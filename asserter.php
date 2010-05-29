@@ -2,6 +2,8 @@
 
 namespace mageekguy\tests\unit;
 
+use mageekguy\tests\unit\asserter;
+
 class asserter
 {
 	protected $score = null;
@@ -38,14 +40,20 @@ class asserter
 	protected function pass()
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addPassedAssertion($file, $line, $class, $method, $asserter, $reason);
+		$this->score->addPass($file, $line, $class, $method, $asserter);
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addFailedAssertion($file, $line, $class, $method, $asserter, $reason);
+		$this->score->addFail($file, $line, $class, $method, $asserter, $reason);
+		throw new asserter\exception($reason);
+	}
+
+	protected function setWithArguments(array $arguments)
+	{
+		return $this;
 	}
 
 	protected static function toString($mixed)
@@ -106,5 +114,9 @@ class asserter
 		return $backtrace;
 	}
 }
+
+namespace mageekguy\tests\unit\asserter;
+
+class exception extends \runtimeException {}
 
 ?>

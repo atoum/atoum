@@ -2,7 +2,7 @@
 
 namespace mageekguy\tests\unit\asserters;
 
-class boolean extends \mageekguy\sparkline\tests\asserter
+class boolean extends \mageekguy\tests\unit\asserter
 {
 	protected $mixed = null;
 
@@ -14,7 +14,7 @@ class boolean extends \mageekguy\sparkline\tests\asserter
 	public function setWith($mixed)
 	{
 		$this->mixed = $mixed;
-		return $this->reset();
+		return $this;
 	}
 
 	public function isTrue()
@@ -29,16 +29,18 @@ class boolean extends \mageekguy\sparkline\tests\asserter
 
 	public function isEqualTo($mixed)
 	{
-		if ($this->skip() === false)
-		{
-			$this->mixed === $mixed ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($mixed));
-		}
-
+		$this->mixed === $mixed ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($mixed));
 		return $this;
 	}
 
 	protected function setWithArguments(array $arguments)
 	{
+		if (array_key_exists(0, $arguments) === false)
+		{
+			throw new \logicException('Argument must be set at index 0');
+		}
+
+		return $this->setWith($arguments[0]);
 	}
 }
 

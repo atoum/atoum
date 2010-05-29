@@ -4,16 +4,33 @@ namespace mageekguy\tests\unit;
 
 class score
 {
-	protected $failedAssertions = array();
+	protected $failNumber = 0;
+	protected $passNumber = 0;
+	protected $assertions = array();
 
-	public function addFailedAssertion($file, $line, $class, $method, $asserter, $reason)
+	public function addPass($file, $line, $class, $method, $asserter)
 	{
-		$this->failedAssertions[$class][] = array(
+		$this->passNumber++;
+
+		$this->assertions[$class][$method][] = array(
 			'file' => $file,
 			'line' => $line,
-			'method' => $method,
 			'asserter' => $asserter,
-			'reason' => $reason
+			'fail' => null
+		);
+
+		return $this;
+	}
+
+	public function addFail($file, $line, $class, $method, $asserter, $reason)
+	{
+		$this->failNumber++;
+
+		$this->assertions[$class][$method][] = array(
+			'file' => $file,
+			'line' => $line,
+			'asserter' => $asserter,
+			'fail' => $reason
 		);
 
 		return $this;

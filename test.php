@@ -3,6 +3,7 @@
 namespace mageekguy\tests\unit;
 
 use mageekguy\tests\unit;
+use mageekguy\tests\unit\asserter;
 
 abstract class test
 {
@@ -72,6 +73,7 @@ abstract class test
 			{
 				$this->{$testMethod}();
 			}
+			catch (asserter\exception $exception) {}
 			catch (\exception $exception)
 			{
 				var_dump($exception);

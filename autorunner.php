@@ -13,7 +13,7 @@ class autorunner
 {
 	const testClass = '\mageekguy\tests\unit\test';
 
-	public function run()
+	public static function run()
 	{
 		foreach (get_declared_classes() as $class)
 		{
@@ -22,8 +22,6 @@ class autorunner
 				self::runTestClass($class);
 			}
 		}
-
-		return $this;
 	}
 
 	protected static function isTestClass($class)
@@ -67,6 +65,7 @@ class autorunner
 
 			$returnValue = proc_close($php);
 
+			var_dump($stdout);
 			var_dump(unserialize($stdout));
 			var_dump($stderr);
 			var_dump($returnValue);
@@ -78,7 +77,7 @@ if (autorun === true)
 {
 	register_shutdown_function(function()
 		{
-			$autorunner = new \mageekguy\tests\unit\autorunner(); $autorunner->run();
+			\mageekguy\tests\unit\autorunner::run();
 		}
 	);
 }
