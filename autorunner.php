@@ -2,6 +2,8 @@
 
 namespace mageekguy\tests\unit;
 
+use \mageekguy\tests\unit\reporters;
+
 require(__DIR__ . '/autoloader.php');
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
@@ -37,6 +39,10 @@ class autorunner
 		{
 			self::runTestMethod($test, $testMethod);
 		}
+
+		$reporter = new reporters\cli();
+
+		$reporter->report($test);
 	}
 
 	protected static function runTestMethod($test, $testMethod)
@@ -57,18 +63,27 @@ class autorunner
 			fwrite($pipes[0], $phpCode);
 			fclose($pipes[0]);
 
-			$stdout = stream_get_contents($pipes[1]);
+			$stdOut = stream_get_contents($pipes[1]);
 			fclose($pipes[1]);
 
-			$stderr = stream_get_contents($pipes[2]);
+			$stdErr = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
 
 			$returnValue = proc_close($php);
 
-			var_dump($stdout);
-			var_dump(unserialize($stdout));
-			var_dump($stderr);
-			var_dump($returnValue);
+			if ($stdErr != '')
+			{
+				throw new \runtimeException($stdErr, $returnValue);
+			}
+
+			$score = unserialize($stdOut);
+
+			if ($score instanceof \mageekguy\tests\unit\score === false)
+			{
+				throw new \runtimeException('Unable to retrieve score from \'' . $stdOut . '\'');
+			}
+
+			$test->getScore()->merge($score);
 		}
 	}
 }

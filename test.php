@@ -7,10 +7,8 @@ use mageekguy\tests\unit\asserter;
 
 abstract class test
 {
-	const name = __CLASS__;
 	const version = '$Rev$';
 	const author = 'Frédéric Hardy';
-	const directory = __DIR__;
 	const testMethodPrefix = 'test';
 
 	protected $score = null;
@@ -19,6 +17,7 @@ abstract class test
 	private $class = '';
 	private $path = '';
 	private $testMethods = array();
+	private $currentMethod = null;
 
 	public function __construct()
 	{
@@ -57,6 +56,11 @@ abstract class test
 		return $this->score;
 	}
 
+	public function getVersion()
+	{
+		return substr(self::version, 6, -2);
+	}
+
 	public function getTestMethods()
 	{
 		return $this->testMethods;
@@ -82,6 +86,8 @@ abstract class test
 					throw new \runtimeException('Test method ' . $this->getClass() . '::' . $testMethod . '() is undefined');
 				}
 
+				$this->currentMethod = $testMethod;
+
 				try
 				{
 					$this->{$testMethod}();
@@ -92,11 +98,14 @@ abstract class test
 				}
 				catch (\exception $exception)
 				{
-					$this->score->addException($exception);
+					list($file, $line, $class, $method) = $this->getBacktrace();
+					$this->score->addException($file, $line, $class, $method, $exception);
 				}
 			}
 
 			restore_error_handler();
+
+			$this->currentMethod = null;
 
 			$this->tearDown();
 		}
@@ -109,11 +118,12 @@ abstract class test
 		return $this;
 	}
 
-	public function errorHandler($errno, $errstr, $file, $line, $context)
+	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
 	{
 		if (error_reporting() !== 0)
 		{
-			$this->score->addError($file, $line, $errno, $errstr);
+			list($file, $line, $class, $method) = $this->getBacktrace();
+			$this->score->addError($file, $line, $class, $method, $errno, $errstr);
 		}
 
 		return true;
@@ -127,6 +137,26 @@ abstract class test
 	protected function tearDown()
 	{
 		return $this;
+	}
+
+	protected function getBacktrace()
+	{
+		$debugBacktrace = debug_backtrace();
+
+		foreach ($debugBacktrace as $key => $value)
+		{
+			if (isset($value['object']) === true && isset($value['function']) === true && $value['object'] === $this && $value['function'] === $this->currentMethod)
+			{
+				return array(
+					$debugBacktrace[$key - 1]['file'],
+					$debugBacktrace[$key - 1]['line'],
+					$value['class'],
+					$value['function']
+				);
+			}
+		}
+
+		return null;
 	}
 }
 
