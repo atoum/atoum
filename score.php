@@ -7,7 +7,9 @@ class score
 	protected $failNumber = 0;
 	protected $passNumber = 0;
 	protected $assertions = array();
+	protected $exceptionNumber = 0;
 	protected $exceptions = array();
+	protected $errorNumber = 0;
 	protected $errors = array();
 
 	public function addPass($file, $line, $class, $method, $asserter)
@@ -40,6 +42,8 @@ class score
 
 	public function addException($file, $line, $class, $method, \exception $exception)
 	{
+		$this->exceptionNumber++;
+
 		$this->exceptions[$class][$method][] = array(
 			'file' => $file,
 			'line' => $line,
@@ -51,6 +55,8 @@ class score
 
 	public function addError($file, $line, $class, $method, $type, $message)
 	{
+		$this->errorNumber++;
+
 		$this->errors[$class][$method][] = array(
 			'file' => $file,
 			'line' => $line,
@@ -77,10 +83,14 @@ class score
 			}
 		}
 
+		$this->exceptionNumber += $score->exceptionNumber;
+
 		foreach ($score->exceptions as $exception)
 		{
 			$this->exceptions[] = $exception;
 		}
+
+		$this->errorNumber += $score->errorNumber;
 
 		foreach ($score->errors as $file => $lines)
 		{
@@ -96,9 +106,19 @@ class score
 		return $this;
 	}
 
+	public function getFailNumber()
+	{
+		return $this->failNumber;
+	}
+
 	public function getAssertions()
 	{
 		return $this->assertions;
+	}
+
+	public function getErrorNumber()
+	{
+		return $this->errorNumber;
 	}
 
 	public function getErrors()
