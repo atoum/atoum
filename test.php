@@ -7,6 +7,10 @@ use mageekguy\tests\unit\asserter;
 
 abstract class test
 {
+	const name = __CLASS__;
+	const version = '$Rev$';
+	const author = 'Frédéric Hardy';
+	const directory = __DIR__;
 	const testMethodPrefix = 'test';
 
 	protected $score = null;
@@ -65,24 +69,54 @@ abstract class test
 			$testMethods = $this->testMethods;
 		}
 
-		$this->setUp();
-
-		foreach ($testMethods as $testMethod)
+		try
 		{
-			try
+			$this->setUp();
+
+			set_error_handler(array($this, 'errorHandler'));
+
+			foreach ($testMethods as $testMethod)
 			{
-				$this->{$testMethod}();
+				if (in_array($testMethod, $this->testMethods) === false)
+				{
+					throw new \runtimeException('Test method ' . $this->getClass() . '::' . $testMethod . '() is undefined');
+				}
+
+				try
+				{
+					$this->{$testMethod}();
+				}
+				catch (asserter\exception $exception)
+				{
+					# Do nothing, just break execution of current method because an assertion failed.
+				}
+				catch (\exception $exception)
+				{
+					$this->score->addException($exception);
+				}
 			}
-			catch (asserter\exception $exception) {}
-			catch (\exception $exception)
-			{
-				var_dump($exception);
-			}
+
+			restore_error_handler();
+
+			$this->tearDown();
+		}
+		catch (\exception $exception)
+		{
+			$this->tearDown();
+			throw $exception;
 		}
 
-		$this->tearDown();
-
 		return $this;
+	}
+
+	public function errorHandler($errno, $errstr, $file, $line, $context)
+	{
+		if (error_reporting() !== 0)
+		{
+			$this->score->addError($file, $line, $errno, $errstr);
+		}
+
+		return true;
 	}
 
 	protected function setUp()
