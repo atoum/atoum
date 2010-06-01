@@ -4,17 +4,24 @@ namespace mageekguy\tests\unit\reporters;
 
 use \mageekguy\tests\unit\test;
 
-class cli extends \mageekguy\tests\unit\reporter implements \mageekguy\tests\unit\observer
+class cli extends \mageekguy\tests\unit\reporter
 {
 	public function manageObservableEvent(\mageekguy\tests\unit\observable $test, $event)
 	{
-		echo $event;
+		switch ($event)
+		{
+			case test::eventRunStart:
+				self::write('\mageekguy\tests\unit\test version ' . $test->getVersion() . ' by ' . \mageekguy\tests\unit\test::author) . '.';
+				break;
+
+			case test::eventRunEnd:
+				$this->reportScore($test);
+				break;
+		}
 	}
 
-	public function report(\mageekguy\tests\unit\test $test)
+	protected function reportScore(\mageekguy\tests\unit\test $test)
 	{
-		self::write('\mageekguy\tests\unit\test version ' . $test->getVersion() . ' by ' . \mageekguy\tests\unit\test::author) . '.';
-
 		$score = $test->getScore();
 
 		$failNumber = $score->getFailNumber();

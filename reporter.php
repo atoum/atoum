@@ -2,9 +2,8 @@
 
 namespace mageekguy\tests\unit;
 
-abstract class reporter
+abstract class reporter implements \mageekguy\tests\unit\observer
 {
-	public abstract function report(\mageekguy\tests\unit\test $test);
 }
 
 ?>

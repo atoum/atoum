@@ -37,8 +37,6 @@ class autorunner
 		$test = new $testClass();
 		$test->addObserver($reporter);
 		$test->run();
-
-		$reporter->report($test);
 	}
 }
 

@@ -11,14 +11,14 @@ abstract class test implements observable
 	const author = 'Frédéric Hardy';
 	const testMethodPrefix = 'test';
 
-	const startRun = 1;
-	const beforeSetUp = 2;
-	const afterSetUp = 3;
-	const beforeTestMethod = 4;
-	const afterTestMethod = 5;
-	const beforeTearDown = 6;
-	const afterTearDown = 7;
-	const endRun = 8;
+	const eventRunStart = 1;
+	const eventBeforeSetUp = 2;
+	const eventAfterSetUp = 3;
+	const eventBeforeTestMethod = 4;
+	const eventAfterTestMethod = 5;
+	const eventBeforeTearDown = 6;
+	const eventAfterTearDown = 7;
+	const eventRunEnd = 8;
 
 	protected $score = null;
 	protected $assert = null;
@@ -94,7 +94,7 @@ abstract class test implements observable
 
 	public function run(array $testMethods = array(), $runInChildProcess = true)
 	{
-		$this->sendEventToObservers(self::startRun);
+		$this->sendEventToObservers(self::eventRunStart);
 
 		if (sizeof($testMethods) <= 0)
 		{
@@ -105,9 +105,9 @@ abstract class test implements observable
 		{
 			if ($runInChildProcess === true)
 			{
-				$this->sendEventToObservers(self::beforeSetUp);
+				$this->sendEventToObservers(self::eventBeforeSetUp);
 				$this->setUp();
-				$this->sendEventToObservers(self::afterSetUp);
+				$this->sendEventToObservers(self::eventAfterSetUp);
 			}
 
 			foreach ($testMethods as $testMethod)
@@ -124,17 +124,17 @@ abstract class test implements observable
 				}
 				else
 				{
-					$this->sendEventToObservers(self::beforeTestMethod);
+					$this->sendEventToObservers(self::eventBeforeTestMethod);
 					$this->runInChildProcess($testMethod);
-					$this->sendEventToObservers(self::afterTestMethod);
+					$this->sendEventToObservers(self::eventAfterTestMethod);
 				}
 			}
 
 			if ($runInChildProcess === true)
 			{
-				$this->sendEventToObservers(self::beforeTearDown);
+				$this->sendEventToObservers(self::eventBeforeTearDown);
 				$this->tearDown();
-				$this->sendEventToObservers(self::afterTearDown);
+				$this->sendEventToObservers(self::eventAfterTearDown);
 			}
 		}
 		catch (\exception $exception)
@@ -143,7 +143,7 @@ abstract class test implements observable
 			throw $exception;
 		}
 
-		$this->sendEventToObservers(self::endRun);
+		$this->sendEventToObservers(self::eventRunEnd);
 
 		return $this;
 	}
