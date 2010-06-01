@@ -2,8 +2,15 @@
 
 namespace mageekguy\tests\unit\reporters;
 
-class cli extends \mageekguy\tests\unit\reporter
+use \mageekguy\tests\unit\test;
+
+class cli extends \mageekguy\tests\unit\reporter implements \mageekguy\tests\unit\observer
 {
+	public function manageObservableEvent(\mageekguy\tests\unit\observable $test, $event)
+	{
+		echo $event;
+	}
+
 	public function report(\mageekguy\tests\unit\test $test)
 	{
 		self::write('\mageekguy\tests\unit\test version ' . $test->getVersion() . ' by ' . \mageekguy\tests\unit\test::author) . '.';

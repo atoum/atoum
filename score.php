@@ -6,10 +6,10 @@ class score
 {
 	protected $failNumber = 0;
 	protected $passNumber = 0;
-	protected $assertions = array();
-	protected $exceptionNumber = 0;
-	protected $exceptions = array();
 	protected $errorNumber = 0;
+	protected $exceptionNumber = 0;
+	protected $assertions = array();
+	protected $exceptions = array();
 	protected $errors = array();
 
 	public function addPass($file, $line, $class, $method, $asserter)
