@@ -5,7 +5,7 @@ namespace mageekguy\tests\unit;
 use mageekguy\tests\unit;
 use mageekguy\tests\unit\asserter;
 
-abstract class test implements observable
+abstract class test implements observable, \countable
 {
 	const version = '$Rev$';
 	const author = 'Frédéric Hardy';
@@ -15,10 +15,14 @@ abstract class test implements observable
 	const eventBeforeSetUp = 2;
 	const eventAfterSetUp = 3;
 	const eventBeforeTestMethod = 4;
-	const eventAfterTestMethod = 5;
-	const eventBeforeTearDown = 6;
-	const eventAfterTearDown = 7;
-	const eventRunEnd = 8;
+	const eventFailure = 5;
+	const eventError = 6;
+	const eventException = 7;
+	const eventSuccess = 8;
+	const eventAfterTestMethod = 9;
+	const eventBeforeTearDown = 10;
+	const eventAfterTearDown = 11;
+	const eventRunEnd = 12;
 
 	protected $score = null;
 	protected $assert = null;
@@ -27,6 +31,7 @@ abstract class test implements observable
 	private $class = '';
 	private $path = '';
 	private $testMethods = array();
+	private $runTestMethods = array();
 	private $currentMethod = null;
 
 	public function __construct()
@@ -49,6 +54,13 @@ abstract class test implements observable
 				$this->testMethods[] = $methodName;
 			}
 		}
+
+		$this->runTestMethods = & $this->testMethods;
+	}
+
+	public function count()
+	{
+		return sizeof($this->runTestMethods);
 	}
 
 	public function addObserver(observer $observer)
@@ -92,13 +104,13 @@ abstract class test implements observable
 		return $this->testMethods;
 	}
 
-	public function run(array $testMethods = array(), $runInChildProcess = true)
+	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
 		$this->sendEventToObservers(self::eventRunStart);
 
-		if (sizeof($testMethods) <= 0)
+		if (sizeof($runTestMethods) > 0)
 		{
-			$testMethods = $this->testMethods;
+			$this->runTestMethods = $runTestMethods;
 		}
 
 		try
@@ -110,13 +122,18 @@ abstract class test implements observable
 				$this->sendEventToObservers(self::eventAfterSetUp);
 			}
 
-			foreach ($testMethods as $testMethod)
+			foreach ($this->runTestMethods as $testMethod)
 			{
 				if (in_array($testMethod, $this->testMethods) === false)
 				{
 					throw new \runtimeException('Test method ' . $this->getClass() . '::' . $testMethod . '() is undefined');
 				}
 
+				$failNumber = $this->score->getFailNumber();
+				$errorNumber = $this->score->getErrorNumber();
+				$exceptionNumber = $this->score->getExceptionNumber();
+
+				$this->sendEventToObservers(self::eventBeforeTestMethod);
 
 				if ($runInChildProcess === false)
 				{
@@ -124,10 +141,28 @@ abstract class test implements observable
 				}
 				else
 				{
-					$this->sendEventToObservers(self::eventBeforeTestMethod);
 					$this->runInChildProcess($testMethod);
-					$this->sendEventToObservers(self::eventAfterTestMethod);
 				}
+
+				switch (true)
+				{
+					case $failNumber < $this->score->getFailNumber():
+						$this->sendEventToObservers(self::eventFailure);
+						break;
+
+					case $errorNumber < $this->score->getErrorNumber():
+						$this->sendEventToObservers(self::eventError);
+						break;
+
+					case $exceptionNumber < $this->score->getExceptionNumber():
+						$this->sendEventToObservers(self::eventException);
+						break;
+
+					default:
+						$this->sendEventToObservers(self::eventSuccess);
+				}
+
+				$this->sendEventToObservers(self::eventAfterTestMethod);
 			}
 
 			if ($runInChildProcess === true)

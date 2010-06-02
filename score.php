@@ -11,6 +11,8 @@ class score
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
+	protected $memory = 0;
+	protected $time = 0.0;
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
@@ -124,6 +126,16 @@ class score
 	public function getErrors()
 	{
 		return $this->errors;
+	}
+
+	public function getExceptionNumber()
+	{
+		return $this->exceptionNumber;
+	}
+
+	public function getExceptions()
+	{
+		return $this->exceptions;
 	}
 }
 

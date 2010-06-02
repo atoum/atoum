@@ -6,22 +6,89 @@ use \mageekguy\tests\unit\test;
 
 class cli extends \mageekguy\tests\unit\reporter
 {
+	protected $run = 0;
+	protected $start = 0.0;
+	protected $progressBar = '';
+	protected $testMethods = 0;
+	protected $size = 0;
+
 	public function manageObservableEvent(\mageekguy\tests\unit\observable $test, $event)
 	{
 		switch ($event)
 		{
 			case test::eventRunStart:
-				self::write('\mageekguy\tests\unit\test version ' . $test->getVersion() . ' by ' . \mageekguy\tests\unit\test::author) . '.';
+				$this->runStart($test);
+				break;
+
+			case test::eventBeforeTestMethod:
+				$this->testMethods++;
+				break;
+
+			case test::eventSuccess:
+				$this->progressBar('.');
+				break;
+
+			case test::eventFailure:
+				$this->progressBar('F');
+				break;
+
+			case test::eventError:
+				$this->progressBar('!');
+				break;
+
+			case test::eventException:
+				$this->progressBar('E');
 				break;
 
 			case test::eventRunEnd:
-				$this->reportScore($test);
+				$this->runEnd($test);
 				break;
 		}
 	}
 
-	protected function reportScore(\mageekguy\tests\unit\test $test)
+	protected function runStart(\mageekguy\tests\unit\test $test)
 	{
+		if ($this->run == 0)
+		{
+			self::write(sprintf($this->locale->_('\mageekguy\tests\unit\test version %s by %s.'), $test->getVersion(), \mageekguy\tests\unit\test::author));
+
+			$this->start = microtime(true);
+			$this->progressBar = '';
+			$this->testMethods = 0;
+			$this->size = sizeof($test);
+		}
+
+		$this->progressBar();
+
+		$this->run++;
+	}
+
+	protected function progressBar($dot = '')
+	{
+		$end = '[' . sprintf('%' . strlen($this->size) . 'd', $this->testMethods) . '/' . $this->size . ']';
+
+		if (strlen($this->progressBar) >= 60)
+		{
+			self::write();
+		}
+		else
+		{
+			echo str_repeat("\010", 60 + strlen($end));
+		}
+
+		$this->progressBar .= $dot;
+
+		echo str_pad(str_pad($this->progressBar, $this->size, '-', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
+	}
+
+	protected function runEnd(\mageekguy\tests\unit\test $test)
+	{
+		$duration = (microtime(true) - $this->start);
+
+		self::write();
+		self::write(sprintf($this->locale->__('Duration: %4.2f second, Memory %4.2f Mb.', 'Duration: %4.2f seconds, Memory %4.2f Mb', $duration), $duration, memory_get_peak_usage(true) / 1048576));
+
+		/*
 		$score = $test->getScore();
 
 		$failNumber = $score->getFailNumber();
@@ -96,6 +163,7 @@ class cli extends \mageekguy\tests\unit\reporter
 				}
 			}
 		}
+		*/
 	}
 
 	public static function write($message = '', $level = 0)

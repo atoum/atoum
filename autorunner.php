@@ -17,11 +17,15 @@ class autorunner
 
 	public static function run()
 	{
+		$reporter = new reporters\cli();
+
 		foreach (get_declared_classes() as $class)
 		{
 			if (self::isTestClass($class) === true)
 			{
-				self::runTestClass($class);
+				$test = new $class();
+				$test->addObserver($reporter);
+				$test->run();
 			}
 		}
 	}
@@ -29,14 +33,6 @@ class autorunner
 	protected static function isTestClass($class)
 	{
 		return (is_subclass_of($class, self::testClass) === true && get_parent_class($class) !== false);
-	}
-
-	protected static function runTestClass($testClass)
-	{
-		$reporter = new reporters\cli();
-		$test = new $testClass();
-		$test->addObserver($reporter);
-		$test->run();
 	}
 }
 
