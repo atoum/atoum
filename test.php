@@ -196,12 +196,19 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function exceptionHandler(\exception $exception)
+	{
+		list($file, $line, $class, $method) = $this->getBacktrace($exception->getTrace());
+		$this->score->addException($file, $line, $class, $method, $exception);
+		return $this;
+	}
+
 	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
 	{
 		if (error_reporting() !== 0)
 		{
 			list($file, $line, $class, $method) = $this->getBacktrace();
-			$this->score->addError($file, $line, $class, $method, $errno, $errstr);
+			$this->score->addError($file, $line, $class, $method, $errno, trim($errstr));
 		}
 
 		return true;
@@ -228,8 +235,7 @@ abstract class test implements observable, \countable
 		}
 		catch (\exception $exception)
 		{
-			list($file, $line, $class, $method) = $this->getBacktrace();
-			$this->score->addException($file, $line, $class, $method, $exception);
+			$this->exceptionHandler($exception);
 		}
 
 		restore_error_handler();
@@ -286,13 +292,13 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	protected function getBacktrace()
+	protected function getBacktrace(array $trace = null)
 	{
-		$debugBacktrace = debug_backtrace();
+		$debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
 
 		foreach ($debugBacktrace as $key => $value)
 		{
-			if (isset($value['object']) === true && isset($value['function']) === true && $value['object'] === $this && $value['function'] === $this->currentMethod)
+			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->getClass() && $value['function'] === $this->currentMethod)
 			{
 				return array(
 					$debugBacktrace[$key - 1]['file'],
