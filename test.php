@@ -34,10 +34,17 @@ abstract class test implements observable, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 
-	public function __construct()
+	public function __construct(unit\locale $locale = null)
 	{
+		if ($locale === null)
+		{
+			$locale = new unit\locale();
+		}
+
+		$this->setLocale($locale);
+
 		$this->score = new unit\score();
-		$this->assert = new unit\asserter($this->score);
+		$this->assert = new unit\asserter($this->score, $this->locale);
 
 		$class = new \reflectionClass($this);
 
@@ -56,6 +63,12 @@ abstract class test implements observable, \countable
 		}
 
 		$this->runTestMethods = & $this->testMethods;
+	}
+
+	public function setLocale(unit\locale $locale)
+	{
+		$this->locale = $locale;
+		return $this;
 	}
 
 	public function count()

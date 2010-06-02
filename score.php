@@ -4,21 +4,15 @@ namespace mageekguy\tests\unit;
 
 class score
 {
-	protected $failNumber = 0;
-	protected $passNumber = 0;
-	protected $errorNumber = 0;
-	protected $exceptionNumber = 0;
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
-	protected $memory = 0;
-	protected $time = 0.0;
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
-		$this->passNumber++;
-
-		$this->assertions[$class][$method][] = array(
+		$this->assertions[] = array(
+			'class' => $class,
+			'method' => $method,
 			'file' => $file,
 			'line' => $line,
 			'asserter' => $asserter,
@@ -30,9 +24,9 @@ class score
 
 	public function addFail($file, $line, $class, $method, $asserter, $reason)
 	{
-		$this->failNumber++;
-
-		$this->assertions[$class][$method][] = array(
+		$this->assertions[] = array(
+			'class' => $class,
+			'method' => $method,
 			'file' => $file,
 			'line' => $line,
 			'asserter' => $asserter,
@@ -44,9 +38,9 @@ class score
 
 	public function addException($file, $line, $class, $method, \exception $exception)
 	{
-		$this->exceptionNumber++;
-
-		$this->exceptions[$class][$method][] = array(
+		$this->exceptions[] = array(
+			'class' => $class,
+			'method' => $method,
 			'file' => $file,
 			'line' => $line,
 			'exception' => $exception
@@ -57,9 +51,9 @@ class score
 
 	public function addError($file, $line, $class, $method, $type, $message)
 	{
-		$this->errorNumber++;
-
-		$this->errors[$class][$method][] = array(
+		$this->errors[] = array(
+			'class' => $class,
+			'method' => $method,
 			'file' => $file,
 			'line' => $line,
 			'type' => $type,
@@ -71,56 +65,47 @@ class score
 
 	public function merge(\mageekguy\tests\unit\score $score)
 	{
-		$this->passNumber += $score->passNumber;
-		$this->failNumber += $score->failNumber;
-
-		foreach ($score->assertions as $class => $methods)
+		foreach ($score->assertions as $assertion)
 		{
-			foreach ($methods as $method => $assertions)
-			{
-				foreach ($assertions as $assertion)
-				{
-					$this->assertions[$class][$method][] = $assertion;
-				}
-			}
+			$this->assertions[] = $assertion;
 		}
-
-		$this->exceptionNumber += $score->exceptionNumber;
 
 		foreach ($score->exceptions as $exception)
 		{
 			$this->exceptions[] = $exception;
 		}
 
-		$this->errorNumber += $score->errorNumber;
-
-		foreach ($score->errors as $file => $lines)
+		foreach ($score->errors as $error)
 		{
-			foreach ($lines as $line => $errors)
-			{
-				foreach ($errors as $error)
-				{
-					$this->errors[$file][$line][] = $error;
-				}
-			}
+			$this->errors[] = $error;
 		}
 
 		return $this;
 	}
 
-	public function getFailNumber()
+	public function getFailAssertions()
 	{
-		return $this->failNumber;
+		$assertions = array();
+
+		foreach ($this->assertions as $assertion)
+		{
+			if ($assertion['fail'] !== null)
+			{
+				$assertions[] = $assertion;
+			}
+		}
+
+		return $assertions;
 	}
 
-	public function getAssertions()
+	public function getFailNumber()
 	{
-		return $this->assertions;
+		return sizeof($this->getFailAssertions());
 	}
 
 	public function getErrorNumber()
 	{
-		return $this->errorNumber;
+		return sizeof($this->errors);
 	}
 
 	public function getErrors()
@@ -130,7 +115,7 @@ class score
 
 	public function getExceptionNumber()
 	{
-		return $this->exceptionNumber;
+		return sizeof($this->exceptions);
 	}
 
 	public function getExceptions()

@@ -2,15 +2,18 @@
 
 namespace mageekguy\tests\unit;
 
+use mageekguy\tests\unit;
 use mageekguy\tests\unit\asserter;
 
 class asserter
 {
 	protected $score = null;
+	protected $locale = null;
 
-	public final function __construct(score $score)
+	public final function __construct(score $score, unit\locale $locale)
 	{
 		$this->score = $score;
+		$this->locale = $locale;
 	}
 
 	public function __get($asserter)
@@ -22,7 +25,7 @@ class asserter
 			throw new \logicException('Asserter \'' . $class . '\' does not exist');
 		}
 
-		return new $class($this->score);
+		return new $class($this->score, $this->locale);
 	}
 
 	public function __call($asserter, $arguments)

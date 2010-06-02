@@ -2,6 +2,7 @@
 
 namespace mageekguy\tests\unit;
 
+use \mageekguy\tests\unit;
 use \mageekguy\tests\unit\reporters;
 
 require(__DIR__ . '/autoloader.php');
@@ -23,7 +24,7 @@ class autorunner
 		{
 			if (self::isTestClass($class) === true)
 			{
-				$test = new $class();
+				$test = new $class(new unit\locale());
 				$test->addObserver($reporter);
 				$test->run();
 			}
