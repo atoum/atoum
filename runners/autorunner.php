@@ -14,8 +14,17 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 class autorunner extends \mageekguy\tests\unit\runner
 {
+	protected $score = null;
+
+	public function __construct()
+	{
+		$this->score = new unit\score();
+	}
+
 	public function run()
 	{
+		$locale = new unit\locale();
+
 		$reporter = new reporters\cli();
 
 		$this->addObserver($reporter);
@@ -26,7 +35,7 @@ class autorunner extends \mageekguy\tests\unit\runner
 		{
 			if (self::isTestClass($class) === true)
 			{
-				$test = new $class(new unit\locale());
+				$test = new $class($this->score, $locale);
 				$test->addObserver($reporter);
 				$test->run();
 			}

@@ -34,8 +34,15 @@ abstract class test implements observable, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 
-	public function __construct(unit\locale $locale = null)
+	public function __construct(unit\score $score = null, unit\locale $locale = null)
 	{
+		if ($score === null)
+		{
+			$score = new unit\score();
+		}
+
+		$this->setScore($score);
+
 		if ($locale === null)
 		{
 			$locale = new unit\locale();
@@ -43,7 +50,6 @@ abstract class test implements observable, \countable
 
 		$this->setLocale($locale);
 
-		$this->score = new unit\score();
 		$this->assert = new unit\asserter($this->score, $this->locale);
 
 		$class = new \reflectionClass($this);
@@ -63,6 +69,12 @@ abstract class test implements observable, \countable
 		}
 
 		$this->runTestMethods = & $this->testMethods;
+	}
+
+	public function setScore(unit\score $score)
+	{
+		$this->score = $score;
+		return $this;
 	}
 
 	public function setLocale(unit\locale $locale)
@@ -195,8 +207,8 @@ abstract class test implements observable, \countable
 	{
 		if (error_reporting() !== 0)
 		{
-			list($file, $line, $class, $method) = $this->getBacktrace();
-			$this->score->addError($file, $line, $class, $method, $errno, trim($errstr));
+			list($file, $line) = $this->getBacktrace();
+			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, trim($errstr));
 		}
 
 		return true;
@@ -235,8 +247,8 @@ abstract class test implements observable, \countable
 		}
 		catch (\exception $exception)
 		{
-			list($file, $line, $class, $method) = $this->getBacktrace($exception->getTrace());
-			$this->score->addException($file, $line, $class, $method, $exception);
+			list($file, $line) = $this->getBacktrace($exception->getTrace());
+			$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
 		}
 
 		restore_error_handler();
@@ -303,9 +315,7 @@ abstract class test implements observable, \countable
 			{
 				return array(
 					$debugBacktrace[$key - 1]['file'],
-					$debugBacktrace[$key - 1]['line'],
-					$value['class'],
-					$value['function']
+					$debugBacktrace[$key - 1]['line']
 				);
 			}
 		}
