@@ -7,7 +7,6 @@ use \mageekguy\tests\unit\test;
 class cli extends \mageekguy\tests\unit\reporter
 {
 	protected $run = 0;
-	protected $start = 0.0;
 	protected $progressBar = '';
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
@@ -49,7 +48,6 @@ class cli extends \mageekguy\tests\unit\reporter
 		{
 			self::write(sprintf($this->locale->_('\mageekguy\tests\unit\test version %s by %s.'), $test->getVersion(), \mageekguy\tests\unit\test::author));
 
-			$this->start = microtime(true);
 			$this->progressBar = '';
 			$this->testMethods = 0;
 			$this->testMethodNumber = sizeof($test);
@@ -81,14 +79,13 @@ class cli extends \mageekguy\tests\unit\reporter
 
 	protected function runEnd(\mageekguy\tests\unit\test $test)
 	{
-		$duration = (microtime(true) - $this->start);
-
 		$score = $test->getScore();
 
 		$failNumber = $score->getFailNumber();
 		$errorNumber = $score->getErrorNumber();
 		$exceptionNumber = $score->getExceptionNumber();
 		$outputNumber = $score->getOutputNumber();
+		$duration = $score->getTotalDuration();
 
 		self::write();
 

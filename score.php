@@ -8,6 +8,7 @@ class score
 	protected $exceptions = array();
 	protected $errors = array();
 	protected $outputs = array();
+	protected $durations = array();
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
@@ -78,12 +79,24 @@ class score
 		return $this;
 	}
 
+	public function addDuration($class, $method, $duration)
+	{
+		$this->durations[] = array(
+			'class' => $class,
+			'method' => $method,
+			'duration' => $duration
+		);
+
+		return $this;
+	}
+
 	public function merge(\mageekguy\tests\unit\score $score)
 	{
 		$this->assertions = array_merge($this->assertions, $score->assertions);
 		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
 		$this->errors = array_merge($this->errors, $score->errors);
 		$this->outputs = array_merge($this->outputs, $score->outputs);
+		$this->durations = array_merge($this->durations, $score->durations);
 
 		return $this;
 	}
@@ -96,6 +109,23 @@ class score
 	public function getOutputs()
 	{
 		return $this->outputs;
+	}
+
+	public function getTotalDuration()
+	{
+		$total = 0.0;
+
+		foreach ($this->durations as $duration)
+		{
+			$total += $duration['duration'];
+		}
+
+		return $total;
+	}
+
+	public function getDurations()
+	{
+		return $this->durations;
 	}
 
 	public function getFailAssertions()

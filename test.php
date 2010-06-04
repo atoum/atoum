@@ -139,7 +139,7 @@ abstract class test implements observable, \countable
 			{
 				if (in_array($testMethod, $this->testMethods) === false)
 				{
-					throw new \runtimeException('Test method ' . $this->getClass() . '::' . $testMethod . '() is undefined');
+					throw new \runtimeException('Test method ' . $this->class . '::' . $testMethod . '() is undefined');
 				}
 
 				$failNumber = $this->score->getFailNumber();
@@ -221,8 +221,10 @@ abstract class test implements observable, \countable
 		try
 		{
 			ob_start();
+			$start = microtime(true);
 			$this->{$testMethod}();
-			$this->score->addOutput($this->getClass(), $this->currentMethod, ob_get_contents());
+			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $start);
+			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
 			ob_end_clean();
 		}
 		catch (asserter\exception $exception)
@@ -244,7 +246,7 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod)
 	{
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->getClass() . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
+		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
 
 		$descriptors = array
 			(
@@ -295,7 +297,7 @@ abstract class test implements observable, \countable
 
 		foreach ($debugBacktrace as $key => $value)
 		{
-			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->getClass() && $value['function'] === $this->currentMethod)
+			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->class && $value['function'] === $this->currentMethod)
 			{
 				return array(
 					$debugBacktrace[$key - 1]['file'],
