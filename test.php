@@ -196,13 +196,6 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function exceptionHandler(\exception $exception)
-	{
-		list($file, $line, $class, $method) = $this->getBacktrace($exception->getTrace());
-		$this->score->addException($file, $line, $class, $method, $exception);
-		return $this;
-	}
-
 	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
 	{
 		if (error_reporting() !== 0)
@@ -227,7 +220,10 @@ abstract class test implements observable, \countable
 
 		try
 		{
+			ob_start();
 			$this->{$testMethod}();
+			$this->score->addOutput($this->getClass(), $this->currentMethod, ob_get_contents());
+			ob_end_clean();
 		}
 		catch (asserter\exception $exception)
 		{
@@ -235,7 +231,8 @@ abstract class test implements observable, \countable
 		}
 		catch (\exception $exception)
 		{
-			$this->exceptionHandler($exception);
+			list($file, $line, $class, $method) = $this->getBacktrace($exception->getTrace());
+			$this->score->addException($file, $line, $class, $method, $exception);
 		}
 
 		restore_error_handler();

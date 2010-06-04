@@ -7,6 +7,7 @@ class score
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
+	protected $outputs = array();
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
@@ -63,24 +64,38 @@ class score
 		return $this;
 	}
 
-	public function merge(\mageekguy\tests\unit\score $score)
+	public function addOutput($class, $method, $output)
 	{
-		foreach ($score->assertions as $assertion)
+		if ($output != '')
 		{
-			$this->assertions[] = $assertion;
-		}
-
-		foreach ($score->exceptions as $exception)
-		{
-			$this->exceptions[] = $exception;
-		}
-
-		foreach ($score->errors as $error)
-		{
-			$this->errors[] = $error;
+			$this->outputs[] = array(
+				'class' => $class,
+				'method' => $method,
+				'output' => $output
+			);
 		}
 
 		return $this;
+	}
+
+	public function merge(\mageekguy\tests\unit\score $score)
+	{
+		$this->assertions = array_merge($this->assertions, $score->assertions);
+		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
+		$this->errors = array_merge($this->errors, $score->errors);
+		$this->outputs = array_merge($this->outputs, $score->outputs);
+
+		return $this;
+	}
+
+	public function getOutputNumber()
+	{
+		return sizeof($this->outputs);
+	}
+
+	public function getOutputs()
+	{
+		return $this->outputs;
 	}
 
 	public function getFailAssertions()
@@ -96,6 +111,11 @@ class score
 		}
 
 		return $assertions;
+	}
+
+	public function getAssertionNumber()
+	{
+		return sizeof($this->assertions);
 	}
 
 	public function getFailNumber()

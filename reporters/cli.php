@@ -10,7 +10,7 @@ class cli extends \mageekguy\tests\unit\reporter
 	protected $start = 0.0;
 	protected $progressBar = '';
 	protected $testMethods = 0;
-	protected $size = 0;
+	protected $testMethodNumber = 0;
 
 	public function manageObservableEvent(\mageekguy\tests\unit\observable $test, $event)
 	{
@@ -52,7 +52,7 @@ class cli extends \mageekguy\tests\unit\reporter
 			$this->start = microtime(true);
 			$this->progressBar = '';
 			$this->testMethods = 0;
-			$this->size = sizeof($test);
+			$this->testMethodNumber = sizeof($test);
 		}
 
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
@@ -63,7 +63,7 @@ class cli extends \mageekguy\tests\unit\reporter
 
 	protected function progressBar($dot = '')
 	{
-		$end = '[' . sprintf('%' . strlen($this->size) . 'd', $this->testMethods) . '/' . $this->size . ']';
+		$end = '[' . sprintf('%' . strlen($this->testMethodNumber) . 'd', $this->testMethods) . '/' . $this->testMethodNumber . ']';
 
 		if (strlen($this->progressBar) >= 60)
 		{
@@ -76,34 +76,52 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		$this->progressBar .= $dot;
 
-		echo str_pad(str_pad($this->progressBar, $this->size, '?', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
+		echo str_pad(str_pad($this->progressBar, $this->testMethodNumber, '?', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
 	}
 
 	protected function runEnd(\mageekguy\tests\unit\test $test)
 	{
 		$duration = (microtime(true) - $this->start);
 
-		self::write();
-		self::write(sprintf($this->locale->__('Duration: %4.2f second, Memory %4.2f Mb.', 'Duration: %4.2f seconds, Memory %4.2f Mb', $duration), $duration, memory_get_peak_usage(true) / 1048576));
-
 		$score = $test->getScore();
 
 		$failNumber = $score->getFailNumber();
 		$errorNumber = $score->getErrorNumber();
-		$exceptionNumber = $score->getErrorNumber();
+		$exceptionNumber = $score->getExceptionNumber();
+		$outputNumber = $score->getOutputNumber();
+
+		self::write();
 
 		if ($failNumber <= 0)
 		{
 			if ($errorNumber === 0 && $exceptionNumber === 0)
 			{
-				self::write($this->locale->_('Success !'));
+				self::write(sprintf($this->locale->_('Success ! (%s, %s)'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber())));
 			}
 			else
 			{
 				self::write($this->locale->_('Success but there are some errors...'));
 			}
 		}
-		else
+
+		self::write(sprintf($this->locale->__('Duration: %4.2f second, Memory %4.2f Mb.', 'Duration: %4.2f seconds, Memory %4.2f Mb', $duration), $duration, memory_get_peak_usage(true) / 1048576));
+
+		if ($outputNumber > 0)
+		{
+			self::write($this->locale->_('Output:'));
+
+			foreach ($score->getOutputs() as $output)
+			{
+				self::write($output['class'] . '::' . $output['method'] . '():', 1);
+
+				foreach (explode("\n", trim($output['output'])) as $line)
+				{
+					self::write($line, 2);
+				}
+			}
+		}
+
+		if ($failNumber > 0)
 		{
 			self::write(sprintf($this->locale->__('There was %d failure', 'There were %d failures', $failNumber), $failNumber) . ':');
 
