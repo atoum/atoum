@@ -107,11 +107,6 @@ abstract class test implements observable, \countable
 		return $this->score;
 	}
 
-	public function getVersion()
-	{
-		return substr(self::version, 6, -2);
-	}
-
 	public function getTestMethods()
 	{
 		return $this->testMethods;
@@ -207,6 +202,11 @@ abstract class test implements observable, \countable
 		return true;
 	}
 
+	public static function getVersion()
+	{
+		return substr(self::version, 6, -2);
+	}
+
 	protected function setUp()
 	{
 		return $this;
@@ -221,9 +221,11 @@ abstract class test implements observable, \countable
 		try
 		{
 			ob_start();
-			$start = microtime(true);
+			$time = microtime(true);
+			$memory = memory_get_usage(true);
 			$this->{$testMethod}();
-			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $start);
+			$this->score->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory);
+			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
 			ob_end_clean();
 		}
@@ -246,7 +248,7 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod)
 	{
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
+		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
 
 		$descriptors = array
 			(

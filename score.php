@@ -9,6 +9,7 @@ class score
 	protected $errors = array();
 	protected $outputs = array();
 	protected $durations = array();
+	protected $memoryUsages = array();
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
@@ -45,7 +46,7 @@ class score
 			'method' => $method,
 			'file' => $file,
 			'line' => $line,
-			'exception' => $exception
+			'value' => $exception
 		);
 
 		return $this;
@@ -72,7 +73,7 @@ class score
 			$this->outputs[] = array(
 				'class' => $class,
 				'method' => $method,
-				'output' => $output
+				'value' => $output
 			);
 		}
 
@@ -84,7 +85,18 @@ class score
 		$this->durations[] = array(
 			'class' => $class,
 			'method' => $method,
-			'duration' => $duration
+			'value' => $duration
+		);
+
+		return $this;
+	}
+
+	public function addMemoryUsage($class, $method, $memoryUsage)
+	{
+		$this->durations[] = array(
+			'class' => $class,
+			'method' => $method,
+			'value' => $memoryUsage
 		);
 
 		return $this;
@@ -117,7 +129,7 @@ class score
 
 		foreach ($this->durations as $duration)
 		{
-			$total += $duration['duration'];
+			$total += $duration['value'];
 		}
 
 		return $total;
@@ -126,6 +138,23 @@ class score
 	public function getDurations()
 	{
 		return $this->durations;
+	}
+
+	public function getTotalMemoryUsage()
+	{
+		$total = 0.0;
+
+		foreach ($this->memoryUsages as $memoryUsage)
+		{
+			$total += $memoryUsage['value'];
+		}
+
+		return $total;
+	}
+
+	public function getMemoryUsages()
+	{
+		return $this->memoryUsages;
 	}
 
 	public function getFailAssertions()
