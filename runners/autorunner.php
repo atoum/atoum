@@ -14,13 +14,6 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 class autorunner extends \mageekguy\tests\unit\runner
 {
-	protected $score = null;
-
-	public function __construct()
-	{
-		$this->score = new unit\score();
-	}
-
 	public function run()
 	{
 		$locale = new unit\locale();
