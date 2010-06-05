@@ -24,6 +24,105 @@ abstract class reporter implements \mageekguy\tests\unit\observer
 		return $this;
 	}
 
+	public function manageObservableEvent(\mageekguy\tests\unit\observable $observable, $event)
+	{
+		switch (true)
+		{
+			case $observable instanceof runner:
+				switch ($event)
+				{
+					case runner::eventRunStart:
+						$this->runStart($observable);
+						break;
+
+					case runner::eventRunStop:
+						$this->runEnd($observable);
+						break;
+				}
+				break;
+
+			case $observable instanceof test:
+				switch ($event)
+				{
+					case test::eventRunStart:
+						$this->testRunStart($observable);
+						break;
+
+					case test::eventBeforeTestMethod:
+						$this->testMethods++;
+						break;
+
+					case test::eventSuccess:
+						$this->progressBar('.');
+						break;
+
+					case test::eventFailure:
+						$this->progressBar('F');
+						break;
+
+					case test::eventError:
+					case test::eventException:
+						$this->progressBar('!');
+						break;
+
+					case test::eventRunEnd:
+						$this->testRunEnd($observable);
+						break;
+				}
+				break;
+		}
+	}
+
+	protected function runStart(\mageekguy\tests\unit\runner $runner)
+	{
+		return $this;
+	}
+
+	protected function testRunStart(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function success(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function failure(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function error(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function exception(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function afterTestMethod(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function testRunEnd(\mageekguy\tests\unit\test $test)
+	{
+		return $this;
+	}
+
+	protected function runEnd(\mageekguy\tests\unit\runner $runner)
+	{
+		return $this;
+	}
+
 	protected function getErrorLabel($error)
 	{
 		switch ($error)

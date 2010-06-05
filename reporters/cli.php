@@ -13,55 +13,6 @@ class cli extends \mageekguy\tests\unit\reporter
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
 
-	public function manageObservableEvent(\mageekguy\tests\unit\observable $observable, $event)
-	{
-		switch (true)
-		{
-			case $observable instanceof runner:
-				switch ($event)
-				{
-					case runner::eventRunStart:
-						$this->runStart($observable);
-						break;
-
-					case runner::eventRunStop:
-						$this->runEnd($observable);
-						break;
-				}
-				break;
-
-			case $observable instanceof test:
-				switch ($event)
-				{
-					case test::eventRunStart:
-						$this->testRunStart($observable);
-						break;
-
-					case test::eventBeforeTestMethod:
-						$this->testMethods++;
-						break;
-
-					case test::eventSuccess:
-						$this->progressBar('.');
-						break;
-
-					case test::eventFailure:
-						$this->progressBar('F');
-						break;
-
-					case test::eventError:
-					case test::eventException:
-						$this->progressBar('!');
-						break;
-
-					case test::eventRunEnd:
-						$this->testRunEnd($observable);
-						break;
-				}
-				break;
-		}
-	}
-
 	protected function runStart(\mageekguy\tests\unit\runner $runner)
 	{
 		$this->start = microtime(true);
@@ -82,22 +33,30 @@ class cli extends \mageekguy\tests\unit\reporter
 		$this->progressBar();
 	}
 
-	protected function progressBar($dot = '')
+	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
 	{
-		$end = '[' . sprintf('%' . strlen($this->testMethodNumber) . 'd', $this->testMethods) . '/' . $this->testMethodNumber . ']';
+		$this->testMethods++;
+		return $this;
+	}
 
-		if (strlen($this->progressBar) >= 60)
-		{
-			self::write();
-		}
-		else if ($this->testMethods > 0)
-		{
-			echo str_repeat("\010", 60 + strlen($end));
-		}
+	protected function success(\mageekguy\tests\unit\test $test)
+	{
+		return $this->progressBar('.');
+	}
 
-		$this->progressBar .= $dot;
+	protected function failure(\mageekguy\tests\unit\test $test)
+	{
+		return $this->progressBar('F');
+	}
 
-		echo str_pad(str_pad($this->progressBar, $this->testMethodNumber, '?', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
+	protected function error(\mageekguy\tests\unit\test $test)
+	{
+		return $this->progressBar('!');
+	}
+
+	protected function exception(\mageekguy\tests\unit\test $test)
+	{
+		return $this->progressBar('!');
 	}
 
 	protected function testRunEnd(\mageekguy\tests\unit\test $test)
@@ -182,6 +141,26 @@ class cli extends \mageekguy\tests\unit\reporter
 		$duration = microtime(true) - $this->start;
 
 		self::write(sprintf($this->locale->__('Total duration: %4.2f second, Total memory usage: %4.2f Mb.', 'Total duration: %4.2f seconds, Total memory usage: %4.2f Mb', $duration), $duration, memory_get_peak_usage(true) / 1048576));
+
+		return $this;
+	}
+
+	protected function progressBar($dot = '')
+	{
+		$end = '[' . sprintf('%' . strlen($this->testMethodNumber) . 'd', $this->testMethods) . '/' . $this->testMethodNumber . ']';
+
+		if (strlen($this->progressBar) >= 60)
+		{
+			self::write();
+		}
+		else if ($this->testMethods > 0)
+		{
+			echo str_repeat("\010", 60 + strlen($end));
+		}
+
+		$this->progressBar .= $dot;
+
+		echo str_pad(str_pad($this->progressBar, $this->testMethodNumber, '?', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
 
 		return $this;
 	}
