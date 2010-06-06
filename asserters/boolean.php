@@ -29,7 +29,7 @@ class boolean extends \mageekguy\tests\unit\asserter
 
 	public function isEqualTo($mixed)
 	{
-		$this->mixed === $mixed ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($mixed));
+		$this->mixed === $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not equal to %s'), $this, self::toString($mixed)));
 		return $this;
 	}
 

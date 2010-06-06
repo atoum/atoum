@@ -237,7 +237,7 @@ abstract class test implements observable, \countable
 			$memory = memory_get_usage(true);
 			$this->{$testMethod}();
 			$this->score->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory);
-			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
+//			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
 			ob_end_clean();
 		}

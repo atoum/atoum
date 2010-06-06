@@ -79,7 +79,7 @@ class cli extends \mageekguy\tests\unit\reporter
 			}
 			else
 			{
-				self::write($this->locale->_('Success but there are some errors...'));
+				self::write($this->locale->_('Success, but there are some errors...'));
 			}
 		}
 

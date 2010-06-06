@@ -19,24 +19,23 @@ class exception extends \mageekguy\tests\unit\asserter
 
 	public function isInstanceOf($mixed)
 	{
-		if (is_object($mixed) === false && class_exists($mixed, true) === false)
+		if (self::isException($mixed) === false)
 		{
-			throw new \LogicException('Argument of ' . __METHOD__ . '() must be a valid class name');
+			throw new \LogicException('Argument of ' . __METHOD__ . '() must be an \exception class or on instance of class \exception');
 		}
-		else if ($mixed != '\exception' && is_subclass_of($mixed, '\exception') === false)
-		{
-			throw new \LogicException('Argument of ' . __METHOD__ . '() must be an exception');
-		}
-		else
-		{
-			$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, (is_string($mixed) === true ? $mixed : get_class($mixed))));
-			return $this;
-		}
+
+		$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, (is_string($mixed) === true ? $mixed : get_class($mixed))));
+
+		return $this;
 	}
 
 	public function hasMessage($message)
 	{
-		$this->isInstanceOf('\exception');
+		if (self::isException($this->mixed) === false)
+		{
+			$this->fail(sprintf($this->locale->_('Message not found because %s is not an exception'), $this->mixed));
+		}
+
 		$this->mixed->getMessage() == (string) $message ? $this->pass() : $this->fail(sprintf($this->locale->_('Message \'%s\' is not identical to \'%s\''), $this->mixed->getMessage(), $message));
 
 		return $this;
@@ -50,6 +49,13 @@ class exception extends \mageekguy\tests\unit\asserter
 		}
 
 		return $this->setWith($arguments[0]);
+	}
+
+	protected static function isException($mixed)
+	{
+		$mixed = (is_object($mixed) === false ? (string) $mixed : get_class($mixed));
+
+		return ($mixed === '\exception' || is_subclass_of($mixed, '\exception') === true);
 	}
 }
 

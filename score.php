@@ -93,7 +93,7 @@ class score
 
 	public function addMemoryUsage($class, $method, $memoryUsage)
 	{
-		$this->durations[] = array(
+		$this->memoryUsages[] = array(
 			'class' => $class,
 			'method' => $method,
 			'value' => $memoryUsage
@@ -200,6 +200,36 @@ class score
 	public function getExceptions()
 	{
 		return $this->exceptions;
+	}
+
+	public function errorExists($message = null, $type = null)
+	{
+		$messageIsNull = $message === null;
+		$typeIsNull = $type === null;
+
+		foreach ($this->errors as $key => $error)
+		{
+			$messageMatch = $messageIsNull === true ? true : $error['message'] == $message;
+			$typeMatch = $typeIsNull === true ? true : $error['type'] == $type;
+
+			if ($messageMatch === true && $typeMatch === true)
+			{
+				return $key;
+			}
+		}
+
+		return null;
+	}
+
+	public function deleteError($key)
+	{
+		if (isset($this->errors[$key]) === false)
+		{
+			throw new \runtimeException('Error key \'' . $key . '\' does not exist');
+		}
+
+		unset($this->errors[$key]);
+		return $this;
 	}
 }
 
