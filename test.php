@@ -208,7 +208,7 @@ abstract class test implements observable, \countable
 		if (error_reporting() !== 0)
 		{
 			list($file, $line) = $this->getBacktrace();
-			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, trim($errstr));
+			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr);
 		}
 
 		return true;
@@ -237,7 +237,7 @@ abstract class test implements observable, \countable
 			$memory = memory_get_usage(true);
 			$this->{$testMethod}();
 			$this->score->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory);
-//			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
+			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
 			ob_end_clean();
 		}
@@ -286,17 +286,33 @@ abstract class test implements observable, \countable
 
 			if ($stdErr != '')
 			{
-				throw new \runtimeException($stdErr, $returnValue);
+				foreach (explode("\n", trim($stdErr)) as $error)
+				{
+					$file = null;
+					$line = null;
+					$message = $error;
+					if (preg_match('/^(.*?) in ([^ ]+) on line (.*)$/', $error, $match) === true)
+					{
+						$file = $match[2];
+						$line = $match[3];
+						$message = $message[1];
+					}
+
+					$this->score->addError($file, $line, $this->class, $this->currentMethod, $returnValue, $message);
+				}
 			}
 
-			$score = unserialize($stdOut);
-
-			if ($score instanceof \mageekguy\tests\unit\score === false)
+			if ($stdOut !== '')
 			{
-				throw new \runtimeException('Unable to retrieve score from \'' . $stdOut . '\'');
-			}
+				$score = unserialize($stdOut);
 
-			$this->score->merge($score);
+				if ($score instanceof \mageekguy\tests\unit\score === false)
+				{
+					throw new unit\exception('Unable to retrieve score from \'' . $stdOut . '\'');
+				}
+
+				$this->score->merge($score);
+			}
 		}
 	}
 

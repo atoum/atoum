@@ -60,7 +60,7 @@ class score
 			'file' => $file,
 			'line' => $line,
 			'type' => $type,
-			'message' => $message
+			'message' => trim($message)
 		);
 
 		return $this;

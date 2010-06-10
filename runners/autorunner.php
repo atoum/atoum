@@ -43,7 +43,17 @@ class autorunner extends \mageekguy\tests\unit\runner
 	}
 }
 
-if (autorun === true)
+if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
+{
+	foreach (array_slice($_SERVER['argv'], 1) as $file)
+	{
+		require($file);
+	}
+
+	$autorunner = new \mageekguy\tests\unit\runners\autorunner();
+	$autorunner->run();
+}
+else if (autorun === true)
 {
 	register_shutdown_function(function()
 		{
