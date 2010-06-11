@@ -4,7 +4,12 @@ namespace mageekguy\tests\unit\asserters;
 
 class object extends \mageekguy\tests\unit\asserter
 {
-	protected $value = null;
+	protected $mixed = null;
+
+	public function __toString()
+	{
+		return self::toString($this->mixed);
+	}
 
 	public function setWith($mixed)
 	{
@@ -19,7 +24,19 @@ class object extends \mageekguy\tests\unit\asserter
 			throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
 		}
 
-		$this->value instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($mixed) === true ? $mixed : get_class($mixed)));
+		$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($mixed) === true ? $mixed : self::toString($mixed)));
+
+		return $this;
+	}
+
+	public function isIdenticalTo($mixed)
+	{
+		if (is_object($mixed) === false)
+		{
+			throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance');
+		}
+
+		$this->mixed === $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not identical to %s'), $this, self::toString($this)));
 
 		return $this;
 	}
