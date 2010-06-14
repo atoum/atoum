@@ -12,7 +12,7 @@ class object extends \mageekguy\tests\unit\asserters\variable
 		}
 		catch (\logicException $exception)
 		{
-			if (class_exists($mixed) === false && interface_exists($mixed) === false)
+			if (self::classExists($mixed) === false)
 			{
 				throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
 			}
@@ -29,6 +29,11 @@ class object extends \mageekguy\tests\unit\asserters\variable
 		{
 			throw new \logicException('Argument of ' . $method . '() must be a class instance');
 		}
+	}
+
+	protected static function classExists($mixed)
+	{
+		return (class_exists($mixed) === true || interface_exists($mixed) === true);
 	}
 }
 

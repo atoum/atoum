@@ -12,7 +12,7 @@ class exception extends \mageekguy\tests\unit\asserters\object
 		}
 		catch (\logicException $exception)
 		{
-			if ((class_exists($mixed) === false && interface_exists($mixed) === false) || ($mixed !== '\exception' && is_subclass_of($mixed, '\exception') === false))
+			if (self::classExists($mixed) === false || ($mixed !== '\exception' && is_subclass_of($mixed, '\exception') === false))
 			{
 				throw new \logicException('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
 			}
