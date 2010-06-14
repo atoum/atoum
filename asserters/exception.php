@@ -2,29 +2,33 @@
 
 namespace mageekguy\tests\unit\asserters;
 
-class exception extends \mageekguy\tests\unit\asserter
+class exception extends \mageekguy\tests\unit\asserters\object
 {
-	protected $mixed = null;
-
-	public function __toString()
-	{
-		return self::toString($this->mixed);
-	}
-
-	public function setWith($mixed)
-	{
-		$this->mixed = $mixed;
-		return $this;
-	}
-
 	public function isInstanceOf($mixed)
 	{
-		if (self::isException($mixed) === false)
+		try
 		{
-			throw new \LogicException('Argument of ' . __METHOD__ . '() must be an \exception class or on instance of class \exception');
+			self::check($mixed, __METHOD__);
+		}
+		catch (\logicException $exception)
+		{
+			if ((class_exists($mixed) === false && interface_exists($mixed) === false) || ($mixed !== '\exception' && is_subclass_of($mixed, '\exception') === false))
+			{
+				throw new \logicException('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
+			}
 		}
 
-		$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, (is_string($mixed) === true ? $mixed : get_class($mixed))));
+		return parent::isInstanceOf($mixed);
+	}
+
+	public function hasDefaultCode()
+	{
+		if (self::isException($this->mixed) === false)
+		{
+			$this->fail(sprintf($this->locale->_('%s is not an exception'), $this->mixed));
+		}
+
+		$this->mixed->getCode() === 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('Code is %s instead of 0'), $this->mixed->getCode()));
 
 		return $this;
 	}
@@ -41,21 +45,17 @@ class exception extends \mageekguy\tests\unit\asserter
 		return $this;
 	}
 
-	protected function setWithArguments(array $arguments)
+	protected static function check($mixed, $method)
 	{
-		if (array_key_exists(0, $arguments) === false)
+		if (self::isException($mixed) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new \logicException('Argument of ' . $method . '() must be an exception instance');
 		}
-
-		return $this->setWith($arguments[0]);
 	}
 
 	protected static function isException($mixed)
 	{
-		$mixed = (is_object($mixed) === false ? (string) $mixed : get_class($mixed));
-
-		return ($mixed === '\exception' || is_subclass_of($mixed, '\exception') === true);
+		return (is_object($mixed) === true && $mixed instanceof \exception === true);
 	}
 }
 

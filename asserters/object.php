@@ -2,26 +2,20 @@
 
 namespace mageekguy\tests\unit\asserters;
 
-class object extends \mageekguy\tests\unit\asserter
+class object extends \mageekguy\tests\unit\asserters\variable
 {
-	protected $mixed = null;
-
-	public function __toString()
-	{
-		return self::toString($this->mixed);
-	}
-
-	public function setWith($mixed)
-	{
-		$this->mixed = $mixed;
-		return $this;
-	}
-
 	public function isInstanceOf($mixed)
 	{
-		if (is_object($mixed) === false && class_exists($mixed) === false && interface_exists($mixed) === false)
+		try
 		{
-			throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
+			self::check($mixed, __METHOD__);
+		}
+		catch (\logicException $exception)
+		{
+			if (class_exists($mixed) === false && interface_exists($mixed) === false)
+			{
+				throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
+			}
 		}
 
 		$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($mixed) === true ? $mixed : self::toString($mixed)));
@@ -29,26 +23,12 @@ class object extends \mageekguy\tests\unit\asserter
 		return $this;
 	}
 
-	public function isIdenticalTo($mixed)
+	protected static function check($mixed, $method)
 	{
 		if (is_object($mixed) === false)
 		{
-			throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance');
+			throw new \logicException('Argument of ' . $method . '() must be a class instance');
 		}
-
-		$this->mixed === $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not identical to %s'), $this, self::toString($this)));
-
-		return $this;
-	}
-
-	protected function setWithArguments(array $arguments)
-	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new \logicException('Argument must be set at index 0');
-		}
-
-		return $this->setWith($arguments[0]);
 	}
 }
 
