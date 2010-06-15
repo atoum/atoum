@@ -71,7 +71,11 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		self::write();
 
-		if ($failNumber <= 0)
+		if ($failNumber > 0)
+		{
+			self::write(sprintf($this->locale->_('Failure ! (%s, %s, %s)'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber()), sprintf($this->locale->__('%d failure', '%d failures', $failNumber), $failNumber)));
+		}
+		else
 		{
 			if ($errorNumber === 0 && $exceptionNumber === 0)
 			{

@@ -27,6 +27,15 @@ class variable extends \mageekguy\tests\unit\asserter
 		return $this;
 	}
 
+	public function isNotEqualTo($mixed)
+	{
+		self::check($mixed, __METHOD__);
+
+		$this->mixed != $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is equal to value \'%s\''), $this->mixed, $mixed));
+
+		return $this;
+	}
+
 	public function isIdenticalTo($mixed)
 	{
 		self::check($mixed, __METHOD__);
