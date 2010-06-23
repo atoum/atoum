@@ -243,10 +243,14 @@ abstract class test implements observable, \countable
 		}
 		catch (asserter\exception $exception)
 		{
-			# Do nothing, just break execution of current method because an assertion failed.
+			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+			ob_end_clean();
 		}
 		catch (\exception $exception)
 		{
+			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+			ob_end_clean();
+
 			list($file, $line) = $this->getBacktrace($exception->getTrace());
 			$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
 		}
