@@ -4,22 +4,16 @@ namespace mageekguy\tests\unit;
 
 class adapter
 {
-	protected $callables = array();
+	protected $functions = array();
 
-	public function setFunction($function, \closure $callable)
+	public function __set($function, \closure $closure)
 	{
-		$this->callables[$function] = $callable;
-		return $this;
+		$this->functions[$function] = $closure;
 	}
 
-	public function __set($function, \closure $callable)
+	public function __call($function, $arguments)
 	{
-		$this->setFunction($function, $callable);
-	}
-
-	public function __call($method, $arguments)
-	{
-		return (isset($this->callables[$method]) === false ? call_user_func_array($method, $arguments) : $this->callables[$method]($arguments));
+		return (isset($this->functions[$function]) === false ? call_user_func_array($function, $arguments) : $this->functions[$function]->__invoke($arguments));
 	}
 }
 

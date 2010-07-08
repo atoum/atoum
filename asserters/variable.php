@@ -45,6 +45,13 @@ class variable extends \mageekguy\tests\unit\asserter
 		return $this;
 	}
 
+	public function isNull()
+	{
+		$this->mixed === null ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is not null'), $this->mixed));
+
+		return $this;
+	}
+
 	protected function setWithArguments(array $arguments)
 	{
 		if (array_key_exists(0, $arguments) === false)

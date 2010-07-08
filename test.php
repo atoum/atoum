@@ -232,25 +232,31 @@ abstract class test implements observable, \countable
 
 		try
 		{
-			ob_start();
-			$time = microtime(true);
-			$memory = memory_get_usage(true);
-			$this->{$testMethod}();
-			$this->score->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory);
-			$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
-			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
-			ob_end_clean();
+			try
+			{
+				ob_start();
+				$time = microtime(true);
+				$memory = memory_get_usage(true);
+				$this->{$testMethod}();
+				$this->score->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory);
+				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
+				$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+				ob_end_clean();
+			}
+			catch (\exception $exception)
+			{
+				$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+				ob_end_clean();
+
+				throw $exception;
+			}
 		}
 		catch (asserter\exception $exception)
 		{
-			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
-			ob_end_clean();
+			# Do nothing, just break execution of current method because an assertion failed.
 		}
 		catch (\exception $exception)
 		{
-			$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
-			ob_end_clean();
-
 			list($file, $line) = $this->getBacktrace($exception->getTrace());
 			$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
 		}
@@ -295,6 +301,7 @@ abstract class test implements observable, \countable
 					$file = null;
 					$line = null;
 					$message = $error;
+
 					if (preg_match('/^(.*?) in ([^ ]+) on line (.*)$/', $error, $match) === true)
 					{
 						$file = $match[2];

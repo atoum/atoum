@@ -46,7 +46,7 @@ class score
 			'method' => $method,
 			'file' => $file,
 			'line' => $line,
-			'value' => $exception
+			'value' => (string) $exception
 		);
 
 		return $this;
