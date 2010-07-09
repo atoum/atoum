@@ -32,8 +32,6 @@ class cli extends \mageekguy\tests\unit\reporter
 		$this->testMethodNumber = sizeof($test);
 
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
-
-		$this->progressBar();
 	}
 
 	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
