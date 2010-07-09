@@ -28,7 +28,7 @@ class autorunner extends \mageekguy\tests\unit\runner
 		{
 			if (self::isTestClass($class) === true)
 			{
-				$test = new $class($this->score, $locale);
+				$test = new $class(null, $locale);
 				$test->addObserver($reporter);
 				$test->run();
 			}

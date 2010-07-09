@@ -73,7 +73,7 @@ abstract class test implements observable, \countable
 
 	public function setScore(unit\score $score)
 	{
-		$this->score = $score;
+		$this->score = $score->setTestClass($this);
 		return $this;
 	}
 
@@ -124,6 +124,11 @@ abstract class test implements observable, \countable
 		return $this->testMethods;
 	}
 
+	public function getCurrentMethod()
+	{
+		return $this->currentMethod;
+	}
+
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
 		$this->sendEventToObservers(self::eventRunStart);
@@ -152,6 +157,8 @@ abstract class test implements observable, \countable
 				$failNumber = $this->score->getFailNumber();
 				$errorNumber = $this->score->getErrorNumber();
 				$exceptionNumber = $this->score->getExceptionNumber();
+
+				$this->currentMethod = $testMethod;
 
 				$this->sendEventToObservers(self::eventBeforeTestMethod);
 
@@ -183,6 +190,8 @@ abstract class test implements observable, \countable
 				}
 
 				$this->sendEventToObservers(self::eventAfterTestMethod);
+
+				$this->currentMethod = null;
 			}
 
 			if ($runInChildProcess === true)
@@ -226,8 +235,6 @@ abstract class test implements observable, \countable
 
 	protected function runTestMethod($testMethod)
 	{
-		$this->currentMethod = $testMethod;
-
 		set_error_handler(array($this, 'errorHandler'));
 
 		try
@@ -262,8 +269,6 @@ abstract class test implements observable, \countable
 		}
 
 		restore_error_handler();
-
-		$this->currentMethod = null;
 
 		return $this;
 	}

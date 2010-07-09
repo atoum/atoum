@@ -13,13 +13,7 @@ abstract class runner implements observable
 	const eventRunStart = 1;
 	const eventRunStop = 2;
 
-	protected $score = null;
 	protected $observers = array();
-
-	public function __construct()
-	{
-		$this->score = new unit\score();
-	}
 
 	public function addObserver(observer $observer)
 	{

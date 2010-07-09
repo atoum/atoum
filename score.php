@@ -4,12 +4,24 @@ namespace mageekguy\tests\unit;
 
 class score
 {
+	protected $testClass = '';
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
 	protected $outputs = array();
 	protected $durations = array();
 	protected $memoryUsages = array();
+
+	public function setTestClass(\mageekguy\tests\unit\test $test)
+	{
+		$this->testClass = get_class($test);
+		return $this;
+	}
+
+	public function getTestClass()
+	{
+		return $this->testClass;
+	}
 
 	public function addPass($file, $line, $class, $method, $asserter)
 	{

@@ -49,20 +49,27 @@ abstract class reporter implements \mageekguy\tests\unit\observer
 						break;
 
 					case test::eventBeforeTestMethod:
-						$this->testMethods++;
+						$this->beforeTestMethod($observable);
 						break;
 
 					case test::eventSuccess:
-						$this->progressBar('.');
+						$this->success($observable);
 						break;
 
 					case test::eventFailure:
-						$this->progressBar('F');
+						$this->failure($observable);
 						break;
 
 					case test::eventError:
+						$this->error($observable);
+						break;
+
 					case test::eventException:
-						$this->progressBar('!');
+						$this->exception($observable);
+						break;
+
+					case test::eventAfterTestMethod:
+						$this->afterTestMethod($observable);
 						break;
 
 					case test::eventRunEnd:

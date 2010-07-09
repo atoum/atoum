@@ -9,7 +9,9 @@ class cli extends \mageekguy\tests\unit\reporter
 {
 	protected $run = 0;
 	protected $start = 0.0;
-	protected $progressBar = '';
+	protected $progressBar = 0;
+	protected $padding = 0;
+	protected $currentMethod = '';
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
 
@@ -25,17 +27,27 @@ class cli extends \mageekguy\tests\unit\reporter
 	protected function testRunStart(\mageekguy\tests\unit\test $test)
 	{
 		$this->run++;
-		$this->progressBar = '';
+		$this->progressBar = 0;
 		$this->testMethods = 0;
 		$this->testMethodNumber = sizeof($test);
 
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
+
 		$this->progressBar();
 	}
 
 	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
 	{
 		$this->testMethods++;
+		$this->currentMethod = $test->getCurrentMethod();
+		$this->progressBar();
+		return $this;
+	}
+
+	protected function afterTestMethod(\mageekguy\tests\unit\test $test)
+	{
+		$this->currentMethod = '';
+		$this->progressBar();
 		return $this;
 	}
 
@@ -71,6 +83,9 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		self::write();
 
+		self::write(sprintf($this->locale->__('Duration: %4.2f second.', 'Duration: %4.2f seconds.', $duration), $duration));
+		self::write(sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
+
 		if ($failNumber > 0)
 		{
 			self::write(sprintf($this->locale->_('Failure ! (%s, %s, %s)'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber()), sprintf($this->locale->__('%d failure', '%d failures', $failNumber), $failNumber)));
@@ -81,15 +96,13 @@ class cli extends \mageekguy\tests\unit\reporter
 
 			if ($problemNumber === 0)
 			{
-				self::write(sprintf($this->locale->_('Success ! (%s, %s)'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber())));
+				self::write(sprintf($this->locale->_('Success (%s, %s) !'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber())));
 			}
 			else
 			{
-				self::write(sprintf($this->locale->__('Success, but there is %s problem...', 'Success, but there are %s problems...', $problemNumber), $problemNumber));
+				self::write(sprintf($this->locale->__('Success (%s, %s), but there is %s problem...', 'Success (%s, %s), but there are %s problems...', $problemNumber), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber()), $problemNumber));
 			}
 		}
-
-		self::write(sprintf($this->locale->__('Test duration: %4.2f second, Test memory usage: %4.2f Mb.', 'Test duration: %4.2f seconds, Test memory usage: %4.2f Mb', $duration), $duration, $score->getTotalMemoryUsage() / 1048576));
 
 		if ($outputNumber > 0)
 		{
@@ -108,7 +121,7 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		if ($failNumber > 0)
 		{
-			self::write(sprintf($this->locale->__('There was %d failure', 'There were %d failures', $failNumber), $failNumber) . ':');
+			self::write(sprintf($this->locale->__('There is %d failure', 'There are %d failures', $failNumber), $failNumber) . ':');
 
 			foreach ($score->getFailAssertions() as $assertion)
 			{
@@ -119,7 +132,7 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		if ($errorNumber > 0)
 		{
-			self::write(sprintf($this->locale->__('There was %d error', 'There were %d errors', $errorNumber), $errorNumber) . ':');
+			self::write(sprintf($this->locale->__('There is %d error', 'There are %d errors', $errorNumber), $errorNumber) . ':');
 
 			foreach ($score->getErrors() as $error)
 			{
@@ -130,7 +143,7 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		if ($exceptionNumber > 0)
 		{
-			self::write(sprintf($this->locale->__('There was %d exception', 'There were %d exceptions', $exceptionNumber), $exceptionNumber) . ':');
+			self::write(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $exceptionNumber), $exceptionNumber) . ':');
 
 			foreach ($score->getExceptions() as $exception)
 			{
@@ -150,7 +163,8 @@ class cli extends \mageekguy\tests\unit\reporter
 	{
 		$duration = microtime(true) - $this->start;
 
-		self::write(sprintf($this->locale->__('Total duration: %4.2f second, Total memory usage: %4.2f Mb.', 'Total duration: %4.2f seconds, Total memory usage: %4.2f Mb', $duration), $duration, memory_get_peak_usage(true) / 1048576));
+		self::write(sprintf($this->locale->__('Total duration: %4.2f second.', 'Total duration: %4.2f seconds.', $duration), $duration));
+		self::write(sprintf($this->locale->_('Total memory usage: %4.2f Mb.'), memory_get_peak_usage(true) / 1048576));
 
 		return $this;
 	}
@@ -159,18 +173,30 @@ class cli extends \mageekguy\tests\unit\reporter
 	{
 		$end = '[' . sprintf('%' . strlen($this->testMethodNumber) . 'd', $this->testMethods) . '/' . $this->testMethodNumber . ']';
 
-		if (strlen($this->progressBar) >= 60)
+		if ($this->padding > 0)
 		{
-			self::write();
-		}
-		else if ($this->testMethods > 0)
-		{
-			echo str_repeat("\010", 60 + strlen($end));
+			$eraser = str_repeat("\010", $this->padding);
+			echo $eraser . str_repeat(' ', $this->padding) . $eraser;
 		}
 
-		$this->progressBar .= $dot;
+		if ($this->progressBar >= 60)
+		{
+			self::write($end);
+			$this->progressBar = 0;
+		}
 
-		echo str_pad(str_pad($this->progressBar, $this->testMethodNumber, '?', STR_PAD_RIGHT), 60, '_', STR_PAD_RIGHT) . $end;
+		if ($dot != '')
+		{
+			$this->progressBar++;
+		}
+
+		$maxPadding = 60 - $this->progressBar;
+
+		$padding = str_pad(str_repeat('?', min($maxPadding, $this->testMethodNumber - $this->testMethods)), $maxPadding, '_', STR_PAD_RIGHT) . $end . ' ' . $this->currentMethod;
+
+		echo $dot . $padding;
+
+		$this->padding = strlen($padding);
 
 		return $this;
 	}
