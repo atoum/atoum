@@ -1,30 +1,28 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
-use \mageekguy\tests\unit;
-
-abstract class reporter implements \mageekguy\tests\unit\observer
+abstract class reporter implements observer
 {
 	protected $locale = null;
 
-	public function __construct(unit\locale $locale = null)
+	public function __construct(locale $locale = null)
 	{
 		if ($locale === null)
 		{
-			$locale = new unit\locale();
+			$locale = new locale();
 		}
 
 		$this->setLocale($locale);
 	}
 
-	public function setLocale(unit\locale $locale)
+	public function setLocale(locale $locale)
 	{
 		$this->locale = $locale;
 		return $this;
 	}
 
-	public function manageObservableEvent(\mageekguy\tests\unit\observable $observable, $event)
+	public function manageObservableEvent(observable $observable, $event)
 	{
 		switch (true)
 		{
@@ -116,52 +114,52 @@ abstract class reporter implements \mageekguy\tests\unit\observer
 		}
 	}
 
-	protected function runStart(\mageekguy\tests\unit\runner $runner)
+	protected function runStart(runner $runner)
 	{
 		return $this;
 	}
 
-	protected function testRunStart(\mageekguy\tests\unit\test $test)
+	protected function testRunStart(test $test)
 	{
 		return $this;
 	}
 
-	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
+	protected function beforeTestMethod(test $test)
 	{
 		return $this;
 	}
 
-	protected function success(\mageekguy\tests\unit\test $test)
+	protected function success(test $test)
 	{
 		return $this;
 	}
 
-	protected function failure(\mageekguy\tests\unit\test $test)
+	protected function failure(test $test)
 	{
 		return $this;
 	}
 
-	protected function error(\mageekguy\tests\unit\test $test)
+	protected function error(test $test)
 	{
 		return $this;
 	}
 
-	protected function exception(\mageekguy\tests\unit\test $test)
+	protected function exception(test $test)
 	{
 		return $this;
 	}
 
-	protected function afterTestMethod(\mageekguy\tests\unit\test $test)
+	protected function afterTestMethod(test $test)
 	{
 		return $this;
 	}
 
-	protected function testRunEnd(\mageekguy\tests\unit\test $test)
+	protected function testRunEnd(test $test)
 	{
 		return $this;
 	}
 
-	protected function runEnd(\mageekguy\tests\unit\runner $runner)
+	protected function runEnd(runner $runner)
 	{
 		return $this;
 	}

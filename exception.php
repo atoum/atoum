@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
 class exception extends \runtimeException {}
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
-use mageekguy\tests\unit;
-use mageekguy\tests\unit\asserter;
+use mageekguy\atoum;
+use mageekguy\atoum\asserter;
 
 abstract class test implements observable, \countable
 {
@@ -34,23 +34,23 @@ abstract class test implements observable, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 
-	public function __construct(unit\score $score = null, unit\locale $locale = null)
+	public function __construct(score $score = null, locale $locale = null)
 	{
 		if ($score === null)
 		{
-			$score = new unit\score();
+			$score = new score();
 		}
 
 		$this->setScore($score);
 
 		if ($locale === null)
 		{
-			$locale = new unit\locale();
+			$locale = new locale();
 		}
 
 		$this->setLocale($locale);
 
-		$this->assert = new unit\asserter($this->score, $this->locale);
+		$this->assert = new asserter($this->score, $this->locale);
 
 		$class = new \reflectionClass($this);
 
@@ -71,13 +71,13 @@ abstract class test implements observable, \countable
 		$this->runTestMethods = & $this->testMethods;
 	}
 
-	public function setScore(unit\score $score)
+	public function setScore(score $score)
 	{
 		$this->score = $score->setTestClass($this);
 		return $this;
 	}
 
-	public function setLocale(unit\locale $locale)
+	public function setLocale(locale $locale)
 	{
 		$this->locale = $locale;
 		return $this;
@@ -322,7 +322,7 @@ abstract class test implements observable, \countable
 			{
 				$score = unserialize($stdOut);
 
-				if ($score instanceof \mageekguy\tests\unit\score === false)
+				if ($score instanceof score === false)
 				{
 					throw new unit\exception('Unable to retrieve score from \'' . $stdOut . '\'');
 				}

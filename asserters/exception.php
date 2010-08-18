@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class exception extends \mageekguy\tests\unit\asserters\object
+class exception extends \mageekguy\atoum\asserters\object
 {
 	public function isInstanceOf($mixed)
 	{

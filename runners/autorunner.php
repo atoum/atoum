@@ -1,24 +1,23 @@
 <?php
 
-namespace mageekguy\tests\unit\runners;
+namespace mageekguy\atoum\runners;
 
 require_once(__DIR__ . '/../runner.php');
-
-use \mageekguy\tests\unit;
-use \mageekguy\tests\unit\reporters;
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {
 	define(__NAMESPACE__ . '\autorun', true);
 }
 
-class autorunner extends \mageekguy\tests\unit\runner
+use \mageekguy\atoum;
+
+class autorunner extends atoum\runner
 {
 	public function run()
 	{
-		$locale = new unit\locale();
+		$locale = new atoum\locale();
 
-		$reporter = new reporters\cli();
+		$reporter = new atoum\reporters\cli();
 
 		$this->addObserver($reporter);
 
@@ -50,14 +49,14 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 		require($file);
 	}
 
-	$autorunner = new \mageekguy\tests\unit\runners\autorunner();
+	$autorunner = new atoum\runners\autorunner();
 	$autorunner->run();
 }
 else if (autorun === true)
 {
 	register_shutdown_function(function()
 		{
-			$autorunner = new \mageekguy\tests\unit\runners\autorunner();
+			$autorunner = new atoum\runners\autorunner();
 			$autorunner->run();
 		}
 	);

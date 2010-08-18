@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-use \mageekguy\tests\unit\reporter;
+use \mageekguy\atoum\reporter;
 
-class error extends \mageekguy\tests\unit\asserter
+class error extends \mageekguy\atoum\asserter
 {
 	protected $message = null;
 	protected $type = null;

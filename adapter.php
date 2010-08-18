@@ -1,19 +1,37 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
 class adapter
 {
 	protected $functions = array();
+	protected $calls = array();
 
-	public function __set($function, \closure $closure)
+	public function __set($functionName, \closure $closure)
 	{
-		$this->functions[$function] = $closure;
+		$this->functions[$functionName] = $closure;
 	}
 
-	public function __call($function, $arguments)
+	public function __get($functionName)
 	{
-		return (isset($this->functions[$function]) === false ? call_user_func_array($function, $arguments) : $this->functions[$function]->__invoke($arguments));
+		return (isset($this->{$functionName}) === false ? null : $this->functions[$functionName]);
+	}
+
+	public function __isset($functionName)
+	{
+		return (isset($this->functions[$functionName]) === true);
+	}
+
+	public function __call($functionName, $arguments)
+	{
+		$this->calls[$functionName][] = $arguments;
+
+		return (isset($this->functions[$functionName]) === false ? call_user_func_array($functionName, $arguments) : $this->functions[$functionName]->__invoke($arguments));
+	}
+
+	public function getCalls($functionName = null)
+	{
+		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
 	}
 }
 

@@ -1,16 +1,16 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
-use mageekguy\tests\unit;
-use mageekguy\tests\unit\asserter;
+use mageekguy\atoum;
+use mageekguy\atoum\asserter;
 
 class asserter
 {
 	protected $score = null;
 	protected $locale = null;
 
-	public final function __construct(score $score, unit\locale $locale)
+	public final function __construct(score $score, locale $locale)
 	{
 		$this->score = $score;
 		$this->locale = $locale;
@@ -118,7 +118,7 @@ class asserter
 	}
 }
 
-namespace mageekguy\tests\unit\asserter;
+namespace mageekguy\atoum\asserter;
 
 class exception extends \runtimeException {}
 

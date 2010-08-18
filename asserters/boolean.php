@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class boolean extends \mageekguy\tests\unit\asserters\variable
+class boolean extends \mageekguy\atoum\asserters\variable
 {
 	public function isTrue()
 	{

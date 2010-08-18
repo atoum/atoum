@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
 class locale
 {
@@ -9,9 +9,9 @@ class locale
 		return $string;
 	}
 
-	public function __($stringSingular, $stringPlural, $quantity)
+	public function __($singular, $plural, $quantity)
 	{
-		return ($quantity <= 1 ? $stringSingular : $stringPlural);
+		return ($quantity <= 1 ? $singular : $plural);
 	}
 }
 

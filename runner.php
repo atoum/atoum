@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
-use \mageekguy\tests\unit;
+use \mageekguy\atoum;
 
 require(__DIR__ . '/autoloader.php');
 
 abstract class runner implements observable
 {
-	const testClass = '\mageekguy\tests\unit\test';
+	const testClass = '\mageekguy\atoum\test';
 
 	const eventRunStart = 1;
 	const eventRunStop = 2;
@@ -19,6 +19,11 @@ abstract class runner implements observable
 	{
 		$this->observers[] = $observer;
 		return $this;
+	}
+
+	public function getObservers()
+	{
+		return $this->observers;
 	}
 
 	public function sendEventToObservers($event)

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class string extends \mageekguy\tests\unit\asserters\variable
+class string extends \mageekguy\atoum\asserters\variable
 {
 	protected static function check($mixed, $method)
 	{

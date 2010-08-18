@@ -1,11 +1,10 @@
 <?php
 
-namespace mageekguy\tests\unit\reporters;
+namespace mageekguy\atoum\reporters;
 
-use \mageekguy\tests\unit\runner;
-use \mageekguy\tests\unit\test;
+use \mageekguy\atoum;
 
-class cli extends \mageekguy\tests\unit\reporter
+class cli extends atoum\reporter
 {
 	protected $run = 0;
 	protected $start = 0.0;
@@ -15,16 +14,16 @@ class cli extends \mageekguy\tests\unit\reporter
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
 
-	protected function runStart(\mageekguy\tests\unit\runner $runner)
+	protected function runStart(atoum\runner $runner)
 	{
 		$this->start = microtime(true);
 
-		self::write(sprintf($this->locale->_('\mageekguy\tests\unit\test version %s by %s.'), \mageekguy\tests\unit\test::getVersion(), \mageekguy\tests\unit\test::author));
+		self::write(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author));
 
 		return $this;
 	}
 
-	protected function testRunStart(\mageekguy\tests\unit\test $test)
+	protected function testRunStart(atoum\test $test)
 	{
 		$this->run++;
 		$this->progressBar = 0;
@@ -34,7 +33,7 @@ class cli extends \mageekguy\tests\unit\reporter
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
 	}
 
-	protected function beforeTestMethod(\mageekguy\tests\unit\test $test)
+	protected function beforeTestMethod(atoum\test $test)
 	{
 		$this->testMethods++;
 		$this->currentMethod = $test->getCurrentMethod();
@@ -42,34 +41,34 @@ class cli extends \mageekguy\tests\unit\reporter
 		return $this;
 	}
 
-	protected function afterTestMethod(\mageekguy\tests\unit\test $test)
+	protected function afterTestMethod(atoum\test $test)
 	{
 		$this->currentMethod = '';
 		$this->progressBar();
 		return $this;
 	}
 
-	protected function success(\mageekguy\tests\unit\test $test)
+	protected function success(atoum\test $test)
 	{
 		return $this->progressBar('.');
 	}
 
-	protected function failure(\mageekguy\tests\unit\test $test)
+	protected function failure(atoum\test $test)
 	{
 		return $this->progressBar('F');
 	}
 
-	protected function error(\mageekguy\tests\unit\test $test)
+	protected function error(atoum\test $test)
 	{
 		return $this->progressBar('!');
 	}
 
-	protected function exception(\mageekguy\tests\unit\test $test)
+	protected function exception(atoum\test $test)
 	{
 		return $this->progressBar('!');
 	}
 
-	protected function testRunEnd(\mageekguy\tests\unit\test $test)
+	protected function testRunEnd(atoum\test $test)
 	{
 		$score = $test->getScore();
 
@@ -157,7 +156,7 @@ class cli extends \mageekguy\tests\unit\reporter
 		return $this;
 	}
 
-	protected function runEnd(\mageekguy\tests\unit\runner $runner)
+	protected function runEnd(atoum\runner $runner)
 	{
 		$duration = microtime(true) - $this->start;
 
@@ -173,8 +172,7 @@ class cli extends \mageekguy\tests\unit\reporter
 
 		if ($this->padding > 0)
 		{
-			$eraser = str_repeat("\010", $this->padding);
-			echo $eraser . str_repeat(' ', $this->padding) . $eraser;
+			echo str_repeat("\010", $this->padding);
 		}
 
 		if ($this->progressBar >= 60)

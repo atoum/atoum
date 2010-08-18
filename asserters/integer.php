@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class integer extends \mageekguy\tests\unit\asserter
+class integer extends \mageekguy\atoum\asserter
 {
 	protected $mixed = null;
 

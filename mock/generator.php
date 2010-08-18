@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\tests\unit\mock;
+namespace mageekguy\atoum\mock;
 
-use \mageekguy\tests\unit;
+use \mageekguy\atoum;
 
 class generator
 {
 	protected $adapter = null;
 
-	public function __construct(unit\adapter $adapter = null)
+	public function __construct(atoum\adapter $adapter = null)
 	{
 		if ($adapter === null)
 		{

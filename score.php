@@ -1,6 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
+
+use mageekguy\atoum;
 
 class score
 {
@@ -12,7 +14,7 @@ class score
 	protected $durations = array();
 	protected $memoryUsages = array();
 
-	public function setTestClass(\mageekguy\tests\unit\test $test)
+	public function setTestClass(test $test)
 	{
 		$this->testClass = get_class($test);
 		return $this;
@@ -114,7 +116,7 @@ class score
 		return $this;
 	}
 
-	public function merge(\mageekguy\tests\unit\score $score)
+	public function merge(score $score)
 	{
 		$this->assertions = array_merge($this->assertions, $score->assertions);
 		$this->exceptions = array_merge($this->exceptions, $score->exceptions);

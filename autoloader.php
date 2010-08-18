@@ -1,33 +1,38 @@
 <?php
 
-namespace mageekguy\tests\unit;
+namespace mageekguy\atoum;
 
 class autoloader
 {
 	public static function register()
 	{
-		if (spl_autoload_register(array(__CLASS__, 'requireClass')) === false)
+		if (spl_autoload_register(array(__CLASS__, 'getClass')) === false)
 		{
 			throw new \runtimeException('Unable to register ' . __NAMESPACE__ . ' autoloader');
 		}
 	}
 
-	protected static function requireClass($class)
+	public static function getPath($class)
 	{
+		$path = null;
+
 		$class = ltrim($class, '\\');
 
-		if (stripos($class, __NAMESPACE__) === 0)
+		if ($class !== __NAMESPACE__ && stripos($class, __NAMESPACE__) === 0)
 		{
-			$class = explode('\\', $class);
+			$path = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, str_replace(__NAMESPACE__, '', $class)) . '.php';
+		}
 
-			$directory = array_slice($class, 3, -1);
+		return $path;
+	}
 
-			$path = __DIR__ . DIRECTORY_SEPARATOR . (sizeof($directory) <= 0 ? '' : join(DIRECTORY_SEPARATOR, $directory) . DIRECTORY_SEPARATOR) . end($class) . '.php';
+	protected static function getClass($class, adapter $adapter = null)
+	{
+		$path = self::getPath($class);
 
-			if (file_exists($path) === true)
-			{
-				require($path);
-			}
+		if ($path !== null)
+		{
+			require($path);
 		}
 	}
 }

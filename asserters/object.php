@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class object extends \mageekguy\tests\unit\asserters\variable
+class object extends \mageekguy\atoum\asserters\variable
 {
 	public function isInstanceOf($mixed)
 	{

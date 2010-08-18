@@ -1,9 +1,16 @@
 <?php
 
-namespace mageekguy\tests\unit\asserters;
+namespace mageekguy\atoum\asserters;
 
-class collection extends \mageekguy\tests\unit\asserters\variable
+class collection extends \mageekguy\atoum\asserters\variable
 {
+	public function isEmpty()
+	{
+		sizeof($this->mixed) == 0 ? $this->pass() : $this->fail($this->locale->_('Collection is not empty'));
+
+		return $this;
+	}
+
 	protected static function check($mixed, $method)
 	{
 		if (is_array($mixed) === false)
