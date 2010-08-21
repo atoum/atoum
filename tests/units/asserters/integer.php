@@ -7,14 +7,14 @@ use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../../runners/autorunner.php');
 
-class variable extends atoum\test
+class integer extends atoum\test
 {
 	public function test__construct()
 	{
 		$score = new atoum\score($this);
 		$locale = new atoum\locale();
 
-		$asserter = new asserters\variable($score, $locale);
+		$asserter = new asserters\integer($score, $locale);
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -24,15 +24,15 @@ class variable extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\variable(new atoum\score($this), new atoum\locale());
+		$asserter = new asserters\integer(new atoum\score($this), new atoum\locale());
 
 		$variable = uniqid();
 
 		$this->assert
 			->object($asserter->setWith($variable))->isIdenticalTo($asserter)
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getInteger())->isEqualTo($variable)
 			->object($asserter->setWith($this))->isIdenticalTo($asserter)
-			->object($asserter->getVariable())->isIdenticalTo($this)
+			->object($asserter->getInteger())->isIdenticalTo($this)
 		;
 	}
 
@@ -40,7 +40,7 @@ class variable extends atoum\test
 	{
 		$score = new atoum\score($this);
 
-		$asserter = new asserters\variable($score, new atoum\locale());
+		$asserter = new asserters\integer($score, new atoum\locale());
 
 		$variable = uniqid();
 
@@ -75,7 +75,7 @@ class variable extends atoum\test
 	{
 		$score = new atoum\score($this);
 
-		$asserter = new asserters\variable($score, new atoum\locale());
+		$asserter = new asserters\integer($score, new atoum\locale());
 
 		$variable = uniqid();
 

@@ -4,27 +4,41 @@ namespace mageekguy\atoum\asserters;
 
 class integer extends \mageekguy\atoum\asserter
 {
-	protected $mixed = null;
+	protected $integer = null;
 
 	public function __toString()
 	{
-		return self::toString($this->mixed);
+		return self::toString($this->integer);
 	}
 
-	public function setWith($mixed)
+	public function getInteger()
 	{
-		$this->mixed = $mixed;
+		return $this->integer;
+	}
+
+	public function setWith($integer)
+	{
+		$this->integer = $integer;
+
 		return $this;
 	}
 
-	public function isEqualTo($mixed)
+	public function isZero()
 	{
-		if (is_integer($mixed) === false)
+		$this->integer === 0 ? $this->pass() : $this->fail($this . ' is not equal to zero');
+
+		return $this;
+	}
+
+	public function isEqualTo($integer)
+	{
+		if (is_integer($integer) === false)
 		{
 			throw new \logicException('Argument of ' . __METHOD__ . '() must be an integer');
 		}
 
-		$this->mixed === $mixed ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($mixed));
+		$this->integer === $integer ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($integer));
+
 		return $this;
 	}
 

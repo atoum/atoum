@@ -191,6 +191,11 @@ class score
 		return sizeof($this->assertions);
 	}
 
+	public function getPassNumber()
+	{
+		return ($this->getAssertionNumber() - sizeof($this->getFailAssertions()));
+	}
+
 	public function getFailNumber()
 	{
 		return sizeof($this->getFailAssertions());

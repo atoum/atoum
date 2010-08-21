@@ -40,6 +40,16 @@ class asserter
 		return $asserter;
 	}
 
+	public function getScore()
+	{
+		return $this->score;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
 	protected function pass()
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
