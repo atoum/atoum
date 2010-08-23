@@ -23,7 +23,7 @@ class autoloader
 			$path = __DIR__ . str_replace('\\', DIRECTORY_SEPARATOR, str_replace(__NAMESPACE__, '', $class)) . '.php';
 		}
 
-		return $path;
+		return $path === null || file_exists($path) === false ? null : $path;
 	}
 
 	protected static function getClass($class, adapter $adapter = null)

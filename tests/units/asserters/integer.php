@@ -42,17 +42,17 @@ class integer extends atoum\test
 
 		$asserter = new asserters\integer($score, new atoum\locale());
 
-		$variable = uniqid();
+		$variable = rand(0, PHP_INT_MAX);
 
 		$asserter->setWith($variable);
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
+//			->integer($score->getPassNumber())->isZero()
+//			->integer($score->getFailNumber())->isZero()
 			->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->isEqualTo(uniqid()))->isIdenticalTo($asserter)
+//			->integer($score->getFailNumber())->isZero()
+			->object($asserter->isEqualTo(rand(- PHP_INT_MAX, - 1)))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -77,14 +77,14 @@ class integer extends atoum\test
 
 		$asserter = new asserters\integer($score, new atoum\locale());
 
-		$variable = uniqid();
+		$variable = rand(0, PHP_INT_MAX);
 
 		$asserter->setWith($variable);
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
+			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isZero()
-			->object($asserter->isNotEqualTo(uniqid()))->isIdenticalTo($asserter)
+			->object($asserter->isNotEqualTo(rand(- PHP_INT_MAX, -1)))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 			->object($asserter->isNotEqualTo($variable))->isIdenticalTo($asserter)

@@ -10,13 +10,13 @@ class asserter
 	protected $score = null;
 	protected $locale = null;
 
-	public final function __construct(score $score, locale $locale)
+	public function __construct(score $score, locale $locale)
 	{
 		$this->score = $score;
 		$this->locale = $locale;
 	}
 
-	public function __get($asserter)
+	public function __call($asserter, $arguments)
 	{
 		$class = __NAMESPACE__ . '\asserters\\' . $asserter;
 
@@ -25,12 +25,7 @@ class asserter
 			throw new \logicException('Asserter \'' . $class . '\' does not exist');
 		}
 
-		return new $class($this->score, $this->locale);
-	}
-
-	public function __call($asserter, $arguments)
-	{
-		$asserter = $this->{$asserter};
+		$asserter = new $class($this->score, $this->locale);
 
 		if (sizeof($arguments) > 0)
 		{
@@ -121,7 +116,7 @@ class asserter
 			$debugBacktrace[$debugKey - 1]['line'],
 			$debugBacktrace[$debugKey]['class'],
 			$debugBacktrace[$debugKey]['function'],
-			$debugBacktrace[$debugKey - 1]['class'] . '::' . $debugBacktrace[$debugKey - 1]['function'] . '()'
+			get_class($this) . '::' . $debugBacktrace[$debugKey - 1]['function'] . '()'
 		);
 
 		return $backtrace;

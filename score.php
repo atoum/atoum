@@ -6,13 +6,21 @@ use mageekguy\atoum;
 
 class score
 {
-	protected $testClass = '';
+	protected $testClass = null;
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
 	protected $outputs = array();
 	protected $durations = array();
 	protected $memoryUsages = array();
+
+	public function __construct(test $test = null)
+	{
+		if ($test !== null)
+		{
+			$this->setTestClass($test);
+		}
+	}
 
 	public function setTestClass(test $test)
 	{
@@ -84,11 +92,20 @@ class score
 	{
 		if ($output != '')
 		{
-			$this->outputs[] = array(
-				'class' => $class,
-				'method' => $method,
-				'value' => $output
-			);
+			$hash = self::getHash($class, $method);
+
+			if (isset($this->outputs[$hash]) === true)
+			{
+				$this->outputs[$hash]['value'] .= $output;
+			}
+			else
+			{
+				$this->outputs[$hash] = array(
+					'class' => $class,
+					'method' => $method,
+					'value' => $output
+				);
+			}
 		}
 
 		return $this;
@@ -96,22 +113,46 @@ class score
 
 	public function addDuration($class, $method, $duration)
 	{
-		$this->durations[] = array(
-			'class' => $class,
-			'method' => $method,
-			'value' => $duration
-		);
+		if ($duration > 0)
+		{
+			$hash = self::getHash($class, $method);
+
+			if (isset($this->durations[$hash]) === true)
+			{
+				$this->durations[$hash]['value'] += $duration;
+			}
+			else
+			{
+				$this->durations[$hash] = array(
+					'class' => $class,
+					'method' => $method,
+					'value' => $duration
+				);
+			}
+		}
 
 		return $this;
 	}
 
 	public function addMemoryUsage($class, $method, $memoryUsage)
 	{
-		$this->memoryUsages[] = array(
-			'class' => $class,
-			'method' => $method,
-			'value' => $memoryUsage
-		);
+		if ($memoryUsage > 0)
+		{
+			$hash = self::getHash($class, $method);
+
+			if (isset($this->memoryUsages[$hash]) === true)
+			{
+				$this->memoryUsages[$hash]['value'] += $memoryUsage;
+			}
+			else
+			{
+				$this->memoryUsages[$hash] = array(
+					'class' => $class,
+					'method' => $method,
+					'value' => $memoryUsage
+				);
+			}
+		}
 
 		return $this;
 	}
@@ -134,7 +175,7 @@ class score
 
 	public function getOutputs()
 	{
-		return $this->outputs;
+		return array_values($this->outputs);
 	}
 
 	public function getTotalDuration()
@@ -149,9 +190,14 @@ class score
 		return $total;
 	}
 
+	public function getDurationNumber()
+	{
+		return sizeof($this->durations);
+	}
+
 	public function getDurations()
 	{
-		return $this->durations;
+		return array_values($this->durations);
 	}
 
 	public function getTotalMemoryUsage()
@@ -168,22 +214,17 @@ class score
 
 	public function getMemoryUsages()
 	{
-		return $this->memoryUsages;
+		return array_values($this->memoryUsages);
+	}
+
+	public function getPassAssertions()
+	{
+		return array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; });
 	}
 
 	public function getFailAssertions()
 	{
-		$assertions = array();
-
-		foreach ($this->assertions as $assertion)
-		{
-			if ($assertion['fail'] !== null)
-			{
-				$assertions[] = $assertion;
-			}
-		}
-
-		return $assertions;
+		return array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; });
 	}
 
 	public function getAssertionNumber()
@@ -249,6 +290,11 @@ class score
 
 		unset($this->errors[$key]);
 		return $this;
+	}
+
+	protected static function getHash($class, $method)
+	{
+		return md5($class . $method);
 	}
 }
 
