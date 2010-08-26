@@ -4,36 +4,51 @@ namespace mageekguy\atoum\asserters;
 
 class object extends \mageekguy\atoum\asserters\variable
 {
-	public function isInstanceOf($mixed)
+	public function setWith($variable)
+	{
+		parent::setWith($variable);
+
+		if (self::isObject($this->getVariable()) === false)
+		{
+			$this->fail(sprintf($this->locale->_('%s is not an object'), $this));
+		}
+	}
+
+	public function isInstanceOf($variable)
 	{
 		try
 		{
-			self::check($mixed, __METHOD__);
+			self::check($variable, __METHOD__);
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($mixed) === false)
+			if (self::classExists($variable) === false)
 			{
 				throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
 			}
 		}
 
-		$this->mixed instanceof $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($mixed) === true ? $mixed : self::toString($mixed)));
+		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : self::toString($variable)));
 
 		return $this;
 	}
 
-	protected static function check($mixed, $method)
+	protected static function check($variable, $method)
 	{
-		if (is_object($mixed) === false)
+		if (self::isObject($variable) === false)
 		{
 			throw new \logicException('Argument of ' . $method . '() must be a class instance');
 		}
 	}
 
-	protected static function classExists($mixed)
+	protected static function isObject($variable)
 	{
-		return (class_exists($mixed) === true || interface_exists($mixed) === true);
+		return (is_object($variable) === true);
+	}
+
+	protected static function classExists($variable)
+	{
+		return (class_exists($variable) === true || interface_exists($variable) === true);
 	}
 }
 

@@ -4,52 +4,55 @@ namespace mageekguy\atoum\asserters;
 
 class variable extends \mageekguy\atoum\asserter
 {
-	protected $mixed = null;
+	protected $variable = null;
 
 	public function __toString()
 	{
-		return self::toString($this->mixed);
+		return self::toString($this->variable);
 	}
 
-	public function setWith($mixed)
+	public function setWith($variable)
 	{
-		$this->mixed = $mixed;
+		$this->variable = $variable;
 
 		return $this;
 	}
 
-	public function isEqualTo($mixed)
+	public function getVariable()
 	{
-		self::check($mixed, __METHOD__);
+		return $this->variable;
+	}
 
-		$this->mixed == $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is not equal to value \'%s\''), $this->mixed, $mixed));
+	public function isEqualTo($variable, $failMessage = null)
+	{
+		self::check($variable, __METHOD__);
+
+		$this->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Value \'%s\' is not equal to value \'%s\''), $this->variable, $variable));
 
 		return $this;
 	}
 
-	public function isNotEqualTo($mixed)
+	public function isNotEqualTo($variable, $failMessage = null)
 	{
-		self::check($mixed, __METHOD__);
+		self::check($variable, __METHOD__);
 
-		$this->mixed != $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is equal to value \'%s\''), $this->mixed, $mixed));
+		$this->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Value \'%s\' is equal to value \'%s\''), $this->variable, $variable));
 
 		return $this;
 	}
 
-	public function isIdenticalTo($mixed)
+	public function isIdenticalTo($variable, $failMessage = null)
 	{
-		self::check($mixed, __METHOD__);
+		self::check($variable, __METHOD__);
 
-		$this->mixed === $mixed ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is not identical to value \'%s\''), $this->mixed, $mixed));
+		$this->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Value \'%s\' is not identical to value \'%s\''), $this->variable, $variable));
 
 		return $this;
 	}
 
-	public function isNull()
+	public function isNull($failMessage = null)
 	{
-		$this->mixed === null ? $this->pass() : $this->fail(sprintf($this->locale->_('Value \'%s\' is not null'), $this->mixed));
-
-		return $this;
+		return $this->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('Value \'%s\' is not null'), $this->variable));
 	}
 
 	protected function setWithArguments(array $arguments)
@@ -62,7 +65,7 @@ class variable extends \mageekguy\atoum\asserter
 		return $this->setWith($arguments[0]);
 	}
 
-	protected static function check($mixed, $method) {}
+	protected static function check($variable, $method) {}
 }
 
 ?>

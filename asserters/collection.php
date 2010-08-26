@@ -11,6 +11,13 @@ class collection extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
+	public function isNotEmpty()
+	{
+		sizeof($this->mixed) > 0 ? $this->pass() : $this->fail($this->locale->_('Collection is empty'));
+
+		return $this;
+	}
+
 	protected static function check($mixed, $method)
 	{
 		if (is_array($mixed) === false)

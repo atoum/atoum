@@ -73,7 +73,7 @@ abstract class test implements observable, \countable
 
 	public function setScore(score $score)
 	{
-		$this->score = $score->setTestClass($this);
+		$this->score = $score;
 		return $this;
 	}
 

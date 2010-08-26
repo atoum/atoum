@@ -6,7 +6,6 @@ use mageekguy\atoum;
 
 class score
 {
-	protected $testClass = null;
 	protected $assertions = array();
 	protected $exceptions = array();
 	protected $errors = array();
@@ -14,23 +13,16 @@ class score
 	protected $durations = array();
 	protected $memoryUsages = array();
 
-	public function __construct(test $test = null)
+	public function reset()
 	{
-		if ($test !== null)
-		{
-			$this->setTestClass($test);
-		}
-	}
+		$this->assertions = array();
+		$this->exceptions = array();
+		$this->errors = array();
+		$this->outputs = array();
+		$this->durations = array();
+		$this->memoryUsages = array();
 
-	public function setTestClass(test $test)
-	{
-		$this->testClass = get_class($test);
 		return $this;
-	}
-
-	public function getTestClass()
-	{
-		return $this->testClass;
 	}
 
 	public function addPass($file, $line, $class, $method, $asserter)
@@ -92,20 +84,11 @@ class score
 	{
 		if ($output != '')
 		{
-			$hash = self::getHash($class, $method);
-
-			if (isset($this->outputs[$hash]) === true)
-			{
-				$this->outputs[$hash]['value'] .= $output;
-			}
-			else
-			{
-				$this->outputs[$hash] = array(
-					'class' => $class,
-					'method' => $method,
-					'value' => $output
-				);
-			}
+			$this->outputs[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $output
+			);
 		}
 
 		return $this;
@@ -115,20 +98,11 @@ class score
 	{
 		if ($duration > 0)
 		{
-			$hash = self::getHash($class, $method);
-
-			if (isset($this->durations[$hash]) === true)
-			{
-				$this->durations[$hash]['value'] += $duration;
-			}
-			else
-			{
-				$this->durations[$hash] = array(
-					'class' => $class,
-					'method' => $method,
-					'value' => $duration
-				);
-			}
+			$this->durations[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $duration
+			);
 		}
 
 		return $this;
@@ -138,20 +112,11 @@ class score
 	{
 		if ($memoryUsage > 0)
 		{
-			$hash = self::getHash($class, $method);
-
-			if (isset($this->memoryUsages[$hash]) === true)
-			{
-				$this->memoryUsages[$hash]['value'] += $memoryUsage;
-			}
-			else
-			{
-				$this->memoryUsages[$hash] = array(
-					'class' => $class,
-					'method' => $method,
-					'value' => $memoryUsage
-				);
-			}
+			$this->memoryUsages[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $memoryUsage
+			);
 		}
 
 		return $this;
@@ -164,13 +129,9 @@ class score
 		$this->errors = array_merge($this->errors, $score->errors);
 		$this->outputs = array_merge($this->outputs, $score->outputs);
 		$this->durations = array_merge($this->durations, $score->durations);
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
 
 		return $this;
-	}
-
-	public function getOutputNumber()
-	{
-		return sizeof($this->outputs);
 	}
 
 	public function getOutputs()
@@ -188,11 +149,6 @@ class score
 		}
 
 		return $total;
-	}
-
-	public function getDurationNumber()
-	{
-		return sizeof($this->durations);
 	}
 
 	public function getDurations()
@@ -227,6 +183,26 @@ class score
 		return array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; });
 	}
 
+	public function getErrors()
+	{
+		return $this->errors;
+	}
+
+	public function getExceptions()
+	{
+		return $this->exceptions;
+	}
+
+	public function getDurationNumber()
+	{
+		return sizeof($this->durations);
+	}
+
+	public function getOutputNumber()
+	{
+		return sizeof($this->outputs);
+	}
+
 	public function getAssertionNumber()
 	{
 		return sizeof($this->assertions);
@@ -237,6 +213,16 @@ class score
 		return ($this->getAssertionNumber() - sizeof($this->getFailAssertions()));
 	}
 
+	public function getExceptionNumber()
+	{
+		return sizeof($this->exceptions);
+	}
+
+	public function getMemoryUsageNumber()
+	{
+		return sizeof($this->memoryUsages);
+	}
+
 	public function getFailNumber()
 	{
 		return sizeof($this->getFailAssertions());
@@ -245,21 +231,6 @@ class score
 	public function getErrorNumber()
 	{
 		return sizeof($this->errors);
-	}
-
-	public function getErrors()
-	{
-		return $this->errors;
-	}
-
-	public function getExceptionNumber()
-	{
-		return sizeof($this->exceptions);
-	}
-
-	public function getExceptions()
-	{
-		return $this->exceptions;
 	}
 
 	public function errorExists($message = null, $type = null)
@@ -289,12 +260,8 @@ class score
 		}
 
 		unset($this->errors[$key]);
-		return $this;
-	}
 
-	protected static function getHash($class, $method)
-	{
-		return md5($class . $method);
+		return $this;
 	}
 }
 
