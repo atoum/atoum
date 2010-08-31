@@ -175,12 +175,12 @@ class score
 
 	public function getPassAssertions()
 	{
-		return array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; });
+		return array_values(array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; }));
 	}
 
 	public function getFailAssertions()
 	{
-		return array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; });
+		return array_values(array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; }));
 	}
 
 	public function getErrors()

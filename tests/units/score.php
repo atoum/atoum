@@ -769,6 +769,93 @@ class score extends atoum\test
 			->variable($score->errorExists($message, $type))->isNull()
 		;
 	}
+
+	public function testGetFailAssertions()
+	{
+		$score = new atoum\score();
+
+		$file = uniqid();
+		$line = rand(1, PHP_INT_MAX);
+		$class = uniqid();
+		$method = uniqid();
+		$asserter = new atoum\asserters\integer($score, new atoum\locale());
+
+		$this->assert
+			->collection($score->getFailAssertions())->isEmpty()
+		;
+
+		$score->addPass(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()));
+
+		$this->assert
+			->collection($score->getFailAssertions())->isEmpty()
+		;
+
+		$file = uniqid();
+		$line = rand(1, PHP_INT_MAX);
+		$class = uniqid();
+		$method = uniqid();
+		$asserter = new atoum\asserters\integer($score, new atoum\locale());
+		$reason = uniqid();
+
+		$score->addFail($file, $line, $class, $method, $asserter, $reason);
+
+		$this->assert
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'asserter' => $asserter,
+						'fail' => $reason
+					)
+				)
+			)
+		;
+	}
+
+	public function testGetPassAssertions()
+	{
+		$score = new atoum\score();
+
+		$file = uniqid();
+		$line = rand(1, PHP_INT_MAX);
+		$class = uniqid();
+		$method = uniqid();
+		$asserter = new atoum\asserters\integer($score, new atoum\locale());
+
+		$this->assert
+			->collection($score->getPassAssertions())->isEmpty()
+		;
+
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()), uniqid());
+
+		$this->assert
+			->collection($score->getPassAssertions())->isEmpty()
+		;
+
+		$file = uniqid();
+		$line = rand(1, PHP_INT_MAX);
+		$class = uniqid();
+		$method = uniqid();
+		$asserter = new atoum\asserters\integer($score, new atoum\locale());
+
+		$score->addPass($file, $line, $class, $method, $asserter);
+
+		$this->assert
+			->collection($score->getPassAssertions())->isEqualTo(array(
+					array(
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'asserter' => $asserter,
+						'fail' => null
+					)
+				)
+			)
+		;
+	}
 }
 
 ?>

@@ -6,21 +6,21 @@ class collection extends \mageekguy\atoum\asserters\variable
 {
 	public function isEmpty()
 	{
-		sizeof($this->mixed) == 0 ? $this->pass() : $this->fail($this->locale->_('Collection is not empty'));
+		sizeof($this->variable) == 0 ? $this->pass() : $this->fail($this->locale->_('Collection is not empty'));
 
 		return $this;
 	}
 
 	public function isNotEmpty()
 	{
-		sizeof($this->mixed) > 0 ? $this->pass() : $this->fail($this->locale->_('Collection is empty'));
+		sizeof($this->variable) > 0 ? $this->pass() : $this->fail($this->locale->_('Collection is empty'));
 
 		return $this;
 	}
 
-	protected static function check($mixed, $method)
+	protected static function check($variable, $method)
 	{
-		if (is_array($mixed) === false)
+		if (is_array($variable) === false)
 		{
 			throw new \logicException('Argument of ' . $method . '() must be an array');
 		}

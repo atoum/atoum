@@ -93,30 +93,18 @@ class variable extends atoum\test
 				->hasMessage(sprintf($locale->_('Value \'%s\' is not equal to value \'%s\''), $variable, $notEqualVariable))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
-//			->collection($score->getFailAssertions())->isEqualTo(array(
-//					array(
-//						'class' => __CLASS__,
-//						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
-//						'file' => __FILE__,
-//						'line' => $line,
-//						'asserter' => get_class($asserter) . '::isEqualTo()',
-//						'fail' => $exception->getMessage()
-//					)
-//				)
-//			)
-		;
-
-		var_dump($score->getFailAssertions() == array(array(
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
 						'fail' => $exception->getMessage()
-					))
-		);
-
-		var_dump($score->getFailAssertions());
+					)
+				)
+			)
+		;
 
 		$asserter->setWith(1);
 
