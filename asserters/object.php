@@ -8,10 +8,12 @@ class object extends \mageekguy\atoum\asserters\variable
 	{
 		parent::setWith($variable);
 
-		if (self::isObject($this->getVariable()) === false)
+		if (self::isObject($this->variable) === false)
 		{
 			$this->fail(sprintf($this->locale->_('%s is not an object'), $this));
 		}
+
+		return $this;
 	}
 
 	public function isInstanceOf($variable)

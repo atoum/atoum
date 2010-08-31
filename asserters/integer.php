@@ -2,28 +2,20 @@
 
 namespace mageekguy\atoum\asserters;
 
-class integer extends \mageekguy\atoum\asserter
+class integer extends \mageekguy\atoum\asserters\variable
 {
-	protected $integer = null;
-
-	public function __construct(\mageekguy\atoum\score $score, \mageekguy\atoum\locale $locale)
+	public function setWith($variable)
 	{
-		parent::__construct($score, $locale);
-	}
+		parent::setWith($variable);
 
-	public function __toString()
-	{
-		return self::toString($this->integer);
-	}
-
-	public function getInteger()
-	{
-		return $this->integer;
-	}
-
-	public function setWith($integer)
-	{
-		$this->integer = $integer;
+		if (self::isInteger($this->variable) === false)
+		{
+			$this->fail(sprintf($this->locale->_('Value %s is not an integer'), $this));
+		}
+		else
+		{
+			$this->pass();
+		}
 
 		return $this;
 	}
@@ -31,30 +23,6 @@ class integer extends \mageekguy\atoum\asserter
 	public function isZero()
 	{
 		return $this->isEqualTo(0);
-	}
-
-	public function isEqualTo($integer)
-	{
-		if (is_integer($integer) === false)
-		{
-			throw new \logicException('Argument of ' . __METHOD__ . '() must be an integer');
-		}
-
-		$this->integer === $integer ? $this->pass() : $this->fail($this . ' is not equal to ' . self::toString($integer));
-
-		return $this;
-	}
-
-	public function isNotEqualTo($integer)
-	{
-		if (is_integer($integer) === false)
-		{
-			throw new \logicException('Argument of ' . __METHOD__ . '() must be an integer');
-		}
-
-		$this->integer != $integer ? $this->pass() : $this->fail($this . ' is equal to ' . self::toString($integer));
-
-		return $this;
 	}
 
 	protected function setWithArguments(array $arguments)
@@ -65,6 +33,19 @@ class integer extends \mageekguy\atoum\asserter
 		}
 
 		return $this->setWith($arguments[0]);
+	}
+
+	protected static function check($variable, $method)
+	{
+		if (self::isInteger($variable) === false)
+		{
+			throw new \logicException('Argument of ' . $method . '() must be an integer');
+		}
+	}
+
+	protected static function isInteger($variable)
+	{
+		return (is_integer($variable) === true);
 	}
 }
 

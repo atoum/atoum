@@ -45,26 +45,7 @@ class asserter
 		return $this->locale;
 	}
 
-	protected function pass()
-	{
-		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addPass($file, $line, $class, $method, $asserter);
-		return $this;
-	}
-
-	protected function fail($reason)
-	{
-		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addFail($file, $line, $class, $method, $asserter, $reason);
-		throw new asserter\exception($reason);
-	}
-
-	protected function setWithArguments(array $arguments)
-	{
-		return $this;
-	}
-
-	protected static function toString($mixed)
+	public static function toString($mixed)
 	{
 		switch (true)
 		{
@@ -92,6 +73,25 @@ class asserter
 			case is_array($mixed):
 				return 'array(' . sizeof($mixed) . ')';
 		}
+	}
+
+	protected function pass()
+	{
+		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
+		$this->score->addPass($file, $line, $class, $method, $asserter);
+		return $this;
+	}
+
+	protected function fail($reason)
+	{
+		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
+		$this->score->addFail($file, $line, $class, $method, $asserter, $reason);
+		throw new asserter\exception($reason);
+	}
+
+	protected function setWithArguments(array $arguments)
+	{
+		return $this;
 	}
 
 	private function getBacktrace()

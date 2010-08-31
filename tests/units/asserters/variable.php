@@ -11,7 +11,7 @@ class variable extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, $locale);
@@ -24,7 +24,7 @@ class variable extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\variable(new atoum\score($this), new atoum\locale());
+		$asserter = new asserters\variable(new atoum\score(), new atoum\locale());
 
 		$variable = uniqid();
 
@@ -38,7 +38,7 @@ class variable extends atoum\test
 
 	public function testIsEqualTo()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, new atoum\locale());
@@ -90,7 +90,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not equal to value \'%s\''), $variable, $notEqualVariable))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, asserters\variable::toString($notEqualVariable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -143,7 +143,7 @@ class variable extends atoum\test
 
 	public function testIsNotEqualTo()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, $locale);
@@ -182,7 +182,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is equal to value \'%s\''), $variable, $variable))
+				->hasMessage(sprintf($locale->_('%s is equal to %s'), $asserter, asserters\variable::toString($variable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -208,7 +208,7 @@ class variable extends atoum\test
 
 	public function testIsIdenticalTo()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, $locale);
@@ -249,7 +249,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not identical to value \'%s\''), $variable, $notIdenticalVariable))
+				->hasMessage(sprintf($locale->_('%s is not identical to %s'), $asserter, asserters\variable::toString($notIdenticalVariable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -275,7 +275,7 @@ class variable extends atoum\test
 
 	public function testIsNull()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, $locale);
@@ -316,7 +316,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not null'), $variable))
+				->hasMessage(sprintf($locale->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -336,7 +336,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not null'), $variable))
+				->hasMessage(sprintf($locale->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;
@@ -356,7 +356,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not null'), $variable))
+				->hasMessage(sprintf($locale->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(3)
 		;
@@ -376,7 +376,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not null'), $variable))
+				->hasMessage(sprintf($locale->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(4)
 		;
