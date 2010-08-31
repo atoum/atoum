@@ -24,6 +24,8 @@ class integer extends atoum\test
 
 	public function testSetWith()
 	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
 		$locale = new atoum\locale();
 		$score = new atoum\score();
 
@@ -47,7 +49,7 @@ class integer extends atoum\test
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $currentMethod,
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
@@ -73,7 +75,7 @@ class integer extends atoum\test
 			->collection($score->getPassAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $currentMethod,
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
@@ -86,6 +88,8 @@ class integer extends atoum\test
 
 	public function testIsEqualTo()
 	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
 		$locale = new atoum\locale();
 		$score = new atoum\score();
 
@@ -99,7 +103,7 @@ class integer extends atoum\test
 
 		try
 		{
-			$isEqualToLine = __LINE__; $this->assert->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter);
+			$isEqualToLine1 = __LINE__; $this->assert->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter);
 		}
 		catch (\exception $exception) {}
 
@@ -109,7 +113,7 @@ class integer extends atoum\test
 			->collection($score->getPassAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $currentMethod,
 						'file' => __FILE__,
 						'line' => $setWithLine,
 						'asserter' => get_class($asserter) . '::setWith()',
@@ -117,9 +121,9 @@ class integer extends atoum\test
 					),
 					array(
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $currentMethod,
 						'file' => __FILE__,
-						'line' => $isEqualToLine,
+						'line' => $isEqualToLine1,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
 						'fail' => null
 					)
@@ -132,14 +136,46 @@ class integer extends atoum\test
 
 		try
 		{
-			$isEqualToLine = __LINE__; $asserter->isEqualTo(- $variable);
+			$isEqualToLine2 = __LINE__; $asserter->isEqualTo(- $variable);
 		}
 		catch (\exception $exception) {}
 
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value \'%s\' is not equal to value \'%s\''), $variable, - $variable))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, asserters\integer::toString(- $variable)))
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->collection($score->getPassAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => $currentMethod,
+						'file' => __FILE__,
+						'line' => $setWithLine,
+						'asserter' => get_class($asserter) . '::setWith()',
+						'fail' => null
+					),
+					array(
+						'class' => __CLASS__,
+						'method' => $currentMethod,
+						'file' => __FILE__,
+						'line' => $isEqualToLine1,
+						'asserter' => get_class($asserter) . '::isEqualTo()',
+						'fail' => null
+					)
+				)
+			)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => $currentMethod,
+						'file' => __FILE__,
+						'line' => $isEqualToLine2,
+						'asserter' => get_class($asserter) . '::isEqualTo()',
+						'fail' => $exception->getMessage()
+					)
+				)
+			)
 		;
 	}
 }
