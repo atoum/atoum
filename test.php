@@ -55,6 +55,15 @@ abstract class test implements observable, \countable
 
 		$class = new \reflectionClass($this);
 
+		foreach (self::getAnnotations($class->getDocComment()) as $annotation => $value)
+		{
+			switch ($annotation)
+			{
+				case '@isolation':
+					$this->isolation = $value == 'on';
+			}
+		}
+
 		$this->class = $class->getName();
 
 		$this->path = $class->getFilename();
@@ -66,20 +75,15 @@ abstract class test implements observable, \countable
 			if (strpos($methodName, self::testMethodPrefix) === 0)
 			{
 				$annotations = array(
-					'isolation' => true
+					'isolation' => $this->isolation
 				);
 
-				$comments = explode("\n", trim(trim($publicMethod->getDocComment(), '/*')));
-				array_walk($comments, function(& $value, $key) { $value = trim($value); });
-
-				foreach ($comments as $comment)
+				foreach (self::getAnnotations($publicMethod->getDocComment()) as $annotation => $value)
 				{
-					$comment = preg_split("/\s/", $comment);
-
-					switch ($comment[0])
+					switch ($annotation)
 					{
 						case '@isolation':
-							$annotations['isolation'] = $comment[1] == 'on';
+							$annotations['isolation'] = $value == 'on';
 							break;
 					}
 				}
@@ -174,8 +178,6 @@ abstract class test implements observable, \countable
 					throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is undefined');
 				}
 
-				$runInChildProcess = $this->testMethods[$testMethodName]['isolation'];
-
 				$failNumber = $this->score->getFailNumber();
 				$errorNumber = $this->score->getErrorNumber();
 				$exceptionNumber = $this->score->getExceptionNumber();
@@ -184,7 +186,7 @@ abstract class test implements observable, \countable
 
 				$this->sendEventToObservers(self::eventBeforeTestMethod);
 
-				if ($runInChildProcess === false)
+				if ($runInChildProcess === false || $this->testMethods[$testMethodName]['isolation'] === false)
 				{
 					$this->runTestMethod($testMethodName);
 				}
@@ -388,6 +390,29 @@ abstract class test implements observable, \countable
 		}
 
 		return false;
+	}
+
+	protected static function getAnnotations($comments)
+	{
+		$annotations = array();
+
+		$comments = explode("\n", trim(trim($comments, '/*')));
+		array_walk($comments, function(& $value, $key) { $value = trim($value); });
+
+		foreach ($comments as $comment)
+		{
+			$comment = preg_split("/\s/", $comment);
+
+			if (sizeof($comment) == 2)
+			{
+				if (substr($comment[0], 0, 1) == '@')
+				{
+					$annotations[$comment[0]] = $comment[1];
+				}
+			}
+		}
+
+		return $annotations;
 	}
 }
 
