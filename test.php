@@ -27,6 +27,7 @@ abstract class test implements observable, \countable
 	protected $score = null;
 	protected $assert = null;
 	protected $observers = array();
+	protected $isolation = true;
 
 	private $class = '';
 	private $path = '';
@@ -64,11 +65,30 @@ abstract class test implements observable, \countable
 
 			if (strpos($methodName, self::testMethodPrefix) === 0)
 			{
-				$this->testMethods[] = $methodName;
+				$annotations = array(
+					'isolation' => true
+				);
+
+				$comments = explode("\n", trim(trim($publicMethod->getDocComment(), '/*')));
+				array_walk($comments, function(& $value, $key) { $value = trim($value); });
+
+				foreach ($comments as $comment)
+				{
+					$comment = preg_split("/\s/", $comment);
+
+					switch ($comment[0])
+					{
+						case '@isolation':
+							$annotations['isolation'] = $comment[1] == 'on';
+							break;
+					}
+				}
+
+				$this->testMethods[$methodName] = $annotations;
 			}
 		}
 
-		$this->runTestMethods = & $this->testMethods;
+		$this->runTestMethods = $this->getTestMethods();
 	}
 
 	public function setScore(score $score)
@@ -121,7 +141,7 @@ abstract class test implements observable, \countable
 
 	public function getTestMethods()
 	{
-		return $this->testMethods;
+		return array_keys($this->testMethods);
 	}
 
 	public function getCurrentMethod()
@@ -147,28 +167,30 @@ abstract class test implements observable, \countable
 				$this->sendEventToObservers(self::eventAfterSetUp);
 			}
 
-			foreach ($this->runTestMethods as $testMethod)
+			foreach ($this->runTestMethods as $testMethodName)
 			{
-				if (in_array($testMethod, $this->testMethods) === false)
+				if (isset($this->testMethods[$testMethodName]) === false)
 				{
-					throw new \runtimeException('Test method ' . $this->class . '::' . $testMethod . '() is undefined');
+					throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is undefined');
 				}
+
+				$runInChildProcess = $this->testMethods[$testMethodName]['isolation'];
 
 				$failNumber = $this->score->getFailNumber();
 				$errorNumber = $this->score->getErrorNumber();
 				$exceptionNumber = $this->score->getExceptionNumber();
 
-				$this->currentMethod = $testMethod;
+				$this->currentMethod = $testMethodName;
 
 				$this->sendEventToObservers(self::eventBeforeTestMethod);
 
 				if ($runInChildProcess === false)
 				{
-					$this->runTestMethod($testMethod);
+					$this->runTestMethod($testMethodName);
 				}
 				else
 				{
-					$this->runInChildProcess($testMethod);
+					$this->runInChildProcess($testMethodName);
 				}
 
 				switch (true)
@@ -353,6 +375,19 @@ abstract class test implements observable, \countable
 		}
 
 		return null;
+	}
+
+	protected function testMethodExists($testMethodName)
+	{
+		foreach ($this->testMethods as $testMethod)
+		{
+			if ($testMethod['name'] == $testMethodName)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

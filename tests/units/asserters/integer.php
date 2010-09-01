@@ -9,6 +9,9 @@ require_once(__DIR__ . '/../../../runners/autorunner.php');
 
 class integer extends atoum\test
 {
+	/**
+	@isolation disabled
+	*/
 	public function test__construct()
 	{
 		$score = new atoum\score();
@@ -22,6 +25,9 @@ class integer extends atoum\test
 		;
 	}
 
+	/**
+	@isolation disabled
+	*/
 	public function testSetWith()
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
@@ -86,6 +92,9 @@ class integer extends atoum\test
 		;
 	}
 
+	/**
+	@isolation disabled
+	*/
 	public function testIsEqualTo()
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
