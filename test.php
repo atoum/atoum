@@ -397,11 +397,10 @@ abstract class test implements observable, \countable
 		$annotations = array();
 
 		$comments = explode("\n", trim(trim($comments, '/*')));
-		array_walk($comments, function(& $value, $key) { $value = trim($value); });
 
 		foreach ($comments as $comment)
 		{
-			$comment = preg_split("/\s/", $comment);
+			$comment = preg_split("/\s+/", trim($comment));
 
 			if (sizeof($comment) == 2)
 			{

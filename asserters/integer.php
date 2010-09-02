@@ -10,7 +10,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 
 		if (self::isInteger($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('Value %s is not an integer'), $this));
+			$this->fail(sprintf($this->locale->_('%s is not an integer'), $this));
 		}
 		else
 		{

@@ -47,7 +47,7 @@ class integer extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Value %s is not an integer'), asserters\integer::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not an integer'), asserters\integer::toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
