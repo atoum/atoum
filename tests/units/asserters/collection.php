@@ -47,7 +47,7 @@ class collection extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not an array'), asserters\integer::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not an array'), asserters\collection::toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(

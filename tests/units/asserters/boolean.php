@@ -10,14 +10,14 @@ require_once(__DIR__ . '/../../../runners/autorunner.php');
 /**
 @isolation off
 */
-class string extends atoum\test
+class boolean extends atoum\test
 {
 	public function test__construct()
 	{
 		$score = new atoum\score();
 		$locale = new atoum\locale();
 
-		$asserter = new asserters\string($score, $locale);
+		$asserter = new asserters\boolean($score, $locale);
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -32,7 +32,7 @@ class string extends atoum\test
 		$locale = new atoum\locale();
 		$score = new atoum\score();
 
-		$asserter = new asserters\string($score, $locale);
+		$asserter = new asserters\boolean($score, $locale);
 
 		$exception = null;
 
@@ -47,7 +47,7 @@ class string extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not a string'), asserters\string::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not a boolean'), asserters\boolean::toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -67,7 +67,7 @@ class string extends atoum\test
 
 		try
 		{
-			$line = __LINE__; $this->assert->object($asserter->setWith(uniqid()))->isIdenticalTo($asserter);
+			$line = __LINE__; $this->assert->object($asserter->setWith(true))->isIdenticalTo($asserter);
 		}
 		catch (\exception $exception) {}
 

@@ -4,22 +4,43 @@ namespace mageekguy\atoum\asserters;
 
 class boolean extends \mageekguy\atoum\asserters\variable
 {
-	public function isTrue()
+	public function setWith($variable)
 	{
-		return $this->isEqualTo(true);
+		parent::setWith($variable);
+
+		if (self::isBoolean($this->variable) === false)
+		{
+			$this->fail(sprintf($this->locale->_('%s is not a boolean'), $this));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
 	}
 
-	public function isFalse()
+	public function isTrue($failMessage = null)
 	{
-		return $this->isEqualTo(false);
+		return $this->isEqualTo(true, $failMessage);
 	}
 
-	protected static function check($mixed, $method)
+	public function isFalse($failMessage = null)
 	{
-		if (is_bool($mixed) === false)
+		return $this->isEqualTo(false, $failMessage);
+	}
+
+	protected static function check($variable, $method)
+	{
+		if (self::isBoolean($variable) === false)
 		{
 			throw new \logicException('Argument of ' . $method . '() must be a boolean');
 		}
+	}
+
+	protected static function isBoolean($variable)
+	{
+		return (is_bool($variable) === true);
 	}
 }
 
