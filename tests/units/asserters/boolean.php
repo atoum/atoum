@@ -36,7 +36,7 @@ class boolean extends atoum\test
 
 		$exception = null;
 
-		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
+		$variable = uniqid();
 
 		try
 		{
@@ -61,6 +61,7 @@ class boolean extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
+			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 
 		$exception = null;
@@ -86,6 +87,7 @@ class boolean extends atoum\test
 					)
 				)
 			)
+			->boolean($asserter->getVariable())->isTrue()
 		;
 	}
 }

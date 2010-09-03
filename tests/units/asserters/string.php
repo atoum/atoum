@@ -61,13 +61,16 @@ class string extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
+			->integer($asserter->getVariable())->isEqualTo($variable)
 		;
+
+		$variable = uniqid();
 
 		$exception = null;
 
 		try
 		{
-			$line = __LINE__; $this->assert->object($asserter->setWith(uniqid()))->isIdenticalTo($asserter);
+			$line = __LINE__; $this->assert->object($asserter->setWith($variable))->isIdenticalTo($asserter);
 		}
 		catch (\exception $exception) {}
 
@@ -86,6 +89,7 @@ class string extends atoum\test
 					)
 				)
 			)
+			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
 }
