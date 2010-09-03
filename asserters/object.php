@@ -4,13 +4,20 @@ namespace mageekguy\atoum\asserters;
 
 class object extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable)
+	public function setWith($variable, $check = true)
 	{
 		parent::setWith($variable);
 
-		if (self::isObject($this->variable) === false)
+		if ($check === true)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not an object'), $this));
+			if (self::isObject($this->variable) === false)
+			{
+				$this->fail(sprintf($this->locale->_('%s is not an object'), $this));
+			}
+			else
+			{
+				$this->pass();
+			}
 		}
 
 		return $this;

@@ -4,6 +4,25 @@ namespace mageekguy\atoum\asserters;
 
 class exception extends \mageekguy\atoum\asserters\object
 {
+	public function setWith($variable, $check = true)
+	{
+		parent::setWith($variable, false);
+
+		if ($check === true)
+		{
+			if (self::isException($variable) === false)
+			{
+				$this->fail(sprintf($this->locale->_('%s is not an exception'), $this));
+			}
+			else
+			{
+				$this->pass();
+			}
+		}
+
+		return $this;
+	}
+
 	public function isInstanceOf($variable)
 	{
 		try
@@ -55,7 +74,7 @@ class exception extends \mageekguy\atoum\asserters\object
 
 	protected static function isException($variable)
 	{
-		return (is_object($variable) === true && $variable instanceof \exception === true);
+		return (parent::isObject($variable) === true && $variable instanceof \exception === true);
 	}
 }
 
