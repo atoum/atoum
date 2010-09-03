@@ -30,7 +30,7 @@ class extractor extends atoum\test
 	public function testStar()
 	{
 		$this->assert
-			->string('*****')->match('/\*{2,10}/')
+			->string(self::star())->match('/\*{2,10}/')
 		;
 
 		$this->assert
