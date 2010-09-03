@@ -42,6 +42,20 @@ class object extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
+	public function hasSize($size)
+	{
+		sizeof($this->variable) == $size ? $this->pass() : $this->fail(sprintf($this->locale->_('%s has not size %d'), $this, $size));
+
+		return $this;
+	}
+
+	public function isEmpty()
+	{
+		sizeof($this->variable) == 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('%s has size %d'), $this, sizeof($this->variable)));
+
+		return $this;
+	}
+
 	protected static function check($variable, $method)
 	{
 		if (self::isObject($variable) === false)

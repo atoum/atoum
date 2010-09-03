@@ -10,28 +10,36 @@ class extractor implements \iteratorAggregate
 	{
 		if ($comments !== null)
 		{
-			$comments = trim((string) $comments);
+			$this->extract($comments);
+		}
+	}
 
-			if (substr($comments, 0, 3) == '/**' && substr($comments, -2) == '*/')
+	public function extract($comments)
+	{
+		$comments = trim((string) $comments);
+
+		if (substr($comments, 0, 3) == '/**' && substr($comments, -2) == '*/')
+		{
+			foreach (explode("\n", trim(trim($comments, '/*'))) as $comment)
 			{
-				foreach (explode("\n", trim(trim($comments, '/*'))) as $comment)
-				{
-					$comment = preg_split("/\s+/", trim(trim(trim($comment), '*/')));
+				$comment = preg_split("/\s+/", trim(trim(trim($comment), '*/')));
 
-					if (sizeof($comment) == 2)
+				if (sizeof($comment) == 2)
+				{
+					if (substr($comment[0], 0, 1) == '@')
 					{
-						if (substr($comment[0], 0, 1) == '@')
-						{
-							$this->annotations[substr($comment[0], 1)] = $comment[1];
-						}
+						$this->annotations[substr($comment[0], 1)] = $comment[1];
 					}
 				}
 			}
 		}
+
+		return $this;
 	}
 
 	public function getIterator()
 	{
+		return new \arrayIterator($this->annotations);
 	}
 
 	public function getAnnotations()

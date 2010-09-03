@@ -65,7 +65,14 @@ class extractor extends atoum\test
 			->collection($extractor->getAnnotations())->isEmpty()
 		;
 
-		$extractor = new annotations\extractor('/* */');
+		$extractor = new annotations\extractor('//');
+
+		$this->assert
+			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->collection($extractor->getAnnotations())->isEmpty()
+		;
+
+		$extractor = new annotations\extractor('/**/');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
@@ -82,7 +89,16 @@ class extractor extends atoum\test
 		$annotation = uniqid();
 		$value = uniqid();
 
-		$extractor = new annotations\extractor('/* @' . $annotation . ' ' . $value . ' */');
+		$extractor = new annotations\extractor(
+			'/*' .
+			self::space() .
+			'@' .
+			$annotation .
+			self::space() .
+			$value .
+			self::space() .
+			'*/'
+		);
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
@@ -92,7 +108,19 @@ class extractor extends atoum\test
 		$annotation = uniqid();
 		$value = uniqid();
 
-		$extractor = new annotations\extractor('/' . self::star() . ' @' . $annotation . ' ' . $value . ' ' . self::star(10, 1) . '/');
+		$extractor = new annotations\extractor(
+			self::space() .
+			'/' .
+			self::star() .
+			'@' .
+			$annotation .
+			self::space() .
+			$value .
+			self::space() .
+			self::star(10, 1) .
+			'/' .
+			self::space()
+		);
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
@@ -101,31 +129,91 @@ class extractor extends atoum\test
 				)
 			)
 		;
+	}
 
+	public function testExtract()
+	{
 		$annotation = uniqid();
 		$value = uniqid();
 
-		$extractor = new annotations\extractor(self::space() . '/' . self::star() . ' @' . $annotation . ' ' . $value . ' ' . self::star(10, 1) . '/');
+		$extractor = new annotations\extractor();
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract(''))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract('#'))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract('//'))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract('/**/'))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract('/***/'))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract('/**' . self::space() . '*/'))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract(
+					'/*' .
+					self::space() .
+					'@' .
+					$annotation .
+					self::space() .
+					$value .
+					self::space() .
+					'*/'
+				))->isIdenticalTo($extractor)
+			->collection($extractor->getAnnotations())->isEmpty()
+			->object($extractor->extract(
+					self::space() .
+					'/' .
+					self::star() .
+					'@' .
+					$annotation .
+					self::space() .
+					$value .
+					self::space() .
+					self::star(10, 1) .
+					'/' .
+					self::space()
+				))->isIdenticalTo($extractor)
 			->collection($extractor->getAnnotations())->isEqualTo(array(
 					$annotation => $value
 				)
 			)
 		;
+	}
 
+	public function testGetIterator()
+	{
 		$annotation = uniqid();
 		$value = uniqid();
 
-		$extractor = new annotations\extractor('/' . self::star() . "\n" . self::space() . self::star() . self::space() . '@' . $annotation . ' ' . $value . ' ' . self::star(10, 1) . '/');
+		$extractor = new annotations\extractor();
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEqualTo(array(
-					$annotation => $value
-				)
-			)
+			->object($extractor->getIterator())
+				->isInstanceOf('\arrayIterator')
+				->isEmpty()
+		;
+
+		$extractor = new annotations\extractor(
+			self::space() .
+			'/' .
+			self::star() .
+			'@' .
+			$annotation .
+			self::space() .
+			$value .
+			self::space() .
+			self::star(10, 1) .
+			'/' .
+			self::space()
+		);
+
+		$this->assert
+			->object($extractor->getIterator())
+				->isInstanceOf('\arrayIterator')
+				->hasSize(1)
 		;
 	}
 
