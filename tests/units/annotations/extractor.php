@@ -12,6 +12,36 @@ require_once(__DIR__ . '/../../../runners/autorunner.php');
 */
 class extractor extends atoum\test
 {
+	public function testSpace()
+	{
+		$this->assert
+			->string(self::space())->match('/ {1,10}/')
+		;
+
+		$this->assert
+			->string(self::space(5))->match('/ {1,5}/')
+		;
+
+		$this->assert
+			->string(self::space(5, 3))->match('/ {3,5}/')
+		;
+	}
+
+	public function testStar()
+	{
+		$this->assert
+			->string('*****')->match('/\*{2,10}/')
+		;
+
+		$this->assert
+			->string(self::star(5))->match('/\*{2,5}/')
+		;
+
+		$this->assert
+			->string(self::star(5, 3))->match('/\*{3,5}/')
+		;
+	}
+
 	public function test__contruct()
 	{
 		$extractor = new annotations\extractor();
