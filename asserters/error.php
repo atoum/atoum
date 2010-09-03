@@ -17,6 +17,16 @@ class error extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
+	public function getMessage()
+	{
+		return $this->message;
+	}
+
+	public function getType()
+	{
+		return $this->type;
+	}
+
 	public function exists()
 	{
 		$key = null;
@@ -38,7 +48,7 @@ class error extends \mageekguy\atoum\asserter
 					$failReason = $this->locale->_('error does not exist');
 					break;
 
-				case $this->type === null && $this->message !== nul:
+				case $this->type === null && $this->message !== null:
 					$failReason = sprintf($this->locale->_('error with message \'%s\' does not exist'), $this->message);
 					break;
 

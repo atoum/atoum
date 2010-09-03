@@ -55,11 +55,11 @@ abstract class test implements observable, \countable
 
 		$class = new \reflectionClass($this);
 
-		foreach (self::getAnnotations($class->getDocComment()) as $annotation => $value)
+		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
 		{
 			switch ($annotation)
 			{
-				case '@isolation':
+				case 'isolation':
 					$this->isolation = $value == 'on';
 			}
 		}
