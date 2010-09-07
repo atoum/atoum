@@ -6,7 +6,7 @@ use \mageekguy\atoum;
 
 require(__DIR__ . '/autoloader.php');
 
-abstract class runner implements observable
+class runner implements observable
 {
 	const testClass = '\mageekguy\atoum\test';
 
@@ -36,7 +36,33 @@ abstract class runner implements observable
 		return $this;
 	}
 
-	public abstract function run();
+	public function run()
+	{
+		$locale = new atoum\locale();
+
+		$reporter = new atoum\reporters\cli();
+
+		$this->addObserver($reporter);
+
+		$this->sendEventToObservers(self::eventRunStart);
+
+		foreach (get_declared_classes() as $class)
+		{
+			if (self::isTestClass($class) === true)
+			{
+				$test = new $class(null, $locale);
+				$test->addObserver($reporter);
+				$test->run();
+			}
+		}
+
+		$this->sendEventToObservers(self::eventRunStop);
+	}
+
+	protected static function isTestClass($class)
+	{
+		return (is_subclass_of($class, self::testClass) === true && get_parent_class($class) !== false);
+	}
 }
 
 ?>

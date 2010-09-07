@@ -68,7 +68,7 @@ class asserter
 				return 'resource ' . $mixed;
 
 			case is_string($mixed):
-				return 'string(' . $mixed . ')';
+				return 'string(' . strlen($mixed) . ') \'' . $mixed . '\'';
 
 			case is_array($mixed):
 				return 'array(' . sizeof($mixed) . ')';

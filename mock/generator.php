@@ -12,15 +12,20 @@ class generator
 	{
 		if ($adapter === null)
 		{
-			$adapter = new unit\adapter();
+			$adapter = new atoum\adapter();
 		}
 
 		$this->adapter = $adapter;
 	}
 
-	public function generate($class, $mockClass = null)
+	public function generate($class, $mockNamespace = null, $mockClass = null)
 	{
 		$class = '\\' . ltrim($class, '\\');
+
+		if ($mockNamespace === null)
+		{
+			$mockNamespace = self::getNamespace($class);
+		}
 
 		if ($mockClass === null)
 		{
@@ -44,15 +49,15 @@ class generator
 			throw new \logicException('Argument 1 of method \'' . __METHOD__ . '()\' must not be a final class name');
 		}
 
-		$code = $this->getMockedClassCode($reflectionClass, $mockClass);
+		$code = $this->getMockedClassCode($reflectionClass, $mockNamespace, $mockClass);
 		eval($code);
 
 		return $this;
 	}
 
-	protected function getMockedClassCode(\reflectionClass $class, $mockClass)
+	protected function getMockedClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		return 'namespace ' . __NAMESPACE__ . ' {' . "\n"
+		return 'namespace ' . $mockNamespace . ' {' . "\n"
 			. 'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . "\n"
 			. '{' . "\n"
 			. '	private $mockController = null;' . "\n"
@@ -180,6 +185,18 @@ class generator
 		}
 
 		return $type;
+	}
+
+	protected static function getNamespace($class)
+	{
+		$lastAntiSlash = strrpos($class, '\\');
+
+		if ($lastAntiSlash !== false)
+		{
+			$namespace = __NAMESPACE__ . '\\' . ltrim(substr($class, 0, $lastAntiSlash), '\\');
+		}
+
+		return $namespace;
 	}
 
 	protected static function getClassName($class)
