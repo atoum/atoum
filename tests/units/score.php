@@ -677,8 +677,8 @@ class score extends atoum\test
 		$score = new atoum\score();
 
 		$this->assert
-			->boolean($score->errorExists(uniqid()))->isFalse()
-			->boolean($score->errorExists(uniqid(), rand(1, PHP_INT_MAX)))->isFalse()
+			->variable($score->errorExists(uniqid()))->isNull()
+			->variable($score->errorExists(uniqid(), rand(1, PHP_INT_MAX)))->isNull()
 		;
 
 		$type = rand(1, PHP_INT_MAX - 1);

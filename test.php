@@ -78,7 +78,7 @@ abstract class test implements observable, \countable
 					'isolation' => $this->isolation
 				);
 
-				foreach (self::getAnnotations($publicMethod->getDocComment()) as $annotation => $value)
+				foreach (new annotations\extractor($publicMethod->getDocComment()) as $annotation => $value)
 				{
 					switch ($annotation)
 					{

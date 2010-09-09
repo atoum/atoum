@@ -12,10 +12,6 @@ class autoloader extends atoum\test
 	{
 		$this->assert->variable(atoum\autoloader::getPath(uniqid()))->isNull();
 		$this->assert->variable(atoum\autoloader::getPath('\mageekguy\atoum'))->isNull();
-
-		$class = uniqid();
-
-		$this->assert->string(atoum\autoloader::getPath('\mageekguy\atoum\\' . $class))->isEqualTo(realpath(__DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..') . DIRECTORY_SEPARATOR . $class . '.php');
 	}
 }
 
