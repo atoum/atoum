@@ -24,6 +24,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('_', 60) . '][0/0]')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$mockController->count = function() { return 1; };
@@ -32,6 +33,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)). str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$count = rand(2, 9);
@@ -42,6 +44,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)). str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$count = rand(10, 60);
@@ -52,6 +55,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)). str_repeat('_', 60 - sizeof($test)) . '][ 0/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$mockController->count = function() { return 61; };
@@ -60,6 +64,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][ 0/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$count = rand(100, PHP_INT_MAX);
@@ -69,6 +74,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][' . sprintf('%' . strlen((string) $count) . 'd', 0) . '/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
 		;
 	}
 
@@ -86,19 +92,133 @@ class progressBar extends atoum\test
 		$progressBar = new cli\progressBar($test);
 
 		$this->assert
-			->object($progressBar->update('F'))->isIdenticalTo($progressBar)
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
 			->string((string) $progressBar)->isEqualTo('[' . str_repeat('_', 60) . '][0/0]')
+			->string((string) $progressBar)->isEmpty()
 		;
 
 		$mockController->count = function() { return 1; };
 
 		$progressBar = new cli\progressBar($test);
 
-		$length = strlen((string) $progressBar);
+		$progressBarString = (string) $progressBar;
+		$progressBarLength = strlen($progressBarString);
 
 		$this->assert
-			->object($progressBar->update('F'))->isIdenticalTo($progressBar)
-			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", $length - 1) . 'F' . str_repeat('_', 59) . '][1/1]', "\010"))
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', sizeof($test)). str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
+			->string((string) $progressBar)->isEmpty()
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]', "\010"))
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes('[' . str_repeat('.', sizeof($test)). str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']' . str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]', "\010"))
+			->string((string) $progressBar)->isEmpty()
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$mockController->count = function() { return 60; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$progressBarString = (string) $progressBar;
+
+		$this->assert
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', 60) . '][ 0/60]')
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$nextProgressBarString = 'F' . str_repeat('.', 59) . '][ 1/60]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString, "\010"))
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		for ($i = 2; $i <= 60; $i++)
+		{
+			$currentProgressBarString = $nextProgressBarString;
+
+			$nextProgressBarString = 'F' . str_repeat('.', 60 - $i) . '][' . sprintf('%2d', $i) . '/60]';
+
+			$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString, "\010"))
+				->string((string) $progressBar)->isEmpty()
+			;
+		}
+
+		$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->string((string) $progressBar)->isEmpty()
+		;
+
+		$mockController->count = function() { return 61; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$progressBarString = (string) $progressBar;
+
+		$this->assert
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', 59) . '>][ 0/61]')
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$nextProgressBarString = 'F' . str_repeat('.', 58) . '>][ 1/61]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString, "\010"))
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		for ($i = 2; $i <= 58; $i++)
+		{
+			$currentProgressBarString = $nextProgressBarString;
+
+			$nextProgressBarString = 'F' . str_repeat('.', 59 - $i) . '>][' . sprintf('%2d', $i) . '/61]';
+
+			$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString, "\010"))
+				->string((string) $progressBar)->isEmpty()
+			;
+		}
+
+		$currentProgressBarString = $nextProgressBarString;
+
+		$nextProgressBarString = '[..' . str_repeat('_', 58) . ']';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($currentProgressBarString) - 1) . 'F>][59/61]' . "\n" . $nextProgressBarString, "\010"))
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$currentProgressBarString = $nextProgressBarString;
+
+		$nextProgressBarString = 'F.' . str_repeat('_', 58) . '][60/61]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString, "\010"))
+			->string((string) $progressBar)->isEmpty()
+		;
+
+		$currentProgressBarString = $nextProgressBarString;
+
+		$nextProgressBarString = 'F' . str_repeat('_', 58) . '][61/61]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->string(addcslashes((string) $progressBar, "\010"))->isEqualTo(addcslashes(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString, "\010"))
+			->string((string) $progressBar)->isEmpty()
 		;
 	}
 }

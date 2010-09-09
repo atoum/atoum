@@ -348,7 +348,7 @@ abstract class test implements observable, \countable
 
 				if ($score instanceof score === false)
 				{
-					throw new unit\exception('Unable to retrieve score from \'' . $stdOut . '\'');
+					throw new atoum\exception('Unable to retrieve score from \'' . $stdOut . '\'');
 				}
 
 				$this->score->merge($score);

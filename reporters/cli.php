@@ -8,11 +8,11 @@ class cli extends atoum\reporter
 {
 	protected $run = 0;
 	protected $start = 0.0;
-	protected $progressBar = 0;
 	protected $padding = 0;
 	protected $currentMethod = '';
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
+	protected $progressBar = null;
 
 	protected function runStart(atoum\runner $runner)
 	{
@@ -29,43 +29,48 @@ class cli extends atoum\reporter
 		$this->progressBar = 0;
 		$this->testMethods = 0;
 		$this->testMethodNumber = sizeof($test);
+		$this->progressBar = new atoum\reporters\cli\progressBar($test);
 
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
+
+		echo $this->progressBar;
 	}
 
 	protected function beforeTestMethod(atoum\test $test)
 	{
 		$this->testMethods++;
 		$this->currentMethod = $test->getCurrentMethod();
-		$this->progressBar();
 		return $this;
 	}
 
 	protected function afterTestMethod(atoum\test $test)
 	{
 		$this->currentMethod = '';
-		$this->progressBar();
 		return $this;
 	}
 
 	protected function success(atoum\test $test)
 	{
-		return $this->progressBar('.');
+		echo $this->progressBar->refresh('S');
+		return $this;
 	}
 
 	protected function failure(atoum\test $test)
 	{
-		return $this->progressBar('F');
+		echo $this->progressBar->refresh('F');
+		return $this;
 	}
 
 	protected function error(atoum\test $test)
 	{
-		return $this->progressBar('!');
+		echo $this->progressBar->refresh('e');
+		return $this;
 	}
 
 	protected function exception(atoum\test $test)
 	{
-		return $this->progressBar('!');
+		echo $this->progressBar->refresh('E');
+		return $this;
 	}
 
 	protected function testRunEnd(atoum\test $test)
@@ -162,37 +167,6 @@ class cli extends atoum\reporter
 
 		self::write(sprintf($this->locale->__('Total duration: %4.2f second.', 'Total duration: %4.2f seconds.', $duration), $duration));
 		self::write(sprintf($this->locale->_('Total memory usage: %4.2f Mb.'), memory_get_peak_usage(true) / 1048576));
-
-		return $this;
-	}
-
-	protected function progressBar($dot = '')
-	{
-		$end = '[' . sprintf('%' . strlen($this->testMethodNumber) . 'd', $this->testMethods) . '/' . $this->testMethodNumber . ']';
-
-		if ($this->padding > 0)
-		{
-			echo str_repeat("\010", $this->padding);
-		}
-
-		if ($this->progressBar >= 60)
-		{
-			self::write($end);
-			$this->progressBar = 0;
-		}
-
-		if ($dot != '')
-		{
-			$this->progressBar++;
-		}
-
-		$maxPadding = 60 - $this->progressBar;
-
-		$padding = str_pad(str_repeat('?', min($maxPadding, $this->testMethodNumber - $this->testMethods)), $maxPadding, '_', STR_PAD_RIGHT) . $end . ' ' . $this->currentMethod;
-
-		echo $dot . $padding;
-
-		$this->padding = strlen($padding);
 
 		return $this;
 	}

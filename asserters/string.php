@@ -20,6 +20,11 @@ class string extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
+	public function isEmpty($failMessage = null)
+	{
+		return $this->isEqualTo('', $failMessage);
+	}
+
 	public function match($pattern, $failMessage = null)
 	{
 		preg_match($pattern, $this->variable) === 1 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not match %s'), $this, $pattern));

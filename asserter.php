@@ -9,6 +9,7 @@ class asserter
 {
 	protected $score = null;
 	protected $locale = null;
+	protected $asserters = array();
 
 	public function __construct(score $score, locale $locale)
 	{
@@ -25,14 +26,17 @@ class asserter
 			throw new \logicException('Asserter \'' . $class . '\' does not exist');
 		}
 
-		$asserter = new $class($this->score, $this->locale);
+		if (isset($this->asserters[$class]) === false)
+		{
+			$this->asserters[$class] = new $class($this->score, $this->locale);
+		}
 
 		if (sizeof($arguments) > 0)
 		{
-			$asserter->setWithArguments($arguments);
+			$this->asserters[$class]->setWithArguments($arguments);
 		}
 
-		return $asserter;
+		return $this->asserters[$class];
 	}
 
 	public function getScore()
