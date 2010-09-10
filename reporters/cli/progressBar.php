@@ -13,7 +13,7 @@ class progressBar extends atoum\reporter
 	protected $progressBar = '';
 	protected $counter = '';
 	protected $toString = 0;
-	protected $refresh = '';
+	protected $refresh = array();
 
 	public function __construct(atoum\test $test)
 	{
@@ -44,15 +44,15 @@ class progressBar extends atoum\reporter
 			$string .= $this->progressBar . $this->counter;
 		}
 
-		if ($this->refresh != '')
+		if (sizeof($this->refresh) > 0)
 		{
-			$refreshLength = strlen($this->refresh);
+			$refreshLength = strlen(current($this->refresh[0]));
 
 			$this->currentTestNumber += $refreshLength;
 
 			$string .= str_repeat("\010", strlen($this->progressBar) - $refreshLength) . str_repeat("\010", strlen($this->counter));
 
-			$this->progressBar = $this->refresh . substr($this->progressBar, $refreshLength + 1);
+			$this->progressBar = current($this->refresh[0]) . substr($this->progressBar, $refreshLength + 1);
 			$this->counter = '[' . sprintf('%' . strlen((string) $this->numberOfTests) . 'd', $this->currentTestNumber) . '/' . $this->numberOfTests . ']';
 
 			$string .= $this->progressBar;
@@ -66,7 +66,7 @@ class progressBar extends atoum\reporter
 				$string .= "\n" . $this->progressBar;
 			}
 
-			$this->refresh = '';
+			$this->refresh = array();
 		}
 
 		$this->toString++;
@@ -74,11 +74,11 @@ class progressBar extends atoum\reporter
 		return $string;
 	}
 
-	public function refresh($refresh)
+	public function refresh($value, $method = '')
 	{
 		if ($this->numberOfTests > 0 && $this->currentTestNumber < $this->numberOfTests)
 		{
-			$this->refresh .= $refresh;
+			$this->refresh[] = array($value, $method);
 		}
 
 		return $this;
