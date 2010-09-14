@@ -27,9 +27,6 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 			}
 		}
 	}
-
-	$runner = new atoum\runner();
-	$runner->run();
 }
 
 ?>

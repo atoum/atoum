@@ -13,9 +13,12 @@ class cli extends atoum\reporter
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
 	protected $progressBar = null;
+	protected $score = null;
 
 	public function runnerStart(atoum\runner $runner)
 	{
+		$this->score = new atoum\score();
+
 		$this->start = microtime(true);
 
 		self::write(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author));
@@ -28,7 +31,7 @@ class cli extends atoum\reporter
 		$this->run++;
 		$this->progressBar = 0;
 		$this->testMethods = 0;
-		$this->testMethodNumber = sizeof($test);
+		$this->testMethodNumber += sizeof($test);
 		$this->progressBar = new atoum\reporters\cli\progressBar($test);
 
 		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
@@ -77,16 +80,28 @@ class cli extends atoum\reporter
 	{
 		$score = $test->getScore();
 
+		$testDuration = $score->getTotalDuration();
+
+		self::write();
+		self::write(sprintf($this->locale->__('Test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
+		self::write(sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
+
+		$this->score->merge($score);
+
+		return $this;
+	}
+
+	public function runnerStop(atoum\runner $runner)
+	{
+		$totalDuration = microtime(true) - $this->start;
+
+		$score = $this->score;
+
 		$failNumber = $score->getFailNumber();
 		$errorNumber = $score->getErrorNumber();
 		$exceptionNumber = $score->getExceptionNumber();
 		$outputNumber = $score->getOutputNumber();
-		$duration = $score->getTotalDuration();
-
-		self::write();
-
-		self::write(sprintf($this->locale->__('Duration: %4.2f second.', 'Duration: %4.2f seconds.', $duration), $duration));
-		self::write(sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
+		$testDuration = $score->getTotalDuration();
 
 		if ($failNumber > 0)
 		{
@@ -158,14 +173,10 @@ class cli extends atoum\reporter
 			}
 		}
 
-		return $this;
-	}
+		self::write(sprintf($this->locale->__('Total test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
+		self::write(sprintf($this->locale->_('Total test memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
 
-	public function runnerStop(atoum\runner $runner)
-	{
-		$duration = microtime(true) - $this->start;
-
-		self::write(sprintf($this->locale->__('Total duration: %4.2f second.', 'Total duration: %4.2f seconds.', $duration), $duration));
+		self::write(sprintf($this->locale->__('Total duration: %4.2f second.', 'Total duration: %4.2f seconds.', $totalDuration), $totalDuration));
 		self::write(sprintf($this->locale->_('Total memory usage: %4.2f Mb.'), memory_get_peak_usage(true) / 1048576));
 
 		return $this;

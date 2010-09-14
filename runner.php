@@ -40,10 +40,6 @@ class runner implements observable
 	{
 		$locale = new atoum\locale();
 
-		$reporter = new atoum\reporters\cli();
-
-		$this->addObserver($reporter);
-
 		$this->callObservers(self::runStart);
 
 		foreach (get_declared_classes() as $class)
@@ -51,7 +47,12 @@ class runner implements observable
 			if (self::isTestClass($class) === true)
 			{
 				$test = new $class(null, $locale);
-				$test->addObserver($reporter);
+
+				foreach ($this->observers as $observer)
+				{
+					$test->addObserver($observer);
+				}
+
 				$test->run();
 			}
 		}

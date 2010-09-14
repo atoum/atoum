@@ -19,14 +19,20 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 	}
 
 	$runner = new atoum\runner();
-	$runner->run();
+	$runner
+		->addObserver(new atoum\reporters\cli())
+		->run()
+	;
 }
 else if (autorun === true)
 {
 	register_shutdown_function(function()
 		{
 			$runner = new atoum\runner();
-			$runner->run();
+			$runner
+				->addObserver(new atoum\reporters\cli())
+				->run()
+			;
 		}
 	);
 }
