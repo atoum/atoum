@@ -65,17 +65,8 @@ class error extends atoum\test
 
 		$asserter = new asserters\error($score, $locale);
 
-		$exception = null;
-
-		try
-		{
-			$line = __LINE__; $asserter->exists();
-		;
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
-			->exception($exception)
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage($locale->_('error does not exist'))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -86,7 +77,7 @@ class error extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $exception->getMessage()
+						'fail' => $locale->_('error does not exist')
 					)
 				)
 			)
@@ -97,14 +88,11 @@ class error extends atoum\test
 
 		$otherException = null;
 
-		try
-		{
-			$otherLine = __LINE__; $asserter->exists();
-		}
-		catch (\exception $otherException) {}
+		$this->assert
+			->object($asserter->exists())->isIdenticalTo($asserter); $otherLine = __LINE__
+		;
 
 		$this->assert
-			->variable($otherException)->isNull()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -113,7 +101,7 @@ class error extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $exception->getMessage()
+						'fail' => $locale->_('error does not exist')
 					)
 				)
 			)
@@ -138,16 +126,8 @@ class error extends atoum\test
 
 		$asserter->setWith($message, null);
 
-		$exception = null;
-
-		try
-		{
-			$line = __LINE__; $asserter->exists();
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
-			->exception($exception)
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('error with message \'%s\' does not exist'), $message))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -158,7 +138,7 @@ class error extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $exception->getMessage()
+						'fail' => sprintf($locale->_('error with message \'%s\' does not exist'), $message)
 					)
 				)
 			)
@@ -167,16 +147,11 @@ class error extends atoum\test
 
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message);
 
-		$otherException = null;
-
-		try
-		{
-			$otherLine = __LINE__; $asserter->exists();
-		}
-		catch (\exception $otherException) {}
+		$this->assert
+			->object($asserter->exists())->isIdenticalTo($asserter); $otherLine = __LINE__
+		;
 
 		$this->assert
-			->variable($otherException)->isNull()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -185,7 +160,7 @@ class error extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $exception->getMessage()
+						'fail' => sprintf($locale->_('error with message \'%s\' does not exist'), $message)
 					)
 				)
 			)
@@ -203,8 +178,6 @@ class error extends atoum\test
 			)
 			->collection($score->getErrors())->isEmpty()
 		;
-
-		$score->reset();
 	}
 }
 

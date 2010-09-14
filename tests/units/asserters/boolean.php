@@ -34,18 +34,10 @@ class boolean extends atoum\test
 
 		$asserter = new asserters\boolean($score, $locale);
 
-		$exception = null;
-
 		$variable = uniqid();
 
-		try
-		{
-			$line = __LINE__; $asserter->setWith($variable);
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
-			->exception($exception)
+			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a boolean'), asserters\boolean::toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -56,7 +48,7 @@ class boolean extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => $exception->getMessage()
+						'fail' => sprintf($locale->_('%s is not a boolean'), asserters\boolean::toString($variable))
 					)
 				)
 			)
@@ -64,16 +56,11 @@ class boolean extends atoum\test
 			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 
-		$exception = null;
-
-		try
-		{
-			$line = __LINE__; $this->assert->object($asserter->setWith(true))->isIdenticalTo($asserter);
-		}
-		catch (\exception $exception) {}
+		$this->assert
+			->object($asserter->setWith(true))->isIdenticalTo($asserter); $line = __LINE__
+		;
 
 		$this->assert
-			->variable($exception)->isNull()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->collection($score->getPassAssertions())->isEqualTo(array(

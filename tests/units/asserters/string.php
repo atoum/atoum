@@ -59,7 +59,7 @@ class string extends atoum\test
 		$variable = uniqid();
 
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__;
+			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
