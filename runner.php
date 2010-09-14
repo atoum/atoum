@@ -10,12 +10,12 @@ class runner implements observable
 {
 	const testClass = '\mageekguy\atoum\test';
 
-	const eventRunStart = 1;
-	const eventRunStop = 2;
+	const runStart = 'runnerStart';
+	const runStop = 'runnerStop';
 
 	protected $observers = array();
 
-	public function addObserver(observer $observer)
+	public function addObserver(atoum\observers\runner $observer)
 	{
 		$this->observers[] = $observer;
 		return $this;
@@ -26,11 +26,11 @@ class runner implements observable
 		return $this->observers;
 	}
 
-	public function sendEventToObservers($event)
+	public function callObservers($method)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->manageObservableEvent($this, $event);
+			$observer->{$method}($this);
 		}
 
 		return $this;
@@ -44,7 +44,7 @@ class runner implements observable
 
 		$this->addObserver($reporter);
 
-		$this->sendEventToObservers(self::eventRunStart);
+		$this->callObservers(self::runStart);
 
 		foreach (get_declared_classes() as $class)
 		{
@@ -56,7 +56,7 @@ class runner implements observable
 			}
 		}
 
-		$this->sendEventToObservers(self::eventRunStop);
+		$this->callObservers(self::runStop);
 	}
 
 	protected static function isTestClass($class)

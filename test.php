@@ -11,18 +11,18 @@ abstract class test implements observable, \countable
 	const author = 'Frédéric Hardy';
 	const testMethodPrefix = 'test';
 
-	const eventRunStart = 1;
-	const eventBeforeSetUp = 2;
-	const eventAfterSetUp = 3;
-	const eventBeforeTestMethod = 4;
-	const eventFailure = 5;
-	const eventError = 6;
-	const eventException = 7;
-	const eventSuccess = 8;
-	const eventAfterTestMethod = 9;
-	const eventBeforeTearDown = 10;
-	const eventAfterTearDown = 11;
-	const eventRunEnd = 12;
+	const runStart = 'testRunStart';
+	const beforeSetUp = 'beforeTestSetUp';
+	const afterSetUp = 'afterTestSetUp';
+	const beforeTestMethod = 'beforeTestMethod';
+	const fail = 'testAssertionFail';
+	const error = 'testError';
+	const exception = 'testException';
+	const success = 'testAssertionSuccess';
+	const afterTestMethod = 'afterTestMethod';
+	const beforeTearDown = 'beforeTestTearDown';
+	const afterTearDown = 'afterTestTearDown';
+	const runStop = 'testRunStop';
 
 	protected $score = null;
 	protected $assert = null;
@@ -112,17 +112,17 @@ abstract class test implements observable, \countable
 		return sizeof($this->runTestMethods);
 	}
 
-	public function addObserver(observer $observer)
+	public function addObserver(atoum\observers\test $observer)
 	{
 		$this->observers[] = $observer;
 		return $this;
 	}
 
-	public function sendEventToObservers($event)
+	public function callObservers($method)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->manageObservableEvent($this, $event);
+			$observer->{$method}($this);
 		}
 
 		return $this;
@@ -155,7 +155,7 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
-		$this->sendEventToObservers(self::eventRunStart);
+		$this->callObservers(self::runStart);
 
 		if (sizeof($runTestMethods) > 0)
 		{
@@ -166,9 +166,9 @@ abstract class test implements observable, \countable
 		{
 			if ($runInChildProcess === true)
 			{
-				$this->sendEventToObservers(self::eventBeforeSetUp);
+				$this->callObservers(self::beforeSetUp);
 				$this->setUp();
-				$this->sendEventToObservers(self::eventAfterSetUp);
+				$this->callObservers(self::afterSetUp);
 			}
 
 			foreach ($this->runTestMethods as $testMethodName)
@@ -184,7 +184,7 @@ abstract class test implements observable, \countable
 
 				$this->currentMethod = $testMethodName;
 
-				$this->sendEventToObservers(self::eventBeforeTestMethod);
+				$this->callObservers(self::beforeTestMethod);
 
 				if ($runInChildProcess === false || $this->testMethods[$testMethodName]['isolation'] === false)
 				{
@@ -198,31 +198,31 @@ abstract class test implements observable, \countable
 				switch (true)
 				{
 					case $failNumber < $this->score->getFailNumber():
-						$this->sendEventToObservers(self::eventFailure);
+						$this->callObservers(self::fail);
 						break;
 
 					case $errorNumber < $this->score->getErrorNumber():
-						$this->sendEventToObservers(self::eventError);
+						$this->callObservers(self::error);
 						break;
 
 					case $exceptionNumber < $this->score->getExceptionNumber():
-						$this->sendEventToObservers(self::eventException);
+						$this->callObservers(self::exception);
 						break;
 
 					default:
-						$this->sendEventToObservers(self::eventSuccess);
+						$this->callObservers(self::success);
 				}
 
-				$this->sendEventToObservers(self::eventAfterTestMethod);
+				$this->callObservers(self::afterTestMethod);
 
 				$this->currentMethod = null;
 			}
 
 			if ($runInChildProcess === true)
 			{
-				$this->sendEventToObservers(self::eventBeforeTearDown);
+				$this->callObservers(self::beforeTearDown);
 				$this->tearDown();
-				$this->sendEventToObservers(self::eventAfterTearDown);
+				$this->callObservers(self::afterTearDown);
 			}
 		}
 		catch (\exception $exception)
@@ -231,7 +231,7 @@ abstract class test implements observable, \countable
 			throw $exception;
 		}
 
-		$this->sendEventToObservers(self::eventRunEnd);
+		$this->callObservers(self::runStop);
 
 		return $this;
 	}

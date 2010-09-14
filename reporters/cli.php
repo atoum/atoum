@@ -14,7 +14,7 @@ class cli extends atoum\reporter
 	protected $testMethodNumber = 0;
 	protected $progressBar = null;
 
-	protected function runStart(atoum\runner $runner)
+	public function runnerStart(atoum\runner $runner)
 	{
 		$this->start = microtime(true);
 
@@ -23,7 +23,7 @@ class cli extends atoum\reporter
 		return $this;
 	}
 
-	protected function testRunStart(atoum\test $test)
+	public function testRunStart(atoum\test $test)
 	{
 		$this->run++;
 		$this->progressBar = 0;
@@ -36,44 +36,44 @@ class cli extends atoum\reporter
 		echo $this->progressBar;
 	}
 
-	protected function beforeTestMethod(atoum\test $test)
+	public function beforeTestMethod(atoum\test $test)
 	{
 		$this->testMethods++;
 		$this->currentMethod = $test->getCurrentMethod();
 		return $this;
 	}
 
-	protected function afterTestMethod(atoum\test $test)
+	public function afterTestMethod(atoum\test $test)
 	{
 		$this->currentMethod = '';
 		return $this;
 	}
 
-	protected function success(atoum\test $test)
+	public function testAssertionSuccess(atoum\test $test)
 	{
 		echo $this->progressBar->refresh('S');
 		return $this;
 	}
 
-	protected function failure(atoum\test $test)
+	public function testAssertionFail(atoum\test $test)
 	{
 		echo $this->progressBar->refresh('F');
 		return $this;
 	}
 
-	protected function error(atoum\test $test)
+	public function testError(atoum\test $test)
 	{
 		echo $this->progressBar->refresh('e');
 		return $this;
 	}
 
-	protected function exception(atoum\test $test)
+	public function testException(atoum\test $test)
 	{
 		echo $this->progressBar->refresh('E');
 		return $this;
 	}
 
-	protected function testRunEnd(atoum\test $test)
+	public function testRunStop(atoum\test $test)
 	{
 		$score = $test->getScore();
 
@@ -161,7 +161,7 @@ class cli extends atoum\reporter
 		return $this;
 	}
 
-	protected function runEnd(atoum\runner $runner)
+	public function runnerStop(atoum\runner $runner)
 	{
 		$duration = microtime(true) - $this->start;
 

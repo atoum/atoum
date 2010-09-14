@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-abstract class reporter implements observer
+abstract class reporter implements observers\runner, observers\test
 {
 	protected $locale = null;
 
@@ -22,60 +22,74 @@ abstract class reporter implements observer
 		return $this;
 	}
 
-	public function manageObservableEvent(observable $observable, $event)
+	public function runnerStart(runner $runner)
 	{
-		switch (true)
-		{
-			case $observable instanceof runner:
-				switch ($event)
-				{
-					case runner::eventRunStart:
-						$this->runStart($observable);
-						break;
+		return $this;
+	}
 
-					case runner::eventRunStop:
-						$this->runEnd($observable);
-						break;
-				}
-				break;
+	public function testRunStart(test $test)
+	{
+		return $this;
+	}
 
-			case $observable instanceof test:
-				switch ($event)
-				{
-					case test::eventRunStart:
-						$this->testRunStart($observable);
-						break;
+	public function beforeTestSetup(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventBeforeTestMethod:
-						$this->beforeTestMethod($observable);
-						break;
+	public function afterTestSetup(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventSuccess:
-						$this->success($observable);
-						break;
+	public function beforeTestMethod(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventFailure:
-						$this->failure($observable);
-						break;
+	public function testAssertionSuccess(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventError:
-						$this->error($observable);
-						break;
+	public function testAssertionFail(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventException:
-						$this->exception($observable);
-						break;
+	public function testError(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventAfterTestMethod:
-						$this->afterTestMethod($observable);
-						break;
+	public function testException(test $test)
+	{
+		return $this;
+	}
 
-					case test::eventRunEnd:
-						$this->testRunEnd($observable);
-						break;
-				}
-				break;
-		}
+	public function afterTestMethod(test $test)
+	{
+		return $this;
+	}
+
+	public function testRunStop(test $test)
+	{
+		return $this;
+	}
+
+	public function beforeTestTearDown(test $test)
+	{
+		return $this;
+	}
+
+	public function afterTestTearDown(test $test)
+	{
+		return $this;
+	}
+
+	public function runnerStop(runner $runner)
+	{
+		return $this;
 	}
 
 	public static function getErrorLabel($error)
@@ -114,55 +128,6 @@ abstract class reporter implements observer
 		}
 	}
 
-	protected function runStart(runner $runner)
-	{
-		return $this;
-	}
-
-	protected function testRunStart(test $test)
-	{
-		return $this;
-	}
-
-	protected function beforeTestMethod(test $test)
-	{
-		return $this;
-	}
-
-	protected function success(test $test)
-	{
-		return $this;
-	}
-
-	protected function failure(test $test)
-	{
-		return $this;
-	}
-
-	protected function error(test $test)
-	{
-		return $this;
-	}
-
-	protected function exception(test $test)
-	{
-		return $this;
-	}
-
-	protected function afterTestMethod(test $test)
-	{
-		return $this;
-	}
-
-	protected function testRunEnd(test $test)
-	{
-		return $this;
-	}
-
-	protected function runEnd(runner $runner)
-	{
-		return $this;
-	}
 }
 
 ?>
