@@ -117,7 +117,15 @@ class asserter
 
 		$backtrace = array();
 
-		if ($debugBacktrace[$debugKey]['function'] != '__call')
+		if (isset($debugBacktrace[$debugKey + 3]) === true && $debugBacktrace[$debugKey + 3]['function'] == '__call')
+		{
+			$backtrace[] = $debugBacktrace[$debugKey - 1]['file'];
+			$backtrace[] = $debugBacktrace[$debugKey - 1]['line'];
+			$backtrace[] = $debugBacktrace[$debugKey + 5]['class'];
+			$backtrace[] = $debugBacktrace[$debugKey + 5]['function'];
+			$backtrace[] = get_class($this) . '::' . $debugBacktrace[$debugKey - 1]['function'] . '()';
+		}
+		else if ($debugBacktrace[$debugKey]['function'] != '__call')
 		{
 			$backtrace[] = $debugBacktrace[$debugKey - 1]['file'];
 			$backtrace[] = $debugBacktrace[$debugKey - 1]['line'];

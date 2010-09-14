@@ -34,18 +34,10 @@ class string extends atoum\test
 
 		$asserter = new asserters\string($score, $locale);
 
-		$exception = null;
-
 		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
 
-		try
-		{
-			$line = __LINE__; $asserter->setWith($variable);
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
-			->exception($exception)
+			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a string'), asserters\string::toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -56,7 +48,7 @@ class string extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => $exception->getMessage()
+						'fail' => sprintf($locale->_('%s is not a string'), asserters\string::toString($variable))
 					)
 				)
 			)
@@ -64,17 +56,8 @@ class string extends atoum\test
 			->integer($asserter->getVariable())->isEqualTo($variable)
 		;
 
-		$variable = uniqid();
-
-		$exception = null;
-
-		try
-		{
-			$line = __LINE__; $this->assert->object($asserter->setWith($variable))->isIdenticalTo($asserter);
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
+			->object($asserter->setWith($variable))->isIdenticalTo($asserter)
 			->variable($exception)->isNull()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)

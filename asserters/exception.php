@@ -6,11 +6,24 @@ class exception extends \mageekguy\atoum\asserters\object
 {
 	public function setWith($variable, $check = true)
 	{
-		parent::setWith($variable, false);
+		$exception = $variable;
+
+		if ($exception instanceof \closure)
+		{
+			$exception = null;
+
+			try
+			{
+				$variable();
+			}
+			catch (\exception $exception) {}
+		}
+
+		parent::setWith($exception, false);
 
 		if ($check === true)
 		{
-			if (self::isException($variable) === false)
+			if (self::isException($exception) === false)
 			{
 				$this->fail(sprintf($this->locale->_('%s is not an exception'), $this));
 			}

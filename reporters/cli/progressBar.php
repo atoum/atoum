@@ -7,13 +7,14 @@ use \mageekguy\atoum;
 class progressBar extends atoum\reporter
 {
 	const width = 60;
+	const progressBarFormat = '[%s]';
+	const counterFormat = '[%s]';
 
 	protected $numberOfTests = 0;
 	protected $currentTestNumber = 0;
-	protected $progressBar = '';
-	protected $counter = '';
-	protected $toString = 0;
-	protected $refresh = array();
+	protected $progressBar = null;
+	protected $counter = null;
+	protected $refresh = null;
 
 	public function __construct(atoum\test $test)
 	{
@@ -24,35 +25,24 @@ class progressBar extends atoum\reporter
 	{
 		$string = '';
 
-		if ($this->toString == 0)
+		if ($this->progressBar === null && $this->counter === null)
 		{
-			$this->progressBar = '[';
-
-			if ($this->numberOfTests > self::width)
-			{
-				$this->progressBar .= str_repeat('.', self::width - 1) . '>';
-			}
-			else
-			{
-				$this->progressBar .= str_pad(str_repeat('.', $this->numberOfTests), self::width, '_', STR_PAD_RIGHT);
-			}
-
-			$this->progressBar .= ']';
+			$this->progressBar = sprintf(self::progressBarFormat, ($this->numberOfTests > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->numberOfTests), self::width, '_', STR_PAD_RIGHT)));
 
 			$this->counter = '[' . sprintf('%' . strlen((string) $this->numberOfTests) . 'd', $this->currentTestNumber) . '/' . $this->numberOfTests . ']';
 
 			$string .= $this->progressBar . $this->counter;
 		}
 
-		if (sizeof($this->refresh) > 0)
+		if ($this->refresh !== null)
 		{
-			$refreshLength = strlen(current($this->refresh[0]));
+			$refreshLength = strlen($this->refresh);
 
 			$this->currentTestNumber += $refreshLength;
 
 			$string .= str_repeat("\010", strlen($this->progressBar) - $refreshLength) . str_repeat("\010", strlen($this->counter));
 
-			$this->progressBar = current($this->refresh[0]) . substr($this->progressBar, $refreshLength + 1);
+			$this->progressBar = $this->refresh . substr($this->progressBar, $refreshLength + 1);
 			$this->counter = '[' . sprintf('%' . strlen((string) $this->numberOfTests) . 'd', $this->currentTestNumber) . '/' . $this->numberOfTests . ']';
 
 			$string .= $this->progressBar;
@@ -66,19 +56,17 @@ class progressBar extends atoum\reporter
 				$string .= "\n" . $this->progressBar;
 			}
 
-			$this->refresh = array();
+			$this->refresh = null;
 		}
-
-		$this->toString++;
 
 		return $string;
 	}
 
-	public function refresh($value, $method = '')
+	public function refresh($value)
 	{
 		if ($this->numberOfTests > 0 && $this->currentTestNumber < $this->numberOfTests)
 		{
-			$this->refresh[] = array($value, $method);
+			$this->refresh .= $value;
 		}
 
 		return $this;

@@ -78,7 +78,7 @@ class progressBar extends atoum\test
 		;
 	}
 
-	public function testUpdate()
+	public function testRefresh()
 	{
 		$mockGenerator = new atoum\mock\generator();
 
