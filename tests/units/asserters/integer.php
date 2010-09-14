@@ -39,7 +39,7 @@ class integer extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not an integer'), asserters\integer::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not an integer'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -48,7 +48,7 @@ class integer extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not an integer'), asserters\integer::toString($variable))
+						'fail' => sprintf($locale->_('%s is not an integer'), $asserter->toString($variable))
 					)
 				)
 			)
@@ -137,7 +137,7 @@ class integer extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, asserters\integer::toString(- $variable)))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->collection($score->getPassAssertions())->isEqualTo(array(
 					array(

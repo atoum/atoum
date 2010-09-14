@@ -6,7 +6,6 @@ use \mageekguy\atoum;
 
 class cli extends atoum\reporter
 {
-	protected $run = 0;
 	protected $start = 0.0;
 	protected $padding = 0;
 	protected $currentMethod = '';
@@ -28,7 +27,6 @@ class cli extends atoum\reporter
 
 	public function testRunStart(atoum\test $test)
 	{
-		$this->run++;
 		$this->progressBar = 0;
 		$this->testMethods = 0;
 		$this->testMethodNumber += sizeof($test);

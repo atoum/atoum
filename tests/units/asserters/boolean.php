@@ -39,7 +39,7 @@ class boolean extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not a boolean'), asserters\boolean::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not a boolean'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -48,7 +48,7 @@ class boolean extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not a boolean'), asserters\boolean::toString($variable))
+						'fail' => sprintf($locale->_('%s is not a boolean'), $asserter->toString($variable))
 					)
 				)
 			)

@@ -8,7 +8,7 @@ class variable extends \mageekguy\atoum\asserter
 
 	public function __toString()
 	{
-		return self::toString($this->variable);
+		return $this->toString($this->variable);
 	}
 
 	public function setWith($variable)
@@ -27,7 +27,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, self::toString($variable)));
+		$this->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
@@ -36,7 +36,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, self::toString($variable)));
+		$this->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
@@ -45,7 +45,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, self::toString($variable)));
+		$this->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}

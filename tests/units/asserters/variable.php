@@ -78,7 +78,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, $notEqualVariable) { $line = __LINE__; $asserter->isEqualTo($notEqualVariable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, asserters\variable::toString($notEqualVariable)))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -88,7 +88,7 @@ class variable extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, asserters\variable::toString($notEqualVariable))
+						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable))
 					)
 				)
 			)
@@ -135,7 +135,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, $variable) { $asserter->isNotEqualTo($variable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is equal to %s'), $asserter, asserters\variable::toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is equal to %s'), $asserter, $asserter->toString($variable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -175,7 +175,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, $notIdenticalVariable) { $asserter->isIdenticalTo($notIdenticalVariable); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not identical to %s'), $asserter, asserters\variable::toString($notIdenticalVariable)))
+				->hasMessage(sprintf($locale->_('%s is not identical to %s'), $asserter, $asserter->toString($notIdenticalVariable)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;

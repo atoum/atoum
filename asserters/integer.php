@@ -36,7 +36,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable > $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, self::toString($variable)));
+		$this->variable > $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}

@@ -50,33 +50,33 @@ class asserter
 		return $this->locale;
 	}
 
-	public static function toString($mixed)
+	public function toString($mixed)
 	{
 		switch (true)
 		{
 			case is_bool($mixed):
-				return 'boolean(' . ($mixed == false ? 'false' : 'true') . ')';
+				return sprintf($this->locale->_('boolean(%s)'), ($mixed == false ? $this->locale->_('false') : $this->locale->_('true')));
 
 			case is_integer($mixed):
-				return 'integer(' . $mixed . ')';
+				return sprintf($this->locale->_('integer(%s)'), $mixed);
 
 			case is_float($mixed):
-				return 'float(' . $mixed . ')';
+				return sprintf($this->locale->_('float(%s)'), $mixed);
 
 			case is_null($mixed):
 				return 'null';
 
 			case is_object($mixed):
-				return 'instance of ' . get_class($mixed);
+				return sprintf($this->locale->_('object(%s)'), get_class($mixed));
 
 			case is_resource($mixed):
-				return 'resource ' . $mixed;
+				return sprintf($this->locale->_('resource(%s)'), $mixed);
 
 			case is_string($mixed):
-				return 'string(' . strlen($mixed) . ') \'' . $mixed . '\'';
+				return sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), $mixed);
 
 			case is_array($mixed):
-				return 'array(' . sizeof($mixed) . ')';
+				return sprintf($this->locale->_('array(%s)'), sizeof($mixed));
 		}
 	}
 

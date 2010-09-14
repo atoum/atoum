@@ -37,7 +37,7 @@ class object extends \mageekguy\atoum\asserters\variable
 			}
 		}
 
-		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : self::toString($variable)));
+		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : $this->toString($variable)));
 
 		return $this;
 	}
