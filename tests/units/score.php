@@ -92,7 +92,7 @@ class score extends atoum\test
 		$this->assert
 			->collection($score->getPassAssertions())->isEmpty()
 			->integer($score->getPassNumber())->isZero()
-			->object($score->addPass($file, $line, $class, $method, $asserter))->isIdenticalTo($score)
+			->integer($score->addPass($file, $line, $class, $method, $asserter))->isGreaterThan(0)
 			->collection($score->getPassAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -114,7 +114,7 @@ class score extends atoum\test
 		$otherAsserter = new atoum\asserters\integer($score, new atoum\locale());
 
 		$this->assert
-			->object($score->addPass($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter))->isIdenticalTo($score)
+			->integer($score->addPass($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter))->isGreaterThan(0)
 			->collection($score->getPassAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -152,7 +152,7 @@ class score extends atoum\test
 		$this->assert
 			->collection($score->getFailAssertions())->isEmpty()
 			->integer($score->getFailNumber())->isZero()
-			->object($score->addFail($file, $line, $class, $method, $asserter, $reason))->isIdenticalTo($score)
+			->integer($score->addFail($file, $line, $class, $method, $asserter, $reason))->isGreaterThan(0)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -175,7 +175,7 @@ class score extends atoum\test
 		$otherReason = uniqid();
 
 		$this->assert
-			->object($score->addFail($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter, $otherReason))->isIdenticalTo($score)
+			->integer($score->addFail($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter, $otherReason))->isGreaterThan(0)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,

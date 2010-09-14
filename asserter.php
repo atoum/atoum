@@ -9,7 +9,8 @@ class asserter
 {
 	protected $score = null;
 	protected $locale = null;
-	protected $asserters = array();
+
+	protected static $asserters = array();
 
 	public function __construct(score $score, locale $locale)
 	{
@@ -26,17 +27,17 @@ class asserter
 			throw new \logicException('Asserter \'' . $class . '\' does not exist');
 		}
 
-		if (isset($this->asserters[$class]) === false)
+		if (isset(self::$asserters[$class]) === false)
 		{
-			$this->asserters[$class] = new $class($this->score, $this->locale);
+			self::$asserters[$class] = new $class($this->score, $this->locale);
 		}
 
 		if (sizeof($arguments) > 0)
 		{
-			$this->asserters[$class]->setWithArguments($arguments);
+			self::$asserters[$class]->setWithArguments($arguments);
 		}
 
-		return $this->asserters[$class];
+		return self::$asserters[$class];
 	}
 
 	public function getScore()
@@ -89,8 +90,8 @@ class asserter
 	protected function fail($reason)
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addFail($file, $line, $class, $method, $asserter, $reason);
-		throw new asserter\exception($reason);
+
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
 	}
 
 	protected function setWithArguments(array $arguments)
@@ -147,6 +148,8 @@ class asserter
 }
 
 namespace mageekguy\atoum\asserter;
+
+use mageekguy\atoum;
 
 class exception extends \runtimeException {}
 

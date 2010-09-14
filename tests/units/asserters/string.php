@@ -56,9 +56,13 @@ class string extends atoum\test
 			->integer($asserter->getVariable())->isEqualTo($variable)
 		;
 
+		$variable = uniqid();
+
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter)
-			->variable($exception)->isNull()
+			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__;
+		;
+
+		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->collection($score->getPassAssertions())->isEqualTo(array(

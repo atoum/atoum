@@ -6,12 +6,14 @@ use mageekguy\atoum;
 
 class score
 {
-	protected $assertions = array();
-	protected $exceptions = array();
-	protected $errors = array();
-	protected $outputs = array();
-	protected $durations = array();
-	protected $memoryUsages = array();
+	private $assertions = array();
+	private $exceptions = array();
+	private $errors = array();
+	private $outputs = array();
+	private $durations = array();
+	private $memoryUsages = array();
+
+	private static $assertionId = 0;
 
 	public function reset()
 	{
@@ -28,6 +30,7 @@ class score
 	public function addPass($file, $line, $class, $method, $asserter)
 	{
 		$this->assertions[] = array(
+			'id' => ++self::$assertionId,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -36,12 +39,13 @@ class score
 			'fail' => null
 		);
 
-		return $this;
+		return self::$assertionId;
 	}
 
 	public function addFail($file, $line, $class, $method, $asserter, $reason)
 	{
 		$this->assertions[] = array(
+			'id' => ++self::$assertionId,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -50,7 +54,7 @@ class score
 			'fail' => $reason
 		);
 
-		return $this;
+		return self::$assertionId;
 	}
 
 	public function addException($file, $line, $class, $method, \exception $exception)
@@ -175,12 +179,12 @@ class score
 
 	public function getPassAssertions()
 	{
-		return array_values(array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; }));
+		return self::cleanAssertions(array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; }));
 	}
 
 	public function getFailAssertions()
 	{
-		return array_values(array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; }));
+		return self::cleanAssertions(array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; }));
 	}
 
 	public function getErrors()
@@ -262,6 +266,18 @@ class score
 		unset($this->errors[$key]);
 
 		return $this;
+	}
+
+	public function failExists(atoum\asserter\exception $exception)
+	{
+		$id = $exception->getCode();
+
+		return (sizeof(array_filter($this->assertions, function($assertion) use ($id) { return $assertion['fail'] !== null && $assertion['id'] === $id; })) > 0);
+	}
+
+	private static function cleanAssertions(array $assertions)
+	{
+		return array_map(function ($assertion) { unset($assertion['id']); return $assertion; }, array_values($assertions));
 	}
 }
 

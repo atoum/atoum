@@ -25,6 +25,25 @@ class integer extends \mageekguy\atoum\asserters\variable
 		return $this->isEqualTo(0);
 	}
 
+	public function isEqualTo($integer, $failMessage = null)
+	{
+		if (self::isInteger($integer) === false)
+		{
+			throw new \logicException('Argument must be an integer');
+		}
+
+		return parent::isEqualTo($integer, $failMessage);
+	}
+
+	public function isGreaterThan($variable, $failMessage = null)
+	{
+		self::check($variable, __METHOD__);
+
+		$this->variable > $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, self::toString($variable)));
+
+		return $this;
+	}
+
 	protected function setWithArguments(array $arguments)
 	{
 		if (array_key_exists(0, $arguments) === false)

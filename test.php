@@ -284,12 +284,14 @@ abstract class test implements observable, \countable
 		}
 		catch (asserter\exception $exception)
 		{
-			# Do nothing, just break execution of current method because an assertion failed.
+			if ($this->score->failExists($exception) === false)
+			{
+				$this->addExceptionToScore($exception);
+			}
 		}
 		catch (\exception $exception)
 		{
-			list($file, $line) = $this->getBacktrace($exception->getTrace());
-			$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
+			$this->addExceptionToScore($exception);
 		}
 
 		restore_error_handler();
@@ -358,6 +360,14 @@ abstract class test implements observable, \countable
 
 	protected function tearDown()
 	{
+		return $this;
+	}
+
+	protected function addExceptionToScore(\exception $exception)
+	{
+		list($file, $line) = $this->getBacktrace($exception->getTrace());
+		$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
+
 		return $this;
 	}
 
