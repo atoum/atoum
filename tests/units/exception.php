@@ -6,6 +6,7 @@ use \mageekguy\atoum;
 
 require_once(__DIR__ . '/../../runners/autorunner.php');
 
+/** @isolation off */
 class exception extends atoum\test
 {
 	public function testConstruct()
