@@ -4,8 +4,6 @@ namespace mageekguy\atoum\runners\directory;
 
 use \mageekguy\atoum;
 
-require_once(__DIR__ . '/../runner.php');
-
 class directoryFilter extends \recursiveFilterIterator
 {
 	function accept()
@@ -13,7 +11,6 @@ class directoryFilter extends \recursiveFilterIterator
 		return (substr($this->getInnerIterator()->current()->getFilename(), 0, 1) != '.');
 	}
 }
-
 
 if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 {

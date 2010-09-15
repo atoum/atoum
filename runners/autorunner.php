@@ -15,10 +15,12 @@ function autorun()
 {
 	$reporter = new atoum\reporters\cli();
 
-	$runner = new atoum\runner();
+	$runner = atoum\runner::getInstance();
+
 	$runner
-		->addObserver($reporter)
-		->run(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
+		->configureRunner(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
+		->configureTest(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
+		->run()
 	;
 };
 
