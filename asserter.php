@@ -12,8 +12,6 @@ class asserter
 
 	protected static $aliases = array();
 
-	protected static $asserters = array();
-
 	public function __construct(score $score, locale $locale)
 	{
 		$this->score = $score;
@@ -29,17 +27,14 @@ class asserter
 			throw new \logicException('Asserter \'' . $class . '\' does not exist');
 		}
 
-		if (isset(self::$asserters[$class]) === false)
-		{
-			self::$asserters[$class] = new $class($this->score, $this->locale);
-		}
+		$asserter = new $class($this->score, $this->locale);
 
 		if (sizeof($arguments) > 0)
 		{
-			self::$asserters[$class]->setWithArguments($arguments);
+			$asserter->setWithArguments($arguments);
 		}
 
-		return self::$asserters[$class];
+		return $asserter;
 	}
 
 	public function getScore()
@@ -85,6 +80,11 @@ class asserter
 	public static function setAlias($alias, $asserter)
 	{
 		self::$aliases[$alias] = $asserter;
+	}
+
+	public static function resetAliases()
+	{
+		self::$aliases = array();
 	}
 
 	protected function pass()

@@ -95,6 +95,11 @@ abstract class test implements observable, \countable
 		$this->runTestMethods = $this->getTestMethods();
 	}
 
+	public function __destruct()
+	{
+		atoum\asserter::resetAliases();
+	}
+
 	public function setScore(score $score)
 	{
 		$this->score = $score;
