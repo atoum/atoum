@@ -29,10 +29,7 @@ class string extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
-
-		$asserter = new asserters\string($score, $locale);
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
 
 		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
 

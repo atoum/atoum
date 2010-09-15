@@ -48,12 +48,12 @@ class string extends \mageekguy\atoum\asserters\variable
 
 	protected function setWithArguments(array $arguments)
 	{
-		if (array_key_exists(0, $arguments) === false)
+		if (isset($arguments[1]) === true)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			$this->charset = $arguments[1];
 		}
 
-		return $this->setWith($arguments[0], isset($arguments[1]) === false ? null : $arguments[1]);
+		return parent::setWithArguments($arguments);
 	}
 
 	protected static function check($variable, $method)
