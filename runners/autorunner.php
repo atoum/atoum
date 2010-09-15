@@ -20,14 +20,14 @@ function autorun()
 	if ($runner->isConfigured() === false)
 	{
 		$runner
-			->configureRunner(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
+			->configureWith(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
 		;
 	}
 
 	if ($runner->testIsConfigured() === false)
 	{
 		$runner
-			->configureTest(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
+			->configureTestWith(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
 		;
 	}
 

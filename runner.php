@@ -12,7 +12,7 @@ class runner implements observable
 	const runStop = 'runnerStop';
 
 	protected $observers = array();
-	protected $configureRunner = null;
+	protected $configure = null;
 	protected $configureTest = null;
 
 	public function addObserver(atoum\observers\runner $observer)
@@ -41,7 +41,7 @@ class runner implements observable
 		return ($this->configureTest !== null);
 	}
 
-	public function configureTest(\closure $configureTest)
+	public function configureTestWith(\closure $configureTest)
 	{
 		$this->configureTest = $configureTest;
 
@@ -50,19 +50,19 @@ class runner implements observable
 
 	public function isConfigured()
 	{
-		return ($this->configureRunner !== null);
+		return ($this->configure !== null);
 	}
 
-	public function configure(\closure $configureRunner)
+	public function configureWith(\closure $configure)
 	{
-		$this->configureRunner = $configureRunner;
+		$this->configure = $configure;
 
 		return $this;
 	}
 
 	public function run($testClass = '\mageekguy\atoum\test')
 	{
-		$this->configureRunner->__invoke($this);
+		$this->configure->__invoke($this);
 
 		$this->callObservers(self::runStart);
 
