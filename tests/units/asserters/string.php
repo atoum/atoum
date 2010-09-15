@@ -54,6 +54,7 @@ class string extends atoum\test
 			)
 			->integer($score->getPassNumber())->isZero()
 			->integer($asserter->getVariable())->isEqualTo($variable)
+			->variable($asserter->getCharlist())->isNull()
 		;
 
 		$variable = uniqid();
@@ -77,6 +78,56 @@ class string extends atoum\test
 				)
 			)
 			->string($asserter->getVariable())->isEqualTo($variable)
+			->variable($asserter->getCharlist())->isNull()
+		;
+
+		$score->reset();
+
+		$variable = uniqid();
+		$charlist = "\010";
+
+		$this->assert
+			->object($asserter->setWith($variable, $charlist))->isIdenticalTo($asserter); $line = __LINE__
+		;
+
+		$this->assert
+			->integer($score->getFailNumber())->isZero()
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->collection($score->getPassAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => $currentMethod,
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::setWith()',
+						'fail' => null
+					)
+				)
+			)
+			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getCharlist())->isEqualTo($charlist)
+		;
+	}
+
+	public function testToString()
+	{
+		$asserter = new asserters\string(new atoum\score(), new atoum\locale());
+
+		$variable = uniqid();
+
+		$asserter->setWith($variable);
+
+		$this->assert
+			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . $variable . '\'')
+		;
+
+		$variable = "\010" . uniqid() . "\010";
+		$charlist = "\010";
+
+		$asserter->setWith($variable, $charlist);
+
+		$this->assert
+			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . addcslashes($variable, "\010") . '\'')
 		;
 	}
 }

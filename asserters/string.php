@@ -4,8 +4,17 @@ namespace mageekguy\atoum\asserters;
 
 class string extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable)
+	protected $charlist = null;
+
+	public function getCharlist()
 	{
+		return $this->charlist;
+	}
+
+	public function setWith($variable, $charlist = null)
+	{
+		$this->charlist = $charlist;
+
 		parent::setWith($variable);
 
 		if (self::isString($this->variable) === false)
@@ -30,6 +39,21 @@ class string extends \mageekguy\atoum\asserters\variable
 		preg_match($pattern, $this->variable) === 1 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not match %s'), $this, $pattern));
 
 		return $this;
+	}
+
+	public function toString($mixed)
+	{
+		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
+	}
+
+	protected function setWithArguments(array $arguments)
+	{
+		if (array_key_exists(0, $arguments) === false)
+		{
+			throw new \logicException('Argument must be set at index 0');
+		}
+
+		return $this->setWith($arguments[0], isset($arguments[1]) === false ? null : $arguments[1]);
 	}
 
 	protected static function check($variable, $method)
