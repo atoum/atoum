@@ -11,6 +11,16 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 	define(__NAMESPACE__ . '\autorun', true);
 }
 
+$autorun = function() {
+	$reporter = new atoum\reporters\cli();
+
+	$runner = new atoum\runner();
+	$runner
+		->addObserver($reporter)
+		->run(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
+	;
+};
+
 if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 {
 	foreach (array_slice($_SERVER['argv'], 1) as $file)
@@ -18,23 +28,11 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 		require($file);
 	}
 
-	$runner = new atoum\runner();
-	$runner
-		->addObserver(new atoum\reporters\cli())
-		->run()
-	;
+	$autorun();
 }
 else if (autorun === true)
 {
-	register_shutdown_function(function()
-		{
-			$runner = new atoum\runner();
-			$runner
-				->addObserver(new atoum\reporters\cli())
-				->run()
-			;
-		}
-	);
+	register_shutdown_function($autorun);
 }
 
 ?>

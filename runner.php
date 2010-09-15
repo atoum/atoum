@@ -8,8 +8,6 @@ require(__DIR__ . '/autoloader.php');
 
 class runner implements observable
 {
-	const testClass = '\mageekguy\atoum\test';
-
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
@@ -36,33 +34,25 @@ class runner implements observable
 		return $this;
 	}
 
-	public function run()
+	public function run(\closure $depedenciesInjecter = null, $testClass = '\mageekguy\atoum\test')
 	{
 		$locale = new atoum\locale();
 
 		$this->callObservers(self::runStart);
 
-		foreach (get_declared_classes() as $class)
+		foreach (array_filter(get_declared_classes(), function($class) use ($testClass) { return (is_subclass_of($class, $testClass) === true && get_parent_class($class) !== false); }) as $class)
 		{
-			if (self::isTestClass($class) === true)
+			$test = new $class(null, $locale);
+
+			if ($depedenciesInjecter !== null)
 			{
-				$test = new $class(null, $locale);
-
-				foreach ($this->observers as $observer)
-				{
-					$test->addObserver($observer);
-				}
-
-				$test->run();
+				$depedenciesInjecter($test);
 			}
+
+			$test->run();
 		}
 
 		$this->callObservers(self::runStop);
-	}
-
-	protected static function isTestClass($class)
-	{
-		return (is_subclass_of($class, self::testClass) === true && get_parent_class($class) !== false);
 	}
 }
 
