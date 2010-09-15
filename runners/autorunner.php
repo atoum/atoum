@@ -17,11 +17,21 @@ function autorun()
 
 	$runner = atoum\runner::getInstance();
 
-	$runner
-		->configureRunner(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
-		->configureTest(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
-		->run()
-	;
+	if ($runner->isConfigured() === false)
+	{
+		$runner
+			->configureRunner(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
+		;
+	}
+
+	if ($runner->testIsConfigured() === false)
+	{
+		$runner
+			->configureTest(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
+		;
+	}
+
+	$runner->run();
 };
 
 if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)

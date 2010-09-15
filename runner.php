@@ -36,6 +36,11 @@ class runner implements observable
 		return $this;
 	}
 
+	public function testIsConfigured()
+	{
+		return ($this->configureTest !== null);
+	}
+
 	public function configureTest(\closure $configureTest)
 	{
 		$this->configureTest = $configureTest;
@@ -43,7 +48,12 @@ class runner implements observable
 		return $this;
 	}
 
-	public function configureRunner(\closure $configureRunner)
+	public function isConfigured()
+	{
+		return ($this->configureRunner !== null);
+	}
+
+	public function configure(\closure $configureRunner)
 	{
 		$this->configureRunner = $configureRunner;
 
