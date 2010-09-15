@@ -11,7 +11,8 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 	define(__NAMESPACE__ . '\autorun', true);
 }
 
-$autorun = function() {
+function autorun()
+{
 	$reporter = new atoum\reporters\cli();
 
 	$runner = new atoum\runner();
@@ -28,11 +29,11 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 		require($file);
 	}
 
-	$autorun();
+	autorun();
 }
 else if (autorun === true)
 {
-	register_shutdown_function($autorun);
+	register_shutdown_function(__NAMESPACE__ . '\\autorun');
 }
 
 ?>
