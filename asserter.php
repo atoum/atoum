@@ -10,6 +10,8 @@ class asserter
 	protected $score = null;
 	protected $locale = null;
 
+	protected static $aliases = array();
+
 	protected static $asserters = array();
 
 	public function __construct(score $score, locale $locale)
@@ -20,7 +22,7 @@ class asserter
 
 	public function __call($asserter, $arguments)
 	{
-		$class = __NAMESPACE__ . '\asserters\\' . $asserter;
+		$class = self::getAsserterClass($asserter);
 
 		if (class_exists($class, true) === false)
 		{
@@ -80,6 +82,11 @@ class asserter
 		}
 	}
 
+	public static function setAlias($alias, $asserter)
+	{
+		self::$aliases[$alias] = $asserter;
+	}
+
 	protected function pass()
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
@@ -97,6 +104,25 @@ class asserter
 	protected function setWithArguments(array $arguments)
 	{
 		return $this;
+	}
+
+	protected static function getAsserterClass($asserter)
+	{
+		if (isset(self::$aliases[$asserter]) === true)
+		{
+			$asserter = self::$aliases[$asserter];
+		}
+
+		if (substr($asserter, 0, 1) != '\\')
+		{
+			$asserter = __NAMESPACE__ . '\asserters\\' . $asserter;
+		}
+
+		return $asserter;
+	}
+
+	protected function getNamespace()
+	{
 	}
 
 	private function getBacktrace()
