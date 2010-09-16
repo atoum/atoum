@@ -3,3 +3,5 @@
 namespace mageekguy\atoum;
 
 interface observer {}
+
+?>
