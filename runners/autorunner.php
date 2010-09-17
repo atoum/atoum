@@ -22,22 +22,11 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 if (autorun === true)
 {
 	register_shutdown_function(function() {
-			$reporter = new atoum\reporters\cli();
-
 			$runner = atoum\runner::getInstance();
 
-			if ($runner->isConfigured() === false)
+			if ($runner->hasObservers() === false)
 			{
-				$runner
-					->configureWith(function(atoum\runner $runner) use ($reporter) { $runner->addObserver($reporter); })
-				;
-			}
-
-			if ($runner->testIsConfigured() === false)
-			{
-				$runner
-					->configureTestWith(function(atoum\test $test) use ($reporter) { $test->addObserver($reporter); })
-				;
+				$runner->addObserver(new atoum\reporters\cli());
 			}
 
 			$runner->run();

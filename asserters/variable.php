@@ -50,6 +50,15 @@ class variable extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
+	public function isNotIdenticalTo($variable, $failMessage = null)
+	{
+		self::check($variable, __METHOD__);
+
+		$this->variable !== $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
+
+		return $this;
+	}
+
 	public function isNull($failMessage = null)
 	{
 		return $this->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));

@@ -28,6 +28,7 @@ abstract class test implements observable, \countable
 	protected $assert = null;
 	protected $observers = array();
 	protected $isolation = true;
+	protected $ignore = false;
 
 	private $class = '';
 	private $path = '';
@@ -61,6 +62,11 @@ abstract class test implements observable, \countable
 			{
 				case 'isolation':
 					$this->isolation = $value == 'on';
+					break;
+
+				case 'ignore':
+					$this->ignore = $value == 'on';
+					break;
 			}
 		}
 
@@ -106,10 +112,20 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function getScore()
+	{
+		return $this->score;
+	}
+
 	public function setLocale(locale $locale)
 	{
 		$this->locale = $locale;
 		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function count()
@@ -143,11 +159,6 @@ abstract class test implements observable, \countable
 		return $this->path;
 	}
 
-	public function getScore()
-	{
-		return $this->score;
-	}
-
 	public function getTestMethods()
 	{
 		return array_keys($this->testMethods);
@@ -158,85 +169,110 @@ abstract class test implements observable, \countable
 		return $this->currentMethod;
 	}
 
+	public function ignore($boolean)
+	{
+		$this->ignore = ($boolean == true);
+		return $this;
+	}
+
+	public function isIgnored()
+	{
+		return ($this->ignore === true);
+	}
+
+	public function isolate($boolean)
+	{
+		$this->isolation = ($boolean == true);
+		return $this;
+	}
+
+	public function isIsolated()
+	{
+		return ($this->isolation === true);
+	}
+
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
-		$this->callObservers(self::runStart);
-
-		if (sizeof($runTestMethods) > 0)
+		if ($this->ignore === false)
 		{
-			$this->runTestMethods = $runTestMethods;
-		}
+			$this->callObservers(self::runStart);
 
-		try
-		{
-			if ($runInChildProcess === true)
+			if (sizeof($runTestMethods) > 0)
 			{
-				$this->callObservers(self::beforeSetUp);
-				$this->setUp();
-				$this->callObservers(self::afterSetUp);
+				$this->runTestMethods = $runTestMethods;
 			}
 
-			foreach ($this->runTestMethods as $testMethodName)
+			try
 			{
-				if (isset($this->testMethods[$testMethodName]) === false)
+				if ($runInChildProcess === true)
 				{
-					throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is undefined');
+					$this->callObservers(self::beforeSetUp);
+					$this->setUp();
+					$this->callObservers(self::afterSetUp);
 				}
 
-				$failNumber = $this->score->getFailNumber();
-				$errorNumber = $this->score->getErrorNumber();
-				$exceptionNumber = $this->score->getExceptionNumber();
-
-				$this->currentMethod = $testMethodName;
-
-				$this->callObservers(self::beforeTestMethod);
-
-				if ($runInChildProcess === false || $this->testMethods[$testMethodName]['isolation'] === false)
+				foreach ($this->runTestMethods as $testMethodName)
 				{
-					$this->runTestMethod($testMethodName);
+					if (isset($this->testMethods[$testMethodName]) === false)
+					{
+						throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is undefined');
+					}
+
+					$failNumber = $this->score->getFailNumber();
+					$errorNumber = $this->score->getErrorNumber();
+					$exceptionNumber = $this->score->getExceptionNumber();
+
+					$this->currentMethod = $testMethodName;
+
+					$this->callObservers(self::beforeTestMethod);
+
+					if ($runInChildProcess === false || $this->testMethods[$testMethodName]['isolation'] === false)
+					{
+						$this->runTestMethod($testMethodName);
+					}
+					else
+					{
+						$this->runInChildProcess($testMethodName);
+					}
+
+					switch (true)
+					{
+						case $failNumber < $this->score->getFailNumber():
+							$this->callObservers(self::fail);
+							break;
+
+						case $errorNumber < $this->score->getErrorNumber():
+							$this->callObservers(self::error);
+							break;
+
+						case $exceptionNumber < $this->score->getExceptionNumber():
+							$this->callObservers(self::exception);
+							break;
+
+						default:
+							$this->callObservers(self::success);
+					}
+
+					$this->callObservers(self::afterTestMethod);
+
+					$this->currentMethod = null;
 				}
-				else
+
+				if ($runInChildProcess === true)
 				{
-					$this->runInChildProcess($testMethodName);
+					$this->callObservers(self::beforeTearDown);
+					$this->tearDown();
+					$this->callObservers(self::afterTearDown);
 				}
-
-				switch (true)
-				{
-					case $failNumber < $this->score->getFailNumber():
-						$this->callObservers(self::fail);
-						break;
-
-					case $errorNumber < $this->score->getErrorNumber():
-						$this->callObservers(self::error);
-						break;
-
-					case $exceptionNumber < $this->score->getExceptionNumber():
-						$this->callObservers(self::exception);
-						break;
-
-					default:
-						$this->callObservers(self::success);
-				}
-
-				$this->callObservers(self::afterTestMethod);
-
-				$this->currentMethod = null;
 			}
-
-			if ($runInChildProcess === true)
+			catch (\exception $exception)
 			{
-				$this->callObservers(self::beforeTearDown);
 				$this->tearDown();
-				$this->callObservers(self::afterTearDown);
+				throw $exception;
 			}
-		}
-		catch (\exception $exception)
-		{
-			$this->tearDown();
-			throw $exception;
-		}
 
-		$this->callObservers(self::runStop);
+			$this->callObservers(self::runStop);
+		}
 
 		return $this;
 	}

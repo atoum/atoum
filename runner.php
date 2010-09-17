@@ -11,24 +11,36 @@ class runner implements observable
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
-	protected $observers = array();
-	protected $configure = null;
-	protected $configureTest = null;
+	protected $runnerObservers = array();
+	protected $testObservers = array();
 
-	public function addObserver(atoum\observers\runner $observer)
+	public function addObserver(atoum\observer $observer)
 	{
-		$this->observers[] = $observer;
+		switch (true)
+		{
+			case $observer instanceof atoum\observers\runner:
+				$this->runnerObservers[] = $observer;
+
+			case $observer instanceof atoum\observers\test:
+				$this->testObservers[] = $observer;
+		}
+
 		return $this;
 	}
 
 	public function getObservers()
 	{
-		return $this->observers;
+		return array_merge($this->runnerObservers, $this->testObservers);
+	}
+
+	public function hasObservers()
+	{
+		return (sizeof($this->runnerObservers) > 0 || sizeof($this->testObservers) > 0);
 	}
 
 	public function callObservers($method)
 	{
-		foreach ($this->observers as $observer)
+		foreach ($this->runnerObservers as $observer)
 		{
 			$observer->{$method}($this);
 		}
@@ -36,33 +48,12 @@ class runner implements observable
 		return $this;
 	}
 
-	public function testIsConfigured()
+	public function run($testClass = null)
 	{
-		return ($this->configureTest !== null);
-	}
-
-	public function configureTestWith(\closure $configureTest)
-	{
-		$this->configureTest = $configureTest;
-
-		return $this;
-	}
-
-	public function isConfigured()
-	{
-		return ($this->configure !== null);
-	}
-
-	public function configureWith(\closure $configure)
-	{
-		$this->configure = $configure;
-
-		return $this;
-	}
-
-	public function run($testClass = '\mageekguy\atoum\test')
-	{
-		$this->configure->__invoke($this);
+		if ($testClass === null)
+		{
+			$testClass = __NAMESPACE__ . '\test';
+		}
 
 		$this->callObservers(self::runStart);
 
@@ -70,9 +61,15 @@ class runner implements observable
 		{
 			$test = new $class();
 
-			$this->configureTest->__invoke($test);
+			if ($test->isIgnored() === false)
+			{
+				foreach ($this->testObservers as $observer)
+				{
+					$test->addObserver($observer);
+				}
 
-			$test->run();
+				$test->run();
+			}
 		}
 
 		$this->callObservers(self::runStop);
