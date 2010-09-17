@@ -160,9 +160,12 @@ abstract class test implements observable, \countable
 	{
 		$testMethods = array();
 
-		if ($this->isIgnored() === false)
+		foreach ($this->testMethods as $methodName => $annotations)
 		{
-			$testMethods = array_keys(array_filter($this->testMethods, function($method) { return (isset($method['ignore']) === false || $method['ignore'] === false); }));
+			if (isset($annotations['ignore']) === true ? $annotations['ignore'] === false : $this->ignore === false)
+			{
+				$testMethods[] = $methodName;
+			}
 		}
 
 		return $testMethods;
@@ -185,6 +188,16 @@ abstract class test implements observable, \countable
 	public function isIgnored()
 	{
 		return ($this->ignore === true);
+	}
+
+	public function methodIsIgnored($testMethodName)
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		return (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
 	}
 
 	public function isolate($boolean)
@@ -235,7 +248,7 @@ abstract class test implements observable, \countable
 
 					$this->callObservers(self::beforeTestMethod);
 
-					if ($runInChildProcess === false || (isset($this->testMethods[$testMethodName]['isolation']) === true && $this->testMethods[$testMethodName]['isolation'] === false) || $this->isolation === false)
+					if ($runInChildProcess === false || (isset($this->testMethods[$testMethodName]['isolation']) === false ? $this->isolation : $this->testMethods[$testMethodName]['isolation']) === false)
 					{
 						$this->runTestMethod($testMethodName);
 					}

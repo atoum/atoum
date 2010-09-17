@@ -14,7 +14,10 @@ class emptyTest extends atoum\test
 /** @ignore on */
 class notEmptyTest extends atoum\test
 {
-	public function testMethod() {}
+	public function testMethod1() {}
+
+	/** @ignore off */
+	public function testMethod2() {}
 }
 
 /** @isolation off */
@@ -152,8 +155,10 @@ class test extends atoum\test
 
 		$this->assert
 			->boolean($test->isIgnored())->isTrue()
-			->sizeof($test)->isZero()
-			->sizeof($test->ignore(false))->isEqualTo(1)
+			->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+			->sizeof($test)->isEqualTo(1)
+			->sizeof($test->ignore(false))->isEqualTo(2)
 		;
 	}
 
@@ -162,10 +167,39 @@ class test extends atoum\test
 		$test = new emptyTest();
 
 		$this->assert
+			->boolean($test->ignore(false)->isIgnored())->isFalse()
+			->sizeof($test)->isZero()
 			->array($test->getTestMethods())->isEmpty()
 		;
 
+		$test = new notEmptyTest();
+
+		$this->assert
+			->boolean($test->isIgnored())->isTrue()
+			->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+			->sizeof($test)->isEqualTo(1)
+			->array($test->getTestMethods())->isEqualTo(array('testMethod2'))
+			->boolean($test->ignore(false)->isIgnored())->isFalse()
+			->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
+			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+			->sizeof($test)->isEqualTo(2)
+			->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
+		;
 	}
+
+	public function testIgnoreMethod()
+	{
+		$test = new notEmptyTest();
+
+		$this->assert
+			->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+			->boolean($test->ignore(false)->methodIsIgnored('testMethod1'))->isFalse()
+			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+		;
+	}
+
 }
 
 ?>
