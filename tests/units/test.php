@@ -141,8 +141,20 @@ class test extends atoum\test
 	{
 		$this->assert
 			->sizeof(new emptyTest())->isEqualTo(0)
-			->sizeof(new notEmptyTest())->isEqualTo(1)
 		;
+
+		$test = new notEmptyTest();
+
+		$this->assert
+			->boolean($test->isIgnored())->isTrue()
+			->sizeof($test)->isZero()
+			->sizeof($test->ignore(false))->isEqualTo(1)
+		;
+	}
+
+	public function testGetTestMethods()
+	{
+
 	}
 }
 

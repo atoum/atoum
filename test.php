@@ -80,16 +80,18 @@ abstract class test implements observable, \countable
 
 			if (strpos($methodName, self::testMethodPrefix) === 0)
 			{
-				$annotations = array(
-					'isolation' => $this->isolation
-				);
+				$annotations = array();
 
 				foreach (new annotations\extractor($publicMethod->getDocComment()) as $annotation => $value)
 				{
 					switch ($annotation)
 					{
-						case '@isolation':
+						case 'isolation':
 							$annotations['isolation'] = $value == 'on';
+							break;
+
+						case 'ignore':
+							$annotations['ignore'] = $value == 'on';
 							break;
 					}
 				}
@@ -161,7 +163,14 @@ abstract class test implements observable, \countable
 
 	public function getTestMethods()
 	{
-		return array_keys($this->testMethods);
+		$testMethods = array();
+
+		if ($this->isIgnored() === false)
+		{
+			$testMethods = array_keys(array_filter($this->testMethods, function($method) { return (isset($method['ignore']) === false || $method['ignore'] === false); }));
+		}
+
+		return $testMethods;
 	}
 
 	public function getCurrentMethod()
@@ -172,6 +181,9 @@ abstract class test implements observable, \countable
 	public function ignore($boolean)
 	{
 		$this->ignore = ($boolean == true);
+
+		$this->runTestMethods = $this->getTestMethods();
+
 		return $this;
 	}
 
@@ -193,15 +205,22 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
-		if ($this->ignore === false)
-		{
-			$this->callObservers(self::runStart);
+		$this->callObservers(self::runStart);
 
-			if (sizeof($runTestMethods) > 0)
+		if (sizeof($runTestMethods) > 0)
+		{
+			$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
+
+			if (sizeof($unknownTestMethods) > 0)
 			{
-				$this->runTestMethods = $runTestMethods;
+				throw new \runtimeException('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
 			}
 
+			$this->runTestMethods = $runTestMethods;
+		}
+
+		if (sizeof($this->runTestMethods) > 0)
+		{
 			try
 			{
 				if ($runInChildProcess === true)
@@ -213,11 +232,6 @@ abstract class test implements observable, \countable
 
 				foreach ($this->runTestMethods as $testMethodName)
 				{
-					if (isset($this->testMethods[$testMethodName]) === false)
-					{
-						throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is undefined');
-					}
-
 					$failNumber = $this->score->getFailNumber();
 					$errorNumber = $this->score->getErrorNumber();
 					$exceptionNumber = $this->score->getExceptionNumber();
@@ -226,7 +240,7 @@ abstract class test implements observable, \countable
 
 					$this->callObservers(self::beforeTestMethod);
 
-					if ($runInChildProcess === false || $this->testMethods[$testMethodName]['isolation'] === false)
+					if ($runInChildProcess === false || (isset($this->testMethods[$testMethodName]['isolation']) === true && $this->testMethods[$testMethodName]['isolation'] === false) || $this->isolation === false)
 					{
 						$this->runTestMethod($testMethodName);
 					}
@@ -270,9 +284,9 @@ abstract class test implements observable, \countable
 				$this->tearDown();
 				throw $exception;
 			}
-
-			$this->callObservers(self::runStop);
 		}
+
+		$this->callObservers(self::runStop);
 
 		return $this;
 	}
