@@ -20,6 +20,11 @@ class notEmptyTest extends atoum\test
 /** @isolation off */
 class test extends atoum\test
 {
+	public function setUp()
+	{
+		$this->assert->setAlias('array', 'collection');
+	}
+
 	public function test__construct()
 	{
 		$test = new emptyTest();
@@ -154,6 +159,11 @@ class test extends atoum\test
 
 	public function testGetTestMethods()
 	{
+		$test = new emptyTest();
+
+		$this->assert
+			->array($test->getTestMethods())->isEmpty()
+		;
 
 	}
 }

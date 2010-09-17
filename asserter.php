@@ -9,8 +9,7 @@ class asserter
 {
 	protected $score = null;
 	protected $locale = null;
-
-	protected static $aliases = array();
+	protected $aliases = array();
 
 	public function __construct(score $score, locale $locale)
 	{
@@ -20,7 +19,7 @@ class asserter
 
 	public function __call($asserter, $arguments)
 	{
-		$class = self::getAsserterClass($asserter);
+		$class = $this->getAsserterClass($asserter);
 
 		if (class_exists($class, true) === false)
 		{
@@ -33,6 +32,8 @@ class asserter
 		{
 			$asserter->setWithArguments($arguments);
 		}
+
+		$asserter->aliases = $this->aliases;
 
 		return $asserter;
 	}
@@ -77,14 +78,19 @@ class asserter
 		}
 	}
 
-	public static function setAlias($alias, $asserter)
+	public function setAlias($alias, $asserter)
 	{
-		self::$aliases[$alias] = $asserter;
+		$this->aliases[$alias] = $asserter;
 	}
 
 	public static function resetAliases()
 	{
-		self::$aliases = array();
+		$this->aliases = array();
+	}
+
+	public function getAliases()
+	{
+		return $this->aliases;
 	}
 
 	protected function pass()
@@ -106,11 +112,11 @@ class asserter
 		return $this;
 	}
 
-	protected static function getAsserterClass($asserter)
+	protected function getAsserterClass($asserter)
 	{
-		if (isset(self::$aliases[$asserter]) === true)
+		if (isset($this->aliases[$asserter]) === true)
 		{
-			$asserter = self::$aliases[$asserter];
+			$asserter = $this->aliases[$asserter];
 		}
 
 		if (substr($asserter, 0, 1) != '\\')
