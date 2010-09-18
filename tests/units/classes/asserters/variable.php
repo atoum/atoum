@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use \mageekguy\atoum;
 use \mageekguy\atoum\asserters;
 
-require_once(__DIR__ . '/../../../runners/autorunner.php');
+require_once(__DIR__ . '/../../runner.php');
 
 /** @isolation off */
 class variable extends atoum\test

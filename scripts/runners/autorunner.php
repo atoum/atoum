@@ -4,7 +4,7 @@ namespace mageekguy\atoum\runners;
 
 use \mageekguy\atoum;
 
-require_once(__DIR__ . '/../runner.php');
+require_once(__DIR__ . '/../../classes/runner.php');
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\reporters\cli;
 use \mageekguy\atoum;
 use \mageekguy\atoum\reporters\cli;
 
-require_once(__DIR__ . '/../../../../runners/autorunner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
 class progressBar extends atoum\test
 {

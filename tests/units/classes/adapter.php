@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units;
 
 use \mageekguy\atoum;
 
-require_once(__DIR__ . '/../../runners/autorunner.php');
+require_once(__DIR__ . '/../runner.php');
 
 /** @isolation off */
 class adapter extends atoum\test

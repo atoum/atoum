@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units;
 use \mageekguy\atoum;
 use \mageekguy\atoum\annotations;
 
-require_once(__DIR__ . '/../../../runners/autorunner.php');
+require_once(__DIR__ . '/../../runner.php');
 
 /**
 @isolation off

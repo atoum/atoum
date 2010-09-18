@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units\test;
 
 use \mageekguy\atoum;
 
-require_once(__DIR__ . '/../../runners/autorunner.php');
+require_once(__DIR__ . '/../runner.php');
 
 /** @ignore on */
 class emptyTest extends atoum\test
@@ -199,7 +199,6 @@ class test extends atoum\test
 			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 		;
 	}
-
 }
 
 ?>
