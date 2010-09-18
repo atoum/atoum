@@ -4,7 +4,7 @@ namespace mageekguy\atoum;
 
 use \mageekguy\atoum;
 
-require(__DIR__ . '/autoloader.php');
+require_once(__DIR__ . '/autoloader.php');
 
 class runner implements observable
 {
