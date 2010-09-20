@@ -9,10 +9,9 @@ abstract class script
 	const padding = '   ';
 
 	protected $locale = null;
-	protected $arguments = array();
 
 	private $name = '';
-	private $errors = array();
+	private $arguments = array();
 
 	public function __construct($name, locale $locale = null, adapter $adapter = null)
 	{
@@ -91,12 +90,6 @@ abstract class script
 	public static function exceptionHandler(\exception $exception)
 	{
 		self::stop($exception->getCode(), $exception->getMessage());
-	}
-
-	protected function addError($error)
-	{
-		$this->errors[] = $error;
-		return $this;
 	}
 
 	protected abstract function handleArgument($argument);

@@ -13,29 +13,46 @@ class generator extends atoum\script
 	const phar = 'mageekguy.atoum.phar';
 
 	protected $help = false;
-	protected $fromDirectory = null;
+	protected $originDirectory = null;
 	protected $destinationDirectory = null;
 
-	public function setFromDirectory($directory)
+	public function setOriginDirectory($directory)
 	{
-		$this->fromDirectory = self::cleanPath($directory);
+		$originDirectory = self::cleanPath($directory);
 
-		if ($this->fromDirectory == '')
+		if ($originDirectory == '')
 		{
-			throw new \logicException('Empty path is invalid');
+			throw new \logicException('Empty origin directory is invalid');
 		}
+		else if ($this->destinationDirectory !== null && $originDirectory === $this->destinationDirectory)
+		{
+			throw new \logicException('Origin directory must be different from destination directory');
+		}
+
+		$this->originDirectory = $originDirectory;
 
 		return $this;
 	}
 
-	public function getFromDirectory()
+	public function getOriginDirectory()
 	{
-		return $this->fromDirectory;
+		return $this->originDirectory;
 	}
 
 	public function setDestinationDirectory($directory)
 	{
-		$this->destinationDirectory = self::cleanPath($directory);
+		$destinationDirectory = self::cleanPath($directory);
+
+		if ($destinationDirectory == '')
+		{
+			throw new \logicException('Empty destination directory is invalid');
+		}
+		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
+		{
+			throw new \logicException('Destination directory must be different from origin directory');
+		}
+
+		$this->destinationDirectory = $destinationDirectory;
 
 		return $this;
 	}
@@ -108,14 +125,14 @@ class generator extends atoum\script
 
 	protected function generate()
 	{
-		$this->fromDirectory = self::cleanPath($this->fromDirectory);
+		$this->originDirectory = self::cleanPath($this->originDirectory);
 
-		self::checkDirectory($this->fromDirectory);
+		self::checkDirectory($this->originDirectory);
 		self::checkDirectory($this->destinationDirectory);
 
-		if (is_readable($this->fromDirectory) === false)
+		if (is_readable($this->originDirectory) === false)
 		{
-			throw new \logicException(sprintf($this->locale->_('Directory \'%s\' is not readable'), $this->fromDirectory));
+			throw new \logicException(sprintf($this->locale->_('Directory \'%s\' is not readable'), $this->originDirectory));
 		}
 
 		if (is_writable($this->destinationDirectory) === false)
@@ -131,19 +148,19 @@ class generator extends atoum\script
 				'author' => atoum\test::author,
 				'support' => self::mail,
 				'repository' => self::repository,
-				'description' => file_get_contents($this->fromDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
-				'licence' => file_get_contents($this->fromDirectory . DIRECTORY_SEPARATOR . 'COPYING')
+				'description' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
+				'licence' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
 			)
 		);
 
-		$phar->buildFromDirectory($this->fromDirectory, '/\.php$/');
+		$phar->buildOriginDirectory($this->originDirectory, '/\.php$/');
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
 		$phar->compressFiles(\Phar::GZ);
 	}
 
 	protected static function cleanPath($path)
 	{
-		return $path == '/' ? $path : rtrim($path, DIRECTORY_SEPARATOR);
+		return ($path = (string) $path) == '/' ? $path : rtrim($path, DIRECTORY_SEPARATOR);
 	}
 
 	protected static function checkDirectory($directory)
