@@ -9,14 +9,21 @@ abstract class script
 	const padding = '   ';
 
 	protected $locale = null;
-	protected $arguments = null;
+	protected $arguments = array();
 
 	private $name = '';
 	private $errors = array();
 
-	public function __construct($name, locale $locale = null)
+	public function __construct($name, locale $locale = null, adapter $adapter = null)
 	{
-		if (PHP_SAPI !== 'cli')
+		if ($adapter === null)
+		{
+			$adapter = new atoum\adapter();
+		}
+
+		$this->adapter = $adapter;
+
+		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
 			throw new \logicException('\'' . $name . '\' must be used in CLI only');
 		}
@@ -31,9 +38,24 @@ abstract class script
 		$this->locale = $locale;
 	}
 
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
 	public function getName()
 	{
 		return $this->name;
+	}
+
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function getErrors()

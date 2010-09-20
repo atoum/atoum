@@ -13,14 +13,36 @@ class generator extends atoum\script
 	const phar = 'mageekguy.atoum.phar';
 
 	protected $help = false;
-	protected $fromDirectory = false;
-	protected $destinationDirectory = false;
+	protected $fromDirectory = null;
+	protected $destinationDirectory = null;
 
 	public function setFromDirectory($directory)
 	{
 		$this->fromDirectory = self::cleanPath($directory);
 
+		if ($this->fromDirectory == '')
+		{
+			throw new \logicException('Empty path is invalid');
+		}
+
 		return $this;
+	}
+
+	public function getFromDirectory()
+	{
+		return $this->fromDirectory;
+	}
+
+	public function setDestinationDirectory($directory)
+	{
+		$this->destinationDirectory = self::cleanPath($directory);
+
+		return $this;
+	}
+
+	public function getDestinationDirectory()
+	{
+		return $this->destinationDirectory;
 	}
 
 	public function run()
@@ -52,14 +74,15 @@ class generator extends atoum\script
 			case '-d':
 			case '--directory':
 				$this->arguments->next();
-				$directory = self::cleanPath($this->arguments->current());
+
+				$directory = $this->arguments->current();
 
 				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
 				{
 					throw new \logicException(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
 				}
 
-				$this->destinationDirectory = $directory;
+				$this->setDestinationDirectory($directory);
 				break;
 
 			default:
@@ -118,9 +141,9 @@ class generator extends atoum\script
 		$phar->compressFiles(\Phar::GZ);
 	}
 
-	protected static function cleanPath($directory)
+	protected static function cleanPath($path)
 	{
-		return rtrim($directory, DIRECTORY_SEPARATOR);
+		return $path == '/' ? $path : rtrim($path, DIRECTORY_SEPARATOR);
 	}
 
 	protected static function checkDirectory($directory)
