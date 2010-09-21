@@ -50,6 +50,7 @@ class generator
 		}
 
 		$code = $this->getMockedClassCode($reflectionClass, $mockNamespace, $mockClass);
+		file_put_contents('/usr/home/fch/tmp/mock.php', $code);
 		eval($code);
 
 		return $this;
@@ -114,6 +115,10 @@ class generator
 					if ($parameter->isDefaultValueAvailable() == true)
 					{
 						$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+					}
+					else if ($parameter->isOptional() === true)
+					{
+						$parameterCode .= '=null';
 					}
 
 					$parameters[] = $parameterCode;
@@ -189,26 +194,20 @@ class generator
 
 	protected static function getNamespace($class)
 	{
+		$class = ltrim($class, '\\');
+
 		$lastAntiSlash = strrpos($class, '\\');
 
-		if ($lastAntiSlash !== false)
-		{
-			$namespace = __NAMESPACE__ . '\\' . ltrim(substr($class, 0, $lastAntiSlash), '\\');
-		}
-
-		return $namespace;
+		return __NAMESPACE__ . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected static function getClassName($class)
 	{
+		$class = ltrim($class, '\\');
+
 		$lastAntiSlash = strrpos($class, '\\');
 
-		if ($lastAntiSlash !== false)
-		{
-			$class = substr($class, $lastAntiSlash + 1);
-		}
-
-		return $class;
+		return ($lastAntiSlash === false ? $class : substr($class, $lastAntiSlash + 1));
 	}
 }
 

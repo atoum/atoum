@@ -61,9 +61,10 @@ class generator extends atoum\test
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
 
+		$generator = new phar\generator(uniqid(), null, $adapter);
+
 		$this->assert
-			->exception(function() use ($adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
+			->exception(function() use ($generator) {
 					$generator->setOriginDirectory('');
 				}
 			)
@@ -73,12 +74,10 @@ class generator extends atoum\test
 
 		$adapter->is_dir = function() { return false; };
 
-		$generator = new phar\generator(uniqid(), null, $adapter);
-
 		$directory = uniqid();
 
 		$this->assert
-			->exception(function() use ($directory, $generator) {
+			->exception(function() use ($generator, $directory) {
 					$generator->setOriginDirectory($directory);
 				}
 			)
@@ -88,14 +87,10 @@ class generator extends atoum\test
 
 		$adapter->is_dir = function() { return true; };
 
-		$generator = new phar\generator(uniqid(), null, $adapter);
-
 		$this->assert
 			->object($generator->setOriginDirectory('/'))->isIdenticalTo($generator)
 			->string($generator->getOriginDirectory())->isEqualTo('/')
 		;
-
-		$generator = new phar\generator(uniqid(), null, $adapter);
 
 		$directory = uniqid();
 
@@ -104,7 +99,6 @@ class generator extends atoum\test
 			->string($generator->getOriginDirectory())->isEqualTo($directory)
 		;
 
-		$generator = new phar\generator(uniqid(), null, $adapter);
 		$generator->setDestinationDirectory(uniqid());
 
 		$this->assert
@@ -133,9 +127,10 @@ class generator extends atoum\test
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
 
+		$generator = new phar\generator(uniqid(), null, $adapter);
+
 		$this->assert
-			->exception(function() use ($adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
+			->exception(function() use ($generator) {
 					$generator->setDestinationDirectory('');
 				}
 			)
@@ -145,13 +140,10 @@ class generator extends atoum\test
 
 		$adapter->is_dir = function() { return false; };
 
-		$generator = new phar\generator(uniqid(), null, $adapter);
-
 		$directory = uniqid();
 
 		$this->assert
-			->exception(function() use ($directory, $adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
+			->exception(function() use ($generator, $directory) {
 					$generator->setDestinationDirectory($directory);
 				}
 			)
@@ -161,14 +153,10 @@ class generator extends atoum\test
 
 		$adapter->is_dir = function() { return true; };
 
-		$generator = new phar\generator(uniqid(), null, $adapter);
-
 		$this->assert
 			->object($generator->setDestinationDirectory('/'))->isIdenticalTo($generator)
 			->string($generator->getDestinationDirectory())->isEqualTo('/')
 		;
-
-		$generator = new phar\generator(uniqid(), null, $adapter);
 
 		$directory = uniqid();
 
@@ -176,8 +164,6 @@ class generator extends atoum\test
 			->object($generator->setDestinationDirectory($directory))->isIdenticalTo($generator)
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 		;
-
-		$generator = new phar\generator(uniqid(), null, $adapter);
 
 		$directory = uniqid();
 
@@ -211,6 +197,7 @@ class generator extends atoum\test
 		;
 	}
 
+	/** @isolation off */
 	public function testRun()
 	{
 		$adapter = new atoum\adapter();
@@ -267,6 +254,8 @@ class generator extends atoum\test
 		;
 
 		$adapter->is_writable = function() { return true; };
+
+		$generator->run('\mageekguy\atoum\mock\phar');
 	}
 }
 

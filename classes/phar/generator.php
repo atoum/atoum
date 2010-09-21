@@ -146,7 +146,7 @@ class generator extends atoum\script
 
 		try
 		{
-			$phar = new \Phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+			$phar = new \phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
 
 			$phar->setStub('<?php Phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER(); ?>');
 			$phar->setMetadata(array(
@@ -167,7 +167,7 @@ class generator extends atoum\script
 			throw new \logicException(sprintf($this->locale->_('Unable to create phar \'%s\' in directory \'%s\''), $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar, $this->destinationDirectory));
 		}
 
-		return $this;
+		return $phar;
 	}
 
 	protected function cleanPath($path)

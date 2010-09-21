@@ -75,7 +75,7 @@ class controller
 			throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' is not under control');
 		}
 
-		return $this->methods[$method]($arguments);
+		return call_user_func_array($this->methods[$method], $arguments);
 	}
 
 	protected function checkMethod($method)
