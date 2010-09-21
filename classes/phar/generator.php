@@ -18,7 +18,7 @@ class generator extends atoum\script
 
 	public function setOriginDirectory($directory)
 	{
-		$originDirectory = self::cleanPath($directory);
+		$originDirectory = $this->cleanPath($directory);
 
 		if ($originDirectory == '')
 		{
@@ -45,7 +45,7 @@ class generator extends atoum\script
 
 	public function setDestinationDirectory($directory)
 	{
-		$destinationDirectory = self::cleanPath($directory);
+		$destinationDirectory = $this->cleanPath($directory);
 
 		if ($destinationDirectory == '')
 		{
@@ -58,6 +58,10 @@ class generator extends atoum\script
 		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
 		{
 			throw new \logicException('Destination directory must be different from origin directory');
+		}
+		else if (strpos($destinationDirectory, $this->originDirectory) === 0)
+		{
+			throw new \logicException('Origin directory must not include destination directory');
 		}
 
 		$this->destinationDirectory = $destinationDirectory;
@@ -140,29 +144,46 @@ class generator extends atoum\script
 			throw new \logicException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
 		}
 
-		$phar = new \Phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+		try
+		{
+			$phar = new \Phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
 
-		$phar->setStub('<?php Phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER(); ?>');
-		$phar->setMetadata(array(
-				'version' => atoum\test::getVersion(),
-				'author' => atoum\test::author,
-				'support' => self::mail,
-				'repository' => self::repository,
-				'description' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
-				'licence' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
-			)
-		);
+			$phar->setStub('<?php Phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER(); ?>');
+			$phar->setMetadata(array(
+					'version' => atoum\test::getVersion(),
+					'author' => atoum\test::author,
+					'support' => self::mail,
+					'repository' => self::repository,
+					'description' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
+					'licence' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
+				)
+			);
 
-		$phar->buildOriginDirectory($this->originDirectory, '/\.php$/');
-		$phar->setSignatureAlgorithm(\Phar::SHA1);
-		$phar->compressFiles(\Phar::GZ);
+			$phar->buildFromIterator(new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->originDirectory)), $this->originDirectory);
+			$phar->setSignatureAlgorithm(\Phar::SHA1);
+		}
+		catch (\exception $exception)
+		{
+			throw new \logicException(sprintf($this->locale->_('Unable to create phar \'%s\' in directory \'%s\''), $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar, $this->destinationDirectory));
+		}
 
 		return $this;
 	}
 
-	protected static function cleanPath($path)
+	protected function cleanPath($path)
 	{
-		return ($path = (string) $path) == '/' ? $path : rtrim($path, DIRECTORY_SEPARATOR);
+		$path = $this->adapter->realpath((string) $path);
+
+		if ($path === false)
+		{
+			$path = '';
+		}
+		else if (DIRECTORY_SEPARATOR == '/' && $path != '/')
+		{
+			$path = rtrim($path, DIRECTORY_SEPARATOR);
+		}
+
+		return $path;
 	}
 }
 

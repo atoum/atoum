@@ -59,6 +59,7 @@ class generator extends atoum\test
 		$adapter = new atoum\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
 
 		$this->assert
 			->exception(function() use ($adapter) {
@@ -77,8 +78,7 @@ class generator extends atoum\test
 		$directory = uniqid();
 
 		$this->assert
-			->exception(function() use ($directory, $adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
+			->exception(function() use ($directory, $generator) {
 					$generator->setOriginDirectory($directory);
 				}
 			)
@@ -104,15 +104,25 @@ class generator extends atoum\test
 			->string($generator->getOriginDirectory())->isEqualTo($directory)
 		;
 
+		$generator = new phar\generator(uniqid(), null, $adapter);
+		$generator->setDestinationDirectory(uniqid());
+
 		$this->assert
-			->exception(function() use ($adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
-					$generator->setDestinationDirectory(uniqid());
+			->exception(function() use ($generator) {
 					$generator->setOriginDirectory($generator->getDestinationDirectory());
 				}
 			)
 				->isInstanceOf('\logicException')
 				->hasMessage('Origin directory must be different from destination directory')
+		;
+
+		$realDirectory = $generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . uniqid();
+
+		$adapter->realpath = function($path) use ($realDirectory) { return $realDirectory; };
+
+		$this->assert
+			->object($generator->setOriginDirectory('/'))->isIdenticalTo($generator)
+			->string($generator->getOriginDirectory())->isEqualTo($realDirectory)
 		;
 	}
 
@@ -121,6 +131,7 @@ class generator extends atoum\test
 		$adapter = new atoum\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
 
 		$this->assert
 			->exception(function() use ($adapter) {
@@ -175,15 +186,28 @@ class generator extends atoum\test
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 		;
 
+		$generator->setOriginDirectory(uniqid());
+
 		$this->assert
-			->exception(function() use ($adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
-					$generator->setOriginDirectory(uniqid());
+			->exception(function() use ($generator) {
 					$generator->setDestinationDirectory($generator->getOriginDirectory());
 				}
 			)
 				->isInstanceOf('\logicException')
 				->hasMessage('Destination directory must be different from origin directory')
+		;
+
+		$realDirectory = $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . uniqid();
+
+		$adapter->realpath = function($path) use ($realDirectory) { return $realDirectory; };
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->setDestinationDirectory(uniqid());
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Origin directory must not include destination directory')
 		;
 	}
 
@@ -192,6 +216,7 @@ class generator extends atoum\test
 		$adapter = new atoum\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
 		$adapter->is_dir = function() { return true; };
 
 		$generator = new phar\generator(uniqid(), null, $adapter);
@@ -240,6 +265,8 @@ class generator extends atoum\test
 				->isInstanceOf('\logicException')
 				->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
 		;
+
+		$adapter->is_writable = function() { return true; };
 	}
 }
 

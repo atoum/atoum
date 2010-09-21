@@ -26,7 +26,7 @@ class adapter
 	{
 		$this->calls[$functionName][] = $arguments;
 
-		return (isset($this->functions[$functionName]) === false ? call_user_func_array($functionName, $arguments) : $this->functions[$functionName]->__invoke($arguments));
+		return call_user_func_array(isset($this->functions[$functionName]) === false ? $functionName : $this->functions[$functionName], $arguments);
 	}
 
 	public function getCalls($functionName = null)

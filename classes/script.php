@@ -9,9 +9,9 @@ abstract class script
 	const padding = '   ';
 
 	protected $locale = null;
+	protected $arguments = array();
 
 	private $name = '';
-	private $arguments = array();
 
 	public function __construct($name, locale $locale = null, adapter $adapter = null)
 	{
