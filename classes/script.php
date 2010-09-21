@@ -64,8 +64,8 @@ abstract class script
 
 	public function run()
 	{
-		set_error_handler(array(__CLASS__, 'errorHandler'));
-		set_exception_handler(array(__CLASS__, 'exceptionHandler'));
+		set_error_handler(array($this, 'errorHandler'));
+		set_exception_handler(array($this, 'exceptionHandler'));
 
 		$this->arguments = new \arrayIterator(array_slice($_SERVER['argv'], 1));
 
@@ -82,14 +82,14 @@ abstract class script
 		return $this;
 	}
 
-	public static function errorHandler($error, $message, $file, $line)
+	public function errorHandler($error, $message, $file, $line)
 	{
-		self::stop($error, $message);
+		$this->stop($error, $message);
 	}
 
-	public static function exceptionHandler(\exception $exception)
+	public function exceptionHandler(\exception $exception)
 	{
-		self::stop($exception->getCode(), $exception->getMessage());
+		$this->stop($exception->getCode(), $exception->getMessage());
 	}
 
 	protected abstract function handleArgument($argument);
@@ -134,11 +134,6 @@ abstract class script
 		}
 	}
 
-	protected static function writeError($message)
-	{
-		fwrite(STDERR, rtrim($message) . "\n");
-	}
-
 	protected static function isArgument($string)
 	{
 		switch (substr($string, 0, 1))
@@ -153,9 +148,9 @@ abstract class script
 		}
 	}
 
-	protected static function stop($code, $message)
+	protected function stop($code, $message)
 	{
-		self::writeError($message);
+		fwrite(STDERR, sprintf($this->locale->_('Error: %s.'), rtrim(rtrim($message, '.'))) . "\n");
 		die($code);
 	}
 }

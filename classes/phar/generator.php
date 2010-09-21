@@ -24,6 +24,10 @@ class generator extends atoum\script
 		{
 			throw new \logicException('Empty origin directory is invalid');
 		}
+		else if ($this->adapter->is_dir($originDirectory) === false)
+		{
+			throw new \logicException('Path \'' . $originDirectory . '\' of origin directory is invalid');
+		}
 		else if ($this->destinationDirectory !== null && $originDirectory === $this->destinationDirectory)
 		{
 			throw new \logicException('Origin directory must be different from destination directory');
@@ -47,6 +51,10 @@ class generator extends atoum\script
 		{
 			throw new \logicException('Empty destination directory is invalid');
 		}
+		else if ($this->adapter->is_dir($destinationDirectory) === false)
+		{
+			throw new \logicException('Path \'' . $destinationDirectory . '\' of destination directory is invalid');
+		}
 		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
 		{
 			throw new \logicException('Destination directory must be different from origin directory');
@@ -66,17 +74,7 @@ class generator extends atoum\script
 	{
 		parent::run();
 
-		if ($this->help === true)
-		{
-			$this->help();
-		}
-
-		if ($this->destinationDirectory !== false)
-		{
-			$this->generate();
-		}
-
-		return $this;
+		return ($this->help === true ?  $this->help() : $this->generate());
 	}
 
 	protected function handleArgument($argument)
@@ -125,19 +123,21 @@ class generator extends atoum\script
 
 	protected function generate()
 	{
-		$this->originDirectory = self::cleanPath($this->originDirectory);
-
-		self::checkDirectory($this->originDirectory);
-		self::checkDirectory($this->destinationDirectory);
-
-		if (is_readable($this->originDirectory) === false)
+		if ($this->originDirectory === null)
 		{
-			throw new \logicException(sprintf($this->locale->_('Directory \'%s\' is not readable'), $this->originDirectory));
+			throw new \logicException(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
 		}
-
-		if (is_writable($this->destinationDirectory) === false)
+		else if ($this->destinationDirectory === null)
 		{
-			throw new \logicException(sprintf($this->locale->_('Directory \'%s\' is not writable'), $this->destinationDirectory));
+			throw new \logicException(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
+		}
+		else if ($this->adapter->is_readable($this->originDirectory) === false)
+		{
+			throw new \logicException(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
+		}
+		else if ($this->adapter->is_writable($this->destinationDirectory) === false)
+		{
+			throw new \logicException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
 		}
 
 		$phar = new \Phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
@@ -156,19 +156,13 @@ class generator extends atoum\script
 		$phar->buildOriginDirectory($this->originDirectory, '/\.php$/');
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
 		$phar->compressFiles(\Phar::GZ);
+
+		return $this;
 	}
 
 	protected static function cleanPath($path)
 	{
 		return ($path = (string) $path) == '/' ? $path : rtrim($path, DIRECTORY_SEPARATOR);
-	}
-
-	protected static function checkDirectory($directory)
-	{
-		if (is_dir($directory) === false)
-		{
-			throw new \logicException('Path \'' . $directory . '\' is not a directory');
-		}
 	}
 }
 

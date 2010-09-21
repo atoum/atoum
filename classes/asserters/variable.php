@@ -64,6 +64,11 @@ class variable extends \mageekguy\atoum\asserter
 		return $this->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
 	}
 
+	public function isNotNull($failMessage = null)
+	{
+		return $this->isNotIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is null'), $this));
+	}
+
 	protected function setWithArguments(array $arguments)
 	{
 		if (array_key_exists(0, $arguments) === false)
