@@ -91,7 +91,7 @@ class cli extends atoum\reporter
 
 	public function runnerStop(atoum\runner $runner)
 	{
-		$totalDuration = microtime(true) - $this->start;
+		$runningDuration = microtime(true) - $this->start;
 
 		$score = $this->score;
 
@@ -173,9 +173,7 @@ class cli extends atoum\reporter
 
 		self::write(sprintf($this->locale->__('Total test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
 		self::write(sprintf($this->locale->_('Total test memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
-
-		self::write(sprintf($this->locale->__('Total duration: %4.2f second.', 'Total duration: %4.2f seconds.', $totalDuration), $totalDuration));
-		self::write(sprintf($this->locale->_('Total memory usage: %4.2f Mb.'), memory_get_peak_usage(true) / 1048576));
+		self::write(sprintf($this->locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration));
 
 		return $this;
 	}
