@@ -9,6 +9,8 @@ class controller
 	protected $mock = null;
 	protected $methods = array();
 
+	protected static $injectInNextInstance = null;
+
 	public function __set($method, \closure $closure)
 	{
 		$this->checkMethod($method);
@@ -71,6 +73,12 @@ class controller
 		return $this;
 	}
 
+	public function injectInNextMockInstance()
+	{
+		self::$injectInNextInstance = $this;
+		return $this;
+	}
+
 	public function reset()
 	{
 		$this->mock = null;
@@ -89,6 +97,18 @@ class controller
 		}
 
 		return call_user_func_array($this->methods[$method], $arguments);
+	}
+
+	public static function get()
+	{
+		$instance = self::$injectInNextInstance;
+
+		if ($instance !== null)
+		{
+			self::$injectInNextInstance = null;
+		}
+
+		return $instance;
 	}
 
 	protected function checkMethod($method)

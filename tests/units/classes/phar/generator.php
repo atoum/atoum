@@ -259,6 +259,10 @@ class generator extends atoum\test
 
 		$mockGenerator->generate('\Phar');
 
+		$mockController = new atoum\mock\controller();
+		$mockController->__construct = function() {};
+		$mockController->injectInNextMockInstance();
+
 		$phar = new atoum\mock\phar(uniqid());
 	}
 }

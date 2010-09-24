@@ -178,6 +178,10 @@ class generator
 
 				if ($method->isConstructor() === true)
 				{
+					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
+					$methodCode .= "\t\t" . '{' . "\n";
+					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n";
+					$methodCode .= "\t\t" . '}' . "\n";
 					$methodCode .= "\t\t" . 'if ($mockController !== null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . "\n";
