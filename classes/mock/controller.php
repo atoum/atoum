@@ -41,15 +41,28 @@ class controller
 	{
 		if ($this->mock !== $mock)
 		{
-			$this->reset();
-
 			$this->mock = $mock;
 
 			$reflection = new \reflectionClass($this->mock);
 
-			foreach ($reflection->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
+			$methods = $reflection->getMethods(\reflectionMethod::IS_PUBLIC);
+
+			array_walk($methods, function(& $value, $key) { $value = $value->getName(); });
+
+			foreach ($this->methods as $method => $closure)
 			{
-				$this->methods[$method->getName()] = null;
+				if (in_array($method, $methods) === false)
+				{
+					throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' does not exist');
+				}
+			}
+
+			foreach ($methods as $method)
+			{
+				if (isset($this->methods[$method]) === false)
+				{
+					$this->methods[$method] = null;
+				}
 			}
 
 			$mock->setMockController($this);
@@ -80,19 +93,17 @@ class controller
 
 	protected function checkMethod($method)
 	{
-		if ($this->mock === null)
+		if ($this->mock !== null)
 		{
-			throw new \logicException('Class is undefined in controller');
-		}
+			if (sizeof($this->methods) <= 0)
+			{
+				throw new \logicException('Class \'' . get_class($this->mock) . '\' has no public methods');
+			}
 
-		if (sizeof($this->methods) <= 0)
-		{
-			throw new \logicException('Class \'' . get_class($this->mock) . '\' has no public methods');
-		}
-
-		if (array_key_exists($method, $this->methods) === false)
-		{
-			throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' does not exist');
+			if (array_key_exists($method, $this->methods) === false)
+			{
+				throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' does not exist');
+			}
 		}
 	}
 }

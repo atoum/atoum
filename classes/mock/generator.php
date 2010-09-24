@@ -8,6 +8,8 @@ class generator
 {
 	protected $adapter = null;
 
+	private $reflectionClassInjecter = null;
+
 	public function __construct(atoum\adapter $adapter = null)
 	{
 		if ($adapter === null)
@@ -16,6 +18,30 @@ class generator
 		}
 
 		$this->adapter = $adapter;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function getReflectionClass($class)
+	{
+		return ($this->reflectionClassInjecter === null ? new \reflectionClass($class) : $this->reflectionClassInjecter->__invoke($class));
+	}
+
+	public function setReflectionClassInjecter(\closure $reflectionClassInjecter)
+	{
+		$closure = new \reflectionMethod($reflectionClassInjecter, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new \runtimeException('Reflection class injecter must take one argument');
+		}
+
+		$this->reflectionClassInjecter = $reflectionClassInjecter;
+
+		return $this;
 	}
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
@@ -34,23 +60,27 @@ class generator
 
 		if ($this->adapter->class_exists($class, true) === false)
 		{
-			throw new \logicException('Argument 1 of method \'' . __METHOD__ . '()\' must be a valid class name');
+			throw new \logicException('Class \'' . $class . '\' does not exist');
 		}
 
-		if ($this->adapter->class_exists(__NAMESPACE__ . '\\' . $mockClass, false) === true)
+		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true)
 		{
-			throw new \logicException('Argument 2 of method \'' . __METHOD__ . '()\' must be an undefined class name');
+			throw new \logicException('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
-		$reflectionClass = new \reflectionClass($class);
+		$reflectionClass = $this->getReflectionClass($class);
+
+		if ($reflectionClass instanceof \reflectionClass === false)
+		{
+			throw new \logicException('Reflection class injecter does not return a \reflectionClass instance');
+		}
 
 		if ($reflectionClass->isFinal() === true)
 		{
-			throw new \logicException('Argument 1 of method \'' . __METHOD__ . '()\' must not be a final class name');
+			throw new \logicException('Class \'' . $class . '\' is final, unable to mock it');
 		}
 
 		$code = $this->getMockedClassCode($reflectionClass, $mockNamespace, $mockClass);
-		file_put_contents('/usr/home/fch/tmp/mock.php', $code);
 		eval($code);
 
 		return $this;
@@ -58,7 +88,7 @@ class generator
 
 	protected function getMockedClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		return 'namespace ' . $mockNamespace . ' {' . "\n"
+		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . "\n"
 			. 'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . "\n"
 			. '{' . "\n"
 			. '	private $mockController = null;' . "\n"
@@ -124,12 +154,14 @@ class generator
 					$parameters[] = $parameterCode;
 				}
 
+				$methodCode .= '(' . join(', ', $parameters);
+				
 				if ($method->isConstructor() === true)
 				{
-					$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
+					$methodCode .= ', \\' . __NAMESPACE__ . '\\controller $mockController = null';
 				}
 
-				$methodCode .= '(' . join(', ', $parameters) . ')' . "\n"
+				$methodCode .= ')' . "\n"
 					. "\t" . '{' . "\n"
 				;
 
@@ -198,7 +230,7 @@ class generator
 
 		$lastAntiSlash = strrpos($class, '\\');
 
-		return __NAMESPACE__ . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return '\\' . __NAMESPACE__ . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected static function getClassName($class)

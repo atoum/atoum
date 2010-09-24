@@ -197,7 +197,6 @@ class generator extends atoum\test
 		;
 	}
 
-	/** @isolation off */
 	public function testRun()
 	{
 		$adapter = new atoum\adapter();
@@ -255,7 +254,12 @@ class generator extends atoum\test
 
 		$adapter->is_writable = function() { return true; };
 
-		$generator->run('\mageekguy\atoum\mock\phar');
+
+		$mockGenerator = new atoum\mock\generator();
+
+		$mockGenerator->generate('\Phar');
+
+		$phar = new atoum\mock\phar(uniqid());
 	}
 }
 

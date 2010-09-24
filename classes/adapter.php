@@ -24,6 +24,11 @@ class adapter
 
 	public function __call($functionName, $arguments)
 	{
+		if (is_callable($functionName) === false)
+		{
+			throw new \logicException('Function \'' . $functionName . '()\' is not callable by an adapter');
+		}
+
 		$this->calls[$functionName][] = $arguments;
 
 		return call_user_func_array(isset($this->functions[$functionName]) === false ? $functionName : $this->functions[$functionName], $arguments);
