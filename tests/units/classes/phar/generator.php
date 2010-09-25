@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\phar;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\mock;
 use \mageekguy\atoum\phar;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -254,16 +255,16 @@ class generator extends atoum\test
 
 		$adapter->is_writable = function() { return true; };
 
+		$mockController = new mock\controller();
+		$mockController
+			->injectInNextMockInstance()
+			->__construct = function() {}
+		;
 
-		$mockGenerator = new atoum\mock\generator();
-
+		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\Phar');
 
-		$mockController = new atoum\mock\controller();
-		$mockController->__construct = function() {};
-		$mockController->injectInNextMockInstance();
-
-		$phar = new atoum\mock\phar(uniqid());
+		$phar = new mock\phar(uniqid());
 	}
 }
 
