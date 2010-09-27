@@ -13,7 +13,7 @@ abstract class script
 
 	private $name = '';
 
-	public function __construct($name, locale $locale = null, adapter $adapter = null)
+	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		if ($adapter === null)
 		{

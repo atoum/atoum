@@ -16,6 +16,17 @@ class generator extends atoum\script
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;
 
+	private $pharInjecter = null;
+	private $fileIteratorInjecter = null;
+
+	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	{
+		parent::__construct($name, $locale, $adapter);
+
+		$this->pharInjecter = function ($name) { return new \phar($name); };
+		$this->fileIteratorInjecter = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory), $directory)); };
+	}
+
 	public function setOriginDirectory($directory)
 	{
 		$originDirectory = $this->cleanPath($directory);
@@ -72,6 +83,44 @@ class generator extends atoum\script
 	public function getDestinationDirectory()
 	{
 		return $this->destinationDirectory;
+	}
+
+	public function getPhar($name)
+	{
+		return $this->pharInjecter->__invoke($name);
+	}
+
+	public function setPharInjecter(\closure $pharInjecter)
+	{
+		$closure = new \reflectionMethod($pharInjecter, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new \runtimeException('Phar injecter must take one argument');
+		}
+
+		$this->pharInjecter = $pharInjecter;
+
+		return $this;
+	}
+
+	public function getFileIterator($directory)
+	{
+		return $this->fileIteratorInjecter->__invoke($directory);
+	}
+
+	public function setFileIteratorInjecter(\closure $fileIteratorInjecter)
+	{
+		$closure = new \reflectionMethod($fileIteratorInjecter, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new \runtimeException('File iterator injecter must take one argument');
+		}
+
+		$this->fileIteratorInjecter = $fileIteratorInjecter;
+
+		return $this;
 	}
 
 	public function run()
@@ -146,7 +195,19 @@ class generator extends atoum\script
 
 		try
 		{
-			$phar = new \phar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+			$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+
+			if ($phar instanceof \phar === false)
+			{
+				throw new \logicException('Phar injecter must return a \phar instance');
+			}
+
+			$fileIterator = $this->getFileIterator($this->originDirectory);
+
+			if ($fileIterator instanceof \iterator === false)
+			{
+				throw new \logicException('File iterator injecter must return a \iterator instance');
+			}
 
 			$phar->setStub('<?php Phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER(); ?>');
 			$phar->setMetadata(array(
@@ -154,16 +215,17 @@ class generator extends atoum\script
 					'author' => atoum\test::author,
 					'support' => self::mail,
 					'repository' => self::repository,
-					'description' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
-					'licence' => file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
+					'description' => $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
+					'licence' => $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
 				)
 			);
 
-			$phar->buildFromIterator(new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->originDirectory)), $this->originDirectory);
+			$phar->buildFromIterator($fileIterator);
 			$phar->setSignatureAlgorithm(\Phar::SHA1);
 		}
 		catch (\exception $exception)
 		{
+			var_dump($exception->getMessage());
 			throw new \logicException(sprintf($this->locale->_('Unable to create phar \'%s\' in directory \'%s\''), $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar, $this->destinationDirectory));
 		}
 

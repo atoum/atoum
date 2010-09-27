@@ -198,6 +198,88 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testSetPharInjecter()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
+		$adapter->is_dir = function() { return true; };
+
+		$generator = new phar\generator(uniqid(), null, $adapter);
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->setPharInjecter(function() {});
+				}
+			)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('Phar injecter must take one argument')
+		;
+
+		$mockController = new mock\controller();
+		$mockController
+			->injectInNextMockInstance()
+			->__construct = function() {}
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\Phar');
+
+		$pharName = uniqid();
+
+		$phar = new mock\phar($pharName);
+
+		$this->assert
+			->exception(function() use ($generator, $pharName) { $generator->getPhar($pharName); })
+				->isInstanceOf('\unexpectedValueException')
+				->hasMessage('Cannot create phar \'' . $pharName . '\', file extension (or combination) not recognised')
+			->object($generator->setPharInjecter(function($name) use ($phar) { return $phar; }))->isIdenticalTo($generator)
+			->object($generator->getPhar(uniqid()))->isIdenticalTo($phar)
+		;
+	}
+
+	public function testSetFileIteratorInjecter()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
+		$adapter->is_dir = function() { return true; };
+
+		$generator = new phar\generator(uniqid(), null, $adapter);
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->setFileIteratorInjecter(function() {});
+				}
+			)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('File iterator injecter must take one argument')
+		;
+
+		$directory = uniqid();
+
+		$mockController = new mock\controller();
+		$mockController
+			->injectInNextMockInstance()
+			->__construct = function() {}
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\recursiveDirectoryIterator');
+
+		$iterator = new mock\recursiveDirectoryIterator($directory);
+
+		$this->assert
+			->exception(function() use ($generator, $directory) { $generator->getFileIterator($directory); })
+				->isInstanceOf('\unexpectedValueException')
+				->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
+			->object($generator->setFileIteratorInjecter(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($generator)
+			->object($generator->getFileIterator(uniqid()))->isIdenticalTo($iterator)
+		;
+	}
+
 	public function testRun()
 	{
 		$adapter = new atoum\adapter();
@@ -254,17 +336,35 @@ class generator extends atoum\test
 		;
 
 		$adapter->is_writable = function() { return true; };
-
-		$mockController = new mock\controller();
-		$mockController
-			->injectInNextMockInstance()
-			->__construct = function() {}
-		;
+		$adapter->file_get_contents = function() {};
 
 		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\Phar');
+
+		$pharController = new mock\controller();
+		$pharController->injectInNextMockInstance();
+		$pharController->__construct = function() {};
+		$pharController->setStub = function() {};
+		$pharController->setMetadata = function() {};
+		$pharController->buildFromIterator = function() {};
+		$pharController->setSignatureAlgorithm = function() {};
+
+		$mockGenerator->generate('\phar');
 
 		$phar = new mock\phar(uniqid());
+
+		$generator->setPharInjecter(function($name) use ($phar) { return $phar; });
+
+		$fileIteratorController = new mock\controller();
+		$fileIteratorController->injectInNextMockInstance();
+		$fileIteratorController->__construct = function() {};
+
+		$mockGenerator->generate('\recursiveDirectoryIterator');
+
+		$iterator = new mock\recursiveDirectoryIterator(uniqid());
+
+		$generator->setFileIteratorInjecter(function($directory) use ($iterator) { return $iterator; });
+
+		$generator->run();
 	}
 }
 
