@@ -4,6 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 class variable extends \mageekguy\atoum\asserter
 {
+	protected $isSet = false;
 	protected $variable = null;
 
 	public function __toString()
@@ -14,6 +15,11 @@ class variable extends \mageekguy\atoum\asserter
 	public function setWith($variable)
 	{
 		$this->variable = $variable;
+
+		if ($this->isSet === false)
+		{
+			$this->isSet = true;
+		}
 
 		return $this;
 	}
@@ -27,7 +33,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)));
+		$this->variableIsSet()->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
@@ -36,7 +42,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
+		$this->variableIsSet()->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
@@ -45,7 +51,7 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
+		$this->variableIsSet()->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
@@ -54,14 +60,14 @@ class variable extends \mageekguy\atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable !== $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
+		$this->variableIsSet()->variable !== $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
 
 		return $this;
 	}
 
 	public function isNull($failMessage = null)
 	{
-		return $this->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
+		return $this->variableIsSet()->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
 	}
 
 	public function isNotNull($failMessage = null)
@@ -77,6 +83,16 @@ class variable extends \mageekguy\atoum\asserter
 		}
 
 		return $this->setWith($arguments[0]);
+	}
+
+	protected function variableIsSet($message = 'Variable is undefined')
+	{
+		if ($this->isSet === false)
+		{
+			throw new \logicException($message);
+		}
+
+		return $this;
 	}
 
 	protected static function check($variable, $method) {}

@@ -14,10 +14,7 @@ class error extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\error($score, $locale);
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -27,10 +24,7 @@ class error extends atoum\test
 
 	public function testSetWith()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\error($score, $locale);
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->setWith(null, null))->isIdenticalTo($asserter)
@@ -60,10 +54,7 @@ class error extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\error($score, $locale);
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })

@@ -26,6 +26,11 @@ class phpClass extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
+	public function getClass()
+	{
+		return ($this->class === null ? null : $this->class->getName());
+	}
+
 	public function setWith($class)
 	{
 		try
@@ -44,14 +49,14 @@ class phpClass extends \mageekguy\atoum\asserter
 
 	public function hasParent($parent, $failMessage = null)
 	{
-		$this->class->getParentClass()->getName() == $parent ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
+		$this->classIsSet()->class->getParentClass()->getName() == $parent ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
 
 		return $this;
 	}
 
 	public function hasInterface($interface, $failMessage = null)
 	{
-		in_array(ltrim($interface, '\\'), $this->class->getInterfaceNames()) === true  ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
+		in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true  ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
 
 		return $this;
 	}
@@ -66,6 +71,15 @@ class phpClass extends \mageekguy\atoum\asserter
 		return $this->setWith($arguments[0]);
 	}
 
+	protected function classIsSet()
+	{
+		if ($this->class === null)
+		{
+			throw new \logicException('Class is undefined');
+		}
+
+		return $this;
+	}
 }
 
 ?>

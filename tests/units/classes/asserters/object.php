@@ -14,10 +14,7 @@ class object extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\object($score, $locale);
+		$asserter = new asserters\object($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -29,10 +26,7 @@ class object extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
-
-		$asserter = new asserters\object($score, $locale);
+		$asserter = new asserters\object($score = new atoum\score(), $locale = new atoum\locale());
 
 		$variable = uniqid();
 
@@ -84,10 +78,16 @@ class object extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
+		$asserter = new asserters\object($score = new atoum\score(), $locale = new atoum\locale());
 
-		$asserter = new asserters\object($score, $locale);
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->hasSize(rand(0, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Object is undefined')
+		;
 
 		$asserter->setWith($this);
 
@@ -137,10 +137,16 @@ class object extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
+		$asserter = new asserters\object($score = new atoum\score(), $locale = new atoum\locale());
 
-		$asserter = new asserters\object($score, $locale);
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->hasSize(rand(0, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Object is undefined')
+		;
 
 		$asserter->setWith($this);
 

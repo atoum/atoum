@@ -364,7 +364,9 @@ class generator extends atoum\test
 
 		$generator->setFileIteratorInjecter(function($directory) use ($iterator) { return $iterator; });
 
-		$generator->run();
+		$this->assert
+			->object($generator->run())->isIdenticalTo($generator)
+		;
 	}
 }
 

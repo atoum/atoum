@@ -44,6 +44,15 @@ class variable extends atoum\test
 
 		$asserter = new asserters\variable($score, new atoum\locale());
 
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Variable is undefined')
+		;
+
 		$variable = uniqid();
 
 		$asserter->setWith($variable);
@@ -120,6 +129,15 @@ class variable extends atoum\test
 
 		$asserter = new asserters\variable($score, $locale);
 
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isNotEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Variable is undefined')
+		;
+
 		$variable = uniqid();
 
 		$asserter->setWith($variable);
@@ -157,6 +175,15 @@ class variable extends atoum\test
 		$locale = new atoum\locale();
 
 		$asserter = new asserters\variable($score, $locale);
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Variable is undefined')
+		;
 
 		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
 
@@ -199,14 +226,18 @@ class variable extends atoum\test
 		$asserter = new asserters\variable($score, $locale);
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Variable is undefined')
 		;
 
-		$asserter->setWith(null);
-
 		$this->assert
-			->object($asserter->isNull())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->setWith(null)->isNull())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;

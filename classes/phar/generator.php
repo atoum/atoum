@@ -225,11 +225,10 @@ class generator extends atoum\script
 		}
 		catch (\exception $exception)
 		{
-			var_dump($exception->getMessage());
 			throw new \logicException(sprintf($this->locale->_('Unable to create phar \'%s\' in directory \'%s\''), $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar, $this->destinationDirectory));
 		}
 
-		return $phar;
+		return $this;
 	}
 
 	protected function cleanPath($path)

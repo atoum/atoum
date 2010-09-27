@@ -14,10 +14,7 @@ class exception extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\exception($score, $locale);
+		$asserter = new asserters\exception($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -29,10 +26,7 @@ class exception extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
-
-		$asserter = new asserters\exception($score, $locale);
+		$asserter = new asserters\exception($score = new atoum\score(), $locale = new atoum\locale());
 
 		$variable = uniqid();
 

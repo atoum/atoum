@@ -115,6 +115,7 @@ class generator extends atoum\test
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\reflectionClass');
+
 		$mockController = new mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->isFinal= function() { return true; };
