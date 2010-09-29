@@ -118,7 +118,7 @@ class generator extends atoum\test
 
 		$mockController = new mock\controller();
 		$mockController->__construct = function() {};
-		$mockController->isFinal= function() { return true; };
+		$mockController->isFinal = function() { return true; };
 
 		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
 
@@ -144,6 +144,43 @@ class generator extends atoum\test
 			)
 				->isInstanceOf('\logicException')
 				->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
+		;
+
+		$mockController->isFinal = function() { return false; };
+		$mockController->isAbstract = function() { return true; };
+
+		$class = uniqid();
+
+		$adapter->class_exists = function($arg) use ($class) { return $arg === '\\' . $class; };
+
+		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
+
+		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
+
+		$this->assert
+			->exception(function () use ($generator, $class) {
+					$generator->generate($class);
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Class \'\\' . $class . '\' is abstract, unable to mock it')
+		;
+
+		$class = '\\' . uniqid();
+
+		$adapter->class_exists = function($arg) use ($class) { return $arg === $class; };
+
+		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
+
+		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
+
+		$this->assert
+			->exception(function () use ($generator, $class) {
+					$generator->generate($class);
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Class \'' . $class . '\' is abstract, unable to mock it')
 		;
 
 		$generator = new mock\generator();

@@ -8,8 +8,11 @@ class controller
 {
 	protected $mock = null;
 	protected $methods = array();
+	protected $calls = array();
 
 	protected static $injectInNextInstance = null;
+
+	private $reflectionClassInjecter = null;
 
 	public function __set($method, \closure $closure)
 	{
@@ -39,15 +42,64 @@ class controller
 		$this->methods[$method] = null;
 	}
 
+	public function getMock()
+	{
+		return $this->mock;
+	}
+
+	public function getMethods()
+	{
+		return $this->methods;
+	}
+
+	public function getCalls($method = null)
+	{
+		if ($method !== null && isset($this->methods[$method]) === false)
+		{
+			throw new \logicException('Method \'' . $method . '\' is not mocked');
+		}
+
+		return ($method === null ? $this->calls : (isset($this->calls[$method]) === false ? array() : $this->calls[$method]));
+	}
+
+	public function getReflectionClass($class)
+	{
+		return ($this->reflectionClassInjecter === null ? new \reflectionClass($class) : $this->reflectionClassInjecter->__invoke($class));
+	}
+
+	public function setReflectionClassInjecter(\closure $reflectionClassInjecter)
+	{
+		$closure = new \reflectionMethod($reflectionClassInjecter, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new \runtimeException('Reflection class injecter must take one argument');
+		}
+
+		$this->reflectionClassInjecter = $reflectionClassInjecter;
+
+		return $this;
+	}
+
 	public function control(mock\aggregator $mock)
 	{
 		if ($this->mock !== $mock)
 		{
 			$this->mock = $mock;
 
-			$reflection = new \reflectionClass($this->mock);
+			$class = $this->getReflectionClass($this->mock);
 
-			$methods = $reflection->getMethods(\reflectionMethod::IS_PUBLIC);
+			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
+					try
+					{
+						return ($value->getPrototype()->getName() != __NAMESPACE__ . '\aggregator');
+					}
+					catch (\exception $exception)
+					{
+						return true;
+					}
+				}
+			);
 
 			array_walk($methods, function(& $value, $key) { $value = $value->getName(); });
 
@@ -83,6 +135,7 @@ class controller
 	{
 		$this->mock = null;
 		$this->methods = array();
+		$this->calls = array();
 
 		return $this;
 	}
@@ -95,6 +148,8 @@ class controller
 		{
 			throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' is not under control');
 		}
+
+		$this->calls[$method][] = $arguments;
 
 		return call_user_func_array($this->methods[$method], $arguments);
 	}

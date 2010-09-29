@@ -320,6 +320,11 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	protected function beforeTestMethod()
+	{
+		return $this;
+	}
+
 	protected function runTestMethod($testMethod)
 	{
 		set_error_handler(array($this, 'errorHandler'));
@@ -328,6 +333,8 @@ abstract class test implements observable, \countable
 		{
 			try
 			{
+				$this->beforeTestMethod();
+
 				ob_start();
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
@@ -336,6 +343,8 @@ abstract class test implements observable, \countable
 				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 				$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
 				ob_end_clean();
+
+				$this->afterTestMethod();
 			}
 			catch (\exception $exception)
 			{
@@ -419,6 +428,11 @@ abstract class test implements observable, \countable
 				$this->score->merge($score);
 			}
 		}
+	}
+
+	protected function afterTestMethod()
+	{
+		return $this;
 	}
 
 	protected function tearDown()

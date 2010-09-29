@@ -80,6 +80,11 @@ class generator
 			throw new \logicException('Class \'' . $class . '\' is final, unable to mock it');
 		}
 
+		if ($reflectionClass->isAbstract() === true)
+		{
+			throw new \logicException('Class \'' . $class . '\' is abstract, unable to mock it');
+		}
+
 		$code = $this->getMockedClassCode($reflectionClass, $mockNamespace, $mockClass);
 		eval($code);
 
@@ -155,7 +160,7 @@ class generator
 				}
 
 				$methodCode .= '(' . join(', ', $parameters);
-				
+
 				if ($method->isConstructor() === true)
 				{
 					$methodCode .= ', \\' . __NAMESPACE__ . '\\controller $mockController = null';
@@ -172,12 +177,26 @@ class generator
 					$parameters[] = '$' . $parameter->getName();
 				}
 
-				$parameters = join(', ', $parameters);
-
-				$mockController = '$this->mockController';
-
-				if ($method->isConstructor() === true)
+				if ($method->isConstructor() === false)
 				{
+					$parameters = join(', ', $parameters);
+
+					$methodCode .=
+						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
+						. "\t\t" . '{' . "\n"
+						. "\t\t\t" . 'return $this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
+						. "\t\t" . '}' . "\n"
+						. "\t\t" . 'else' . "\n"
+						. "\t\t" . '{' . "\n"
+						. "\t\t\t" . 'return parent::' . $methodName . '(' . $parameters . ');' . "\n"
+						. "\t\t" . '}' . "\n"
+						. "\t" . '}' . "\n"
+					;
+				}
+				else
+				{
+					$parameters = join(', ', array_slice($parameters, 0, -1));
+
 					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n";
@@ -186,19 +205,18 @@ class generator
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . "\n";
 					$methodCode .= "\t\t" . '}' . "\n";
+					$methodCode .=
+						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
+						. "\t\t" . '{' . "\n"
+						. "\t\t\t" . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
+						. "\t\t" . '}' . "\n"
+						. "\t\t" . 'else' . "\n"
+						. "\t\t" . '{' . "\n"
+						. "\t\t\t" . 'parent::' . $methodName . '(' . $parameters . ');' . "\n"
+						. "\t\t" . '}' . "\n"
+						. "\t" . '}' . "\n"
+					;
 				}
-
-				$methodCode .=
-					  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
-					. "\t\t" . '{' . "\n"
-					. "\t\t\t" . ($method->isConstructor() === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
-					. "\t\t" . '}' . "\n"
-					. "\t\t" . 'else' . "\n"
-					. "\t\t" . '{' . "\n"
-					. "\t\t\t" . ($method->isConstructor() === true ? '' : 'return ') . 'parent::' . $methodName . '(' . $parameters . ');' . "\n"
-					. "\t\t" . '}' . "\n"
-					. "\t" . '}' . "\n"
-				;
 
 				$mockedMethods .= $methodCode;
 			}
