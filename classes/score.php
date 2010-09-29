@@ -6,18 +6,20 @@ use mageekguy\atoum;
 
 class score
 {
-	private $assertions = array();
+	private $passAssertions = 0;
+	private $failAssertions = array();
 	private $exceptions = array();
 	private $errors = array();
 	private $outputs = array();
 	private $durations = array();
 	private $memoryUsages = array();
 
-	private static $assertionId = 0;
+	private static $failId = 0;
 
 	public function reset()
 	{
-		$this->assertions = array();
+		$this->passAssertions = 0;
+		$this->failAssertions = array();
 		$this->exceptions = array();
 		$this->errors = array();
 		$this->outputs = array();
@@ -27,25 +29,16 @@ class score
 		return $this;
 	}
 
-	public function addPass($file, $line, $class, $method, $asserter)
+	public function addPass()
 	{
-		$this->assertions[] = array(
-			'id' => ++self::$assertionId,
-			'class' => $class,
-			'method' => $method,
-			'file' => $file,
-			'line' => $line,
-			'asserter' => $asserter,
-			'fail' => null
-		);
-
-		return self::$assertionId;
+		$this->passAssertions++;
+		return $this;
 	}
 
 	public function addFail($file, $line, $class, $method, $asserter, $reason)
 	{
-		$this->assertions[] = array(
-			'id' => ++self::$assertionId,
+		$this->failAssertions[] = array(
+			'id' => ++self::$failId,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -54,7 +47,7 @@ class score
 			'fail' => $reason
 		);
 
-		return self::$assertionId;
+		return self::$failId;
 	}
 
 	public function addException($file, $line, $class, $method, \exception $exception)
@@ -128,7 +121,8 @@ class score
 
 	public function merge(score $score)
 	{
-		$this->assertions = array_merge($this->assertions, $score->assertions);
+		$this->passAssertions += $score->passAssertions;
+		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
 		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
 		$this->errors = array_merge($this->errors, $score->errors);
 		$this->outputs = array_merge($this->outputs, $score->outputs);
@@ -177,14 +171,9 @@ class score
 		return array_values($this->memoryUsages);
 	}
 
-	public function getPassAssertions()
-	{
-		return self::cleanAssertions(array_filter($this->assertions, function($assertion) { return $assertion['fail'] === null; }));
-	}
-
 	public function getFailAssertions()
 	{
-		return self::cleanAssertions(array_filter($this->assertions, function($assertion) { return $assertion['fail'] !== null; }));
+		return self::cleanAssertions($this->failAssertions);
 	}
 
 	public function getErrors()
@@ -209,7 +198,7 @@ class score
 
 	public function getAssertionNumber()
 	{
-		return sizeof($this->assertions);
+		return ($this->passAssertions + sizeof($this->failAssertions));
 	}
 
 	public function getPassNumber()
@@ -272,7 +261,7 @@ class score
 	{
 		$id = $exception->getCode();
 
-		return (sizeof(array_filter($this->assertions, function($assertion) use ($id) { return $assertion['fail'] !== null && $assertion['id'] === $id; })) > 0);
+		return (sizeof(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
 	}
 
 	private static function cleanAssertions(array $assertions)

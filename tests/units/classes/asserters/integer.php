@@ -59,17 +59,6 @@ class integer extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => null
-					)
-				)
-			)
 			->integer($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
@@ -95,25 +84,6 @@ class integer extends atoum\test
 		$this->assert
 			->variable($exception)->isNull()
 			->integer($score->getPassNumber())->isEqualTo(2)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $setWithLine,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => null
-					),
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $isEqualToLine1,
-						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => null
-					)
-				)
-			)
 			->integer($score->getFailNumber())->isZero()
 		;
 
@@ -130,25 +100,6 @@ class integer extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)))
 			->integer($score->getPassNumber())->isEqualTo(2)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $setWithLine,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => null
-					),
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $isEqualToLine1,
-						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => null
-					)
-				)
-			)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(

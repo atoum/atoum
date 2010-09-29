@@ -63,17 +63,6 @@ class boolean extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => null
-					)
-				)
-			)
 			->boolean($asserter->getVariable())->isTrue()
 		;
 	}

@@ -14,7 +14,7 @@ class score extends atoum\test
 		$score = new atoum\score();
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -91,20 +91,9 @@ class score extends atoum\test
 		$asserter = new atoum\asserters\integer($score, new atoum\locale());
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
 			->integer($score->getPassNumber())->isZero()
-			->integer($score->addPass($file, $line, $class, $method, $asserter))->isGreaterThan(0)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => $class,
-						'method' => $method,
-						'file' => $file,
-						'line' => $line,
-						'asserter' => $asserter,
-						'fail' => null
-					)
-				)
-			)
+			->integer($score->getPassNumber())->isZero()
+			->object($score->addPass())->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
 
@@ -115,26 +104,8 @@ class score extends atoum\test
 		$otherAsserter = new atoum\asserters\integer($score, new atoum\locale());
 
 		$this->assert
-			->integer($score->addPass($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter))->isGreaterThan(0)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => $class,
-						'method' => $method,
-						'file' => $file,
-						'line' => $line,
-						'asserter' => $asserter,
-						'fail' => null
-					),
-					array(
-						'class' => $otherClass,
-						'method' => $otherMethod,
-						'file' => $otherFile,
-						'line' => $otherLine,
-						'asserter' => $otherAsserter,
-						'fail' => null
-					)
-				)
-			)
+			->object($score->addPass())->isIdenticalTo($score)
+			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getPassNumber())->isEqualTo(2)
 		;
 	}
@@ -545,7 +516,7 @@ class score extends atoum\test
 		$score = new atoum\score($this);
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -553,7 +524,7 @@ class score extends atoum\test
 			->collection($score->getDurations())->isEmpty()
 			->collection($score->getMemoryUsages())->isEmpty()
 			->object($score->reset())->isIdenticalTo($score)
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -562,7 +533,7 @@ class score extends atoum\test
 			->collection($score->getMemoryUsages())->isEmpty()
 		;
 
-		$score->addPass(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)));
+		$score->addPass();
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
@@ -571,7 +542,7 @@ class score extends atoum\test
 		$score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
-			->collection($score->getPassAssertions())->isNotEmpty()
+			->integer($score->getPassNumber())->isGreaterThan(0)
 			->collection($score->getFailAssertions())->isNotEmpty()
 			->collection($score->getExceptions())->isNotEmpty()
 			->collection($score->getErrors())->isNotEmpty()
@@ -579,7 +550,7 @@ class score extends atoum\test
 			->collection($score->getDurations())->isNotEmpty()
 			->collection($score->getMemoryUsages())->isNotEmpty()
 			->object($score->reset())->isIdenticalTo($score)
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -595,7 +566,7 @@ class score extends atoum\test
 		$otherScore = new atoum\score();
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -603,7 +574,7 @@ class score extends atoum\test
 			->collection($score->getDurations())->isEmpty()
 			->collection($score->getMemoryUsages())->isEmpty()
 			->object($score->merge($otherScore))->isIdenticalTo($score)
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 			->collection($score->getFailAssertions())->isEmpty()
 			->collection($score->getExceptions())->isEmpty()
 			->collection($score->getErrors())->isEmpty()
@@ -612,7 +583,7 @@ class score extends atoum\test
 			->collection($score->getMemoryUsages())->isEmpty()
 		;
 
-		$score->addPass(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)));
+		$score->addPass();
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
@@ -638,7 +609,7 @@ class score extends atoum\test
 			->integer($score->getMemoryUsageNumber())->isEqualTo(1)
 		;
 
-		$otherScore->addPass(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)));
+		$otherScore->addPass();
 		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
 		$otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
@@ -785,7 +756,7 @@ class score extends atoum\test
 			->collection($score->getFailAssertions())->isEmpty()
 		;
 
-		$score->addPass(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()));
+		$score->addPass();
 
 		$this->assert
 			->collection($score->getFailAssertions())->isEmpty()
@@ -826,13 +797,13 @@ class score extends atoum\test
 		$asserter = new atoum\asserters\integer($score, new atoum\locale());
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 		;
 
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()), uniqid());
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEmpty()
+			->integer($score->getPassNumber())->isZero()
 		;
 
 		$file = uniqid();
@@ -841,20 +812,10 @@ class score extends atoum\test
 		$method = uniqid();
 		$asserter = new atoum\asserters\integer($score, new atoum\locale());
 
-		$score->addPass($file, $line, $class, $method, $asserter);
+		$score->addPass();
 
 		$this->assert
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => $class,
-						'method' => $method,
-						'file' => $file,
-						'line' => $line,
-						'asserter' => $asserter,
-						'fail' => null
-					)
-				)
-			)
+			->integer($score->getPassNumber())->isEqualTo(1)
 		;
 	}
 }

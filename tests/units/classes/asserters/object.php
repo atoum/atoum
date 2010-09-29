@@ -59,17 +59,6 @@ class object extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => null
-					)
-				)
-			)
 			->object($asserter->getVariable())->isIdenticalTo($variable)
 		;
 	}
@@ -119,17 +108,6 @@ class object extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::hasSize()',
-						'fail' => null
-					)
-				)
-			)
 		;
 	}
 
@@ -182,17 +160,6 @@ class object extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(0)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::isEmpty()',
-						'fail' => null
-					)
-				)
-			)
 		;
 	}
 }

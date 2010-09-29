@@ -69,17 +69,6 @@ class variable extends atoum\test
 		$this->assert
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => null
-					)
-				)
-			)
 		;
 
 		$notEqualVariable = uniqid();

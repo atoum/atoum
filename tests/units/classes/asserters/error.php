@@ -97,17 +97,6 @@ class error extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => null
-					)
-				)
-			)
 			->collection($score->getErrors())->isEmpty()
 		;
 
@@ -156,17 +145,6 @@ class error extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getPassAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => null
-					)
-				)
-			)
 			->collection($score->getErrors())->isEmpty()
 		;
 	}

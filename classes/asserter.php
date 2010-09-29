@@ -96,7 +96,7 @@ class asserter
 	protected function pass()
 	{
 		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
-		$this->score->addPass($file, $line, $class, $method, $asserter);
+		$this->score->addPass();
 		return $this;
 	}
 
