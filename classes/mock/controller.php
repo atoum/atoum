@@ -32,7 +32,7 @@ class controller
 	{
 		$this->checkMethod($method);
 
-		return ($this->methods[$method] !== null);
+		return (isset($this->methods[$method]) === true && $this->methods[$method] !== null);
 	}
 
 	public function __unset($method)
@@ -146,7 +146,7 @@ class controller
 
 		if (isset($this->{$method}) === false)
 		{
-			throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' is not under control');
+			throw new \logicException('Method ' . $method . '() is not under control');
 		}
 
 		$this->calls[$method][] = $arguments;

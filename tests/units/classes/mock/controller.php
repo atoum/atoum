@@ -1,21 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\controller;
+namespace mageekguy\atoum\tests\units\mock;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\mock;
 
 require_once(__DIR__ . '/../../runner.php');
-
-class foo
-{
-	public function a() {}
-	public function b() {}
-
-	protected function c() {}
-
-	private function e() {}
-}
 
 class controller extends atoum\test
 {
@@ -61,8 +51,8 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$mockGenerator = new mock\generator();
 
+		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\reflectionMethod')
 			->generate('\reflectionClass')
@@ -167,6 +157,17 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
+		$method = uniqid();
+
+		$this->assert
+			->exception(function() use ($mockController, $method) {
+					$mockController->invoke($method, array());
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Method ' . $method . '() is not under control')
+		;
+
 		$return = uniqid();
 
 		$mockController->test = function() use ($return) { return $return; };
@@ -193,6 +194,151 @@ class controller extends atoum\test
 					array($argument1)
 				)
 			)
+			->string($mockController->invoke('test', array($argument1, $argument2)))->isEqualTo($return)
+			->array($mockController->getCalls())->isEqualTo(array(
+					'test' => array(
+						array(),
+						array($argument1),
+						array($argument1, $argument2)
+					)
+				)
+			)
+			->array($mockController->getCalls('test'))->isEqualTo(array(
+					array(),
+					array($argument1),
+					array($argument1, $argument2)
+				)
+			)
+			->string($mockController->invoke('test', array($argument1, $argument2, $argument3)))->isEqualTo($return)
+			->array($mockController->getCalls())->isEqualTo(array(
+					'test' => array(
+						array(),
+						array($argument1),
+						array($argument1, $argument2),
+						array($argument1, $argument2, $argument3)
+					)
+				)
+			)
+			->array($mockController->getCalls('test'))->isEqualTo(array(
+					array(),
+					array($argument1),
+					array($argument1, $argument2),
+					array($argument1, $argument2, $argument3)
+				)
+			)
+		;
+
+		$mockController->test2 = function() use ($return) { return $return; };
+
+		$this->assert
+			->string($mockController->invoke('test2', array($argument1)))->isEqualTo($return)
+			->array($mockController->getCalls())->isEqualTo(array(
+					'test' => array(
+						array(),
+						array($argument1),
+						array($argument1, $argument2),
+						array($argument1, $argument2, $argument3)
+					),
+					'test2' => array(
+						array($argument1)
+					)
+				)
+			)
+			->array($mockController->getCalls('test2'))->isEqualTo(array(
+					array($argument1)
+				)
+			)
+			->string($mockController->invoke('test2', array($argument1, $argument2)))->isEqualTo($return)
+			->array($mockController->getCalls())->isEqualTo(array(
+					'test' => array(
+						array(),
+						array($argument1),
+						array($argument1, $argument2),
+						array($argument1, $argument2, $argument3)
+					),
+					'test2' => array(
+						array($argument1),
+						array($argument1, $argument2)
+					)
+				)
+			)
+			->array($mockController->getCalls('test2'))->isEqualTo(array(
+					array($argument1),
+					array($argument1, $argument2)
+				)
+			)
+			->string($mockController->invoke('test2', array($argument1, $argument2, $argument3)))->isEqualTo($return)
+			->array($mockController->getCalls())->isEqualTo(array(
+					'test' => array(
+						array(),
+						array($argument1),
+						array($argument1, $argument2),
+						array($argument1, $argument2, $argument3)
+					),
+					'test2' => array(
+						array($argument1),
+						array($argument1, $argument2),
+						array($argument1, $argument2, $argument3)
+					)
+				)
+			)
+			->array($mockController->getCalls('test2'))->isEqualTo(array(
+					array($argument1),
+					array($argument1, $argument2),
+					array($argument1, $argument2, $argument3)
+				)
+			)
+		;
+	}
+
+	public function testGet()
+	{
+		$this->assert
+			->variable(mock\controller::get())->isNull()
+		;
+
+		$mockController = new mock\controller();
+
+		$this->assert
+			->object($mockController->injectInNextMockInstance())->isIdenticalTo($mockController)
+			->object(mock\controller::get())->isIdenticalTo($mockController)
+			->variable(mock\controller::get())->isNull()
+		;
+	}
+
+	public function testReset()
+	{
+		$mockController = new mock\controller();
+
+		$this->assert
+			->variable($mockController->getMock())->isNull()
+			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCalls())->isEmpty()
+			->object($mockController->reset())->isIdenticalTo($mockController)
+			->variable($mockController->getMock())->isNull()
+			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCalls())->isEmpty()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate(__CLASS__)
+		;
+
+		$mock = new \mageekguy\atoum\mock\mageekguy\atoum\tests\units\mock\controller();
+		$mockController->control($mock);
+
+		$mockController->{__FUNCTION__} = function() {};
+		$mockController->invoke(__FUNCTION__, array());
+
+		$this->assert
+			->variable($mockController->getMock())->isNotNull()
+			->array($mockController->getMethods())->isNotEmpty()
+			->array($mockController->getCalls())->isNotEmpty()
+			->object($mockController->reset())->isIdenticalTo($mockController)
+			->variable($mockController->getMock())->isNull()
+			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCalls())->isEmpty()
 		;
 	}
 }
