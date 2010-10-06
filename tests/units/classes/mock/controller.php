@@ -25,6 +25,72 @@ class controller extends atoum\test
 		;
 	}
 
+	public function test__isset()
+	{
+		$mockController = new mock\controller();
+
+		$this->assert
+			->boolean(isset($mockController->{uniqid()}))->isFalse()
+		;
+
+		$method = uniqid();
+
+		$mockController->{$method} = function() {};
+
+		$this->assert
+			->boolean(isset($mockController->{uniqid()}))->isFalse()
+			->boolean(isset($mockController->{$method}))->isTrue()
+		;
+	}
+
+	public function test__get()
+	{
+		$mockController = new mock\controller();
+
+		$this->assert
+			->variable($mockController->{uniqid()})->isNull()
+		;
+
+		$method = uniqid();
+		$function = function() {};
+
+		$mockController->{$method} = $function;
+
+		$this->assert
+			->variable($mockController->{uniqid()})->isNull()
+			->object($mockController->{$method})->isIdenticalTo($function)
+		;
+	}
+
+	public function test__unset()
+	{
+		$mockController = new mock\controller();
+
+		$method = uniqid();
+
+		$this->assert
+			->variable($mockController->{$method})->isNull()
+		;
+
+		unset($mockController->{$method});
+
+		$this->assert
+			->variable($mockController->{$method})->isNull()
+		;
+
+		$mockController->{$method} = function() {};
+
+		$this->assert
+			->variable($mockController->{$method})->isNotNull()
+		;
+
+		unset($mockController->{$method});
+
+		$this->assert
+			->variable($mockController->{$method})->isNull()
+		;
+	}
+
 	public function testSetReflectionClassInjecter()
 	{
 		$mockController = new mock\controller();

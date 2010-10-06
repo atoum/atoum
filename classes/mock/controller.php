@@ -25,7 +25,7 @@ class controller
 	{
 		$this->checkMethod($method);
 
-		return $this->methods[$method];
+		return (isset($this->methods[$method]) === false ? null : $this->methods[$method]);
 	}
 
 	public function __isset($method)
@@ -39,7 +39,10 @@ class controller
 	{
 		$this->checkMethod($method);
 
-		$this->methods[$method] = null;
+		if (isset($this->methods[$method]) === true)
+		{
+			$this->methods[$method] = null;
+		}
 	}
 
 	public function getMock()
