@@ -27,9 +27,16 @@ class mock extends \mageekguy\atoum\asserter
 		return $this->mock;
 	}
 
-	public function wasCalled()
+	public function wasCalled($failMessage = null)
 	{
 		sizeof($this->mockIsSet()->mock->getMockController()->getCalls()) > 0 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not called'), get_class($this->mock)));
+
+		return $this;
+	}
+
+	public function callMethod($method, $failMessage = null)
+	{
+		sizeof($this->mockIsSet()->mock->getMockController()->getCalls($method)) > 0 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Method %s is not called'), $method));
 
 		return $this;
 	}
@@ -40,6 +47,8 @@ class mock extends \mageekguy\atoum\asserter
 		{
 			throw new \logicException('Mock is undefined');
 		}
+
+		return $this;
 	}
 }
 

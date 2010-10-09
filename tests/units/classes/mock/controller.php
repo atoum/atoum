@@ -117,7 +117,6 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\reflectionMethod')
@@ -217,6 +216,8 @@ class controller extends atoum\test
 			)
 			->array($mockController->getCalls())->isEmpty()
 		;
+
+		$mockController = new mock\controller();
 	}
 
 	public function testInvoke()

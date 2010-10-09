@@ -60,13 +60,7 @@ class variable extends atoum\test
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-		;
-
-		$this->assert
-			->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter); $line = __LINE__
-		;
-
-		$this->assert
+			->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;
