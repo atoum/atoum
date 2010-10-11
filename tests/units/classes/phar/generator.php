@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../runner.php');
 /** @isolation on */
 class generator extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(atoum\phar\generator::phar)->isEqualTo('mageekguy.atoum.phar')
+		;
+	}
+
 	public function test__construct()
 	{
 		$adapter = new atoum\adapter();
@@ -340,32 +347,41 @@ class generator extends atoum\test
 
 		$mockGenerator = new mock\generator();
 
-		$pharController = new mock\controller();
-		$pharController->injectInNextMockInstance();
-		$pharController->__construct = function() {};
-		$pharController->setStub = function() {};
-		$pharController->setMetadata = function() {};
-		$pharController->buildFromIterator = function() {};
-		$pharController->setSignatureAlgorithm = function() {};
+		$mockGenerator
+			->generate('\phar')
+			->generate('\recursiveDirectoryIterator')
+		;
 
-		$mockGenerator->generate('\phar');
+		$generator->setPharInjecter(function($name) use (& $phar) {
+				$pharController = new mock\controller();
+				$pharController->injectInNextMockInstance();
+				$pharController->__construct = function() {};
+				$pharController->setStub = function() {};
+				$pharController->setMetadata = function() {};
+				$pharController->buildFromIterator = function() {};
+				$pharController->setSignatureAlgorithm = function() {};
+				$pharController->injectInNextMockInstance();
 
-		$phar = new mock\phar(uniqid());
+				return ($phar = new mock\phar($name));
+			}
+		);
 
-		$generator->setPharInjecter(function($name) use ($phar) { return $phar; });
-
-		$fileIteratorController = new mock\controller();
-		$fileIteratorController->injectInNextMockInstance();
-		$fileIteratorController->__construct = function() {};
-
-		$mockGenerator->generate('\recursiveDirectoryIterator');
-
-		$iterator = new mock\recursiveDirectoryIterator(uniqid());
-
-		$generator->setFileIteratorInjecter(function($directory) use ($iterator) { return $iterator; });
+		$generator->setFileIteratorInjecter(function($directory) use (& $fileIterator) {
+				$fileIteratorController = new mock\controller();
+				$fileIteratorController->injectInNextMockInstance();
+				$fileIteratorController->__construct = function() {};
+				$fileIteratorController->injectInNextMockInstance();
+				return ($fileIterator = new mock\recursiveDirectoryIterator($directory));
+			}
+		);
 
 		$this->assert
 			->object($generator->run())->isIdenticalTo($generator)
+			->mock($phar)
+				->callMethod('__construct', array($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null))
+				->callMethod('buildFromIterator', array($fileIterator, null))
+			->mock($fileIterator)
+				->callMethod('__construct', array($generator->getOriginDirectory()))
 		;
 	}
 }

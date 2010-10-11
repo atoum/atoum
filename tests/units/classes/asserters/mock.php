@@ -126,7 +126,7 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testCallMethod()
+	public function testCallMethod($argForTest = null)
 	{
 		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
 
@@ -172,6 +172,70 @@ class mock extends atoum\test
 			)
 		;
 
+		$mock->{__FUNCTION__}();
+
+		$this->assert
+			->object($asserter->callMethod($method))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->callMethod($method, array(uniqid())); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('Method %s is not called with this argument'), $method))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::callMethod()',
+						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
+					)
+				)
+			)
+			->exception(function() use (& $otherLine, $asserter, $method) { $otherLine = __LINE__; $asserter->callMethod($method, array(uniqid(), uniqid())); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('Method %s is not called with these arguments'), $method))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::callMethod()',
+						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
+					),
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::callMethod()',
+						'fail' => sprintf($locale->_('Method %s is not called with these arguments'), $method)
+					)
+				)
+			)
+		;
+
+		$arg = uniqid();
+
+		$mock->{__FUNCTION__}($arg);
+
+		$this->assert
+			->object($asserter->callMethod($method, array($arg)))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(2)
+		;
 	}
 }
 

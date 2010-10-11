@@ -34,11 +34,34 @@ class mock extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
-	public function callMethod($method, $failMessage = null)
+	public function callMethod($method, array $args = null, $failMessage = null)
 	{
-		sizeof($this->mockIsSet()->mock->getMockController()->getCalls($method)) > 0 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Method %s is not called'), $method));
+		$calls = $this->mockIsSet()->mock->getMockController()->getCalls($method);
+
+		if (sizeof($calls) <= 0)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Method %s is not called'), $method));
+		}
+		else if ($args !== null && in_array($args, $calls) === false)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('Method %s is not called with this argument', 'Method %s is not called with these arguments', sizeof($args)), $method));
+		}
+		else
+		{
+			$this->pass();
+		}
 
 		return $this;
+	}
+
+	protected function setWithArguments(array $arguments)
+	{
+		if (array_key_exists(0, $arguments) === false)
+		{
+			throw new \logicException('Argument must be set at index 0');
+		}
+
+		return $this->setWith($arguments[0]);
 	}
 
 	protected function mockIsSet()
