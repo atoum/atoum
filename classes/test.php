@@ -24,14 +24,13 @@ abstract class test implements observable, \countable
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
 
-	protected $score = null;
-	protected $assert = null;
-	protected $observers = array();
-	protected $isolation = true;
-	protected $ignore = false;
-
 	private $class = '';
 	private $path = '';
+	private $asserterGenerator = null;
+	private $score = null;
+	private $observers = array();
+	private $isolation = true;
+	private $ignore = false;
 	private $testMethods = array();
 	private $runTestMethods = array();
 	private $currentMethod = null;
@@ -43,16 +42,16 @@ abstract class test implements observable, \countable
 			$score = new score();
 		}
 
-		$this->setScore($score);
-
 		if ($locale === null)
 		{
 			$locale = new locale();
 		}
 
-		$this->setLocale($locale);
-
-		$this->assert = new asserter($this->score, $this->locale);
+		$this
+			->setScore($score)
+			->setLocale($locale)
+			->asserterGenerator = new asserter\generator($this->score, $this->locale)
+		;
 
 		$class = new \reflectionClass($this);
 
@@ -103,6 +102,24 @@ abstract class test implements observable, \countable
 		$this->runTestMethods = $this->getTestMethods();
 	}
 
+	public function __get($property)
+	{
+		switch ($property)
+		{
+			case 'assert':
+				return $this->asserterGenerator;
+
+			default:
+				throw new \logicException('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
+		}
+	}
+
+	public function setAsserterGenerator(atoum\asserter\generator $generator)
+	{
+		$this->asserterGenerator = $generator->setScore($this->score)->setLocale($this->locale);
+		return $this;
+	}
+
 	public function setScore(score $score)
 	{
 		$this->score = $score;
@@ -123,6 +140,11 @@ abstract class test implements observable, \countable
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+	public function getAsserterGenerator()
+	{
+		return $this->asserterGenerator;
 	}
 
 	public function count()

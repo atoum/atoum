@@ -34,7 +34,7 @@ class mock extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
-	public function callMethod($method, array $args = null, $failMessage = null)
+	public function call($method, array $args = null, $failMessage = null)
 	{
 		$calls = $this->mockIsSet()->mock->getMockController()->getCalls($method);
 

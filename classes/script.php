@@ -22,6 +22,11 @@ abstract class script
 
 		$this->adapter = $adapter;
 
+		if (isset($this->adapter->exit) === false)
+		{
+			$adapter->exit = function($code) { exit($code); };
+		}
+
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
 			throw new \logicException('\'' . $name . '\' must be used in CLI only');
@@ -64,8 +69,8 @@ abstract class script
 
 	public function run()
 	{
-//		set_error_handler(array($this, 'errorHandler'));
-//		set_exception_handler(array($this, 'exceptionHandler'));
+		$this->adapter->set_error_handler(array($this, 'errorHandler'));
+		$this->adapter->set_exception_handler(array($this, 'exceptionHandler'));
 
 		$this->arguments = new \arrayIterator(array_slice($_SERVER['argv'], 1));
 
@@ -151,7 +156,7 @@ abstract class script
 	protected function stop($code, $message)
 	{
 		fwrite(STDERR, sprintf($this->locale->_('Error: %s.'), rtrim(rtrim($message, '.'))) . "\n");
-		die($code);
+		$this->adapter->exit($code);
 	}
 }
 

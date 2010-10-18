@@ -11,10 +11,7 @@ class phpClass extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\phpClass($score, $locale);
+		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserter')

@@ -11,15 +11,13 @@ class mock extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\mock($score, $locale);
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserter')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->getMock())->isNull()
 		;
 	}
 
@@ -30,23 +28,16 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$mock = uniqid();
-
 		$this->assert
-			->exception(function() use ($asserter, $mock) {
-						$asserter->setWith($mock);
+			->exception(function() use ($asserter, & $mock) {
+						$asserter->setWith($mock = uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a mock'), $mock))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
-		;
-
-		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock();
-
-		$this->assert
-			->object($asserter->setWith($mock))->isIdenticalTo($asserter)
+			->object($asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
 			->object($asserter->getMock())->isIdenticalTo($mock)
 		;
 	}
@@ -66,9 +57,8 @@ class mock extends atoum\test
 
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
-		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock();
 
-		$asserter->setWith($mock);
+		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock());
 
 		$score->reset();
 
@@ -95,10 +85,8 @@ class mock extends atoum\test
 
 		$score->reset();
 
-		$failMessage = uniqid();
-
 		$this->assert
-			->exception(function() use (& $line, $asserter, $failMessage) { $line = __LINE__; $asserter->wasCalled($failMessage); })
+			->exception(function() use (& $line, $asserter, & $failMessage) { $line = __LINE__; $asserter->wasCalled($failMessage = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage($failMessage)
 			->integer($score->getPassNumber())->isEqualTo(0)
@@ -132,7 +120,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) {
-						$asserter->callMethod(uniqid());
+						$asserter->call(uniqid());
 					}
 				)
 					->isInstanceOf('\logicException')
@@ -154,7 +142,7 @@ class mock extends atoum\test
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->callMethod($method); })
+			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('Method %s is not called'), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
@@ -165,7 +153,7 @@ class mock extends atoum\test
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::callMethod()',
+						'asserter' => get_class($asserter) . '::call()',
 						'fail' => sprintf($locale->_('Method %s is not called'), $method)
 					)
 				)
@@ -175,7 +163,7 @@ class mock extends atoum\test
 		$mock->{__FUNCTION__}();
 
 		$this->assert
-			->object($asserter->callMethod($method))->isIdenticalTo($asserter)
+			->object($asserter->call($method))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -185,7 +173,7 @@ class mock extends atoum\test
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->callMethod($method, array(uniqid())); })
+			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method, array(uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('Method %s is not called with this argument'), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
@@ -196,12 +184,12 @@ class mock extends atoum\test
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::callMethod()',
+						'asserter' => get_class($asserter) . '::call()',
 						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
 					)
 				)
 			)
-			->exception(function() use (& $otherLine, $asserter, $method) { $otherLine = __LINE__; $asserter->callMethod($method, array(uniqid(), uniqid())); })
+			->exception(function() use (& $otherLine, $asserter, $method) { $otherLine = __LINE__; $asserter->call($method, array(uniqid(), uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('Method %s is not called with these arguments'), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
@@ -212,7 +200,7 @@ class mock extends atoum\test
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::callMethod()',
+						'asserter' => get_class($asserter) . '::call()',
 						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
 					),
 					array(
@@ -220,19 +208,17 @@ class mock extends atoum\test
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
 						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::callMethod()',
+						'asserter' => get_class($asserter) . '::call()',
 						'fail' => sprintf($locale->_('Method %s is not called with these arguments'), $method)
 					)
 				)
 			)
 		;
 
-		$arg = uniqid();
-
-		$mock->{__FUNCTION__}($arg);
+		$mock->{__FUNCTION__}($arg = uniqid());
 
 		$this->assert
-			->object($asserter->callMethod($method, array($arg)))->isIdenticalTo($asserter)
+			->object($asserter->call($method, array($arg)))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;

@@ -22,6 +22,8 @@ class string extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -31,10 +33,8 @@ class string extends atoum\test
 
 		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
 
-		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
-
 		$this->assert
-			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
+			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a string'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -54,10 +54,8 @@ class string extends atoum\test
 			->variable($asserter->getCharlist())->isNull()
 		;
 
-		$variable = uniqid();
-
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($variable = uniqid()))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
@@ -69,11 +67,8 @@ class string extends atoum\test
 
 		$score->reset();
 
-		$variable = uniqid();
-		$charlist = "\010";
-
 		$this->assert
-			->object($asserter->setWith($variable, $charlist))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($variable = uniqid(), $charlist = "\010"))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
@@ -88,18 +83,13 @@ class string extends atoum\test
 	{
 		$asserter = new asserters\string(new atoum\score(), new atoum\locale());
 
-		$variable = uniqid();
-
-		$asserter->setWith($variable);
+		$asserter->setWith($variable = uniqid());
 
 		$this->assert
 			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . $variable . '\'')
 		;
 
-		$variable = "\010" . uniqid() . "\010";
-		$charlist = "\010";
-
-		$asserter->setWith($variable, $charlist);
+		$asserter->setWith($variable = "\010" . uniqid() . "\010", $charlist = "\010");
 
 		$this->assert
 			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . addcslashes($variable, "\010") . '\'')

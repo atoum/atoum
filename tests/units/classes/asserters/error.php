@@ -19,6 +19,8 @@ class error extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->getMessage())->isNull()
+			->variable($asserter->getType())->isNull()
 		;
 	}
 
@@ -77,8 +79,6 @@ class error extends atoum\test
 
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid());
 
-		$otherException = null;
-
 		$this->assert
 			->object($asserter->exists())->isIdenticalTo($asserter); $otherLine = __LINE__
 		;
@@ -102,9 +102,7 @@ class error extends atoum\test
 
 		$score->reset();
 
-		$message = uniqid();
-
-		$asserter->setWith($message, null);
+		$asserter->setWith($message = uniqid(), null);
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })

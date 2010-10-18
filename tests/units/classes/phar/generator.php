@@ -14,7 +14,11 @@ class generator extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(atoum\phar\generator::phar)->isEqualTo('mageekguy.atoum.phar')
+			->string(phar\generator::phar)->isEqualTo('mageekguy.atoum.phar')
+			->string(phar\generator::version)->isEqualTo('0.0.1')
+			->string(phar\generator::author)->isEqualTo('Frédéric Hardy')
+			->string(phar\generator::mail)->isEqualTo('support@atoum.org')
+			->string(phar\generator::repository)->isEqualTo('https://svn.mageekbox.net/repositories/unit/trunk')
 		;
 	}
 
@@ -24,12 +28,15 @@ class generator extends atoum\test
 
 		$adapter->php_sapi_name = function() { return uniqid(); };
 
+		$name = uniqid();
+
 		$this->assert
-			->exception(function() use ($adapter) {
-					$generator = new phar\generator(uniqid(), null, $adapter);
+			->exception(function() use ($name, $adapter) {
+					$generator = new phar\generator($name, null, $adapter);
 				}
 			)
 				->isInstanceOf('\logicException')
+				->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
@@ -343,14 +350,21 @@ class generator extends atoum\test
 		;
 
 		$adapter->is_writable = function() { return true; };
-		$adapter->file_get_contents = function() {};
+
+		$generator->setPharInjecter(function($name) { return null; });
+
+		$this->assert
+			->exception(function() use ($generator) {
+						$generator->run();
+					}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Phar injecter must return a \phar instance')
+		;
 
 		$mockGenerator = new mock\generator();
 
-		$mockGenerator
-			->generate('\phar')
-			->generate('\recursiveDirectoryIterator')
-		;
+		$mockGenerator->generate('\phar');
 
 		$generator->setPharInjecter(function($name) use (& $phar) {
 				$pharController = new mock\controller();
@@ -366,6 +380,19 @@ class generator extends atoum\test
 			}
 		);
 
+		$generator->setFileIteratorInjecter(function($directory) { return null; });
+
+		$this->assert
+			->exception(function() use ($generator) {
+						$generator->run();
+					}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('File iterator injecter must return a \iterator instance')
+		;
+
+		$mockGenerator->generate('\recursiveDirectoryIterator');
+
 		$generator->setFileIteratorInjecter(function($directory) use (& $fileIterator) {
 				$fileIteratorController = new mock\controller();
 				$fileIteratorController->injectInNextMockInstance();
@@ -375,13 +402,88 @@ class generator extends atoum\test
 			}
 		);
 
+		$adapter->file_get_contents = function($file) { return false; };
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->run();
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
+		;
+
+		$description = uniqid();
+
+		$adapter->file_get_contents = function($file) use ($generator, $description) {
+				switch ($file)
+				{
+					case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+						return $description;
+
+					default:
+						return false;
+				}
+			}
+		;
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->run();
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
+		;
+
+		$licence = uniqid();
+
+		$adapter->file_get_contents = function($file) use ($generator, $description, $licence) {
+				switch ($file)
+				{
+					case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+						return $description;
+
+					case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'COPYING':
+						return $licence;
+
+					default:
+						return uniqid();
+				}
+			}
+		;
+
 		$this->assert
 			->object($generator->run())->isIdenticalTo($generator)
 			->mock($phar)
-				->callMethod('__construct', array($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null))
-				->callMethod('buildFromIterator', array($fileIterator, null))
+				->call('__construct', array(
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null
+					)
+				)
+				->call('setMetadata', array(
+						array(
+							'version' => atoum\test::getVersion(),
+							'author' => atoum\test::author,
+							'support' => atoum\phar\generator::mail,
+							'repository' => atoum\phar\generator::repository,
+							'description' => $description,
+							'licence' => $licence
+						)
+					)
+				)
+				->call('setStub', array('<?php \phar::mapPhar(\'' . phar\generator::phar . '\'); require(\'phar://' . phar\generator::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();', null))
+				->call('buildFromIterator', array(
+						$fileIterator,
+						null
+					)
+				)
+				->call('setSignatureAlgorithm', array(
+						\phar::SHA1,
+						null
+					)
+				)
 			->mock($fileIterator)
-				->callMethod('__construct', array($generator->getOriginDirectory()))
+				->call('__construct', array($generator->getOriginDirectory()))
 		;
 	}
 }

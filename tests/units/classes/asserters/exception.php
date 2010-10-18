@@ -19,6 +19,8 @@ class exception extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -28,10 +30,8 @@ class exception extends atoum\test
 
 		$asserter = new asserters\exception($score = new atoum\score(), $locale = new atoum\locale());
 
-		$variable = uniqid();
-
 		$this->assert
-			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
+			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an exception'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -50,10 +50,8 @@ class exception extends atoum\test
 			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 
-		$variable = new \exception();
-
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($variable = new \exception()))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert

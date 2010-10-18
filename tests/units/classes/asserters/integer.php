@@ -19,6 +19,8 @@ class integer extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -28,10 +30,8 @@ class integer extends atoum\test
 
 		$asserter = new asserters\integer($score = new atoum\score(), $locale = new atoum\locale());
 
-		$variable = uniqid();
-
 		$this->assert
-			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
+			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an integer'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -50,10 +50,8 @@ class integer extends atoum\test
 			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 
-		$variable = rand(- PHP_INT_MAX, PHP_INT_MAX);
-
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
@@ -71,44 +69,33 @@ class integer extends atoum\test
 
 		$variable = rand(1, PHP_INT_MAX);
 
-		$setWithLine = __LINE__; $asserter->setWith($variable);
+		$asserter->setWith($variable = rand(1, PHP_INT_MAX));
 
-		$exception = null;
-
-		try
-		{
-			$isEqualToLine1 = __LINE__; $this->assert->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter);
-		}
-		catch (\exception $exception) {}
+		$score->reset();
 
 		$this->assert
-			->variable($exception)->isNull()
-			->integer($score->getPassNumber())->isEqualTo(2)
+			->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$exception = null;
-
-		try
-		{
-			$isEqualToLine2 = __LINE__; $asserter->isEqualTo(- $variable);
-		}
-		catch (\exception $exception) {}
-
 		$this->assert
-			->exception($exception)
+			->exception(function() use ($asserter, $variable, & $line) {
+						$line = __LINE__; $asserter->isEqualTo(- $variable);
+					}
+			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)))
-			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
 						'file' => __FILE__,
-						'line' => $isEqualToLine2,
+						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => $exception->getMessage()
+						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable))
 					)
 				)
 			)

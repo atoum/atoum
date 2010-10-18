@@ -14,14 +14,13 @@ class boolean extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\boolean($score, $locale);
+		$asserter = new asserters\boolean($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -29,15 +28,10 @@ class boolean extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
-
-		$asserter = new asserters\boolean($score, $locale);
-
-		$variable = uniqid();
+		$asserter = new asserters\boolean($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
+			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a boolean'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)

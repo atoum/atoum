@@ -12,9 +12,18 @@ class variable extends \mageekguy\atoum\asserter
 		return $this->toString($this->variable);
 	}
 
-	public function setWith($variable)
+	public function __get($property)
 	{
-		$this->variable = $variable;
+		$this->checkProperty($property);
+
+		return $this->variable;
+	}
+
+	public function __set($property, $value)
+	{
+		$this->checkProperty($property);
+
+		$this->variable = $value;
 
 		if ($this->isSet === false)
 		{
@@ -22,6 +31,26 @@ class variable extends \mageekguy\atoum\asserter
 		}
 
 		return $this;
+	}
+
+	public function __unset($property)
+	{
+		$this->checkProperty($property);
+
+		$this->variable = null;
+		$this->isSet = false;
+	}
+
+	public function __isset($property)
+	{
+		$this->checkProperty($property);
+
+		return ($this->isSet === true);
+	}
+
+	public function setWith($variable)
+	{
+		return $this->__set('variable', $variable);
 	}
 
 	public function getVariable()
@@ -93,6 +122,14 @@ class variable extends \mageekguy\atoum\asserter
 		}
 
 		return $this;
+	}
+
+	protected function checkProperty($property)
+	{
+		if ($property !== 'variable')
+		{
+			throw new \logicException('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
+		}
 	}
 
 	protected static function check($variable, $method) {}

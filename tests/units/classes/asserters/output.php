@@ -20,6 +20,8 @@ class output extends atoum\test
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserters\string')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -27,18 +29,14 @@ class output extends atoum\test
 	{
 		$asserter = new asserters\output(new atoum\score(), new atoum\locale());
 
-		$output = uniqid();
-
 		$this->assert
-			->object($asserter->setWith(function() use ($output) { echo $output; }))->isIdenticalTo($asserter)
+			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }))->isIdenticalTo($asserter)
 			->string($asserter->getVariable())->isEqualTo($output)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
-		$output = uniqid();
-
 		$this->assert
-			->object($asserter->setWith(function() use ($output) { echo $output; }, "\010"))->isIdenticalTo($asserter)
+			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, "\010"))->isIdenticalTo($asserter)
 			->string($asserter->getVariable())->isEqualTo($output)
 			->string($asserter->getCharlist())->isEqualTo("\010")
 		;

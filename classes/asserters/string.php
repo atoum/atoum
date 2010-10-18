@@ -50,7 +50,7 @@ class string extends \mageekguy\atoum\asserters\variable
 	{
 		if (isset($arguments[1]) === true)
 		{
-			$this->charset = $arguments[1];
+			$this->charlist = $arguments[1];
 		}
 
 		return parent::setWithArguments($arguments);

@@ -193,40 +193,49 @@ class generator extends atoum\script
 			throw new \logicException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
 		}
 
-		try
+		$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+
+		if ($phar instanceof \phar === false)
 		{
-			$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
-
-			if ($phar instanceof \phar === false)
-			{
-				throw new \logicException('Phar injecter must return a \phar instance');
-			}
-
-			$fileIterator = $this->getFileIterator($this->originDirectory);
-
-			if ($fileIterator instanceof \iterator === false)
-			{
-				throw new \logicException('File iterator injecter must return a \iterator instance');
-			}
-
-			$phar->setStub('<?php Phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER(); ?>');
-			$phar->setMetadata(array(
-					'version' => atoum\test::getVersion(),
-					'author' => atoum\test::author,
-					'support' => self::mail,
-					'repository' => self::repository,
-					'description' => $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT'),
-					'licence' => $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING')
-				)
-			);
-
-			$phar->buildFromIterator($fileIterator);
-			$phar->setSignatureAlgorithm(\Phar::SHA1);
+			throw new \logicException('Phar injecter must return a \phar instance');
 		}
-		catch (\exception $exception)
+
+		$fileIterator = $this->getFileIterator($this->originDirectory);
+
+		if ($fileIterator instanceof \iterator === false)
 		{
-			throw new \logicException(sprintf($this->locale->_('Unable to create phar \'%s\' in directory \'%s\''), $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar, $this->destinationDirectory));
+			throw new \logicException('File iterator injecter must return a \iterator instance');
 		}
+
+		$description = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
+
+		if ($description === false)
+		{
+			throw new \logicException('ABOUT file is missing in \'' . $this->originDirectory . '\'');
+		}
+
+		$licence = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
+
+		if ($licence === false)
+		{
+			throw new \logicException('COPYING file is missing in \'' . $this->originDirectory . '\'');
+		}
+
+		$phar->setStub('<?php \phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();');
+
+		$phar->setMetadata(array(
+				'version' => atoum\test::getVersion(),
+				'author' => atoum\test::author,
+				'support' => self::mail,
+				'repository' => self::repository,
+				'description' => $description,
+				'licence' => $licence
+			)
+		);
+
+		$phar->buildFromIterator($fileIterator);
+
+		$phar->setSignatureAlgorithm(\phar::SHA1);
 
 		return $this;
 	}

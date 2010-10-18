@@ -534,7 +534,7 @@ class score extends atoum\test
 		;
 
 		$score->addPass();
-		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
 		$score->addOutput(uniqid(), uniqid(), uniqid());
@@ -584,7 +584,7 @@ class score extends atoum\test
 		;
 
 		$score->addPass();
-		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
 		$score->addOutput(uniqid(), uniqid(), uniqid());
@@ -610,7 +610,7 @@ class score extends atoum\test
 		;
 
 		$otherScore->addPass();
-		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), rand(- PHP_INT_MAX, PHP_INT_MAX)), uniqid());
+		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale()), uniqid());
 		$otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
 		$otherScore->addOutput(uniqid(), uniqid(), uniqid());

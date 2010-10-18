@@ -5,37 +5,28 @@ namespace mageekguy\atoum;
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
 
-class asserter
+abstract class asserter
 {
 	protected $score = null;
 	protected $locale = null;
-	protected $aliases = array();
+	protected $generator = null;
 
-	public function __construct(score $score, locale $locale)
+	public function __construct(score $score, locale $locale, asserter\generator $generator = null)
 	{
 		$this->score = $score;
 		$this->locale = $locale;
+
+		if ($generator === null)
+		{
+			$generator = new asserter\generator($this->score, $this->locale);
+		}
+
+		$this->generator = $generator;
 	}
 
 	public function __call($asserter, $arguments)
 	{
-		$class = $this->getAsserterClass($asserter);
-
-		if (class_exists($class, true) === false)
-		{
-			throw new \logicException('Asserter \'' . $class . '\' does not exist');
-		}
-
-		$asserter = new $class($this->score, $this->locale);
-
-		if (sizeof($arguments) > 0)
-		{
-			$asserter->setWithArguments($arguments);
-		}
-
-		$asserter->aliases = $this->aliases;
-
-		return $asserter;
+		return $this->generator->__call($asserter, $arguments);
 	}
 
 	public function getScore()
@@ -78,104 +69,36 @@ class asserter
 		}
 	}
 
-	public function setAlias($alias, $asserter)
-	{
-		$this->aliases[$alias] = $asserter;
-	}
-
-	public static function resetAliases()
-	{
-		$this->aliases = array();
-	}
-
-	public function getAliases()
-	{
-		return $this->aliases;
-	}
+	public abstract function setWith($variable);
 
 	protected function pass()
 	{
-		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
 		$this->score->addPass();
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
-		list($file, $line, $class, $method, $asserter) = $this->getBacktrace();
+		$debugBacktraces = array_slice(debug_backtrace(), 1);
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
-	}
+		$asserter = get_class($this);
 
-	protected function setWithArguments(array $arguments)
-	{
-		return $this;
-	}
-
-	protected function getAsserterClass($asserter)
-	{
-		if (isset($this->aliases[$asserter]) === true)
+		foreach ($debugBacktraces as $debugBacktrace)
 		{
-			$asserter = $this->aliases[$asserter];
+			if (isset($debugBacktrace['object']) === true && get_class($debugBacktrace['object']) === $asserter && isset($debugBacktrace['file']) === true && isset($debugBacktrace['line']) === true)
+			{
+				$file = $debugBacktrace['file'];
+				$line = $debugBacktrace['line'];
+			}
+
+			if (isset($debugBacktrace['class']) === true && is_subclass_of($debugBacktrace['class'], '\mageekguy\atoum\test') === true)
+			{
+				$class = $debugBacktrace['class'];
+				$method = $debugBacktrace['function'];
+			}
 		}
 
-		if (substr($asserter, 0, 1) != '\\')
-		{
-			$asserter = __NAMESPACE__ . '\asserters\\' . $asserter;
-		}
-
-		return $asserter;
-	}
-
-	protected function getNamespace()
-	{
-	}
-
-	private function getBacktrace()
-	{
-		$debugKey = 0;
-
-		$debugBacktrace = debug_backtrace();
-
-		while (isset($debugBacktrace[$debugKey]['object']) === false || $debugBacktrace[$debugKey]['object'] !== $this)
-		{
-			$debugKey++;
-		}
-
-		do
-		{
-			$debugKey++;
-		}
-		while (isset($debugBacktrace[$debugKey]['object']) === true && $debugBacktrace[$debugKey]['object'] === $this);
-
-		$backtrace = array();
-
-		if (isset($debugBacktrace[$debugKey + 3]) === true && $debugBacktrace[$debugKey + 3]['function'] == '__call')
-		{
-			$backtrace[] = $debugBacktrace[$debugKey - 1]['file'];
-			$backtrace[] = $debugBacktrace[$debugKey - 1]['line'];
-			$backtrace[] = $debugBacktrace[$debugKey + 5]['class'];
-			$backtrace[] = $debugBacktrace[$debugKey + 5]['function'];
-			$backtrace[] = get_class($this) . '::' . $debugBacktrace[$debugKey - 1]['function'] . '()';
-		}
-		else if ($debugBacktrace[$debugKey]['function'] != '__call')
-		{
-			$backtrace[] = $debugBacktrace[$debugKey - 1]['file'];
-			$backtrace[] = $debugBacktrace[$debugKey - 1]['line'];
-			$backtrace[] = $debugBacktrace[$debugKey]['class'];
-			$backtrace[] = $debugBacktrace[$debugKey]['function'];
-			$backtrace[] = get_class($this) . '::' . $debugBacktrace[$debugKey - 1]['function'] . '()';
-		}
-		else
-		{
-			$backtrace[] = $debugBacktrace[$debugKey]['file'];
-			$backtrace[] = $debugBacktrace[$debugKey]['line'];
-			$backtrace[] = $debugBacktrace[$debugKey + 2]['class'];
-			$backtrace[] = $debugBacktrace[$debugKey + 2]['function'];
-			$backtrace[] = get_class($this) . '::' . $debugBacktrace[$debugKey]['args'][0] . '()';
-		}
-
-		return $backtrace;
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter . '::' . $debugBacktraces[0]['function'] . '()', $reason));
 	}
 }
 

@@ -14,14 +14,13 @@ class collection extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\collection($score, $locale);
+		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->variable($asserter->variable)->isNull()
+			->boolean(isset($asserter->variable))->isFalse()
 		;
 	}
 
@@ -29,15 +28,10 @@ class collection extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$locale = new atoum\locale();
-		$score = new atoum\score();
-
-		$asserter = new asserters\collection($score, $locale);
-
-		$variable = uniqid();
+		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, $variable) { $line = __LINE__; $asserter->setWith($variable); })
+			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an array'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -56,10 +50,8 @@ class collection extends atoum\test
 			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 
-		$variable = array();
-
 		$this->assert
-			->object($asserter->setWith($variable))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($variable = array()))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
