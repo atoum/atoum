@@ -87,16 +87,12 @@ abstract class asserter
 		$asserter = get_class($this);
 		$line = null;
 
-		$backtraces = array_filter(debug_backtrace(), function($value) use ($file) { return (isset($value['file']) === true && $value['file'] === $file); });
+		$cloneOfThis = $this;
 
-		foreach ($backtraces as $backtrace)
-		{
-			if ($backtrace['object'] === $this)
-			{
-				$asserter .= '::' . $backtrace['function'] . '()';
-				$line = $backtrace['line'];
-			}
-		}
+		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $cloneOfThis) { return (isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && $value['object'] === $cloneOfThis); }));
+
+		$asserter .= '::' . $backtrace['function'] . '()';
+		$line = $backtrace['line'];
 
 		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
 	}
