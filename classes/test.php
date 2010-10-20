@@ -35,6 +35,8 @@ abstract class test implements observable, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 
+	public static $runningTest = null;
+
 	public function __construct(score $score = null, locale $locale = null)
 	{
 		if ($score === null)
@@ -235,6 +237,8 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
+		self::$runningTest = $this;
+
 		$this->callObservers(self::runStart);
 
 		if (sizeof($runTestMethods) > 0)
@@ -317,6 +321,8 @@ abstract class test implements observable, \countable
 		}
 
 		$this->callObservers(self::runStop);
+
+		self::$runningTest = null;
 
 		return $this;
 	}

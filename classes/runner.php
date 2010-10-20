@@ -81,13 +81,15 @@ class runner implements observable
 
 		if ($instance === null)
 		{
-			$instance = new self();
+			$instance = new static();
 		}
 
 		return $instance;
 	}
 
 	protected function __construct() {}
+
+	protected function __clone() {}
 }
 
 ?>

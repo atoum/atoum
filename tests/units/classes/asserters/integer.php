@@ -98,8 +98,8 @@ class integer extends atoum\test
 						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable))
 					)
 				)
-			)
-		;
+				)
+			;
 	}
 }
 

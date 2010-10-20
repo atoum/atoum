@@ -79,26 +79,49 @@ abstract class asserter
 
 	protected function fail($reason)
 	{
-		$debugBacktraces = array_slice(debug_backtrace(), 1);
+		$test = atoum\test::$runningTest;
 
+		$class = $test->getClass();
+		$method = $test->getCurrentMethod();
+		$file = $test->getPath();
 		$asserter = get_class($this);
+		$line = null;
 
-		foreach ($debugBacktraces as $debugBacktrace)
+		$backtraces = array_filter(debug_backtrace(), function($value) use ($file) { return (isset($value['file']) === true && $value['file'] === $file); });
+
+		foreach ($backtraces as $backtrace)
 		{
-			if (isset($debugBacktrace['object']) === true && get_class($debugBacktrace['object']) === $asserter && isset($debugBacktrace['file']) === true && isset($debugBacktrace['line']) === true)
+			if ($backtrace['object'] === $this)
 			{
-				$file = $debugBacktrace['file'];
-				$line = $debugBacktrace['line'];
-			}
-
-			if (isset($debugBacktrace['class']) === true && is_subclass_of($debugBacktrace['class'], '\mageekguy\atoum\test') === true)
-			{
-				$class = $debugBacktrace['class'];
-				$method = $debugBacktrace['function'];
+				$asserter .= '::' . $backtrace['function'] . '()';
+				$line = $backtrace['line'];
 			}
 		}
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter . '::' . $debugBacktraces[0]['function'] . '()', $reason));
+		/*
+		foreach ($backtraces as $i => $backtrace)
+		{
+			if (is_a($backtrace['object'], __NAMESPACE__ . '\asserter\generator') === true)
+			{
+				$file = $backtrace['file'];
+				$line = $backtrace['line'];
+			}
+
+			if ($backtrace['class'] === $asserterClass)
+			{
+				if ($file === null && $line === null)
+				{
+					$file = $backtrace['file'];
+					$line = $backtrace['line'];
+				}
+
+				$asserter = $asserterClass . '::' . $backtrace['function'] . '()';
+				break;
+			}
+		}
+		*/
+
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
 	}
 }
 

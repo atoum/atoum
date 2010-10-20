@@ -35,6 +35,9 @@ class boolean extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a boolean'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$this->assert
 			->collection($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
