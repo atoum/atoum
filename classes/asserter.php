@@ -79,22 +79,19 @@ abstract class asserter
 
 	protected function fail($reason)
 	{
+		$asserter = $this;
+
 		$test = atoum\test::$runningTest;
 
 		$class = $test->getClass();
 		$method = $test->getCurrentMethod();
 		$file = $test->getPath();
-		$asserter = get_class($this);
-		$line = null;
 
-		$cloneOfThis = $this;
+		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $asserter) { return (isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && $value['object'] === $asserter); }));
 
-		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $cloneOfThis) { return (isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && $value['object'] === $cloneOfThis); }));
-
-		$asserter .= '::' . $backtrace['function'] . '()';
 		$line = $backtrace['line'];
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . $backtrace['function'] . '()', $reason));
 	}
 }
 
