@@ -98,29 +98,6 @@ abstract class asserter
 			}
 		}
 
-		/*
-		foreach ($backtraces as $i => $backtrace)
-		{
-			if (is_a($backtrace['object'], __NAMESPACE__ . '\asserter\generator') === true)
-			{
-				$file = $backtrace['file'];
-				$line = $backtrace['line'];
-			}
-
-			if ($backtrace['class'] === $asserterClass)
-			{
-				if ($file === null && $line === null)
-				{
-					$file = $backtrace['file'];
-					$line = $backtrace['line'];
-				}
-
-				$asserter = $asserterClass . '::' . $backtrace['function'] . '()';
-				break;
-			}
-		}
-		*/
-
 		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, $asserter, $reason));
 	}
 }
