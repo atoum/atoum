@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\asserter;
 
-use \mageekguy\atoum;
+use mageekguy\atoum;
 
 class generator
 {

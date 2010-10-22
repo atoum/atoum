@@ -87,18 +87,24 @@ abstract class asserter
 		$method = $test->getCurrentMethod();
 		$file = $test->getPath();
 
-		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $asserter) { return (isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && $value['object'] === $asserter); }));
+		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $asserter) {
+					static $found = false;
+
+					if ($found === false && isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && ($value['object'] === $asserter || is_a($value['object'], __NAMESPACE__ . '\asserter\generator')))
+					{
+						$found = true;
+						return true;
+					}
+
+					return false;
+				}
+			)
+		);
 
 		$line = $backtrace['line'];
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . $backtrace['function'] . '()', $reason));
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . ($backtrace['function'] !== '__call' ? $backtrace['function'] : $backtrace['args'][0]) . '()', $reason));
 	}
 }
-
-namespace mageekguy\atoum\asserter;
-
-use mageekguy\atoum;
-
-class exception extends \runtimeException {}
 
 ?>

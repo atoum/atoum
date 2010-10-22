@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\tests\units\asserter;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
+use mageekguy\atoum;
+use mageekguy\atoum\asserter;
 
 require_once(__DIR__ . '/../../runner.php');
 

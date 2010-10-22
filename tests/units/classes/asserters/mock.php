@@ -114,7 +114,7 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testCallMethod($argForTest = null)
+	public function testCall($argForTest = null)
 	{
 		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
 

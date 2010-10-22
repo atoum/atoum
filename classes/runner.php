@@ -6,7 +6,7 @@ use \mageekguy\atoum;
 
 require_once(__DIR__ . '/autoloader.php');
 
-class runner implements observable
+class runner extends atoum\singleton implements observable
 {
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
@@ -74,22 +74,6 @@ class runner implements observable
 
 		$this->callObservers(self::runStop);
 	}
-
-	public static function getInstance()
-	{
-		static $instance = null;
-
-		if ($instance === null)
-		{
-			$instance = new static();
-		}
-
-		return $instance;
-	}
-
-	protected function __construct() {}
-
-	protected function __clone() {}
 }
 
 ?>
