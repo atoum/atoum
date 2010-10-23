@@ -8,14 +8,16 @@ abstract class singleton
 {
 	public static function getInstance()
 	{
-		static $instance = null;
+		static $instances = array();
 
-		if ($instance === null)
+		$class = get_called_class();
+
+		if (isset($instances[$class]) === false)
 		{
-			$instance = new static();
+			$instances[$class] = new $class();
 		}
 
-		return $instance;
+		return $instances[$class];
 	}
 
 	protected function __construct() {}

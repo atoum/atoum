@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\test;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\mock;
 
 require_once(__DIR__ . '/../runner.php');
 
@@ -215,6 +216,31 @@ class test extends atoum\test
 			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 			->boolean($test->ignore(false)->methodIsIgnored('testMethod1'))->isFalse()
 			->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+		;
+	}
+
+	public function testRun()
+	{
+		$registryController = new mock\controller();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\registry');
+
+		$registry = mock\mageekguy\atoum\registry::getInstance();
+		$registry->setMockController($registryController);
+
+		$registryController->__set = function() {};
+		$registryController->__get = function() {};
+		$registryController->__unset = function() {};
+
+		$test = new emptyTest();
+		$test->setRegistryInjecter(function() use ($registry) { return $registry; });
+
+		$this->assert
+			->object($test->run())->isIdenticalTo($test)
+			->mock($registry)
+				->call('__set', array(atoum\test::getRegistryKey(), array($test)))
+				->call('__unset', array(atoum\test::getRegistryKey()))
 		;
 	}
 }

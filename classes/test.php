@@ -27,6 +27,7 @@ abstract class test implements observable, \countable
 	private $class = '';
 	private $path = '';
 	private $asserterGenerator = null;
+	private $registryInjecter = null;
 	private $score = null;
 	private $observers = array();
 	private $isolation = true;
@@ -139,6 +140,20 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function setRegistryInjecter(\closure $registryInjecter)
+	{
+		$closure = new \reflectionMethod($registryInjecter, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 0)
+		{
+			throw new \runtimeException('Registry injecter must take no argument');
+		}
+
+		$this->registryInjecter = $registryInjecter;
+
+		return $this;
+	}
+
 	public function getLocale()
 	{
 		return $this->locale;
@@ -147,6 +162,11 @@ abstract class test implements observable, \countable
 	public function getAsserterGenerator()
 	{
 		return $this->asserterGenerator;
+	}
+
+	public function getRegistry()
+	{
+		return ($this->registryInjecter === null ? atoum\registry::getInstance() : $this->registryInjecter->__invoke());
 	}
 
 	public function count()
@@ -237,7 +257,21 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
-		self::$runningTest = $this;
+		$registryKey = __CLASS__ . '\running';
+
+		$registry = $this->getRegistry();
+
+		$tests = array();
+
+		if (isset($registry->{$registryKey}) === true)
+		{
+			$tests = $registry->{$registryKey};
+			unset($registry->{$registryKey});
+		}
+
+		array_push($tests, $this);
+
+		$registry->{$registryKey} = $tests;
 
 		$this->callObservers(self::runStart);
 
@@ -322,7 +356,14 @@ abstract class test implements observable, \countable
 
 		$this->callObservers(self::runStop);
 
-		self::$runningTest = null;
+		array_pop($tests);
+
+		unset($registry->{$registryKey});
+
+		if (sizeof($tests) > 0)
+		{
+			$registry->{$registryKey} = $tests;
+		}
 
 		return $this;
 	}
@@ -341,6 +382,11 @@ abstract class test implements observable, \countable
 	public static function getVersion()
 	{
 		return substr(self::version, 6, -2);
+	}
+
+	public static function getRegistryKey()
+	{
+		return __CLASS__ . '\running';
 	}
 
 	protected function setUp()

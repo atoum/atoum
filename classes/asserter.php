@@ -81,7 +81,14 @@ abstract class asserter
 	{
 		$asserter = $this;
 
-		$test = atoum\test::$runningTest;
+		$tests = atoum\registry::getInstance()->{atoum\test::getRegistryKey()};
+
+		if (sizeof($tests) <= 0)
+		{
+			throw new \runtimeException('There is no test currently running');
+		}
+
+		$test = array_pop($tests);
 
 		$class = $test->getClass();
 		$method = $test->getCurrentMethod();
