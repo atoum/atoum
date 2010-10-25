@@ -24,7 +24,7 @@ class generator extends atoum\script
 		parent::__construct($name, $locale, $adapter);
 
 		$this->pharInjecter = function ($name) { return new \phar($name); };
-		$this->fileIteratorInjecter = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory), $directory)); };
+		$this->fileIteratorInjecter = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory))); };
 	}
 
 	public function setOriginDirectory($directory)
@@ -123,9 +123,11 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function run()
+	public function run(atoum\superglobal $superglobal = null)
 	{
-		parent::run();
+		$this->help = false;
+
+		parent::run($superglobal);
 
 		return ($this->help === true ?  $this->help() : $this->generate());
 	}
@@ -160,16 +162,18 @@ class generator extends atoum\script
 
 	protected function help()
 	{
-		self::writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
-		self::writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version));
-		self::writeMessage($this->locale->_('Available options are:'));
+		$this
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()))
+			->writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version))
+			->writeMessage($this->locale->_('Available options are:'))
+		;
 
 		$options = array(
 			'-h, --help' => $this->locale->_('Display this help'),
 			'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
 		);
 
-		self::writeLabels($options);
+		$this->writeLabels($options);
 
 		return $this;
 	}
@@ -233,7 +237,7 @@ class generator extends atoum\script
 			)
 		);
 
-		$phar->buildFromIterator($fileIterator);
+		$phar->buildFromIterator($fileIterator, $this->originDirectory);
 
 		$phar->setSignatureAlgorithm(\phar::SHA1);
 

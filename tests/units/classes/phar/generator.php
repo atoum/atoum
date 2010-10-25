@@ -8,7 +8,6 @@ use \mageekguy\atoum\phar;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/** @isolation on */
 class generator extends atoum\test
 {
 	public function testClassConstants()
@@ -48,6 +47,8 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->object($generator->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($generator->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writer')
+			->object($generator->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writer')
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
@@ -294,6 +295,30 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testSetOutputWriter()
+	{
+		$generator = new phar\generator(uniqid());
+
+		$stdout = new atoum\writers\stdout();
+
+		$this->assert
+			->object($generator->setOutputWriter($stdout))->isIdenticalTo($generator)
+			->object($generator->getOutputWriter())->isIdenticalTo($stdout)
+		;
+	}
+
+	public function testSetErrorWriter()
+	{
+		$generator = new phar\generator(uniqid());
+
+		$stderr = new atoum\writers\stderr();
+
+		$this->assert
+			->object($generator->setErrorWriter($stderr))->isIdenticalTo($generator)
+			->object($generator->getErrorWriter())->isIdenticalTo($stderr)
+		;
+	}
+
 	public function testRun()
 	{
 		$adapter = new atoum\adapter();
@@ -474,7 +499,94 @@ class generator extends atoum\test
 				->call('setStub', array('<?php \phar::mapPhar(\'' . phar\generator::phar . '\'); require(\'phar://' . phar\generator::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();', null))
 				->call('buildFromIterator', array(
 						$fileIterator,
+						$generator->getOriginDirectory()
+					)
+				)
+				->call('setSignatureAlgorithm', array(
+						\phar::SHA1,
 						null
+					)
+				)
+			->mock($fileIterator)
+				->call('__construct', array($generator->getOriginDirectory()))
+		;
+
+		$superglobal = new atoum\superglobal();
+
+		$superglobal->_SERVER = array('argv' => array(uniqid(), '--help'));
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\mageekguy\atoum\writers\stdout')
+			->generate('\mageekguy\atoum\writers\stderr')
+		;
+
+		$stdout = new mock\mageekguy\atoum\writers\stdout();
+		$stdout
+			->getMockController()
+				->write = function() {}
+		;
+
+		$stderr = new mock\mageekguy\atoum\writers\stderr();
+		$stderr
+			->getMockController()
+				->write = function() {}
+		;
+
+		$generator
+			->setOutputWriter($stdout)
+			->setErrorWriter($stderr)
+		;
+
+		$this->assert
+			->object($generator->run($superglobal))->isIdenticalTo($generator)
+			->mock($stdout)
+				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName())))
+				->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\phar\generator::version)))
+				->call('write', array($generator->getLocale()->_('Available options are:')))
+				->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help')))
+				->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>')))
+		;
+
+		$generator->setPharInjecter(function($name) use (& $phar) {
+				$pharController = new mock\controller();
+				$pharController->injectInNextMockInstance();
+				$pharController->__construct = function() {};
+				$pharController->setStub = function() {};
+				$pharController->setMetadata = function() {};
+				$pharController->buildFromIterator = function() {};
+				$pharController->setSignatureAlgorithm = function() {};
+				$pharController->injectInNextMockInstance();
+
+				return ($phar = new mock\phar($name));
+			}
+		);
+
+		$superglobal->_SERVER = array('argv' => array(uniqid(), '-d', 	$directory = uniqid()));
+
+		$this->assert
+			->object($generator->run($superglobal))->isIdenticalTo($generator)
+			->string($generator->getDestinationDirectory())->isEqualTo($directory)
+			->mock($phar)
+				->call('__construct', array(
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null
+					)
+				)
+				->call('setMetadata', array(
+						array(
+							'version' => atoum\test::getVersion(),
+							'author' => atoum\test::author,
+							'support' => atoum\phar\generator::mail,
+							'repository' => atoum\phar\generator::repository,
+							'description' => $description,
+							'licence' => $licence
+						)
+					)
+				)
+				->call('setStub', array('<?php \phar::mapPhar(\'' . phar\generator::phar . '\'); require(\'phar://' . phar\generator::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();', null))
+				->call('buildFromIterator', array(
+						$fileIterator,
+						$generator->getOriginDirectory()
 					)
 				)
 				->call('setSignatureAlgorithm', array(

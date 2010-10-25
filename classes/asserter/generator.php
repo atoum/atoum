@@ -19,7 +19,7 @@ class generator
 		;
 	}
 
-	public function __call($asserter, $arguments)
+	public function __get($asserter)
 	{
 		$class = $this->getAsserterClass($asserter);
 
@@ -33,12 +33,19 @@ class generator
 			$this->asserters[$class] = new $class($this->score, $this->locale, $this);
 		}
 
+		return $this->asserters[$class];
+	}
+
+	public function __call($asserter, $arguments)
+	{
+		$asserter = $this->{$asserter};
+
 		if (sizeof($arguments) > 0)
 		{
-			call_user_func_array(array($this->asserters[$class], 'setWith'), $arguments);
+			call_user_func_array(array($asserter, 'setWith'), $arguments);
 		}
 
-		return $this->asserters[$class];
+		return $asserter;
 	}
 
 	public function getScore()

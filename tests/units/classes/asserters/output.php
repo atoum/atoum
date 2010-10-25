@@ -20,8 +20,8 @@ class output extends atoum\test
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserters\string')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
-			->variable($asserter->variable)->isNull()
-			->boolean(isset($asserter->variable))->isFalse()
+			->variable($asserter->getVariable())->isNull()
+			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
 

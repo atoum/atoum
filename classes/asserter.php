@@ -24,6 +24,11 @@ abstract class asserter
 		$this->generator = $generator;
 	}
 
+	public function __get($asserter)
+	{
+		return $this->generator->__get($asserter);
+	}
+
 	public function __call($asserter, $arguments)
 	{
 		return $this->generator->__call($asserter, $arguments);
@@ -79,6 +84,47 @@ abstract class asserter
 
 	protected function fail($reason)
 	{
+		$tests = atoum\registry::getInstance()->{atoum\test::getRegistryKey()};
+
+		if (sizeof($tests) <= 0)
+		{
+			throw new \runtimeException('There is no test currently running');
+		}
+
+		$test = array_pop($tests);
+
+		$class = $test->getClass();
+		$method = $test->getCurrentMethod();
+		$file = $test->getPath();
+		$line = null;
+		$function = null;
+
+		foreach (array_reverse(debug_backtrace()) as $backtrace)
+		{
+			if (isset($backtrace['file']) === true && $backtrace['file'] === $file && isset($backtrace['line']) === true)
+			{
+				$line = $backtrace['line'];
+			}
+
+			if ($function === null && isset($backtrace['object']) === true && get_class($backtrace['object']) === get_class($this) && isset($backtrace['function']) === true)
+			{
+				$function = $backtrace['function'];
+			}
+		}
+
+		/*
+		foreach (debug_backtrace() as $t)
+		{
+			echo (
+					isset($t['file']) === false ? 'unknown' : $t['file']) . ':'
+				. (isset($t['line']) === false ? 'unknown' : $t['line']) . ':'
+				. (isset($t['class']) === false ? 'unknwon' : $t['class']) .
+				'(' . (isset($t['class']) === false ? 'unknown' : get_class($t['object'])) . ')' . ':'
+				. (isset($t['function']) === false ? 'unknown' : $t['function']) . "\n";
+		}
+
+		echo "\n";
+
 		$asserter = $this;
 
 		$tests = atoum\registry::getInstance()->{atoum\test::getRegistryKey()};
@@ -109,8 +155,9 @@ abstract class asserter
 		);
 
 		$line = $backtrace['line'];
+		*/
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . ($backtrace['function'] !== '__call' ? $backtrace['function'] : $backtrace['args'][0]) . '()', $reason));
+		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . $function . '()', $reason));
 	}
 }
 

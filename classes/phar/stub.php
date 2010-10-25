@@ -12,7 +12,7 @@ class stub extends atoum\script
 	protected $decompress = false;
 	protected $extract = false;
 
-	public function run()
+	public function run(atoum\superglobal $superglobal = null)
 	{
 		if (PHP_SAPI !== 'cli' || realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
@@ -20,7 +20,7 @@ class stub extends atoum\script
 		}
 		else
 		{
-			parent::run();
+			parent::run($superglobal);
 
 			if ($this->help === true)
 			{

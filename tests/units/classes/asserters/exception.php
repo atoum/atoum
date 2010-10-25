@@ -19,8 +19,8 @@ class exception extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
-			->variable($asserter->variable)->isNull()
-			->boolean(isset($asserter->variable))->isFalse()
+			->variable($asserter->getVariable())->isNull()
+			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
 

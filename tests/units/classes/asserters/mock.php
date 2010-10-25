@@ -34,7 +34,7 @@ class mock extends atoum\test
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not a mock'), $mock))
+				->hasMessage(sprintf($locale->_('%s is not a mock'), $asserter->toString($mock)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
 			->object($asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)

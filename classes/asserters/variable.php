@@ -5,6 +5,7 @@ namespace mageekguy\atoum\asserters;
 class variable extends \mageekguy\atoum\asserter
 {
 	protected $isSet = false;
+	protected $isSetByReference = false;
 	protected $variable = null;
 
 	public function __toString()
@@ -12,50 +13,46 @@ class variable extends \mageekguy\atoum\asserter
 		return $this->toString($this->variable);
 	}
 
-	public function __get($property)
+	public function wasSet()
 	{
-		$this->checkProperty($property);
-
-		return $this->variable;
-	}
-
-	public function __set($property, $value)
-	{
-		$this->checkProperty($property);
-
-		$this->variable = $value;
-
-		if ($this->isSet === false)
-		{
-			$this->isSet = true;
-		}
-
-		return $this;
-	}
-
-	public function __unset($property)
-	{
-		$this->checkProperty($property);
-
-		$this->variable = null;
-		$this->isSet = false;
-	}
-
-	public function __isset($property)
-	{
-		$this->checkProperty($property);
-
 		return ($this->isSet === true);
 	}
 
 	public function setWith($variable)
 	{
-		return $this->__set('variable', $variable);
+		$this->variable = $variable;
+		$this->isSet = true;
+		$this->isSetByReference = false;
+
+		return $this;
+	}
+
+	public function setByReferenceWith(& $variable)
+	{
+		$this->variable = & $variable;
+		$this->isSet = true;
+		$this->isSetByReference = true;
+
+		return $this;
+	}
+
+	public function reset()
+	{
+		$this->variable = null;
+		$this->isSet = false;
+		$this->isSetByReference = false;
+
+		return $this;
 	}
 
 	public function getVariable()
 	{
 		return $this->variable;
+	}
+
+	public function isSetByReference()
+	{
+		return ($this->isSet === true && $this->isSetByReference === true);
 	}
 
 	public function isEqualTo($variable, $failMessage = null)
@@ -104,6 +101,30 @@ class variable extends \mageekguy\atoum\asserter
 		return $this->isNotIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is null'), $this));
 	}
 
+	public function isReferenceTo(& $reference, $failMessage = null)
+	{
+		if ($this->variableIsSet()->isSetByReference() === false)
+		{
+			throw new \logicException('Variable is not set by reference');
+		}
+
+		if (is_object($this->variable) === true && is_object($reference) === true)
+		{
+			$this->isIdenticalTo($reference, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+		}
+		else
+		{
+			$tmp = $reference;
+			$reference = uniqid(mt_rand());
+			$isReference = ($this->variable === $reference);
+			$reference = $tmp;
+
+			$isReference === true ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+		}
+
+		return $this;
+	}
+
 	protected function setWithArguments(array $arguments)
 	{
 		if (array_key_exists(0, $arguments) === false)
@@ -122,14 +143,6 @@ class variable extends \mageekguy\atoum\asserter
 		}
 
 		return $this;
-	}
-
-	protected function checkProperty($property)
-	{
-		if ($property !== 'variable')
-		{
-			throw new \logicException('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
-		}
 	}
 
 	protected static function check($variable, $method) {}

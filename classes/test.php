@@ -396,6 +396,9 @@ abstract class test implements observable, \countable
 
 	protected function beforeTestMethod()
 	{
+		$this->assert->setAlias('array', 'collection');
+		$this->assert->setAlias('class', 'phpClass');
+
 		return $this;
 	}
 

@@ -20,8 +20,8 @@ class variable extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
-			->variable($asserter->variable)->isNull()
-			->boolean(isset($asserter->variable))->isFalse()
+			->variable($asserter->getVariable())->isNull()
+			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
 
@@ -31,81 +31,90 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, & $property) {
-					$asserter->{$property = uniqid()};
-				}
-			)
+						$asserter->{$property = uniqid()};
+					}
+				)
 				->isInstanceOf('\logicException')
-				->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($asserter) . '\'')
+				->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
+			->variable($asserter->getVariable())->isNull()
 		;
 
-		$this->assert
-			->variable($asserter->variable)->isNull()
-		;
-
-		$asserter->variable = ($variable = uniqid());
+		$asserter->setWith($variable = uniqid());
 
 		$this->assert
-			->string($asserter->variable)->isEqualTo($variable)
+			->string($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
 
-	public function test__set()
+	public function testReset()
 	{
 		$asserter = new asserters\variable(new atoum\score(), new atoum\locale());
 
-		$this->assert
-			->exception(function() use ($asserter, & $property) {
-					$asserter->{$property = uniqid()} = uniqid();
-				}
-			)
-				->isInstanceOf('\logicException')
-				->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($asserter) . '\'')
-		;
-
-		$this->assert
-			->boolean(isset($asserter->variable))->isFalse()
-		;
-
-		$asserter->variable = ($variable = uniqid());
-
-		$this->assert
-			->string($asserter->variable)->isIdenticalTo($variable)
-			->boolean(isset($asserter->variable))->isTrue()
-		;
-
-		$asserter->variable = $this;
-
-		$this->assert
-			->object($asserter->variable)->isIdenticalTo($this)
-			->boolean(isset($asserter->variable))->isTrue()
-		;
-	}
-
-	public function test__unset()
-	{
-		$asserter = new asserters\variable(new atoum\score(), new atoum\locale());
-
-		$this->assert
-			->exception(function() use ($asserter, & $property) {
-					unset($asserter->{$property = uniqid()});
-				}
-			)
-				->isInstanceOf('\logicException')
-				->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($asserter) . '\'')
-		;
-
-		$asserter->variable = uniqid();
+		$asserter->setWith(uniqid());
 
 		$this->assert
 			->variable($asserter->variable)->isNotNull()
-			->boolean(isset($asserter->variable))->isTrue()
+			->boolean($asserter->wasSet())->isTrue()
+			->object($asserter->reset())->isIdenticalTo($asserter)
+			->variable($asserter->getVariable())->isNull()
+			->boolean($asserter->wasSet())->isFalse()
 		;
+	}
 
-		unset($asserter->variable);
+	public function testSetWith()
+	{
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+
+		$variable = uniqid();
 
 		$this->assert
-			->variable($asserter->variable)->isNull()
-			->boolean(isset($asserter->variable))->isFalse()
+			->boolean($asserter->isSetByReference())->isFalse()
+			->object($asserter->setWith($variable))->isIdenticalTo($asserter)
+			->variable($asserter->getVariable())->isIdenticalTo($variable)
+			->boolean($asserter->isSetByReference())->isFalse()
+		;
+	}
+
+	public function testSetByReferenceWith()
+	{
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+
+		$variable = uniqid();
+
+		$this->assert
+			->boolean($asserter->isSetByReference())->isFalse()
+			->object($asserter->setByReferenceWith($variable))->isIdenticalTo($asserter)
+			->variable($asserter->getVariable())->isIdenticalTo($variable)
+			->boolean($asserter->isSetByReference())->isTrue()
+		;
+	}
+
+	public function testIsSetByReference()
+	{
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->isSetByReference())->isFalse()
+		;
+
+		$asserter->setWith(uniqid());
+
+		$this->assert
+			->boolean($asserter->isSetByReference())->isFalse()
+		;
+
+		$asserter->setWith(uniqid());
+
+		$this->assert
+			->boolean($asserter->isSetByReference())->isFalse()
+		;
+
+		$variable = uniqid();
+
+		$asserter->setByReferenceWith($variable);
+
+		$this->assert
+			->boolean($asserter->isSetByReference())->isTrue()
 		;
 	}
 
@@ -114,7 +123,7 @@ class variable extends atoum\test
 		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->boolean(isset($asserter->variable))->isFalse()
+			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
 						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
@@ -123,7 +132,7 @@ class variable extends atoum\test
 					->hasMessage('Variable is undefined')
 		;
 
-		$asserter->variable = ($variable = uniqid());
+		$asserter->setWith($variable = uniqid());
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -152,7 +161,7 @@ class variable extends atoum\test
 			)
 		;
 
-		$asserter->variable = 1;
+		$asserter->setWith(1);
 
 		$this->assert
 			->object($asserter->isEqualTo('1'))->isIdenticalTo($asserter)
@@ -174,7 +183,7 @@ class variable extends atoum\test
 		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->boolean(isset($asserter->variable))->isFalse()
+			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
 						$asserter->isNotEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
@@ -183,7 +192,7 @@ class variable extends atoum\test
 					->hasMessage('Variable is undefined')
 		;
 
-		$asserter->variable = ($variable = uniqid());
+		$asserter->setWith($variable = uniqid());
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -215,7 +224,7 @@ class variable extends atoum\test
 		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->boolean(isset($asserter->variable))->isFalse()
+			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
 						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
@@ -224,7 +233,7 @@ class variable extends atoum\test
 					->hasMessage('Variable is undefined')
 		;
 
-		$asserter->variable = ($variable = rand(- PHP_INT_MAX, PHP_INT_MAX));
+		$asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX));
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -256,7 +265,7 @@ class variable extends atoum\test
 		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
-			->boolean(isset($asserter->variable))->isFalse()
+			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
 						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
@@ -270,7 +279,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$asserter->variable = null;
+		$asserter->setWith(null);
 
 		$this->assert
 			->object($asserter->isNull())->isIdenticalTo($asserter)
@@ -278,7 +287,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$asserter->variable = '';
+		$asserter->setWith('');
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
@@ -288,7 +297,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
-		$asserter->variable = uniqid();
+		$asserter->setWith(uniqid());
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
@@ -298,7 +307,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;
 
-		$asserter->variable = 0;
+		$asserter->setWith(0);
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
@@ -308,7 +317,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(3)
 		;
 
-		$asserter->variable = false;
+		$asserter->setWith(false);
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
@@ -316,6 +325,91 @@ class variable extends atoum\test
 				->hasMessage(sprintf($locale->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(4)
+		;
+	}
+
+	public function testIsReferenceTo()
+	{
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+
+		$variable = uniqid();
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter, $variable) {
+						$asserter->isReferenceTo($variable);
+					}
+				)
+				->isInstanceOf('\logicException')
+				->hasMessage('Variable is undefined')
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setWith($variable);
+
+		$this->assert
+			->boolean($asserter->wasSet())->isTrue()
+			->boolean($asserter->isSetByReference())->isFalse()
+			->exception(function() use ($asserter, $variable) {
+						$asserter->isReferenceTo($variable);
+					}
+				)
+				->isInstanceOf('\logicException')
+				->hasMessage('Variable is not set by reference')
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setByReferenceWith($variable);
+
+		$reference = & $variable;
+
+		$this->assert
+			->boolean($asserter->wasSet())->isTrue()
+			->boolean($asserter->isSetByReference())->isTrue()
+			->object($asserter->isReferenceTo($reference))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$notReference = uniqid();
+
+		$this->assert
+			->exception(function() use ($asserter, $notReference) {
+						$asserter->isReferenceTo($notReference);
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is not a reference to %s'), $asserter, $asserter->toString($notReference)))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$variable = new \exception();
+		$reference = $variable;
+
+		$asserter->setByReferenceWith($variable);
+
+		$this->assert
+			->boolean($asserter->wasSet())->isTrue()
+			->boolean($asserter->isSetByReference())->isTrue()
+			->object($asserter->isReferenceTo($reference))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$notReference = new \exception();
+
+		$this->assert
+			->exception(function() use ($asserter, $notReference) {
+						$asserter->isReferenceTo($notReference);
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is not a reference to %s'), $asserter, $asserter->toString($notReference)))
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(2)
 		;
 	}
 }

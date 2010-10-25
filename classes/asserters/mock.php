@@ -12,7 +12,7 @@ class mock extends \mageekguy\atoum\asserter
 
 		if ($this->mock instanceof \mageekguy\atoum\mock\aggregator === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a mock'), $this->mock));
+			$this->fail(sprintf($this->locale->_('%s is not a mock'), $this->toString($this->mock)));
 		}
 		else
 		{

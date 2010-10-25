@@ -19,8 +19,8 @@ class integer extends atoum\test
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
-			->variable($asserter->variable)->isNull()
-			->boolean(isset($asserter->variable))->isFalse()
+			->variable($asserter->getVariable())->isNull()
+			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
 
@@ -89,15 +89,15 @@ class integer extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'class' => __CLASS__,
-						'method' => $currentMethod,
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable))
+						array(
+							'class' => __CLASS__,
+							'method' => $currentMethod,
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::isEqualTo()',
+							'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable))
+						)
 					)
-				)
 				)
 			;
 	}

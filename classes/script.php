@@ -10,6 +10,8 @@ abstract class script
 
 	protected $locale = null;
 	protected $arguments = array();
+	protected $outputWriter = null;
+	protected $errorWriter = null;
 
 	private $name = '';
 
@@ -39,12 +41,40 @@ abstract class script
 			$locale = new atoum\locale();
 		}
 
-		$this->locale = $locale;
+		$this
+			->setOutputWriter(new atoum\writers\stdout())
+			->setErrorWriter(new atoum\writers\stderr())
+			->locale = $locale
+		;
+	}
+
+	public function setOutputWriter(atoum\writer $writer)
+	{
+		$this->outputWriter = $writer;
+
+		return $this;
+	}
+
+	public function setErrorWriter(atoum\writer $writer)
+	{
+		$this->errorWriter = $writer;
+
+		return $this;
 	}
 
 	public function getAdapter()
 	{
 		return $this->adapter;
+	}
+
+	public function getOutputWriter()
+	{
+		return $this->outputWriter;
+	}
+
+	public function getErrorWriter()
+	{
+		return $this->errorWriter;
 	}
 
 	public function getName()
@@ -67,12 +97,17 @@ abstract class script
 		return $this->errors;
 	}
 
-	public function run()
+	public function run(atoum\superglobal $superglobal = null)
 	{
+		if ($superglobal === null)
+		{
+			$superglobal = new atoum\superglobal();
+		}
+
 		$this->adapter->set_error_handler(array($this, 'errorHandler'));
 		$this->adapter->set_exception_handler(array($this, 'exceptionHandler'));
 
-		$this->arguments = new \arrayIterator(array_slice($_SERVER['argv'], 1));
+		$this->arguments = new \arrayIterator(array_slice($superglobal->_SERVER['argv'], 1));
 
 		foreach ($this->arguments as $argument)
 		{
@@ -97,19 +132,19 @@ abstract class script
 		$this->stop($exception->getCode(), $exception->getMessage());
 	}
 
-	protected abstract function handleArgument($argument);
-
-	protected static function writeMessage($message)
+	protected function writeMessage($message)
 	{
-		fwrite(STDOUT, rtrim($message) . "\n");
+		$this->outputWriter->write($message);
+
+		return $this;
 	}
 
-	protected static function writeLabel($label, $value, $level = 0)
+	protected function writeLabel($label, $value, $level = 0)
 	{
-		self::writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value);
+		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value);
 	}
 
-	protected static function writeLabels(array $labels, $level = 1)
+	protected function writeLabels(array $labels, $level = 1)
 	{
 		$maxLength = 0;
 
@@ -127,17 +162,27 @@ abstract class script
 		{
 			$value = explode("\n", trim($value));
 
-			self::writeLabel(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level);
+			$this->writeLabel(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level);
 
 			if (sizeof($value) > 1)
 			{
 				foreach (array_slice($value, 1) as $line)
 				{
-					self::writeLabel(str_repeat(' ', $maxLength), $line, $level);
+					$this->writeLabel(str_repeat(' ', $maxLength), $line, $level);
 				}
 			}
 		}
+
+		return $this;
 	}
+
+	protected function stop($code, $message)
+	{
+		$this->errorWriter->write(sprintf($this->locale->_('Error: %s.'), rtrim(rtrim($message, '.'))));
+		$this->adapter->exit($code);
+	}
+
+	protected abstract function handleArgument($argument);
 
 	protected static function isArgument($string)
 	{
@@ -151,12 +196,6 @@ abstract class script
 			default:
 				return false;
 		}
-	}
-
-	protected function stop($code, $message)
-	{
-		fwrite(STDERR, sprintf($this->locale->_('Error: %s.'), rtrim(rtrim($message, '.'))) . "\n");
-		$this->adapter->exit($code);
 	}
 }
 
