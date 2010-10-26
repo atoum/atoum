@@ -84,7 +84,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory('');
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Empty origin directory is invalid')
 		;
 
@@ -97,7 +97,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($directory);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Path \'' . $directory . '\' of origin directory is invalid')
 		;
 
@@ -122,7 +122,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($generator->getDestinationDirectory());
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Origin directory must be different from destination directory')
 		;
 
@@ -150,7 +150,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory('');
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Empty destination directory is invalid')
 		;
 
@@ -163,7 +163,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($directory);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Path \'' . $directory . '\' of destination directory is invalid')
 		;
 
@@ -195,7 +195,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($generator->getOriginDirectory());
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Destination directory must be different from origin directory')
 		;
 
@@ -208,7 +208,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory(uniqid());
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Origin directory must not include destination directory')
 		;
 	}
@@ -319,6 +319,48 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testWriteMessage()
+	{
+		$generator = new phar\generator(uniqid());
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\mageekguy\atoum\writers\stdout')
+		;
+
+		$stdout = new mock\mageekguy\atoum\writers\stdout();
+		$stdout->getMockController()->write = function() {};
+
+		$generator->setOutputWriter($stdout);
+
+		$this->assert
+			->object($generator->writeMessage($message = uniqid()))->isIdenticalTo($generator)
+			->mock($stdout)
+				->call('write', array($message))
+		;
+	}
+
+	public function testWriteError()
+	{
+		$generator = new phar\generator(uniqid());
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\mageekguy\atoum\writers\stderr')
+		;
+
+		$stderr = new mock\mageekguy\atoum\writers\stderr();
+		$stderr->getMockController()->write = function() {};
+
+		$generator->setErrorWriter($stderr);
+
+		$this->assert
+			->object($generator->writeError($error = uniqid()))->isIdenticalTo($generator)
+			->mock($stderr)
+				->call('write', array(sprintf($generator->getLocale()->_('Error: %s'), $error)))
+		;
+	}
+
 	public function testRun()
 	{
 		$adapter = new atoum\adapter();
@@ -334,7 +376,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Origin directory must be defined')
 		;
 
@@ -345,7 +387,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Destination directory must be defined')
 		;
 
@@ -370,7 +412,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
 		;
 
@@ -434,7 +476,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 
@@ -457,7 +499,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 
@@ -515,7 +557,6 @@ class generator extends atoum\test
 
 		$superglobal->_SERVER = array('argv' => array(uniqid(), '--help'));
 
-		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\writers\stdout')
 			->generate('\mageekguy\atoum\writers\stderr')

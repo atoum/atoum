@@ -33,15 +33,15 @@ class generator extends atoum\script
 
 		if ($originDirectory == '')
 		{
-			throw new \logicException('Empty origin directory is invalid');
+			throw new \runtimeException('Empty origin directory is invalid');
 		}
 		else if ($this->adapter->is_dir($originDirectory) === false)
 		{
-			throw new \logicException('Path \'' . $originDirectory . '\' of origin directory is invalid');
+			throw new \runtimeException('Path \'' . $originDirectory . '\' of origin directory is invalid');
 		}
 		else if ($this->destinationDirectory !== null && $originDirectory === $this->destinationDirectory)
 		{
-			throw new \logicException('Origin directory must be different from destination directory');
+			throw new \runtimeException('Origin directory must be different from destination directory');
 		}
 
 		$this->originDirectory = $originDirectory;
@@ -60,19 +60,19 @@ class generator extends atoum\script
 
 		if ($destinationDirectory == '')
 		{
-			throw new \logicException('Empty destination directory is invalid');
+			throw new \runtimeException('Empty destination directory is invalid');
 		}
 		else if ($this->adapter->is_dir($destinationDirectory) === false)
 		{
-			throw new \logicException('Path \'' . $destinationDirectory . '\' of destination directory is invalid');
+			throw new \runtimeException('Path \'' . $destinationDirectory . '\' of destination directory is invalid');
 		}
 		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
 		{
-			throw new \logicException('Destination directory must be different from origin directory');
+			throw new \runtimeException('Destination directory must be different from origin directory');
 		}
 		else if (strpos($destinationDirectory, $this->originDirectory) === 0)
 		{
-			throw new \logicException('Origin directory must not include destination directory');
+			throw new \runtimeException('Origin directory must not include destination directory');
 		}
 
 		$this->destinationDirectory = $destinationDirectory;
@@ -182,11 +182,11 @@ class generator extends atoum\script
 	{
 		if ($this->originDirectory === null)
 		{
-			throw new \logicException(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
+			throw new \runtimeException(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
 		}
 		else if ($this->destinationDirectory === null)
 		{
-			throw new \logicException(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
+			throw new \runtimeException(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
 		}
 		else if ($this->adapter->is_readable($this->originDirectory) === false)
 		{
@@ -194,7 +194,7 @@ class generator extends atoum\script
 		}
 		else if ($this->adapter->is_writable($this->destinationDirectory) === false)
 		{
-			throw new \logicException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
+			throw new \runtimeException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
 		}
 
 		$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
@@ -215,14 +215,14 @@ class generator extends atoum\script
 
 		if ($description === false)
 		{
-			throw new \logicException('ABOUT file is missing in \'' . $this->originDirectory . '\'');
+			throw new \runtimeException(sprintf($this->locale->_('ABOUT file is missing in \'%s\''), $this->originDirectory));
 		}
 
 		$licence = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
 
 		if ($licence === false)
 		{
-			throw new \logicException('COPYING file is missing in \'' . $this->originDirectory . '\'');
+			throw new \runtimeException(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
 		}
 
 		$phar->setStub('<?php \phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();');

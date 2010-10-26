@@ -104,9 +104,6 @@ abstract class script
 			$superglobal = new atoum\superglobal();
 		}
 
-		$this->adapter->set_error_handler(array($this, 'errorHandler'));
-		$this->adapter->set_exception_handler(array($this, 'exceptionHandler'));
-
 		$this->arguments = new \arrayIterator(array_slice($superglobal->_SERVER['argv'], 1));
 
 		foreach ($this->arguments as $argument)
@@ -122,29 +119,26 @@ abstract class script
 		return $this;
 	}
 
-	public function errorHandler($error, $message, $file, $line)
-	{
-		$this->stop($error, $message);
-	}
-
-	public function exceptionHandler(\exception $exception)
-	{
-		$this->stop($exception->getCode(), $exception->getMessage());
-	}
-
-	protected function writeMessage($message)
+	public function writeMessage($message)
 	{
 		$this->outputWriter->write($message);
 
 		return $this;
 	}
 
-	protected function writeLabel($label, $value, $level = 0)
+	public function writeError($message)
+	{
+		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), $message));
+
+		return $this;
+	}
+
+	public function writeLabel($label, $value, $level = 0)
 	{
 		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value);
 	}
 
-	protected function writeLabels(array $labels, $level = 1)
+	public function writeLabels(array $labels, $level = 1)
 	{
 		$maxLength = 0;
 
@@ -174,12 +168,6 @@ abstract class script
 		}
 
 		return $this;
-	}
-
-	protected function stop($code, $message)
-	{
-		$this->errorWriter->write(sprintf($this->locale->_('Error: %s.'), rtrim(rtrim($message, '.'))));
-		$this->adapter->exit($code);
 	}
 
 	protected abstract function handleArgument($argument);
