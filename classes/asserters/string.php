@@ -11,19 +11,22 @@ class string extends \mageekguy\atoum\asserters\variable
 		return $this->charlist;
 	}
 
-	public function setWith($variable, $charlist = null)
+	public function setWith($variable, $charlist = null, $checkType = true)
 	{
 		$this->charlist = $charlist;
 
 		parent::setWith($variable);
 
-		if (self::isString($this->variable) === false)
+		if ($checkType === true)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a string'), $this));
-		}
-		else
-		{
-			$this->pass();
+			if (self::isString($this->variable) === false)
+			{
+				$this->fail(sprintf($this->locale->_('%s is not a string'), $this));
+			}
+			else
+			{
+				$this->pass();
+			}
 		}
 
 		return $this;

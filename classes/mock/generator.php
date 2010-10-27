@@ -44,6 +44,13 @@ class generator
 		return $this;
 	}
 
+	public function overload(php\method $method)
+	{
+		$this->methods[$method->getName()] = $method;
+
+		return $this;
+	}
+
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
 		$class = '\\' . ltrim($class, '\\');
@@ -143,46 +150,79 @@ class generator
 			{
 				$methodName = $method->getName();
 
-				$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
+				$isConstrictor = false;
+				$parameters = '';
 
-				$parameters = array();
-
-				foreach ($method->getParameters() as $parameter)
+				if (isset($this->methods[$methodName]) === true)
 				{
-					$parameterCode = $this->getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
-
-					if ($parameter->isDefaultValueAvailable() == true)
+					foreach ($this->methods[$methodName]->getArguments() as $argument)
 					{
-						$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
-					}
-					else if ($parameter->isOptional() === true)
-					{
-						$parameterCode .= '=null';
+						$parameters[] = $argument->getVariable();
 					}
 
-					$parameters[] = $parameterCode;
+					$parameters = join(', ', $parameters);
+
+					$mockControllerArgument = new php\method\argument('mockController');
+					$mockControllerArgument
+						->isObject('\\' . __NAMESPACE__ . '\\controller')
+						->setDefaultValue(null)
+					;
+
+					$methodCode = "\n\t" . (string) $this->methods[$methodName]->addArgument($mockControllerArgument). "\n\t" . '{' . "\n";
+					$isConstructor = $this->methods[$methodName]->isConstructor();
+
+					unset($this->methods[$methodName]);
+				}
+				else
+				{
+					$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
+					$isConstructor = $method->isConstructor();
+
+					$parameters = array();
+
+					foreach ($method->getParameters() as $parameter)
+					{
+						$parameterCode = $this->getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+
+						if ($parameter->isDefaultValueAvailable() == true)
+						{
+							$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+						}
+						else if ($parameter->isOptional() === true)
+						{
+							$parameterCode .= '=null';
+						}
+
+						$parameters[] = $parameterCode;
+					}
+
+					if ($method->isConstructor() === true)
+					{
+						$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
+					}
+
+					$methodCode .= '(' . join(', ', $parameters) . ')' . "\n";
+					$methodCode .= "\t" . '{' . "\n";
+
+					$parameters = array();
+
+					foreach ($method->getParameters() as $parameter)
+					{
+						$parameters[] = '$' . $parameter->getName();
+					}
+
+					if ($isConstructor === false)
+					{
+						$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
+					}
+					else
+					{
+						$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', array_slice($parameters, 0, -1)));
+					}
 				}
 
-
-				if ($method->isConstructor() === true)
+				if ($isConstructor === false)
 				{
-					$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
-				}
-
-				$methodCode .= '(' . join(', ', $parameters) . ')' . "\n";
-				$methodCode .= "\t" . '{' . "\n";
-
-				$parameters = array();
-
-				foreach ($method->getParameters() as $parameter)
-				{
-					$parameters[] = '$' . $parameter->getName();
-				}
-
-				if ($method->isConstructor() === false)
-				{
-					$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
-
 					$methodCode .=
 						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
 						. "\t\t" . '{' . "\n"
@@ -197,8 +237,6 @@ class generator
 				}
 				else
 				{
-					$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', array_slice($parameters, 0, -1)));
-
 					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n";

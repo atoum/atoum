@@ -226,7 +226,7 @@ class test extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\registry');
 
-		$registry = mock\mageekguy\atoum\registry::getInstance();
+		$registry = \mageekguy\atoum\mock\mageekguy\atoum\registry::getInstance();
 		$registry->setMockController($registryController);
 
 		$registryController->__set = function() {};

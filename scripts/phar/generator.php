@@ -11,7 +11,7 @@ $generator->setOriginDirectory(__DIR__ . '/../..');
 
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
 		$generator->getErrorWriter()->write(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
-		exit($error);
+		exit(1);
 	}
 );
 
@@ -22,12 +22,12 @@ try
 catch (\runtimeException $exception)
 {
 	$generator->writeError($exception->getMessage());
-	exit($exception->getCode());
+	exit(1);
 }
 catch (\exception $exception)
 {
 	$generator->getErrorWriter()->write(sprintf($generator->getLocale()->_('Unattended exception: %s'), $exception->getMessage()));
-	exit($exception->getCode());
+	exit(1);
 }
 
 exit(0);

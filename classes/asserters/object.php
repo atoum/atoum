@@ -4,11 +4,11 @@ namespace mageekguy\atoum\asserters;
 
 class object extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable, $check = true)
+	public function setWith($variable, $checkType = true)
 	{
 		parent::setWith($variable);
 
-		if ($check === true)
+		if ($checkType === true)
 		{
 			if (self::isObject($this->variable) === false)
 			{
