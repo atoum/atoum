@@ -7,7 +7,8 @@ use \mageekguy\atoum\mock;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/** @isolation off */
+class constructorWithoutArgument { public function __construct() {} }
+
 class generator extends atoum\test
 {
 	public function setUp()
@@ -53,6 +54,45 @@ class generator extends atoum\test
 			->object($generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($generator)
 			->object($generator->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
 		;
+	}
+
+	public function testGetMockedClassCode()
+	{
+		$realClass = uniqid();
+
+		$adapter = new atoum\adapter();
+
+		$adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); };
+
+		$generator = new mock\generator($adapter);
+
+		$mockGenerator = new mock\generator();
+
+		$mockGenerator->generate('\reflectionMethod');
+
+		$reflectionMethodController = new mock\controller();
+		$reflectionMethodController->__construct = function() {};
+		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isConstructor = function() { return true; };
+		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->injectInNextMockInstance();
+
+		$reflectionMethod = new mock\reflectionMethod(null, null);
+
+		$mockGenerator->generate('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->isFinal = function() { return false; };
+		$reflectionClassController->isAbstract = function() { return false; };
+		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
+		$reflectionClassController->injectInNextMockInstance();
+
+		$reflectionClass = new mock\reflectionClass(null);
+
+		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
+
+		var_dump($generator->getMockedClassCode($realClass));
 	}
 
 	public function testGenerate()
@@ -116,11 +156,11 @@ class generator extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\reflectionClass');
 
-		$mockController = new mock\controller();
-		$mockController->__construct = function() {};
-		$mockController->isFinal = function() { return true; };
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->isFinal = function() { return true; };
 
-		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
+		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $reflectionClassController);
 
 		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
 
@@ -146,14 +186,14 @@ class generator extends atoum\test
 				->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
 		;
 
-		$mockController->isFinal = function() { return false; };
-		$mockController->isAbstract = function() { return true; };
+		$reflectionClassController->isFinal = function() { return false; };
+		$reflectionClassController->isAbstract = function() { return true; };
 
 		$class = uniqid();
 
 		$adapter->class_exists = function($arg) use ($class) { return $arg === '\\' . $class; };
 
-		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
+		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $reflectionClassController);
 
 		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
 
@@ -170,7 +210,7 @@ class generator extends atoum\test
 
 		$adapter->class_exists = function($arg) use ($class) { return $arg === $class; };
 
-		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $mockController);
+		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $reflectionClassController);
 
 		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
 

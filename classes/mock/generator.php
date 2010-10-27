@@ -44,7 +44,7 @@ class generator
 		return $this;
 	}
 
-	public function generate($class, $mockNamespace = null, $mockClass = null)
+	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
 		$class = '\\' . ltrim($class, '\\');
 
@@ -85,13 +85,17 @@ class generator
 			throw new \logicException('Class \'' . $class . '\' is abstract, unable to mock it');
 		}
 
-		$code = $this->getMockedClassCode($reflectionClass, $mockNamespace, $mockClass);
-		eval($code);
+		return $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass);
+	}
+
+	public function generate($class, $mockNamespace = null, $mockClass = null)
+	{
+		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
 		return $this;
 	}
 
-	protected function getMockedClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
+	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . "\n"
 			. 'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . "\n"
@@ -123,13 +127,13 @@ class generator
 			. '		}' . "\n"
 			. '		return $this;' . "\n"
 			. '	}'
-			. $this->getMockedClassMethods($class)
+			. $this->generateMethodCode($class)
 			. '}' . "\n"
 			. '}'
 		;
 	}
 
-	protected function getMockedClassMethods(\reflectionClass $class)
+	protected function generateMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
 
@@ -159,16 +163,14 @@ class generator
 					$parameters[] = $parameterCode;
 				}
 
-				$methodCode .= '(' . join(', ', $parameters);
 
 				if ($method->isConstructor() === true)
 				{
-					$methodCode .= ', \\' . __NAMESPACE__ . '\\controller $mockController = null';
+					$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
 				}
 
-				$methodCode .= ')' . "\n"
-					. "\t" . '{' . "\n"
-				;
+				$methodCode .= '(' . join(', ', $parameters) . ')' . "\n";
+				$methodCode .= "\t" . '{' . "\n";
 
 				$parameters = array();
 
@@ -179,7 +181,7 @@ class generator
 
 				if ($method->isConstructor() === false)
 				{
-					$parameters = join(', ', $parameters);
+					$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
 
 					$methodCode .=
 						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
@@ -195,7 +197,7 @@ class generator
 				}
 				else
 				{
-					$parameters = join(', ', array_slice($parameters, 0, -1));
+					$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', array_slice($parameters, 0, -1)));
 
 					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
