@@ -162,14 +162,18 @@ class generator
 
 					$parameters = join(', ', $parameters);
 
-					$mockControllerArgument = new php\method\argument('mockController');
-					$mockControllerArgument
-						->isObject('\\' . __NAMESPACE__ . '\\controller')
-						->setDefaultValue(null)
-					;
-
-					$methodCode = "\n\t" . (string) $this->methods[$methodName]->addArgument($mockControllerArgument). "\n\t" . '{' . "\n";
 					$isConstructor = $this->methods[$methodName]->isConstructor();
+
+					if ($isConstructor === true)
+					{
+						$this->methods[$methodName]->addArgument(php\method\argument::get('mockController')
+								->isObject('\\' . __NAMESPACE__ . '\\controller')
+								->setDefaultValue(null)
+							)
+						;
+					}
+
+					$methodCode = "\n\t" . ((string) $this->methods[$methodName]). "\n\t" . '{' . "\n";
 
 					unset($this->methods[$methodName]);
 				}

@@ -69,6 +69,11 @@ class method
 
 		return join(', ', $arguments);
 	}
+
+	public static function get($name)
+	{
+		return new static($name);
+	}
 }
 
 ?>

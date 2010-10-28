@@ -476,20 +476,18 @@ abstract class test implements observable, \countable
 
 			if ($stdErr != '')
 			{
+				$file = null;
+				$line = null;
+
 				foreach (explode("\n", trim($stdErr)) as $error)
 				{
-					$file = null;
-					$line = null;
-					$message = $error;
-
-					if (preg_match('/^(.*?) in ([^ ]+) on line (.*)$/', $error, $match) === true)
+					if (preg_match('/ in ([^ ]+) on line (.*)$/', $error, $match) === 1)
 					{
-						$file = $match[2];
-						$line = $match[3];
-						$message = $message[1];
+						$file = $match[1];
+						$line = $match[2];
 					}
 
-					$this->score->addError($file, $line, $this->class, $this->currentMethod, $returnValue, $message);
+					$this->score->addError($file, $line, $this->class, $this->currentMethod, $returnValue, $error);
 				}
 			}
 

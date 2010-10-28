@@ -65,6 +65,16 @@ class score
 
 	public function addError($file, $line, $class, $method, $type, $message)
 	{
+		foreach ($this->errors as & $error)
+		{
+			if ($error['class'] === $class && $error['method'] === $method && $error['file'] === $file && $error['line'] === $error['line'] && $error['type'] === $type)
+			{
+				$error['message'] .= "\n" . trim($message);
+			}
+
+			return $this;
+		}
+
 		$this->errors[] = array(
 			'class' => $class,
 			'method' => $method,

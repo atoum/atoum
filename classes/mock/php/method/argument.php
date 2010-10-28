@@ -83,6 +83,11 @@ class argument
 		$this->defaultValueIsSet = true;
 		return $this;
 	}
+
+	public static function get($name)
+	{
+		return new static($name);
+	}
 }
 
 ?>
