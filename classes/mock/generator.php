@@ -7,6 +7,7 @@ use \mageekguy\atoum;
 class generator
 {
 	protected $adapter = null;
+	protected $shuntedMethods = array();
 
 	private $reflectionClassInjecter = null;
 
@@ -47,6 +48,13 @@ class generator
 	public function overload(php\method $method)
 	{
 		$this->methods[$method->getName()] = $method;
+
+		return $this;
+	}
+
+	public function shunt($method)
+	{
+		$this->shuntedMethods[] = $method;
 
 		return $this;
 	}
@@ -150,7 +158,7 @@ class generator
 			{
 				$methodName = $method->getName();
 
-				$isConstrictor = false;
+				$isConstructor = false;
 				$parameters = '';
 
 				if (isset($this->methods[$methodName]) === true)
@@ -200,7 +208,7 @@ class generator
 						$parameters[] = $parameterCode;
 					}
 
-					if ($method->isConstructor() === true)
+					if ($isConstructor === true)
 					{
 						$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
 					}
@@ -225,42 +233,58 @@ class generator
 					}
 				}
 
-				if ($isConstructor === false)
-				{
-					$methodCode .=
-						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
-						. "\t\t" . '{' . "\n"
-						. "\t\t\t" . 'return $this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
-						. "\t\t" . '}' . "\n"
-						. "\t\t" . 'else' . "\n"
-						. "\t\t" . '{' . "\n"
-						. "\t\t\t" . 'return parent::' . $methodName . '(' . $parameters . ');' . "\n"
-						. "\t\t" . '}' . "\n"
-						. "\t" . '}' . "\n"
-					;
-				}
-				else
+				$isShunted = (in_array($methodName, $this->shuntedMethods) === true);
+
+				if ($isConstructor === true)
 				{
 					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n";
+
+					if ($isShunted === true)
+					{
+						$methodCode .= "\t\t\t" . 'if ($mockController === null)' . "\n";
+						$methodCode .= "\t\t\t" . '{' . "\n";
+						$methodCode .= "\t\t\t\t" . '$mockController = new \mageekguy\atoum\mock\controller();' . "\n";
+						$methodCode .= "\t\t\t" . '}' . "\n";
+					}
+
 					$methodCode .= "\t\t" . '}' . "\n";
 					$methodCode .= "\t\t" . 'if ($mockController !== null)' . "\n";
 					$methodCode .= "\t\t" . '{' . "\n";
 					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . "\n";
 					$methodCode .= "\t\t" . '}' . "\n";
+				}
+
+				if ($isShunted === true)
+				{
+					$methodCode .= "\t\t" . 'if (isset($this->mockController->' . $methodName . ') === false)' . "\n";
+					$methodCode .= "\t\t" . '{' . "\n";
+					$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . "\n";
+					$methodCode .= "\t\t" . '}' . "\n";
+					$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n";
+				}
+				else
+				{
 					$methodCode .=
 						  "\t\t" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . "\n"
 						. "\t\t" . '{' . "\n"
-						. "\t\t\t" . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
+						. "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
 						. "\t\t" . '}' . "\n"
-						. "\t\t" . 'else' . "\n"
-						. "\t\t" . '{' . "\n"
-						. "\t\t\t" . 'parent::' . $methodName . '(' . $parameters . ');' . "\n"
-						. "\t\t" . '}' . "\n"
-						. "\t" . '}' . "\n"
 					;
 				}
+
+				if ($isShunted === false)
+				{
+					$methodCode .=
+						"\t\t" . 'else' . "\n"
+						. "\t\t" . '{' . "\n"
+						. "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'parent::' . $methodName . '(' . $parameters . ');' . "\n"
+						. "\t\t" . '}' . "\n"
+						;
+				}
+
+				$methodCode .= "\t" . '}' . "\n";
 
 				$mockedMethods .= $methodCode;
 			}
