@@ -70,9 +70,9 @@ class score
 			if ($error['class'] === $class && $error['method'] === $method && $error['file'] === $file && $error['line'] === $error['line'] && $error['type'] === $type)
 			{
 				$error['message'] .= "\n" . trim($message);
-			}
 
-			return $this;
+				return $this;
+			}
 		}
 
 		$this->errors[] = array(

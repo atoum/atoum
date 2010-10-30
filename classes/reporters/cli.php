@@ -194,10 +194,7 @@ class cli extends atoum\reporter
 
 		foreach ($messages as $message)
 		{
-			if ($message != '')
-			{
-				echo ($level <= 0 ? '' : str_repeat('   ', $level)) . rtrim($message) . PHP_EOL;
-			}
+			echo ($level <= 0 ? '' : str_repeat('   ', $level)) . rtrim($message) . PHP_EOL;
 		}
 	}
 }
