@@ -213,6 +213,43 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testSetStubFile()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->php_sapi_name = function() { return 'cli'; };
+		$adapter->realpath = function($path) { return $path; };
+
+		$generator = new phar\generator(uniqid(), null, $adapter);
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->setStubFile('');
+				}
+			)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('Stub file is invalid')
+		;
+
+		$adapter->is_file = function() { return false; };
+
+		$this->assert
+			->exception(function() use ($generator) {
+					$generator->setStubFile(uniqid());
+				}
+			)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('Stub file is not a valid file')
+		;
+
+		$adapter->is_file = function() { return true; };
+
+		$this->assert
+			->object($generator->setStubFile($stubFile = uniqid()))->isIdenticalTo($generator)
+			->string($generator->getStubFile())->isEqualTo($stubFile)
+		;
+	}
+
 	public function testSetPharInjecter()
 	{
 		$adapter = new atoum\adapter();
@@ -368,6 +405,7 @@ class generator extends atoum\test
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
 		$adapter->is_dir = function() { return true; };
+		$adapter->is_file = function() { return true; };
 
 		$generator = new phar\generator(uniqid(), null, $adapter);
 
@@ -380,7 +418,7 @@ class generator extends atoum\test
 				->hasMessage('Origin directory must be defined')
 		;
 
-		$generator->setOriginDirectory(uniqid());
+		$generator->setOriginDirectory($originDirectory = uniqid());
 
 		$this->assert
 			->exception(function () use ($generator) {
@@ -393,6 +431,17 @@ class generator extends atoum\test
 
 		$generator->setDestinationDirectory(uniqid());
 
+		$this->assert
+			->exception(function () use ($generator) {
+						$generator->run();
+					}
+				)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('Stub file must be defined')
+		;
+
+		$generator->setStubFile($stubFile = uniqid());
+
 		$adapter->is_readable = function() { return false; };
 
 		$this->assert
@@ -400,11 +449,12 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\runtimeException')
 				->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
 		;
 
-		$adapter->is_readable = function() { return true; };
+		$adapter->is_readable = function($path) use ($originDirectory) { return ($path === $originDirectory); };
+
 		$adapter->is_writable = function() { return false; };
 
 		$this->assert
@@ -417,6 +467,17 @@ class generator extends atoum\test
 		;
 
 		$adapter->is_writable = function() { return true; };
+
+		$this->assert
+			->exception(function () use ($generator) {
+						$generator->run();
+					}
+				)
+				->isInstanceOf('\runtimeException')
+				->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
+		;
+
+		$adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === $originDirectory || $path === $stubFile); };
 
 		$generator->setPharInjecter(function($name) { return null; });
 
@@ -504,8 +565,9 @@ class generator extends atoum\test
 		;
 
 		$licence = uniqid();
+		$stub = uniqid();
 
-		$adapter->file_get_contents = function($file) use ($generator, $description, $licence) {
+		$adapter->file_get_contents = function($file) use ($generator, $description, $licence, $stub) {
 				switch ($file)
 				{
 					case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
@@ -513,6 +575,9 @@ class generator extends atoum\test
 
 					case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'COPYING':
 						return $licence;
+
+					case $generator->getStubFile():
+						return $stub;
 
 					default:
 						return uniqid();
@@ -538,7 +603,7 @@ class generator extends atoum\test
 						)
 					)
 				)
-				->call('setStub', array('<?php \phar::mapPhar(\'' . phar\generator::phar . '\'); require(\'phar://' . phar\generator::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();', null))
+				->call('setStub', array($stub, null))
 				->call('buildFromIterator', array(
 						$fileIterator,
 						$generator->getOriginDirectory()
@@ -624,7 +689,7 @@ class generator extends atoum\test
 						)
 					)
 				)
-				->call('setStub', array('<?php \phar::mapPhar(\'' . phar\generator::phar . '\'); require(\'phar://' . phar\generator::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();', null))
+				->call('setStub', array($stub, null))
 				->call('buildFromIterator', array(
 						$fileIterator,
 						$generator->getOriginDirectory()

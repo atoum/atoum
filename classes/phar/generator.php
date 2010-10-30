@@ -15,6 +15,7 @@ class generator extends atoum\script
 	protected $help = false;
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;
+	protected $stubFile = null;
 
 	private $pharInjecter = null;
 	private $fileIteratorInjecter = null;
@@ -80,9 +81,33 @@ class generator extends atoum\script
 		return $this;
 	}
 
+	public function setStubFile($stubFile)
+	{
+		$stubFile = $this->cleanPath($stubFile);
+
+		if ($stubFile == '')
+		{
+			throw new \runtimeException('Stub file is invalid');
+		}
+
+		if ($this->adapter->is_file($stubFile) === false)
+		{
+			throw new \runtimeException('Stub file is not a valid file');
+		}
+
+		$this->stubFile = $stubFile;
+
+		return $this;
+	}
+
 	public function getDestinationDirectory()
 	{
 		return $this->destinationDirectory;
+	}
+
+	public function getStubFile()
+	{
+		return $this->stubFile;
 	}
 
 	public function getPhar($name)
@@ -184,17 +209,30 @@ class generator extends atoum\script
 		{
 			throw new \runtimeException(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
 		}
-		else if ($this->destinationDirectory === null)
+
+		if ($this->destinationDirectory === null)
 		{
 			throw new \runtimeException(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
 		}
-		else if ($this->adapter->is_readable($this->originDirectory) === false)
+
+		if ($this->stubFile === null)
 		{
-			throw new \logicException(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
+			throw new \runtimeException(sprintf($this->locale->_('Stub file must be defined'), $this->originDirectory));
 		}
-		else if ($this->adapter->is_writable($this->destinationDirectory) === false)
+
+		if ($this->adapter->is_readable($this->originDirectory) === false)
+		{
+			throw new \runtimeException(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
+		}
+
+		if ($this->adapter->is_writable($this->destinationDirectory) === false)
 		{
 			throw new \runtimeException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
+		}
+
+		if ($this->adapter->is_readable($this->stubFile) === false)
+		{
+			throw new \runtimeException(sprintf($this->locale->_('Stub file \'%s\' is not readable'), $this->stubFile));
 		}
 
 		$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
@@ -225,7 +263,7 @@ class generator extends atoum\script
 			throw new \runtimeException(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
 		}
 
-		$phar->setStub('<?php \phar::mapPhar(\'' . self::phar . '\'); require(\'phar://' . self::phar . '/classes/autoloader.php\'); if (PHP_SAPI === \'cli\') { $stub = new \mageekguy\atoum\phar\stub(__FILE__); $stub->run(); } __HALT_COMPILER();');
+		$phar->setStub($this->adapter->file_get_contents($this->stubFile));
 
 		$phar->setMetadata(array(
 				'version' => atoum\test::getVersion(),

@@ -230,6 +230,33 @@ class score extends atoum\test
 			)
 			->integer($score->getErrorNumber())->isEqualTo(2)
 		;
+
+		$anAnotherMessage = uniqid();
+
+		$this->assert
+			->object($score->addError($file, $line, $class, $method, $type, $anAnotherMessage))->isIdenticalTo($score)
+			->collection($score->getErrors())->isEqualTo(array(
+					array(
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => $message . PHP_EOL . $anAnotherMessage
+					),
+					array(
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'file' => $otherFile,
+						'line' => $otherLine,
+						'type' => $otherType,
+						'message' => $otherMessage
+					)
+				)
+			)
+			->integer($score->getErrorNumber())->isEqualTo(2)
+		;
+
 	}
 
 	public function testAddOutput()

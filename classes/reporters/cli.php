@@ -127,7 +127,7 @@ class cli extends atoum\reporter
 			{
 				self::write($output['class'] . '::' . $output['method'] . '():', 1);
 
-				foreach (explode("\n", trim($output['value'])) as $line)
+				foreach (explode(PHP_EOL, trim($output['value'])) as $line)
 				{
 					self::write($line, 2);
 				}
@@ -174,7 +174,7 @@ class cli extends atoum\reporter
 			{
 				self::write($exception['class'] . '::' . $exception['method'] . '():', 1);
 
-				foreach (explode("\n", $exception['value']) as $line)
+				foreach (explode(PHP_EOL, $exception['value']) as $line)
 				{
 					self::write($line, 2);
 				}
@@ -190,7 +190,7 @@ class cli extends atoum\reporter
 
 	public static function write($message = '', $level = 0)
 	{
-		$messages = explode("\n", $message);
+		$messages = explode(PHP_EOL, $message);
 
 		foreach ($messages as $message)
 		{

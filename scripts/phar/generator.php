@@ -8,6 +8,7 @@ require(__DIR__ . '/../../classes/autoloader.php');
 
 $generator = new atoum\phar\generator(__FILE__);
 $generator->setOriginDirectory(__DIR__ . '/../..');
+$generator->setStubFile(__DIR__ . '/resources/stub.php');
 
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
 		$generator->getErrorWriter()->write(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
