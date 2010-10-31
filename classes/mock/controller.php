@@ -6,7 +6,7 @@ use \mageekguy\atoum\mock;
 
 class controller
 {
-	protected $mock = null;
+	protected $mockClass = null;
 	protected $methods = array();
 	protected $calls = array();
 
@@ -45,9 +45,9 @@ class controller
 		}
 	}
 
-	public function getMock()
+	public function getMockClass()
 	{
-		return $this->mock;
+		return $this->mockClass;
 	}
 
 	public function getMethods()
@@ -86,11 +86,13 @@ class controller
 
 	public function control(mock\aggregator $mock)
 	{
-		if ($this->mock !== $mock)
-		{
-			$this->mock = $mock;
+		$mockClass = get_class($mock);
 
-			$class = $this->getReflectionClass($this->mock);
+		if ($this->mockClass !== $mockClass)
+		{
+			$this->mockClass = $mockClass;
+
+			$class = $this->getReflectionClass($this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try
@@ -110,7 +112,7 @@ class controller
 			{
 				if (in_array($method, $methods) === false)
 				{
-					throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' does not exist');
+					throw new \logicException('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 				}
 			}
 
@@ -136,7 +138,7 @@ class controller
 
 	public function reset()
 	{
-		$this->mock = null;
+		$this->mockClass = null;
 		$this->methods = array();
 		$this->calls = array();
 
@@ -171,16 +173,11 @@ class controller
 
 	protected function checkMethod($method)
 	{
-		if ($this->mock !== null)
+		if ($this->mockClass !== null)
 		{
-			if (sizeof($this->methods) <= 0)
-			{
-				throw new \logicException('Class \'' . get_class($this->mock) . '\' has no public methods');
-			}
-
 			if (array_key_exists($method, $this->methods) === false)
 			{
-				throw new \logicException('Method \'' . get_class($this->mock) . '::' . $method . '()\' does not exist');
+				throw new \logicException('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
 		}
 	}

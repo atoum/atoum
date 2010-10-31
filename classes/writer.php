@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-abstract class writer
+abstract class writer implements adapter\aggregator
 {
 	protected $adapter = null;
 
@@ -29,6 +29,7 @@ abstract class writer
 	}
 
 	public abstract function write($string);
+	public abstract function flush($string);
 }
 
 ?>

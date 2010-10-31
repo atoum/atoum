@@ -6,9 +6,14 @@ use mageekguy\atoum;
 
 class stdout extends atoum\writer
 {
-	public function write($string)
+	public function write($something)
 	{
-		$this->adapter->fwrite(STDOUT, rtrim($string) . "\n");
+		return $this->flush($something);
+	}
+
+	public function flush($something)
+	{
+		$this->adapter->fwrite(STDOUT, rtrim($something) . "\n");
 		return $this;
 	}
 }

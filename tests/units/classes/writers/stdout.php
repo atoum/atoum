@@ -14,6 +14,7 @@ class stdout extends atoum\test
 		$stdout = new writers\stdout();
 
 		$this->assert
+			->object($stdout)->isInstanceOf('\mageekguy\atoum\adapter\aggregator')
 			->object($stdout->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 

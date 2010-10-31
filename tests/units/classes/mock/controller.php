@@ -19,7 +19,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->variable($mockController->getMock())->isNull()
+			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getMethods())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
@@ -204,11 +204,11 @@ class controller extends atoum\test
 		$aMock = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $aMockController);
 
 		$this->assert
-			->variable($mockController->getMock())->isNull()
+			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getMethods())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->control($aMock))->isIdenticalTo($mockController)
-			->object($mockController->getMock())->isIdenticalTo($aMock)
+			->string($mockController->getMockClass())->isEqualTo(get_class($aMock))
 			->array($mockController->getMethods())->isEqualTo(array(
 					'a' => null,
 					'b' => null
@@ -378,11 +378,11 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->variable($mockController->getMock())->isNull()
+			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getMethods())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
-			->variable($mockController->getMock())->isNull()
+			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getMethods())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
@@ -399,11 +399,11 @@ class controller extends atoum\test
 		$mockController->invoke(__FUNCTION__, array());
 
 		$this->assert
-			->variable($mockController->getMock())->isNotNull()
+			->variable($mockController->getMockClass())->isNotNull()
 			->array($mockController->getMethods())->isNotEmpty()
 			->array($mockController->getCalls())->isNotEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
-			->variable($mockController->getMock())->isNull()
+			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getMethods())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;

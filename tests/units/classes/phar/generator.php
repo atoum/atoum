@@ -589,7 +589,7 @@ class generator extends atoum\test
 			->object($generator->run())->isIdenticalTo($generator)
 			->mock($phar)
 				->call('__construct', array(
-						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null, null
 					)
 				)
 				->call('setMetadata', array(
@@ -615,7 +615,7 @@ class generator extends atoum\test
 					)
 				)
 			->mock($fileIterator)
-				->call('__construct', array($generator->getOriginDirectory()))
+				->call('__construct', array($generator->getOriginDirectory(), null))
 		;
 
 		$superglobal = new atoum\superglobal();
@@ -675,7 +675,7 @@ class generator extends atoum\test
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 			->mock($phar)
 				->call('__construct', array(
-						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\phar\generator::phar, null, null, null
 					)
 				)
 				->call('setMetadata', array(
@@ -701,7 +701,7 @@ class generator extends atoum\test
 					)
 				)
 			->mock($fileIterator)
-				->call('__construct', array($generator->getOriginDirectory()))
+				->call('__construct', array($generator->getOriginDirectory(), null))
 		;
 	}
 }

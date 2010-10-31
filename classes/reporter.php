@@ -127,7 +127,6 @@ abstract class reporter implements observers\runner, observers\test
 				return $error;
 		}
 	}
-
 }
 
 ?>

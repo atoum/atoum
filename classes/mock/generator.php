@@ -95,11 +95,6 @@ class generator
 			throw new \logicException('Class \'' . $class . '\' is final, unable to mock it');
 		}
 
-		if ($reflectionClass->isAbstract() === true)
-		{
-			throw new \logicException('Class \'' . $class . '\' is abstract, unable to mock it');
-		}
-
 		return $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass);
 	}
 
@@ -159,7 +154,7 @@ class generator
 				$methodName = $method->getName();
 
 				$isConstructor = false;
-				$parameters = '';
+				$parameters = array();
 
 				if (isset($this->methods[$methodName]) === true)
 				{
@@ -167,8 +162,6 @@ class generator
 					{
 						$parameters[] = $argument->getVariable();
 					}
-
-					$parameters = join(', ', $parameters);
 
 					$isConstructor = $this->methods[$methodName]->isConstructor();
 
@@ -189,8 +182,6 @@ class generator
 				{
 					$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
 					$isConstructor = $method->isConstructor();
-
-					$parameters = array();
 
 					foreach ($method->getParameters() as $parameter)
 					{
@@ -223,15 +214,9 @@ class generator
 						$parameters[] = '$' . $parameter->getName();
 					}
 
-					if ($isConstructor === false)
-					{
-						$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
-					}
-					else
-					{
-						$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', array_slice($parameters, 0, -1)));
-					}
 				}
+
+				$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
 
 				$isShunted = (in_array($methodName, $this->shuntedMethods) === true);
 
@@ -271,13 +256,7 @@ class generator
 						. "\t\t" . '{' . "\n"
 						. "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n"
 						. "\t\t" . '}' . "\n"
-					;
-				}
-
-				if ($isShunted === false)
-				{
-					$methodCode .=
-						"\t\t" . 'else' . "\n"
+						. "\t\t" . 'else' . "\n"
 						. "\t\t" . '{' . "\n"
 						. "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'parent::' . $methodName . '(' . $parameters . ');' . "\n"
 						. "\t\t" . '}' . "\n"

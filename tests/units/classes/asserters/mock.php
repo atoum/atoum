@@ -144,7 +144,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Method %s is not called'), $method))
+				->hasMessage(sprintf($locale->_('Method %s::%s() is not called'), get_class($mock), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -154,7 +154,7 @@ class mock extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Method %s is not called'), $method)
+						'fail' => sprintf($locale->_('Method %s::%s() is not called'), get_class($mock), $method)
 					)
 				)
 			)
@@ -175,7 +175,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method, array(uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Method %s is not called with this argument'), $method))
+				->hasMessage(sprintf($locale->_('Method %s::%s() is not called with this argument'), get_class($mock), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -185,13 +185,13 @@ class mock extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
+						'fail' => sprintf($locale->_('Method %s::%s() is not called with this argument'), get_class($mock), $method)
 					)
 				)
 			)
 			->exception(function() use (& $otherLine, $asserter, $method) { $otherLine = __LINE__; $asserter->call($method, array(uniqid(), uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Method %s is not called with these arguments'), $method))
+				->hasMessage(sprintf($locale->_('Method %s::%s() is not called with these arguments'), get_class($mock),$method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -201,7 +201,7 @@ class mock extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Method %s is not called with this argument'), $method)
+						'fail' => sprintf($locale->_('Method %s::%s() is not called with this argument'), get_class($mock), $method)
 					),
 					array(
 						'class' => __CLASS__,
@@ -209,7 +209,7 @@ class mock extends atoum\test
 						'file' => __FILE__,
 						'line' => $otherLine,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Method %s is not called with these arguments'), $method)
+						'fail' => sprintf($locale->_('Method %s::%s() is not called with these arguments'), get_class($mock), $method)
 					)
 				)
 			)
