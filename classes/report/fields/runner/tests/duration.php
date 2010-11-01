@@ -1,33 +1,33 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\durations;
+namespace mageekguy\atoum\report\fields\runner\tests;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\report;
 
-class tests extends report\fields\runner
+class duration extends report\fields\runner
 {
+	protected $value = null;
 	protected $testsNumber = null;
-	protected $duration = null;
 
 	public function toString()
 	{
 		return
-			$this->duration === null ?
+			$this->value === null ?
 			$this->locale->__('Total test duration: unknown.', 'Total tests duration: unknown.', $this->testsNumber) :
 			sprintf(
 					$this->locale->__('Total test duration: %s.', 'Total tests duration: %s.', $this->testsNumber),
 					sprintf(
-						$this->locale->__('%4.2f second', '%4.2f seconds', $this->duration),
-						$this->duration
+						$this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
+						$this->value
 					)
 			)
 		;
 	}
 
-	public function getDuration()
+	public function getValue()
 	{
-		return $this->duration;
+		return $this->value;
 	}
 
 	public function getTestsNumber()
@@ -37,7 +37,7 @@ class tests extends report\fields\runner
 
 	public function setWithRunner(atoum\runner $runner)
 	{
-		$this->duration = $runner->getScore()->getTotalDuration();
+		$this->value = $runner->getScore()->getTotalDuration();
 		$this->testsNumber = $runner->getTestsNumber();
 
 		return $this;

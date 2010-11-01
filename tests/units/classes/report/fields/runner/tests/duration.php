@@ -1,30 +1,30 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\durations\runnings;
+namespace mageekguy\atoum\tests\units\report\fields\runner\tests;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\mock;
 use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\runner\durations;
+use \mageekguy\atoum\report\fields\runner\tests;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class tests extends atoum\test
+class duration extends atoum\test
 {
 	public function test__construct()
 	{
-		$tests = new durations\tests();
+		$duration = new tests\duration();
 
 		$this->assert
-			->object($tests)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($tests->getDuration())->isNull()
-			->variable($tests->getTestsNumber())->isNull()
+			->object($duration)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
+			->variable($duration->getValue())->isNull()
+			->variable($duration->getTestsNumber())->isNull()
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$tests = new durations\tests($locale = new atoum\locale());
+		$duration = new tests\duration($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -49,20 +49,20 @@ class tests extends atoum\test
 		$runnerController->getScore = function () use ($score) { return $score; };
 
 		$this->assert
-			->variable($tests->getDuration())->isNull()
-			->variable($tests->getTestsNumber())->isNull()
-			->object($tests->setWithRunner($runner))->isIdenticalTo($tests)
-			->integer($tests->getDuration())->isEqualTo($totalDuration)
-			->integer($tests->getTestsNumber())->isEqualTo($testsNumber)
+			->variable($duration->getValue())->isNull()
+			->variable($duration->getTestsNumber())->isNull()
+			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
+			->integer($duration->getValue())->isEqualTo($totalDuration)
+			->integer($duration->getTestsNumber())->isEqualTo($testsNumber)
 		;
 	}
 
 	public function testToString()
 	{
-		$tests = new durations\tests($locale = new atoum\locale());
+		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($tests->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
 		;
 
 		$mockGenerator = new mock\generator();
@@ -88,35 +88,35 @@ class tests extends atoum\test
 
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$tests->setWithRunner($runner);
+		$duration->setWithRunner($runner);
 
 		$this->assert
-			->string($tests->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
 		;
 
-		$totalDuration = rand(1, PHP_INT_MAX);
+		$totalDuration = rand(2, PHP_INT_MAX);
 
 		$score
 			->getMockController()
 				->getTotalDuration = function() use ($totalDuration) { return $totalDuration; }
 		;
 
-		$tests->setWithRunner($runner);
+		$duration->setWithRunner($runner);
 
 		$this->assert
-			->string($tests->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
 		;
 
 		$testsNumber = rand(2, PHP_INT_MAX);
 
 		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
 
-		$tests->setWithRunner($runner);
+		$duration->setWithRunner($runner);
 
 		$this->assert
-			->string($tests->toString())->isEqualTo(sprintf($locale->__('Total tests duration: %4.2f second.', 'Total tests duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total tests duration: %4.2f second.', 'Total tests duration: %4.2f seconds.', $totalDuration), $totalDuration))
 		;
 	}
-}
 
+}
 ?>

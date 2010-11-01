@@ -20,8 +20,6 @@ class cli extends atoum\reporter
 
 		$this->start = microtime(true);
 
-		self::write(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author));
-
 		return $this;
 	}
 
@@ -180,10 +178,6 @@ class cli extends atoum\reporter
 				}
 			}
 		}
-
-		self::write(sprintf($this->locale->__('Total test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
-		self::write(sprintf($this->locale->_('Total test memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
-		self::write(sprintf($this->locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration));
 
 		return $this;
 	}

@@ -36,8 +36,9 @@ if (autorun === true)
 
 				$report = new atoum\report();
 				$report->addRunnerField(new atoum\report\fields\runner\version(), array('runnerStart'));
-				$report->addRunnerField(new atoum\report\fields\runner\durations\tests(), array('runnerStop'));
-				$report->addRunnerField(new atoum\report\fields\runner\durations\running(), array('runnerStop'));
+				$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array('runnerStop'));
+				$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array('runnerStop'));
+				$report->addRunnerField(new atoum\report\fields\runner\duration(), array('runnerStop'));
 				$report->addDecorator($stringDecorator);
 				$runner->addObserver($report);
 			}
