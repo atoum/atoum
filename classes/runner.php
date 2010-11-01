@@ -11,21 +11,49 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
+	protected $score = null;
 	protected $adapter = null;
 	protected $runnerObservers = array();
 	protected $testObservers = array();
+	protected $testsNumber = null;
 
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(adapter $adapter = null)
+	public function __construct(score $score = null, adapter $adapter = null)
 	{
+		if ($score === null)
+		{
+			$score = new score();
+		}
+
 		if ($adapter === null)
 		{
 			$adapter = new adapter();
 		}
 
+		$this->score = $score;
 		$this->adapter = $adapter;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function getTestsNumber()
+	{
+		return $this->testsNumber;
+	}
+
+	public function getObservers()
+	{
+		return array_merge($this->runnerObservers, $this->testObservers);
 	}
 
 	public function setAdapter(adapter $adapter)
@@ -33,11 +61,6 @@ class runner implements observable, adapter\aggregator
 		$this->adapter = $adapter;
 
 		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function addObserver(atoum\observer $observer)
@@ -52,11 +75,6 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $this;
-	}
-
-	public function getObservers()
-	{
-		return array_merge($this->runnerObservers, $this->testObservers);
 	}
 
 	public function hasObservers()
@@ -76,6 +94,8 @@ class runner implements observable, adapter\aggregator
 
 	public function run($testClass = null)
 	{
+		$this->score->reset();
+
 		$this->start = $this->adapter->microtime(true);
 
 		if ($testClass === null)
@@ -85,9 +105,13 @@ class runner implements observable, adapter\aggregator
 
 		$this->callObservers(self::runStart);
 
-		foreach (array_filter($this->adapter->get_declared_classes(), function($class) use ($testClass) { return (is_subclass_of($class, $testClass) === true && get_parent_class($class) !== false); }) as $class)
+		$testClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testClass) { return (is_subclass_of($class, $testClass) === true && get_parent_class($class) !== false); });
+
+		$this->testsNumber = sizeof($testClasses);
+
+		foreach ($testClasses as $testClass)
 		{
-			$test = new $class();
+			$test = new $testClass();
 
 			if ($test->isIgnored() === false)
 			{
@@ -96,13 +120,15 @@ class runner implements observable, adapter\aggregator
 					$test->addObserver($observer);
 				}
 
-				$test->run();
+				$this->score->merge($test->run()->getScore());
 			}
 		}
 
 		$this->stop = $this->adapter->microtime(true);
 
 		$this->callObservers(self::runStop);
+
+		return $this->score;
 	}
 
 	public function getRunningDuration()
