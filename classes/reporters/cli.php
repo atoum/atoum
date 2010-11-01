@@ -30,9 +30,7 @@ class cli extends atoum\reporter
 		$this->testMethodNumber += sizeof($test);
 		$this->progressBar = new atoum\reporters\cli\progressBar($test);
 
-		self::write(sprintf($this->locale->_('Run %s...'), $test->getClass()));
-
-		echo $this->progressBar;
+//		echo $this->progressBar;
 	}
 
 	public function beforeTestMethod(atoum\test $test)

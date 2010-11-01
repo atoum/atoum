@@ -23,7 +23,7 @@ class report extends atoum\test
 				)
 			)
 			->array($report->getTestFields())->isEqualTo(array(
-					'testRunnerStart' => array(),
+					'testRunStart' => array(),
 					'beforeTestSetup' => array(),
 					'afterTestSetup' => array(),
 					'beforeTestMethod' => array(),
@@ -33,7 +33,8 @@ class report extends atoum\test
 					'testException' => array(),
 					'afterTestMethod' => array(),
 					'beforeTestTearDown' => array(),
-					'afterTestTearDown' => array()
+					'afterTestTearDown' => array(),
+					'testRunStop' => array()
 				)
 			)
 			->array($report->getDecorators())->isEmpty()
@@ -92,7 +93,7 @@ class report extends atoum\test
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(
-					'testRunnerStart' => array(),
+					'testRunStart' => array(),
 					'beforeTestSetup' => array(),
 					'afterTestSetup' => array(),
 					'beforeTestMethod' => array(),
@@ -102,12 +103,13 @@ class report extends atoum\test
 					'testException' => array(),
 					'afterTestMethod' => array(),
 					'beforeTestTearDown' => array(),
-					'afterTestTearDown' => array()
+					'afterTestTearDown' => array(),
+					'testRunStop' => array()
 				)
 			)
 			->object($report->addTestField($field = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunnerStart' => array($field),
+					'testRunStart' => array($field),
 					'beforeTestSetup' => array($field),
 					'afterTestSetup' => array($field),
 					'beforeTestMethod' => array($field),
@@ -117,12 +119,13 @@ class report extends atoum\test
 					'testException' => array($field),
 					'afterTestMethod' => array($field),
 					'beforeTestTearDown' => array($field),
-					'afterTestTearDown' => array($field)
+					'afterTestTearDown' => array($field),
+					'testRunStop' => array($field)
 				)
 			)
 			->object($report->addTestField($otherField = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunnerStart' => array($field, $otherField),
+					'testRunStart' => array($field, $otherField),
 					'beforeTestSetup' => array($field, $otherField),
 					'afterTestSetup' => array($field, $otherField),
 					'beforeTestMethod' => array($field, $otherField),
@@ -132,12 +135,13 @@ class report extends atoum\test
 					'testException' => array($field, $otherField),
 					'afterTestMethod' => array($field, $otherField),
 					'beforeTestTearDown' => array($field, $otherField),
-					'afterTestTearDown' => array($field, $otherField)
+					'afterTestTearDown' => array($field, $otherField),
+					'testRunStop' => array($field, $otherField)
 				)
 			)
 			->object($report->addTestField($beforeTestSetupField = new mock\mageekguy\atoum\report\fields\test(), array('beforeTestSetup')))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunnerStart' => array($field, $otherField),
+					'testRunStart' => array($field, $otherField),
 					'beforeTestSetup' => array($field, $otherField, $beforeTestSetupField),
 					'afterTestSetup' => array($field, $otherField),
 					'beforeTestMethod' => array($field, $otherField),
@@ -147,7 +151,8 @@ class report extends atoum\test
 					'testException' => array($field, $otherField),
 					'afterTestMethod' => array($field, $otherField),
 					'beforeTestTearDown' => array($field, $otherField),
-					'afterTestTearDown' => array($field, $otherField)
+					'afterTestTearDown' => array($field, $otherField),
+					'testRunStop' => array($field, $otherField)
 				)
 			)
 		;

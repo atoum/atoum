@@ -16,7 +16,7 @@ class report implements observers\runner, observers\test
 		);
 
 		$this->testFields = array(
-			'testRunnerStart' => array(),
+			'testRunStart' => array(),
 			'beforeTestSetup' => array(),
 			'afterTestSetup' => array(),
 			'beforeTestMethod' => array(),
@@ -27,6 +27,7 @@ class report implements observers\runner, observers\test
 			'afterTestMethod' => array(),
 			'beforeTestTearDown' => array(),
 			'afterTestTearDown' => array(),
+			'testRunStop' => array(),
 		);
 	}
 
