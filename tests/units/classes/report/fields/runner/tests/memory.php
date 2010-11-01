@@ -18,7 +18,7 @@ class memory extends atoum\test
 		$this->assert
 			->object($memory)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
 			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestsNumber())->isNull()
+			->variable($memory->getTestNumber())->isNull()
 		;
 	}
 
@@ -40,20 +40,29 @@ class memory extends atoum\test
 				->getTotalMemoryUsage = function() use ($totalMemoryUsage) { return $totalMemoryUsage; }
 		;
 
-		$testsNumber = rand(0, PHP_INT_MAX);
-
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
 		$runnerController->getScore = function () use ($score) { return $score; };
+
+		$runnerController->getTestNumber = function () { return 0; };
 
 		$this->assert
 			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestsNumber())->isNull()
+			->variable($memory->getTestNumber())->isNull()
+			->object($memory->setWithRunner($runner))->isIdenticalTo($memory)
+			->variable($memory->getValue())->isNull()
+			->variable($memory->getTestNumber())->isNull()
+		;
+
+		$testNumber = rand(1, PHP_INT_MAX);
+
+		$runnerController->getTestNumber = function () use ($testNumber) { return $testNumber; };
+
+		$this->assert
 			->object($memory->setWithRunner($runner))->isIdenticalTo($memory)
 			->integer($memory->getValue())->isEqualTo($totalMemoryUsage)
-			->integer($memory->getTestsNumber())->isEqualTo($testsNumber)
+			->integer($memory->getTestNumber())->isEqualTo($testNumber)
 		;
 	}
 
@@ -71,12 +80,12 @@ class memory extends atoum\test
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$testsNumber = 1;
+		$testNumber = 1;
 
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use ($testNumber) { return $testNumber; };
 
 		$totalMemoryUsage = 0.5;
 
@@ -107,9 +116,9 @@ class memory extends atoum\test
 			->string($memory->toString())->isEqualTo(sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576))
 		;
 
-		$testsNumber = rand(2, PHP_INT_MAX);
+		$testNumber = rand(2, PHP_INT_MAX);
 
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use ($testNumber) { return $testNumber; };
 
 		$memory->setWithRunner($runner);
 

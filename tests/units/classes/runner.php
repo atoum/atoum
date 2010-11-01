@@ -47,7 +47,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testGetTestsNumber()
+	public function testGetTestNumber()
 	{
 		$adapter = new atoum\adapter();
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
@@ -56,13 +56,13 @@ class runner extends atoum\test
 		$runner = new atoum\runner(null, $adapter);
 
 		$this->assert
-			->variable($runner->getTestsNumber())->isNull();
+			->variable($runner->getTestNumber())->isNull();
 		;
 
 		$runner->run();
 
 		$this->assert
-			->integer($runner->getTestsNumber())->isZero()
+			->integer($runner->getTestNumber())->isZero()
 		;
 
 		$mockGenerator = new mock\generator();
@@ -86,7 +86,36 @@ class runner extends atoum\test
 		$runner->run();
 
 		$this->assert
-			->integer($runner->getTestsNumber())->isEqualTo(sizeof($testClasses))
+			->integer($runner->getTestNumber())->isEqualTo(sizeof($testClasses))
+		;
+	}
+
+	public function testGetTestMethodNumber()
+	{
+		$adapter = new atoum\adapter();
+		$adapter->get_declared_classes = function() { return array(); };
+
+		$runner = new atoum\runner(null, $adapter);
+
+		$this->assert
+			->variable($runner->getTestMethodNumber())->isNull();
+		;
+
+		$runner->run();
+
+		$this->assert
+			->variable($runner->getTestMethodNumber())->isNull();
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\test');
+
+		$adapter->get_declared_classes = function() { return array('\mageekguy\atoum\mock\mageekguy\atoum\test'); };
+
+		$runner->run();
+
+		$this->assert
+			->integer($runner->getTestMethodNumber())->isZero()
 		;
 	}
 }

@@ -25,7 +25,10 @@ class duration extends report\fields\runner
 
 	public function setWithRunner(atoum\runner $runner)
 	{
-		$this->value = $runner->getRunningDuration();
+		if ($runner->getTestNumber() > 0)
+		{
+			$this->value = $runner->getRunningDuration();
+		}
 
 		return $this;
 	}

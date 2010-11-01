@@ -28,16 +28,20 @@ class duration extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
 
-		$runningDuration = rand(0, PHP_INT_MAX);
-
 		$runner = new mock\mageekguy\atoum\runner();
-		$runner
-			->getMockController()
-				->getRunningDuration = function () use ($runningDuration) { return $runningDuration; }
-		;
+		$runnerController = $runner->getMockController();
+		$runnerController->getTestNumber = function() { return 0; };
+		$runnerController->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
 
 		$this->assert
 			->variable($duration->getValue())->isNull()
+			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
+			->variable($duration->getValue())->isNull()
+		;
+
+		$runnerController->getTestNumber = function() { return rand(1, PHP_INT_MAX); };
+
+		$this->assert
 			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
 			->integer($duration->getValue())->isIdenticalTo($runningDuration)
 		;
@@ -57,10 +61,17 @@ class duration extends atoum\test
 		$mockGenerator->generate('\mageekguy\atoum\runner');
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runner
-			->getMockController()
-				->getRunningDuration = function () use ($runningDuration) { return $runningDuration; }
+		$runnerController = $runner->getMockController();
+		$runnerController->getTestNumber = function() { return 0; };
+		$runnerController->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
+
+		$duration->setWithRunner($runner);
+
+		$this->assert
+			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.'))
 		;
+
+		$runnerController->getTestNumber = function() { return rand(1, PHP_INT_MAX); };
 
 		$duration->setWithRunner($runner);
 

@@ -15,7 +15,8 @@ class runner implements observable, adapter\aggregator
 	protected $adapter = null;
 	protected $runnerObservers = array();
 	protected $testObservers = array();
-	protected $testsNumber = null;
+	protected $testNumber = null;
+	protected $testMethodNumber = null;
 
 	private $start = null;
 	private $stop = null;
@@ -46,9 +47,14 @@ class runner implements observable, adapter\aggregator
 		return $this->adapter;
 	}
 
-	public function getTestsNumber()
+	public function getTestNumber()
 	{
-		return $this->testsNumber;
+		return $this->testNumber;
+	}
+
+	public function getTestMethodNumber()
+	{
+		return $this->testMethodNumber;
 	}
 
 	public function getObservers()
@@ -107,11 +113,13 @@ class runner implements observable, adapter\aggregator
 
 		$testClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testClass) { return (is_subclass_of($class, $testClass) === true && get_parent_class($class) !== false); });
 
-		$this->testsNumber = sizeof($testClasses);
+		$this->testNumber = sizeof($testClasses);
 
 		foreach ($testClasses as $testClass)
 		{
 			$test = new $testClass();
+
+			$this->testMethodNumber += sizeof($test);
 
 			if ($test->isIgnored() === false)
 			{

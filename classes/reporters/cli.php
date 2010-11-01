@@ -99,24 +99,6 @@ class cli extends atoum\reporter
 		$outputNumber = $score->getOutputNumber();
 		$testDuration = $score->getTotalDuration();
 
-		if ($failNumber > 0)
-		{
-			self::write(sprintf($this->locale->_('Failure ! (%s, %s, %s)'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber()), sprintf($this->locale->__('%d failure', '%d failures', $failNumber), $failNumber)));
-		}
-		else
-		{
-			$problemNumber = $errorNumber + $exceptionNumber;
-
-			if ($problemNumber === 0)
-			{
-				self::write(sprintf($this->locale->_('Success (%s, %s) !'), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber())));
-			}
-			else
-			{
-				self::write(sprintf($this->locale->__('Success (%s, %s), but there is %s problem...', 'Success (%s, %s), but there are %s problems...', $problemNumber), sprintf($this->locale->__('%d test', '%d tests', $this->testMethodNumber), $this->testMethodNumber), sprintf($this->locale->__('%d assertion', '%d assertions', $score->getAssertionNumber()), $score->getAssertionNumber()), $problemNumber));
-			}
-		}
-
 		if ($outputNumber > 0)
 		{
 			self::write($this->locale->_('Output:'));

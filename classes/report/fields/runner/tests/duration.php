@@ -8,15 +8,15 @@ use \mageekguy\atoum\report;
 class duration extends report\fields\runner
 {
 	protected $value = null;
-	protected $testsNumber = null;
+	protected $testNumber = null;
 
 	public function toString()
 	{
 		return
 			$this->value === null ?
-			$this->locale->__('Total test duration: unknown.', 'Total tests duration: unknown.', $this->testsNumber) :
+			$this->locale->__('Total test duration: unknown.', 'Total tests duration: unknown.', $this->testNumber) :
 			sprintf(
-					$this->locale->__('Total test duration: %s.', 'Total tests duration: %s.', $this->testsNumber),
+					$this->locale->__('Total test duration: %s.', 'Total tests duration: %s.', $this->testNumber),
 					sprintf(
 						$this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
 						$this->value
@@ -30,15 +30,15 @@ class duration extends report\fields\runner
 		return $this->value;
 	}
 
-	public function getTestsNumber()
+	public function getTestNumber()
 	{
-		return $this->testsNumber;
+		return $this->testNumber;
 	}
 
 	public function setWithRunner(atoum\runner $runner)
 	{
 		$this->value = $runner->getScore()->getTotalDuration();
-		$this->testsNumber = $runner->getTestsNumber();
+		$this->testNumber = $runner->getTestNumber();
 
 		return $this;
 	}

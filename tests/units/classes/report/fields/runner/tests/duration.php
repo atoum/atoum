@@ -18,7 +18,7 @@ class duration extends atoum\test
 		$this->assert
 			->object($duration)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
 			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestsNumber())->isNull()
+			->variable($duration->getTestNumber())->isNull()
 		;
 	}
 
@@ -45,15 +45,15 @@ class duration extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
 		$this->assert
 			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestsNumber())->isNull()
+			->variable($duration->getTestNumber())->isNull()
 			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
 			->integer($duration->getValue())->isEqualTo($totalDuration)
-			->integer($duration->getTestsNumber())->isEqualTo($testsNumber)
+			->integer($duration->getTestNumber())->isEqualTo($testsNumber)
 		;
 	}
 
@@ -76,7 +76,7 @@ class duration extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
 
 		$totalDuration = 0.5;
 
@@ -109,7 +109,7 @@ class duration extends atoum\test
 
 		$testsNumber = rand(2, PHP_INT_MAX);
 
-		$runnerController->getTestsNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
 
 		$duration->setWithRunner($runner);
 

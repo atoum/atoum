@@ -8,15 +8,15 @@ use \mageekguy\atoum\report;
 class memory extends report\fields\runner
 {
 	protected $value = null;
-	protected $testsNumber = null;
+	protected $testNumber = null;
 
 	public function toString()
 	{
 		return
 			$this->value === null ?
-			$this->locale->__('Total test memory usage: unknown.', 'Total tests memory usage: unknown.', $this->testsNumber) :
+			$this->locale->__('Total test memory usage: unknown.', 'Total tests memory usage: unknown.', $this->testNumber) :
 			sprintf(
-					$this->locale->__('Total test memory usage: %s.', 'Total tests memory usage: %s.', $this->testsNumber),
+					$this->locale->__('Total test memory usage: %s.', 'Total tests memory usage: %s.', $this->testNumber),
 					sprintf(
 						$this->locale->__('%4.2f Mb', '%4.2f Mb', $this->value / 1048576),
 						$this->value / 1048576
@@ -30,15 +30,18 @@ class memory extends report\fields\runner
 		return $this->value;
 	}
 
-	public function getTestsNumber()
+	public function getTestNumber()
 	{
-		return $this->testsNumber;
+		return $this->testNumber;
 	}
 
 	public function setWithRunner(atoum\runner $runner)
 	{
-		$this->value = $runner->getScore()->getTotalMemoryUsage();
-		$this->testsNumber = $runner->getTestsNumber();
+		if ($runner->getTestNumber() > 0)
+		{
+			$this->value = $runner->getScore()->getTotalMemoryUsage();
+			$this->testNumber = $runner->getTestNumber();
+		}
 
 		return $this;
 	}
