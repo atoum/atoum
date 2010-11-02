@@ -7,10 +7,7 @@ use \mageekguy\atoum\report;
 
 abstract class test extends report\field
 {
-	public function setWithTest(atoum\test $test)
-	{
-		return parent::setWithRunner($test);
-	}
+	public abstract function setWithTest(atoum\test $test, $event = null);
 }
 
 ?>

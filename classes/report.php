@@ -151,14 +151,14 @@ class report implements observers\runner, observers\test
 			{
 				foreach ($this->decorators as $decorator)
 				{
-					$decorator->{$writeMethod}($field->{$setMethod}($entity));
+					$decorator->{$writeMethod}($field->{$setMethod}($entity, $event));
 				}
 			}
 		}
 
 		return $this;
 	}
-	
+
 	protected function addField(report\field $field, array $events, $propertyName)
 	{
 		if (sizeof($events) <= 0)

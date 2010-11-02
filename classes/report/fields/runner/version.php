@@ -28,7 +28,7 @@ class version extends report\fields\runner
 		return $this->number;
 	}
 
-	public function setWithRunner(atoum\runner $runner)
+	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		return $this;
 	}

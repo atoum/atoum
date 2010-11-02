@@ -35,7 +35,7 @@ class duration extends report\fields\runner
 		return $this->testNumber;
 	}
 
-	public function setWithRunner(atoum\runner $runner)
+	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		$this->value = $runner->getScore()->getTotalDuration();
 		$this->testNumber = $runner->getTestNumber();

@@ -35,7 +35,7 @@ class memory extends report\fields\runner
 		return $this->testNumber;
 	}
 
-	public function setWithRunner(atoum\runner $runner)
+	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		if ($runner->getTestNumber() > 0)
 		{

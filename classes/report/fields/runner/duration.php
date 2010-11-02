@@ -23,7 +23,7 @@ class duration extends report\fields\runner
 		return $this->value;
 	}
 
-	public function setWithRunner(atoum\runner $runner)
+	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		if ($runner->getTestNumber() > 0)
 		{

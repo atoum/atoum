@@ -62,6 +62,11 @@ class runner implements observable, adapter\aggregator
 		return array_merge($this->runnerObservers, $this->testObservers);
 	}
 
+	public function getObserverEvents()
+	{
+		return array(self::runStart, self::runStop);
+	}
+
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;

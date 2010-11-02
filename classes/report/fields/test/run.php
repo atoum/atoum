@@ -14,7 +14,7 @@ class run extends report\fields\test
 		return $this->testClass;
 	}
 
-	public function setWithTest(atoum\test $test)
+	public function setWithTest(atoum\test $test, $event = null)
 	{
 		$this->testClass = $test->getClass();
 		return $this;

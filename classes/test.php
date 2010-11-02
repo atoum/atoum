@@ -169,27 +169,6 @@ abstract class test implements observable, \countable
 		return ($this->registryInjecter === null ? atoum\registry::getInstance() : $this->registryInjecter->__invoke());
 	}
 
-	public function count()
-	{
-		return sizeof($this->runTestMethods);
-	}
-
-	public function addObserver(atoum\observers\test $observer)
-	{
-		$this->observers[] = $observer;
-		return $this;
-	}
-
-	public function callObservers($method)
-	{
-		foreach ($this->observers as $observer)
-		{
-			$observer->{$method}($this);
-		}
-
-		return $this;
-	}
-
 	public function getClass()
 	{
 		return $this->class;
@@ -218,6 +197,45 @@ abstract class test implements observable, \countable
 	public function getCurrentMethod()
 	{
 		return $this->currentMethod;
+	}
+
+	public function getObserverEvents()
+	{
+		return array(
+			self::runStart,
+			self::beforeSetUp,
+			self::afterSetUp,
+			self::beforeTestMethod,
+			self::fail,
+			self::error,
+			self::exception,
+			self::success,
+			self::afterTestMethod,
+			self::beforeTearDown,
+			self::afterTearDown,
+			self::runStop
+		);
+	}
+
+	public function count()
+	{
+		return sizeof($this->runTestMethods);
+	}
+
+	public function addObserver(atoum\observers\test $observer)
+	{
+		$this->observers[] = $observer;
+		return $this;
+	}
+
+	public function callObservers($method)
+	{
+		foreach ($this->observers as $observer)
+		{
+			$observer->{$method}($this);
+		}
+
+		return $this;
 	}
 
 	public function ignore($boolean)

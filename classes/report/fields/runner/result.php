@@ -44,7 +44,7 @@ class result extends report\fields\runner
 		return $this->exceptionNumber;
 	}
 
-	public function setWithRunner(atoum\runner $runner)
+	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		$testNumber = $runner->getTestNumber();
 
