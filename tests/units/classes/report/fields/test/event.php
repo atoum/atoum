@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\report\fields\test;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\cli;
 use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report;
 use \mageekguy\atoum\report\fields\test;
 
 require_once(__DIR__ . '/../../../../runner.php');
@@ -57,6 +57,52 @@ class event extends atoum\test
 			->string($event->getValue())->isEqualTo(atoum\test::afterTearDown)
 			->object($event->setWithTest($test, atoum\test::runStop))->isIdenticalTo($event)
 			->string($event->getValue())->isEqualTo(atoum\test::runStop)
+		;
+	}
+
+	public function testToString()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\mageekguy\atoum\test')
+		;
+
+		$event = new test\event();
+
+		$test = new mock\mageekguy\atoum\test();
+
+		$count = rand(1, PHP_INT_MAX);
+		$test->getMockController()->count = function() use ($count) { return $count; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->string($event->toString($progressBar))->isEmpty()
+			->object($event->setWithTest($test, atoum\test::runStart))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::beforeSetUp))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::afterSetUp))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::beforeTestMethod))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::fail))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar->refresh('F'))
+			->object($event->setWithTest($test, atoum\test::error))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar->refresh('e'))
+			->object($event->setWithTest($test, atoum\test::exception))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar->refresh('E'))
+			->object($event->setWithTest($test, atoum\test::success))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar->refresh('S'))
+			->object($event->setWithTest($test, atoum\test::afterTestMethod))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::beforeTearDown))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::afterTearDown))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo((string) $progressBar)
+			->object($event->setWithTest($test, atoum\test::runStop))->isIdenticalTo($event)
+			->string($event->toString())->isEqualTo(PHP_EOL)
 		;
 	}
 }

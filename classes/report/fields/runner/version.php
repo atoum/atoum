@@ -33,7 +33,7 @@ class version extends report\fields\runner
 
 	public function toString()
 	{
-		return ($this->author === null || $this->number === null ? '' : sprintf($this->locale->_('Atoum version %s by %s.'), $this->number, $this->author));
+		return ($this->author === null || $this->number === null ? '' : sprintf($this->locale->_('Atoum version %s by %s.'), $this->number, $this->author) . PHP_EOL);
 	}
 }
 

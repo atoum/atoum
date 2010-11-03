@@ -149,9 +149,11 @@ class report implements observers\runner, observers\test
 		{
 			foreach ($this->{$propertyName}[$event] as $field)
 			{
+				$field->{$setMethod}($entity, $event);
+
 				foreach ($this->decorators as $decorator)
 				{
-					$decorator->{$writeMethod}($field->{$setMethod}($entity, $event));
+					$decorator->{$writeMethod}($field);
 				}
 			}
 		}

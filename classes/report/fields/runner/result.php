@@ -92,7 +92,7 @@ class result extends report\fields\runner
 			;
 		}
 
-		return $string;
+		return $string . PHP_EOL;
 	}
 }
 

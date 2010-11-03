@@ -70,20 +70,20 @@ class run extends atoum\test
 		$test = new mock\mageekguy\atoum\test();
 
 		$this->assert
-			->string($run->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::runStop)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::beforeSetUp)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::afterSetUp)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::beforeTestMethod)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::fail)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::error)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::exception)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::success)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::afterTestMethod)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::beforeTearDown)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::afterTearDown)->toString())->isEqualTo($locale->_('There is currently no test running.'))
-			->string($run->setWithTest($test, atoum\test::runStart)->toString())->isEqualTo(sprintf($locale->_('Run %s...'), $test->getClass()))
+			->string($run->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::runStop)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::beforeSetUp)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::afterSetUp)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::beforeTestMethod)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::fail)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::error)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::exception)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::success)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::afterTestMethod)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::beforeTearDown)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::afterTearDown)->toString())->isEqualTo($locale->_('There is currently no test running.') . PHP_EOL)
+			->string($run->setWithTest($test, atoum\test::runStart)->toString())->isEqualTo(sprintf($locale->_('Run %s...'), $test->getClass()) . PHP_EOL)
 		;
 	}
 }

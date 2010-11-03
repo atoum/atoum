@@ -74,10 +74,10 @@ class duration extends atoum\test
 		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
@@ -85,10 +85,10 @@ class duration extends atoum\test
 		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
 		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = rand(2, PHP_INT_MAX); };
@@ -96,10 +96,10 @@ class duration extends atoum\test
 		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 	}
 }

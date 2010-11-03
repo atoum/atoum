@@ -11,7 +11,6 @@ class cli extends atoum\reporter
 	protected $currentMethod = '';
 	protected $testMethods = 0;
 	protected $testMethodNumber = 0;
-	protected $progressBar = null;
 	protected $score = null;
 
 	public function runnerStart(atoum\runner $runner)
@@ -27,9 +26,6 @@ class cli extends atoum\reporter
 	{
 		$this->testMethods = 0;
 		$this->testMethodNumber += sizeof($test);
-		$this->progressBar = new atoum\reporters\cli\progressBar($test);
-
-//		echo $this->progressBar;
 	}
 
 	public function beforeTestMethod(atoum\test $test)
@@ -47,25 +43,21 @@ class cli extends atoum\reporter
 
 	public function testAssertionSuccess(atoum\test $test)
 	{
-		echo $this->progressBar->refresh('S');
 		return $this;
 	}
 
 	public function testAssertionFail(atoum\test $test)
 	{
-		echo $this->progressBar->refresh('F');
 		return $this;
 	}
 
 	public function testError(atoum\test $test)
 	{
-		echo $this->progressBar->refresh('e');
 		return $this;
 	}
 
 	public function testException(atoum\test $test)
 	{
-		echo $this->progressBar->refresh('E');
 		return $this;
 	}
 
@@ -75,9 +67,9 @@ class cli extends atoum\reporter
 
 		$testDuration = $score->getTotalDuration();
 
-		self::write();
-		self::write(sprintf($this->locale->__('Test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
-		self::write(sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
+//		self::write();
+//		self::write(sprintf($this->locale->__('Test duration: %4.2f second.', 'Duration: %4.2f seconds.', $testDuration), $testDuration));
+//		self::write(sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $score->getTotalMemoryUsage() / 1048576));
 
 		$this->score->merge($score);
 

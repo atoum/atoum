@@ -34,18 +34,20 @@ class duration extends report\fields\runner
 	public function toString()
 	{
 		return
-			$this->value === null ?
-			$this->locale->__('Total test duration: unknown.', 'Total tests duration: unknown.', $this->testNumber) :
-			sprintf(
-					$this->locale->__('Total test duration: %s.', 'Total tests duration: %s.', $this->testNumber),
-					sprintf(
-						$this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
-						$this->value
-					)
+			(
+				$this->value === null ?
+				$this->locale->__('Total test duration: unknown.', 'Total tests duration: unknown.', $this->testNumber) :
+				sprintf(
+						$this->locale->__('Total test duration: %s.', 'Total tests duration: %s.', $this->testNumber),
+						sprintf(
+							$this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
+							$this->value
+						)
+				)
 			)
+			. PHP_EOL
 		;
 	}
-
 }
 
 ?>

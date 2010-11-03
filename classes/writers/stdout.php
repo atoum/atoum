@@ -13,7 +13,7 @@ class stdout extends atoum\writer
 
 	public function flush($something)
 	{
-		$this->adapter->fwrite(STDOUT, rtrim($something) . "\n");
+		$this->adapter->fwrite(STDOUT, $something);
 		return $this;
 	}
 }

@@ -50,7 +50,7 @@ class version extends atoum\test
 		$this->assert
 			->string($version->setWithRunner($runner)->toString())->isEmpty()
 			->string($version->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
-			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()))
+			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()) . PHP_EOL)
 		;
 	}
 }

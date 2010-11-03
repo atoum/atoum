@@ -27,9 +27,12 @@ class run extends report\fields\test
 	public function toString()
 	{
 		return
-			$this->testClass === null ?
-			$this->locale->_('There is currently no test running.') :
-			sprintf($this->locale->_('Run %s...'), $this->testClass)
+			(
+				$this->testClass === null ?
+				$this->locale->_('There is currently no test running.') :
+				sprintf($this->locale->_('Run %s...'), $this->testClass)
+			)
+			. PHP_EOL
 		;
 	}
 }

@@ -53,10 +53,10 @@ class duration extends atoum\test
 		$duration = new runner\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.'))
-			->string($duration->setWithRunner($runner)->toString())->isEqualTo('Running duration: unknown.')
-			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo('Running duration: unknown.')
-			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration))
+			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
 		;
 	}
 }

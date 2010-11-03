@@ -34,9 +34,12 @@ class memory extends report\fields\runner
 	public function toString()
 	{
 		return
-			$this->value === null ?
-			$this->locale->_('Total test memory usage: unknown.') :
-			sprintf($this->locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $this->testNumber), $this->value / 1048576)
+			(
+				$this->value === null ?
+				$this->locale->_('Total test memory usage: unknown.') :
+				sprintf($this->locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $this->testNumber), $this->value / 1048576)
+			)
+			. PHP_EOL
 		;
 	}
 
