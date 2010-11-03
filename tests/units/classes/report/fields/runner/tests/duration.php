@@ -32,26 +32,24 @@ class duration extends atoum\test
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$totalDuration = rand(1, PHP_INT_MAX);
-
 		$score = new mock\mageekguy\atoum\score();
-		$score
-			->getMockController()
-				->getTotalDuration = function() use ($totalDuration) { return $totalDuration; }
-		;
-
-		$testsNumber = rand(0, PHP_INT_MAX);
+		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = rand(1, PHP_INT_MAX); };
 
 		$runner = new mock\mageekguy\atoum\runner();
-
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
+		$runnerController->getTestNumber = function () use (& $testsNumber) { return $testsNumber = rand(1, PHP_INT_MAX); };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
 		$this->assert
 			->variable($duration->getValue())->isNull()
 			->variable($duration->getTestNumber())->isNull()
 			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
+			->variable($duration->getValue())->isNull()
+			->variable($duration->getTestNumber())->isNull()
+			->object($duration->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($duration)
+			->variable($duration->getValue())->isNull()
+			->variable($duration->getTestNumber())->isNull()
+			->object($duration->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($duration)
 			->integer($duration->getValue())->isEqualTo($totalDuration)
 			->integer($duration->getTestNumber())->isEqualTo($testsNumber)
 		;
@@ -59,64 +57,51 @@ class duration extends atoum\test
 
 	public function testToString()
 	{
-		$duration = new tests\duration($locale = new atoum\locale());
-
-		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
-		;
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$testsNumber = 1;
+		$score = new mock\mageekguy\atoum\score();
+		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = (rand(1, 100) / 1000); };
 
 		$runner = new mock\mageekguy\atoum\runner();
-
 		$runnerController = $runner->getMockController();
-		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
-
-		$totalDuration = 0.5;
-
-		$score = new mock\mageekguy\atoum\score();
-		$score
-			->getMockController()
-				->getTotalDuration = function() use ($totalDuration) { return $totalDuration; }
-		;
-
+		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = 1; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$duration->setWithRunner($runner);
+		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
 		;
 
-		$totalDuration = rand(2, PHP_INT_MAX);
+		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
 
-		$score
-			->getMockController()
-				->getTotalDuration = function() use ($totalDuration) { return $totalDuration; }
-		;
-
-		$duration->setWithRunner($runner);
+		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total test duration: %4.2f second.', 'Total test duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
 		;
 
-		$testsNumber = rand(2, PHP_INT_MAX);
+		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = rand(2, PHP_INT_MAX); };
 
-		$runnerController->getTestNumber = function () use ($testsNumber) { return $testsNumber; };
-
-		$duration->setWithRunner($runner);
+		$duration = new tests\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo(sprintf($locale->__('Total tests duration: %4.2f second.', 'Total tests duration: %4.2f seconds.', $totalDuration), $totalDuration))
+			->string($duration->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test duration: unknown.'))
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)))
 		;
 	}
-
 }
+
 ?>

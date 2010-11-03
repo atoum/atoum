@@ -17,8 +17,8 @@ class version extends atoum\test
 
 		$this->assert
 			->object($version)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->string($version->getAuthor())->isEqualTo(atoum\test::author)
-			->string($version->getNumber())->isEqualTo(atoum\test::getVersion())
+			->variable($version->getAuthor())->isNull()
+			->variable($version->getNumber())->isNull()
 		;
 	}
 
@@ -26,10 +26,16 @@ class version extends atoum\test
 	{
 		$version = new runner\version();
 
+		$runner = new atoum\runner();
+
 		$this->assert
-			->string($version->getAuthor())->isEqualTo(atoum\test::author)
-			->string($version->getNumber())->isEqualTo(atoum\test::getVersion())
-			->object($version->setWithRunner(new atoum\runner()))->isIdenticalTo($version)
+			->object($version->setWithRunner($runner))->isIdenticalTo($version)
+			->variable($version->getAuthor())->isNull()
+			->variable($version->getNumber())->isNull()
+			->object($version->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($version)
+			->variable($version->getAuthor())->isNull()
+			->variable($version->getNumber())->isNull()
+			->object($version->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($version)
 			->string($version->getAuthor())->isEqualTo(atoum\test::author)
 			->string($version->getNumber())->isEqualTo(atoum\test::getVersion())
 		;
@@ -39,8 +45,12 @@ class version extends atoum\test
 	{
 		$version = new runner\version();
 
+		$runner = new atoum\runner();
+
 		$this->assert
-			->string($version->toString())->isEqualTo(sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()));
+			->string($version->setWithRunner($runner)->toString())->isEmpty()
+			->string($version->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()))
 		;
 	}
 }

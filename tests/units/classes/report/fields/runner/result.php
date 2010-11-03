@@ -53,7 +53,7 @@ class result extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = function() use ($score) { return $score; };
-		$runnerController->getTestNumber = function() { return 0; };
+		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
 		$runnerController->getTestMethodNumber = function() use (& $testMethodNumber) { return $testMethodNumber = rand(1, PHP_INT_MAX); };
 
 
@@ -65,12 +65,14 @@ class result extends atoum\test
 			->variable($result->getFailNumber())->isNull()
 			->variable($result->getErrorNumber())->isNull()
 			->variable($result->getExceptionNumber())->isNull()
-		;
-
-		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
-
-		$this->assert
-			->object($result->setWithRunner($runner))->isIdenticalTo($result)
+			->object($result->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($result)
+			->variable($result->getTestNumber())->isNull()
+			->variable($result->getTestMethodNumber())->isNull()
+			->variable($result->getAssertionNumber())->isNull()
+			->variable($result->getFailNumber())->isNull()
+			->variable($result->getErrorNumber())->isNull()
+			->variable($result->getExceptionNumber())->isNull()
+			->object($result->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($result)
 			->integer($result->getTestNumber())->isEqualTo($testNumber)
 			->integer($result->getTestMethodNumber())->isEqualTo($testMethodNumber)
 			->integer($result->getAssertionNumber())->isEqualTo($assertionNumber)
@@ -82,12 +84,6 @@ class result extends atoum\test
 
 	public function testToString()
 	{
-		$result = new runner\result($locale = new atoum\locale());
-
-		$this->assert
-			->string($result->toString())->isEqualTo($locale->_('No test running.'))
-		;
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\score')
@@ -96,30 +92,25 @@ class result extends atoum\test
 
 		$score = new mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
-
 		$scoreController->getAssertionNumber = function() use (& $assertionNumber) { return $assertionNumber = rand(1, PHP_INT_MAX); };
-		$scoreController->getFailNumber = function() { return 0; };
 		$scoreController->getErrorNumber = function() use (& $errorNumber) { return $errorNumber = rand(0, PHP_INT_MAX); };
 		$scoreController->getExceptionNumber = function() use (& $exceptionNumber) { return $exceptionNumber = rand(0, PHP_INT_MAX); };
+
 
 		$runner = new mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = function() use ($score) { return $score; };
-		$runnerController->getTestNumber = function() { return 0; };
+		$scoreController->getFailNumber = function() { return 0; };
+		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
 		$runnerController->getTestMethodNumber = function() use (& $testMethodNumber) { return $testMethodNumber = rand(1, PHP_INT_MAX); };
 
-		$result->setWithRunner($runner);
+		$result = new runner\result($locale = new atoum\locale());
 
 		$this->assert
 			->string($result->toString())->isEqualTo($locale->_('No test running.'))
-		;
-
-		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
-
-		$result->setWithRunner($runner);
-
-		$this->assert
-			->string($result->toString())->isEqualTo(sprintf($locale->_('Success (%s, %s, %s, %s, %s) !'),
+			->string($result->setWithRunner($runner)->toString())->isEqualTo($locale->_('No test running.'))
+			->string($result->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('No test running.'))
+			->string($result->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->_('Success (%s, %s, %s, %s, %s) !'),
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
@@ -130,11 +121,13 @@ class result extends atoum\test
 
 		$scoreController->getFailNumber = function() use (& $failNumber) { return $failNumber = rand(1, PHP_INT_MAX); };
 
-		$result->setWithRunner($runner);
+		$result = new runner\result($locale = new atoum\locale());
 
 		$this->assert
-			->integer($result->getFailNumber())->isEqualTo($failNumber)
-			->string($result->toString())->isEqualTo(sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !'),
+			->string($result->toString())->isEqualTo($locale->_('No test running.'))
+			->string($result->setWithRunner($runner)->toString())->isEqualTo($locale->_('No test running.'))
+			->string($result->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('No test running.'))
+			->string($result->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !'),
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s failure', '%s failures', $failNumber), $failNumber),

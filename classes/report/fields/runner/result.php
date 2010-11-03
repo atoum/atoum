@@ -46,13 +46,11 @@ class result extends report\fields\runner
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
-		$testNumber = $runner->getTestNumber();
-
-		if ($testNumber > 0)
+		if ($event === atoum\runner::runStop)
 		{
 			$score = $runner->getScore();
 
-			$this->testNumber = $testNumber;
+			$this->testNumber = $runner->getTestNumber();
 			$this->testMethodNumber = $runner->getTestMethodNumber();
 			$this->assertionNumber = $score->getAssertionNumber();
 			$this->failNumber = $score->getFailNumber();

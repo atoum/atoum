@@ -10,14 +10,6 @@ class version extends report\fields\runner
 	protected $author = null;
 	protected $number = null;
 
-	public function __construct(atoum\locale $locale = null)
-	{
-		parent::__construct($locale);
-
-		$this->author = atoum\test::author;
-		$this->number = atoum\test::getVersion();
-	}
-
 	public function getAuthor()
 	{
 		return $this->author;
@@ -30,12 +22,18 @@ class version extends report\fields\runner
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
+		if ($event === atoum\runner::runStart)
+		{
+			$this->author = atoum\test::author;
+			$this->number = atoum\test::getVersion();
+		}
+
 		return $this;
 	}
 
 	public function toString()
 	{
-		return sprintf($this->locale->_('Atoum version %s by %s.'), $this->number, $this->author);
+		return ($this->author === null || $this->number === null ? '' : sprintf($this->locale->_('Atoum version %s by %s.'), $this->number, $this->author));
 	}
 }
 

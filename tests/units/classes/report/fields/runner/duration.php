@@ -29,54 +29,34 @@ class duration extends atoum\test
 		$mockGenerator->generate('\mageekguy\atoum\runner');
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runnerController = $runner->getMockController();
-		$runnerController->getTestNumber = function() { return 0; };
-		$runnerController->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
+		$runner->getMockController()->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
 
 		$this->assert
 			->variable($duration->getValue())->isNull()
 			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
 			->variable($duration->getValue())->isNull()
-		;
-
-		$runnerController->getTestNumber = function() { return rand(1, PHP_INT_MAX); };
-
-		$this->assert
-			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
-			->integer($duration->getValue())->isIdenticalTo($runningDuration)
+			->object($duration->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($duration)
+			->variable($duration->getValue())->isNull()
+			->object($duration->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($duration)
+			->integer($duration->getValue())->isEqualTo($runningDuration)
 		;
 	}
 
 	public function testToString()
 	{
-		$duration = new runner\duration($locale = new atoum\locale());
-
-		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.'))
-		;
-
-		$runningDuration = rand(0, PHP_INT_MAX);
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runnerController = $runner->getMockController();
-		$runnerController->getTestNumber = function() { return 0; };
-		$runnerController->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
+		$runner->getMockController()->getRunningDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
 
-		$duration->setWithRunner($runner);
+		$duration = new runner\duration($locale = new atoum\locale());
 
 		$this->assert
 			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.'))
-		;
-
-		$runnerController->getTestNumber = function() { return rand(1, PHP_INT_MAX); };
-
-		$duration->setWithRunner($runner);
-
-		$this->assert
-			->string($duration->toString())->isEqualTo(sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration))
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo('Running duration: unknown.')
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo('Running duration: unknown.')
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration))
 		;
 	}
 }

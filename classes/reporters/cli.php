@@ -25,7 +25,6 @@ class cli extends atoum\reporter
 
 	public function testRunStart(atoum\test $test)
 	{
-		$this->progressBar = 0;
 		$this->testMethods = 0;
 		$this->testMethodNumber += sizeof($test);
 		$this->progressBar = new atoum\reporters\cli\progressBar($test);

@@ -10,21 +10,6 @@ class memory extends report\fields\runner
 	protected $value = null;
 	protected $testNumber = null;
 
-	public function toString()
-	{
-		return
-			$this->value === null ?
-			$this->locale->__('Total test memory usage: unknown.', 'Total tests memory usage: unknown.', $this->testNumber) :
-			sprintf(
-					$this->locale->__('Total test memory usage: %s.', 'Total tests memory usage: %s.', $this->testNumber),
-					sprintf(
-						$this->locale->__('%4.2f Mb', '%4.2f Mb', $this->value / 1048576),
-						$this->value / 1048576
-					)
-			)
-		;
-	}
-
 	public function getValue()
 	{
 		return $this->value;
@@ -37,7 +22,7 @@ class memory extends report\fields\runner
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
-		if ($runner->getTestNumber() > 0)
+		if ($event === atoum\runner::runStop)
 		{
 			$this->value = $runner->getScore()->getTotalMemoryUsage();
 			$this->testNumber = $runner->getTestNumber();
@@ -45,6 +30,16 @@ class memory extends report\fields\runner
 
 		return $this;
 	}
+
+	public function toString()
+	{
+		return
+			$this->value === null ?
+			$this->locale->_('Total test memory usage: unknown.') :
+			sprintf($this->locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $this->testNumber), $this->value / 1048576)
+		;
+	}
+
 }
 
 ?>

@@ -16,7 +16,11 @@ class run extends report\fields\test
 
 	public function setWithTest(atoum\test $test, $event = null)
 	{
-		$this->testClass = $test->getClass();
+		if ($event === atoum\test::runStart)
+		{
+			$this->testClass = $test->getClass();
+		}
+
 		return $this;
 	}
 

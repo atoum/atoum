@@ -10,6 +10,11 @@ class progress extends report\fields\test
 	public function setWithTest(atoum\test $test, $event = null)
 	{
 	}
+
+	public function toString()
+	{
+		return '';
+	}
 }
 
 ?>

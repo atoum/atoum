@@ -146,7 +146,7 @@ class runner implements observable, adapter\aggregator
 
 	public function getRunningDuration()
 	{
-		return ($this->start === null || $this->stop === null ? null : $this->stop -  $this->start);
+		return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
 	}
 }
 

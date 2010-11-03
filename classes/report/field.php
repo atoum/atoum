@@ -6,8 +6,6 @@ use \mageekguy\atoum;
 
 abstract class field
 {
-	protected $event = null;
-
 	public function __construct(atoum\locale $locale = null)
 	{
 		if ($locale === null)
@@ -21,18 +19,6 @@ abstract class field
 	public function getLocale()
 	{
 		return $this->locale;
-	}
-
-	public function getEvent()
-	{
-		return $this->event;
-	}
-
-	public function setEvent($event)
-	{
-		$this->event = $event;
-
-		return $this;
 	}
 
 	public function toString()
