@@ -31,25 +31,25 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetReflectionClassInjecter()
+	public function testSetReflectionClassInjector()
 	{
 		$generator = new mock\generator();
 
 
 		$this->assert
 			->exception(function() use ($generator) {
-					$generator->setReflectionClassInjecter(function() {});
+					$generator->setReflectionClassInjector(function() {});
 				}
 			)
 				->isInstanceOf('\runtimeException')
-				->hasMessage('Reflection class injecter must take one argument')
+				->hasMessage('Reflection class injector must take one argument')
 		;
 
 		$reflectionClass = new \reflectionClass($this);
 
 		$this->assert
 			->object($generator->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($generator)
+			->object($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($generator)
 			->object($generator->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
 		;
 	}
@@ -110,7 +110,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
+		$generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; });
 
 		$this->assert
 			->string($generator->getMockedClassCode($realClass))->isEqualTo(
@@ -356,7 +356,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new atoum\mock\reflectionClass(uniqid(), $reflectionClassController);
 
-		$generator->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; });
+		$generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; });
 
 		$this->assert
 			->exception(function () use ($generator, $class) {

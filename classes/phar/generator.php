@@ -17,15 +17,15 @@ class generator extends atoum\script
 	protected $destinationDirectory = null;
 	protected $stubFile = null;
 
-	private $pharInjecter = null;
-	private $fileIteratorInjecter = null;
+	private $pharInjector = null;
+	private $fileIteratorInjector = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
 
-		$this->pharInjecter = function ($name) { return new \phar($name); };
-		$this->fileIteratorInjecter = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory))); };
+		$this->pharInjector = function ($name) { return new \phar($name); };
+		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory))); };
 	}
 
 	public function setOriginDirectory($directory)
@@ -112,38 +112,38 @@ class generator extends atoum\script
 
 	public function getPhar($name)
 	{
-		return $this->pharInjecter->__invoke($name);
+		return $this->pharInjector->__invoke($name);
 	}
 
-	public function setPharInjecter(\closure $pharInjecter)
+	public function setPharInjector(\closure $pharInjector)
 	{
-		$closure = new \reflectionMethod($pharInjecter, '__invoke');
+		$closure = new \reflectionMethod($pharInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Phar injecter must take one argument');
+			throw new \runtimeException('Phar injector must take one argument');
 		}
 
-		$this->pharInjecter = $pharInjecter;
+		$this->pharInjector = $pharInjector;
 
 		return $this;
 	}
 
 	public function getFileIterator($directory)
 	{
-		return $this->fileIteratorInjecter->__invoke($directory);
+		return $this->fileIteratorInjector->__invoke($directory);
 	}
 
-	public function setFileIteratorInjecter(\closure $fileIteratorInjecter)
+	public function setFileIteratorInjector(\closure $fileIteratorInjector)
 	{
-		$closure = new \reflectionMethod($fileIteratorInjecter, '__invoke');
+		$closure = new \reflectionMethod($fileIteratorInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('File iterator injecter must take one argument');
+			throw new \runtimeException('File iterator injector must take one argument');
 		}
 
-		$this->fileIteratorInjecter = $fileIteratorInjecter;
+		$this->fileIteratorInjector = $fileIteratorInjector;
 
 		return $this;
 	}
@@ -239,14 +239,14 @@ class generator extends atoum\script
 
 		if ($phar instanceof \phar === false)
 		{
-			throw new \logicException('Phar injecter must return a \phar instance');
+			throw new \logicException('Phar injector must return a \phar instance');
 		}
 
 		$fileIterator = $this->getFileIterator($this->originDirectory);
 
 		if ($fileIterator instanceof \iterator === false)
 		{
-			throw new \logicException('File iterator injecter must return a \iterator instance');
+			throw new \logicException('File iterator injector must return a \iterator instance');
 		}
 
 		$description = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');

@@ -27,7 +27,7 @@ abstract class test implements observable, \countable
 	private $class = '';
 	private $path = '';
 	private $asserterGenerator = null;
-	private $registryInjecter = null;
+	private $registryInjector = null;
 	private $score = null;
 	private $observers = array();
 	private $isolation = true;
@@ -140,16 +140,16 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function setRegistryInjecter(\closure $registryInjecter)
+	public function setRegistryInjector(\closure $registryInjector)
 	{
-		$closure = new \reflectionMethod($registryInjecter, '__invoke');
+		$closure = new \reflectionMethod($registryInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 0)
 		{
-			throw new \runtimeException('Registry injecter must take no argument');
+			throw new \runtimeException('Registry injector must take no argument');
 		}
 
-		$this->registryInjecter = $registryInjecter;
+		$this->registryInjector = $registryInjector;
 
 		return $this;
 	}
@@ -166,7 +166,7 @@ abstract class test implements observable, \countable
 
 	public function getRegistry()
 	{
-		return ($this->registryInjecter === null ? atoum\registry::getInstance() : $this->registryInjecter->__invoke());
+		return ($this->registryInjector === null ? atoum\registry::getInstance() : $this->registryInjector->__invoke());
 	}
 
 	public function getClass()

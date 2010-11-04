@@ -234,7 +234,7 @@ class test extends atoum\test
 		$registryController->__unset = function() {};
 
 		$test = new emptyTest();
-		$test->setRegistryInjecter(function() use ($registry) { return $registry; });
+		$test->setRegistryInjector(function() use ($registry) { return $registry; });
 
 		$this->assert
 			->object($test->run())->isIdenticalTo($test)

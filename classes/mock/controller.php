@@ -12,7 +12,7 @@ class controller
 
 	protected static $injectInNextInstance = null;
 
-	private $reflectionClassInjecter = null;
+	private $reflectionClassInjector = null;
 
 	public function __set($method, \closure $closure)
 	{
@@ -67,19 +67,19 @@ class controller
 
 	public function getReflectionClass($class)
 	{
-		return ($this->reflectionClassInjecter === null ? new \reflectionClass($class) : $this->reflectionClassInjecter->__invoke($class));
+		return ($this->reflectionClassInjector === null ? new \reflectionClass($class) : $this->reflectionClassInjector->__invoke($class));
 	}
 
-	public function setReflectionClassInjecter(\closure $reflectionClassInjecter)
+	public function setReflectionClassInjector(\closure $reflectionClassInjector)
 	{
-		$closure = new \reflectionMethod($reflectionClassInjecter, '__invoke');
+		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Reflection class injecter must take one argument');
+			throw new \runtimeException('Reflection class injector must take one argument');
 		}
 
-		$this->reflectionClassInjecter = $reflectionClassInjecter;
+		$this->reflectionClassInjector = $reflectionClassInjector;
 
 		return $this;
 	}

@@ -91,24 +91,24 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testSetReflectionClassInjecter()
+	public function testSetReflectionClassInjector()
 	{
 		$mockController = new mock\controller();
 
 		$this->assert
 			->exception(function() use ($mockController) {
-					$mockController->setReflectionClassInjecter(function() {});
+					$mockController->setReflectionClassInjector(function() {});
 				}
 			)
 				->isInstanceOf('\runtimeException')
-				->hasMessage('Reflection class injecter must take one argument')
+				->hasMessage('Reflection class injector must take one argument')
 		;
 
 		$reflectionClass = new \reflectionClass($this);
 
 		$this->assert
 			->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($mockController->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($mockController)
+			->object($mockController->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($mockController)
 			->object($mockController->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
 		;
 	}
@@ -190,13 +190,13 @@ class controller extends atoum\test
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('b');
 
-		$reflectionClassInjecterController = new mock\controller();
-		$reflectionClassInjecterController->__construct = function() {};
-		$reflectionClassInjecterController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
+		$reflectionClassInjectorController = new mock\controller();
+		$reflectionClassInjectorController->__construct = function() {};
+		$reflectionClassInjectorController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
 
-		$reflectionClassInjecter = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $reflectionClassInjecterController);
+		$reflectionClassInjector = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $reflectionClassInjectorController);
 
-		$mockController->setReflectionClassInjecter(function ($class) use ($reflectionClassInjecter) { return $reflectionClassInjecter; });
+		$mockController->setReflectionClassInjector(function ($class) use ($reflectionClassInjector) { return $reflectionClassInjector; });
 
 		$aMockController = new mock\controller();
 		$aMockController->__construct = function() {};

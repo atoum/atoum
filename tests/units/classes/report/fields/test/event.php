@@ -77,7 +77,7 @@ class event extends atoum\test
 		;
 	}
 
-	public function testSetProgressBarInjecter()
+	public function testSetProgressBarInjector()
 	{
 		$event = new test\event();
 
@@ -87,13 +87,13 @@ class event extends atoum\test
 		$test = new mock\mageekguy\atoum\test();
 
 		$this->assert
-			->object($event->setProgressBarInjecter(function($test) use (& $progressBar) { return $progressBar = new cli\progressBar($test); }))->isIdenticalTo($event)
+			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new cli\progressBar($test); }))->isIdenticalTo($event)
 			->object($event->setWithTest($test)->getProgressBar())->isIdenticalTo($progressBar)
 		;
 
 		$this->assert
 			->exception(function() use ($event) {
-						$event->setProgressBarInjecter(function() {});
+						$event->setProgressBarInjector(function() {});
 					}
 				)
 				->isInstanceOf('\invalidArgumentException')

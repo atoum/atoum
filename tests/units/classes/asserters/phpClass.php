@@ -20,24 +20,24 @@ class phpClass extends atoum\test
 		;
 	}
 
-	public function testSetReflectionClassInjecter()
+	public function testSetReflectionClassInjector()
 	{
 		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale());
 
 		$this->assert
 			->exception(function() use ($asserter) {
-					$asserter->setReflectionClassInjecter(function() {});
+					$asserter->setReflectionClassInjector(function() {});
 				}
 			)
 				->isInstanceOf('\runtimeException')
-				->hasMessage('Reflection class injecter must take one argument')
+				->hasMessage('Reflection class injector must take one argument')
 		;
 
 		$reflectionClass = new \reflectionClass($this);
 
 		$this->assert
 			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($asserter->setReflectionClassInjecter(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($asserter)
+			->object($asserter->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($asserter)
 			->object($asserter->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
 		;
 	}
@@ -66,7 +66,7 @@ class phpClass extends atoum\test
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() { throw new \reflectionException();};
 
-		$asserter->setReflectionClassInjecter(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); });
+		$asserter->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); });
 
 		$class = uniqid();
 
@@ -115,7 +115,7 @@ class phpClass extends atoum\test
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjecter(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 				->getScore()->reset()
 		;
@@ -170,7 +170,7 @@ class phpClass extends atoum\test
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjecter(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 				->getScore()->reset()
 		;

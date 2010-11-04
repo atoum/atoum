@@ -9,7 +9,7 @@ class generator
 	protected $adapter = null;
 	protected $shuntedMethods = array();
 
-	private $reflectionClassInjecter = null;
+	private $reflectionClassInjector = null;
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
@@ -28,19 +28,19 @@ class generator
 
 	public function getReflectionClass($class)
 	{
-		return ($this->reflectionClassInjecter === null ? new \reflectionClass($class) : $this->reflectionClassInjecter->__invoke($class));
+		return ($this->reflectionClassInjector === null ? new \reflectionClass($class) : $this->reflectionClassInjector->__invoke($class));
 	}
 
-	public function setReflectionClassInjecter(\closure $reflectionClassInjecter)
+	public function setReflectionClassInjector(\closure $reflectionClassInjector)
 	{
-		$closure = new \reflectionMethod($reflectionClassInjecter, '__invoke');
+		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Reflection class injecter must take one argument');
+			throw new \runtimeException('Reflection class injector must take one argument');
 		}
 
-		$this->reflectionClassInjecter = $reflectionClassInjecter;
+		$this->reflectionClassInjector = $reflectionClassInjector;
 
 		return $this;
 	}
@@ -87,7 +87,7 @@ class generator
 
 		if ($reflectionClass instanceof \reflectionClass === false)
 		{
-			throw new \logicException('Reflection class injecter does not return a \reflectionClass instance');
+			throw new \logicException('Reflection class injector does not return a \reflectionClass instance');
 		}
 
 		if ($reflectionClass->isFinal() === true)

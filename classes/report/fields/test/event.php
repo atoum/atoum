@@ -10,7 +10,7 @@ class event extends report\fields\test
 {
 	protected $test = null;
 	protected $value = null;
-	protected $progressBarInjecter = null;
+	protected $progressBarInjector = null;
 
 	public function getTest()
 	{
@@ -29,10 +29,10 @@ class event extends report\fields\test
 			throw new \logicException('Unable to get progress bar because test is undefined');
 		}
 
-		return ($this->progressBarInjecter === null ? new cli\progressBar($this->test) : $this->progressBarInjecter->__invoke($this->test));
+		return ($this->progressBarInjector === null ? new cli\progressBar($this->test) : $this->progressBarInjector->__invoke($this->test));
 	}
 
-	public function setProgressBarInjecter(\closure $closure)
+	public function setProgressBarInjector(\closure $closure)
 	{
 		$reflectedClosure = new \reflectionMethod($closure, '__invoke');
 
@@ -41,7 +41,7 @@ class event extends report\fields\test
 			throw new \invalidArgumentException('Progress bar injector must take one argument');
 		}
 
-		$this->progressBarInjecter = $closure;
+		$this->progressBarInjector = $closure;
 
 		return $this;
 	}
