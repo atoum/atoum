@@ -37,15 +37,16 @@ if (autorun === true)
 					$stringDecorator->addWriter($stdoutWriter);
 
 					$report = new atoum\report();
-					$report->addRunnerField(new atoum\report\fields\runner\version(), array('runnerStart'));
-					$report->addTestField(new atoum\report\fields\test\run(), array('testRunStart'));
+					$report->addRunnerField(new atoum\report\fields\runner\version(), array(atoum\runner::runStart));
+					$report->addTestField(new atoum\report\fields\test\run(), array(atoum\test::runStart));
 					$report->addTestField(new atoum\report\fields\test\event());
-					$report->addTestField(new atoum\report\fields\test\duration(), array('testRunStop'));
-					$report->addTestField(new atoum\report\fields\test\memory(), array('testRunStop'));
-					$report->addRunnerField(new atoum\report\fields\runner\result(), array('runnerStop'));
-					$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array('runnerStop'));
-					$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array('runnerStop'));
-					$report->addRunnerField(new atoum\report\fields\runner\duration(), array('runnerStop'));
+					$report->addTestField(new atoum\report\fields\test\duration(), array(atoum\test::runStop));
+					$report->addTestField(new atoum\report\fields\test\memory(), array(atoum\test::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\output(), array(atoum\runner::runStop));
 					$report->addDecorator($stringDecorator);
 					$runner->addObserver($report);
 				}

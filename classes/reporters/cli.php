@@ -88,21 +88,6 @@ class cli extends atoum\reporter
 		$outputNumber = $score->getOutputNumber();
 		$testDuration = $score->getTotalDuration();
 
-		if ($outputNumber > 0)
-		{
-			self::write($this->locale->_('Output:'));
-
-			foreach ($score->getOutputs() as $output)
-			{
-				self::write($output['class'] . '::' . $output['method'] . '():', 1);
-
-				foreach (explode(PHP_EOL, trim($output['value'])) as $line)
-				{
-					self::write($line, 2);
-				}
-			}
-		}
-
 		if ($failNumber > 0)
 		{
 			self::write(sprintf($this->locale->__('There is %d failure', 'There are %d failures', $failNumber), $failNumber) . ':');

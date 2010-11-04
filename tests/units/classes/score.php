@@ -242,7 +242,7 @@ class score extends atoum\test
 						'file' => $file,
 						'line' => $line,
 						'type' => $type,
-						'message' => $message . PHP_EOL . $anAnotherMessage
+						'message' => $message
 					),
 					array(
 						'class' => $otherClass,
@@ -251,12 +251,19 @@ class score extends atoum\test
 						'line' => $otherLine,
 						'type' => $otherType,
 						'message' => $otherMessage
-					)
+					),
+					array(
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => $anAnotherMessage
+					),
 				)
 			)
-			->integer($score->getErrorNumber())->isEqualTo(2)
+			->integer($score->getErrorNumber())->isEqualTo(3)
 		;
-
 	}
 
 	public function testAddOutput()
