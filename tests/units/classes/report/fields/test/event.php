@@ -21,6 +21,23 @@ class event extends atoum\test
 		;
 	}
 
+	public function testGetProgressBar()
+	{
+		$event = new test\event();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\test');
+
+		$test = new mock\mageekguy\atoum\test();
+		$this->assert
+			->variable($event->getTest())->isNull()
+			->exception(function() use ($event) { $event->getProgressBar(); })
+				->isInstanceOf('\logicException')
+				->hasMessage('Unable to get progress bar because test is undefined')
+			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('\mageekguy\atoum\cli\progressBar')
+		;
+	}
+
 	public function testSetWithTest()
 	{
 		$mockGenerator = new mock\generator();
@@ -57,6 +74,30 @@ class event extends atoum\test
 			->string($event->getValue())->isEqualTo(atoum\test::afterTearDown)
 			->object($event->setWithTest($test, atoum\test::runStop))->isIdenticalTo($event)
 			->string($event->getValue())->isEqualTo(atoum\test::runStop)
+		;
+	}
+
+	public function testSetProgressBarInjecter()
+	{
+		$event = new test\event();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\test');
+
+		$test = new mock\mageekguy\atoum\test();
+
+		$this->assert
+			->object($event->setProgressBarInjecter(function($test) use (& $progressBar) { return $progressBar = new cli\progressBar($test); }))->isIdenticalTo($event)
+			->object($event->setWithTest($test)->getProgressBar())->isIdenticalTo($progressBar)
+		;
+
+		$this->assert
+			->exception(function() use ($event) {
+						$event->setProgressBarInjecter(function() {});
+					}
+				)
+				->isInstanceOf('\invalidArgumentException')
+				->hasMessage('Progress bar injector must take one argument')
 		;
 	}
 
