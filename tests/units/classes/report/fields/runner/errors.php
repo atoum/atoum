@@ -9,22 +9,22 @@ use \mageekguy\atoum\report\fields\runner;
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-class error extends atoum\test
+class errorss extends atoum\test
 {
 	public function test__construct()
 	{
-		$error = new runner\error();
+		$errors = new runner\errors();
 
 		$this->assert
-			->object($error)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($error->getRunner())->isNull()
-			->object($error->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($errors)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
+			->variable($errors->getRunner())->isNull()
+			->object($errors->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$error = new runner\error();
+		$errors = new runner\errors();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -32,18 +32,18 @@ class error extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$this->assert
-			->object($error->setWithRunner($runner))->isIdenticalTo($error)
-			->object($error->getRunner())->isIdenticalTo($runner)
-			->object($error->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($error)
-			->object($error->getRunner())->isIdenticalTo($runner)
-			->object($error->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($error)
-			->object($error->getRunner())->isIdenticalTo($runner)
+			->object($errors->setWithRunner($runner))->isIdenticalTo($errors)
+			->object($errors->getRunner())->isIdenticalTo($runner)
+			->object($errors->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($errors)
+			->object($errors->getRunner())->isIdenticalTo($runner)
+			->object($errors->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($errors)
+			->object($errors->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function testToString()
 	{
-		$error = new runner\error($locale = new atoum\locale());
+		$errors = new runner\errors($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -58,13 +58,13 @@ class error extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($error->toString())->isEmpty()
-			->string($error->setWithRunner($runner)->toString())->isEmpty()
-			->string($error->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($error->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->string($errors->toString())->isEmpty()
+			->string($errors->setWithRunner($runner)->toString())->isEmpty()
+			->string($errors->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
+			->string($errors->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
 		;
 
-		$errors = array(
+		$errorss = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -83,13 +83,13 @@ class error extends atoum\test
 			),
 		);
 
-		$score->getMockController()->getErrors = function() use ($errors) { return $errors; };
+		$score->getMockController()->getErrors = function() use ($errorss) { return $errorss; };
 
-		$error = new runner\error($locale = new atoum\locale());
+		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
-			->string($error->toString())->isEmpty()
-			->string($error->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($errors)), sizeof($errors)) . PHP_EOL .
+			->string($errors->toString())->isEmpty()
+			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($errorss)), sizeof($errorss)) . PHP_EOL .
 				'  ' . $class . '::' . $method . '():' . PHP_EOL .
 				'    ' . sprintf($locale->_('Error %s in file %s on line %d:'), $type, $file, $line) . PHP_EOL .
 				'      ' . $message . PHP_EOL .

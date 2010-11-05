@@ -9,22 +9,22 @@ use \mageekguy\atoum\report\fields\runner;
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-class exception extends atoum\test
+class exceptionss extends atoum\test
 {
 	public function test__construct()
 	{
-		$exception = new runner\exception();
+		$exceptions = new runner\exceptions();
 
 		$this->assert
-			->object($exception)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($exception->getRunner())->isNull()
-			->object($exception->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($exceptions)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
+			->variable($exceptions->getRunner())->isNull()
+			->object($exceptions->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$exception = new runner\exception();
+		$exceptions = new runner\exceptions();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -32,18 +32,18 @@ class exception extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$this->assert
-			->object($exception->setWithRunner($runner))->isIdenticalTo($exception)
-			->object($exception->getRunner())->isIdenticalTo($runner)
-			->object($exception->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($exception)
-			->object($exception->getRunner())->isIdenticalTo($runner)
-			->object($exception->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($exception)
-			->object($exception->getRunner())->isIdenticalTo($runner)
+			->object($exceptions->setWithRunner($runner))->isIdenticalTo($exceptions)
+			->object($exceptions->getRunner())->isIdenticalTo($runner)
+			->object($exceptions->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($exceptions)
+			->object($exceptions->getRunner())->isIdenticalTo($runner)
+			->object($exceptions->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($exceptions)
+			->object($exceptions->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function testToString()
 	{
-		$exception = new runner\exception($locale = new atoum\locale());
+		$exceptions = new runner\exceptions($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -58,13 +58,13 @@ class exception extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($exception->toString())->isEmpty()
-			->string($exception->setWithRunner($runner)->toString())->isEmpty()
-			->string($exception->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($exception->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->string($exceptions->toString())->isEmpty()
+			->string($exceptions->setWithRunner($runner)->toString())->isEmpty()
+			->string($exceptions->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
+			->string($exceptions->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
 		;
 
-		$exceptions = array(
+		$exceptionss = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -81,13 +81,13 @@ class exception extends atoum\test
 			),
 		);
 
-		$score->getMockController()->getExceptions = function() use ($exceptions) { return $exceptions; };
+		$score->getMockController()->getExceptions = function() use ($exceptionss) { return $exceptionss; };
 
-		$exception = new runner\exception($locale = new atoum\locale());
+		$exceptions = new runner\exceptions($locale = new atoum\locale());
 
 		$this->assert
-			->string($exception->toString())->isEmpty()
-			->string($exception->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions)) . PHP_EOL .
+			->string($exceptions->toString())->isEmpty()
+			->string($exceptions->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptionss)), sizeof($exceptionss)) . PHP_EOL .
 				'  ' . $class . '::' . $method . '():' . PHP_EOL .
 				'    ' . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
 				'      ' . $value . PHP_EOL .

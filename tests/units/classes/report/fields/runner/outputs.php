@@ -9,22 +9,22 @@ use \mageekguy\atoum\report\fields\runner;
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-class output extends atoum\test
+class outputss extends atoum\test
 {
 	public function test__construct()
 	{
-		$output = new runner\output();
+		$outputs = new runner\outputs();
 
 		$this->assert
-			->object($output)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($output->getRunner())->isNull()
-			->object($output->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($outputs)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
+			->variable($outputs->getRunner())->isNull()
+			->object($outputs->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$output = new runner\output();
+		$outputs = new runner\outputs();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -32,18 +32,18 @@ class output extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$this->assert
-			->object($output->setWithRunner($runner))->isIdenticalTo($output)
-			->object($output->getRunner())->isIdenticalTo($runner)
-			->object($output->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($output)
-			->object($output->getRunner())->isIdenticalTo($runner)
-			->object($output->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($output)
-			->object($output->getRunner())->isIdenticalTo($runner)
+			->object($outputs->setWithRunner($runner))->isIdenticalTo($outputs)
+			->object($outputs->getRunner())->isIdenticalTo($runner)
+			->object($outputs->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($outputs)
+			->object($outputs->getRunner())->isIdenticalTo($runner)
+			->object($outputs->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($outputs)
+			->object($outputs->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function testToString()
 	{
-		$output = new runner\output($locale = new atoum\locale());
+		$outputs = new runner\outputs($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -58,13 +58,13 @@ class output extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($output->toString())->isEmpty()
-			->string($output->setWithRunner($runner)->toString())->isEmpty()
-			->string($output->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($output->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->string($outputs->toString())->isEmpty()
+			->string($outputs->setWithRunner($runner)->toString())->isEmpty()
+			->string($outputs->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
+			->string($outputs->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
 		;
 
-		$outputs = array(
+		$outputss = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -77,13 +77,13 @@ class output extends atoum\test
 			)
 		);
 
-		$score->getMockController()->getOutputs = function() use ($outputs) { return $outputs; };
+		$score->getMockController()->getOutputs = function() use ($outputss) { return $outputss; };
 
-		$output = new runner\output($locale = new atoum\locale());
+		$outputs = new runner\outputs($locale = new atoum\locale());
 
 		$this->assert
-			->string($output->toString())->isEmpty()
-			->string($output->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputs)), sizeof($outputs)) . PHP_EOL .
+			->string($outputs->toString())->isEmpty()
+			->string($outputs->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
 				"  " . $class . '::' . $method . '():' . PHP_EOL .
 				"    " . $value . PHP_EOL .
 				"  " . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .

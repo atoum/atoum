@@ -5,7 +5,7 @@ namespace mageekguy\atoum\report\fields\runner;
 use \mageekguy\atoum;
 use \mageekguy\atoum\report;
 
-class exception extends report\fields\runner
+class exceptions extends report\fields\runner
 {
 	protected $runner = null;
 
