@@ -99,41 +99,41 @@ class cli extends atoum\reporter
 			}
 		}
 
-		if ($errorNumber > 0)
-		{
-			self::write(sprintf($this->locale->__('There is %d error', 'There are %d errors', $errorNumber), $errorNumber) . ':');
+//		if ($errorNumber > 0)
+//		{
+//			self::write(sprintf($this->locale->__('There is %d error', 'There are %d errors', $errorNumber), $errorNumber) . ':');
+//
+//			$class = null;
+//			$method = null;
+//
+//			foreach ($score->getErrors() as $error)
+//			{
+//				if ($error['class'] != $class || $error['method'] != $method)
+//				{
+//					$class = $error['class'];
+//					$method = $error['method'];
+//					self::write($error['class'] . '::' . $error['method'] . '():', 1);
+//				}
+//
+//				self::write(sprintf($this->locale->_('Error %s:'), self::getErrorLabel($error['type'])), 2);
+//				self::write($error['message'], 3);
+//			}
+//		}
 
-			$class = null;
-			$method = null;
-
-			foreach ($score->getErrors() as $error)
-			{
-				if ($error['class'] != $class || $error['method'] != $method)
-				{
-					$class = $error['class'];
-					$method = $error['method'];
-					self::write($error['class'] . '::' . $error['method'] . '():', 1);
-				}
-
-				self::write(sprintf($this->locale->_('Error %s:'), self::getErrorLabel($error['type'])), 2);
-				self::write($error['message'], 3);
-			}
-		}
-
-		if ($exceptionNumber > 0)
-		{
-			self::write(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $exceptionNumber), $exceptionNumber) . ':');
-
-			foreach ($score->getExceptions() as $exception)
-			{
-				self::write($exception['class'] . '::' . $exception['method'] . '():', 1);
-
-				foreach (explode(PHP_EOL, $exception['value']) as $line)
-				{
-					self::write($line, 2);
-				}
-			}
-		}
+//		if ($exceptionNumber > 0)
+//		{
+//			self::write(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $exceptionNumber), $exceptionNumber) . ':');
+//
+//			foreach ($score->getExceptions() as $exception)
+//			{
+//				self::write($exception['class'] . '::' . $exception['method'] . '():', 1);
+//
+//				foreach (explode(PHP_EOL, $exception['value']) as $line)
+//				{
+//					self::write($line, 2);
+//				}
+//			}
+//		}
 
 		return $this;
 	}
