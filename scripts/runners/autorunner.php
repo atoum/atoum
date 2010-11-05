@@ -30,8 +30,6 @@ if (autorun === true)
 
 				if ($runner->hasObservers() === false)
 				{
-					$runner->addObserver(new atoum\reporters\cli());
-
 					$stdoutWriter = new atoum\writers\stdout();
 					$stringDecorator = new atoum\report\decorators\string();
 					$stringDecorator->addWriter($stdoutWriter);
@@ -46,6 +44,7 @@ if (autorun === true)
 					$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
 					$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
 					$report->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
+					$report->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));
 					$report->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop));
 					$report->addRunnerField(new atoum\report\fields\runner\errors(), array(atoum\runner::runStop));
 					$report->addRunnerField(new atoum\report\fields\runner\exceptions(), array(atoum\runner::runStop));

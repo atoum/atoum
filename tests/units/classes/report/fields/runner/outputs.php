@@ -9,7 +9,7 @@ use \mageekguy\atoum\report\fields\runner;
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-class outputss extends atoum\test
+class outputs extends atoum\test
 {
 	public function test__construct()
 	{
