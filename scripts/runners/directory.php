@@ -1,16 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\runners\directory;
+namespace mageekguy\atoum\runners;
 
 use \mageekguy\atoum;
 
-class directoryFilter extends \recursiveFilterIterator
-{
-	function accept()
-	{
-		return (substr($this->getInnerIterator()->current()->getFilename(), 0, 1) != '.');
-	}
-}
+require_once(__DIR__ . '/../../classes/runner.php');
 
 if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 {
@@ -18,7 +12,7 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 	{
 		if (is_dir($path) === true)
 		{
-			foreach (new \recursiveIteratorIterator(new directoryFilter(new \recursiveDirectoryIterator($path))) as $file)
+			foreach (new \recursiveIteratorIterator(new directory\filter(new \recursiveDirectoryIterator($path))) as $file)
 			{
 				require($file->getPathname());
 			}

@@ -28,6 +28,12 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testAddObserver()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\observer');
+	}
+
 	public function testGetRunningDuration()
 	{
 		$adapter = new atoum\adapter();

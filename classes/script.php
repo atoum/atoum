@@ -135,7 +135,7 @@ abstract class script
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value);
+		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value . PHP_EOL);
 	}
 
 	public function writeLabels(array $labels, $level = 1)

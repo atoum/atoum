@@ -6,17 +6,27 @@ use \mageekguy\atoum;
 
 class stub extends atoum\script
 {
+	protected $pharName = 'phar://';
 	protected $help = false;
+	protected $version = false;
 	protected $infos = false;
 	protected $signature = false;
 	protected $decompress = false;
 	protected $extract = false;
+	protected $testIt = false;
+
+	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	{
+		parent::__construct($name, $locale, $adapter);
+
+		$this->pharName .= $this->getName();
+	}
 
 	public function run(atoum\superglobal $superglobal = null)
 	{
 		if (PHP_SAPI !== 'cli' || realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
-			require_once(__DIR__ . '/../../scripts/runners/autorunner.php');
+			require_once($this->pharName . '/scripts/runners/autorunner.php');
 		}
 		else
 		{
@@ -27,6 +37,11 @@ class stub extends atoum\script
 				$this->help();
 			}
 
+			if ($this->version === true)
+			{
+				$this->version();
+			}
+
 			if ($this->infos === true)
 			{
 				$this->infos();
@@ -35,6 +50,11 @@ class stub extends atoum\script
 			if ($this->signature === true)
 			{
 				$this->signature();
+			}
+
+			if ($this->testIt === true)
+			{
+				$this->testIt();
 			}
 
 			if ($this->extract !== false)
@@ -55,6 +75,11 @@ class stub extends atoum\script
 				$this->help = true;
 				break;
 
+			case '-v':
+			case '--version':
+				$this->version = true;
+				break;
+
 			case '-i':
 			case '--infos':
 				$this->infos = true;
@@ -63,6 +88,10 @@ class stub extends atoum\script
 			case '-s':
 			case '--signature':
 				$this->signature = true;
+				break;
+
+			case '--testIt':
+				$this->testIt = true;
 				break;
 
 			case '-e':
@@ -85,9 +114,9 @@ class stub extends atoum\script
 
 	protected function help()
 	{
-		self::writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
-		self::writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author));
-		self::writeMessage($this->locale->_('Available options are:'));
+		$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]') . PHP_EOL, $this->getName()));
+		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
+		$this->writeMessage($this->locale->_('Available options are:') . PHP_EOL);
 
 		$options = array(
 			'-h, --help' => $this->locale->_('Display this help'),
@@ -96,25 +125,36 @@ class stub extends atoum\script
 			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>')
 		);
 
-		self::writeLabels($options);
+		$this->writeLabels($options);
+
+		return $this;
+	}
+
+	protected function version()
+	{
+		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
 
 		return $this;
 	}
 
 	protected function infos()
 	{
-		self::writeMessage($this->locale->_('Informations:'));
+		$phar = new \Phar($this->pharName);
 
-		$phar = new \Phar(__DIR__ . '../..');
+		$this->writeMessage($this->locale->_('Informations:') . PHP_EOL);
+		$this->writeLabels($phar->getMetadata());
 
-		self::writeLabels($phar->getMetadata());
+		return $this;
 	}
 
 	protected function signature()
 	{
-		$phar = new \Phar(__DIR__ . '../..');
+		$phar = new \Phar($this->pharName);
+
 		$signature = $phar->getSignature();
-		self::writeLabel($this->locale->_('Signature'), $signature['hash']);
+
+		$this->writeLabel($this->locale->_('Signature'), $signature['hash']);
+
 		return $this;
 	}
 
@@ -130,8 +170,44 @@ class stub extends atoum\script
 			throw new \logicException('Directory \'' . $this->extract . '\' is not writable');
 		}
 
-		$phar = new \Phar(\mageekguy\sparkline::directory);
+		$phar = new \Phar($this->getName());
+
 		$phar->extractTo($this->extract);
+
+		return $this;
+	}
+
+	protected function testIt()
+	{
+		define('\mageekguy\atoum\runners\autorun', false);
+
+		$runner = new atoum\runner();
+
+		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator($this->pharName . '/tests/units/classes'))) as $file)
+		{
+			require($file->getPathname());
+		}
+
+		$stringDecorator = new atoum\report\decorators\string();
+		$stringDecorator->addWriter(new atoum\writers\stdout());
+
+		$report = new atoum\report();
+		$report->addRunnerField(new atoum\report\fields\runner\version(), array(atoum\runner::runStart));
+		$report->addTestField(new atoum\report\fields\test\run(), array(atoum\test::runStart));
+		$report->addTestField(new atoum\report\fields\test\event());
+		$report->addTestField(new atoum\report\fields\test\duration(), array(atoum\test::runStop));
+		$report->addTestField(new atoum\report\fields\test\memory(), array(atoum\test::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\errors(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\exceptions(), array(atoum\runner::runStop));
+		$report->addDecorator($stringDecorator);
+
+		$runner->addObserver($report)->run();
 
 		return $this;
 	}

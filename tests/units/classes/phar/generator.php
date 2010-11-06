@@ -647,11 +647,11 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->run($superglobal))->isIdenticalTo($generator)
 			->mock($stdout)
-				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName())))
-				->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\phar\generator::version)))
-				->call('write', array($generator->getLocale()->_('Available options are:')))
-				->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help')))
-				->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>')))
+				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
+				->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\phar\generator::version) . PHP_EOL))
+				->call('write', array($generator->getLocale()->_('Available options are:') . PHP_EOL))
+				->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL))
+				->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL))
 		;
 
 		$generator->setPharInjector(function($name) use (& $phar) {

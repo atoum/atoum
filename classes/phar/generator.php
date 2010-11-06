@@ -188,9 +188,9 @@ class generator extends atoum\script
 	protected function help()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()))
-			->writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version))
-			->writeMessage($this->locale->_('Available options are:'))
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version) . PHP_EOL)
+			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
 		;
 
 		$options = array(
