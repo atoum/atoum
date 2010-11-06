@@ -73,12 +73,12 @@ class generator
 			$mockClass = self::getClassName($class);
 		}
 
-		if ($this->adapter->class_exists($class, true) === false)
+		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
 			throw new \logicException('Class \'' . $class . '\' does not exist');
 		}
 
-		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true)
+		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
 		{
 			throw new \logicException('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
@@ -95,7 +95,7 @@ class generator
 			throw new \logicException('Class \'' . $class . '\' is final, unable to mock it');
 		}
 
-		return $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass);
+		return ($reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass));
 	}
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
@@ -137,13 +137,13 @@ class generator
 			. '		}' . "\n"
 			. '		return $this;' . "\n"
 			. '	}'
-			. $this->generateMethodCode($class)
+			. $this->generateClassMethodCode($class)
 			. '}' . "\n"
 			. '}'
 		;
 	}
 
-	protected function generateMethodCode(\reflectionClass $class)
+	protected function generateClassMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
 
@@ -181,6 +181,7 @@ class generator
 				else
 				{
 					$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
+
 					$isConstructor = $method->isConstructor();
 
 					foreach ($method->getParameters() as $parameter)
@@ -213,7 +214,6 @@ class generator
 					{
 						$parameters[] = '$' . $parameter->getName();
 					}
-
 				}
 
 				$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
@@ -291,6 +291,116 @@ class generator
 		}
 
 		return $type;
+	}
+
+	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
+	{
+		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . "\n"
+			. 'final class ' . $mockClass . ' implements \\' . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . "\n"
+			. '{' . "\n"
+			. '	private $mockController = null;' . "\n"
+			. '	public function getMockController()' . "\n"
+			. '	{' . "\n"
+			. '		if ($this->mockController === null)' . "\n"
+			. '		{' . "\n"
+			. '			$this->setMockController(new \\' . __NAMESPACE__ . '\\controller());' . "\n"
+			. '		}' . "\n"
+			. '		return $this->mockController;' . "\n"
+			. '	}' . "\n"
+			. '	public function setMockController(\\' . __NAMESPACE__ . '\\controller $controller)' . "\n"
+			. '	{' . "\n"
+			. '		if ($this->mockController !== $controller)' . "\n"
+			. '		{' . "\n"
+			. '			$this->mockController = $controller->control($this);' . "\n"
+			. '		}' . "\n"
+			. '		return $this->mockController;' . "\n"
+			. '	}' . "\n"
+			. '	public function resetMockController()' . "\n"
+			. '	{' . "\n"
+			. '		if ($this->mockController !== null)' . "\n"
+			. '		{' . "\n"
+			. '			$mockController = $this->mockController;' . "\n"
+			. '			$this->mockController = null;' . "\n"
+			. '			$mockController->reset();' . "\n"
+			. '		}' . "\n"
+			. '		return $this;' . "\n"
+			. '	}' . "\n"
+			. $this->generateInterfaceMethodCode($class)
+			. '}' . "\n"
+			. '}'
+		;
+	}
+
+	protected function generateInterfaceMethodCode(\reflectionClass $class)
+	{
+		$mockedMethods = '';
+
+		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
+		{
+			if ($method->isFinal() === false && $method->isStatic() === false)
+			{
+				$methodName = $method->getName();
+
+				$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
+
+				$isConstructor = $method->isConstructor();
+
+				foreach ($method->getParameters() as $parameter)
+				{
+					$parameterCode = $this->getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+
+					if ($parameter->isDefaultValueAvailable() == true)
+					{
+						$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+					}
+					else if ($parameter->isOptional() === true)
+					{
+						$parameterCode .= '=null';
+					}
+
+					$parameters[] = $parameterCode;
+				}
+
+				if ($isConstructor === true)
+				{
+					$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
+				}
+
+				$methodCode .= '(' . join(', ', $parameters) . ')' . "\n";
+				$methodCode .= "\t" . '{' . "\n";
+
+				$parameters = array();
+
+				foreach ($method->getParameters() as $parameter)
+				{
+					$parameters[] = '$' . $parameter->getName();
+				}
+
+				if ($isConstructor === true)
+				{
+					$methodCode .= "\t\t" . 'if ($mockController === null)' . "\n";
+					$methodCode .= "\t\t" . '{' . "\n";
+					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n";
+					$methodCode .= "\t\t\t" . 'if ($mockController === null)' . "\n";
+					$methodCode .= "\t\t\t" . '{' . "\n";
+					$methodCode .= "\t\t\t\t" . '$mockController = new \mageekguy\atoum\mock\controller();' . "\n";
+					$methodCode .= "\t\t\t" . '}' . "\n";
+					$methodCode .= "\t\t" . '}' . "\n";
+				}
+
+				$methodCode .= "\t\t" . 'if (isset($this->mockController->' . $methodName . ') === false)' . "\n";
+				$methodCode .= "\t\t" . '{' . "\n";
+				$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . "\n";
+				$methodCode .= "\t\t" . '}' . "\n";
+				$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . "\n";
+
+				$methodCode .= "\t" . '}' . "\n";
+
+				$mockedMethods .= $methodCode;
+			}
+		}
+
+		return $mockedMethods;
 	}
 
 	protected static function getNamespace($class)

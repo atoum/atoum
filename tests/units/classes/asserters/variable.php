@@ -155,7 +155,7 @@ class variable extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable))
+						'fail' => $failMessage = sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable))
 					)
 				)
 			)
@@ -170,11 +170,30 @@ class variable extends atoum\test
 		;
 
 		$this->assert
-			->exception(function() use ($asserter, $notEqualVariable, & $failMessage) { $asserter->isEqualTo($notEqualVariable, $failMessage = uniqid()); })
+			->exception(function() use (& $otherLine, $asserter, & $otherNotEqualVariable, & $otherFailMessage) { $otherLine = __LINE__; $asserter->isEqualTo($otherNotEqualVariable = uniqid(), $otherFailMessage = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage($failMessage)
+				->hasMessage($otherFailMessage)
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isEqualTo()',
+						'fail' => $failMessage
+					),
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::isEqualTo()',
+						'fail' => $otherFailMessage
+					)
+				)
+			)
 		;
 	}
 

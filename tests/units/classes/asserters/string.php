@@ -14,12 +14,10 @@ class string extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\string($score, $locale);
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
+			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
 			->variable($asserter->getVariable())->isNull()
