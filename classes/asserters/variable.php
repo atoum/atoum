@@ -61,46 +61,80 @@ class variable extends atoum\asserter
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variableIsSet()->variable == $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)));
-
-		return $this;
+		if ($this->variableIsSet()->variable == $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)));
+		}
 	}
 
 	public function isNotEqualTo($variable, $failMessage = null)
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variableIsSet()->variable != $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
-
-		return $this;
+		if ($this->variableIsSet()->variable != $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
+		}
 	}
 
 	public function isIdenticalTo($variable, $failMessage = null)
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variableIsSet()->variable === $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
-
-		return $this;
+		if ($this->variableIsSet()->variable === $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
+		}
 	}
 
 	public function isNotIdenticalTo($variable, $failMessage = null)
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variableIsSet()->variable !== $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
-
-		return $this;
+		if ($this->variableIsSet()->variable !== $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
+		}
 	}
 
 	public function isNull($failMessage = null)
 	{
-		return $this->variableIsSet()->isIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
+		if ($this->variableIsSet()->variable === null)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
+		}
 	}
 
 	public function isNotNull($failMessage = null)
 	{
-		return $this->isNotIdenticalTo(null, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is null'), $this));
+		if ($this->variableIsSet()->variable !== null)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is null'), $this));
+		}
 	}
 
 	public function isReferenceTo(& $reference, $failMessage = null)
@@ -112,7 +146,14 @@ class variable extends atoum\asserter
 
 		if (is_object($this->variable) === true && is_object($reference) === true)
 		{
-			$this->isIdenticalTo($reference, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+			if ($this->variable === $reference)
+			{
+				return $this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+			}
 		}
 		else
 		{
@@ -121,7 +162,14 @@ class variable extends atoum\asserter
 			$isReference = ($this->variable === $reference);
 			$reference = $tmp;
 
-			$isReference === true ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+			if ($isReference === true)
+			{
+				return $this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+			}
 		}
 
 		return $this;

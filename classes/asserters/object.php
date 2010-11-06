@@ -42,18 +42,28 @@ class object extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
-	public function hasSize($size)
+	public function hasSize($size, $failMessage = null)
 	{
-		sizeof($this->variableIsSet()->variable) == $size ? $this->pass() : $this->fail(sprintf($this->locale->_('%s has not size %d'), $this, $size));
-
-		return $this;
+		if (sizeof($this->variableIsSet()->variable) == $size)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has not size %d'), $this, $size));
+		}
 	}
 
-	public function isEmpty()
+	public function isEmpty($failMessage = null)
 	{
-		sizeof($this->variable) == 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('%s has size %d'), $this, sizeof($this->variable)));
-
-		return $this;
+		if (sizeof($this->variable) == 0)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has size %d'), $this, sizeof($this->variable)));
+		}
 	}
 
 	protected function variableIsSet($message = 'Object is undefined')

@@ -20,18 +20,28 @@ class collection extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
-	public function isEmpty()
+	public function isEmpty($failMessage = null)
 	{
-		sizeof($this->variable) == 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not empty'), $this));
-
-		return $this;
+		if (sizeof($this->variableIsSet()->variable) == 0)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this));
+		}
 	}
 
 	public function isNotEmpty()
 	{
-		sizeof($this->variable) > 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is empty'), $this));
-
-		return $this;
+		if (sizeof($this->variableIsSet()->variable) > 0)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is empty'), $this));
+		}
 	}
 
 	protected static function check($variable, $method)

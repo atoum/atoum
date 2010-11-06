@@ -49,16 +49,26 @@ class phpClass extends \mageekguy\atoum\asserter
 
 	public function hasParent($parent, $failMessage = null)
 	{
-		$this->classIsSet()->class->getParentClass()->getName() == $parent ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
-
-		return $this;
+		if ($this->classIsSet()->class->getParentClass()->getName() == $parent)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
+		}
 	}
 
 	public function hasInterface($interface, $failMessage = null)
 	{
-		in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true  ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
-
-		return $this;
+		if (in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
+		}
 	}
 
 	protected function setWithArguments(array $arguments)

@@ -36,7 +36,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		return $this;
 	}
 
-	public function isInstanceOf($variable)
+	public function isInstanceOf($variable, $failMessage = null)
 	{
 		try
 		{
@@ -50,31 +50,41 @@ class exception extends \mageekguy\atoum\asserters\object
 			}
 		}
 
-		return parent::isInstanceOf($variable);
+		return parent::isInstanceOf($variable, $failMessage);
 	}
 
-	public function hasDefaultCode()
+	public function hasDefaultCode($failMessage = null)
 	{
 		if (self::isException($this->variable) === false)
 		{
 			$this->fail(sprintf($this->locale->_('%s is not an exception'), $this->variable));
 		}
 
-		$this->variable->getCode() === 0 ? $this->pass() : $this->fail(sprintf($this->locale->_('Code is %s instead of 0'), $this->variable->getCode()));
-
-		return $this;
+		if ($this->variable->getCode() === 0)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Code is %s instead of 0'), $this->variable->getCode()));
+		}
 	}
 
-	public function hasMessage($message)
+	public function hasMessage($message, $failMessage = null)
 	{
 		if (self::isException($this->variable) === false)
 		{
 			$this->fail(sprintf($this->locale->_('Message not found because %s is not an exception'), $this->variable));
 		}
 
-		$this->variable->getMessage() == (string) $message ? $this->pass() : $this->fail(sprintf($this->locale->_('Message \'%s\' is not identical to \'%s\''), $this->variable->getMessage(), $message));
-
-		return $this;
+		if ($this->variable->getMessage() == (string) $message)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Message \'%s\' is not identical to \'%s\''), $this->variable->getMessage(), $message));
+		}
 	}
 
 	protected static function check($variable, $method)

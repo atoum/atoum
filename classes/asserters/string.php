@@ -34,6 +34,11 @@ class string extends variable
 		return $this;
 	}
 
+	public function toString($mixed)
+	{
+		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
+	}
+
 	public function isEmpty($failMessage = null)
 	{
 		return $this->isEqualTo('', $failMessage);
@@ -41,14 +46,14 @@ class string extends variable
 
 	public function match($pattern, $failMessage = null)
 	{
-		preg_match($pattern, $this->variable) === 1 ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not match %s'), $this, $pattern));
-
-		return $this;
-	}
-
-	public function toString($mixed)
-	{
-		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
+		if (preg_match($pattern, $this->variableIsSet()->variable) === 1)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not match %s'), $this, $pattern));
+		}
 	}
 
 	public function isEqualTo($variable, $failMessage = null)

@@ -20,9 +20,9 @@ class integer extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
-	public function isZero()
+	public function isZero($failMessage = null)
 	{
-		return $this->isEqualTo(0);
+		return $this->isEqualTo(0, $failMessage);
 	}
 
 	public function isEqualTo($variable, $failMessage = null)
@@ -36,9 +36,14 @@ class integer extends \mageekguy\atoum\asserters\variable
 	{
 		self::check($variable, __METHOD__);
 
-		$this->variable > $variable ? $this->pass() : $this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, $this->toString($variable)));
-
-		return $this;
+		if ($this->variable > $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, $this->toString($variable)));
+		}
 	}
 
 	protected function setWithArguments(array $arguments)
