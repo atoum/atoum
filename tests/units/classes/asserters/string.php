@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\tools;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -91,6 +92,36 @@ class string extends atoum\test
 
 		$this->assert
 			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . addcslashes($variable, "\010") . '\'')
+		;
+	}
+
+	public function testIsEqualTo()
+	{
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->isEqualTo(uniqid());
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith($firstString = uniqid());
+
+		$score->reset();
+
+		$diff = new tools\diff($firstString, $secondString = uniqid());
+
+		$this->assert
+			->exception(function() use ($asserter, $secondString) {
+						$asserter->isEqualTo($secondString);
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage($locale->_('strings are not equals:') . PHP_EOL . $diff)
 		;
 	}
 }

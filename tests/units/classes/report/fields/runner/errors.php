@@ -64,12 +64,12 @@ class errors extends atoum\test
 			->string($errors->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
 		;
 
-		$errorss = array(
+		$allErrors = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
 				'file' => $file = uniqid(),
-				'line' => $line = uniqid(),
+				'line' => $line = rand(1, PHP_INT_MAX),
 				'type' => $type = uniqid(),
 				'message' => $message = uniqid()
 			),
@@ -77,26 +77,98 @@ class errors extends atoum\test
 				'class' => $otherClass = uniqid(),
 				'method' => $otherMethod = uniqid(),
 				'file' => $otherFile = uniqid(),
-				'line' => $otherLine = uniqid(),
+				'line' => $otherLine = rand(1, PHP_INT_MAX),
 				'type' => $otherType = uniqid(),
 				'message' => ($firstOtherMessage = uniqid()) . PHP_EOL . ($secondOtherMessage = uniqid())
 			),
 		);
 
-		$score->getMockController()->getErrors = function() use ($errorss) { return $errorss; };
+		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
 		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
 			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($errorss)), sizeof($errorss)) . PHP_EOL .
+			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
 				'  ' . $class . '::' . $method . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('Error %s in file %s on line %d:'), $type, $file, $line) . PHP_EOL .
+				'    ' . sprintf($locale->_('Error %s in %s on line %d:'), $type, $file, $line) . PHP_EOL .
 				'      ' . $message . PHP_EOL .
 				'  ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('Error %s in file %s on line %d:'), $otherType, $otherFile, $otherLine) . PHP_EOL .
+				'    ' . sprintf($locale->_('Error %s in %s on line %d:'), $otherType, $otherFile, $otherLine) . PHP_EOL .
 				'      ' . $firstOtherMessage . PHP_EOL .
 				'      ' . $secondOtherMessage . PHP_EOL
+			)
+		;
+
+		$allErrors = array(
+			array(
+				'class' => $class = uniqid(),
+				'method' => $method = uniqid(),
+				'file' => null,
+				'line' => null,
+				'type' => $type = uniqid(),
+				'message' => $message = uniqid()
+			)
+		);
+
+		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
+
+		$errors = new runner\errors($locale = new atoum\locale());
+
+		$this->assert
+			->string($errors->toString())->isEmpty()
+			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				'  ' . $class . '::' . $method . '():' . PHP_EOL .
+				'    ' . sprintf($locale->_('Error %s in unknown file on unknown line:'), $type) . PHP_EOL .
+				'      ' . $message . PHP_EOL
+			)
+		;
+
+		$allErrors = array(
+			array(
+				'class' => $class = uniqid(),
+				'method' => $method = uniqid(),
+				'file' => null,
+				'line' => $line = rand(1, PHP_INT_MAX),
+				'type' => $type = uniqid(),
+				'message' => $message = uniqid()
+			)
+		);
+
+		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
+
+		$errors = new runner\errors($locale = new atoum\locale());
+
+		$this->assert
+			->string($errors->toString())->isEmpty()
+			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				'  ' . $class . '::' . $method . '():' . PHP_EOL .
+				'    ' . sprintf($locale->_('Error %s in unknown file on line %d:'), $type, $line) . PHP_EOL .
+				'      ' . $message . PHP_EOL
+			)
+		;
+
+		$allErrors = array(
+			array(
+				'class' => $class = uniqid(),
+				'method' => $method = uniqid(),
+				'file' => $file = uniqid(),
+				'line' => null,
+				'type' => $type = uniqid(),
+				'message' => $message = uniqid()
+			)
+		);
+
+		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
+
+		$errors = new runner\errors($locale = new atoum\locale());
+
+		$this->assert
+			->string($errors->toString())->isEmpty()
+			->string($errors->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				'  ' . $class . '::' . $method . '():' . PHP_EOL .
+				'    ' . sprintf($locale->_('Error %s in %s on unknown line:'), $type, $file) . PHP_EOL .
+				'      ' . $message . PHP_EOL
 			)
 		;
 	}

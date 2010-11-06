@@ -65,6 +65,33 @@ class diff extends atoum\test
 				'+' . $secondString . PHP_EOL
 			)
 		;
+
+		$diff
+			->setFirstString($firstString = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+			->setSecondString($secondString = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
+		;
+
+		$this->assert
+			->castToString($diff)->isEqualTo(
+				'@@ -4 +4 @@' . PHP_EOL .
+				'-4'. PHP_EOL .
+				'+6' . PHP_EOL
+			)
+		;
+
+		$diff
+			->setFirstString($firstString = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+			->setSecondString($secondString = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
+		;
+
+		$this->assert
+			->castToString($diff)->isEqualTo(
+				'@@ -4 +4,2 @@' . PHP_EOL .
+				'-4'. PHP_EOL .
+				'+6' . PHP_EOL .
+				'+7' . PHP_EOL
+			)
+		;
 	}
 
 	public function testMake()

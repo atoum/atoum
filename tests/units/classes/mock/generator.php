@@ -330,13 +330,13 @@ class generator extends atoum\test
 				"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . "\n" .
 				"\t\t\t" . 'if ($mockController === null)' . "\n" .
 				"\t\t\t" . '{' . "\n" .
-				"\t\t\t\t" . '$mockController = new \mageekguy\atoum\mock\controller());' . "\n" .
+				"\t\t\t\t" . '$mockController = new \mageekguy\atoum\mock\controller();' . "\n" .
 				"\t\t\t" . '}' . "\n" .
 				"\t\t" . '}' . "\n" .
 				"\t\t" . '$this->setMockController($mockController);' . "\n" .
 				"\t\t" . 'if (isset($this->mockController->__construct) === false)' . "\n" .
 				"\t\t" . '{' . "\n" .
-				"\t\t\t" . '$this->mockController->__construct =  function() {};' . "\n" .
+				"\t\t\t" . '$this->mockController->__construct = function() {};' . "\n" .
 				"\t\t" . '}' . "\n" .
 				"\t\t" . '$this->mockController->invoke(\'__construct\', array());' . "\n" .
 				"\t" . '}' . "\n" .

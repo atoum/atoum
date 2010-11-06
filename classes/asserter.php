@@ -112,51 +112,6 @@ abstract class asserter
 			}
 		}
 
-		/*
-		foreach (debug_backtrace() as $t)
-		{
-			echo (
-					isset($t['file']) === false ? 'unknown' : $t['file']) . ':'
-				. (isset($t['line']) === false ? 'unknown' : $t['line']) . ':'
-				. (isset($t['class']) === false ? 'unknwon' : $t['class']) .
-				'(' . (isset($t['class']) === false ? 'unknown' : get_class($t['object'])) . ')' . ':'
-				. (isset($t['function']) === false ? 'unknown' : $t['function']) . "\n";
-		}
-
-		echo "\n";
-
-		$asserter = $this;
-
-		$tests = atoum\registry::getInstance()->{atoum\test::getRegistryKey()};
-
-		if (sizeof($tests) <= 0)
-		{
-			throw new \runtimeException('There is no test currently running');
-		}
-
-		$test = array_pop($tests);
-
-		$class = $test->getClass();
-		$method = $test->getCurrentMethod();
-		$file = $test->getPath();
-
-		$backtrace = current(array_filter(debug_backtrace(), function($value) use ($file, $asserter) {
-					static $found = false;
-
-					if ($found === false && isset($value['file']) === true && $value['file'] === $file && isset($value['object']) === true && ($value['object'] === $asserter || is_a($value['object'], __NAMESPACE__ . '\asserter\generator')))
-					{
-						$found = true;
-						return true;
-					}
-
-					return false;
-				}
-			)
-		);
-
-		$line = $backtrace['line'];
-		*/
-
 		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . $function . '()', $reason));
 	}
 }

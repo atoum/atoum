@@ -272,27 +272,6 @@ class generator
 		return $mockedMethods;
 	}
 
-	protected function getParameterType(\reflectionParameter $parameter)
-	{
-		$type = '';
-
-		if ($parameter->isArray() == true)
-		{
-			$type = 'array ';
-		}
-		else
-		{
-			$class = $parameter->getClass();
-
-			if ($class !== null)
-			{
-				$type = '\\' . $class->getName() . ' ';
-			}
-		}
-
-		return $type;
-	}
-
 	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . "\n"
@@ -341,7 +320,7 @@ class generator
 			{
 				$methodName = $method->getName();
 
-				$methodCode = "\n\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
+				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName;
 
 				$isConstructor = $method->isConstructor();
 
@@ -386,7 +365,10 @@ class generator
 					$methodCode .= "\t\t\t\t" . '$mockController = new \mageekguy\atoum\mock\controller();' . "\n";
 					$methodCode .= "\t\t\t" . '}' . "\n";
 					$methodCode .= "\t\t" . '}' . "\n";
+					$methodCode .= "\t\t" . '$this->setMockController($mockController);' . "\n";
 				}
+
+				$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
 
 				$methodCode .= "\t\t" . 'if (isset($this->mockController->' . $methodName . ') === false)' . "\n";
 				$methodCode .= "\t\t" . '{' . "\n";
@@ -401,6 +383,27 @@ class generator
 		}
 
 		return $mockedMethods;
+	}
+
+	protected function getParameterType(\reflectionParameter $parameter)
+	{
+		$type = '';
+
+		if ($parameter->isArray() == true)
+		{
+			$type = 'array ';
+		}
+		else
+		{
+			$class = $parameter->getClass();
+
+			if ($class !== null)
+			{
+				$type = '\\' . $class->getName() . ' ';
+			}
+		}
+
+		return $type;
 	}
 
 	protected static function getNamespace($class)

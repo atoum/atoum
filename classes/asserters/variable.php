@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\asserters;
 
-class variable extends \mageekguy\atoum\asserter
+use \mageekguy\atoum;
+
+class variable extends atoum\asserter
 {
 	protected $isSet = false;
 	protected $isSetByReference = false;

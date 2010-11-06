@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\asserters;
 
-class string extends \mageekguy\atoum\asserters\variable
+use \mageekguy\atoum\tools;
+
+class string extends variable
 {
 	protected $charlist = null;
 
@@ -47,6 +49,22 @@ class string extends \mageekguy\atoum\asserters\variable
 	public function toString($mixed)
 	{
 		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
+	}
+
+	public function isEqualTo($variable, $failMessage = null)
+	{
+		self::check($variable, __METHOD__);
+
+		if ($this->variableIsSet()->variable == $variable)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$diff = new tools\diff($this->variable, $variable);
+
+			$this->fail($failMessage !== null ? $failMessage : $this->locale->_('strings are not equals:') . PHP_EOL . $diff);
+		}
 	}
 
 	protected function setWithArguments(array $arguments)

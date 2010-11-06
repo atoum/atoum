@@ -51,7 +51,28 @@ class errors extends report\fields\runner
 						$method = $error['method'];
 					}
 
-					$string .= '    ' . sprintf($this->locale->_('Error %s in file %s on line %d:'), $error['type'], $error['file'], $error['line']) . PHP_EOL;
+					$string .= '    ';
+
+					switch (true)
+					{
+						case $error['file'] === null && $error['line'] === null:
+							$string .= sprintf($this->locale->_('Error %s in unknown file on unknown line:'), $error['type']);
+							break;
+
+						case $error['file'] === null && $error['line'] !== null:
+							$string .= sprintf($this->locale->_('Error %s in unknown file on line %d:'), $error['type'], $error['line']);
+							break;
+
+						case $error['file'] !== null && $error['line'] === null:
+							$string .= sprintf($this->locale->_('Error %s in %s on unknown line:'), $error['type'], $error['file']);
+							break;
+
+						case $error['file'] !== null && $error['line'] !== null:
+							$string .= sprintf($this->locale->_('Error %s in %s on line %d:'), $error['type'], $error['file'], $error['line']);
+							break;
+					}
+
+					$string .= PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($error['message'])) as $line)
 					{
