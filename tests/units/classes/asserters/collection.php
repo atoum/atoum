@@ -60,6 +60,52 @@ class collection extends atoum\test
 			->collection($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
+
+	public function testContain()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->contain(uniqid());
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(array(uniqid(), uniqid(), $variable = uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->contain($notInArray = uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray)))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->collection($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::contain()',
+						'fail' => $failMessage = sprintf($locale->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray))
+					)
+				)
+			)
+		;
+
+		$this->assert
+			->object($asserter->contain($variable))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
 }
 
 ?>

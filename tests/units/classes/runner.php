@@ -153,6 +153,18 @@ class runner extends atoum\test
 			->array(atoum\runner::getObserverEvents())->isEqualTo(array(atoum\runner::runStart, atoum\runner::runStop))
 		;
 	}
+
+	public function testAddReport()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->object($runner->addReport($report = new atoum\report()))->isIdenticalTo($runner)
+			->array($runner->getReports())->isEqualTo(array($report))
+			->array($runner->getObservers())->contain($report)
+			->array($runner->getTestObservers())->contain($report)
+		;
+	}
 }
 
 ?>

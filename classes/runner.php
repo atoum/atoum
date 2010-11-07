@@ -15,6 +15,7 @@ class runner implements observable, adapter\aggregator
 	protected $adapter = null;
 	protected $observers = array();
 	protected $testObservers = array();
+	protected $reports = array();
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
 
@@ -144,11 +145,25 @@ class runner implements observable, adapter\aggregator
 		return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
 	}
 
+	public function addReport(atoum\report $report)
+	{
+		$this->reports[] = $report;
+
+		return $this
+			->addObserver($report)
+			->addTestObserver($report)
+		;
+	}
+
+	public function getReports()
+	{
+		return $this->reports;
+	}
+
 	public static function getObserverEvents()
 	{
 		return array(self::runStart, self::runStop);
 	}
-
 }
 
 ?>

@@ -44,6 +44,19 @@ class collection extends \mageekguy\atoum\asserters\variable
 		}
 	}
 
+
+	public function contain($variable, $failMessage = null)
+	{
+		if (in_array($variable, $this->variableIsSet()->variable) === true)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not contain %s'), $this, $this->toString($variable)));
+		}
+	}
+
 	protected static function check($variable, $method)
 	{
 		if (self::isArray($variable) === false)
