@@ -14,7 +14,7 @@ class duration extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(test\duration::titlePrompt)->isEqualTo('> ')
+			->string(test\duration::titlePrompt)->isEqualTo('=> ')
 		;
 	}
 

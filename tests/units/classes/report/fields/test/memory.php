@@ -14,7 +14,7 @@ class memory extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(test\memory::titlePrompt)->isEqualTo('> ')
+			->string(test\memory::titlePrompt)->isEqualTo('=> ')
 		;
 	}
 

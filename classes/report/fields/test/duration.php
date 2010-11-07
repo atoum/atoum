@@ -7,7 +7,7 @@ use \mageekguy\atoum\report;
 
 class duration extends report\fields\test
 {
-	const titlePrompt = '> ';
+	const titlePrompt = '=> ';
 
 	protected $value = null;
 
