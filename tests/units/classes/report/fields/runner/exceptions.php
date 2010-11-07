@@ -11,6 +11,15 @@ require_once(__DIR__ . '/../../../../runner.php');
 
 class exceptions extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(runner\exceptions::titlePrompt)->isEqualTo('> ')
+			->string(runner\exceptions::methodPrompt)->isEqualTo('=> ')
+			->string(runner\exceptions::exceptionPrompt)->isEqualTo('==> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$exceptions = new runner\exceptions();
@@ -87,14 +96,14 @@ class exceptions extends atoum\test
 
 		$this->assert
 			->string($exceptions->toString())->isEmpty()
-			->string($exceptions->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptionss)), sizeof($exceptionss)) . PHP_EOL .
-				'  ' . $class . '::' . $method . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
-				'      ' . $value . PHP_EOL .
-				'  ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine) . PHP_EOL .
-				'      ' . $firstOtherValue . PHP_EOL .
-				'      ' . $secondOtherValue . PHP_EOL
+			->string($exceptions->setWithRunner($runner)->toString())->isEqualTo(runner\exceptions::titlePrompt . sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptionss)), sizeof($exceptionss)) . PHP_EOL .
+				runner\exceptions::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\exceptions::exceptionPrompt . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
+				$value . PHP_EOL .
+				runner\exceptions::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				runner\exceptions::exceptionPrompt . sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine) . PHP_EOL .
+				$firstOtherValue . PHP_EOL .
+				$secondOtherValue . PHP_EOL
 			)
 		;
 	}

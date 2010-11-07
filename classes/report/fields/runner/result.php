@@ -7,6 +7,8 @@ use \mageekguy\atoum\report;
 
 class result extends report\fields\runner
 {
+	const titlePrompt = '> ';
+
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
 	protected $assertionNumber = null;
@@ -63,15 +65,15 @@ class result extends report\fields\runner
 
 	public function toString()
 	{
-		$string = '';
+		$string = self::titlePrompt;
 
 		if ($this->testNumber === null )
 		{
-			$string = $this->locale->_('No test running.');
+			$string .= $this->locale->_('No test running.');
 		}
 		else if ($this->failNumber === 0)
 		{
-			$string = sprintf($this->locale->_('Success (%s, %s, %s, %s, %s) !'),
+			$string .= sprintf($this->locale->_('Success (%s, %s, %s, %s, %s) !'),
 					sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 					sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
 					sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber),
@@ -82,7 +84,7 @@ class result extends report\fields\runner
 		}
 		else
 		{
-			$string = sprintf($this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
+			$string .= sprintf($this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
 					sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 					sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
 					sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),

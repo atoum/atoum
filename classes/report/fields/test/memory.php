@@ -7,6 +7,8 @@ use \mageekguy\atoum\report;
 
 class memory extends report\fields\test
 {
+	const titlePrompt = '> ';
+
 	protected $value = null;
 
 	public function getValue()
@@ -26,16 +28,21 @@ class memory extends report\fields\test
 
 	public function toString()
 	{
-		return
-			(
-				$this->value === null ?
-				$this->locale->_('Memory usage: unknown.') :
-				sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $this->value / 1048576)
-			)
-			. PHP_EOL
-		;
-	}
+		$string = self::titlePrompt;
 
+		if ($this->value === null)
+		{
+			$string .= $this->locale->_('Memory usage: unknown.');
+		}
+		else
+		{
+			$string .= sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $this->value / 1048576);
+		}
+
+		$string .= PHP_EOL;
+
+		return $string;
+	}
 }
 
 ?>

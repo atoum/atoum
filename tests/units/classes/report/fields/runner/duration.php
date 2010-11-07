@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../../runner.php');
 
 class duration extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(runner\duration::titlePrompt)->isEqualTo('> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$duration = new runner\duration();
@@ -53,10 +60,10 @@ class duration extends atoum\test
 		$duration = new runner\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
-			->string($duration->setWithRunner($runner)->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
-			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Running duration: unknown.') . PHP_EOL)
-			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
+			->string($duration->toString())->isEqualTo(runner\duration::titlePrompt . $locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner)->toString())->isEqualTo(runner\duration::titlePrompt . $locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(runner\duration::titlePrompt . $locale->_('Running duration: unknown.') . PHP_EOL)
+			->string($duration->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(runner\duration::titlePrompt . sprintf($locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
 		;
 	}
 }

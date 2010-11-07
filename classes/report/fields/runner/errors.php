@@ -7,6 +7,10 @@ use \mageekguy\atoum\report;
 
 class errors extends report\fields\runner
 {
+	const titlePrompt = '> ';
+	const methodPrompt = '=> ';
+	const errorPrompt = '==> ';
+
 	protected $runner = null;
 
 	public function getRunner()
@@ -36,7 +40,7 @@ class errors extends report\fields\runner
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
+				$string .= self::titlePrompt . sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -45,13 +49,13 @@ class errors extends report\fields\runner
 				{
 					if ($error['class'] !== $class || $error['method'] !== $method)
 					{
-						$string .= '  ' . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
+						$string .= self::methodPrompt . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
 
 						$class = $error['class'];
 						$method = $error['method'];
 					}
 
-					$string .= '    ';
+					$string .= self::errorPrompt;
 
 					switch (true)
 					{
@@ -76,7 +80,7 @@ class errors extends report\fields\runner
 
 					foreach (explode(PHP_EOL, rtrim($error['message'])) as $line)
 					{
-						$string .= '      ' . $line . PHP_EOL;
+						$string .= $line . PHP_EOL;
 					}
 				}
 			}

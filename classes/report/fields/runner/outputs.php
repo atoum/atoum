@@ -7,6 +7,9 @@ use \mageekguy\atoum\report;
 
 class outputs extends report\fields\runner
 {
+	const titlePrompt = '> ';
+	const methodPrompt = '=> ';
+
 	protected $runner = null;
 
 	public function getRunner()
@@ -36,15 +39,15 @@ class outputs extends report\fields\runner
 
 			if ($sizeOfOutputs > 0)
 			{
-				$string .= sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs) . PHP_EOL;
+				$string .= self::titlePrompt . sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs) . PHP_EOL;
 
 				foreach ($outputs as $output)
 				{
-					$string .= '  ' . $output['class'] . '::' . $output['method'] . '():' . PHP_EOL;
+					$string .= self::methodPrompt . $output['class'] . '::' . $output['method'] . '():' . PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{
-						$string .= '    ' . $line . PHP_EOL;
+						$string .= $line . PHP_EOL;
 					}
 				}
 			}

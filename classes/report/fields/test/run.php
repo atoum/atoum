@@ -7,6 +7,8 @@ use \mageekguy\atoum\report;
 
 class run extends report\fields\test
 {
+	const titlePrompt = '> ';
+
 	protected $testClass = null;
 
 	public function getTestClass()
@@ -26,14 +28,20 @@ class run extends report\fields\test
 
 	public function toString()
 	{
-		return
-			(
-				$this->testClass === null ?
-				$this->locale->_('There is currently no test running.') :
-				sprintf($this->locale->_('Run %s...'), $this->testClass)
-			)
-			. PHP_EOL
-		;
+		$string = self::titlePrompt;
+
+		if ($this->testClass === null)
+		{
+			$string .= $this->locale->_('There is currently no test running.');
+		}
+		else
+		{
+			$string .= sprintf($this->locale->_('Run %s...'), $this->testClass);
+		}
+
+		$string .= PHP_EOL;
+
+		return $string;
 	}
 }
 

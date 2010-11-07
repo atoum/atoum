@@ -7,6 +7,9 @@ use \mageekguy\atoum\report;
 
 class failures extends report\fields\runner
 {
+	const titlePrompt = '> ';
+	const methodPrompt = '=> ';
+
 	protected $runner = null;
 
 	public function getRunner()
@@ -36,12 +39,12 @@ class failures extends report\fields\runner
 
 			if ($numberOfFails > 0)
 			{
-				$string .= sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails) . PHP_EOL;
+				$string .= self::titlePrompt . sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails) . PHP_EOL;
 
 				foreach ($fails as $fail)
 				{
-					$string .= '  ' . $fail['class'] . '::' . $fail['method'] . '():' . PHP_EOL;
-					$string .= '    ' . sprintf($this->locale->_('In file %s on line %d, %s failed because %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
+					$string .= self::methodPrompt . $fail['class'] . '::' . $fail['method'] . '():' . PHP_EOL;
+					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed because %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
 				}
 			}
 		}

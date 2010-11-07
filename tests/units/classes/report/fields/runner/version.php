@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../../runner.php');
 
 class version extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(runner\version::titlePrompt)->isEqualTo('> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$version = new runner\version();
@@ -50,7 +57,7 @@ class version extends atoum\test
 		$this->assert
 			->string($version->setWithRunner($runner)->toString())->isEmpty()
 			->string($version->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
-			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()) . PHP_EOL)
+			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(runner\version::titlePrompt . sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()) . PHP_EOL)
 		;
 	}
 }

@@ -7,6 +7,8 @@ use \mageekguy\atoum\report;
 
 class duration extends report\fields\runner
 {
+	const titlePrompt = '> ';
+
 	protected $value = null;
 
 	public function getValue()
@@ -26,14 +28,20 @@ class duration extends report\fields\runner
 
 	public function toString()
 	{
-		return
-			(
-				$this->value === null ?
-				$this->locale->_('Running duration: unknown.') :
-				sprintf($this->locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $this->value), $this->value)
-			)
-			. PHP_EOL
-		;
+		$string = self::titlePrompt;
+
+		if ($this->value === null)
+		{
+			$string .= $this->locale->_('Running duration: unknown.');
+		}
+		else
+		{
+			$string .= sprintf($this->locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $this->value), $this->value);
+		}
+
+		$string .= PHP_EOL;
+
+		return $string;
 	}
 }
 

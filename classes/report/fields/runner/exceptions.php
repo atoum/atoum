@@ -7,6 +7,10 @@ use \mageekguy\atoum\report;
 
 class exceptions extends report\fields\runner
 {
+	const titlePrompt = '> ';
+	const methodPrompt = '=> ';
+	const exceptionPrompt = '==> ';
+
 	protected $runner = null;
 
 	public function getRunner()
@@ -36,7 +40,7 @@ class exceptions extends report\fields\runner
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= sprintf($this->locale->__('There is %d exception:', 'There are %d exceptions:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
+				$string .= self::titlePrompt . sprintf($this->locale->__('There is %d exception:', 'There are %d exceptions:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -45,17 +49,17 @@ class exceptions extends report\fields\runner
 				{
 					if ($exception['class'] !== $class || $exception['method'] !== $method)
 					{
-						$string .= '  ' . $exception['class'] . '::' . $exception['method'] . '():' . PHP_EOL;
+						$string .= self::methodPrompt . $exception['class'] . '::' . $exception['method'] . '():' . PHP_EOL;
 
 						$class = $exception['class'];
 						$method = $exception['method'];
 					}
 
-					$string .= '    ' . sprintf($this->locale->_('Exception throwed in file %s on line %d:'), $exception['file'], $exception['line']) . PHP_EOL;
+					$string .= self::exceptionPrompt . sprintf($this->locale->_('Exception throwed in file %s on line %d:'), $exception['file'], $exception['line']) . PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
 					{
-						$string .= '      ' . $line . PHP_EOL;
+						$string .= $line . PHP_EOL;
 					}
 				}
 			}

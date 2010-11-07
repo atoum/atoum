@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../../runner.php');
 
 class duration extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(test\duration::titlePrompt)->isEqualTo('> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$duration = new test\duration();
@@ -66,10 +73,10 @@ class duration extends atoum\test
 		$duration = new test\duration($locale = new atoum\locale());
 
 		$this->assert
-			->string($duration->toString())->isEqualTo($locale->_('Test duration: unknown.') . PHP_EOL)
-			->string($duration->setWithTest($test)->toString())->isEqualTo($locale->_('Test duration: unknown.') . PHP_EOL)
-			->string($duration->setWithTest($test, atoum\test::runStart)->toString())->isEqualTo($locale->_('Test duration: unknown.') . PHP_EOL)
-			->string($duration->setWithTest($test, atoum\test::runStop)->toString())->isEqualTo(sprintf($locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
+			->string($duration->toString())->isEqualTo(test\duration::titlePrompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithTest($test)->toString())->isEqualTo(test\duration::titlePrompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithTest($test, atoum\test::runStart)->toString())->isEqualTo(test\duration::titlePrompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->string($duration->setWithTest($test, atoum\test::runStop)->toString())->isEqualTo(test\duration::titlePrompt . sprintf($locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
 		;
 	}
 }

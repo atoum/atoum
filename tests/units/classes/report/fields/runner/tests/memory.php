@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class memory extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(tests\memory::titlePrompt)->isEqualTo('> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$memory = new tests\memory();
@@ -74,10 +81,10 @@ class memory extends atoum\test
 		$memory = new tests\memory($locale = new atoum\locale());
 
 		$this->assert
-			->string($memory->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
+			->string($memory->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner)->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\memory::titlePrompt . sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
@@ -85,10 +92,10 @@ class memory extends atoum\test
 		$memory = new tests\memory($locale = new atoum\locale());
 
 		$this->assert
-			->string($memory->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner)->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo($locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
+			->string($memory->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner)->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(tests\memory::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
+			->string($memory->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\memory::titlePrompt . sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 	}
 }

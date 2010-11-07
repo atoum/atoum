@@ -11,6 +11,14 @@ require_once(__DIR__ . '/../../../../runner.php');
 
 class failures extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(runner\failures::titlePrompt)->isEqualTo('> ')
+			->string(runner\failures::methodPrompt)->isEqualTo('=> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$failures = new runner\failures();
@@ -89,11 +97,11 @@ class failures extends atoum\test
 
 		$this->assert
 			->string($failures->toString())->isEmpty()
-			->string($failures->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
-				'  ' . $class . '::' . $method . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('In file %s on line %d, %s failed because %s'), $file, $line, $asserter, $fail) . PHP_EOL .
-				'  ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				'    ' . sprintf($locale->_('In file %s on line %d, %s failed because %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+			->string($failures->setWithRunner($runner)->toString())->isEqualTo(runner\failures::titlePrompt . sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
+				runner\failures::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed because %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				runner\failures::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed because %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}

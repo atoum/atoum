@@ -83,12 +83,12 @@ class outputs extends atoum\test
 
 		$this->assert
 			->string($outputs->toString())->isEmpty()
-			->string($outputs->setWithRunner($runner)->toString())->isEqualTo(sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
-				"  " . $class . '::' . $method . '():' . PHP_EOL .
-				"    " . $value . PHP_EOL .
-				"  " . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				"    " . $firstOtherValue . PHP_EOL .
-				"    " . $secondOtherValue . PHP_EOL
+			->string($outputs->setWithRunner($runner)->toString())->isEqualTo(runner\outputs::titlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
+				runner\outputs::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				$value . PHP_EOL .
+				runner\outputs::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$firstOtherValue . PHP_EOL .
+				$secondOtherValue . PHP_EOL
 			)
 		;
 	}
