@@ -21,7 +21,6 @@ class notEmptyTest extends atoum\test
 	public function testMethod2() {}
 }
 
-/** @isolation off */
 class test extends atoum\test
 {
 	public function setUp()

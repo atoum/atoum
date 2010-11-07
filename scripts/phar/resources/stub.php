@@ -8,8 +8,6 @@ use \mageekguy\atoum\phar;
 
 require('phar://mageekguy.atoum.phar/classes/autoloader.php');
 
-\phar::mapPhar(phar\generator::phar);
-
 if (PHP_SAPI === 'cli')
 {
 	$stub = new phar\stub(__FILE__);

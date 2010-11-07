@@ -122,7 +122,8 @@ class stub extends atoum\script
 			'-h, --help' => $this->locale->_('Display this help'),
 			'-i, --infos' => $this->locale->_('Display informations'),
 			'-s, --signature' => $this->locale->_('Display phar signature'),
-			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>')
+			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
+			'--testIt' => $this->locale->_('Execute all Atoum unit tests')
 		);
 
 		$this->writeLabels($options);
