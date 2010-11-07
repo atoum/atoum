@@ -559,19 +559,6 @@ abstract class test implements observable, \countable
 		return null;
 	}
 
-	protected function testMethodExists($testMethodName)
-	{
-		foreach ($this->testMethods as $testMethod)
-		{
-			if ($testMethod['name'] == $testMethodName)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	protected static function getAnnotations($comments)
 	{
 		$annotations = array();

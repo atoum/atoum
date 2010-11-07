@@ -324,6 +324,8 @@ class generator
 
 				$isConstructor = $method->isConstructor();
 
+				$parameters = array();
+
 				foreach ($method->getParameters() as $parameter)
 				{
 					$parameterCode = $this->getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();

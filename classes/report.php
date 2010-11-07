@@ -11,23 +11,23 @@ class report implements observers\runner, observers\test
 	public function __construct()
 	{
 		$this->runnerFields = array(
-			'runnerStart' => array(),
-			'runnerStop' => array()
+			runner::runStart => array(),
+			runner::runStop => array()
 		);
 
 		$this->testFields = array(
-			'testRunStart' => array(),
-			'beforeTestSetup' => array(),
-			'afterTestSetup' => array(),
-			'beforeTestMethod' => array(),
-			'testAssertionSuccess' => array(),
-			'testAssertionFail' => array(),
-			'testError' => array(),
-			'testException' => array(),
-			'afterTestMethod' => array(),
-			'beforeTestTearDown' => array(),
-			'afterTestTearDown' => array(),
-			'testRunStop' => array(),
+			test::runStart => array(),
+			test::beforeSetUp => array(),
+			test::afterSetUp => array(),
+			test::beforeTestMethod => array(),
+			test::success => array(),
+			test::fail => array(),
+			test::error => array(),
+			test::exception => array(),
+			test::afterTestMethod => array(),
+			test::beforeTearDown => array(),
+			test::afterTearDown => array(),
+			test::runStop => array(),
 		);
 	}
 

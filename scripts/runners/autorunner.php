@@ -26,17 +26,20 @@ if (constant(__NAMESPACE__ . '\autorun') === true)
 		$report->addTestField(new atoum\report\fields\test\event());
 		$report->addTestField(new atoum\report\fields\test\duration(), array(atoum\test::runStop));
 		$report->addTestField(new atoum\report\fields\test\memory(), array(atoum\test::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\errors(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\exceptions(), array(atoum\runner::runStop));
 		$report->addDecorator($stringDecorator);
 
-		atoum\registry::getInstance()->currentRunner->addObserver($report);
+		atoum\registry::getInstance()->currentRunner
+			->addObserver($report)
+			->addTestObserver($report)
+		;
 	}
 
 	if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)

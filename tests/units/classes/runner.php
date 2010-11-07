@@ -30,8 +30,30 @@ class runner extends atoum\test
 
 	public function testAddObserver()
 	{
+		$runner = new atoum\runner();
+
 		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\observer');
+		$mockGenerator->generate('\mageekguy\atoum\observers\runner');
+
+		$this->assert
+			->array($runner->getObservers())->isEmpty()
+			->object($runner->addObserver($observer = new mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+			->array($runner->getObservers())->isEqualTo(array($observer))
+		;
+	}
+
+	public function testAddTestObserver()
+	{
+		$runner = new atoum\runner();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\observers\test');
+
+		$this->assert
+			->array($runner->getTestObservers())->isEmpty()
+			->object($runner->addTestObserver($observer = new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
+			->array($runner->getTestObservers())->isEqualTo(array($observer))
+		;
 	}
 
 	public function testGetRunningDuration()

@@ -13,7 +13,7 @@ class runner implements observable, adapter\aggregator
 
 	protected $score = null;
 	protected $adapter = null;
-	protected $runnerObservers = array();
+	protected $observers = array();
 	protected $testObservers = array();
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
@@ -59,7 +59,7 @@ class runner implements observable, adapter\aggregator
 
 	public function getObservers()
 	{
-		return array_merge($this->runnerObservers, $this->testObservers);
+		return $this->observers;
 	}
 
 	public function getObserverEvents()
@@ -74,33 +74,33 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function addObserver(atoum\observer $observer)
+	public function addObserver(atoum\observers\runner $observer)
 	{
-		switch (true)
-		{
-			case $observer instanceof atoum\observers\runner:
-				$this->runnerObservers[] = $observer;
-
-			case $observer instanceof atoum\observers\test:
-				$this->testObservers[] = $observer;
-		}
+		$this->observers[] = $observer;
 
 		return $this;
 	}
 
-	public function hasObservers()
-	{
-		return (sizeof($this->runnerObservers) > 0 || sizeof($this->testObservers) > 0);
-	}
-
 	public function callObservers($method)
 	{
-		foreach ($this->runnerObservers as $observer)
+		foreach ($this->observers as $observer)
 		{
 			$observer->{$method}($this);
 		}
 
 		return $this;
+	}
+
+	public function addTestObserver(atoum\observers\test $observer)
+	{
+		$this->testObservers[] = $observer;
+
+		return $this;
+	}
+
+	public function getTestObservers()
+	{
+		return $this->testObservers;
 	}
 
 	public function run($testClass = null)

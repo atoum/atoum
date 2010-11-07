@@ -18,23 +18,23 @@ class report extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\observers\runner')
 				->isInstanceOf('\mageekguy\atoum\observers\test')
 			->array($report->getRunnerFields())->isEqualTo(array(
-					'runnerStart' => array(),
-					'runnerStop' => array()
+					atoum\runner::runStart => array(),
+					atoum\runner::runStop => array()
 				)
 			)
 			->array($report->getTestFields())->isEqualTo(array(
-					'testRunStart' => array(),
-					'beforeTestSetup' => array(),
-					'afterTestSetup' => array(),
-					'beforeTestMethod' => array(),
-					'testAssertionSuccess' => array(),
-					'testAssertionFail' => array(),
-					'testError' => array(),
-					'testException' => array(),
-					'afterTestMethod' => array(),
-					'beforeTestTearDown' => array(),
-					'afterTestTearDown' => array(),
-					'testRunStop' => array()
+					atoum\test::runStart => array(),
+					atoum\test::beforeSetUp => array(),
+					atoum\test::afterSetUp => array(),
+					atoum\test::beforeTestMethod => array(),
+					atoum\test::success => array(),
+					atoum\test::fail => array(),
+					atoum\test::error => array(),
+					atoum\test::exception => array(),
+					atoum\test::afterTestMethod => array(),
+					atoum\test::beforeTearDown => array(),
+					atoum\test::afterTearDown => array(),
+					atoum\test::runStop => array()
 				)
 			)
 			->array($report->getDecorators())->isEmpty()
@@ -93,66 +93,66 @@ class report extends atoum\test
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(
-					'testRunStart' => array(),
-					'beforeTestSetup' => array(),
-					'afterTestSetup' => array(),
-					'beforeTestMethod' => array(),
-					'testAssertionSuccess' => array(),
-					'testAssertionFail' => array(),
-					'testError' => array(),
-					'testException' => array(),
-					'afterTestMethod' => array(),
-					'beforeTestTearDown' => array(),
-					'afterTestTearDown' => array(),
-					'testRunStop' => array()
+					atoum\test::runStart => array(),
+					atoum\test::beforeSetUp => array(),
+					atoum\test::afterSetUp => array(),
+					atoum\test::beforeTestMethod => array(),
+					atoum\test::success => array(),
+					atoum\test::fail => array(),
+					atoum\test::error => array(),
+					atoum\test::exception => array(),
+					atoum\test::afterTestMethod => array(),
+					atoum\test::beforeTearDown => array(),
+					atoum\test::afterTearDown => array(),
+					atoum\test::runStop => array()
 				)
 			)
 			->object($report->addTestField($field = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunStart' => array($field),
-					'beforeTestSetup' => array($field),
-					'afterTestSetup' => array($field),
-					'beforeTestMethod' => array($field),
-					'testAssertionSuccess' => array($field),
-					'testAssertionFail' => array($field),
-					'testError' => array($field),
-					'testException' => array($field),
-					'afterTestMethod' => array($field),
-					'beforeTestTearDown' => array($field),
-					'afterTestTearDown' => array($field),
-					'testRunStop' => array($field)
+					atoum\test::runStart => array($field),
+					atoum\test::beforeSetUp => array($field),
+					atoum\test::afterSetUp => array($field),
+					atoum\test::beforeTestMethod => array($field),
+					atoum\test::success => array($field),
+					atoum\test::fail => array($field),
+					atoum\test::error => array($field),
+					atoum\test::exception => array($field),
+					atoum\test::afterTestMethod => array($field),
+					atoum\test::beforeTearDown => array($field),
+					atoum\test::afterTearDown => array($field),
+					atoum\test::runStop => array($field)
 				)
 			)
 			->object($report->addTestField($otherField = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunStart' => array($field, $otherField),
-					'beforeTestSetup' => array($field, $otherField),
-					'afterTestSetup' => array($field, $otherField),
-					'beforeTestMethod' => array($field, $otherField),
-					'testAssertionSuccess' => array($field, $otherField),
-					'testAssertionFail' => array($field, $otherField),
-					'testError' => array($field, $otherField),
-					'testException' => array($field, $otherField),
-					'afterTestMethod' => array($field, $otherField),
-					'beforeTestTearDown' => array($field, $otherField),
-					'afterTestTearDown' => array($field, $otherField),
-					'testRunStop' => array($field, $otherField)
+					atoum\test::runStart => array($field, $otherField),
+					atoum\test::beforeSetUp => array($field, $otherField),
+					atoum\test::afterSetUp => array($field, $otherField),
+					atoum\test::beforeTestMethod => array($field, $otherField),
+					atoum\test::success => array($field, $otherField),
+					atoum\test::fail => array($field, $otherField),
+					atoum\test::error => array($field, $otherField),
+					atoum\test::exception => array($field, $otherField),
+					atoum\test::afterTestMethod => array($field, $otherField),
+					atoum\test::beforeTearDown => array($field, $otherField),
+					atoum\test::afterTearDown => array($field, $otherField),
+					atoum\test::runStop => array($field, $otherField)
 				)
 			)
-			->object($report->addTestField($beforeTestSetupField = new mock\mageekguy\atoum\report\fields\test(), array('beforeTestSetup')))->isIdenticalTo($report)
+			->object($report->addTestField($beforeTestSetUpField = new mock\mageekguy\atoum\report\fields\test(), array(atoum\test::beforeSetUp)))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
-					'testRunStart' => array($field, $otherField),
-					'beforeTestSetup' => array($field, $otherField, $beforeTestSetupField),
-					'afterTestSetup' => array($field, $otherField),
-					'beforeTestMethod' => array($field, $otherField),
-					'testAssertionSuccess' => array($field, $otherField),
-					'testAssertionFail' => array($field, $otherField),
-					'testError' => array($field, $otherField),
-					'testException' => array($field, $otherField),
-					'afterTestMethod' => array($field, $otherField),
-					'beforeTestTearDown' => array($field, $otherField),
-					'afterTestTearDown' => array($field, $otherField),
-					'testRunStop' => array($field, $otherField)
+					atoum\test::runStart => array($field, $otherField),
+					atoum\test::beforeSetUp => array($field, $otherField, $beforeTestSetUpField),
+					atoum\test::afterSetUp => array($field, $otherField),
+					atoum\test::beforeTestMethod => array($field, $otherField),
+					atoum\test::success => array($field, $otherField),
+					atoum\test::fail => array($field, $otherField),
+					atoum\test::error => array($field, $otherField),
+					atoum\test::exception => array($field, $otherField),
+					atoum\test::afterTestMethod => array($field, $otherField),
+					atoum\test::beforeTearDown => array($field, $otherField),
+					atoum\test::afterTearDown => array($field, $otherField),
+					atoum\test::runStop => array($field, $otherField)
 				)
 			)
 		;
@@ -248,6 +248,15 @@ class report extends atoum\test
 			->mock($otherDecorator)
 				->call('flush', array($field))
 				->call('flush', array($otherField))
+		;
+	}
+
+	public function testGetRunnerFields()
+	{
+		$report = new atoum\report();
+
+		$this->assert
+//			->array($report->getRunnerFields())->isEmpty()
 		;
 	}
 }
