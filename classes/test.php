@@ -199,24 +199,6 @@ abstract class test implements observable, \countable
 		return $this->currentMethod;
 	}
 
-	public function getObserverEvents()
-	{
-		return array(
-			self::runStart,
-			self::beforeSetUp,
-			self::afterSetUp,
-			self::beforeTestMethod,
-			self::fail,
-			self::error,
-			self::exception,
-			self::success,
-			self::afterTestMethod,
-			self::beforeTearDown,
-			self::afterTearDown,
-			self::runStop
-		);
-	}
-
 	public function count()
 	{
 		return sizeof($this->runTestMethods);
@@ -395,6 +377,24 @@ abstract class test implements observable, \countable
 		}
 
 		return true;
+	}
+
+	public static function getObserverEvents()
+	{
+		return array(
+			self::runStart,
+			self::beforeSetUp,
+			self::afterSetUp,
+			self::beforeTestMethod,
+			self::fail,
+			self::error,
+			self::exception,
+			self::success,
+			self::afterTestMethod,
+			self::beforeTearDown,
+			self::afterTearDown,
+			self::runStop
+		);
 	}
 
 	public static function getVersion()

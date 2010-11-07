@@ -62,11 +62,6 @@ class runner implements observable, adapter\aggregator
 		return $this->observers;
 	}
 
-	public function getObserverEvents()
-	{
-		return array(self::runStart, self::runStop);
-	}
-
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
@@ -148,6 +143,12 @@ class runner implements observable, adapter\aggregator
 	{
 		return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
 	}
+
+	public static function getObserverEvents()
+	{
+		return array(self::runStart, self::runStop);
+	}
+
 }
 
 ?>

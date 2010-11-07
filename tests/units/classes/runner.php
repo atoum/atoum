@@ -146,6 +146,13 @@ class runner extends atoum\test
 			->integer($runner->getTestMethodNumber())->isZero()
 		;
 	}
+
+	public function testGetObserverEvents()
+	{
+		$this->assert
+			->array(atoum\runner::getObserverEvents())->isEqualTo(array(atoum\runner::runStart, atoum\runner::runStop))
+		;
+	}
 }
 
 ?>

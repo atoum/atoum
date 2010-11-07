@@ -48,14 +48,46 @@ class report implements observers\runner, observers\test
 		return $this;
 	}
 
-	public function getRunnerFields()
+	public function getRunnerFields($event = null)
 	{
-		return $this->runnerFields;
+		$fields = array();
+
+		if ($event === null)
+		{
+			$fields = $this->runnerFields;
+		}
+		else
+		{
+			if (in_array($event, runner::getObserverEvents()) === false)
+			{
+				throw new \invalidArgumentException('\'' . $event . '\' is not a runner event');
+			}
+
+			$fields = $this->runnerFields[$event];
+		}
+
+		return $fields;
 	}
 
-	public function getTestFields()
+	public function getTestFields($event = null)
 	{
-		return $this->testFields;
+		$fields = array();
+
+		if ($event === null)
+		{
+			$fields = $this->testFields;
+		}
+		else
+		{
+			if (in_array($event, test::getObserverEvents()) === false)
+			{
+				throw new \invalidArgumentException('\'' . $event . '\' is not a test event');
+			}
+
+			$fields = $this->testFields[$event];
+		}
+
+		return $fields;
 	}
 
 	public function getDecorators()

@@ -256,7 +256,54 @@ class report extends atoum\test
 		$report = new atoum\report();
 
 		$this->assert
-//			->array($report->getRunnerFields())->isEmpty()
+			->array($report->getRunnerFields())->isEqualTo(array(
+					atoum\runner::runStart => array(),
+					atoum\runner::runStop => array()
+				)
+			)
+		;
+
+		$this->assert
+			->array($report->getRunnerFields(atoum\runner::runStart))->isEmpty()
+			->array($report->getRunnerFields(atoum\runner::runStop))->isEmpty()
+		;
+	}
+
+	public function testGetTestFields()
+	{
+		$report = new atoum\report();
+
+		$this->assert
+			->array($report->getTestFields())->isEqualTo(array(
+					atoum\test::runStart => array(),
+					atoum\test::beforeSetUp => array(),
+					atoum\test::afterSetUp => array(),
+					atoum\test::beforeTestMethod => array(),
+					atoum\test::success => array(),
+					atoum\test::fail => array(),
+					atoum\test::error => array(),
+					atoum\test::exception => array(),
+					atoum\test::afterTestMethod => array(),
+					atoum\test::beforeTearDown => array(),
+					atoum\test::afterTearDown => array(),
+					atoum\test::runStop => array()
+				)
+			)
+		;
+
+		$this->assert
+			->array($report->getTestFields(atoum\test::runStart))->isEmpty()
+			->array($report->getTestFields(atoum\test::beforeSetUp))->isEmpty()
+			->array($report->getTestFields(atoum\test::afterSetUp))->isEmpty()
+			->array($report->getTestFields(atoum\test::beforeTestMethod))->isEmpty()
+			->array($report->getTestFields(atoum\test::success))->isEmpty()
+			->array($report->getTestFields(atoum\test::fail))->isEmpty()
+			->array($report->getTestFields(atoum\test::error))->isEmpty()
+			->array($report->getTestFields(atoum\test::exception))->isEmpty()
+			->array($report->getTestFields(atoum\test::afterTestMethod))->isEmpty()
+			->array($report->getTestFields(atoum\test::beforeTearDown))->isEmpty()
+			->array($report->getTestFields(atoum\test::afterTearDown))->isEmpty()
+			->array($report->getTestFields(atoum\test::runStop))->isEmpty()
 		;
 	}
 }
