@@ -106,9 +106,16 @@ abstract class asserter
 				$line = $backtrace['line'];
 			}
 
-			if ($function === null && isset($backtrace['object']) === true && get_class($backtrace['object']) === get_class($this) && isset($backtrace['function']) === true)
+			if ($function === null)
 			{
-				$function = $backtrace['function'];
+				if (isset($backtrace['object']) === true && get_class($backtrace['object']) === get_class($this) && isset($backtrace['function']) === true)
+				{
+					$function = $backtrace['function'];
+				}
+				else if (is_a($backtrace['object'], __NAMESPACE__ . '\asserter\generator') === true && $backtrace['function'] == '__call')
+				{
+					$function = $backtrace['args'][0];
+				}
 			}
 		}
 

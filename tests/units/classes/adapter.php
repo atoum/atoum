@@ -6,7 +6,6 @@ use mageekguy\atoum;
 
 require_once(__DIR__ . '/../runner.php');
 
-/** @isolation off */
 class adapter extends atoum\test
 {
 	public function test__set()
@@ -18,7 +17,7 @@ class adapter extends atoum\test
 		$adapter->md5 = $closure;
 
 		$this->assert
-			->variable($adapter->md5)->isIdenticalTo($closure)
+			->object($adapter->md5)->isIdenticalTo($closure)
 		;
 	}
 
