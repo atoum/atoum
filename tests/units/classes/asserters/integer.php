@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\tools;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -35,7 +36,7 @@ class integer extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an integer'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -67,8 +68,6 @@ class integer extends atoum\test
 
 		$asserter = new asserters\integer($score = new atoum\score(), $locale = new atoum\locale());
 
-		$variable = rand(1, PHP_INT_MAX);
-
 		$asserter->setWith($variable = rand(1, PHP_INT_MAX));
 
 		$score->reset();
@@ -79,23 +78,25 @@ class integer extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
+		$diff = new tools\diff($variable, - $variable);
+
 		$this->assert
 			->exception(function() use ($asserter, $variable, & $line) {
 						$line = __LINE__; $asserter->isEqualTo(- $variable);
 					}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)) . PHP_EOL . $diff)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'class' => __CLASS__,
 							'method' => $currentMethod,
 							'file' => __FILE__,
 							'line' => $line,
 							'asserter' => get_class($asserter) . '::isEqualTo()',
-							'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable))
+							'fail' => sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable) . PHP_EOL . $diff)
 						)
 					)
 				)

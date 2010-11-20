@@ -28,7 +28,11 @@ class collection extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this));
+			$this->fail(
+				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this))
+				. PHP_EOL
+				. $this->diff->setReference(array())->setData($this->variable)
+			);
 		}
 	}
 
@@ -43,7 +47,6 @@ class collection extends \mageekguy\atoum\asserters\variable
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is empty'), $this));
 		}
 	}
-
 
 	public function contain($variable, $failMessage = null)
 	{

@@ -4,14 +4,14 @@ namespace mageekguy\atoum\tools;
 
 class diff
 {
-	protected $firstString = '';
-	protected $secondString = '';
+	protected $reference = '';
+	protected $data = '';
 
-	public function __construct($firstString = '', $secondString = '')
+	public function __construct($reference = '', $data = '')
 	{
 		$this
-			->setFirstString($firstString)
-			->setSecondString($secondString)
+			->setReference($reference)
+			->setData($data)
 		;
 	}
 
@@ -23,6 +23,9 @@ class diff
 		{
 			if (is_array($diff) === true)
 			{
+				$string .= '-Reference' . PHP_EOL;
+				$string .= '+Data' . PHP_EOL;
+
 				$lineNumber++;
 
 				$sizeofMinus = sizeof($diff['-']);
@@ -51,33 +54,33 @@ class diff
 		return $string;
 	}
 
-	public function setFirstString($mixed)
+	public function setReference($mixed)
 	{
-		$this->firstString = (string) $mixed;
+		$this->reference = (string) $mixed;
 
 		return $this;
 	}
 
-	public function setSecondString($mixed)
+	public function setData($mixed)
 	{
-		$this->secondString = (string) $mixed;
+		$this->data = (string) $mixed;
 
 		return $this;
 	}
 
-	public function getFirstString()
+	public function getReference()
 	{
-		return $this->firstString;
+		return $this->reference;
 	}
 
-	public function getSecondString()
+	public function getData()
 	{
-		return $this->secondString;
+		return $this->data;
 	}
 
 	public function make()
 	{
-		return $this->diff(self::split($this->firstString), self::split($this->secondString));
+		return $this->diff(self::split($this->reference), self::split($this->data));
 	}
 
 	protected function diff($old, $new)

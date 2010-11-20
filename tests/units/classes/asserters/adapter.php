@@ -7,9 +7,6 @@ use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class adapter extends atoum\test
 {
 	public function test__construct()
@@ -37,7 +34,7 @@ class adapter extends atoum\test
 		;
 
 		$this->assert
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,

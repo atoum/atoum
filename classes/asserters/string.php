@@ -2,8 +2,6 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\tools;
-
 class string extends variable
 {
 	protected $charlist = null;
@@ -58,18 +56,7 @@ class string extends variable
 
 	public function isEqualTo($variable, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
-
-		if ($this->variableIsSet()->variable == $variable)
-		{
-			return $this->pass();
-		}
-		else
-		{
-			$diff = new tools\diff($this->variable, $variable);
-
-			$this->fail($failMessage !== null ? $failMessage : $this->locale->_('strings are not equals:') . PHP_EOL . $diff);
-		}
+		return parent::isEqualTo($variable, $this->locale->_('strings are not equals'));
 	}
 
 	protected function setWithArguments(array $arguments)

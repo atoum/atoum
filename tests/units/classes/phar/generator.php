@@ -496,7 +496,6 @@ class generator extends atoum\test
 
 		$generator->setPharInjector(function($name) use (& $phar) {
 				$pharController = new mock\controller();
-				$pharController->injectInNextMockInstance();
 				$pharController->__construct = function() {};
 				$pharController->setStub = function() {};
 				$pharController->setMetadata = function() {};

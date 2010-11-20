@@ -4,10 +4,10 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\asserters;
+use \mageekguy\atoum\tools\diffs;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/** @isolation off */
 class variable extends atoum\test
 {
 	public function test__construct()
@@ -142,10 +142,12 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
+		$diff = new diffs\variable();
+
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notEqualVariable) { $line = __LINE__; $asserter->isEqualTo($notEqualVariable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)) . PHP_EOL . $diff->setReference($asserter->getVariable())->setData($notEqualVariable))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -155,13 +157,15 @@ class variable extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => $failMessage = sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable))
+						'fail' => $failMessage = sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)) . PHP_EOL . $diff
 					)
 				)
 			)
 		;
 
 		$asserter->setWith(1);
+
+		$otherDiff = new diffs\variable();
 
 		$this->assert
 			->object($asserter->isEqualTo('1'))->isIdenticalTo($asserter)
@@ -170,9 +174,12 @@ class variable extends atoum\test
 		;
 
 		$this->assert
-			->exception(function() use (& $otherLine, $asserter, & $otherNotEqualVariable, & $otherFailMessage) { $otherLine = __LINE__; $asserter->isEqualTo($otherNotEqualVariable = uniqid(), $otherFailMessage = uniqid()); })
+			->exception(function() use (& $otherLine, $asserter, & $otherNotEqualVariable, & $otherFailMessage) {
+					$otherLine = __LINE__; $asserter->isEqualTo($otherNotEqualVariable = uniqid(), $otherFailMessage = uniqid());
+				}
+			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage($otherFailMessage)
+				->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($asserter->getVariable())->setData($otherNotEqualVariable))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -190,7 +197,7 @@ class variable extends atoum\test
 						'file' => __FILE__,
 						'line' => $otherLine,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => $otherFailMessage
+						'fail' => $otherFailMessage . PHP_EOL . $otherDiff
 					)
 				)
 			)

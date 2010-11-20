@@ -8,9 +8,6 @@ use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class string extends atoum\test
 {
 	public function test__construct()
@@ -37,7 +34,7 @@ class string extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not a string'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -113,7 +110,7 @@ class string extends atoum\test
 
 		$score->reset();
 
-		$diff = new tools\diff($firstString, $secondString = uniqid());
+		$diff = new tools\diff(var_export($firstString, true), var_export($secondString = uniqid(), true));
 
 		$this->assert
 			->exception(function() use ($asserter, $secondString) {
@@ -121,7 +118,7 @@ class string extends atoum\test
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage($locale->_('strings are not equals:') . PHP_EOL . $diff)
+				->hasMessage($locale->_('strings are not equals') . PHP_EOL . $diff)
 		;
 	}
 }

@@ -120,6 +120,7 @@ class stub extends atoum\script
 
 		$options = array(
 			'-h, --help' => $this->locale->_('Display this help'),
+			'-v, --version' => $this->locale->_('Display version'),
 			'-i, --infos' => $this->locale->_('Display informations'),
 			'-s, --signature' => $this->locale->_('Display phar signature'),
 			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),

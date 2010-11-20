@@ -99,16 +99,16 @@ abstract class asserter
 		$line = null;
 		$function = null;
 
-		foreach (array_reverse(debug_backtrace()) as $backtrace)
+		foreach (debug_backtrace() as $backtrace)
 		{
-			if (isset($backtrace['file']) === true && $backtrace['file'] === $file && isset($backtrace['line']) === true)
+			if ($line === null && isset($backtrace['file']) === true && $backtrace['file'] === $file && isset($backtrace['line']) === true)
 			{
 				$line = $backtrace['line'];
 			}
 
-			if ($function === null)
+			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true)
 			{
-				if (isset($backtrace['object']) === true && get_class($backtrace['object']) === get_class($this) && isset($backtrace['function']) === true)
+				if (get_class($backtrace['object']) === get_class($this) && $backtrace['function'] != __FUNCTION__)
 				{
 					$function = $backtrace['function'];
 				}
