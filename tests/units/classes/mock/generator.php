@@ -408,7 +408,6 @@ class generator extends atoum\test
 
 	public function testGenerate()
 	{
-		/*
 		$adapter = new atoum\adapter();
 
 		$generator = new mock\generator($adapter);
@@ -416,26 +415,20 @@ class generator extends atoum\test
 		$adapter->class_exists = function() { return false; };
 		$adapter->interface_exists = function() { return false; };
 
-		$class = uniqid();
+		$class = uniqid('unknownClass');
 
 		$this->assert
-			->exception(function () use ($generator, $class) {
-					$generator->generate($class);
-				}
-			)
-				->isInstanceOf('\logicException')
-				->hasMessage('Class \'\\' . $class . '\' does not exist')
+			->object($generator->generate($class))->isIdenticalTo($generator)
+			->class('\mageekguy\atoum\mock\\' . $class)
+				->hasInterface('\mageekguy\atoum\mock\aggregator')
 		;
 
-		$class = '\\' . uniqid();
+		$class = '\\' . uniqid('unknownClass');
 
 		$this->assert
-			->exception(function () use ($generator, $class) {
-					$generator->generate($class);
-				}
-			)
-				->isInstanceOf('\logicException')
-				->hasMessage('Class \'' . $class . '\' does not exist')
+			->object($generator->generate($class))->isIdenticalTo($generator)
+			->class('\mageekguy\atoum\mock' . $class)
+				->hasInterface('\mageekguy\atoum\mock\aggregator')
 		;
 
 		$adapter->class_exists = function() { return true; };
@@ -510,7 +503,6 @@ class generator extends atoum\test
 				->hasParent(__CLASS__)
 				->hasInterface('\mageekguy\atoum\mock\aggregator')
 		;
-		*/
 	}
 }
 
