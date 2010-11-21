@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -62,12 +61,12 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale());
 
-		$mockGenerator = new mock\generator();
+		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate('\reflectionClass');
-		$mockController = new mock\controller();
+		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() { throw new \reflectionException();};
 
-		$asserter->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); });
+		$asserter->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); });
 
 		$class = uniqid();
 
@@ -108,24 +107,24 @@ class phpClass extends atoum\test
 		$class = uniqid();
 		$parent = uniqid();
 
-		$mockGenerator = new mock\generator();
+		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate('\reflectionClass');
 
-		$mockController = new mock\controller();
+		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 			->getScore()->reset()
 		;
 
-		$parentMockController = new mock\controller();
+		$parentMockController = new atoum\mock\controller();
 		$parentMockController->__construct = function() {};
 		$parentMockController->getName = function() { return uniqid(); };
 
-		$mockController->getParentClass = function() use ($parent, $parentMockController) { return new mock\reflectionClass($parent, $parentMockController); };
+		$mockController->getParentClass = function() use ($parent, $parentMockController) { return new atoum\mock\reflectionClass($parent, $parentMockController); };
 
 		$this->assert
 			->exception(function() use ($asserter, $parent) {
@@ -160,10 +159,10 @@ class phpClass extends atoum\test
 					->hasMessage('Class is undefined')
 		;
 
-		$mockGenerator = new mock\generator();
+		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
 
-		$reflectionClass = new mock\reflectionClass($className = uniqid());
+		$reflectionClass = new atoum\mock\reflectionClass($className = uniqid());
 
 		$asserter
 			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
@@ -181,7 +180,7 @@ class phpClass extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
 
-		$parentClass = new mock\reflectionClass($parentClassName = uniqid());
+		$parentClass = new atoum\mock\reflectionClass($parentClassName = uniqid());
 		$parentClass->getMockController()->__toString = function() use ($parentClassName) { return $parentClassName; };
 
 		$reflectionClass->getMockController()->getParentClass = function() use ($parentClass) { return $parentClass; };
@@ -214,15 +213,15 @@ class phpClass extends atoum\test
 		$class = uniqid();
 		$interface = uniqid();
 
-		$mockGenerator = new mock\generator();
+		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate('\reflectionClass');
 
-		$mockController = new mock\controller();
+		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 				->getScore()->reset()
 		;
