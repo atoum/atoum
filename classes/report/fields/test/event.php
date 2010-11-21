@@ -46,7 +46,6 @@ class event extends report\fields\test
 		return $this;
 	}
 
-
 	public function setWithTest(atoum\test $test, $event = null)
 	{
 		$this->test = $test;

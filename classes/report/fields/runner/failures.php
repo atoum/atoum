@@ -44,7 +44,7 @@ class failures extends report\fields\runner
 				foreach ($fails as $fail)
 				{
 					$string .= self::methodPrompt . $fail['class'] . '::' . $fail['method'] . '():' . PHP_EOL;
-					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed because %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
+					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed : %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
 				}
 			}
 		}

@@ -90,7 +90,7 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, & $function) { $line = __LINE__; $asserter->call($function = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Function %s is not called'), $function))
+				->hasMessage(sprintf($locale->_('function %s is not called'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -100,7 +100,7 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Function %s is not called'), $function)
+						'fail' => sprintf($locale->_('function %s is not called'), $function)
 					)
 				)
 			)
@@ -123,7 +123,7 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->call($function, array(uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Function %s is not called with this argument'), $function))
+				->hasMessage(sprintf($locale->_('function %s is not called with this argument'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -133,13 +133,13 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Function %s is not called with this argument'), $function)
+						'fail' => sprintf($locale->_('function %s is not called with this argument'), $function)
 					)
 				)
 			)
 			->exception(function() use (& $otherLine, $asserter, $function) { $otherLine = __LINE__; $asserter->call($function, array(uniqid(), uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Function %s is not called with these arguments'), $function))
+				->hasMessage(sprintf($locale->_('function %s is not called with these arguments'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -149,7 +149,7 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Function %s is not called with this argument'), $function)
+						'fail' => sprintf($locale->_('function %s is not called with this argument'), $function)
 					),
 					array(
 						'class' => __CLASS__,
@@ -157,7 +157,7 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $otherLine,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('Function %s is not called with these arguments'), $function)
+						'fail' => sprintf($locale->_('function %s is not called with these arguments'), $function)
 					)
 				)
 			)

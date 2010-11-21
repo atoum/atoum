@@ -99,9 +99,9 @@ class failures extends atoum\test
 			->string($failures->toString())->isEmpty()
 			->string($failures->setWithRunner($runner)->toString())->isEqualTo(runner\failures::titlePrompt . sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
 				runner\failures::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed because %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
 				runner\failures::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed because %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}

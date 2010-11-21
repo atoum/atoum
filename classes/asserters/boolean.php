@@ -22,12 +22,12 @@ class boolean extends \mageekguy\atoum\asserters\variable
 
 	public function isTrue($failMessage = null)
 	{
-		return $this->isEqualTo(true, $failMessage);
+		return $this->isEqualTo(true, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not true'), $this));
 	}
 
 	public function isFalse($failMessage = null)
 	{
-		return $this->isEqualTo(false, $failMessage);
+		return $this->isEqualTo(false, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not false'), $this));
 	}
 
 	protected static function check($variable, $method)

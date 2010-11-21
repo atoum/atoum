@@ -4,12 +4,10 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\asserters;
+use \mageekguy\atoum\tools\diffs;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class boolean extends atoum\test
 {
 	public function test__construct()
@@ -21,6 +19,84 @@ class boolean extends atoum\test
 			->object($asserter->getLocale())->isIdenticalTo($locale)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
+		;
+	}
+
+	public function testIsTrue()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\boolean($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+					$asserter->isTrue();
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(true);
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isTrue())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setWith(false);
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isTrue();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is not true'), $asserter) . PHP_EOL . $diff->setReference(true)->setData(false))
+		;
+	}
+
+	public function testIsFalse()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\boolean($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+					$asserter->isFalse();
+				}
+			)
+				->isInstanceOf('\logicException')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(false);
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isFalse())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setWith(true);
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isFalse();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is not false'), $asserter) . PHP_EOL . $diff->setReference(false)->setData(true))
 		;
 	}
 
