@@ -10,14 +10,6 @@ class variable extends atoum\asserter
 	protected $isSet = false;
 	protected $isSetByReference = false;
 	protected $variable = null;
-	protected $diff = null;
-
-	public function __construct(atoum\score $score, atoum\locale $locale, atoum\asserter\generator $generator = null)
-	{
-		parent::__construct($score, $locale, $generator);
-
-		$this->diff = new diffs\variable();
-	}
 
 	public function __toString()
 	{
@@ -76,10 +68,12 @@ class variable extends atoum\asserter
 		}
 		else
 		{
+			$diff = new diffs\variable();
+
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable)))
-				. PHP_EOL
-				. $this->diff->setReference($this->variable)->setData($variable)
+				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable))) .
+				PHP_EOL .
+				$diff->setReference($variable)->setData($this->variable)
 			);
 		}
 	}

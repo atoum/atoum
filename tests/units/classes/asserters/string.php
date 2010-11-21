@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
-use \mageekguy\atoum\tools;
 use \mageekguy\atoum\asserters;
+use \mageekguy\atoum\tools\diffs;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -110,15 +110,15 @@ class string extends atoum\test
 
 		$score->reset();
 
-		$diff = new tools\diff(var_export($firstString, true), var_export($secondString = uniqid(), true));
+		$diff = new diffs\variable();
 
 		$this->assert
-			->exception(function() use ($asserter, $secondString) {
-						$asserter->isEqualTo($secondString);
+			->exception(function() use ($asserter, & $secondString) {
+						$asserter->isEqualTo($secondString = uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage($locale->_('strings are not equals') . PHP_EOL . $diff)
+				->hasMessage($locale->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
 		;
 	}
 }

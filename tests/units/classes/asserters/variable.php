@@ -147,7 +147,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notEqualVariable) { $line = __LINE__; $asserter->isEqualTo($notEqualVariable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)) . PHP_EOL . $diff->setReference($asserter->getVariable())->setData($notEqualVariable))
+				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)) . PHP_EOL . $diff->setReference($notEqualVariable)->setData($asserter->getVariable()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->collection($score->getFailAssertions())->isEqualTo(array(
@@ -179,7 +179,7 @@ class variable extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($asserter->getVariable())->setData($otherNotEqualVariable))
+				->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($otherNotEqualVariable)->setData($asserter->getVariable()))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->collection($score->getFailAssertions())->isEqualTo(array(

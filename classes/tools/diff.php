@@ -19,13 +19,15 @@ class diff
 	{
 		$string = '';
 
-		foreach ($this->make() as $lineNumber => $diff)
-		{
-			if (is_array($diff) === true)
-			{
-				$string .= '-Reference' . PHP_EOL;
-				$string .= '+Data' . PHP_EOL;
+		$diff = array_filter($this->make(), function($value) { return is_array($value) === true; });
 
+		if (sizeof($diff) > 0)
+		{
+			$string .= '-Reference' . PHP_EOL;
+			$string .= '+Data' . PHP_EOL;
+
+			foreach ($diff as $lineNumber => $diff)
+			{
 				$lineNumber++;
 
 				$sizeofMinus = sizeof($diff['-']);

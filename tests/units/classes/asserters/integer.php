@@ -3,14 +3,11 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
-use \mageekguy\atoum\tools;
 use \mageekguy\atoum\asserters;
+use \mageekguy\atoum\tools\diffs;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class integer extends atoum\test
 {
 	public function test__construct()
@@ -78,7 +75,9 @@ class integer extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$diff = new tools\diff($variable, - $variable);
+		$diff = new diffs\variable();
+
+		$diff->setReference(- $variable)->setData($variable);
 
 		$this->assert
 			->exception(function() use ($asserter, $variable, & $line) {
