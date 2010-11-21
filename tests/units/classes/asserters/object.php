@@ -7,9 +7,6 @@ use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class object extends atoum\test
 {
 	public function test__construct()

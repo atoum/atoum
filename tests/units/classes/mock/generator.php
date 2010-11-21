@@ -420,6 +420,7 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->generate($class))->isIdenticalTo($generator)
 			->class('\mageekguy\atoum\mock\\' . $class)
+				->hasNoParent()
 				->hasInterface('\mageekguy\atoum\mock\aggregator')
 		;
 
@@ -428,6 +429,7 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->generate($class))->isIdenticalTo($generator)
 			->class('\mageekguy\atoum\mock' . $class)
+				->hasNoParent()
 				->hasInterface('\mageekguy\atoum\mock\aggregator')
 		;
 

@@ -59,6 +59,18 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 	}
 
+	public function hasNoParent($failMessage = null)
+	{
+		if (($parentClass = $this->classIsSet()->class->getParentClass()) === false)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('class %s has parent %s'), $this->class->getName(), $parentClass));
+		}
+	}
+
 	public function hasInterface($interface, $failMessage = null)
 	{
 		if (in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true)
