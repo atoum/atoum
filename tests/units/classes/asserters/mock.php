@@ -51,7 +51,7 @@ class mock extends atoum\test
 						$asserter->wasCalled();
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
 		;
 
@@ -123,7 +123,7 @@ class mock extends atoum\test
 						$asserter->call(uniqid());
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
 		;
 

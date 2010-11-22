@@ -2,33 +2,21 @@
 
 namespace mageekguy\atoum;
 
+use \mageekguy\atoum\exceptions;
+
 class superglobal
 {
 	protected $superglobals = array();
 
 	public function __set($superglobal, $value)
 	{
-		switch ($superglobal)
-		{
-			case 'GLOBALS':
-			case '_SERVER':
-			case '_GET':
-			case '_POST':
-			case '_FILES':
-			case '_COOKIE':
-			case '_SESSION':
-			case '_REQUEST':
-			case '_ENV':
-				$this->superglobals[$superglobal] = $value;
-				return $this;
-
-			default:
-				throw new \runtimeException('PHP superglobal \'$' . $superglobal . '\' does not exist');
-		}
+		$this->check($superglobal)->superglobals[$superglobal] = $value;
 	}
 
 	public function & __get($superglobal)
 	{
+		$this->check($superglobal);
+
 		switch ($superglobal)
 		{
 			case 'GLOBALS':
@@ -120,9 +108,26 @@ class superglobal
 				{
 					return $this->superglobals[$superglobal];
 				}
+		}
+	}
+
+	protected function check($superglobal)
+	{
+		switch ($superglobal)
+		{
+			case 'GLOBALS':
+			case '_SERVER':
+			case '_GET':
+			case '_POST':
+			case '_FILES':
+			case '_COOKIE':
+			case '_SESSION':
+			case '_REQUEST':
+			case '_ENV':
+				return $this;
 
 			default:
-				throw new \runtimeException('PHP superglobal \'$' . $superglobal . '\' does not exist');
+				throw new exceptions\logic\argument('PHP superglobal \'$' . $superglobal . '\' does not exist');
 		}
 	}
 }

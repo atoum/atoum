@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\mock;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class generator
 {
@@ -37,7 +38,7 @@ class generator
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Reflection class injector must take one argument');
+			throw new exceptions\logic\argument('Reflection class injector must take one argument');
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;
@@ -77,7 +78,7 @@ class generator
 
 		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
 		{
-			throw new \logicException('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
+			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
 		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
@@ -90,12 +91,12 @@ class generator
 
 			if ($reflectionClass instanceof \reflectionClass === false)
 			{
-				throw new \logicException('Reflection class injector does not return a \reflectionClass instance');
+				throw new exceptions\logic('Reflection class injector does not return a \reflectionClass instance');
 			}
 
 			if ($reflectionClass->isFinal() === true)
 			{
-				throw new \logicException('Class \'' . $class . '\' is final, unable to mock it');
+				throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
 			}
 
 			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);

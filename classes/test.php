@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
+use mageekguy\atoum\exceptions;
 
 abstract class test implements observable, \countable
 {
@@ -521,7 +522,7 @@ abstract class test implements observable, \countable
 
 				if ($score instanceof score === false)
 				{
-					throw new atoum\exception('Unable to retrieve score from \'' . $stdOut . '\'');
+					throw new exceptions\runtime('Unable to retrieve score from \'' . $stdOut . '\'');
 				}
 
 				$this->score->merge($score);

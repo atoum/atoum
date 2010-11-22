@@ -30,7 +30,7 @@ class registry extends atoum\test
 						$registry->{$key} = uniqid();
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Key \'' . $key . '\' is already in registry')
 		;
 	}
@@ -60,7 +60,7 @@ class registry extends atoum\test
 						unset($registry->{$key});
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Key \'' . $key . '\' is not in registry')
 		;
 

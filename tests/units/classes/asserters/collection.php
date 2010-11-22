@@ -73,7 +73,7 @@ class collection extends atoum\test
 					$asserter->contain(uniqid());
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Variable is undefined')
 		;
 

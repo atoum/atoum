@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 use \mageekguy\atoum\tools\diffs;
 
 class variable extends atoum\asserter
@@ -196,7 +197,7 @@ class variable extends atoum\asserter
 	{
 		if ($this->isSet === false)
 		{
-			throw new \logicException($message);
+			throw new exceptions\logic($message);
 		}
 
 		return $this;

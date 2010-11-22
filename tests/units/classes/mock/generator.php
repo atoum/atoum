@@ -41,7 +41,7 @@ class generator extends atoum\test
 					$generator->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 
@@ -442,7 +442,7 @@ class generator extends atoum\test
 					$generator->generate($class);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Class \'\mageekguy\atoum\mock\\' . $class . '\' already exists')
 		;
 
@@ -453,7 +453,7 @@ class generator extends atoum\test
 					$generator->generate($class);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Class \'\mageekguy\atoum\mock' . $class . '\' already exists')
 		;
 
@@ -478,7 +478,7 @@ class generator extends atoum\test
 					$generator->generate($class);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Class \'\\' . $class . '\' is final, unable to mock it')
 		;
 
@@ -491,7 +491,7 @@ class generator extends atoum\test
 					$generator->generate($class);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
 		;
 

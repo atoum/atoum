@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class collection extends \mageekguy\atoum\asserters\variable
 {
 	public function setWith($variable)
@@ -72,7 +74,7 @@ class collection extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isArray($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be an array');
+			throw new exceptions\logic\argument('Argument of ' . $method . '() must be an array');
 		}
 	}
 

@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\mock;
 
 use \mageekguy\atoum\mock;
+use \mageekguy\atoum\exceptions;
 
 class controller
 {
@@ -59,7 +60,7 @@ class controller
 	{
 		if ($method !== null && isset($this->methods[$method]) === false)
 		{
-			throw new \logicException('Method \'' . $method . '\' is not mocked');
+			throw new exceptions\logic('Method \'' . $method . '\' is not mocked');
 		}
 
 		return ($method === null ? $this->calls : (isset($this->calls[$method]) === false ? array() : $this->calls[$method]));
@@ -76,7 +77,7 @@ class controller
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Reflection class injector must take one argument');
+			throw new exceptions\logic\argument('Reflection class injector must take one argument');
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;
@@ -112,7 +113,7 @@ class controller
 			{
 				if (in_array($method, $methods) === false)
 				{
-					throw new \logicException('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+					throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 				}
 			}
 
@@ -151,7 +152,7 @@ class controller
 
 		if (isset($this->{$method}) === false)
 		{
-			throw new \logicException('Method ' . $method . '() is not under control');
+			throw new exceptions\logic('Method ' . $method . '() is not under control');
 		}
 
 		$this->calls[$method][] = $arguments;
@@ -177,7 +178,7 @@ class controller
 		{
 			if (array_key_exists($method, $this->methods) === false)
 			{
-				throw new \logicException('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
 		}
 	}

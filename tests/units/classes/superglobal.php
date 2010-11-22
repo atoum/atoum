@@ -34,7 +34,7 @@ class superglobal extends atoum\test
 						$superglobal->{$name = uniqid()} = uniqid();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('PHP superglobal \'$' . $name . '\' does not exist')
 		;
 

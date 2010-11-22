@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserter;
 
 use mageekguy\atoum;
+use mageekguy\atoum\exceptions;
 
 class generator
 {
@@ -27,7 +28,7 @@ class generator
 		{
 			if (class_exists($class, true) === false)
 			{
-				throw new \logicException('Asserter \'' . $class . '\' does not exist');
+				throw new exceptions\logic\argument('Asserter \'' . $class . '\' does not exist');
 			}
 
 			$this->asserters[$class] = new $class($this->score, $this->locale, $this);

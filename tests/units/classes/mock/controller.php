@@ -100,7 +100,7 @@ class controller extends atoum\test
 					$mockController->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 
@@ -231,7 +231,7 @@ class controller extends atoum\test
 					$mockController->invoke($method, array());
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Method ' . $method . '() is not under control')
 		;
 

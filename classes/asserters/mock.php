@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class mock extends \mageekguy\atoum\asserter
 {
 	protected $mock = null;
@@ -63,7 +65,7 @@ class mock extends \mageekguy\atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new exceptions\logic\argument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);
@@ -73,7 +75,7 @@ class mock extends \mageekguy\atoum\asserter
 	{
 		if ($this->mock === null)
 		{
-			throw new \logicException('Mock is undefined');
+			throw new exceptions\logic('Mock is undefined');
 		}
 
 		return $this;
