@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class exception extends \mageekguy\atoum\asserters\object
 {
 	public function setWith($variable, $check = true)
@@ -46,7 +48,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		{
 			if (self::classExists($variable) === false || ($variable !== '\exception' && is_subclass_of($variable, '\exception') === false))
 			{
-				throw new \logicException('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
+				throw new exceptions\logic\argument('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
 			}
 		}
 
@@ -91,7 +93,7 @@ class exception extends \mageekguy\atoum\asserters\object
 	{
 		if (self::isException($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be an exception instance');
+			throw new exceptions\logic\argument('Argument of ' . $method . '() must be an exception instance');
 		}
 	}
 

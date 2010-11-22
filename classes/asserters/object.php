@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class object extends \mageekguy\atoum\asserters\variable
 {
 	public function setWith($variable, $checkType = true)
@@ -33,7 +35,7 @@ class object extends \mageekguy\atoum\asserters\variable
 		{
 			if (self::classExists($variable) === false)
 			{
-				throw new \logicException('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
+				throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
 			}
 		}
 
@@ -75,7 +77,7 @@ class object extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isObject($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be a class instance');
+			throw new exceptions\logic('Argument of ' . $method . '() must be a class instance');
 		}
 	}
 

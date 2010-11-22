@@ -53,7 +53,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Reference is undefined')
 		;
 
@@ -67,7 +67,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Data is undefined')
 		;
 

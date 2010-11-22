@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tools\diffs;
 
 use \mageekguy\atoum\tools;
+use \mageekguy\atoum\exceptions;
 
 class variable extends tools\diff
 {
@@ -26,12 +27,12 @@ class variable extends tools\diff
 	{
 		if ($this->reference === null)
 		{
-			throw new \runtimeException('Reference is undefined');
+			throw new exceptions\runtime('Reference is undefined');
 		}
 
 		if ($this->data === null)
 		{
-			throw new \runtimeException('Data is undefined');
+			throw new exceptions\runtime('Data is undefined');
 		}
 
 		return parent::make();

@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class phpClass extends \mageekguy\atoum\asserter
 {
 	protected $class = null;
@@ -18,7 +20,7 @@ class phpClass extends \mageekguy\atoum\asserter
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Reflection class injector must take one argument');
+			throw new exceptions\logic\argument('Reflection class injector must take one argument');
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;
@@ -87,7 +89,7 @@ class phpClass extends \mageekguy\atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new exceptions\logic\argument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);
@@ -97,7 +99,7 @@ class phpClass extends \mageekguy\atoum\asserter
 	{
 		if ($this->class === null)
 		{
-			throw new \logicException('Class is undefined');
+			throw new exceptions\logic('Class is undefined');
 		}
 
 		return $this;

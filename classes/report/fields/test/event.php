@@ -5,6 +5,7 @@ namespace mageekguy\atoum\report\fields\test;
 use \mageekguy\atoum;
 use \mageekguy\atoum\cli;
 use \mageekguy\atoum\report;
+use \mageekguy\atoum\exceptions;
 
 class event extends report\fields\test
 {
@@ -26,7 +27,7 @@ class event extends report\fields\test
 	{
 		if ($this->test === null)
 		{
-			throw new \logicException('Unable to get progress bar because test is undefined');
+			throw new exceptions\logic('Unable to get progress bar because test is undefined');
 		}
 
 		return ($this->progressBarInjector === null ? new cli\progressBar($this->test) : $this->progressBarInjector->__invoke($this->test));
@@ -38,7 +39,7 @@ class event extends report\fields\test
 
 		if ($reflectedClosure->getNumberOfParameters() != 1)
 		{
-			throw new \invalidArgumentException('Progress bar injector must take one argument');
+			throw new exceptions\logic\argument('Progress bar injector must take one argument');
 		}
 
 		$this->progressBarInjector = $closure;

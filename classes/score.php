@@ -3,6 +3,7 @@
 namespace mageekguy\atoum;
 
 use mageekguy\atoum;
+use mageekguy\atoum\exceptions;
 
 class score
 {
@@ -249,7 +250,7 @@ class score
 	{
 		if (isset($this->errors[$key]) === false)
 		{
-			throw new \runtimeException('Error key \'' . $key . '\' does not exist');
+			throw new exceptions\logic\argument('Error key \'' . $key . '\' does not exist');
 		}
 
 		unset($this->errors[$key]);

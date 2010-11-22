@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use mageekguy\atoum;
 use mageekguy\atoum\asserter;
+use mageekguy\atoum\exceptions;
 
 abstract class asserter
 {
@@ -88,7 +89,7 @@ abstract class asserter
 
 		if (sizeof($tests) <= 0)
 		{
-			throw new \runtimeException('There is no test currently running');
+			throw new exceptions\runtime('There is no test currently running');
 		}
 
 		$test = array_pop($tests);

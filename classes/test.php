@@ -114,7 +114,7 @@ abstract class test implements observable, \countable
 				return $this->asserterGenerator;
 
 			default:
-				throw new \logicException('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
+				throw new exceptions\logic\argument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
 		}
 	}
 
@@ -147,7 +147,7 @@ abstract class test implements observable, \countable
 
 		if ($closure->getNumberOfParameters() != 0)
 		{
-			throw new \runtimeException('Registry injector must take no argument');
+			throw new exceptions\logic\argument('Registry injector must take no argument');
 		}
 
 		$this->registryInjector = $registryInjector;
@@ -239,7 +239,7 @@ abstract class test implements observable, \countable
 	{
 		if (isset($this->testMethods[$testMethodName]) === false)
 		{
-			throw new \runtimeException('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+			throw new exceptions\logic\argument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
 		}
 
 		return (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
@@ -282,7 +282,7 @@ abstract class test implements observable, \countable
 
 			if (sizeof($unknownTestMethods) > 0)
 			{
-				throw new \runtimeException('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
+				throw new exceptions\logic\argument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
 			}
 
 			$this->runTestMethods = $runTestMethods;

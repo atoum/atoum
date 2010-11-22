@@ -3,6 +3,7 @@
 namespace mageekguy\atoum;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 abstract class script
 {
@@ -31,7 +32,7 @@ abstract class script
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
-			throw new \logicException('\'' . $name . '\' must be used in CLI only');
+			throw new exceptions\logic('\'' . $name . '\' must be used in CLI only');
 		}
 
 		$this->name = $name;
@@ -110,7 +111,7 @@ abstract class script
 		{
 			if (self::isArgument($argument) === false)
 			{
-				throw new \logicException('Argument \'' . $argument . '\' is invalid');
+				throw new exceptions\logic\argument('Argument \'' . $argument . '\' is invalid');
 			}
 
 			$this->handleArgument($argument);

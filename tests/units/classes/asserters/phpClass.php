@@ -29,7 +29,7 @@ class phpClass extends atoum\test
 					$asserter->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 

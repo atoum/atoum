@@ -69,7 +69,7 @@ class object extends atoum\test
 						$asserter->hasSize(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 		;
 
@@ -117,7 +117,7 @@ class object extends atoum\test
 						$asserter->hasSize(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 		;
 

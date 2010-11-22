@@ -72,7 +72,7 @@ class adapter extends atoum\test
 						$asserter->call(uniqid());
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->integer($score->getPassNumber())->isZero()
 		;

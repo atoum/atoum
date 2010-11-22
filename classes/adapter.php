@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum;
 
+use \mageekguy\atoum\exceptions;
+
 class adapter
 {
 	protected $functions = array();
@@ -26,7 +28,7 @@ class adapter
 	{
 		if (is_callable($functionName) === false)
 		{
-			throw new \logicException('Function \'' . $functionName . '()\' is not callable by an adapter');
+			throw new exceptions\logic\argument('Function \'' . $functionName . '()\' is not callable by an adapter');
 		}
 
 		$this->calls[$functionName][] = $arguments;

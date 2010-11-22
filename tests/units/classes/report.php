@@ -79,7 +79,7 @@ class report extends atoum\test
 					$report->addRunnerField(new mock\mageekguy\atoum\report\fields\runner(), array($event = uniqid()));
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Event \'' . $event . '\' does not exist')
 		;
 	}

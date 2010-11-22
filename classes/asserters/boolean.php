@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class boolean extends \mageekguy\atoum\asserters\variable
 {
 	public function setWith($variable)
@@ -34,7 +36,7 @@ class boolean extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isBoolean($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be a boolean');
+			throw new exceptions\logic\argument('Argument of ' . $method . '() must be a boolean');
 		}
 	}
 

@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\phar;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class generator extends atoum\script
 {
@@ -34,15 +35,15 @@ class generator extends atoum\script
 
 		if ($originDirectory == '')
 		{
-			throw new \runtimeException('Empty origin directory is invalid');
+			throw new exceptions\runtime('Empty origin directory is invalid');
 		}
 		else if ($this->adapter->is_dir($originDirectory) === false)
 		{
-			throw new \runtimeException('Path \'' . $originDirectory . '\' of origin directory is invalid');
+			throw new exceptions\runtime('Path \'' . $originDirectory . '\' of origin directory is invalid');
 		}
 		else if ($this->destinationDirectory !== null && $originDirectory === $this->destinationDirectory)
 		{
-			throw new \runtimeException('Origin directory must be different from destination directory');
+			throw new exceptions\runtime('Origin directory must be different from destination directory');
 		}
 
 		$this->originDirectory = $originDirectory;
@@ -61,19 +62,19 @@ class generator extends atoum\script
 
 		if ($destinationDirectory == '')
 		{
-			throw new \runtimeException('Empty destination directory is invalid');
+			throw new exceptions\runtime('Empty destination directory is invalid');
 		}
 		else if ($this->adapter->is_dir($destinationDirectory) === false)
 		{
-			throw new \runtimeException('Path \'' . $destinationDirectory . '\' of destination directory is invalid');
+			throw new exceptions\runtime('Path \'' . $destinationDirectory . '\' of destination directory is invalid');
 		}
 		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
 		{
-			throw new \runtimeException('Destination directory must be different from origin directory');
+			throw new exceptions\runtime('Destination directory must be different from origin directory');
 		}
 		else if (strpos($destinationDirectory, $this->originDirectory) === 0)
 		{
-			throw new \runtimeException('Origin directory must not include destination directory');
+			throw new exceptions\runtime('Origin directory must not include destination directory');
 		}
 
 		$this->destinationDirectory = $destinationDirectory;
@@ -87,12 +88,12 @@ class generator extends atoum\script
 
 		if ($stubFile == '')
 		{
-			throw new \runtimeException('Stub file is invalid');
+			throw new exceptions\runtime('Stub file is invalid');
 		}
 
 		if ($this->adapter->is_file($stubFile) === false)
 		{
-			throw new \runtimeException('Stub file is not a valid file');
+			throw new exceptions\runtime('Stub file is not a valid file');
 		}
 
 		$this->stubFile = $stubFile;
@@ -121,7 +122,7 @@ class generator extends atoum\script
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('Phar injector must take one argument');
+			throw new exceptions\runtime('Phar injector must take one argument');
 		}
 
 		$this->pharInjector = $pharInjector;
@@ -140,7 +141,7 @@ class generator extends atoum\script
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new \runtimeException('File iterator injector must take one argument');
+			throw new exceptions\runtime('File iterator injector must take one argument');
 		}
 
 		$this->fileIteratorInjector = $fileIteratorInjector;
@@ -174,14 +175,14 @@ class generator extends atoum\script
 
 				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
 				{
-					throw new \logicException(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
+					throw new exceptions\logic\argument(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
 				}
 
 				$this->setDestinationDirectory($directory);
 				break;
 
 			default:
-				throw new \logicException(sprintf($this->locale->_('Argument \'%s\' is unknown'), $argument));
+				throw new exceptions\logic\argument(sprintf($this->locale->_('Argument \'%s\' is unknown'), $argument));
 		}
 	}
 
@@ -207,60 +208,60 @@ class generator extends atoum\script
 	{
 		if ($this->originDirectory === null)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('Origin directory must be defined'), $this->originDirectory));
 		}
 
 		if ($this->destinationDirectory === null)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('Destination directory must be defined'), $this->originDirectory));
 		}
 
 		if ($this->stubFile === null)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Stub file must be defined'), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('Stub file must be defined'), $this->originDirectory));
 		}
 
 		if ($this->adapter->is_readable($this->originDirectory) === false)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('Origin directory \'%s\' is not readable'), $this->originDirectory));
 		}
 
 		if ($this->adapter->is_writable($this->destinationDirectory) === false)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('Destination directory \'%s\' is not writable'), $this->destinationDirectory));
 		}
 
 		if ($this->adapter->is_readable($this->stubFile) === false)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('Stub file \'%s\' is not readable'), $this->stubFile));
+			throw new exceptions\runtime(sprintf($this->locale->_('Stub file \'%s\' is not readable'), $this->stubFile));
 		}
 
 		$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
 
 		if ($phar instanceof \phar === false)
 		{
-			throw new \logicException('Phar injector must return a \phar instance');
+			throw new exceptions\logic('Phar injector must return a \phar instance');
 		}
 
 		$fileIterator = $this->getFileIterator($this->originDirectory);
 
 		if ($fileIterator instanceof \iterator === false)
 		{
-			throw new \logicException('File iterator injector must return a \iterator instance');
+			throw new exceptions\logic('File iterator injector must return a \iterator instance');
 		}
 
 		$description = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
 
 		if ($description === false)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('ABOUT file is missing in \'%s\''), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('ABOUT file is missing in \'%s\''), $this->originDirectory));
 		}
 
 		$licence = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
 
 		if ($licence === false)
 		{
-			throw new \runtimeException(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
+			throw new exceptions\runtime(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
 		}
 
 		$phar->setStub($this->adapter->file_get_contents($this->stubFile));

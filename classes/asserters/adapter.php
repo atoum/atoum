@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class adapter extends \mageekguy\atoum\asserter
 {
 	protected $adapter = null;
@@ -51,7 +53,7 @@ class adapter extends \mageekguy\atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new exceptions\logic('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);
@@ -61,7 +63,7 @@ class adapter extends \mageekguy\atoum\asserter
 	{
 		if ($this->adapter === null)
 		{
-			throw new \logicException('Adapter is undefined');
+			throw new exceptions\logic('Adapter is undefined');
 		}
 
 		return $this;

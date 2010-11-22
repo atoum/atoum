@@ -102,7 +102,7 @@ class string extends atoum\test
 						$asserter->isEqualTo(uniqid());
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 					->hasMessage('Variable is undefined')
 		;
 

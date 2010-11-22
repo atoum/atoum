@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\phar;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class stub extends atoum\script
 {
@@ -101,14 +102,14 @@ class stub extends atoum\script
 
 				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
 				{
-					throw new \logicException('Bad usage of ' . $argument . ', do php ' . $this->getName() . ' --help for more informations');
+					throw new exceptions\logic\argument('Bad usage of ' . $argument . ', do php ' . $this->getName() . ' --help for more informations');
 				}
 
 				$this->extract = $directory;
 				break;
 
 			default:
-				throw new \logicException('Argument \'' . $argument . '\' is unknown');
+				throw new exceptions\logic\argument('Argument \'' . $argument . '\' is unknown');
 		}
 	}
 
@@ -164,12 +165,12 @@ class stub extends atoum\script
 	{
 		if (is_dir($this->extract) === false)
 		{
-			throw new \logicException('Path \'' . $this->extract . '\' is not a directory');
+			throw new exceptions\logic('Path \'' . $this->extract . '\' is not a directory');
 		}
 
 		if (is_writable($this->extract) === false)
 		{
-			throw new \logicException('Directory \'' . $this->extract . '\' is not writable');
+			throw new exceptions\logic('Directory \'' . $this->extract . '\' is not writable');
 		}
 
 		$phar = new \Phar($this->getName());

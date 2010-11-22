@@ -34,7 +34,7 @@ class generator extends atoum\test
 					$generator = new phar\generator($name, null, $adapter);
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 
@@ -84,7 +84,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory('');
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Empty origin directory is invalid')
 		;
 
@@ -97,7 +97,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($directory);
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Path \'' . $directory . '\' of origin directory is invalid')
 		;
 
@@ -122,7 +122,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($generator->getDestinationDirectory());
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must be different from destination directory')
 		;
 
@@ -150,7 +150,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory('');
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Empty destination directory is invalid')
 		;
 
@@ -163,7 +163,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($directory);
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Path \'' . $directory . '\' of destination directory is invalid')
 		;
 
@@ -195,7 +195,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($generator->getOriginDirectory());
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory must be different from origin directory')
 		;
 
@@ -208,7 +208,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory(uniqid());
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must not include destination directory')
 		;
 	}
@@ -227,7 +227,7 @@ class generator extends atoum\test
 					$generator->setStubFile('');
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file is invalid')
 		;
 
@@ -238,7 +238,7 @@ class generator extends atoum\test
 					$generator->setStubFile(uniqid());
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file is not a valid file')
 		;
 
@@ -265,7 +265,7 @@ class generator extends atoum\test
 					$generator->setPharInjector(function() {});
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Phar injector must take one argument')
 		;
 
@@ -306,7 +306,7 @@ class generator extends atoum\test
 					$generator->setFileIteratorInjector(function() {});
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('File iterator injector must take one argument')
 		;
 
@@ -414,7 +414,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must be defined')
 		;
 
@@ -425,7 +425,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory must be defined')
 		;
 
@@ -436,7 +436,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file must be defined')
 		;
 
@@ -449,7 +449,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
 		;
 
@@ -462,7 +462,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
 		;
 
@@ -473,7 +473,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 				)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
 		;
 
@@ -486,7 +486,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Phar injector must return a \phar instance')
 		;
 
@@ -514,7 +514,7 @@ class generator extends atoum\test
 						$generator->run();
 					}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('File iterator injector must return a \iterator instance')
 		;
 
@@ -536,7 +536,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 
@@ -559,7 +559,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\runtimeException')
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 

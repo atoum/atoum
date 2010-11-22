@@ -149,7 +149,7 @@ class variable extends atoum\asserter
 	{
 		if ($this->variableIsSet()->isSetByReference() === false)
 		{
-			throw new \logicException('Variable is not set by reference');
+			throw new exceptions\logic('Variable is not set by reference');
 		}
 
 		if (is_object($this->variable) === true && is_object($reference) === true)
@@ -187,7 +187,7 @@ class variable extends atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new exceptions\logic\argument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);

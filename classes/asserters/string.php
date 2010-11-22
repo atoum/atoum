@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class string extends variable
 {
 	protected $charlist = null;
@@ -73,7 +75,7 @@ class string extends variable
 	{
 		if (self::isString($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be a string');
+			throw new exceptions\logic\argument('Argument of ' . $method . '() must be a string');
 		}
 	}
 

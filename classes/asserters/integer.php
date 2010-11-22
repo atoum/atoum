@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 
+use \mageekguy\atoum\exceptions;
+
 class integer extends \mageekguy\atoum\asserters\variable
 {
 	public function setWith($variable)
@@ -50,7 +52,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new \logicException('Argument must be set at index 0');
+			throw new exceptions\logic\argument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);
@@ -60,7 +62,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isInteger($variable) === false)
 		{
-			throw new \logicException('Argument of ' . $method . '() must be an integer');
+			throw new exceptions\logic\argument('Argument of ' . $method . '() must be an integer');
 		}
 	}
 
