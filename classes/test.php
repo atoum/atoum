@@ -475,7 +475,7 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod)
 	{
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
+		$phpCode = '<?php ini_set(\'display_errors\', \'stderr\'); ini_set(\'log_errors\', \'Off\'); define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
 
 		$descriptors = array
 			(

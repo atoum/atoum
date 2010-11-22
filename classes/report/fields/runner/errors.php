@@ -57,22 +57,24 @@ class errors extends report\fields\runner
 
 					$string .= self::errorPrompt;
 
+					$type = self::getType($error['type']);
+
 					switch (true)
 					{
 						case $error['file'] === null && $error['line'] === null:
-							$string .= sprintf($this->locale->_('Error %s in unknown file on unknown line:'), $error['type']);
+							$string .= sprintf($this->locale->_('Error %s in unknown file on unknown line:'), $type);
 							break;
 
 						case $error['file'] === null && $error['line'] !== null:
-							$string .= sprintf($this->locale->_('Error %s in unknown file on line %d:'), $error['type'], $error['line']);
+							$string .= sprintf($this->locale->_('Error %s in unknown file on line %d:'), $type, $error['line']);
 							break;
 
 						case $error['file'] !== null && $error['line'] === null:
-							$string .= sprintf($this->locale->_('Error %s in %s on unknown line:'), $error['type'], $error['file']);
+							$string .= sprintf($this->locale->_('Error %s in %s on unknown line:'), $type, $error['file']);
 							break;
 
 						case $error['file'] !== null && $error['line'] !== null:
-							$string .= sprintf($this->locale->_('Error %s in %s on line %d:'), $error['type'], $error['file'], $error['line']);
+							$string .= sprintf($this->locale->_('Error %s in %s on line %d:'), $type, $error['file'], $error['line']);
 							break;
 					}
 
@@ -87,6 +89,42 @@ class errors extends report\fields\runner
 		}
 
 		return $string;
+	}
+
+	public static function getType($error)
+	{
+		switch ($error)
+		{
+			case E_ERROR:
+				return 'E_ERROR';
+
+			case E_WARNING:
+				return 'E_WARNING';
+
+			case E_NOTICE:
+				return 'E_NOTICE';
+
+			case E_USER_NOTICE:
+				return 'E_USER_NOTICE';
+
+			case E_USER_WARNING:
+				return 'E_USER_WARNING';
+
+			case E_USER_ERROR:
+				return 'E_USER_ERROR';
+
+			case E_RECOVERABLE_ERROR:
+				return 'E_RECOVERABLE_ERROR';
+
+			case E_DEPRECATED:
+				return 'E_DEPRECATED';
+
+			case E_USER_DEPRECATED:
+				return 'E_USER_DEPRECATED';
+
+			default:
+				return $error;
+		}
 	}
 }
 
