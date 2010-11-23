@@ -102,14 +102,14 @@ class stub extends atoum\script
 
 				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
 				{
-					throw new exceptions\logic\argument('Bad usage of ' . $argument . ', do php ' . $this->getName() . ' --help for more informations');
+					throw new exceptions\logic\invalidArgument('Bad usage of ' . $argument . ', do php ' . $this->getName() . ' --help for more informations');
 				}
 
 				$this->extract = $directory;
 				break;
 
 			default:
-				throw new exceptions\logic\argument('Argument \'' . $argument . '\' is unknown');
+				throw new exceptions\logic\invalidArgument('Argument \'' . $argument . '\' is unknown');
 		}
 	}
 

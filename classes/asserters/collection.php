@@ -74,7 +74,7 @@ class collection extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isArray($variable) === false)
 		{
-			throw new exceptions\logic\argument('Argument of ' . $method . '() must be an array');
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an array');
 		}
 	}
 

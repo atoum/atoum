@@ -127,7 +127,7 @@ class superglobal
 				return $this;
 
 			default:
-				throw new exceptions\logic\argument('PHP superglobal \'$' . $superglobal . '\' does not exist');
+				throw new exceptions\logic\invalidArgument('PHP superglobal \'$' . $superglobal . '\' does not exist');
 		}
 	}
 }

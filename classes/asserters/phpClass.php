@@ -36,7 +36,7 @@ class phpClass extends \mageekguy\atoum\asserter
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new exceptions\logic\argument('Reflection class injector must take one argument');
+			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;
@@ -105,7 +105,7 @@ class phpClass extends \mageekguy\atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new exceptions\logic\argument('Argument must be set at index 0');
+			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);

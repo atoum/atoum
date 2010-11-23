@@ -187,7 +187,7 @@ class variable extends atoum\asserter
 	{
 		if (array_key_exists(0, $arguments) === false)
 		{
-			throw new exceptions\logic\argument('Argument must be set at index 0');
+			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
 		}
 
 		return $this->setWith($arguments[0]);

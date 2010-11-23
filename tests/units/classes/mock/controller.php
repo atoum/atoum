@@ -105,7 +105,7 @@ class controller extends atoum\test
 					$mockController->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 	}

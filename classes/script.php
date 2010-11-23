@@ -111,7 +111,7 @@ abstract class script
 		{
 			if (self::isArgument($argument) === false)
 			{
-				throw new exceptions\logic\argument('Argument \'' . $argument . '\' is invalid');
+				throw new exceptions\logic\invalidArgument('Argument \'' . $argument . '\' is invalid');
 			}
 
 			$this->handleArgument($argument);

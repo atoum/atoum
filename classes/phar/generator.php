@@ -175,14 +175,14 @@ class generator extends atoum\script
 
 				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
 				{
-					throw new exceptions\logic\argument(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
 				}
 
 				$this->setDestinationDirectory($directory);
 				break;
 
 			default:
-				throw new exceptions\logic\argument(sprintf($this->locale->_('Argument \'%s\' is unknown'), $argument));
+				throw new exceptions\logic\invalidArgument(sprintf($this->locale->_('Argument \'%s\' is unknown'), $argument));
 		}
 	}
 

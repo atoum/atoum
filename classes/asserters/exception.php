@@ -48,7 +48,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		{
 			if (self::classExists($variable) === false || ($variable !== '\exception' && is_subclass_of($variable, '\exception') === false))
 			{
-				throw new exceptions\logic\argument('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
+				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
 			}
 		}
 
@@ -93,7 +93,7 @@ class exception extends \mageekguy\atoum\asserters\object
 	{
 		if (self::isException($variable) === false)
 		{
-			throw new exceptions\logic\argument('Argument of ' . $method . '() must be an exception instance');
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an exception instance');
 		}
 	}
 

@@ -36,7 +36,7 @@ class boolean extends \mageekguy\atoum\asserters\variable
 	{
 		if (self::isBoolean($variable) === false)
 		{
-			throw new exceptions\logic\argument('Argument of ' . $method . '() must be a boolean');
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a boolean');
 		}
 	}
 

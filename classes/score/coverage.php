@@ -43,7 +43,7 @@ class coverage
 
 		if ($closure->getNumberOfParameters() !== 1)
 		{
-			throw new exceptions\logic\argument('Reflection class injector must take one argument');
+			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;

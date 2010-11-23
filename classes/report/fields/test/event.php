@@ -39,7 +39,7 @@ class event extends report\fields\test
 
 		if ($reflectedClosure->getNumberOfParameters() != 1)
 		{
-			throw new exceptions\logic\argument('Progress bar injector must take one argument');
+			throw new exceptions\logic\invalidArgument('Progress bar injector must take one argument');
 		}
 
 		$this->progressBarInjector = $closure;

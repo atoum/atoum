@@ -13,7 +13,7 @@ class registry extends atoum\singleton
 	{
 		if (isset($this->values[$key]) === true)
 		{
-			throw new exceptions\logic\argument('Key \'' . $key . '\' is already in registry');
+			throw new exceptions\logic\invalidArgument('Key \'' . $key . '\' is already in registry');
 		}
 
 		$this->values[$key] = $value;
@@ -25,7 +25,7 @@ class registry extends atoum\singleton
 	{
 		if (isset($this->{$key}) === false)
 		{
-			throw new exceptions\logic\argument('Key \'' . $key . '\' is not in registry');
+			throw new exceptions\logic\invalidArgument('Key \'' . $key . '\' is not in registry');
 		}
 
 		return $this->values[$key];
@@ -40,7 +40,7 @@ class registry extends atoum\singleton
 	{
 		if (isset($this->{$key}) === false)
 		{
-			throw new exceptions\logic\argument('Key \'' . $key . '\' is not in registry');
+			throw new exceptions\logic\invalidArgument('Key \'' . $key . '\' is not in registry');
 		}
 
 		unset($this->values[$key]);

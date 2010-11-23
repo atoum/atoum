@@ -759,7 +759,7 @@ class score extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Error key \'' . $key . '\' does not exist')
 		;
 

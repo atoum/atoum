@@ -34,7 +34,7 @@ class coverage extends atoum\test
 						$coverage->setReflectionClassInjector(function() {});
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Reflection class injector must take one argument')
 		;
 	}

@@ -250,7 +250,7 @@ class score
 	{
 		if (isset($this->errors[$key]) === false)
 		{
-			throw new exceptions\logic\argument('Error key \'' . $key . '\' does not exist');
+			throw new exceptions\logic\invalidArgument('Error key \'' . $key . '\' does not exist');
 		}
 
 		unset($this->errors[$key]);

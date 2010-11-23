@@ -28,7 +28,7 @@ class adapter
 	{
 		if (is_callable($functionName) === false)
 		{
-			throw new exceptions\logic\argument('Function \'' . $functionName . '()\' is not callable by an adapter');
+			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
 		}
 
 		$this->calls[$functionName][] = $arguments;

@@ -75,7 +75,7 @@ class string extends variable
 	{
 		if (self::isString($variable) === false)
 		{
-			throw new exceptions\logic\argument('Argument of ' . $method . '() must be a string');
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a string');
 		}
 	}
 

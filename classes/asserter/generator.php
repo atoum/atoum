@@ -28,7 +28,7 @@ class generator
 		{
 			if (class_exists($class, true) === false)
 			{
-				throw new exceptions\logic\argument('Asserter \'' . $class . '\' does not exist');
+				throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 			}
 
 			$this->asserters[$class] = new $class($this->score, $this->locale, $this);

@@ -7,11 +7,11 @@ use \mageekguy\atoum\exceptions\logic;
 
 require_once(__DIR__ . '/../../../runner.php');
 
-class argument extends atoum\test
+class invalidArgument extends atoum\test
 {
 	public function test__construct()
 	{
-		$invalidArgumentException = new logic\argument();
+		$invalidArgumentException = new logic\invalidArgument();
 
 		$this->assert
 			->object($invalidArgumentException)

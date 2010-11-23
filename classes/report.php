@@ -60,7 +60,7 @@ class report implements observers\runner, observers\test
 		{
 			if (in_array($event, runner::getObserverEvents()) === false)
 			{
-				throw new exceptions\logic\argument('\'' . $event . '\' is not a runner event');
+				throw new exceptions\logic\invalidArgument('\'' . $event . '\' is not a runner event');
 			}
 
 			$fields = $this->runnerFields[$event];
@@ -81,7 +81,7 @@ class report implements observers\runner, observers\test
 		{
 			if (in_array($event, test::getObserverEvents()) === false)
 			{
-				throw new exceptions\logic\argument('\'' . $event . '\' is not a test event');
+				throw new exceptions\logic\invalidArgument('\'' . $event . '\' is not a test event');
 			}
 
 			$fields = $this->testFields[$event];

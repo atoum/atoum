@@ -81,7 +81,7 @@ class generator extends atoum\test
 					$generator->{$asserter = uniqid()}();
 				}
 			)
-			->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+			->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
 			->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
 		;
 
