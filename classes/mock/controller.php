@@ -68,7 +68,23 @@ class controller
 
 	public function getReflectionClass($class)
 	{
-		return ($this->reflectionClassInjector === null ? new \reflectionClass($class) : $this->reflectionClassInjector->__invoke($class));
+		$reflectionClass = null;
+
+		if ($this->reflectionClassInjector === null)
+		{
+			$reflectionClass = new \reflectionClass($class);
+		}
+		else
+		{
+			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
+
+			if ($reflectionClass instanceof \reflectionClass === false)
+			{
+				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
+			}
+		}
+
+		return $reflectionClass;
 	}
 
 	public function setReflectionClassInjector(\closure $reflectionClassInjector)

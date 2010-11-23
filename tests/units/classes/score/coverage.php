@@ -19,6 +19,26 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testSetReflectionClassInjector()
+	{
+		$coverage = new score\coverage();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+
+		$this->assert
+			->object($coverage->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($coverage)
+			->object($coverage->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->mock($reflectionClass)->call('__construct', array($class))
+			->exception(function() use ($coverage) {
+						$coverage->setReflectionClassInjector(function() {});
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+					->hasMessage('Reflection class injector must take one argument')
+		;
+	}
+
 	public function testGetReflectionClass()
 	{
 		$coverage = new score\coverage();
@@ -46,26 +66,6 @@ class coverage extends atoum\test
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Reflection class injector must return a \reflectionClass instance')
-		;
-	}
-
-	public function testSetReflectionClassInjector()
-	{
-		$coverage = new score\coverage();
-
-		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
-
-		$this->assert
-			->object($coverage->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($coverage)
-			->object($coverage->getReflectionClass($class = uniqid()))->isInstanceOf('\mageekguy\atoum\mock\reflectionClass')
-			->mock($reflectionClass)->call('__construct', array($class))
-			->exception(function() use ($coverage) {
-						$coverage->setReflectionClassInjector(function() {});
-					}
-				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
-					->hasMessage('Reflection class injector must take one argument')
 		;
 	}
 }

@@ -95,7 +95,12 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
+		$mockGenerator = new mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+
 		$this->assert
+			->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
+			->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
 			->exception(function() use ($mockController) {
 					$mockController->setReflectionClassInjector(function() {});
 				}
@@ -103,13 +108,35 @@ class controller extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
+	}
 
-		$reflectionClass = new \reflectionClass($this);
+	public function testGetReflectionClass()
+	{
+		$mockController = new mock\controller();
 
 		$this->assert
 			->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($mockController->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($mockController)
-			->object($mockController->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+
+		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); });
+
+		$this->assert
+			->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->mock($reflectionClass)->call('__construct', array($class))
+		;
+
+		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); });
+
+		$this->assert
+			->exception(function() use ($mockController) {
+						$mockController->getReflectionClass(uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
 

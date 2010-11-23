@@ -37,16 +37,16 @@ class coverage
 		return $reflectionClass;
 	}
 
-	public function setReflectionClassInjector(\closure $closure)
+	public function setReflectionClassInjector(\closure $reflectionClassInjector)
 	{
-		$reflectionClosure = new \reflectionMethod($closure, '__invoke');
+		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
 
-		if ($reflectionClosure->getNumberOfParameters() !== 1)
+		if ($closure->getNumberOfParameters() !== 1)
 		{
 			throw new exceptions\logic\argument('Reflection class injector must take one argument');
 		}
 
-		$this->reflectionClassInjector = $closure;
+		$this->reflectionClassInjector = $reflectionClassInjector;
 
 		return $this;
 	}
