@@ -33,24 +33,47 @@ class generator extends atoum\test
 
 	public function testSetReflectionClassInjector()
 	{
-		$generator = new mock\generator();
-
+		$mockGenerator = new mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
 
 		$this->assert
-			->exception(function() use ($generator) {
-					$generator->setReflectionClassInjector(function() {});
+			->object($mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($mockGenerator)
+			->object($mockGenerator->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->exception(function() use ($mockGenerator) {
+					$mockGenerator->setReflectionClassInjector(function() {});
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
+	}
 
-		$reflectionClass = new \reflectionClass($this);
+	public function testGetReflectionClass()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
 
 		$this->assert
-			->object($generator->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($generator)
-			->object($generator->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
+			->object($mockGenerator->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->string($mockGenerator->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
+		;
+
+		$mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); });
+
+		$this->assert
+			->object($mockGenerator->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->mock($reflectionClass)->call('__construct', array($class))
+		;
+
+		$mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); });
+
+		$this->assert
+			->exception(function() use ($mockGenerator) {
+						$mockGenerator->getReflectionClass(uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
 

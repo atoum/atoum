@@ -116,6 +116,7 @@ class controller extends atoum\test
 
 		$this->assert
 			->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->string($mockController->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
 		;
 
 		$mockGenerator = new mock\generator();

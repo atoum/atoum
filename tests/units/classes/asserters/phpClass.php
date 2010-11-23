@@ -20,28 +20,6 @@ class phpClass extends atoum\test
 		;
 	}
 
-	public function testSetReflectionClassInjector()
-	{
-		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale());
-
-		$this->assert
-			->exception(function() use ($asserter) {
-					$asserter->setReflectionClassInjector(function() {});
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
-				->hasMessage('Reflection class injector must take one argument')
-		;
-
-		$reflectionClass = new \reflectionClass($this);
-
-		$this->assert
-			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
-			->object($asserter->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($asserter)
-			->object($asserter->getReflectionClass(__CLASS__))->isIdenticalTo($reflectionClass)
-		;
-	}
-
 	public function testGetClass()
 	{
 		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale());
@@ -54,6 +32,56 @@ class phpClass extends atoum\test
 
 		$this->assert
 			->string($asserter->getClass())->isEqualTo(__CLASS__)
+		;
+	}
+
+	public function testSetReflectionClassInjector()
+	{
+		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale());
+
+		$mockGenerator = new atoum\mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+
+		$this->assert
+			->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
+			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->exception(function() use ($asserter) {
+					$asserter->setReflectionClassInjector(function() {});
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\argument')
+				->hasMessage('Reflection class injector must take one argument')
+		;
+	}
+
+	public function testGetReflectionClass()
+	{
+		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale());
+
+		$this->assert
+			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
+		;
+
+		$mockGenerator = new atoum\mock\generator();
+		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+
+		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); });
+
+		$this->assert
+			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
+			->mock($reflectionClass)->call('__construct', array($class))
+		;
+
+		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); });
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->getReflectionClass(uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
 
