@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\score;
 
+use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
 
 class coverage
@@ -47,6 +48,43 @@ class coverage
 		}
 
 		$this->reflectionClassInjector = $reflectionClassInjector;
+
+		return $this;
+	}
+
+	public function getTestedClassName(atoum\test $test, $testsSubNamespace = '\tests\units\\')
+	{
+		$testsSubNamespace = '\\' . trim($testsSubNamespace, '\\') . '\\';
+
+		$class = null;
+
+		$testClass = $this->getReflectionClass($test)->getName();
+
+		$position = strpos($testClass, $testsSubNamespace);
+
+		if ($position !== false)
+		{
+			$class = substr($testClass, 0, $position) . '\\' . substr($testClass, $position + strlen($testsSubNamespace));
+		}
+
+		return $class;
+	}
+
+	public function addXdebugData(atoum\test $test, array $data)
+	{
+		$testedClassName = $this->getTestedClassName($test);
+		$testedClassFile = $this->getReflectionClass($testedClassName)->getFileName();
+
+		foreach ($data as $file => $lines)
+		{
+			if ($file === $testedClassFile)
+			{
+				foreach ($lines as $line => $number)
+				{
+					$this->lines[$testedClassFile][$line] = (isset($this->lines[$testedClassFile][$line]) === false ? $number : $this->lines[$testedClassFile][$line] + $number);
+				}
+			}
+		}
 
 		return $this;
 	}
