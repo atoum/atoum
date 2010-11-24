@@ -20,6 +20,20 @@ class score extends atoum\test
 			->collection($score->getOutputs())->isEmpty()
 			->collection($score->getDurations())->isEmpty()
 			->collection($score->getMemoryUsages())->isEmpty()
+			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
+		;
+
+		$score = new atoum\score($coverage = new atoum\score\coverage());
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->collection($score->getFailAssertions())->isEmpty()
+			->collection($score->getExceptions())->isEmpty()
+			->collection($score->getErrors())->isEmpty()
+			->collection($score->getOutputs())->isEmpty()
+			->collection($score->getDurations())->isEmpty()
+			->collection($score->getMemoryUsages())->isEmpty()
+			->object($score->getCoverage())->isIdenticalTo($coverage)
 		;
 	}
 
@@ -546,7 +560,7 @@ class score extends atoum\test
 
 	public function testReset()
 	{
-		$score = new atoum\score($this);
+		$score = new atoum\score();
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -849,6 +863,15 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testGetCoverage()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
 		;
 	}
 }

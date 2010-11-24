@@ -14,8 +14,19 @@ class score
 	private $outputs = array();
 	private $durations = array();
 	private $memoryUsages = array();
+	private $coverage = null;
 
 	private static $failId = 0;
+
+	public function __construct(score\coverage $coverage = null)
+	{
+		if ($coverage === null)
+		{
+			$coverage = new score\coverage();
+		}
+
+		$this->coverage = $coverage;
+	}
 
 	public function reset()
 	{
@@ -225,6 +236,11 @@ class score
 	public function getErrorNumber()
 	{
 		return sizeof($this->errors);
+	}
+
+	public function getCoverage()
+	{
+		return $this->coverage;
 	}
 
 	public function errorExists($message = null, $type = null)
