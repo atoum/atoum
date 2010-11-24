@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\score;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\score;
 use \mageekguy\atoum\exceptions;
 
 class coverage
@@ -83,6 +84,19 @@ class coverage
 				{
 					$this->lines[$testedClassFile][$line] = (isset($this->lines[$testedClassFile][$line]) === false ? $number : $this->lines[$testedClassFile][$line] + $number);
 				}
+			}
+		}
+
+		return $this;
+	}
+
+	public function merge(score\coverage $coverage)
+	{
+		foreach ($coverage->getLines() as $file => $lines)
+		{
+			foreach ($lines as $line => $number)
+			{
+				$this->lines[$file][$line] = (isset($this->lines[$file][$line]) === false ? $number : $this->lines[$file][$line] + $number);
 			}
 		}
 

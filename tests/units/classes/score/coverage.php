@@ -111,7 +111,7 @@ class coverage extends atoum\test
 
 		$mockController = new mock\controller();
 		$mockController->__construct = function() {};
-		$mockController->getName = function() use (& $testClassName) { return $testClassName; };
+		$mockController->getName = function() {};
 		$mockController->getFileName = function() use (& $classFile) { return $classFile; };
 
 		$mockGenerator = new mock\generator();
@@ -119,9 +119,7 @@ class coverage extends atoum\test
 
 		$coverage->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); });
 
-		$className = 'name\space\foo';
 		$classFile = uniqid();
-		$testClassName = 'name\space\tests\units\foo';
 
 		$XdebugData = array(
 		  $classFile =>
@@ -146,6 +144,55 @@ class coverage extends atoum\test
 			->object($coverage->addXdebugData($this, $XdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 1, 6 => 2, 7 => 3, 8 => 2, 9 => 1)))
 			->object($coverage->addXdebugData($this, $XdebugData))->isIdenticalTo($coverage)
+			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 2, 6 => 4, 7 => 6, 8 => 4, 9 => 2)))
+		;
+	}
+
+	public function testMerge()
+	{
+		$mockController = new mock\controller();
+		$mockController->__construct = function() {};
+		$mockController->getName = function() {};
+		$mockController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\reflectionClass');
+
+		$classFile = uniqid();
+
+		$XdebugData = array(
+		  $classFile =>
+			 array(
+				5 => 1,
+				6 => 2,
+				7 => 3,
+				8 => 2,
+				9 => 1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage = new score\coverage();
+		$coverage
+			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->addXdebugData($this, $XdebugData)
+		;
+
+		$otherCoverage = new score\coverage();
+		$otherCoverage
+			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->addXdebugData($this, $XdebugData)
+		;
+
+		$this->assert
+			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 2, 6 => 4, 7 => 6, 8 => 4, 9 => 2)))
 		;
 	}
