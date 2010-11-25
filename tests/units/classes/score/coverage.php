@@ -19,12 +19,12 @@ class coverage extends atoum\test
 		;
 	}
 
-	public function testSetXdebugData()
+	public function testSetxdebugData()
 	{
 		$coverage = new score\coverage();
 
 		$this->assert
-			->object($coverage->addXdebugData($this, array()))->isIdenticalTo($coverage)
+			->object($coverage->addxdebugData($this, array()))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEmpty()
 		;
 
@@ -40,7 +40,7 @@ class coverage extends atoum\test
 
 		$classFile = uniqid();
 
-		$XdebugData = array(
+		$xdebugData = array(
 		  $classFile =>
 			 array(
 				5 => 1,
@@ -60,9 +60,9 @@ class coverage extends atoum\test
 		);
 
 		$this->assert
-			->object($coverage->addXdebugData($this, $XdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 1, 6 => 2, 7 => 3, 8 => 2, 9 => 1)))
-			->object($coverage->addXdebugData($this, $XdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 2, 6 => 4, 7 => 6, 8 => 4, 9 => 2)))
 		;
 	}
@@ -79,7 +79,7 @@ class coverage extends atoum\test
 
 		$classFile = uniqid();
 
-		$XdebugData = array(
+		$xdebugData = array(
 		  $classFile =>
 			 array(
 				5 => 1,
@@ -101,13 +101,13 @@ class coverage extends atoum\test
 		$coverage = new score\coverage();
 		$coverage
 			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
-			->addXdebugData($this, $XdebugData)
+			->addxdebugData($this, $xdebugData)
 		;
 
 		$otherCoverage = new score\coverage();
 		$otherCoverage
 			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
-			->addXdebugData($this, $XdebugData)
+			->addxdebugData($this, $xdebugData)
 		;
 
 		$this->assert
