@@ -39,7 +39,7 @@ abstract class test implements observable, \countable
 
 	public static $runningTest = null;
 
-	public function __construct(score $score = null, locale $locale = null)
+	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
 		if ($score === null)
 		{
@@ -51,11 +51,18 @@ abstract class test implements observable, \countable
 			$locale = new locale();
 		}
 
+		if ($adapter === null)
+		{
+			$adapter = new adapter();
+		}
+
 		$this
 			->setScore($score)
 			->setLocale($locale)
-			->asserterGenerator = new asserter\generator($this->score, $this->locale)
+			->setAdapter($adapter)
 		;
+
+		$this->asserterGenerator = new asserter\generator($this->score, $this->locale);
 
 		$class = new \reflectionClass($this);
 
@@ -118,10 +125,26 @@ abstract class test implements observable, \countable
 		}
 	}
 
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
 	public function setAsserterGenerator(atoum\asserter\generator $generator)
 	{
 		$this->asserterGenerator = $generator->setScore($this->score)->setLocale($this->locale);
 		return $this;
+	}
+
+	public function getAsserterGenerator()
+	{
+		return $this->asserterGenerator;
 	}
 
 	public function setScore(score $score)
@@ -141,6 +164,11 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
 	public function setRegistryInjector(\closure $registryInjector)
 	{
 		$closure = new \reflectionMethod($registryInjector, '__invoke');
@@ -155,19 +183,28 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
-	public function getAsserterGenerator()
-	{
-		return $this->asserterGenerator;
-	}
-
 	public function getRegistry()
 	{
 		return ($this->registryInjector === null ? atoum\registry::getInstance() : $this->registryInjector->__invoke());
+	}
+
+	public function getTestedClassName($testsSubNamespace = '\tests\units\\')
+	{
+		$class = null;
+
+		$testsSubNamespace = '\\' . trim($testsSubNamespace, '\\') . '\\';
+
+		$testClass = $this->getClass();
+
+		$position = strpos($testClass, $testsSubNamespace);
+
+
+		if ($position !== false)
+		{
+			$class = substr($testClass, 0, $position) . '\\' . substr($testClass, $position + strlen($testsSubNamespace));
+		}
+
+		return ($this->adapter->class_exists($class) === false ? null : $class);
 	}
 
 	public function getClass()
@@ -435,13 +472,26 @@ abstract class test implements observable, \countable
 
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
+				$xdebugEnabled = extension_loaded('xdebug');
+
+				if ($xdebugEnabled === true)
+				{
+					xdebug_start_code_coverage();
+				}
 
 				$this->{$testMethod}();
+
+				if ($xdebugEnabled === true)
+				{
+					xdebug_stop_code_coverage();
+				}
+
 
 				$this->score
 					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
 					->addDuration($this->class, $this->currentMethod, microtime(true) - $time)
 					->addOutput($this->class, $this->currentMethod, ob_get_contents())
+					->getCoverage()->addXdebugData($this, xdebug_get_code_coverage())
 				;
 
 				ob_end_clean();

@@ -13,11 +13,6 @@ class coverage
 
 	public function __construct() {}
 
-	public function getLines()
-	{
-		return $this->lines;
-	}
-
 	public function getReflectionClass($class)
 	{
 		$reflectionClass = null;
@@ -53,36 +48,27 @@ class coverage
 		return $this;
 	}
 
-	public function getTestedClassName(atoum\test $test, $testsSubNamespace = '\tests\units\\')
+	public function getLines()
 	{
-		$testsSubNamespace = '\\' . trim($testsSubNamespace, '\\') . '\\';
-
-		$class = null;
-
-		$testClass = $this->getReflectionClass($test)->getName();
-
-		$position = strpos($testClass, $testsSubNamespace);
-
-		if ($position !== false)
-		{
-			$class = substr($testClass, 0, $position) . '\\' . substr($testClass, $position + strlen($testsSubNamespace));
-		}
-
-		return $class;
+		return $this->lines;
 	}
 
 	public function addXdebugData(atoum\test $test, array $data)
 	{
-		$testedClassName = $this->getTestedClassName($test);
-		$testedClassFile = $this->getReflectionClass($testedClassName)->getFileName();
+		$testedClassName = $test->getTestedClassName();
 
-		foreach ($data as $file => $lines)
+		if ($testedClassName !== null)
 		{
-			if ($file === $testedClassFile)
+			$testedClassFile = $this->getReflectionClass($testedClassName)->getFileName();
+
+			foreach ($data as $file => $lines)
 			{
-				foreach ($lines as $line => $number)
+				if ($file === $testedClassFile)
 				{
-					$this->lines[$testedClassFile][$line] = (isset($this->lines[$testedClassFile][$line]) === false ? $number : $this->lines[$testedClassFile][$line] + $number);
+					foreach ($lines as $line => $number)
+					{
+						$this->lines[$testedClassFile][$line] = (isset($this->lines[$testedClassFile][$line]) === false ? $number : $this->lines[$testedClassFile][$line] + $number);
+					}
 				}
 			}
 		}

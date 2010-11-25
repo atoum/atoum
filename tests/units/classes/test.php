@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace mageekguy\atoum\tests\units;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\mock;
@@ -35,18 +35,21 @@ class test extends atoum\test
 		$this->assert
 			->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 			->object($test->getAsserterGenerator())->isInstanceOf('\mageekguy\atoum\asserter\generator')
 			->boolean($test->isIgnored())->isTrue()
 		;
 
 		$score = new atoum\score();
 		$locale = new atoum\locale();
+		$adapter = new atoum\adapter();
 
-		$test = new emptyTest($score, $locale);
+		$test = new emptyTest($score, $locale, $adapter);
 
 		$this->assert
 			->object($test->getScore())->isIdenticalTo($score)
 			->object($test->getLocale())->isIdenticalTo($locale)
+			->object($test->getAdapter())->isIdenticalTo($adapter)
 			->boolean($test->isIgnored())->isTrue()
 		;
 
@@ -55,15 +58,30 @@ class test extends atoum\test
 		$this->assert
 			->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 			->boolean($test->isIgnored())->isFalse()
 		;
 
-		$test = new self($score, $locale);
+		$test = new self($score, $locale, $adapter);
 
 		$this->assert
 			->object($test->getScore())->isIdenticalTo($score)
 			->object($test->getLocale())->isIdenticalTo($locale)
+			->object($test->getAdapter())->isIdenticalTo($adapter)
 			->boolean($test->isIgnored())->isFalse()
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$test = new emptyTest();
+
+		$adapter = new atoum\adapter();
+
+		$this->assert
+			->object($test->getAdapter())->isNotIdenticalTo($adapter)
+			->object($test->setAdapter($adapter))->isIdenticalTo($test)
+			->object($test->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
@@ -240,6 +258,48 @@ class test extends atoum\test
 			->mock($registry)
 				->call('__set', array(atoum\test::getRegistryKey(), array($test)))
 				->call('__unset', array(atoum\test::getRegistryKey()))
+		;
+	}
+
+	public function testGetTestedClassName()
+	{
+		$adapter = new atoum\adapter();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\test');
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter);
+
+		$testMockController = $test->getMockController();
+		$testMockController->getClass = function() use (& $testClassName) { return $testClassName; };
+
+		$adapter->class_exists = function() { return true; };
+
+		$className = 'name\space\foo';
+		$testClassName = 'name\space\tests\units\foo';
+
+		$this->assert
+			->string($test->getTestedClassName())->isEqualTo($className)
+		;
+
+		$testClassName = 'name\space\test\unit\foo';
+
+		$this->assert
+			->variable($test->getTestedClassName())->isNull()
+			->variable($test->getTestedClassName('\test\unit'))->isEqualTo($className)
+			->variable($test->getTestedClassName('test\unit'))->isEqualTo($className)
+			->variable($test->getTestedClassName('test\unit\\'))->isEqualTo($className)
+			->variable($test->getTestedClassName('\test\unit\\'))->isEqualTo($className)
+		;
+
+		$adapter->class_exists = function() { return false; };
+
+		$this->assert
+			->variable($test->getTestedClassName())->isNull()
+			->variable($test->getTestedClassName('\test\unit'))->isNull()
+			->variable($test->getTestedClassName('test\unit'))->isNull()
+			->variable($test->getTestedClassName('test\unit\\'))->isNull()
+			->variable($test->getTestedClassName('\test\unit\\'))->isNull()
 		;
 	}
 }
