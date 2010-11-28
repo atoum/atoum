@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use \mageekguy\atoum\exceptions;
+use \mageekguy\atoum\tools\diffs;
 
 class collection extends \mageekguy\atoum\asserters\variable
 {

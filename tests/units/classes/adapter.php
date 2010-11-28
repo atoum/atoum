@@ -19,19 +19,29 @@ class adapter extends atoum\test
 		$this->assert
 			->object($adapter->md5)->isIdenticalTo($closure)
 		;
+
+		$adapter->md5 = $return = uniqid();
+
+		$this->assert
+			->string($adapter->md5)->isEqualTo($return)
+		;
 	}
 
 	public function test__get()
 	{
 		$adapter = new atoum\adapter();
 
-		$closure = function() {};
-
-		$adapter->md5 = $closure;
+		$adapter->md5 = $closure = function() {};
 
 		$this->assert
 			->boolean(isset($adapter->md5))->isTrue()
-			->variable($adapter->md5)->isIdenticalTo($closure)
+		;
+
+		$adapter->md5 = $return = uniqid();
+
+		$this->assert
+			->boolean(isset($adapter->md5))->isTrue()
+			->variable($adapter->md5)->isEqualTo($return)
 		;
 	}
 
@@ -43,10 +53,16 @@ class adapter extends atoum\test
 			->boolean(isset($adapter->md5))->isFalse()
 		;
 
-		$adapter->md5 = function() {};
+		$adapter->{$function = uniqid()} = function() {};
 
 		$this->assert
-			->boolean(isset($adapter->md5))->isTrue()
+			->boolean(isset($adapter->{$function}))->isTrue()
+		;
+
+		$adapter->{$function = uniqid()} = uniqid();
+
+		$this->assert
+			->boolean(isset($adapter->{$function}))->isTrue()
 		;
 	}
 
@@ -54,13 +70,15 @@ class adapter extends atoum\test
 	{
 		$adapter = new atoum\adapter();
 
-		$hash = uniqid();
-
-		$this->assert->string($adapter->md5($hash))->isEqualTo(md5($hash));
+		$this->assert->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash));
 
 		$md5 = uniqid();
 
 		$adapter->md5 = function() use ($md5) { return $md5; };
+
+		$this->assert->string($adapter->md5($hash))->isEqualTo($md5);
+
+		$adapter->md5 = $md5 = uniqid();
 
 		$this->assert->string($adapter->md5($hash))->isEqualTo($md5);
 	}

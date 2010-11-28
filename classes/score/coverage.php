@@ -9,6 +9,7 @@ use \mageekguy\atoum\exceptions;
 class coverage
 {
 	protected $lines = array();
+	protected $methods = array();
 	protected $reflectionClassInjector = null;
 
 	public function __construct() {}
@@ -55,22 +56,48 @@ class coverage
 
 	public function addXdebugData(atoum\test $test, array $data)
 	{
-		$testedClassName = $test->getTestedClassName();
-
-		if ($testedClassName !== null)
+		if (sizeof($data) > 0)
 		{
-			$testedClassFile = $this->getReflectionClass($testedClassName)->getFileName();
-
-			foreach ($data as $file => $lines)
+			try
 			{
-				if ($file === $testedClassFile)
+				$testedClassName = $test->getTestedClassName();
+				$testedClass = $this->getReflectionClass($testedClassName);
+				$testedClassFile = $testedClass->getFileName();
+
+				if (isset($this->methods[$testedClassFile]) === false)
 				{
-					foreach ($lines as $line => $number)
+					$this->methods[$testedClassFile] = array();
+
+					foreach ($testedClass->getMethods() as $method)
 					{
-						$this->lines[$testedClassFile][$line] = (isset($this->lines[$testedClassFile][$line]) === false ? $number : $this->lines[$testedClassFile][$line] + $number);
+						if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
+						{
+							$endLine = $method->getEndLine();
+
+							for ($line = $method->getStartLine(); $line <= $endLine; $line++)
+							{
+								$this->lines[$testedClassFile][$line] = 0;
+								$this->methods[$testedClassFile][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
+							}
+						}
+					}
+				}
+
+				foreach ($data as $file => $lines)
+				{
+					if ($file === $testedClassFile)
+					{
+						foreach ($lines as $line => $number)
+						{
+							if (isset($this->lines[$testedClassFile][$line]) === true)
+							{
+								$this->lines[$testedClassFile][$line] += $number;
+							}
+						}
 					}
 				}
 			}
+			catch (\exception $exception) {}
 		}
 
 		return $this;

@@ -36,7 +36,6 @@ class test extends atoum\test
 			->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-			->object($test->getAsserterGenerator())->isInstanceOf('\mageekguy\atoum\asserter\generator')
 			->boolean($test->isIgnored())->isTrue()
 		;
 
@@ -72,15 +71,21 @@ class test extends atoum\test
 		;
 	}
 
+	public function testGetAdapter()
+	{
+		$test = new emptyTest();
+
+		$this->assert
+			->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+		;
+	}
+
 	public function testSetAdapter()
 	{
 		$test = new emptyTest();
 
-		$adapter = new atoum\adapter();
-
 		$this->assert
-			->object($test->getAdapter())->isNotIdenticalTo($adapter)
-			->object($test->setAdapter($adapter))->isIdenticalTo($test)
+			->object($test->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($test)
 			->object($test->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
@@ -108,23 +113,6 @@ class test extends atoum\test
 			->object($test->getScore())->isNotIdenticalTo($score)
 			->object($test->setScore($score))->isIdenticalTo($test)
 			->object($test->getScore())->isIdenticalTo($score)
-		;
-	}
-
-	public function testSetAsserterGenerator()
-	{
-		$test = new emptyTest();
-
-		$asserterGenerator = new atoum\asserter\generator(new atoum\score(), new atoum\locale());
-
-		$this->assert
-			->object($asserterGenerator->getScore())->isNotIdenticalTo($test->getScore())
-			->object($asserterGenerator->getLocale())->isNotIdenticalTo($test->getLocale())
-			->object($test->getAsserterGenerator())->isNotIdenticalTo($asserterGenerator)
-			->object($test->setAsserterGenerator($asserterGenerator))->isIdenticalTo($test)
-			->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
-			->object($test->getAsserterGenerator()->getScore())->isIdenticalTo($test->getScore())
-			->object($test->getAsserterGenerator()->getLocale())->isIdenticalTo($test->getLocale())
 		;
 	}
 

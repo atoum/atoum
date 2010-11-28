@@ -9,11 +9,6 @@ require_once(__DIR__ . '/../../runner.php');
 
 class controller extends atoum\test
 {
-	public function beforeTestMethod()
-	{
-		$this->assert->setAlias('array', 'collection');
-	}
-
 	public function test__construct()
 	{
 		$mockController = new mock\controller();
@@ -25,6 +20,25 @@ class controller extends atoum\test
 		;
 	}
 
+	public function test_set()
+	{
+		$mockController = new mock\controller();
+
+		$return = uniqid();
+
+		$mockController->{$method = uniqid()} = function() use ($return) { return $return; };
+
+		$this->assert
+			->string($mockController->invoke($method))->isEqualTo($return)
+		;
+
+		$mockController->{$method = uniqid()} = $return = uniqid();
+
+		$this->assert
+			->string($mockController->invoke($method))->isEqualTo($return)
+		;
+	}
+
 	public function test__isset()
 	{
 		$mockController = new mock\controller();
@@ -33,9 +47,7 @@ class controller extends atoum\test
 			->boolean(isset($mockController->{uniqid()}))->isFalse()
 		;
 
-		$method = uniqid();
-
-		$mockController->{$method} = function() {};
+		$mockController->{$method = uniqid()} = function() {};
 
 		$this->assert
 			->boolean(isset($mockController->{uniqid()}))->isFalse()
@@ -51,14 +63,19 @@ class controller extends atoum\test
 			->variable($mockController->{uniqid()})->isNull()
 		;
 
-		$method = uniqid();
-		$function = function() {};
-
-		$mockController->{$method} = $function;
+		$mockController->{$method = uniqid()} = $function = function() {};
 
 		$this->assert
 			->variable($mockController->{uniqid()})->isNull()
 			->object($mockController->{$method})->isIdenticalTo($function)
+		;
+
+		$mockController->{$otherMethod = uniqid()} = $return = uniqid();
+
+		$this->assert
+			->variable($mockController->{uniqid()})->isNull()
+			->object($mockController->{$method})->isIdenticalTo($function)
+			->string($mockController->{$otherMethod})->isEqualTo($return)
 		;
 	}
 
@@ -66,19 +83,11 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$method = uniqid();
-
 		$this->assert
-			->variable($mockController->{$method})->isNull()
+			->variable($mockController->{uniqid()})->isNull()
 		;
 
-		unset($mockController->{$method});
-
-		$this->assert
-			->variable($mockController->{$method})->isNull()
-		;
-
-		$mockController->{$method} = function() {};
+		$mockController->{$method = uniqid()} = function() {};
 
 		$this->assert
 			->variable($mockController->{$method})->isNotNull()
@@ -88,6 +97,18 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->{$method})->isNull()
+		;
+
+		$mockController->{$otherMethod = uniqid()} = uniqid();
+
+		$this->assert
+			->variable($mockController->{$otherMethod})->isNotNull()
+		;
+
+		unset($mockController->{$otherMethod});
+
+		$this->assert
+			->variable($mockController->{$otherMethod})->isNull()
 		;
 	}
 

@@ -27,6 +27,7 @@ abstract class test implements observable, \countable
 
 	private $class = '';
 	private $path = '';
+	private $adapter = null;
 	private $asserterGenerator = null;
 	private $registryInjector = null;
 	private $score = null;
@@ -134,17 +135,6 @@ abstract class test implements observable, \countable
 	public function getAdapter()
 	{
 		return $this->adapter;
-	}
-
-	public function setAsserterGenerator(atoum\asserter\generator $generator)
-	{
-		$this->asserterGenerator = $generator->setScore($this->score)->setLocale($this->locale);
-		return $this;
-	}
-
-	public function getAsserterGenerator()
-	{
-		return $this->asserterGenerator;
 	}
 
 	public function setScore(score $score)
@@ -472,20 +462,19 @@ abstract class test implements observable, \countable
 
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
-				$xdebugEnabled = extension_loaded('xdebug');
+				$xdebugLoaded = $this->adapter->extension_loaded('xdebug');
 
-				if ($xdebugEnabled === true)
+				if ($xdebugLoaded === true)
 				{
-					xdebug_start_code_coverage();
+					$this->adapter->xdebug_start_code_coverage();
 				}
 
 				$this->{$testMethod}();
 
-				if ($xdebugEnabled === true)
+				if ($xdebugLoaded === true)
 				{
-					xdebug_stop_code_coverage();
+					$this->adapter->xdebug_stop_code_coverage();
 				}
-
 
 				$this->score
 					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
@@ -493,6 +482,12 @@ abstract class test implements observable, \countable
 					->addOutput($this->class, $this->currentMethod, ob_get_contents())
 					->getCoverage()->addXdebugData($this, xdebug_get_code_coverage())
 				;
+
+				if ($xdebugLoaded === true)
+				{
+					$this->score->getCoverage()->addXdebugData($this, $this->adapter->xdebug_get_code_coverage());
+					$this->adapter->xdebug_stop_code_coverage();
+				}
 
 				ob_end_clean();
 

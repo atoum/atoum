@@ -15,7 +15,7 @@ class controller
 
 	private $reflectionClassInjector = null;
 
-	public function __set($method, \closure $closure)
+	public function __set($method, $closure)
 	{
 		$this->checkMethod($method);
 
@@ -173,7 +173,7 @@ class controller
 
 		$this->calls[$method][] = $arguments;
 
-		return call_user_func_array($this->methods[$method], $arguments);
+		return $this->methods[$method] instanceof \closure === false ? $this->methods[$method] : call_user_func_array($this->methods[$method], $arguments);
 	}
 
 	public static function get()

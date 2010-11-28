@@ -9,7 +9,7 @@ class adapter
 	protected $functions = array();
 	protected $calls = array();
 
-	public function __set($functionName, \closure $closure)
+	public function __set($functionName, $closure)
 	{
 		$this->functions[$functionName] = $closure;
 	}
@@ -33,7 +33,7 @@ class adapter
 
 		$this->calls[$functionName][] = $arguments;
 
-		return call_user_func_array(isset($this->functions[$functionName]) === false ? $functionName : $this->functions[$functionName], $arguments);
+		return (isset($this->functions[$functionName]) === false ? call_user_func_array($functionName, $arguments) : ($this->functions[$functionName] instanceof \closure === false ? $this->functions[$functionName] : call_user_func_array($this->functions[$functionName], $arguments)));
 	}
 
 	public function getCalls($functionName = null)

@@ -28,15 +28,26 @@ class coverage extends atoum\test
 			->array($coverage->getLines())->isEmpty()
 		;
 
-		$mockController = new mock\controller();
-		$mockController->__construct = function() {};
-		$mockController->getName = function() {};
-		$mockController->getFileName = function() use (& $classFile) { return $classFile; };
-
 		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$mockGenerator
+			->generate('\reflectionClass')
+			->generate('\reflectionMethod')
+		;
 
-		$coverage->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); });
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getStartLine = 6;
+		$methodController->getEndLine = 8;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() {};
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$coverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
 
 		$classFile = uniqid();
 
@@ -61,21 +72,33 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 1, 6 => 2, 7 => 3, 8 => 2, 9 => 1)))
+			->array($coverage->getLines())->isEqualTo(array($classFile => array(6 => 2, 7 => 3, 8 => 2)))
 			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 2, 6 => 4, 7 => 6, 8 => 4, 9 => 2)))
+			->array($coverage->getLines())->isEqualTo(array($classFile => array(6 => 4, 7 => 6, 8 => 4)))
 		;
 	}
 
 	public function testMerge()
 	{
-		$mockController = new mock\controller();
-		$mockController->__construct = function() {};
-		$mockController->getName = function() {};
-		$mockController->getFileName = function() use (& $classFile) { return $classFile; };
-
 		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$mockGenerator
+			->generate('\reflectionClass')
+			->generate('\reflectionMethod')
+		;
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->getName = uniqid();
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getStartLine = 6;
+		$methodController->getEndLine = 8;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() {};
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
 
@@ -100,19 +123,19 @@ class coverage extends atoum\test
 
 		$coverage = new score\coverage();
 		$coverage
-			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
 			->addxdebugData($this, $xdebugData)
 		;
 
 		$otherCoverage = new score\coverage();
 		$otherCoverage
-			->setReflectionClassInjector(function($class) use ($mockController) { return new mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
 			->addxdebugData($this, $xdebugData)
 		;
 
 		$this->assert
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array($classFile => array(5 => 2, 6 => 4, 7 => 6, 8 => 4, 9 => 2)))
+			->array($coverage->getLines())->isEqualTo(array($classFile => array(6 => 4, 7 => 6, 8 => 4)))
 		;
 	}
 }
