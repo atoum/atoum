@@ -19,7 +19,7 @@ class coverage extends atoum\test
 		;
 	}
 
-	public function testSetxdebugData()
+	public function testAddXdebugData()
 	{
 		$coverage = new score\coverage();
 

@@ -25,6 +25,7 @@ class cli extends atoum\test
 			->array($cli->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
 					new atoum\report\fields\runner\tests\duration(),
 					new atoum\report\fields\runner\tests\memory(),
+					new atoum\report\fields\runner\tests\coverage(),
 					new atoum\report\fields\runner\duration(),
 					new atoum\report\fields\runner\result(),
 					new atoum\report\fields\runner\failures(),

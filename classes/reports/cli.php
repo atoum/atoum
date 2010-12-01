@@ -13,6 +13,7 @@ class cli extends atoum\report
 		$this->addRunnerField(new atoum\report\fields\runner\version(), array(atoum\runner::runStart));
 		$this->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
 		$this->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
+		$this->addRunnerField(new atoum\report\fields\runner\tests\coverage(), array(atoum\runner::runStop));
 		$this->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
 		$this->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
 		$this->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));

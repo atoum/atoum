@@ -452,6 +452,9 @@ abstract class test implements observable, \countable
 	{
 		set_error_handler(array($this, 'errorHandler'));
 
+		ini_set('display_errors', 'stderr');
+		ini_set('log_errors', 'Off');
+
 		try
 		{
 			try
@@ -515,12 +518,16 @@ abstract class test implements observable, \countable
 
 		restore_error_handler();
 
+		ini_restore('display_errors');
+		ini_restore('log_errors');
+
+
 		return $this;
 	}
 
 	protected function runInChildProcess($testMethod)
 	{
-		$phpCode = '<?php ini_set(\'display_errors\', \'stderr\'); ini_set(\'log_errors\', \'Off\'); define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
+		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
 
 		$descriptors = array
 			(
@@ -546,31 +553,21 @@ abstract class test implements observable, \countable
 
 			if ($stdErr != '')
 			{
-				$file = null;
-				$line = null;
-
-				foreach (explode("\n", trim($stdErr)) as $error)
-				{
-					if (preg_match('/ in ([^ ]+) on line (.*)$/', $error, $match) === 1)
-					{
-						$file = $match[1];
-						$line = $match[2];
-					}
-
-					$this->score->addError($file, $line, $this->class, $this->currentMethod, $returnValue, $error);
-				}
+				$this->extractError($stdErr);
 			}
 
 			if ($stdOut !== '')
 			{
 				$score = unserialize($stdOut);
 
-				if ($score instanceof score === false)
+				if ($score instanceof score)
 				{
-					throw new exceptions\runtime('Unable to retrieve score from \'' . $stdOut . '\'');
+					$this->score->merge($score);
 				}
-
-				$this->score->merge($score);
+				else
+				{
+					$this->extractError($stdOut, $returnValue);
+				}
 			}
 		}
 	}
@@ -609,6 +606,19 @@ abstract class test implements observable, \countable
 		}
 
 		return null;
+	}
+
+	protected function extractError($string, $returnValue)
+	{
+		foreach (explode("\n", trim($string)) as $error)
+		{
+			if (preg_match('/ in ([^ ]+) on line (.*)$/', $error, $match) === 1)
+			{
+				$this->score->addError($match[1], $match[2], $this->class, $this->currentMethod, $returnValue, $error);
+			}
+		}
+
+		return $this;
 	}
 
 	protected static function getAnnotations($comments)
