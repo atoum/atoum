@@ -6,7 +6,7 @@ use \mageekguy\atoum;
 use \mageekguy\atoum\score;
 use \mageekguy\atoum\exceptions;
 
-class coverage
+class coverage implements \countable
 {
 	protected $lines = array();
 	protected $methods = array();
@@ -54,6 +54,11 @@ class coverage
 		return $this->lines;
 	}
 
+	public function getMethods()
+	{
+		return $this->methods;
+	}
+
 	public function addXdebugData(atoum\test $test, array $data)
 	{
 		if (sizeof($data) > 0)
@@ -77,7 +82,7 @@ class coverage
 							for ($line = $method->getStartLine(); $line <= $endLine; $line++)
 							{
 								$this->lines[$testedClassFile][$line] = 0;
-								$this->methods[$testedClassFile][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
+								$this->methods[$testedClassFile][$testedClass->getName()][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
 							}
 						}
 					}
@@ -105,15 +110,38 @@ class coverage
 
 	public function merge(score\coverage $coverage)
 	{
-		foreach ($coverage->getLines() as $file => $lines)
+		foreach ($coverage->getMethods() as $testedClassFile => $classes)
 		{
-			foreach ($lines as $line => $number)
+			if (isset($this->lines[$testedClassFile]) === false)
 			{
-				$this->lines[$file][$line] = (isset($this->lines[$file][$line]) === false ? $number : $this->lines[$file][$line] + $number);
+				$this->lines[$testedClassFile] = array();
+			}
+
+			foreach ($classes as $className => $methods)
+			{
+				foreach ($methods as $methodName => $calls)
+				{
+					foreach ($calls as $line => $call)
+					{
+						if (isset($this->lines[$testedClassFile][$line]) === false)
+						{
+							$this->lines[$testedClassFile][$line] = 0;
+						}
+
+						$this->lines[$testedClassFile][$line] += $call;
+
+						$this->methods[$testedClassFile][$className][$methodName][$line] = & $this->lines[$testedClassFile][$line];
+					}
+				}
 			}
 		}
 
 		return $this;
+	}
+
+	public function count()
+	{
+		return sizeof($this->lines);
 	}
 }
 

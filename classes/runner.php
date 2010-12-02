@@ -129,7 +129,13 @@ class runner implements observable, adapter\aggregator
 					$test->addObserver($observer);
 				}
 
-				$this->score->merge($test->run()->getScore());
+				try
+				{
+					$this->score->merge($test->run()->getScore());
+				}
+				catch (\exception $exception)
+				{
+				}
 			}
 		}
 

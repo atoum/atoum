@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class coverage extends atoum\test
 {
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(tests\coverage::titlePrompt)->isEqualTo('> ')
+		;
+	}
+
 	public function test__construct()
 	{
 		$duration = new tests\coverage();
@@ -115,6 +122,15 @@ class coverage extends atoum\test
 		);
 
 		$scoreCoverage->addXdebugData($this, $xdebugData);
+
+		$coverage = new tests\coverage($locale = new atoum\locale());
+
+		$this->assert
+			->string($coverage->toString())->isEmpty()
+			->string($coverage->setWithRunner($runner)->toString())->isEmpty()
+			->string($coverage->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
+			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\coverage::titlePrompt)
+		;
 	}
 }
 

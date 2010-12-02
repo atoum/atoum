@@ -7,6 +7,8 @@ use \mageekguy\atoum\report;
 
 class coverage extends report\fields\runner
 {
+	const titlePrompt = '> ';
+
 	protected $coverage = null;
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
@@ -22,6 +24,18 @@ class coverage extends report\fields\runner
 	public function getCoverage()
 	{
 		return $this->coverage;
+	}
+
+	public function toString()
+	{
+		$string = parent::toString();
+
+		if ($this->coverage !== null && sizeof($this->coverage) > 0)
+		{
+			$string .= self::titlePrompt;
+		}
+
+		return $string;
 	}
 }
 

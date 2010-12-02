@@ -370,15 +370,23 @@ abstract class test implements observable, \countable
 
 				if ($runInChildProcess === true)
 				{
-					$this->callObservers(self::beforeTearDown);
-					$this->tearDown();
-					$this->callObservers(self::afterTearDown);
+					$this
+						->callObservers(self::beforeTearDown)
+						->tearDown()
+						->callObservers(self::afterTearDown)
+					;
 				}
 			}
 			catch (\exception $exception)
 			{
-				$this->tearDown();
-				throw $exception;
+				$this
+					->callObservers(self::exception)
+					->callObservers(self::runStop)
+					->callObservers(self::beforeTearDown)
+					->tearDown()
+					->callObservers(self::afterTearDown)
+					->addExceptionToScore($exception)
+				;
 			}
 		}
 
@@ -521,7 +529,6 @@ abstract class test implements observable, \countable
 		ini_restore('display_errors');
 		ini_restore('log_errors');
 
-
 		return $this;
 	}
 
@@ -558,7 +565,7 @@ abstract class test implements observable, \countable
 
 			if ($stdOut !== '')
 			{
-				$score = unserialize($stdOut);
+				$score = @unserialize($stdOut);
 
 				if ($score instanceof score)
 				{
@@ -585,6 +592,7 @@ abstract class test implements observable, \countable
 	protected function addExceptionToScore(\exception $exception)
 	{
 		list($file, $line) = $this->getBacktrace($exception->getTrace());
+
 		$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
 
 		return $this;
