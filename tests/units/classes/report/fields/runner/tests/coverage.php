@@ -121,15 +121,15 @@ class coverage extends atoum\test
 			)
 		);
 
-		$scoreCoverage->addXdebugData($this, $xdebugData);
-
 		$coverage = new tests\coverage($locale = new atoum\locale());
+
+		$scoreCoverage->addXdebugData($this, $xdebugData);
 
 		$this->assert
 			->string($coverage->toString())->isEmpty()
 			->string($coverage->setWithRunner($runner)->toString())->isEmpty()
 			->string($coverage->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\coverage::titlePrompt)
+			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\coverage::titlePrompt . sprintf($locale->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL)
 		;
 	}
 }

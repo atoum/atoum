@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace mageekguy\atoum\tests\units;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\mock;

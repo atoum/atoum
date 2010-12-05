@@ -14,6 +14,13 @@ class coverage implements \countable
 
 	public function __construct() {}
 
+	public function reset()
+	{
+		$this->lines = $this->methods = array();
+
+		return $this;
+	}
+
 	public function getReflectionClass($class)
 	{
 		$reflectionClass = null;
@@ -110,27 +117,36 @@ class coverage implements \countable
 
 	public function merge(score\coverage $coverage)
 	{
-		foreach ($coverage->getMethods() as $testedClassFile => $classes)
+		foreach ($coverage->getMethods() as $file => $classes)
 		{
-			if (isset($this->lines[$testedClassFile]) === false)
+			if (isset($this->methods[$file]) === false)
 			{
-				$this->lines[$testedClassFile] = array();
+				$this->methods[$file] = array();
 			}
 
-			foreach ($classes as $className => $methods)
+			foreach ($classes as $class => $methods)
 			{
-				foreach ($methods as $methodName => $calls)
+				if (isset($this->methods[$file][$class]) === false)
 				{
-					foreach ($calls as $line => $call)
+					$this->methods[$file][$class] = array();
+				}
+
+				foreach ($methods as $method => $lines)
+				{
+					if (isset($this->methods[$file][$class][$method]) === false)
 					{
-						if (isset($this->lines[$testedClassFile][$line]) === false)
+						$this->methods[$file][$class][$method] = array();
+					}
+
+					foreach ($lines as $line => $calls)
+					{
+						if (isset($this->methods[$file][$class][$method][$line]) === false)
 						{
-							$this->lines[$testedClassFile][$line] = 0;
+							$this->lines[$file][$line] = 0;
+							$this->methods[$file][$class][$method][$line] = & $this->lines[$file][$line];
 						}
 
-						$this->lines[$testedClassFile][$line] += $call;
-
-						$this->methods[$testedClassFile][$className][$methodName][$line] = & $this->lines[$testedClassFile][$line];
+						$this->lines[$file][$line] += $calls;
 					}
 				}
 			}
@@ -139,9 +155,44 @@ class coverage implements \countable
 		return $this;
 	}
 
+	public function getValue()
+	{
+		$value = null;
+
+		if (sizeof($this) > 0)
+		{
+			$totalLines = 0;
+			$coveredLines = 0;
+
+			foreach ($this->lines as $lines)
+			{
+				foreach ($lines as $call)
+				{
+					$totalLines++;
+
+					if ($call > 0)
+					{
+						$coveredLines++;
+					}
+				}
+			}
+
+			$value = (float) $coveredLines / $totalLines;
+		}
+
+		return $value;
+	}
+
 	public function count()
 	{
-		return sizeof($this->lines);
+		$size = 0;
+
+		foreach ($this->methods as $classes)
+		{
+			$size += sizeof($classes);
+		}
+
+		return $size;
 	}
 }
 

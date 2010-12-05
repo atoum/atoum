@@ -401,6 +401,8 @@ abstract class test implements observable, \countable
 			$registry->{$registryKey} = $tests;
 		}
 
+		file_put_contents('/home/fch/tmp/xdebug.txt', var_export($this->score->getCoverage()->getLines(), true));
+
 		return $this;
 	}
 
@@ -473,17 +475,18 @@ abstract class test implements observable, \countable
 
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
-				$xdebugLoaded = $this->adapter->extension_loaded('xdebug');
+				$xdebugLoaded = $this->adapter->extension_loaded('Xdebug');
 
 				if ($xdebugLoaded === true)
 				{
-					$this->adapter->xdebug_start_code_coverage();
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_DEAD_CODE);
 				}
 
 				$this->{$testMethod}();
 
 				if ($xdebugLoaded === true)
 				{
+					$this->score->getCoverage()->addXdebugData($this, $this->adapter->xdebug_get_code_coverage());
 					$this->adapter->xdebug_stop_code_coverage();
 				}
 
@@ -491,14 +494,7 @@ abstract class test implements observable, \countable
 					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
 					->addDuration($this->class, $this->currentMethod, microtime(true) - $time)
 					->addOutput($this->class, $this->currentMethod, ob_get_contents())
-					->getCoverage()->addXdebugData($this, xdebug_get_code_coverage())
 				;
-
-				if ($xdebugLoaded === true)
-				{
-					$this->score->getCoverage()->addXdebugData($this, $this->adapter->xdebug_get_code_coverage());
-					$this->adapter->xdebug_stop_code_coverage();
-				}
 
 				ob_end_clean();
 

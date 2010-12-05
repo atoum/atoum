@@ -28,11 +28,11 @@ class coverage extends report\fields\runner
 
 	public function toString()
 	{
-		$string = parent::toString();
+		$string = '';
 
 		if ($this->coverage !== null && sizeof($this->coverage) > 0)
 		{
-			$string .= self::titlePrompt;
+			$string .= self::titlePrompt . sprintf($this->locale->_('Code coverage value: %3.2f%%'), $this->coverage->getValue() * 100.0) . PHP_EOL;
 		}
 
 		return $string;

@@ -29,7 +29,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 
 	public function isEqualTo($variable, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
+		static::check($variable, __METHOD__);
 
 		return parent::isEqualTo($variable, $failMessage);
 	}

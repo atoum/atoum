@@ -8,11 +8,11 @@ use \mageekguy\atoum\tools\diffs;
 
 require_once(__DIR__ . '/../../runner.php');
 
-class integer extends atoum\test
+class float extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\integer($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\float($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -26,12 +26,12 @@ class integer extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\integer($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\float($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not an integer'), $asserter->toString($variable)))
+				->hasMessage(sprintf($locale->_('%s is not a float'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -40,7 +40,7 @@ class integer extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not an integer'), $asserter->toString($variable))
+						'fail' => sprintf($locale->_('%s is not a float'), $asserter->toString($variable))
 					)
 				)
 			)
@@ -49,13 +49,13 @@ class integer extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
+			->object($asserter->setWith($variable = (float) rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($asserter->getVariable())->isEqualTo($variable)
+			->float($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
 
@@ -63,9 +63,9 @@ class integer extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\integer($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\float($score = new atoum\score(), $locale = new atoum\locale());
 
-		$asserter->setWith($variable = rand(1, PHP_INT_MAX));
+		$asserter->setWith($variable = (float) rand(1, PHP_INT_MAX));
 
 		$score->reset();
 
