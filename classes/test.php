@@ -401,8 +401,6 @@ abstract class test implements observable, \countable
 			$registry->{$registryKey} = $tests;
 		}
 
-		file_put_contents('/home/fch/tmp/xdebug.txt', var_export($this->score->getCoverage()->getLines(), true));
-
 		return $this;
 	}
 
@@ -479,7 +477,7 @@ abstract class test implements observable, \countable
 
 				if ($xdebugLoaded === true)
 				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_DEAD_CODE);
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 				}
 
 				$this->{$testMethod}();
