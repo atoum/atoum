@@ -96,25 +96,12 @@ class runner extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$run = function() {};
-
-		$test1 = new mock\mageekguy\atoum\test();
-		$test1->getMockController()->run = $run;
-
-		$test2 = new mock\mageekguy\atoum\test();
-		$test2->getMockController()->run = $run;
-
-		$test3 = new mock\mageekguy\atoum\test();
-		$test3->getMockController()->run = $run;
-
-		$testClasses = array($test1, $test2, $test3);
-
-		$adapter->get_declared_classes = function() use ($testClasses) { return $testClasses; };
+		$adapter->get_declared_classes = function() { return array('\mageekguy\atoum\mock\mageekguy\atoum\test'); };
 
 		$runner->run();
 
 		$this->assert
-			->integer($runner->getTestNumber())->isEqualTo(sizeof($testClasses))
+			->integer($runner->getTestNumber())->isEqualTo(1)
 		;
 	}
 

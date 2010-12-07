@@ -409,10 +409,7 @@ abstract class test implements observable, \countable
 		if (error_reporting() !== 0)
 		{
 			list($file, $line) = $this->getBacktrace();
-			foreach (debug_backtrace() as $trace)
-			{
-				var_dump($trace['file'], $trace['line']);
-			}
+
 			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr);
 		}
 

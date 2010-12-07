@@ -82,16 +82,16 @@ class coverage implements \countable
 					{
 						for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 						{
-							if (isset($data[$testedClassFile][$line]) === true && $data[$testedClassFile][$line] >= 0)
+							if (isset($data[$testedClassFile][$line]) === true)
 							{
-								if (isset($this->lines[$testedClassFile][$line]) === true)
-								{
-									$this->lines[$testedClassFile][$line] += $data[$testedClassFile][$line];
-								}
-								else
+								if (isset($this->lines[$testedClassFile][$line]) === false)
 								{
 									$this->lines[$testedClassFile][$line] = $data[$testedClassFile][$line];
 									$this->methods[$testedClassFile][$testedClass->getName()][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
+								}
+								else if ($data[$testedClassFile][$line] > $this->lines[$testedClassFile][$line])
+								{
+									$this->lines[$testedClassFile][$line] = $data[$testedClassFile][$line];
 								}
 							}
 						}
@@ -127,15 +127,17 @@ class coverage implements \countable
 						$this->methods[$file][$class][$method] = array();
 					}
 
-					foreach ($lines as $line => $calls)
+					foreach ($lines as $line => $call)
 					{
 						if (isset($this->methods[$file][$class][$method][$line]) === false)
 						{
-							$this->lines[$file][$line] = 0;
+							$this->lines[$file][$line] = $call;
 							$this->methods[$file][$class][$method][$line] = & $this->lines[$file][$line];
 						}
-
-						$this->lines[$file][$line] += $calls;
+						else if ($call > $this->lines[$file][$line])
+						{
+								$this->lines[$file][$line] = $call;
+						}
 					}
 				}
 			}
@@ -157,9 +159,12 @@ class coverage implements \countable
 			{
 				foreach ($lines as $call)
 				{
-					$totalLines++;
+					if ($call >= -1)
+					{
+						$totalLines++;
+					}
 
-					if ($call > 0)
+					if ($call === 1)
 					{
 						$coveredLines++;
 					}

@@ -138,14 +138,14 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($runTestClasses as $runTestClass)
 		{
+			$test = new $runTestClass();
+
 			$xdebugLoaded = $this->adapter->extension_loaded('xdebug');
 
 			if ($xdebugLoaded === true)
 			{
 				$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 			}
-
-			$test = new $runTestClass();
 
 			$this->testMethodNumber += sizeof($test);
 
@@ -156,23 +156,16 @@ class runner implements observable, adapter\aggregator
 					$test->addObserver($observer);
 				}
 
-				try
-				{
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
-				}
-				catch (\exception $exception) {}
+				$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
 			}
 
 			if ($xdebugLoaded === true)
 			{
-				$cc = $this->adapter->xdebug_get_code_coverage();
+				$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
 
-				$this->score->getCoverage()->addXdebugData($test, $cc);
 				$this->adapter->xdebug_stop_code_coverage();
 			}
 		}
-
-		file_put_contents('/home/fch/tmp/xdebug.txt', var_export($this->score->getCoverage(), true));
 
 		$this->stop = $this->adapter->microtime(true);
 
