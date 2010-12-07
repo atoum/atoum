@@ -11,6 +11,8 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
+	protected $path = '';
+	protected $class = '';
 	protected $score = null;
 	protected $adapter = null;
 	protected $observers = array();
@@ -36,6 +38,11 @@ class runner implements observable, adapter\aggregator
 
 		$this->score = $score;
 		$this->adapter = $adapter;
+
+		$runnerClass = new \reflectionClass($this);
+
+		$this->path = $runnerClass->getFilename();
+		$this->class = $runnerClass->getName();
 	}
 
 	public function getScore()
@@ -46,6 +53,16 @@ class runner implements observable, adapter\aggregator
 	public function getAdapter()
 	{
 		return $this->adapter;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
+	}
+
+	public function getClass()
+	{
+		return $this->class;
 	}
 
 	public function getTestNumber()
@@ -99,26 +116,36 @@ class runner implements observable, adapter\aggregator
 		return $this->testObservers;
 	}
 
-	public function run($testClass = null)
+	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null)
 	{
 		$this->score->reset();
 
 		$this->start = $this->adapter->microtime(true);
 
-		if ($testClass === null)
-		{
-			$testClass = __NAMESPACE__ . '\test';
-		}
-
 		$this->callObservers(self::runStart);
 
-		$testClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testClass) { return (is_subclass_of($class, $testClass) === true && get_parent_class($class) !== false); });
-
-		$this->testNumber = sizeof($testClasses);
-
-		foreach ($testClasses as $testClass)
+		if ($testBaseClass === null)
 		{
-			$test = new $testClass();
+			$testBaseClass = __NAMESPACE__ . '\test';
+		}
+
+		if (sizeof($runTestClasses) <= 0)
+		{
+			$runTestClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) { return (is_subclass_of($class, $testBaseClass) === true && get_parent_class($class) !== false); });
+		}
+
+		$this->testNumber = sizeof($runTestClasses);
+
+		foreach ($runTestClasses as $runTestClass)
+		{
+			$xdebugLoaded = $this->adapter->extension_loaded('xdebug');
+
+			if ($xdebugLoaded === true)
+			{
+				$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+			}
+
+			$test = new $runTestClass();
 
 			$this->testMethodNumber += sizeof($test);
 
@@ -131,13 +158,21 @@ class runner implements observable, adapter\aggregator
 
 				try
 				{
-					$this->score->merge($test->run()->getScore());
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
 				}
-				catch (\exception $exception)
-				{
-				}
+				catch (\exception $exception) {}
+			}
+
+			if ($xdebugLoaded === true)
+			{
+				$cc = $this->adapter->xdebug_get_code_coverage();
+
+				$this->score->getCoverage()->addXdebugData($test, $cc);
+				$this->adapter->xdebug_stop_code_coverage();
 			}
 		}
+
+		file_put_contents('/home/fch/tmp/xdebug.txt', var_export($this->score->getCoverage(), true));
 
 		$this->stop = $this->adapter->microtime(true);
 

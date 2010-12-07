@@ -41,7 +41,7 @@ class collection extends \mageekguy\atoum\asserters\variable
 		}
 	}
 
-	public function isNotEmpty()
+	public function isNotEmpty($failMessage = null)
 	{
 		if (sizeof($this->variableIsSet()->variable) > 0)
 		{

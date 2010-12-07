@@ -76,34 +76,23 @@ class coverage implements \countable
 				$testedClass = $this->getReflectionClass($testedClassName);
 				$testedClassFile = $testedClass->getFileName();
 
-				if (isset($this->methods[$testedClassFile]) === false)
+				foreach ($testedClass->getMethods() as $method)
 				{
-					$this->methods[$testedClassFile] = array();
-
-					foreach ($testedClass->getMethods() as $method)
+					if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
 					{
-						if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
+						for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 						{
-							$endLine = $method->getEndLine();
-
-							for ($line = $method->getStartLine(); $line <= $endLine; $line++)
+							if (isset($data[$testedClassFile][$line]) === true && $data[$testedClassFile][$line] >= 0)
 							{
-								$this->lines[$testedClassFile][$line] = 0;
-								$this->methods[$testedClassFile][$testedClass->getName()][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
-							}
-						}
-					}
-				}
-
-				foreach ($data as $file => $lines)
-				{
-					if ($file === $testedClassFile)
-					{
-						foreach ($lines as $line => $number)
-						{
-							if (isset($this->lines[$testedClassFile][$line]) === true)
-							{
-								$this->lines[$testedClassFile][$line] += $number;
+								if (isset($this->lines[$testedClassFile][$line]) === true)
+								{
+									$this->lines[$testedClassFile][$line] += $data[$testedClassFile][$line];
+								}
+								else
+								{
+									$this->lines[$testedClassFile][$line] = $data[$testedClassFile][$line];
+									$this->methods[$testedClassFile][$testedClass->getName()][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
+								}
 							}
 						}
 					}

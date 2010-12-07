@@ -26,7 +26,7 @@ class coverage extends atoum\test
 		$coverage = new score\coverage();
 
 		$this->assert
-			->object($coverage->addxdebugData($this, array()))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugData($this, array()))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEmpty()
 		;
 
@@ -77,7 +77,7 @@ class coverage extends atoum\test
 		);
 
 		$this->assert
-			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
 						6 => 2,
@@ -110,7 +110,7 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->object($coverage->addxdebugData($this, $xdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
 						6 => 4,
@@ -165,6 +165,8 @@ class coverage extends atoum\test
 		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$coverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
 
 		$classFile = uniqid();
 		$className = uniqid();
@@ -265,7 +267,7 @@ class coverage extends atoum\test
 			->array($coverage->getMethods())->isEmpty()
 		;
 
-		$coverage->addxdebugData($this, $xdebugData);
+		$coverage->addXdebugData($this, $xdebugData);
 
 		$this->assert
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
@@ -431,6 +433,10 @@ class coverage extends atoum\test
 		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$coverage
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+		;
 
 		$classFile = uniqid();
 		$className = uniqid();

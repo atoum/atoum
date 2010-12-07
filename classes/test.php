@@ -25,8 +25,8 @@ abstract class test implements observable, \countable
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
 
-	private $class = '';
 	private $path = '';
+	private $class = '';
 	private $adapter = null;
 	private $asserterGenerator = null;
 	private $registryInjector = null;
@@ -283,7 +283,7 @@ abstract class test implements observable, \countable
 		return ($this->isolation === true);
 	}
 
-	public function run(array $runTestMethods = array(), $runInChildProcess = true)
+	public function run(array $runTestMethods = array(), atoum\runner $runner = null)
 	{
 		$registryKey = __CLASS__ . '\running';
 
@@ -319,7 +319,7 @@ abstract class test implements observable, \countable
 		{
 			try
 			{
-				if ($runInChildProcess === true)
+				if ($runner !== null)
 				{
 					$this->callObservers(self::beforeSetUp);
 					$this->setUp();
@@ -336,13 +336,13 @@ abstract class test implements observable, \countable
 
 					$this->callObservers(self::beforeTestMethod);
 
-					if ($runInChildProcess === false || (isset($this->testMethods[$testMethodName]['isolation']) === false ? $this->isolation : $this->testMethods[$testMethodName]['isolation']) === false)
+					if ($runner === null || (isset($this->testMethods[$testMethodName]['isolation']) === false ? $this->isolation : $this->testMethods[$testMethodName]['isolation']) === false)
 					{
 						$this->runTestMethod($testMethodName);
 					}
 					else
 					{
-						$this->runInChildProcess($testMethodName);
+						$this->runInChildProcess($testMethodName, $runner);
 					}
 
 					switch (true)
@@ -368,7 +368,7 @@ abstract class test implements observable, \countable
 					$this->currentMethod = null;
 				}
 
-				if ($runInChildProcess === true)
+				if ($runner !== null)
 				{
 					$this
 						->callObservers(self::beforeTearDown)
@@ -409,6 +409,10 @@ abstract class test implements observable, \countable
 		if (error_reporting() !== 0)
 		{
 			list($file, $line) = $this->getBacktrace();
+			foreach (debug_backtrace() as $trace)
+			{
+				var_dump($trace['file'], $trace['line']);
+			}
 			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr);
 		}
 
@@ -473,20 +477,8 @@ abstract class test implements observable, \countable
 
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
-				$xdebugLoaded = $this->adapter->extension_loaded('Xdebug');
-
-				if ($xdebugLoaded === true)
-				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-				}
 
 				$this->{$testMethod}();
-
-				if ($xdebugLoaded === true)
-				{
-					$this->score->getCoverage()->addXdebugData($this, $this->adapter->xdebug_get_code_coverage());
-					$this->adapter->xdebug_stop_code_coverage();
-				}
 
 				$this->score
 					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
@@ -526,9 +518,9 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	protected function runInChildProcess($testMethod)
+	protected function runInChildProcess($testMethod, atoum\runner $runner)
 	{
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $this->getPath() . '\'); $unit = new ' . $this->class . '; $unit->run(array(\'' . $testMethod . '\'), false); echo serialize($unit->getScore()); ?>';
+		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $runner->getPath() . '\'); require(\'' . $this->path . '\'); $runner = new ' . $runner->getClass() . '(); $runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false); echo serialize($runner->getScore()); ?>';
 
 		$descriptors = array
 			(
@@ -554,7 +546,7 @@ abstract class test implements observable, \countable
 
 			if ($stdErr != '')
 			{
-				$this->extractError($stdErr);
+				$this->extractError($stdErr, $returnValue);
 			}
 
 			if ($stdOut !== '')
