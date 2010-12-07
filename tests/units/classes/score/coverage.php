@@ -60,11 +60,11 @@ class coverage extends atoum\test
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				5 => 1,
-				6 => 2,
-				7 => 3,
-				8 => 2,
-				9 => 1
+				5 => -1,
+				6 => 1,
+				7 => -1,
+				8 => -2,
+				9 => -1
 			),
 		  uniqid() =>
 			 array(
@@ -80,9 +80,9 @@ class coverage extends atoum\test
 			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
-						6 => 2,
-						7 => 3,
-						8 => 2
+						6 => 1,
+						7 => -1,
+						8 => -2
 					)
 				)
 			)
@@ -90,9 +90,9 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 2,
-								7 => 3,
-								8 => 2
+								6 => 1,
+								7 => -1,
+								8 => -2
 							)
 						)
 					)
@@ -102,9 +102,9 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 2,
-								7 => 3,
-								8 => 2
+								6 => 1,
+								7 => -1,
+								8 => -2
 							)
 						)
 					)
@@ -113,9 +113,9 @@ class coverage extends atoum\test
 			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
-						6 => 4,
-						7 => 6,
-						8 => 4
+						6 => 1,
+						7 => -1,
+						8 => -2
 					)
 				)
 			)
@@ -123,9 +123,9 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 4,
-								7 => 6,
-								8 => 4
+								6 => 1,
+								7 => -1,
+								8 => -2
 							)
 						)
 					)
@@ -231,11 +231,11 @@ class coverage extends atoum\test
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				5 => 1,
-				6 => 2,
-				7 => 3,
-				8 => 2,
-				9 => 1
+				5 => -2,
+				6 => -1,
+				7 => 1,
+				8 => -2,
+				9 =>-2
 			),
 		  uniqid() =>
 			 array(
@@ -273,9 +273,9 @@ class coverage extends atoum\test
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
-						6 => 2,
-						7 => 3,
-						8 => 2
+						6 => -1,
+						7 => 1,
+						8 => -2
 					)
 				)
 			)
@@ -283,9 +283,9 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 2,
-								7 => 3,
-								8 => 2
+								6 => -1,
+								7 => 1,
+								8 => -2
 							)
 						)
 					)
@@ -297,9 +297,9 @@ class coverage extends atoum\test
 			->object($coverage->merge($coverage))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
-						6 => 4,
-						7 => 6,
-						8 => 4
+						6 => -1,
+						7 => 1,
+						8 =>-2
 					)
 				)
 			)
@@ -307,9 +307,9 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 4,
-								7 => 6,
-								8 => 4
+								6 => -1,
+								7 => 1,
+								8 => -2
 							)
 						)
 					)
@@ -338,16 +338,16 @@ class coverage extends atoum\test
 		$otherXdebugData = array(
 		  $otherClassFile =>
 			 array(
-				1 => 10,
-				2 => 20,
-				3 => 30,
-				4 => 40,
-				5 => 50,
-				6 => 60,
-				7 => 70,
-				8 => 80,
-				9 => 90,
-				10 => 100
+				1 => -2,
+				2 => -1,
+				3 => 1,
+				4 => 1,
+				5 => -1,
+				6 => 1,
+				7 => 1,
+				8 => -1,
+				9 => -2,
+				10 => 1
 			),
 		  uniqid() =>
 			 array(
@@ -367,16 +367,16 @@ class coverage extends atoum\test
 			->object($coverage->merge($otherCoverage->addXdebugData($this, $otherXdebugData)))->isIdenticalTo($coverage)
 			->array($coverage->getLines())->isEqualTo(array(
 					$classFile => array(
-						6 => 4,
-						7 => 6,
-						8 => 4
+						6 => -1,
+						7 => 1,
+						8 => -2
 					),
 					$otherClassFile => array(
-						5 => 50,
-						6 => 60,
-						7 => 70,
-						8 => 80,
-						9 => 90
+						5 => -1,
+						6 => 1,
+						7 => 1,
+						8 => -1,
+						9 => -2
 					)
 				)
 			)
@@ -384,20 +384,20 @@ class coverage extends atoum\test
 					$classFile => array(
 						$className => array(
 							$methodName => array(
-								6 => 4,
-								7 => 6,
-								8 => 4
+								6 => -1,
+								7 => 1,
+								8 =>-2
 							)
 						)
 					),
 					$otherClassFile => array(
 						$otherClassName => array(
 							$otherMethodName => array(
-								5 => 50,
-								6 => 60,
-								7 => 70,
-								8 => 80,
-								9 => 90
+								5 => -1,
+								6 => 1,
+								7 => 1,
+								8 => -1,
+								9 => -2
 							)
 						)
 					)
@@ -500,13 +500,13 @@ class coverage extends atoum\test
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				3 => 0,
-				4 => 0,
-				5 => 0,
-				6 => 0,
-				7 => 0,
-				8 => 0,
-				9 => 0
+				3 => -2,
+				4 => -1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -2
 			),
 		  uniqid() =>
 			 array(
@@ -531,13 +531,13 @@ class coverage extends atoum\test
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				3 => 0,
-				4 => 0,
-				5 => 0,
-				6 => 0,
-				7 => 0,
-				8 => 1,
-				9 => 0
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -1
 			),
 		  uniqid() =>
 			 array(
@@ -552,19 +552,19 @@ class coverage extends atoum\test
 		$coverage->reset()->addXdebugData($this, $xdebugData);
 
 		$this->assert
-			->float($coverage->getValue())->isEqualTo(1 / 5)
+			->float($coverage->getValue())->isEqualTo(1 / 4)
 		;
 
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				3 => 0,
-				4 => 0,
-				5 => 0,
-				6 => 0,
-				7 => 2,
-				8 => 1,
-				9 => 0
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => 1,
+				8 => -2,
+				9 => -1
 			),
 		  uniqid() =>
 			 array(
@@ -579,19 +579,19 @@ class coverage extends atoum\test
 		$coverage->reset()->addXdebugData($this, $xdebugData);
 
 		$this->assert
-			->float($coverage->getValue())->isEqualTo(2 / 5)
+			->float($coverage->getValue())->isEqualTo(2 / 4)
 		;
 
 		$xdebugData = array(
 		  $classFile =>
 			 array(
-				3 => 0,
-				4 => 5,
-				5 => 4,
-				6 => 3,
-				7 => 2,
-				8 => 1,
-				9 => 0
+				3 => -2,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 1,
+				8 => -2,
+				9 => -1
 			),
 		  uniqid() =>
 			 array(
