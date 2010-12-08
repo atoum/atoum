@@ -87,25 +87,21 @@ class coverage extends atoum\test
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => 1,
-								7 => -1,
-								8 => -2
-							)
+					$className => array(
+						$methodName => array(
+							6 => 1,
+							7 => -1,
+							8 => -2
 						)
 					)
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => 1,
-								7 => -1,
-								8 => -2
-							)
+					$className => array(
+						$methodName => array(
+							6 => 1,
+							7 => -1,
+							8 => -2
 						)
 					)
 				)
@@ -120,13 +116,11 @@ class coverage extends atoum\test
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => 1,
-								7 => -1,
-								8 => -2
-							)
+					$className => array(
+						$methodName => array(
+							6 => 1,
+							7 => -1,
+							8 => -2
 						)
 					)
 				)
@@ -280,13 +274,11 @@ class coverage extends atoum\test
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => -1,
-								7 => 1,
-								8 => -2
-							)
+					$className => array(
+						$methodName => array(
+							6 => -1,
+							7 => 1,
+							8 => -2
 						)
 					)
 				)
@@ -304,13 +296,11 @@ class coverage extends atoum\test
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => -1,
-								7 => 1,
-								8 => -2
-							)
+					$className => array(
+						$methodName => array(
+							6 => -1,
+							7 => 1,
+							8 => -2
 						)
 					)
 				)
@@ -381,24 +371,20 @@ class coverage extends atoum\test
 				)
 			)
 			->array($coverage->getMethods())->isEqualTo(array(
-					$classFile => array(
-						$className => array(
-							$methodName => array(
-								6 => -1,
-								7 => 1,
-								8 =>-2
-							)
+					$className => array(
+						$methodName => array(
+							6 => -1,
+							7 => 1,
+							8 =>-2
 						)
 					),
-					$otherClassFile => array(
-						$otherClassName => array(
-							$otherMethodName => array(
-								5 => -1,
-								6 => 1,
-								7 => 1,
-								8 => -1,
-								9 => -2
-							)
+					$otherClassName => array(
+						$otherMethodName => array(
+							5 => -1,
+							6 => 1,
+							7 => 1,
+							8 => -1,
+							9 => -2
 						)
 					)
 				)
