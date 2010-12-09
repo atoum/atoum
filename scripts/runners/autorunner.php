@@ -16,7 +16,6 @@ if (constant(__NAMESPACE__ . '\autorun') === true)
 	if (isset(atoum\registry::getInstance()->currentRunner) === false)
 	{
 		atoum\registry::getInstance()->currentRunner = new atoum\runner();
-
 		atoum\registry::getInstance()->currentRunner->addReport(new atoum\reports\cli());
 	}
 

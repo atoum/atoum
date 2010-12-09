@@ -66,21 +66,6 @@ class error extends \mageekguy\atoum\asserter
 
 		return $this;
 	}
-
-	protected function setWithArguments(array $arguments)
-	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
-		}
-
-		if (array_key_exists(1, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
-		}
-
-		return $this->setWith($arguments[0], $arguments[1]);
-	}
 }
 
 ?>

@@ -48,16 +48,6 @@ class integer extends \mageekguy\atoum\asserters\variable
 		}
 	}
 
-	protected function setWithArguments(array $arguments)
-	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
-		}
-
-		return $this->setWith($arguments[0]);
-	}
-
 	protected static function check($variable, $method)
 	{
 		if (self::isInteger($variable) === false)

@@ -58,17 +58,7 @@ class string extends variable
 
 	public function isEqualTo($variable, $failMessage = null)
 	{
-		return parent::isEqualTo($variable, $this->locale->_('strings are not equals'));
-	}
-
-	protected function setWithArguments(array $arguments)
-	{
-		if (isset($arguments[1]) === true)
-		{
-			$this->charlist = $arguments[1];
-		}
-
-		return parent::setWithArguments($arguments);
+		return parent::isEqualTo($variable, $failMessage !== null ? $failMessage : $this->locale->_('strings are not equals'));
 	}
 
 	protected static function check($variable, $method)

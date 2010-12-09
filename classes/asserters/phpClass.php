@@ -101,16 +101,6 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 	}
 
-	protected function setWithArguments(array $arguments)
-	{
-		if (array_key_exists(0, $arguments) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument must be set at index 0');
-		}
-
-		return $this->setWith($arguments[0]);
-	}
-
 	protected function classIsSet()
 	{
 		if ($this->class === null)
