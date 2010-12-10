@@ -8,6 +8,7 @@ use \mageekguy\atoum\exceptions;
 
 class coverage implements \countable
 {
+	protected $classes = array();
 	protected $lines = array();
 	protected $methods = array();
 	protected $reflectionClassInjector = null;
@@ -16,7 +17,7 @@ class coverage implements \countable
 
 	public function reset()
 	{
-		$this->lines = $this->methods = array();
+		$this->classes = $this->methods = array();
 
 		return $this;
 	}
@@ -56,9 +57,9 @@ class coverage implements \countable
 		return $this;
 	}
 
-	public function getLines()
+	public function getClasses()
 	{
-		return $this->lines;
+		return $this->classes;
 	}
 
 	public function getMethods()
@@ -72,26 +73,25 @@ class coverage implements \countable
 		{
 			try
 			{
-				$testedClassName = $test->getTestedClassName();
-				$testedClass = $this->getReflectionClass($testedClassName);
+				$testedClass = $this->getReflectionClass($test->getTestedClassName());
 				$testedClassFile = $testedClass->getFileName();
 
-				foreach ($testedClass->getMethods() as $method)
+				if (isset($data[$testedClassFile]) === true)
 				{
-					if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
+					$this->classes[$testedClass->getName()] = $testedClassFile;
+
+					foreach ($testedClass->getMethods() as $method)
 					{
-						for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+						if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
 						{
-							if (isset($data[$testedClassFile][$line]) === true)
+							for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 							{
-								if (isset($this->lines[$testedClassFile][$line]) === false)
+								if (isset($data[$testedClassFile][$line]) === true)
 								{
-									$this->lines[$testedClassFile][$line] = $data[$testedClassFile][$line];
-									$this->methods[$testedClassFile][$testedClass->getName()][$method->getName()][$line] = & $this->lines[$testedClassFile][$line];
-								}
-								else if ($data[$testedClassFile][$line] > $this->lines[$testedClassFile][$line])
-								{
-									$this->lines[$testedClassFile][$line] = $data[$testedClassFile][$line];
+									if (isset($this->methods[$testedClass->getName()][$method->getName()][$line]) === false || $this->methods[$testedClass->getName()][$method->getName()][$line] < $data[$testedClassFile][$line])
+									{
+										$this->methods[$testedClass->getName()][$method->getName()][$line] = $data[$testedClassFile][$line];
+									}
 								}
 							}
 						}
@@ -106,38 +106,20 @@ class coverage implements \countable
 
 	public function merge(score\coverage $coverage)
 	{
-		foreach ($coverage->getMethods() as $file => $classes)
+		foreach ($coverage->methods as $class => $methods)
 		{
-			if (isset($this->methods[$file]) === false)
+			if (isset($this->classes[$class]) === false)
 			{
-				$this->methods[$file] = array();
+				$this->classes[$class] = $coverage->classes[$class];
 			}
 
-			foreach ($classes as $class => $methods)
+			foreach ($methods as $method => $lines)
 			{
-				if (isset($this->methods[$file][$class]) === false)
+				foreach ($lines as $line => $call)
 				{
-					$this->methods[$file][$class] = array();
-				}
-
-				foreach ($methods as $method => $lines)
-				{
-					if (isset($this->methods[$file][$class][$method]) === false)
+					if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
 					{
-						$this->methods[$file][$class][$method] = array();
-					}
-
-					foreach ($lines as $line => $call)
-					{
-						if (isset($this->methods[$file][$class][$method][$line]) === false)
-						{
-							$this->lines[$file][$line] = $call;
-							$this->methods[$file][$class][$method][$line] = & $this->lines[$file][$line];
-						}
-						else if ($call > $this->lines[$file][$line])
-						{
-								$this->lines[$file][$line] = $call;
-						}
+						$this->methods[$class][$method][$line] = $call;
 					}
 				}
 			}
@@ -155,7 +137,41 @@ class coverage implements \countable
 			$totalLines = 0;
 			$coveredLines = 0;
 
-			foreach ($this->lines as $lines)
+			foreach ($this->methods as $methods)
+			{
+				foreach ($methods as $lines)
+				{
+					foreach ($lines as $call)
+					{
+						if ($call >= -1)
+						{
+							$totalLines++;
+						}
+
+						if ($call === 1)
+						{
+							$coveredLines++;
+						}
+					}
+				}
+			}
+
+			$value = (float) $coveredLines / $totalLines;
+		}
+
+		return $value;
+	}
+
+	public function getValueForClass($class)
+	{
+		$value = null;
+
+		if (isset($this->methods[$class]) === true)
+		{
+			$totalLines = 0;
+			$coveredLines = 0;
+
+			foreach ($this->methods[$class] as $lines)
 			{
 				foreach ($lines as $call)
 				{
@@ -177,16 +193,37 @@ class coverage implements \countable
 		return $value;
 	}
 
-	public function count()
+	public function getValueForMethod($class, $method)
 	{
-		$size = 0;
+		$value = null;
 
-		foreach ($this->methods as $classes)
+		if (isset($this->methods[$class][$method]) === true)
 		{
-			$size += sizeof($classes);
+			$totalLines = 0;
+			$coveredLines = 0;
+
+			foreach ($this->methods[$class][$method] as $call)
+			{
+				if ($call >= -1)
+				{
+					$totalLines++;
+				}
+
+				if ($call === 1)
+				{
+					$coveredLines++;
+				}
+			}
+
+			$value = (float) $coveredLines / $totalLines;
 		}
 
-		return $size;
+		return $value;
+	}
+
+	public function count()
+	{
+		return sizeof($this->methods);
 	}
 }
 

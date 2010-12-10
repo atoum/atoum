@@ -16,7 +16,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage)->isInstanceOf('\countable')
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 		;
 	}
@@ -27,7 +26,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->addXdebugData($this, array()))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEmpty()
 		;
 
 		$mockGenerator = new mock\generator();
@@ -78,14 +76,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array(
-					$classFile => array(
-						6 => 1,
-						7 => -1,
-						8 => -2
-					)
-				)
-			)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -107,14 +97,6 @@ class coverage extends atoum\test
 				)
 			)
 			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array(
-					$classFile => array(
-						6 => 1,
-						7 => -1,
-						8 => -2
-					)
-				)
-			)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -133,10 +115,8 @@ class coverage extends atoum\test
 		$coverage = new score\coverage();
 
 		$this->assert
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 			->object($coverage->reset())->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 		;
 
@@ -188,10 +168,8 @@ class coverage extends atoum\test
 		$coverage->addXdebugData($this, $xdebugData);
 
 		$this->assert
-			->array($coverage->getLines())->isNotEmpty()
 			->array($coverage->getMethods())->isNotEmpty()
 			->object($coverage->reset())->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 		;
 	}
@@ -249,7 +227,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->merge($coverage))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 		;
 
@@ -257,7 +234,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEmpty()
 			->array($coverage->getMethods())->isEmpty()
 		;
 
@@ -265,14 +241,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array(
-					$classFile => array(
-						6 => -1,
-						7 => 1,
-						8 => -2
-					)
-				)
-			)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -287,14 +255,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->merge($coverage))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array(
-					$classFile => array(
-						6 => -1,
-						7 => 1,
-						8 =>-2
-					)
-				)
-			)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -355,21 +315,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->object($coverage->merge($otherCoverage->addXdebugData($this, $otherXdebugData)))->isIdenticalTo($coverage)
-			->array($coverage->getLines())->isEqualTo(array(
-					$classFile => array(
-						6 => -1,
-						7 => 1,
-						8 => -2
-					),
-					$otherClassFile => array(
-						5 => -1,
-						6 => 1,
-						7 => 1,
-						8 => -1,
-						9 => -2
-					)
-				)
-			)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -594,6 +539,10 @@ class coverage extends atoum\test
 		$this->assert
 			->float($coverage->getValue())->isEqualTo(1.0)
 		;
+	}
+
+	public function testGetValueForMethod()
+	{
 	}
 }
 
