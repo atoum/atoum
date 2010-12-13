@@ -17,8 +17,13 @@ class progressBar extends atoum\test
 			->generate('\mageekguy\atoum\test')
 		;
 
-		$test = new atoum\mock\mageekguy\atoum\test();
-		$mockController = $test->getMockController();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$mockController = new mock\controller();
+		$mockController->getTestedClassName = uniqid();
+
+		$test = new atoum\mock\mageekguy\atoum\test(null, null, $adapter, $mockController);
 
 		$mockController->count = function() { return 0; };
 
@@ -85,8 +90,13 @@ class progressBar extends atoum\test
 			->generate('\mageekguy\atoum\test')
 		;
 
-		$test = new mock\mageekguy\atoum\test();
-		$mockController = $test->getMockController();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$mockController = new mock\controller();
+		$mockController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $mockController);
 
 		$mockController->count = function() { return 0; };
 

@@ -89,18 +89,21 @@ class coverage extends atoum\test
 		$methodController->__construct = function() {};
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
-		$classController->getName = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$scoreCoverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
 
 		$classFile = uniqid();
+		$className = uniqid();
+		$methodName = uniqid();
 
 		$xdebugData = array(
 		  $classFile =>
@@ -129,7 +132,11 @@ class coverage extends atoum\test
 			->string($coverage->toString())->isEmpty()
 			->string($coverage->setWithRunner($runner)->toString())->isEmpty()
 			->string($coverage->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(tests\coverage::titlePrompt . sprintf($locale->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL)
+			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(
+					tests\coverage::titlePrompt . sprintf($locale->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
+					tests\coverage::classPrompt . sprintf($locale->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
+					tests\coverage::methodPrompt . sprintf($locale->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
+			)
 		;
 	}
 }

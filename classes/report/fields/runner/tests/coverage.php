@@ -38,11 +38,21 @@ class coverage extends report\fields\runner
 
 			foreach ($this->coverage->getMethods() as $class => $methods)
 			{
-				$string .= self::classPrompt . sprintf($this->locale->_('Class %s: %3.2f%%'), $class, $this->coverage->getValueForClass($class) * 100.0) . PHP_EOL;
+				$classCoverage = $this->coverage->getValueForClass($class);
 
-				foreach (array_keys($methods) as $method)
+				if ($classCoverage < 1.0)
 				{
-					$string .= self::methodPrompt . sprintf($this->locale->_('%s::%s(): %3.2f%%'), $class, $method, $this->coverage->getValueForMethod($class, $method) * 100.0) . PHP_EOL;
+					$string .= self::classPrompt . sprintf($this->locale->_('Class %s: %3.2f%%'), $class, $classCoverage * 100.0) . PHP_EOL;
+
+					foreach (array_keys($methods) as $method)
+					{
+						$methodCoverage = $this->coverage->getValueForMethod($class, $method);
+
+						if ($methodCoverage < 1.0)
+						{
+							$string .= self::methodPrompt . sprintf($this->locale->_('%s::%s(): %3.2f%%'), $class, $method, $methodCoverage * 100.0) . PHP_EOL;
+						}
+					}
 				}
 			}
 		}

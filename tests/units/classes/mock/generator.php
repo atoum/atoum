@@ -141,15 +141,11 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if ($mockController === null)' . PHP_EOL .
-				'		{' . PHP_EOL .
-				'			$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL .
-				'		}' . PHP_EOL .
 				'		if ($mockController !== null)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if ($this->mockController !== null && isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -238,7 +234,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if ($this->mockController !== null && isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -299,7 +295,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if ($this->mockController !== null && isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array(' . $argument->getVariable() . '));' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -352,10 +348,6 @@ class generator extends atoum\test
 				'		if ($mockController === null)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
-				'			if ($mockController === null)' . PHP_EOL .
-				'			{' . PHP_EOL .
-				'				$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL .
-				'			}' . PHP_EOL .
 				'		}' . PHP_EOL .
 				'		if ($mockController !== null)' . PHP_EOL .
 				'		{' . PHP_EOL .
@@ -411,10 +403,6 @@ class generator extends atoum\test
 				'		if ($mockController === null)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
-				'			if ($mockController === null)' . PHP_EOL .
-				'			{' . PHP_EOL .
-				'				$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL .
-				'			}' . PHP_EOL .
 				'		}' . PHP_EOL .
 				'		$this->setMockController($mockController);' . PHP_EOL .
 				'		if (isset($this->mockController->__construct) === false)' . PHP_EOL .

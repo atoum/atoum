@@ -35,7 +35,13 @@ class run extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->object($run->setWithTest($test))->isIdenticalTo($run)
@@ -74,7 +80,13 @@ class run extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->string($run->toString())->isEqualTo(test\run::titlePrompt . $locale->_('There is currently no test running.') . PHP_EOL)

@@ -1,5 +1,10 @@
 <?php
 
+//TODO
+//Ajouter test::testedClassExists()
+//La mocker dans les tests du runner.
+//La mocker dans les tests qui mock atoum\test.
+
 namespace mageekguy\atoum\mock;
 
 use \mageekguy\atoum;
@@ -166,15 +171,11 @@ class generator
 			'		{' . PHP_EOL .
 			'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
 			'		}' . PHP_EOL .
-			'		if ($mockController === null)' . PHP_EOL .
-			'		{' . PHP_EOL .
-			'			$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL .
-			'		}' . PHP_EOL .
 			'		if ($mockController !== null)' . PHP_EOL .
 			'		{' . PHP_EOL .
 			'			$this->setMockController($mockController);' . PHP_EOL .
 			'		}' . PHP_EOL .
-			'		if ($this->mockController !== null && isset($this->mockController->__construct) === true)' . PHP_EOL .
+			'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
 			'		{' . PHP_EOL .
 			'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
 			'		}' . PHP_EOL .
@@ -304,15 +305,6 @@ class generator
 					$methodCode .= "		" . 'if ($mockController === null)' . PHP_EOL;
 					$methodCode .= "		" . '{' . PHP_EOL;
 					$methodCode .= "			" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
-
-					if ($isShunted === true)
-					{
-						$methodCode .= "			" . 'if ($mockController === null)' . PHP_EOL;
-						$methodCode .= "			" . '{' . PHP_EOL;
-						$methodCode .= "				" . '$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL;
-						$methodCode .= "			" . '}' . PHP_EOL;
-					}
-
 					$methodCode .= "		" . '}' . PHP_EOL;
 					$methodCode .= "		" . 'if ($mockController !== null)' . PHP_EOL;
 					$methodCode .= "		" . '{' . PHP_EOL;
@@ -331,7 +323,7 @@ class generator
 				else
 				{
 					$methodCode .=
-						  "		" . 'if ($this->mockController !== null && isset($this->mockController->' . $methodName . ') === true)' . PHP_EOL
+						  "		" . 'if (isset($this->mockController->' . $methodName . ') === true)' . PHP_EOL
 						. "		" . '{' . PHP_EOL
 						. "			" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', array(' . $parameters . '));' . PHP_EOL
 						. "		" . '}' . PHP_EOL
@@ -441,10 +433,6 @@ class generator
 					$methodCode .= "		" . 'if ($mockController === null)' . PHP_EOL;
 					$methodCode .= "		" . '{' . PHP_EOL;
 					$methodCode .= "			" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
-					$methodCode .= "			" . 'if ($mockController === null)' . PHP_EOL;
-					$methodCode .= "			" . '{' . PHP_EOL;
-					$methodCode .= "				" . '$mockController = new \mageekguy\atoum\mock\controller();' . PHP_EOL;
-					$methodCode .= "			" . '}' . PHP_EOL;
 					$methodCode .= "		" . '}' . PHP_EOL;
 					$methodCode .= "		" . '$this->setMockController($mockController);' . PHP_EOL;
 				}

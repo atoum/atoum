@@ -28,6 +28,9 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
 		$this->assert
 			->exception(function() use ($asserter, & $mock) {
 						$asserter->setWith($mock = uniqid());
@@ -37,7 +40,7 @@ class mock extends atoum\test
 				->hasMessage(sprintf($locale->_('%s is not a mock'), $asserter->toString($mock)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
-			->object($asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock()))->isIdenticalTo($asserter)
+			->object($asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter)))->isIdenticalTo($asserter)
 			->object($asserter->getMock())->isIdenticalTo($mock)
 		;
 	}
@@ -58,7 +61,10 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock());
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter));
 
 		$score->reset();
 
@@ -130,7 +136,10 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);
 		$mock->getMockController()->{__FUNCTION__} = function() {};
 
 		$asserter->setWith($mock);

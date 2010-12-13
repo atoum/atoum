@@ -1,156 +1,136 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
-
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-
-require_once(__DIR__ . '/../runner.php');
-
-class runner extends atoum\test
+namespace mageekguy\atoum\tests\units
 {
-	public function test__construct()
+	use \mageekguy\atoum;
+	use \mageekguy\atoum\mock;
+
+	require_once(__DIR__ . '/../runner.php');
+
+	class runner extends atoum\test
 	{
-		$runner = new atoum\runner();
+		public function test__construct()
+		{
+			$runner = new atoum\runner();
 
-		$this->assert
-			->object($runner->getScore())->isInstanceOf('\mageekguy\atoum\score')
-			->object($runner->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-			->variable($runner->getRunningDuration())->isNull()
-		;
+			$this->assert
+				->object($runner->getScore())->isInstanceOf('\mageekguy\atoum\score')
+				->object($runner->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+				->variable($runner->getRunningDuration())->isNull()
+			;
 
-		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\adapter());
+			$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\adapter());
 
-		$this->assert
-			->object($runner->getScore())->isIdenticalTo($score)
-			->object($runner->getAdapter())->isIdenticalTo($adapter)
-			->variable($runner->getRunningDuration())->isNull()
-		;
-	}
+			$this->assert
+				->object($runner->getScore())->isIdenticalTo($score)
+				->object($runner->getAdapter())->isIdenticalTo($adapter)
+				->variable($runner->getRunningDuration())->isNull()
+			;
+		}
 
-	public function testAddObserver()
-	{
-		$runner = new atoum\runner();
+		public function testAddObserver()
+		{
+			$runner = new atoum\runner();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\observers\runner');
+			$mockGenerator = new mock\generator();
+			$mockGenerator->generate('\mageekguy\atoum\observers\runner');
 
-		$this->assert
-			->array($runner->getObservers())->isEmpty()
-			->object($runner->addObserver($observer = new mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
-			->array($runner->getObservers())->isEqualTo(array($observer))
-		;
-	}
+			$this->assert
+				->array($runner->getObservers())->isEmpty()
+				->object($runner->addObserver($observer = new mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+				->array($runner->getObservers())->isEqualTo(array($observer))
+			;
+		}
 
-	public function testAddTestObserver()
-	{
-		$runner = new atoum\runner();
+		public function testAddTestObserver()
+		{
+			$runner = new atoum\runner();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\observers\test');
+			$mockGenerator = new mock\generator();
+			$mockGenerator->generate('\mageekguy\atoum\observers\test');
 
-		$this->assert
-			->array($runner->getTestObservers())->isEmpty()
-			->object($runner->addTestObserver($observer = new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
-			->array($runner->getTestObservers())->isEqualTo(array($observer))
-		;
-	}
+			$this->assert
+				->array($runner->getTestObservers())->isEmpty()
+				->object($runner->addTestObserver($observer = new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
+				->array($runner->getTestObservers())->isEqualTo(array($observer))
+			;
+		}
 
-	public function testGetRunningDuration()
-	{
-		$adapter = new atoum\adapter();
-		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
-		$adapter->get_declared_classes = function() { return array(); };
+		public function testGetRunningDuration()
+		{
+			$adapter = new atoum\adapter();
+			$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
+			$adapter->get_declared_classes = function() { return array(); };
 
-		$runner = new atoum\runner(null, $adapter);
+			$runner = new atoum\runner(null, $adapter);
 
-		$this->assert
-			->variable($runner->getRunningDuration())->isNull()
-		;
+			$this->assert
+				->variable($runner->getRunningDuration())->isNull()
+			;
 
-		$runner->run();
+			$runner->run();
 
-		$this->assert
-			->integer($runner->getRunningDuration())->isEqualTo(100)
-		;
-	}
+			$this->assert
+				->integer($runner->getRunningDuration())->isEqualTo(100)
+			;
+		}
 
-	public function testGetTestNumber()
-	{
-		$adapter = new atoum\adapter();
-		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
-		$adapter->get_declared_classes = function() { return array(); };
+		public function testGetTestNumber()
+		{
+			$adapter = new atoum\adapter();
 
-		$runner = new atoum\runner(null, $adapter);
+			$adapter->get_declared_classes = array();
 
-		$this->assert
-			->variable($runner->getTestNumber())->isNull();
-		;
+			$runner = new atoum\runner(null, $adapter);
 
-		$runner->run();
+			$this->assert
+				->variable($runner->getTestNumber())->isNull();
+			;
 
-		$this->assert
-			->integer($runner->getTestNumber())->isZero()
-		;
+			$runner->run();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
+			$this->assert
+				->integer($runner->getTestNumber())->isZero()
+			;
+		}
 
-		$adapter->get_declared_classes = function() { return array('\mageekguy\atoum\mock\mageekguy\atoum\test'); };
+		public function testGetTestMethodNumber()
+		{
+			$adapter = new atoum\adapter();
 
-		$runner->run();
+			$adapter->get_declared_classes = array();
 
-		$this->assert
-			->integer($runner->getTestNumber())->isEqualTo(1)
-		;
-	}
+			$runner = new atoum\runner(null, $adapter);
 
-	public function testGetTestMethodNumber()
-	{
-		$adapter = new atoum\adapter();
-		$adapter->get_declared_classes = function() { return array(); };
+			$this->assert
+				->variable($runner->getTestMethodNumber())->isNull();
+			;
 
-		$runner = new atoum\runner(null, $adapter);
+			$runner->run();
 
-		$this->assert
-			->variable($runner->getTestMethodNumber())->isNull();
-		;
+			$this->assert
+				->variable($runner->getTestMethodNumber())->isNull();
+			;
+		}
 
-		$runner->run();
+		public function testGetObserverEvents()
+		{
+			$this->assert
+				->array(atoum\runner::getObserverEvents())->isEqualTo(array(atoum\runner::runStart, atoum\runner::runStop))
+			;
+		}
 
-		$this->assert
-			->variable($runner->getTestMethodNumber())->isNull();
-		;
+		public function testAddReport()
+		{
+			$runner = new atoum\runner();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
-
-		$adapter->get_declared_classes = function() { return array('\mageekguy\atoum\mock\mageekguy\atoum\test'); };
-
-		$runner->run();
-
-		$this->assert
-			->integer($runner->getTestMethodNumber())->isZero()
-		;
-	}
-
-	public function testGetObserverEvents()
-	{
-		$this->assert
-			->array(atoum\runner::getObserverEvents())->isEqualTo(array(atoum\runner::runStart, atoum\runner::runStop))
-		;
-	}
-
-	public function testAddReport()
-	{
-		$runner = new atoum\runner();
-
-		$this->assert
-			->object($runner->addReport($report = new atoum\report()))->isIdenticalTo($runner)
-			->array($runner->getReports())->isEqualTo(array($report))
-			->array($runner->getObservers())->contain($report)
-			->array($runner->getTestObservers())->contain($report)
-		;
+			$this->assert
+				->object($runner->addReport($report = new atoum\report()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report))
+				->array($runner->getObservers())->contain($report)
+				->array($runner->getTestObservers())->contain($report)
+			;
+		}
 	}
 }
 

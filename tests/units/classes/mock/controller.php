@@ -410,7 +410,7 @@ class controller extends atoum\test
 	public function testGet()
 	{
 		$this->assert
-			->variable(mock\controller::get())->isNull()
+			->object(mock\controller::get())->isInstanceOf('\mageekguy\atoum\mock\controller')
 		;
 
 		$mockController = new mock\controller();
@@ -418,7 +418,9 @@ class controller extends atoum\test
 		$this->assert
 			->object($mockController->injectInNextMockInstance())->isIdenticalTo($mockController)
 			->object(mock\controller::get())->isIdenticalTo($mockController)
-			->variable(mock\controller::get())->isNull()
+			->object(mock\controller::get())
+				->isNotIdenticalTo($mockController)
+				->isInstanceOf('\mageekguy\atoum\mock\controller')
 		;
 	}
 
@@ -441,7 +443,10 @@ class controller extends atoum\test
 			->generate(__CLASS__)
 		;
 
-		$mock = new \mageekguy\atoum\mock\mageekguy\atoum\tests\units\mock\controller();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$mock = new mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter);
 		$mockController->control($mock);
 
 		$mockController->{__FUNCTION__} = function() {};

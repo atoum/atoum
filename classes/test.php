@@ -11,7 +11,6 @@ abstract class test implements observable, \countable
 	const version = '$Rev$';
 	const author = 'Frédéric Hardy';
 	const testMethodPrefix = 'test';
-
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -24,6 +23,7 @@ abstract class test implements observable, \countable
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
+	const defaultTestsSubNamespace = 'tests\units';
 
 	private $path = '';
 	private $class = '';
@@ -37,6 +37,7 @@ abstract class test implements observable, \countable
 	private $testMethods = array();
 	private $runTestMethods = array();
 	private $currentMethod = null;
+	private $testsSubNamespace = null;
 
 	public static $runningTest = null;
 
@@ -63,9 +64,25 @@ abstract class test implements observable, \countable
 			->setAdapter($adapter)
 		;
 
-		$this->asserterGenerator = new asserter\generator($this->score, $this->locale);
-
 		$class = new \reflectionClass($this);
+
+		$this->class = $class->getName();
+
+		$this->path = $class->getFilename();
+
+		$testedClassName = $this->getTestedClassName();
+
+		if ($testedClassName === null)
+		{
+			throw new atoum\asserter\exception('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestsSubNamespace() . '\'');
+		}
+
+		if ($this->adapter->class_exists($testedClassName) === false)
+		{
+			throw new atoum\asserter\exception('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
+		}
+
+		$this->asserterGenerator = new asserter\generator($this->score, $this->locale);
 
 		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
 		{
@@ -80,10 +97,6 @@ abstract class test implements observable, \countable
 					break;
 			}
 		}
-
-		$this->class = $class->getName();
-
-		$this->path = $class->getFilename();
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
@@ -124,6 +137,23 @@ abstract class test implements observable, \countable
 			default:
 				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
 		}
+	}
+
+	public function setTestsSubNamespace($testsSubNamespace)
+	{
+		$this->testsSubNamespace = trim((string) $testsSubNamespace, '\\');
+
+		if ($this->testsSubNamespace === '')
+		{
+			throw new atoum\exceptions\logic\invalidArgument('Tests sub-namespace must not be empty');
+		}
+
+		return $this;
+	}
+
+	public function getTestsSubNamespace()
+	{
+		return ($this->testsSubNamespace === null ? self::defaultTestsSubNamespace : $this->testsSubNamespace);
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
@@ -178,23 +208,21 @@ abstract class test implements observable, \countable
 		return ($this->registryInjector === null ? atoum\registry::getInstance() : $this->registryInjector->__invoke());
 	}
 
-	public function getTestedClassName($testsSubNamespace = '\tests\units\\')
+	public function getTestedClassName()
 	{
 		$class = null;
 
-		$testsSubNamespace = '\\' . trim($testsSubNamespace, '\\') . '\\';
-
 		$testClass = $this->getClass();
+		$testsSubNamespace = $this->getTestsSubNamespace();
 
 		$position = strpos($testClass, $testsSubNamespace);
 
-
 		if ($position !== false)
 		{
-			$class = substr($testClass, 0, $position) . '\\' . substr($testClass, $position + strlen($testsSubNamespace));
+			$class = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testsSubNamespace) + 1), '\\');
 		}
 
-		return ($this->adapter->class_exists($class) === false ? null : $class);
+		return $class;
 	}
 
 	public function getClass()

@@ -1,15 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace mageekguy\atoum\tests\units\annotations;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\annotations;
 
 require_once(__DIR__ . '/../../runner.php');
 
-/**
-@isolation off
-*/
 class extractor extends atoum\test
 {
 	public function testSpace()

@@ -42,7 +42,13 @@ class memory extends atoum\test
 		$score = new mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(0, PHP_INT_MAX); };
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$test->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
@@ -69,7 +75,13 @@ class memory extends atoum\test
 		$score = new mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(0, PHP_INT_MAX); };
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$test->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert

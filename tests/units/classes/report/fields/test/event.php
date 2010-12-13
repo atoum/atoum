@@ -28,7 +28,13 @@ class event extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$this->assert
 			->variable($event->getTest())->isNull()
 			->exception(function() use ($event) { $event->getProgressBar(); })
@@ -43,7 +49,13 @@ class event extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$event = new test\event();
 
@@ -84,7 +96,13 @@ class event extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new cli\progressBar($test); }))->isIdenticalTo($event)
@@ -110,7 +128,13 @@ class event extends atoum\test
 
 		$event = new test\event();
 
-		$test = new mock\mageekguy\atoum\test();
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };

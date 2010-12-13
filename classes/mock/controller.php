@@ -184,6 +184,10 @@ class controller
 		{
 			self::$injectInNextInstance = null;
 		}
+		else
+		{
+			$instance = new self();
+		}
 
 		return $instance;
 	}
