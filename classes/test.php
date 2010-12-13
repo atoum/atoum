@@ -449,7 +449,7 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	protected function beforeTestMethod()
+	protected function beforeTestMethod($testMethod)
 	{
 		$this->assert->setAlias('array', 'collection');
 		$this->assert->setAlias('class', 'phpClass');
@@ -468,7 +468,7 @@ abstract class test implements observable, \countable
 		{
 			try
 			{
-				$this->beforeTestMethod();
+				$this->beforeTestMethod($testMethod);
 
 				ob_start();
 
@@ -485,7 +485,7 @@ abstract class test implements observable, \countable
 
 				ob_end_clean();
 
-				$this->afterTestMethod();
+				$this->afterTestMethod($testMethod);
 			}
 			catch (\exception $exception)
 			{
@@ -562,7 +562,7 @@ abstract class test implements observable, \countable
 		}
 	}
 
-	protected function afterTestMethod()
+	protected function afterTestMethod($testMethod)
 	{
 		return $this;
 	}

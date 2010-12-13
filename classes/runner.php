@@ -131,7 +131,7 @@ class runner implements observable, adapter\aggregator
 
 		if (sizeof($runTestClasses) <= 0)
 		{
-			$runTestClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) { return (is_subclass_of($class, $testBaseClass) === true && get_parent_class($class) !== false); });
+			$runTestClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) { $class = new \reflectionClass($class); return ($class->isSubClassOf($testBaseClass) === true && $class->getParentClass() !== false && $class->isAbstract() === false); });
 		}
 
 		$this->testNumber = sizeof($runTestClasses);

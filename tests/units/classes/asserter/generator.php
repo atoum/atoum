@@ -9,11 +9,6 @@ require_once(__DIR__ . '/../../runner.php');
 
 class generator extends atoum\test
 {
-	 public function beforeTestMethod()
-	 {
-		 $this->assert->setAlias('array', 'collection');
-	 }
-
 	public function test__construct()
 	{
 		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
