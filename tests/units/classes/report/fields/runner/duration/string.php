@@ -51,7 +51,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\duration
 		;
 	}
 
-	public function test__ToString()
+	public function test__toString()
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
