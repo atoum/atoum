@@ -5,10 +5,8 @@ namespace mageekguy\atoum\report\fields\runner;
 use \mageekguy\atoum;
 use \mageekguy\atoum\report;
 
-class duration extends report\fields\runner
+abstract class duration extends report\fields\runner
 {
-	const titlePrompt = '> ';
-
 	protected $value = null;
 
 	public function getValue()
@@ -24,24 +22,6 @@ class duration extends report\fields\runner
 		}
 
 		return $this;
-	}
-
-	public function toString()
-	{
-		$string = self::titlePrompt;
-
-		if ($this->value === null)
-		{
-			$string .= $this->locale->_('Running duration: unknown.');
-		}
-		else
-		{
-			$string .= sprintf($this->locale->__('Running duration: %4.2f second.', 'Running duration: %4.2f seconds.', $this->value), $this->value);
-		}
-
-		$string .= PHP_EOL;
-
-		return $string;
 	}
 }
 
