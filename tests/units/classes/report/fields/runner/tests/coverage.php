@@ -79,10 +79,10 @@ class coverage extends atoum\test
 		$coverage = new tests\coverage($locale = new atoum\locale());
 
 		$this->assert
-			->string($coverage->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->castToString($coverage)->isEmpty()
+			->castToString($coverage->setWithRunner($runner))->isEmpty()
+			->castToString($coverage->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($coverage->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$methodController = new mock\controller();
@@ -129,10 +129,10 @@ class coverage extends atoum\test
 		$scoreCoverage->addXdebugData($this, $xdebugData);
 
 		$this->assert
-			->string($coverage->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($coverage->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(
+			->castToString($coverage)->isEmpty()
+			->castToString($coverage->setWithRunner($runner))->isEmpty()
+			->castToString($coverage->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($coverage->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(
 					tests\coverage::titlePrompt . sprintf($locale->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
 					tests\coverage::classPrompt . sprintf($locale->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
 					tests\coverage::methodPrompt . sprintf($locale->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
