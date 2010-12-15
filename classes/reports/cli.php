@@ -15,7 +15,7 @@ class cli extends atoum\report
 			->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop))
 			->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop))
 			->addRunnerField(new atoum\report\fields\runner\tests\coverage(), array(atoum\runner::runStop))
-			->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop))
+			->addRunnerField(new atoum\report\fields\runner\duration\string(), array(atoum\runner::runStop))
 			->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop))
 			->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop))
 			->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop))
