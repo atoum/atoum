@@ -55,9 +55,9 @@ class version extends atoum\test
 		$runner = new atoum\runner();
 
 		$this->assert
-			->string($version->setWithRunner($runner)->toString())->isEmpty()
-			->string($version->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
-			->string($version->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(runner\version::titlePrompt . sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()) . PHP_EOL)
+			->castToString($version->setWithRunner($runner))->isEmpty()
+			->castToString($version->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
+			->castToString($version->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\version::titlePrompt . sprintf($version->getLocale()->_('Atoum version %s by %s.'), $version->getNumber(), $version->getAuthor()) . PHP_EOL)
 		;
 	}
 }

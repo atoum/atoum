@@ -66,10 +66,10 @@ class failures extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($failures->toString())->isEmpty()
-			->string($failures->setWithRunner($runner)->toString())->isEmpty()
-			->string($failures->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($failures->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->castToString($failures)->isEmpty()
+			->castToString($failures->setWithRunner($runner))->isEmpty()
+			->castToString($failures->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($failures->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$fails = array(
@@ -96,8 +96,8 @@ class failures extends atoum\test
 		$failures = new runner\failures($locale = new atoum\locale());
 
 		$this->assert
-			->string($failures->toString())->isEmpty()
-			->string($failures->setWithRunner($runner)->toString())->isEqualTo(runner\failures::titlePrompt . sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
+			->castToString($failures)->isEmpty()
+			->castToString($failures->setWithRunner($runner))->isEqualTo(runner\failures::titlePrompt . sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
 				runner\failures::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
 				runner\failures::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .

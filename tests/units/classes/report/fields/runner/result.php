@@ -114,10 +114,10 @@ class result extends atoum\test
 		$result = new runner\result($locale = new atoum\locale());
 
 		$this->assert
-			->string($result->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner)->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(runner\result::titlePrompt . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !') . PHP_EOL,
+			->castToString($result)->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner))->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(runner\result::titlePrompt . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !') . PHP_EOL,
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
@@ -131,10 +131,10 @@ class result extends atoum\test
 		$result = new runner\result($locale = new atoum\locale());
 
 		$this->assert
-			->string($result->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner)->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner, atoum\runner::runStart)->toString())->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->string($result->setWithRunner($runner, atoum\runner::runStop)->toString())->isEqualTo(runner\result::titlePrompt . sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+			->castToString($result)->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner))->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\result::titlePrompt . $locale->_('No test running.') . PHP_EOL)
+			->castToString($result->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(runner\result::titlePrompt . sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s failure', '%s failures', $failNumber), $failNumber),

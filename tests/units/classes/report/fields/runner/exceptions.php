@@ -67,10 +67,10 @@ class exceptions extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($exceptions->toString())->isEmpty()
-			->string($exceptions->setWithRunner($runner)->toString())->isEmpty()
-			->string($exceptions->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($exceptions->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->castToString($exceptions)->isEmpty()
+			->castToString($exceptions->setWithRunner($runner))->isEmpty()
+			->castToString($exceptions->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($exceptions->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$exceptionss = array(
@@ -95,8 +95,8 @@ class exceptions extends atoum\test
 		$exceptions = new runner\exceptions($locale = new atoum\locale());
 
 		$this->assert
-			->string($exceptions->toString())->isEmpty()
-			->string($exceptions->setWithRunner($runner)->toString())->isEqualTo(runner\exceptions::titlePrompt . sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptionss)), sizeof($exceptionss)) . PHP_EOL .
+			->castToString($exceptions)->isEmpty()
+			->castToString($exceptions->setWithRunner($runner))->isEqualTo(runner\exceptions::titlePrompt . sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptionss)), sizeof($exceptionss)) . PHP_EOL .
 				runner\exceptions::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				runner\exceptions::exceptionPrompt . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
 				$value . PHP_EOL .

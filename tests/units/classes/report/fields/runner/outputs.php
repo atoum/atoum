@@ -58,10 +58,10 @@ class outputs extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($outputs->toString())->isEmpty()
-			->string($outputs->setWithRunner($runner)->toString())->isEmpty()
-			->string($outputs->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($outputs->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->castToString($outputs)->isEmpty()
+			->castToString($outputs->setWithRunner($runner))->isEmpty()
+			->castToString($outputs->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($outputs->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$outputss = array(
@@ -82,8 +82,8 @@ class outputs extends atoum\test
 		$outputs = new runner\outputs($locale = new atoum\locale());
 
 		$this->assert
-			->string($outputs->toString())->isEmpty()
-			->string($outputs->setWithRunner($runner)->toString())->isEqualTo(runner\outputs::titlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
+			->castToString($outputs)->isEmpty()
+			->castToString($outputs->setWithRunner($runner))->isEqualTo(runner\outputs::titlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
 				runner\outputs::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
 				runner\outputs::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .

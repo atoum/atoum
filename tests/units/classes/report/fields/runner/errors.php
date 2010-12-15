@@ -67,10 +67,10 @@ class errors extends atoum\test
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEmpty()
-			->string($errors->setWithRunner($runner, atoum\runner::runStart)->toString())->isEmpty()
-			->string($errors->setWithRunner($runner, atoum\runner::runStop)->toString())->isEmpty()
+			->castToString($errors)->isEmpty()
+			->castToString($errors->setWithRunner($runner))->isEmpty()
+			->castToString($errors->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($errors->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$allErrors = array(
@@ -97,8 +97,8 @@ class errors extends atoum\test
 		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
-			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+			->castToString($errors)->isEmpty()
+			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
 				runner\errors::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				runner\errors::errorPrompt . sprintf($locale->_('Error %s in %s on line %d:'), $type, $file, $line) . PHP_EOL .
 				$message . PHP_EOL .
@@ -125,8 +125,8 @@ class errors extends atoum\test
 		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
-			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+			->castToString($errors)->isEmpty()
+			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
 				runner\errors::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				runner\errors::errorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line:'), $type) . PHP_EOL .
 				$message . PHP_EOL
@@ -149,8 +149,8 @@ class errors extends atoum\test
 		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
-			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+			->castToString($errors)->isEmpty()
+			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
 				runner\errors::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				runner\errors::errorPrompt . sprintf($locale->_('Error %s in unknown file on line %d:'), $type, $line) . PHP_EOL .
 				$message . PHP_EOL
@@ -173,8 +173,8 @@ class errors extends atoum\test
 		$errors = new runner\errors($locale = new atoum\locale());
 
 		$this->assert
-			->string($errors->toString())->isEmpty()
-			->string($errors->setWithRunner($runner)->toString())->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+			->castToString($errors)->isEmpty()
+			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
 				runner\errors::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				runner\errors::errorPrompt . sprintf($locale->_('Error %s in %s on unknown line:'), $type, $file) . PHP_EOL .
 				$message . PHP_EOL
