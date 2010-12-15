@@ -188,7 +188,7 @@ class stub extends atoum\script
 
 		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator($this->pharName . '/tests/units/classes'))) as $file)
 		{
-			require($file->getPathname());
+			require_once($file->getPathname());
 		}
 
 		$stringDecorator = new atoum\report\decorators\string();
@@ -203,7 +203,7 @@ class stub extends atoum\script
 		$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\duration(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\duration\string(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\errors(), array(atoum\runner::runStop));
