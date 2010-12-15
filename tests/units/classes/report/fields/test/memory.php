@@ -85,10 +85,10 @@ class memory extends atoum\test
 		$test->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->string($memory->toString())->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithTest($test)->toString())->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithTest($test, atoum\test::runStart)->toString())->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
-			->string($memory->setWithTest($test, atoum\test::runStop)->toString())->isEqualTo(test\memory::titlePrompt . sprintf($locale->_('Memory usage: %4.2f Mb.'), $totalMemoryUsage / 1048576) . PHP_EOL)
+			->castToString($memory)->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
+			->castToString($memory->setWithTest($test))->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
+			->castToString($memory->setWithTest($test, atoum\test::runStart))->isEqualTo(test\memory::titlePrompt . $locale->_('Memory usage: unknown.') . PHP_EOL)
+			->castToString($memory->setWithTest($test, atoum\test::runStop))->isEqualTo(test\memory::titlePrompt . sprintf($locale->_('Memory usage: %4.2f Mb.'), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 	}
 }
