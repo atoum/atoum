@@ -29,7 +29,7 @@ class string extends atoum\test
 		$toString = uniqid();
 
 		$field = new mock\mageekguy\atoum\report\field();
-		$field->getMockController()->toString = function() use ($toString) { return $toString; };
+		$field->getMockController()->__toString = function() use ($toString) { return $toString; };
 
 		$this->assert
 			->object($decorator->write($field))->isIdenticalTo($decorator)
