@@ -21,10 +21,8 @@ abstract class field
 		return $this->locale;
 	}
 
-	public function toString()
-	{
-		return '';
-	}
+	abstract public function __toString();
+
 }
 
 ?>
