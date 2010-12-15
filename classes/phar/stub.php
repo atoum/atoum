@@ -195,19 +195,19 @@ class stub extends atoum\script
 		$stringDecorator->addWriter(new atoum\writers\stdout());
 
 		$report = new atoum\report();
-		$report->addRunnerField(new atoum\report\fields\runner\version(), array(atoum\runner::runStart));
-		$report->addTestField(new atoum\report\fields\test\run(), array(atoum\test::runStart));
-		$report->addTestField(new atoum\report\fields\test\event());
-		$report->addTestField(new atoum\report\fields\test\duration(), array(atoum\test::runStop));
-		$report->addTestField(new atoum\report\fields\test\memory(), array(atoum\test::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\result(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\tests\duration(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\tests\memory(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\version\string(), array(atoum\runner::runStart));
+		$report->addTestField(new atoum\report\fields\test\run\string(), array(atoum\test::runStart));
+		$report->addTestField(new atoum\report\fields\test\event\string());
+		$report->addTestField(new atoum\report\fields\test\duration\string(), array(atoum\test::runStop));
+		$report->addTestField(new atoum\report\fields\test\memory\string(), array(atoum\test::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\result\string(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\tests\duration\string(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\tests\memory\string(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\duration\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\failures(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\outputs(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\errors(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\exceptions(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\failures\string(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\outputs\string(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\errors\string(), array(atoum\runner::runStop));
+		$report->addRunnerField(new atoum\report\fields\runner\exceptions\string(), array(atoum\runner::runStop));
 		$report->addDecorator($stringDecorator);
 
 		$runner->addObserver($report)->run();
