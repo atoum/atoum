@@ -55,7 +55,7 @@ class event extends report\fields\test
 		return $this;
 	}
 
-	public function toString()
+	public function __toString()
 	{
 		static $progressBar = null;
 

@@ -28,7 +28,7 @@ class coverage extends report\fields\runner
 		return $this->coverage;
 	}
 
-	public function toString()
+	public function __toString()
 	{
 		$string = '';
 

@@ -33,7 +33,7 @@ class duration extends report\fields\runner
 		return $this;
 	}
 
-	public function toString()
+	public function __toString()
 	{
 		$string = self::titlePrompt;
 

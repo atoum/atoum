@@ -26,7 +26,7 @@ class memory extends report\fields\test
 		return $this;
 	}
 
-	public function toString()
+	public function __toString()
 	{
 		$string = self::titlePrompt;
 
