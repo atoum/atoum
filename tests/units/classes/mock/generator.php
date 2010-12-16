@@ -95,7 +95,7 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testGetMockedClassCode()
+	public function testGetMockedClassCodeForUnknownClass()
 	{
 		$adapter = new atoum\adapter();
 
@@ -145,7 +145,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -154,13 +154,10 @@ class generator extends atoum\test
 				'}'
 			)
 		;
+	}
 
-		$realClass = uniqid();
-
-		$adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); };
-
-		$generator = new mock\generator($adapter);
-
+	public function testGetMockedClassCodeForRealClass()
+	{
 		$mockGenerator = new mock\generator();
 
 		$mockGenerator->generate('\reflectionMethod');
@@ -170,7 +167,6 @@ class generator extends atoum\test
 		$reflectionMethodController->getName = function() { return '__construct'; };
 		$reflectionMethodController->isConstructor = function() { return true; };
 		$reflectionMethodController->getParameters = function() { return array(); };
-		$reflectionMethodController->isConstructor = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
@@ -182,7 +178,7 @@ class generator extends atoum\test
 
 		$reflectionClassController = new mock\controller();
 		$reflectionClassController->__construct = function() {};
-		$reflectionClassController->getName = function() use ($realClass) { return $realClass; };
+		$reflectionClassController->getName = function() use (& $realClass) { return $realClass; };
 		$reflectionClassController->isFinal = function() { return false; };
 		$reflectionClassController->isInterface = function() { return false; };
 		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
@@ -190,10 +186,14 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
+
+		$generator = new mock\generator($adapter);
 		$generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; });
 
 		$this->assert
-			->string($generator->getMockedClassCode($realClass))->isEqualTo(
+			->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 				'namespace mageekguy\atoum\mock {' . PHP_EOL .
 				'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
 				'{' . PHP_EOL .
@@ -234,7 +234,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -247,14 +247,52 @@ class generator extends atoum\test
 				'}'
 			)
 		;
+	}
+
+	public function testGetMockedClassCodeWithOverloadMethod()
+	{
+		$mockGenerator = new mock\generator();
+
+		$mockGenerator->generate('\reflectionMethod');
+
+		$reflectionMethodController = new mock\controller();
+		$reflectionMethodController->__construct = function() {};
+		$reflectionMethodController->getName = function() { return '__construct'; };
+		$reflectionMethodController->isConstructor = function() { return true; };
+		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isStatic = function() { return false; };
+		$reflectionMethodController->returnsReference = function() { return false; };
+		$reflectionMethodController->injectInNextMockInstance();
+
+		$reflectionMethod = new mock\reflectionMethod(null, null);
+
+		$mockGenerator->generate('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->getName = function() use (& $realClass) { return $realClass; };
+		$reflectionClassController->isFinal = function() { return false; };
+		$reflectionClassController->isInterface = function() { return false; };
+		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
+		$reflectionClassController->injectInNextMockInstance();
+
+		$reflectionClass = new mock\reflectionClass(null);
+
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$overloadedMethod = new mock\php\method('__construct');
 		$overloadedMethod->addArgument($argument = new mock\php\method\argument(uniqid()));
 
-		$generator->overload($overloadedMethod);
+		$generator = new mock\generator($adapter);
+		$generator
+			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+			->overload($overloadedMethod)
+		;
 
 		$this->assert
-			->string($generator->getMockedClassCode($realClass))->isEqualTo(
+			->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 				'namespace mageekguy\atoum\mock {' . PHP_EOL .
 				'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
 				'{' . PHP_EOL .
@@ -295,7 +333,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if (isset($this->mockController->__construct) === true)' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->invoke(\'__construct\', array(' . $argument->getVariable() . '));' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -308,11 +346,49 @@ class generator extends atoum\test
 				'}'
 			)
 		;
+	}
 
-		$generator->shunt('__construct');
+	public function testGetMockedClassCodeWithShuntedMethod()
+	{
+		$mockGenerator = new mock\generator();
+
+		$mockGenerator->generate('\reflectionMethod');
+
+		$reflectionMethodController = new mock\controller();
+		$reflectionMethodController->__construct = function() {};
+		$reflectionMethodController->getName = function() { return '__construct'; };
+		$reflectionMethodController->isConstructor = function() { return true; };
+		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isStatic = function() { return false; };
+		$reflectionMethodController->returnsReference = function() { return false; };
+		$reflectionMethodController->injectInNextMockInstance();
+
+		$reflectionMethod = new mock\reflectionMethod(null, null);
+
+		$mockGenerator->generate('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->getName = function() use (& $realClass) { return $realClass; };
+		$reflectionClassController->isFinal = function() { return false; };
+		$reflectionClassController->isInterface = function() { return false; };
+		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
+		$reflectionClassController->injectInNextMockInstance();
+
+		$reflectionClass = new mock\reflectionClass(null);
+
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
+
+		$generator = new mock\generator($adapter);
+		$generator
+			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+			->shunt('__construct')
+		;
 
 		$this->assert
-			->string($generator->getMockedClassCode($realClass))->isEqualTo(
+			->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 				'namespace mageekguy\atoum\mock {' . PHP_EOL .
 				'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
 				'{' . PHP_EOL .
@@ -353,7 +429,7 @@ class generator extends atoum\test
 				'		{' . PHP_EOL .
 				'			$this->setMockController($mockController);' . PHP_EOL .
 				'		}' . PHP_EOL .
-				'		if (isset($this->mockController->__construct) === false)' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === false)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->__construct = function() {};' . PHP_EOL .
 				'		}' . PHP_EOL .
@@ -363,11 +439,48 @@ class generator extends atoum\test
 				'}'
 			)
 		;
+	}
 
+	public function testGetMockedClassCodeForInterface()
+	{
+		$mockGenerator = new mock\generator();
+
+		$mockGenerator->generate('\reflectionMethod');
+
+		$reflectionMethodController = new mock\controller();
+		$reflectionMethodController->__construct = function() {};
+		$reflectionMethodController->getName = function() { return '__construct'; };
+		$reflectionMethodController->isConstructor = function() { return true; };
+		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isStatic = function() { return false; };
+		$reflectionMethodController->returnsReference = function() { return false; };
+		$reflectionMethodController->injectInNextMockInstance();
+
+		$reflectionMethod = new mock\reflectionMethod(null, null);
+
+		$mockGenerator->generate('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->getName = function() use (& $realClass) { return $realClass; };
+		$reflectionClassController->isFinal = function() { return false; };
 		$reflectionClassController->isInterface = function() { return true; };
+		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
+		$reflectionClassController->injectInNextMockInstance();
+
+		$reflectionClass = new mock\reflectionClass(null);
+
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
+
+		$generator = new mock\generator($adapter);
+		$generator
+			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+		;
 
 		$this->assert
-			->string($generator->getMockedClassCode($realClass))->isEqualTo(
+			->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 				'namespace mageekguy\atoum\mock {' . PHP_EOL .
 				'final class ' . $realClass . ' implements \\' . $realClass . ', \mageekguy\atoum\mock\aggregator' . PHP_EOL .
 				'{' . PHP_EOL .
@@ -405,11 +518,115 @@ class generator extends atoum\test
 				'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
 				'		}' . PHP_EOL .
 				'		$this->setMockController($mockController);' . PHP_EOL .
-				'		if (isset($this->mockController->__construct) === false)' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === false)' . PHP_EOL .
 				'		{' . PHP_EOL .
 				'			$this->mockController->__construct = function() {};' . PHP_EOL .
 				'		}' . PHP_EOL .
 				'		$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
+				'	}' . PHP_EOL .
+				'}' . PHP_EOL .
+				'}'
+			)
+		;
+	}
+
+	public function testGetMockedClassCodeForRealClassWithoutConstructor()
+	{
+		$mockGenerator = new mock\generator();
+
+		$mockGenerator->generate('\reflectionMethod');
+
+		$reflectionMethodController = new mock\controller();
+		$reflectionMethodController->__construct = function() {};
+		$reflectionMethodController->getName = function() use (& $methodName) { return $methodName; };
+		$reflectionMethodController->isConstructor = function() { return false; };
+		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isStatic = function() { return false; };
+		$reflectionMethodController->returnsReference = function() { return false; };
+		$reflectionMethodController->injectInNextMockInstance();
+
+		$reflectionMethod = new mock\reflectionMethod(null, null);
+
+		$mockGenerator->generate('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->getName = function() use (& $realClass) { return $realClass; };
+		$reflectionClassController->isFinal = function() { return false; };
+		$reflectionClassController->isInterface = function() { return false; };
+		$reflectionClassController->getMethods = function() use ($reflectionMethod) { return array($reflectionMethod); };
+		$reflectionClassController->injectInNextMockInstance();
+
+		$reflectionClass = new mock\reflectionClass(null);
+
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
+
+		$generator = new mock\generator($adapter);
+		$generator
+			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+		;
+
+		$methodName = uniqid();
+
+		$this->assert
+			->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+				'namespace mageekguy\atoum\mock {' . PHP_EOL .
+				'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+				'{' . PHP_EOL .
+				'	private $mockController = null;' . PHP_EOL .
+				'	public function getMockController()' . PHP_EOL .
+				'	{' . PHP_EOL .
+				'		if ($this->mockController === null)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		return $this->mockController;' . PHP_EOL .
+				'	}' . PHP_EOL .
+				'	public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+				'	{' . PHP_EOL .
+				'		if ($this->mockController !== $controller)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$this->mockController = $controller->control($this);' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		return $this->mockController;' . PHP_EOL .
+				'	}' . PHP_EOL .
+				'	public function resetMockController()' . PHP_EOL .
+				'	{' . PHP_EOL .
+				'		if ($this->mockController !== null)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$mockController = $this->mockController;' . PHP_EOL .
+				'			$this->mockController = null;' . PHP_EOL .
+				'			$mockController->reset();' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		return $this;' . PHP_EOL .
+				'	}' . PHP_EOL .
+				'	public function ' . $methodName . '()' . PHP_EOL .
+				'	{' . PHP_EOL .
+				'		if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			return $this->mockController->invoke(\'' . $methodName . '\', array());' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		else' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			return parent::' . $methodName . '();' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'	}' . PHP_EOL .
+				'	public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+				'	{' . PHP_EOL .
+				'		if ($mockController === null)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		if ($mockController !== null)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$this->setMockController($mockController);' . PHP_EOL .
+				'		}' . PHP_EOL .
+				'		if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+				'		{' . PHP_EOL .
+				'			$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
+				'		}' . PHP_EOL .
 				'	}' . PHP_EOL .
 				'}' . PHP_EOL .
 				'}'
