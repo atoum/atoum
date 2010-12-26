@@ -11,8 +11,8 @@ $generator->setOriginDirectory(__DIR__ . '/../..');
 $generator->setStubFile(__DIR__ . '/resources/stub.php');
 
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
-		$generator->getErrorWriter()->write(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
-		exit(1);
+		$generator->writeError(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
+		exit($error);
 	}
 );
 
@@ -27,7 +27,7 @@ catch (\runtimeException $exception)
 }
 catch (\exception $exception)
 {
-	$generator->getErrorWriter()->write(sprintf($generator->getLocale()->_('Unattended exception: %s'), $exception->getMessage()));
+	$generator->writeError(sprintf($generator->getLocale()->_('Unattended exception: %s'), $exception->getMessage()));
 	exit(1);
 }
 

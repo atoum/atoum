@@ -30,7 +30,7 @@ if (constant(__NAMESPACE__ . '\autorun') === true)
 				switch (true)
 				{
 					default:
-						require($argument);
+						require_once($argument);
 				}
 			}
 

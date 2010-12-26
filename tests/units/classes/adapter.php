@@ -81,6 +81,15 @@ class adapter extends atoum\test
 		$adapter->md5 = $md5 = uniqid();
 
 		$this->assert->string($adapter->md5($hash))->isEqualTo($md5);
+
+		$this->assert
+			->exception(function() use ($adapter) {
+						$adapter->require(uniqid());
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Function \'require()\' is not callable by an adapter')
+		;
 	}
 
 	public function testGetCalls()

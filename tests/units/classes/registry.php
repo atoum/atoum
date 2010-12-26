@@ -35,6 +35,20 @@ class registry extends atoum\test
 		;
 	}
 
+	public function test__get()
+	{
+		$registry = atoum\registry::getInstance();
+
+		$this->assert
+			->exception(function() use ($registry, & $key) {
+						$registry->{$key = uniqid()};
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Key \'' . $key . '\' is not in registry')
+		;
+	}
+
 	public function test__isset()
 	{
 		$registry = atoum\registry::getInstance();

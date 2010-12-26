@@ -20,6 +20,55 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testSetReflectionClassInjector()
+	{
+		$coverage = new score\coverage();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\reflectionClass')
+		;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+
+		$reflectionClass = new mock\reflectionClass(uniqid(), $classController);
+
+		$this->assert
+			->object($coverage->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($coverage)
+			->object($coverage->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClass)
+		;
+
+		$this->assert
+			->exception(function() use($coverage) {
+						$coverage->setReflectionClassInjector(function() {});
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Reflection class injector must take one argument')
+		;
+	}
+
+	public function testGetReflectionClass()
+	{
+		$coverage = new score\coverage();
+
+		$this->assert
+			->object($coverage->getReflectionClass($coverage))->isInstanceOf('\reflectionClass')
+		;
+
+		$coverage->setReflectionClassInjector(function($class) { return uniqid(); });
+
+		$this->assert
+			->exception(function() use ($coverage) {
+						$coverage->getReflectionClass($coverage);
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+				->hasMessage('Reflection class injector must return a \reflectionClass instance')
+		;
+	}
+
 	public function testAddXdebugData()
 	{
 		$coverage = new score\coverage();
@@ -397,6 +446,61 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testClasses()
+	{
+		$coverage = new score\coverage();
+
+		$this->assert
+			->array($coverage->getClasses())->isEmpty()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\reflectionClass')
+			->generate('\reflectionMethod')
+		;
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->getName = function() { return uniqid(); };
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getStartLine = 4;
+		$methodController->getEndLine = 8;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$classFile = uniqid();
+		$className = uniqid();
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => -1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -2
+			)
+		);
+
+		$coverage
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+		;
+
+		$coverage->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
+		;
+	}
+
 	public function testGetValue()
 	{
 		$coverage = new score\coverage();
@@ -541,8 +645,305 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testGetValueForClass()
+	{
+		$coverage = new score\coverage();
+
+		$this->assert
+			->variable($coverage->getValueForClass(uniqid()))->isNull()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\reflectionClass')
+			->generate('\reflectionMethod')
+		;
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->getName = function() { return uniqid(); };
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getStartLine = 4;
+		$methodController->getEndLine = 8;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$classFile = uniqid();
+		$className = uniqid();
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => -1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -2
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+		;
+
+		$coverage->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForClass(uniqid()))->isNull()
+			->float($coverage->getValueForClass($className))->isEqualTo(0.0)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForClass(uniqid()))->isNull()
+			->float($coverage->getValueForClass($className))->isEqualTo(1 / 4)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => 1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForClass(uniqid()))->isNull()
+			->float($coverage->getValueForClass($className))->isEqualTo(2 / 4)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForClass(uniqid()))->isNull()
+			->float($coverage->getValueForClass($className))->isEqualTo(1.0)
+		;
+	}
+
 	public function testGetValueForMethod()
 	{
+		$coverage = new score\coverage();
+
+		$this->assert
+			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\reflectionClass')
+			->generate('\reflectionMethod')
+		;
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->getName = function() use (& $methodName) { return $methodName; };
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getStartLine = 4;
+		$methodController->getEndLine = 8;
+
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+
+		$classFile = uniqid();
+		$className = uniqid();
+		$methodName = uniqid();
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => -1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -2
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage
+			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+		;
+
+		$coverage->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+			->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+			->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(0.0)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => -1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+			->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+			->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1 / 4)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => -1,
+				6 => -1,
+				7 => 1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+			->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+			->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(2 / 4)
+		;
+
+		$xdebugData = array(
+		  $classFile =>
+			 array(
+				3 => -2,
+				4 => 1,
+				5 => 1,
+				6 => 1,
+				7 => 1,
+				8 => -2,
+				9 => -1
+			),
+		  uniqid() =>
+			 array(
+				5 => 2,
+				6 => 3,
+				7 => 4,
+				8 => 3,
+				9 => 2
+			)
+		);
+
+		$coverage->reset()->addXdebugData($this, $xdebugData);
+
+		$this->assert
+			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+			->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+			->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1.0)
+		;
 	}
 }
 

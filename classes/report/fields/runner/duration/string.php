@@ -1,4 +1,5 @@
-<?
+<?php
+
 namespace mageekguy\atoum\report\fields\runner\duration;
 
 use \mageekguy\atoum;

@@ -14,7 +14,7 @@ if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
 		{
 			foreach (new \recursiveIteratorIterator(new directory\filter(new \recursiveDirectoryIterator($path))) as $file)
 			{
-				require($file->getPathname());
+				require_once($file->getPathname());
 			}
 		}
 	}

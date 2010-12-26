@@ -13,7 +13,7 @@ class string extends report\decorator
 
 	public function flush(report\field $field)
 	{
-		return $this->sendToWriters((string)$field);
+		return $this->sendToWriters((string) $field);
 	}
 }
 

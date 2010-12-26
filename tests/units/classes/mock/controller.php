@@ -460,6 +460,34 @@ class controller extends atoum\test
 			->array($mockController->getCalls())->isEmpty()
 		;
 	}
+
+	public function testGetCalls()
+	{
+		$mockController = new mock\controller();
+
+		$this->assert
+			->array($mockController->getCalls())->isEmpty()
+		;
+
+		$mockController->{$method = uniqid()} = function($arg) {};
+
+		$this->assert
+			->array($mockController->getCalls())->isEmpty()
+		;
+
+		$mockController->invoke($method, array($arg = uniqid()));
+
+		$this->assert
+			->array($mockController->getCalls())->isEqualTo(array($method => array(array($arg))))
+			->array($mockController->getCalls($method))->isEqualTo(array(array($arg)))
+			->exception(function() use ($mockController, & $unmockedMethod) {
+						$mockController->getCalls($unmockedMethod = uniqid());
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Method \'' . $unmockedMethod . '\' is not mocked')
+		;
+	}
 }
 
 ?>
