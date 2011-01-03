@@ -6,12 +6,12 @@ use \mageekguy\atoum;
 use \mageekguy\atoum\mock;
 use \mageekguy\atoum\report;
 use \mageekguy\atoum\report\fields\runner;
-
+require_once(__DIR__ . '/../runner.php');
 require_once(__DIR__ . '/../../../../runner.php');
 
-abstract class version extends atoum\test
+abstract class version extends \mageekguy\atoum\tests\units\report\fields\runner
 {
-	abstract public function testSetWithRunner();
+	
 }
 
 ?>

@@ -29,7 +29,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 		;
 	}
 
-	public function testSetWithRunner()
+	public function testSetWithTest()
 	{
 		$duration = new test\duration\string($locale = new atoum\locale());
 
