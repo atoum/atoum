@@ -46,180 +46,114 @@ class cli extends atoum\report
 	{
 		parent::runnerStart($runner);
 
-		$this->triggeredFields = $this->getRunnerFields(__FUNCTION__);
-			
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerRunnerFields(__FUNCTION__);
 	}
 
 	public function testRunStart(atoum\test $test)
 	{
 		parent::testRunStart($test);
 
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestSetUp(atoum\test $test)
 	{
 		parent::beforeTestSetUp($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function afterTestSetUp(atoum\test $test)
 	{
 		parent::afterTestSetUp($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestMethod(atoum\test $test)
 	{
 		parent::beforeTestMethod($test);
 
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function testAssertionSuccess(atoum\test $test)
 	{
 		parent::testAssertionSuccess($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function testAssertionFail(atoum\test $test)
 	{
 		parent::testAssertionFail($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function testError(atoum\test $test)
 	{
 		parent::testError($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function testException(atoum\test $test)
 	{
 		parent::testException($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function afterTestMethod(atoum\test $test)
 	{
 		parent::afterTestMethod($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function testRunStop(atoum\test $test)
 	{
 		parent::testRunStop($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestTearDown(atoum\test $test)
 	{
 		parent::beforeTestTearDown($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function afterTestTearDown(atoum\test $test)
 	{
 		parent::afterTestTearDown($test);
 		
-		$this->triggeredFields = $this->getTestFields(__FUNCTION__);
-		
-		$this->write();
-
-		$this->triggeredFields = array();
-
-		return $this;
+		return $this->triggerTestFields(__FUNCTION__);
 	}
 
 	public function runnerStop(atoum\runner $runner)
 	{
 		parent::runnerStop($runner);
 
-		$this->triggeredFields = $this->getRunnerFields(__FUNCTION__);
-		
-		$this->write();
+		return $this->triggerRunnerFields(__FUNCTION__);
+	}
 
-		$this->triggeredFields = array();
+	protected function triggerRunnerFields($event)
+	{
+		$this->triggeredFields = $this->getRunnerFields($event);
+		
+		$this->write()->triggeredFields = array();
+
+		return $this;
+	}
+
+	protected function triggerTestFields($event)
+	{
+		$this->triggeredFields = $this->getTestFields($event);
+		
+		$this->write()->triggeredFields = array();
 
 		return $this;
 	}
