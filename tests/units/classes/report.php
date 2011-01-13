@@ -7,6 +7,7 @@ use \mageekguy\atoum\mock;
 
 require_once(__DIR__ . '/../runner.php');
 
+/*
 class report extends atoum\test
 {
 	public function test__construct()
@@ -307,5 +308,6 @@ class report extends atoum\test
 		;
 	}
 }
+*/
 
 ?>

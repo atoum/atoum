@@ -85,10 +85,6 @@ class cli extends atoum\test
 					new atoum\report\fields\test\memory\string()
 				)
 			)
-			->array($cli->getDecorators())->isEqualTo(array(
-					$decorator
-				)
-			)
 		;
 	}
 }

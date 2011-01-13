@@ -2,11 +2,11 @@
 
 namespace mageekguy\atoum;
 
-class report implements observers\runner, observers\test
+abstract class report implements observers\runner, observers\test
 {
 	protected $runnerFields = array();
 	protected $testFields = array();
-	protected $decorators = array();
+	protected $writers = array();
 
 	public function __construct()
 	{
@@ -41,9 +41,9 @@ class report implements observers\runner, observers\test
 		return $this->addField($field, $events, 'testFields');
 	}
 
-	public function addDecorator(report\decorator $decorator)
+	public function addWriter(writer $writer)
 	{
-		$this->decorators[] = $decorator;
+		$this->writers[] = $writer;
 
 		return $this;
 	}
@@ -90,103 +90,113 @@ class report implements observers\runner, observers\test
 		return $fields;
 	}
 
-	public function getDecorators()
+	public function getWriters()
 	{
-		return $this->decorators;
+		return $this->writers;
 	}
 
 	public function runnerStart(runner $runner)
 	{
-		return $this->decorateRunner($runner, __FUNCTION__, 'write');
+		return $this->setRunnerFields($runner, __FUNCTION__);
 	}
 
 	public function testRunStart(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
-	public function beforeTestSetup(test $test)
+	public function beforeTestSetUp(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
-	public function afterTestSetup(test $test)
+	public function afterTestSetUp(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function beforeTestMethod(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function testAssertionSuccess(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function testAssertionFail(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function testError(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function testException(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function afterTestMethod(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function testRunStop(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function beforeTestTearDown(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function afterTestTearDown(test $test)
 	{
-		return $this->decorateTest($test, __FUNCTION__);
+		return $this->setTestFields($test, __FUNCTION__);
 	}
 
 	public function runnerStop(runner $runner)
 	{
-		return $this->decorateRunner($runner, __FUNCTION__, 'flush');
+		return $this->setRunnerFields($runner, __FUNCTION__);
 	}
 
-	protected function decorateRunner(runner $runner, $event, $writeMethod)
+	public function write()
 	{
-		return $this->decorate($runner, $event, 'runnerFields', 'setWithRunner', $writeMethod);
-	}
-
-	protected function decorateTest(test $test, $event)
-	{
-		return $this->decorate($test, $event, 'testFields', 'setWithTest', 'write');
-	}
-
-	protected function decorate($entity, $event, $propertyName, $setMethod, $writeMethod)
-	{
-		if (isset($this->{$propertyName}[$event]) === true)
+		foreach ($this->writers as $writer)
 		{
-			foreach ($this->{$propertyName}[$event] as $field)
-			{
-				$field->{$setMethod}($entity, $event);
+			$writer->write((string) $this);
+		}
 
-				foreach ($this->decorators as $decorator)
-				{
-					$decorator->{$writeMethod}($field);
-				}
+		return $this;
+	}
+
+	public abstract function __toString();
+
+	protected function setRunnerFields(runner $runner, $event)
+	{
+		if (isset($this->runnerFields[$event]) === true)
+		{
+			foreach ($this->runnerFields[$event] as $field)
+			{
+				$field->setWithRunner($runner, $event);
+			}
+		}
+
+		return $this;
+	}
+
+	protected function setTestFields(test $test, $event)
+	{
+		if (isset($this->testFields[$event]) === true)
+		{
+			foreach ($this->testFields[$event] as $field)
+			{
+				$field->setWithTest($test, $event);
 			}
 		}
 

@@ -165,6 +165,8 @@ class runner implements observable, adapter\aggregator
 
 				$this->adapter->xdebug_stop_code_coverage();
 			}
+
+			unset($test);
 		}
 
 		$this->stop = $this->adapter->microtime(true);

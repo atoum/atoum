@@ -154,7 +154,7 @@ class runner extends atoum\test
 		$runner = new atoum\runner();
 
 		$this->assert
-			->object($runner->addReport($report = new atoum\report()))->isIdenticalTo($runner)
+			->object($runner->addReport($report = new atoum\reports\cli()))->isIdenticalTo($runner)
 			->array($runner->getReports())->isEqualTo(array($report))
 			->array($runner->getObservers())->contain($report)
 			->array($runner->getTestObservers())->contain($report)

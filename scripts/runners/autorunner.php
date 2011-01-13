@@ -15,8 +15,11 @@ if (constant(__NAMESPACE__ . '\autorun') === true)
 {
 	if (isset(atoum\registry::getInstance()->currentRunner) === false)
 	{
+		$report = new atoum\reports\cli();
+		$report->addWriter(new atoum\writers\stdout());
+
 		atoum\registry::getInstance()->currentRunner = new atoum\runner();
-		atoum\registry::getInstance()->currentRunner->addReport(new atoum\reports\cli());
+		atoum\registry::getInstance()->currentRunner->addReport($report);
 	}
 
 	if (PHP_SAPI === 'cli' && realpath($_SERVER['argv'][0]) === __FILE__)
