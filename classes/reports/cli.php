@@ -6,7 +6,7 @@ use \mageekguy\atoum;
 
 class cli extends atoum\report
 {
-	protected $triggeredFields = array();
+	protected $toWriteFields = array();
 
 	public function __construct()
 	{
@@ -34,7 +34,7 @@ class cli extends atoum\report
 	{
 		$string = '';
 
-		foreach ($this->triggeredFields as $field)
+		foreach ($this->toWriteFields as $field)
 		{
 			$string .= (string) $field;
 		}
@@ -44,88 +44,88 @@ class cli extends atoum\report
 
 	public function runnerStart(atoum\runner $runner)
 	{
-		return parent::runnerStart($runner)->triggerRunnerFields(__FUNCTION__);
+		return parent::runnerStart($runner)->writeRunnerFields(__FUNCTION__);
 	}
 
 	public function testRunStart(atoum\test $test)
 	{
-		return parent::testRunStart($test)->triggerTestFields(__FUNCTION__);
+		return parent::testRunStart($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestSetUp(atoum\test $test)
 	{
-		return parent::beforeTestSetUp($test)->triggerTestFields(__FUNCTION__);
+		return parent::beforeTestSetUp($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function afterTestSetUp(atoum\test $test)
 	{
-		return parent::afterTestSetUp($test)->triggerTestFields(__FUNCTION__);
+		return parent::afterTestSetUp($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestMethod(atoum\test $test)
 	{
-		return parent::beforeTestMethod($test)->triggerTestFields(__FUNCTION__);
+		return parent::beforeTestMethod($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function testAssertionSuccess(atoum\test $test)
 	{
-		return parent::testAssertionSuccess($test)->triggerTestFields(__FUNCTION__);
+		return parent::testAssertionSuccess($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function testAssertionFail(atoum\test $test)
 	{
-		return parent::testAssertionFail($test)->triggerTestFields(__FUNCTION__);
+		return parent::testAssertionFail($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function testError(atoum\test $test)
 	{
-		return parent::testError($test)->triggerTestFields(__FUNCTION__);
+		return parent::testError($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function testException(atoum\test $test)
 	{
-		return parent::testException($test)->triggerTestFields(__FUNCTION__);
+		return parent::testException($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function afterTestMethod(atoum\test $test)
 	{
-		return parent::afterTestMethod($test)->triggerTestFields(__FUNCTION__);
+		return parent::afterTestMethod($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function testRunStop(atoum\test $test)
 	{
-		return parent::testRunStop($test)->triggerTestFields(__FUNCTION__);
+		return parent::testRunStop($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function beforeTestTearDown(atoum\test $test)
 	{
-		return parent::beforeTestTearDown($test)->triggerTestFields(__FUNCTION__);
+		return parent::beforeTestTearDown($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function afterTestTearDown(atoum\test $test)
 	{
-		return parent::afterTestTearDown($test)->triggerTestFields(__FUNCTION__);
+		return parent::afterTestTearDown($test)->writeTestFields(__FUNCTION__);
 	}
 
 	public function runnerStop(atoum\runner $runner)
 	{
-		return parent::runnerStop($runner)->triggerRunnerFields(__FUNCTION__);
+		return parent::runnerStop($runner)->writeRunnerFields(__FUNCTION__);
 	}
 
-	protected function triggerRunnerFields($event)
+	protected function writeRunnerFields($event)
 	{
-		$this->triggeredFields = $this->getRunnerFields($event);
+		$this->toWriteFields = $this->getRunnerFields($event);
 		
-		$this->write()->triggeredFields = array();
+		$this->write()->toWriteFields = array();
 
 		return $this;
 	}
 
-	protected function triggerTestFields($event)
+	protected function writeTestFields($event)
 	{
-		$this->triggeredFields = $this->getTestFields($event);
+		$this->toWriteFields = $this->getTestFields($event);
 		
-		$this->write()->triggeredFields = array();
+		$this->write()->toWriteFields = array();
 
 		return $this;
 	}
