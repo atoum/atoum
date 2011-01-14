@@ -1,4 +1,5 @@
 <?php
+
 namespace mageekguy\atoum\writers;
 
 use mageekguy\atoum;
@@ -14,10 +15,12 @@ class file extends atoum\writer
 	public function __construct($filename = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($adapter);
+
 		if($filename === null)
 		{
 			$filename = self::defaultFileName;
 		}
+
 		$this->setFilename($filename);
 	}
 
@@ -62,4 +65,5 @@ class file extends atoum\writer
 		}
 	}
 }
+
 ?>

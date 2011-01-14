@@ -20,19 +20,21 @@ class file extends atoum\test
 		;
 
 		$adapter = new atoum\adapter();
+		$adapter->fopen = function() {};
+		$adapter->fclose = function() {};
 
 		$file = new writers\file(null, $adapter);
-		
+
 		$this->assert
 			->object($file->getAdapter())->isIdenticalTo($adapter)
 			->string($file->getFilename())->isEqualTo('atoum.log')
-			;
-		
+		;
+
 		$file = new writers\file('test.log');
 
 		$this->assert
 			->string($file->getFilename())->isEqualTo('test.log')
-			;
+		;
 	}
 
 	public function testClassConstants()
@@ -45,7 +47,7 @@ class file extends atoum\test
 	public function test__destruct()
 	{
 		$id = uniqid();
-		
+
 		$adapter = new atoum\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fwrite = function() {};
@@ -54,23 +56,24 @@ class file extends atoum\test
 		$adapter->is_null = function() { return true; };
 		
 		$file = new writers\file(null, $adapter);
+
 		$file->write('something');
 		
 		$adapter->is_null = function() { return false; };
 		
 		unset($file);
-		
+
 		$this->assert
 			->adapter($adapter)->call('is_null', array($id))
 			->adapter($adapter)->call('fclose', array($id))
 			;
 			
 	}
-	
+
 	public function testWrite()
 	{
 		$id = uniqid();
-		
+
 		$adapter = new atoum\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fclose = function() {};

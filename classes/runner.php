@@ -191,6 +191,11 @@ class runner implements observable, adapter\aggregator
 		;
 	}
 
+	public function hasReports()
+	{
+		return (sizeof($this->reports) > 0);
+	}
+
 	public function getReports()
 	{
 		return $this->reports;
