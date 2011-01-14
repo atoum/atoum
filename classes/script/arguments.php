@@ -2,14 +2,25 @@
 
 namespace mageekguy\atoum\script;
 
+use \mageekguy\atoum\exceptions;
+
 class arguments
 {
 	protected $values = array();
 
 	public function __construct() {}
 
+	public function resetValues()
+	{
+		$this->values = array();
+
+		return $this;
+	}
+
 	public function parse(array $array)
 	{
+		$this->resetValues();
+
 		$arguments = new \arrayIterator($array);
 
 		if (sizeof($arguments) > 0)
@@ -18,6 +29,7 @@ class arguments
 
 			if (self::isArgument($value) === false)
 			{
+				throw new exceptions\runtime\unexpectedValue('First argument is invalid');
 			}
 
 			$argument = $value;
@@ -55,7 +67,7 @@ class arguments
 
 	public static function isArgument($value)
 	{
-		return (pregmatch('/^(:+|-{1,2})[a-Z][a-Z0-9_-]*', $value) === 1);
+		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 }
 
