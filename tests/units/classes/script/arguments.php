@@ -112,7 +112,7 @@ class arguments extends atoum\test
 
 		$invoke = 0;
 
-		$handler = function ($values) use (& $invoke) { $invoke++; };
+		$handler = function ($argument, $values) use (& $invoke) { $invoke++; };
 
 		$arguments->addHandler('-a', $handler);
 
@@ -169,7 +169,7 @@ class arguments extends atoum\test
 		$arguments = new script\arguments();
 
 		$this->assert
-			->object($arguments->addHandler($argument = '-a', $handler = function($values) {}), $arguments)
+			->object($arguments->addHandler($argument = '-a', $handler = function($argument, $values) {}), $arguments)
 			->array($arguments->getHandlers())->isEqualTo(array($argument => array($handler)))
 			->object($arguments->addHandler($argument, $handler), $arguments)
 			->array($arguments->getHandlers())->isEqualTo(array($argument => array($handler, $handler)))
@@ -178,9 +178,15 @@ class arguments extends atoum\test
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Handler of argument \'' . $argument . '\' must take one argument')
+					->hasMessage('Handler of argument \'' . $argument . '\' must take two argument')
 			->exception(function() use ($arguments, & $argument) {
-						$arguments->addHandler($argument = uniqid(), function($values) {});
+						$arguments->addHandler($argument = '-b', function($argument) {});
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Handler of argument \'' . $argument . '\' must take two argument')
+			->exception(function() use ($arguments, & $argument) {
+						$arguments->addHandler($argument = uniqid(), function($argument, $values) {});
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')

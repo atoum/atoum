@@ -23,7 +23,25 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 				$arguments = new script\arguments();
 
-				$arguments->addHandler('-c', function($values) use ($runner) {
+				$arguments->addHandler('-c', function($argument, $values) use ($runner) {
+						if (sizeof($values) <= 0)
+						{
+							throw atoum\exceptions\runtime('Argument \'' . $argument . '\' must take at least one argument');
+						}
+
+						foreach ($values as $value)
+						{
+							require_once($value);
+						}
+					}
+				);
+
+				$arguments->addHandler('-c', function($argument, $values) use ($runner) {
+						if (sizeof($values) <= 0 || sizeof($values) > 1)
+						{
+							throw atoum\exceptions\runtime('Argument \'' . $argument . '\' must take only one argument');
+						}
+
 						foreach ($values as $value)
 						{
 							require_once($value);
@@ -33,7 +51,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 				if (realpath($_SERVER['argv'][0]) === __FILE__)
 				{
-					$arguments->addHandler('-f', function($values) {
+					$arguments->addHandler('-f', function($argument, $values) {
 							foreach ($values as $value)
 							{
 								require_once($value);

@@ -89,9 +89,9 @@ class arguments implements \iteratorAggregate
 
 		$invoke = new \reflectionMethod($handler, '__invoke');
 
-		if ($invoke->getNumberOfParameters() != 1)
+		if ($invoke->getNumberOfParameters() != 2)
 		{
-			throw new exceptions\runtime('Handler of argument \'' . $argument . '\' must take one argument');
+			throw new exceptions\runtime('Handler of argument \'' . $argument . '\' must take two argument');
 		}
 
 		$this->handlers[$argument][] = $handler;
@@ -110,7 +110,7 @@ class arguments implements \iteratorAggregate
 		{
 			foreach ($this->handlers[$argument] as $handler)
 			{
-				$handler->__invoke($this->getValues($argument));
+				$handler->__invoke($argument, $this->getValues($argument));
 			}
 		}
 
