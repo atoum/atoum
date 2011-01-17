@@ -4,9 +4,10 @@ namespace mageekguy\atoum\script;
 
 use \mageekguy\atoum\exceptions;
 
-class arguments
+class arguments implements \iteratorAggregate
 {
 	protected $values = array();
+	protected $handlers = array();
 
 	public function __construct() {}
 
@@ -15,6 +16,16 @@ class arguments
 		$this->values = array();
 
 		return $this;
+	}
+
+	public function getHandlers()
+	{
+		return $this->handlers;
+	}
+
+	public function getIterator()
+	{
+		return new \arrayIterator($this->getValues());
 	}
 
 	public function parse(array $array)
@@ -48,6 +59,8 @@ class arguments
 				}
 				else
 				{
+					$this->triggerHandlers($argument);
+
 					$argument = $value;
 
 					$this->values[$argument] = array();
@@ -55,19 +68,53 @@ class arguments
 
 				$arguments->next();
 			}
+
+			$this->triggerHandlers($argument);
 		}
 
 		return $this;
 	}
 
-	public function getValues()
+	public function getValues($argument = null)
 	{
-		return $this->values;
+		return ($argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]));
+	}
+
+	public function addHandler($argument, \closure $handler)
+	{
+		if (self::isArgument($argument) === false)
+		{
+			throw new exceptions\runtime('Argument \'' . $argument . '\' is invalid');
+		}
+
+		$invoke = new \reflectionMethod($handler, '__invoke');
+
+		if ($invoke->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\runtime('Handler of argument \'' . $argument . '\' must take one argument');
+		}
+
+		$this->handlers[$argument][] = $handler;
+
+		return $this;
 	}
 
 	public static function isArgument($value)
 	{
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
+	}
+
+	protected function triggerHandlers($argument)
+	{
+		if (isset($this->handlers[$argument]) === true)
+		{
+			foreach ($this->handlers[$argument] as $handler)
+			{
+				$handler->__invoke($this->getValues($argument));
+			}
+		}
+
+		return $this;
 	}
 }
 
