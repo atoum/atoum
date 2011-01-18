@@ -149,11 +149,11 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function run(atoum\superglobal $superglobal = null)
+	public function run(atoum\superglobals $superglobals = null)
 	{
 		$this->help = false;
 
-		parent::run($superglobal);
+		parent::run($superglobals);
 
 		return ($this->help === true ?  $this->help() : $this->generate());
 	}

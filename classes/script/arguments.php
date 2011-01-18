@@ -2,6 +2,7 @@
 
 namespace mageekguy\atoum\script;
 
+use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
 
 class arguments implements \iteratorAggregate
@@ -9,7 +10,27 @@ class arguments implements \iteratorAggregate
 	protected $values = array();
 	protected $handlers = array();
 
-	public function __construct() {}
+	public function __construct(atoum\superglobals $superglobals = null)
+	{
+		if ($superglobals === null)
+		{
+			$superglobals = new atoum\superglobals();
+		}
+
+		$this->setSuperglobals($superglobals);
+	}
+
+	public function setSuperglobals(atoum\superglobals $superglobals)
+	{
+		$this->superglobals = $superglobals;
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
+	}
 
 	public function resetValues()
 	{

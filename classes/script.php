@@ -98,14 +98,14 @@ abstract class script
 		return $this->errors;
 	}
 
-	public function run(atoum\superglobal $superglobal = null)
+	public function run(atoum\superglobals $superglobals = null)
 	{
-		if ($superglobal === null)
+		if ($superglobals === null)
 		{
-			$superglobal = new atoum\superglobal();
+			$superglobals = new atoum\superglobals();
 		}
 
-		$this->arguments = new \arrayIterator(array_slice($superglobal->_SERVER['argv'], 1));
+		$this->arguments = new \arrayIterator(array_slice($superglobals->_SERVER['argv'], 1));
 
 		foreach ($this->arguments as $argument)
 		{

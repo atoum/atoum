@@ -617,9 +617,9 @@ class generator extends atoum\test
 				->call('__construct', array($generator->getOriginDirectory(), null))
 		;
 
-		$superglobal = new atoum\superglobal();
+		$superglobals = new atoum\superglobals();
 
-		$superglobal->_SERVER = array('argv' => array(uniqid(), '--help'));
+		$superglobals->_SERVER = array('argv' => array(uniqid(), '--help'));
 
 		$mockGenerator
 			->generate('\mageekguy\atoum\writers\stdout')
@@ -644,7 +644,7 @@ class generator extends atoum\test
 		;
 
 		$this->assert
-			->object($generator->run($superglobal))->isIdenticalTo($generator)
+			->object($generator->run($superglobals))->isIdenticalTo($generator)
 			->mock($stdout)
 				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
 				->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\phar\generator::version) . PHP_EOL))
@@ -667,10 +667,10 @@ class generator extends atoum\test
 			}
 		);
 
-		$superglobal->_SERVER = array('argv' => array(uniqid(), '-d', 	$directory = uniqid()));
+		$superglobals->_SERVER = array('argv' => array(uniqid(), '-d', 	$directory = uniqid()));
 
 		$this->assert
-			->object($generator->run($superglobal))->isIdenticalTo($generator)
+			->object($generator->run($superglobals))->isIdenticalTo($generator)
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 			->mock($phar)
 				->call('__construct', array(

@@ -15,8 +15,25 @@ class arguments extends atoum\test
 
 		$this->assert
 			->object($arguments)->isInstanceOf('\iteratorAggregate')
+			->object($arguments->getSuperGlobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->array($arguments->getValues())->isEmpty()
 			->array($arguments->getHandlers())->isEmpty()
+		;
+
+		$arguments = new script\arguments($superglobals = new atoum\superglobals());
+
+		$this->assert
+			->object($arguments->getSuperGlobals())->isIdenticalTo($superglobals)
+		;
+	}
+
+	public function testSetSuperglobals()
+	{
+		$arguments = new script\arguments();
+
+		$this->assert
+			->object($arguments->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($arguments)
+			->object($arguments->getSuperGlobals())->isIdenticalTo($superglobals)
 		;
 	}
 

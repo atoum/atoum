@@ -4,7 +4,7 @@ namespace mageekguy\atoum;
 
 use \mageekguy\atoum\exceptions;
 
-class superglobal
+class superglobals
 {
 	protected $superglobals = array();
 
