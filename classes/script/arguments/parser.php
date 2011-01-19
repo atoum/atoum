@@ -106,21 +106,24 @@ class parser implements \iteratorAggregate
 		return ($argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]));
 	}
 
-	public function addHandler($argument, \closure $handler)
+	public function addHandler(\closure $handler, array $arguments)
 	{
-		if (self::isArgument($argument) === false)
-		{
-			throw new exceptions\runtime('Argument \'' . $argument . '\' is invalid');
-		}
-
 		$invoke = new \reflectionMethod($handler, '__invoke');
 
-		if ($invoke->getNumberOfParameters() != 2)
+		if ($invoke->getNumberOfParameters() != 3)
 		{
-			throw new exceptions\runtime('Handler of argument \'' . $argument . '\' must take two argument');
+			throw new exceptions\runtime('Handler must take three arguments');
 		}
 
-		$this->handlers[$argument][] = $handler;
+		foreach ($arguments as $argument)
+		{
+			if (self::isArgument($argument) === false)
+			{
+				throw new exceptions\runtime('Argument \'' . $argument . '\' is invalid');
+			}
+
+			$this->handlers[$argument][] = $handler;
+		}
 
 		return $this;
 	}
@@ -136,7 +139,7 @@ class parser implements \iteratorAggregate
 		{
 			foreach ($this->handlers[$argument] as $handler)
 			{
-				$handler->__invoke($argument, $this->getValues($argument));
+				$handler->__invoke($this, $argument, $this->getValues($argument));
 			}
 		}
 

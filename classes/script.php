@@ -3,6 +3,7 @@
 namespace mageekguy\atoum;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\script;
 use \mageekguy\atoum\exceptions;
 
 abstract class script
@@ -10,14 +11,23 @@ abstract class script
 	const padding = '   ';
 
 	protected $locale = null;
-	protected $arguments = array();
 	protected $outputWriter = null;
 	protected $errorWriter = null;
+	protected $argumentsParser = null;
 
 	private $name = '';
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
+		$this->name = (string) $name;
+
+		if ($locale === null)
+		{
+			$locale = new atoum\locale();
+		}
+
+		$this->locale = $locale;
+
 		if ($adapter === null)
 		{
 			$adapter = new atoum\adapter();
@@ -35,17 +45,10 @@ abstract class script
 			throw new exceptions\logic('\'' . $name . '\' must be used in CLI only');
 		}
 
-		$this->name = $name;
-
-		if ($locale === null)
-		{
-			$locale = new atoum\locale();
-		}
-
 		$this
+			->setArgumentsParser(new script\arguments\parser())
 			->setOutputWriter(new atoum\writers\stdout())
 			->setErrorWriter(new atoum\writers\stderr())
-			->locale = $locale
 		;
 	}
 
@@ -59,6 +62,13 @@ abstract class script
 	public function setErrorWriter(atoum\writer $writer)
 	{
 		$this->errorWriter = $writer;
+
+		return $this;
+	}
+
+	public function setArgumentsParser(script\arguments\parser $parser)
+	{
+		$this->argumentsParser = $parser;
 
 		return $this;
 	}
@@ -85,7 +95,7 @@ abstract class script
 
 	public function getArguments()
 	{
-		return $this->arguments;
+		return $this->argumentsParser;
 	}
 
 	public function getLocale()
@@ -98,16 +108,9 @@ abstract class script
 		return $this->errors;
 	}
 
-	public function run(atoum\superglobals $superglobals = null)
+	public function run(array $arguments = null)
 	{
-		if ($superglobals === null)
-		{
-			$superglobals = new atoum\superglobals();
-		}
-
-		$this->arguments = new \arrayIterator(array_slice($superglobals->_SERVER['argv'], 1));
-
-		foreach ($this->arguments as $argument)
+		foreach ($this->argumentsParser->parse($arguments) as $argument)
 		{
 			if (self::isArgument($argument) === false)
 			{

@@ -149,13 +149,27 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function run(atoum\superglobals $superglobals = null)
+	public function run(array $arguments = null)
 	{
-		$this->help = false;
+		$helpHandler = function($script, $argument, $values) {
+			}
+		;
 
-		parent::run($superglobals);
+		$this->argumentsParser
+			->addHandler('-h', $helpHandler)
+			->addHandler('--help', $helpHandler)
+		;
 
-		return ($this->help === true ?  $this->help() : $this->generate());
+		$directoryHandler = function($script, $argument, $values) {
+			}
+		;
+
+		$this->argumentsParser
+			->addHandler('-d', $directoryHandler)
+			->addHandler('--directory', $directoryHandler)
+		;
+
+		parent::run($arguments);
 	}
 
 	protected function handleArgument($argument)

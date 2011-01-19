@@ -23,7 +23,7 @@ class stub extends atoum\script
 		$this->pharName .= $this->getName();
 	}
 
-	public function run(atoum\superglobals $superglobals = null)
+	public function run(array $arguments = null)
 	{
 		if (PHP_SAPI !== 'cli' || realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
@@ -31,7 +31,7 @@ class stub extends atoum\script
 		}
 		else
 		{
-			parent::run($superglobals);
+			parent::run($arguments);
 
 			if ($this->help === true)
 			{

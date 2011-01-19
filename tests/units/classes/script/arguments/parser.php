@@ -5,94 +5,94 @@ namespace mageekguy\atoum\tests\units\script\arguments;
 use mageekguy\atoum;
 use mageekguy\atoum\script;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
 class parser extends atoum\test
 {
 	public function test__construct()
 	{
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($arguments)->isInstanceOf('\iteratorAggregate')
-			->object($arguments->getSuperGlobals())->isInstanceOf('\mageekguy\atoum\superglobals')
-			->array($arguments->getValues())->isEmpty()
-			->array($arguments->getHandlers())->isEmpty()
+			->object($parser)->isInstanceOf('\iteratorAggregate')
+			->object($parser->getSuperGlobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->array($parser->getValues())->isEmpty()
+			->array($parser->getHandlers())->isEmpty()
 		;
 
-		$arguments = new script\arguments\parser($superglobals = new atoum\superglobals());
+		$parser = new script\arguments\parser($superglobals = new atoum\superglobals());
 
 		$this->assert
-			->object($arguments->getSuperGlobals())->isIdenticalTo($superglobals)
+			->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
 		;
 	}
 
 	public function testSetSuperglobals()
 	{
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($arguments->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($arguments)
-			->object($arguments->getSuperGlobals())->isIdenticalTo($superglobals)
+			->object($parser->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($parser)
+			->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
 		;
 	}
 
 	public function testGetValues()
 	{
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$this->assert
-			->array($arguments->getValues())->isEmpty()
-			->variable($arguments->getValues(uniqid()))->isNull()
+			->array($parser->getValues())->isEmpty()
+			->variable($parser->getValues(uniqid()))->isNull()
 		;
 
-		$arguments->parse(array('-a'));
+		$parser->parse(array('-a'));
 
 		$this->assert
-			->array($arguments->getValues())->isEqualTo(array('-a' => array()))
-			->array($arguments->getValues('-a'))->isEmpty()
-			->variable($arguments->getValues(uniqid()))->isNull()
+			->array($parser->getValues())->isEqualTo(array('-a' => array()))
+			->array($parser->getValues('-a'))->isEmpty()
+			->variable($parser->getValues(uniqid()))->isNull()
 		;
 
-		$arguments->parse(array('-a', 'a1', 'a2'));
+		$parser->parse(array('-a', 'a1', 'a2'));
 
 		$this->assert
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-			->array($arguments->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-			->variable($arguments->getValues(uniqid()))->isNull()
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+			->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+			->variable($parser->getValues(uniqid()))->isNull()
 		;
 
-		$arguments->parse(array('-a', 'a1', 'a2', '-b'));
+		$parser->parse(array('-a', 'a1', 'a2', '-b'));
 
 		$this->assert
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-			->array($arguments->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-			->array($arguments->getValues('-b'))->isEmpty()
-			->variable($arguments->getValues(uniqid()))->isNull()
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+			->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+			->array($parser->getValues('-b'))->isEmpty()
+			->variable($parser->getValues(uniqid()))->isNull()
 		;
 	}
 
 	public function testGetIterator()
 	{
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($arguments->getIterator())->isInstanceOf('\arrayIterator')
+			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
 			->isEmpty()
 		;
 
-		$arguments->parse(array());
+		$parser->parse(array());
 
 		$this->assert
-			->object($arguments->getIterator())->isInstanceOf('\arrayIterator')
+			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
 			->isEmpty()
 		;
 
-		$arguments->parse(array('-a', 'a1', 'a2', '-b'));
+		$parser->parse(array('-a', 'a1', 'a2', '-b'));
 
 		$this->assert
-			->object($arguments->getIterator())->isInstanceOf('\arrayIterator')
-			->isEqualTo(new \arrayIterator($arguments->getValues()))
+			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
+			->isEqualTo(new \arrayIterator($parser->getValues()))
 		;
 	}
 
@@ -102,122 +102,122 @@ class parser extends atoum\test
 
 		$superglobals->_SERVER['argv'] = array();
 
-		$arguments = new script\arguments\parser($superglobals);
+		$parser = new script\arguments\parser($superglobals);
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEmpty()
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEmpty()
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEmpty()
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEmpty()
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array()))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array()))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1')))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c');
 
 		$this->assert
-			->object($arguments->parse())->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+			->object($parser->parse())->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
 		;
 
 		$this->assert
-			->object($arguments->parse(array()))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEmpty()
-			->exception(function() use ($arguments) {
-					$arguments->parse(array('b'));
+			->object($parser->parse(array()))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEmpty()
+			->exception(function() use ($parser) {
+					$parser->parse(array('b'));
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
 				->hasMessage('First argument is invalid')
-			->object($arguments->parse(array('-a')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array()))
-			->object($arguments->parse(array('-a', '-b')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
-			->object($arguments->parse(array('-a', 'a1')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1')))
-			->object($arguments->parse(array('-a', 'a1', 'a2')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-			->object($arguments->parse(array('-a', 'a1', 'a2', '-b')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-			->object($arguments->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
-			->object($arguments->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c')))->isIdenticalTo($arguments)
-			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array()))
+			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
+			->object($parser->parse(array('-a', 'a1')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
+			->object($parser->parse(array('-a', 'a1', 'a2')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+			->object($parser->parse(array('-a', 'a1', 'a2', '-b')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+			->object($parser->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
+			->object($parser->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c')))->isIdenticalTo($parser)
+			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
 		;
 
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$invoke = 0;
 
-		$handler = function ($argument, $values) use (& $invoke) { $invoke++; };
+		$handler = function ($script, $argument, $values) use (& $invoke) { $invoke++; };
 
-		$arguments->addHandler('-a', $handler);
+		$parser->addHandler($handler, array('-a'));
 
 		$this->assert
-			->object($arguments->parse(array()))->isIdenticalTo($arguments)
+			->object($parser->parse(array()))->isIdenticalTo($parser)
 			->integer($invoke)->isZero()
-			->object($arguments->parse(array('-a')))->isIdenticalTo($arguments)
+			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(1)
 		;
 
-		$arguments->addHandler('-a', $handler);
+		$parser->addHandler($handler, array('-a'));
 
 		$this->assert
-			->object($arguments->parse(array('-a')))->isIdenticalTo($arguments)
+			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(3)
 		;
 
-		$arguments->addHandler('-b', $handler);
+		$parser->addHandler($handler, array('-b'));
 
 		$this->assert
-			->object($arguments->parse(array('-a')))->isIdenticalTo($arguments)
+			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(5)
-			->object($arguments->parse(array('-a', '-b')))->isIdenticalTo($arguments)
+			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(8)
 		;
 	}
@@ -248,27 +248,33 @@ class parser extends atoum\test
 
 	public function testAddHandler()
 	{
-		$arguments = new script\arguments\parser();
+		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($arguments->addHandler($argument = '-a', $handler = function($argument, $values) {}), $arguments)
-			->array($arguments->getHandlers())->isEqualTo(array($argument => array($handler)))
-			->object($arguments->addHandler($argument, $handler), $arguments)
-			->array($arguments->getHandlers())->isEqualTo(array($argument => array($handler, $handler)))
-			->exception(function() use ($arguments, & $argument) {
-						$arguments->addHandler($argument = '-b', function() {});
+			->object($parser->addHandler($handler = function($script, $argument, $values) {}, $arguments = array($argument = '-a')), $parser)
+			->array($parser->getHandlers())->isEqualTo(array($argument => array($handler)))
+			->object($parser->addHandler($handler, $arguments), $parser)
+			->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler)))
+			->exception(function() use ($parser, & $argument) {
+						$parser->addHandler(function() {}, $argument = array('-b'));
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Handler of argument \'' . $argument . '\' must take two argument')
-			->exception(function() use ($arguments, & $argument) {
-						$arguments->addHandler($argument = '-b', function($argument) {});
+					->hasMessage('Handler must take three arguments')
+			->exception(function() use ($parser, & $argument) {
+						$parser->addHandler(function($script) {}, array('-b'));
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Handler of argument \'' . $argument . '\' must take two argument')
-			->exception(function() use ($arguments, & $argument) {
-						$arguments->addHandler($argument = uniqid(), function($argument, $values) {});
+					->hasMessage('Handler must take three arguments')
+			->exception(function() use ($parser, & $argument) {
+						$parser->addHandler(function($script, $argument) {}, array('-b'));
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Handler must take three arguments')
+			->exception(function() use ($parser, & $argument) {
+						$parser->addHandler(function($script, $argument, $values) {}, array($argument = 'b'));
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')

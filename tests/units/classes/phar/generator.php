@@ -621,6 +621,8 @@ class generator extends atoum\test
 
 		$superglobals->_SERVER = array('argv' => array(uniqid(), '--help'));
 
+		$generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals));
+
 		$mockGenerator
 			->generate('\mageekguy\atoum\writers\stdout')
 			->generate('\mageekguy\atoum\writers\stderr')
@@ -644,7 +646,7 @@ class generator extends atoum\test
 		;
 
 		$this->assert
-			->object($generator->run($superglobals))->isIdenticalTo($generator)
+			->object($generator->run())->isIdenticalTo($generator)
 			->mock($stdout)
 				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
 				->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\phar\generator::version) . PHP_EOL))
