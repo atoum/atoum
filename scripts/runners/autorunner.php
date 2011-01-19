@@ -26,7 +26,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 				$arguments->addHandler('-c', function($argument, $values) use ($runner) {
 						if (sizeof($values) <= 0)
 						{
-							throw atoum\exceptions\runtime('Argument \'' . $argument . '\' must take at least one argument');
+							throw new atoum\exceptions\runtime('Argument \'' . $argument . '\' must take at least one argument');
 						}
 
 						foreach ($values as $value)
@@ -39,7 +39,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 				$arguments->addHandler('-c', function($argument, $values) use ($runner) {
 						if (sizeof($values) <= 0 || sizeof($values) > 1)
 						{
-							throw atoum\exceptions\runtime('Argument \'' . $argument . '\' must take only one argument');
+							throw new atoum\exceptions\runtime('Argument \'' . $argument . '\' must take only one argument');
 						}
 
 						foreach ($values as $value)
@@ -60,7 +60,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 					);
 				}
 
-				$arguments->parse(array_slice($_SERVER['argv'], 1));
+				$arguments->parse();
 
 				if ($runner->hasReports() === false)
 				{
