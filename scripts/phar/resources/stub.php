@@ -4,7 +4,7 @@ namespace mageekguy\atoum\phar;
 
 use \mageekguy\atoum\phar;
 
-require('phar://' . __FILE__ . '/classes/autoloader.php');
+require_once('phar://' . __FILE__ . '/classes/autoloader.php');
 
 if (PHP_SAPI === 'cli')
 {
