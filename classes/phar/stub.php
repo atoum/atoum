@@ -194,7 +194,7 @@ class stub extends atoum\script
 		$stringDecorator = new atoum\report\decorators\string();
 		$stringDecorator->addWriter(new atoum\writers\stdout());
 
-		$report = new atoum\report();
+		$report = new atoum\reports\cli();
 		$report->addRunnerField(new atoum\report\fields\runner\version\string(), array(atoum\runner::runStart));
 		$report->addTestField(new atoum\report\fields\test\run\string(), array(atoum\test::runStart));
 		$report->addTestField(new atoum\report\fields\test\event\string());
@@ -208,7 +208,6 @@ class stub extends atoum\script
 		$report->addRunnerField(new atoum\report\fields\runner\outputs\string(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\errors\string(), array(atoum\runner::runStop));
 		$report->addRunnerField(new atoum\report\fields\runner\exceptions\string(), array(atoum\runner::runStop));
-		$report->addDecorator($stringDecorator);
 
 		$runner->addObserver($report)->run();
 
