@@ -21,7 +21,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 				$runner = new atoum\runner();
 
-				$arguments = new script\arguments();
+				$arguments = new script\arguments\parser();
 
 				$arguments->addHandler('-c', function($argument, $values) use ($runner) {
 						if (sizeof($values) <= 0)

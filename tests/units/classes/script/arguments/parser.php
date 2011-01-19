@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script;
+namespace mageekguy\atoum\tests\units\script\arguments;
 
 use mageekguy\atoum;
 use mageekguy\atoum\script;
 
 require_once(__DIR__ . '/../../runner.php');
 
-class arguments extends atoum\test
+class parser extends atoum\test
 {
 	public function test__construct()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->object($arguments)->isInstanceOf('\iteratorAggregate')
@@ -20,7 +20,7 @@ class arguments extends atoum\test
 			->array($arguments->getHandlers())->isEmpty()
 		;
 
-		$arguments = new script\arguments($superglobals = new atoum\superglobals());
+		$arguments = new script\arguments\parser($superglobals = new atoum\superglobals());
 
 		$this->assert
 			->object($arguments->getSuperGlobals())->isIdenticalTo($superglobals)
@@ -29,7 +29,7 @@ class arguments extends atoum\test
 
 	public function testSetSuperglobals()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->object($arguments->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($arguments)
@@ -39,7 +39,7 @@ class arguments extends atoum\test
 
 	public function testGetValues()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->array($arguments->getValues())->isEmpty()
@@ -74,7 +74,7 @@ class arguments extends atoum\test
 
 	public function testGetIterator()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->object($arguments->getIterator())->isInstanceOf('\arrayIterator')
@@ -98,7 +98,7 @@ class arguments extends atoum\test
 
 	public function testParse()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->object($arguments->parse(array()))->isIdenticalTo($arguments)
@@ -125,7 +125,7 @@ class arguments extends atoum\test
 			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
 		;
 
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$invoke = 0;
 
@@ -160,30 +160,30 @@ class arguments extends atoum\test
 	public function testIsArgument()
 	{
 		$this->assert
-			->boolean(script\arguments::isArgument(uniqid()))->isFalse()
-			->boolean(script\arguments::isArgument('+' . rand(0, 9)))->isFalse()
-			->boolean(script\arguments::isArgument('-' . rand(0, 9)))->isFalse()
-			->boolean(script\arguments::isArgument('--' . rand(0, 9)))->isFalse()
-			->boolean(script\arguments::isArgument('+_'))->isFalse()
-			->boolean(script\arguments::isArgument('-_'))->isFalse()
-			->boolean(script\arguments::isArgument('--_'))->isFalse()
-			->boolean(script\arguments::isArgument('+-'))->isFalse()
-			->boolean(script\arguments::isArgument('---'))->isFalse()
-			->boolean(script\arguments::isArgument('+a'))->isTrue()
-			->boolean(script\arguments::isArgument('-a'))->isTrue()
-			->boolean(script\arguments::isArgument('--a'))->isTrue()
-			->boolean(script\arguments::isArgument('+a' . rand(0, 9)))->isTrue()
-			->boolean(script\arguments::isArgument('-a' . rand(0, 9)))->isTrue()
-			->boolean(script\arguments::isArgument('--a' . rand(0, 9)))->isTrue()
-			->boolean(script\arguments::isArgument('+aa'))->isTrue()
-			->boolean(script\arguments::isArgument('-aa'))->isTrue()
-			->boolean(script\arguments::isArgument('--aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument(uniqid()))->isFalse()
+			->boolean(script\arguments\parser::isArgument('+' . rand(0, 9)))->isFalse()
+			->boolean(script\arguments\parser::isArgument('-' . rand(0, 9)))->isFalse()
+			->boolean(script\arguments\parser::isArgument('--' . rand(0, 9)))->isFalse()
+			->boolean(script\arguments\parser::isArgument('+_'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('-_'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('--_'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('+-'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('---'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('+a'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('-a'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('--a'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('+a' . rand(0, 9)))->isTrue()
+			->boolean(script\arguments\parser::isArgument('-a' . rand(0, 9)))->isTrue()
+			->boolean(script\arguments\parser::isArgument('--a' . rand(0, 9)))->isTrue()
+			->boolean(script\arguments\parser::isArgument('+aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('-aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('--aa'))->isTrue()
 		;
 	}
 
 	public function testAddHandler()
 	{
-		$arguments = new script\arguments();
+		$arguments = new script\arguments\parser();
 
 		$this->assert
 			->object($arguments->addHandler($argument = '-a', $handler = function($argument, $values) {}), $arguments)

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\script;
+namespace mageekguy\atoum\script\arguments;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
 
-class arguments implements \iteratorAggregate
+class parser implements \iteratorAggregate
 {
 	protected $values = array();
 	protected $handlers = array();
