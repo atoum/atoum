@@ -98,7 +98,72 @@ class parser extends atoum\test
 
 	public function testParse()
 	{
-		$arguments = new script\arguments\parser();
+		$superglobals = new atoum\superglobals();
+
+		$superglobals->_SERVER['argv'] = array();
+
+		$arguments = new script\arguments\parser($superglobals);
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEmpty()
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEmpty()
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array()))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1')))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
+		;
+
+		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c');
+
+		$this->assert
+			->object($arguments->parse())->isIdenticalTo($arguments)
+			->array($arguments->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+		;
 
 		$this->assert
 			->object($arguments->parse(array()))->isIdenticalTo($arguments)

@@ -49,8 +49,13 @@ class parser implements \iteratorAggregate
 		return new \arrayIterator($this->getValues());
 	}
 
-	public function parse(array $array)
+	public function parse(array $array = null)
 	{
+		if ($array === null)
+		{
+			$array = array_slice($this->superglobals->_SERVER['argv'], 1);
+		}
+
 		$this->resetValues();
 
 		$arguments = new \arrayIterator($array);
