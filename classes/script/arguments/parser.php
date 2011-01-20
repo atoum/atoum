@@ -7,6 +7,7 @@ use \mageekguy\atoum\exceptions;
 
 class parser implements \iteratorAggregate
 {
+	protected $script = null;
 	protected $values = array();
 	protected $handlers = array();
 
@@ -25,6 +26,18 @@ class parser implements \iteratorAggregate
 		$this->superglobals = $superglobals;
 
 		return $this;
+	}
+
+	public function setScript(atoum\script $script)
+	{
+		$this->script = $script;
+
+		return $this;
+	}
+
+	public function getScript()
+	{
+		return $this->script;
 	}
 
 	public function getSuperglobals()
@@ -139,7 +152,7 @@ class parser implements \iteratorAggregate
 		{
 			foreach ($this->handlers[$argument] as $handler)
 			{
-				$handler->__invoke($this, $argument, $this->getValues($argument));
+				$handler->__invoke($this->script, $argument, $this->getValues($argument));
 			}
 		}
 

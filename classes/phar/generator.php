@@ -151,56 +151,36 @@ class generator extends atoum\script
 
 	public function run(array $arguments = null)
 	{
-		$helpHandler = function($script, $argument, $values) {
-			}
-		;
-
-		$this->argumentsParser
-			->addHandler('-h', $helpHandler)
-			->addHandler('--help', $helpHandler)
-		;
-
-		$directoryHandler = function($script, $argument, $values) {
-			}
-		;
-
-		$this->argumentsParser
-			->addHandler('-d', $directoryHandler)
-			->addHandler('--directory', $directoryHandler)
-		;
-
-		parent::run($arguments);
-	}
-
-	protected function handleArgument($argument)
-	{
-		switch ($argument)
-		{
-			case '-h':
-			case '--help':
-				$this->help = true;
-				break;
-
-			case '-d':
-			case '--directory':
-				$this->arguments->next();
-
-				$directory = $this->arguments->current();
-
-				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
 				{
-					throw new exceptions\logic\invalidArgument(sprintf($this->locale->_('Bad usage of %s, do php %s --help for more informations'), $argument, $this->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$this->setDestinationDirectory($directory);
-				break;
+				$script->help();
+			},
+			array('-h', '--help')
+		);
 
-			default:
-				throw new exceptions\logic\invalidArgument(sprintf($this->locale->_('Argument \'%s\' is unknown'), $argument));
-		}
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setDestinationDirectory($values[0]);
+			},
+			array('-d', '--directory')
+		);
+
+		parent::run($arguments);
+
+		return $this->generate();
 	}
 
-	protected function help()
+	public function help()
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
@@ -216,6 +196,10 @@ class generator extends atoum\script
 		$this->writeLabels($options);
 
 		return $this;
+	}
+
+	protected function handleArgument($argument)
+	{
 	}
 
 	protected function generate()

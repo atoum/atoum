@@ -42,7 +42,7 @@ abstract class script
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
-			throw new exceptions\logic('\'' . $name . '\' must be used in CLI only');
+			throw new exceptions\logic('\'' . $this->getName() . '\' must be used in CLI only');
 		}
 
 		$this
@@ -68,7 +68,7 @@ abstract class script
 
 	public function setArgumentsParser(script\arguments\parser $parser)
 	{
-		$this->argumentsParser = $parser;
+		$this->argumentsParser = $parser->setScript($this);
 
 		return $this;
 	}
@@ -110,15 +110,7 @@ abstract class script
 
 	public function run(array $arguments = null)
 	{
-		foreach ($this->argumentsParser->parse($arguments) as $argument)
-		{
-			if (self::isArgument($argument) === false)
-			{
-				throw new exceptions\logic\invalidArgument('Argument \'' . $argument . '\' is invalid');
-			}
-
-			$this->handleArgument($argument);
-		}
+		$this->argumentsParser->parse($arguments);
 
 		return $this;
 	}
@@ -172,22 +164,6 @@ abstract class script
 		}
 
 		return $this;
-	}
-
-	protected abstract function handleArgument($argument);
-
-	protected static function isArgument($string)
-	{
-		switch (substr($string, 0, 1))
-		{
-			case '+':
-			case '-':
-			case '--':
-				return true;
-
-			default:
-				return false;
-		}
 	}
 }
 

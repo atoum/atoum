@@ -8,13 +8,6 @@ use \mageekguy\atoum\exceptions;
 class stub extends atoum\script
 {
 	protected $pharName = 'phar://';
-	protected $help = false;
-	protected $version = false;
-	protected $infos = false;
-	protected $signature = false;
-	protected $decompress = false;
-	protected $extract = false;
-	protected $testIt = false;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -25,95 +18,91 @@ class stub extends atoum\script
 
 	public function run(array $arguments = null)
 	{
-		if (PHP_SAPI !== 'cli' || realpath($_SERVER['argv'][0]) !== $this->getName())
+		if (realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
 			require_once($this->pharName . '/scripts/runners/autorunner.php');
 		}
 		else
 		{
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->help();
+				},
+				array('-h', '--help')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->version();
+				},
+				array('-v', '--version')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->infos();
+				},
+				array('-i', '--infos')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->signature();
+				},
+				array('-s', '--signature')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->extractTo($values[0]);
+				},
+				array('-e', '--extractTo')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->testIt();
+				},
+				array('--testIt')
+			);
+
 			parent::run($arguments);
-
-			if ($this->help === true)
-			{
-				$this->help();
-			}
-
-			if ($this->version === true)
-			{
-				$this->version();
-			}
-
-			if ($this->infos === true)
-			{
-				$this->infos();
-			}
-
-			if ($this->signature === true)
-			{
-				$this->signature();
-			}
-
-			if ($this->testIt === true)
-			{
-				$this->testIt();
-			}
-
-			if ($this->extract !== false)
-			{
-				$this->extract();
-			}
 		}
 
 		return $this;
 	}
 
-	protected function handleArgument($argument)
-	{
-		switch ($argument)
-		{
-			case '-h':
-			case '--help':
-				$this->help = true;
-				break;
-
-			case '-v':
-			case '--version':
-				$this->version = true;
-				break;
-
-			case '-i':
-			case '--infos':
-				$this->infos = true;
-				break;
-
-			case '-s':
-			case '--signature':
-				$this->signature = true;
-				break;
-
-			case '--testIt':
-				$this->testIt = true;
-				break;
-
-			case '-e':
-			case '--extract':
-				$this->arguments->next();
-				$directory = $this->arguments->current();
-
-				if ($this->arguments->valid() === false || self::isArgument($directory) === true)
-				{
-					throw new exceptions\logic\invalidArgument('Bad usage of ' . $argument . ', do php ' . $this->getName() . ' --help for more informations');
-				}
-
-				$this->extract = $directory;
-				break;
-
-			default:
-				throw new exceptions\logic\invalidArgument('Argument \'' . $argument . '\' is unknown');
-		}
-	}
-
-	protected function help()
+	public function help()
 	{
 		$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]') . PHP_EOL, $this->getName()));
 		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
@@ -133,14 +122,14 @@ class stub extends atoum\script
 		return $this;
 	}
 
-	protected function version()
+	public function version()
 	{
 		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
 
 		return $this;
 	}
 
-	protected function infos()
+	public function infos()
 	{
 		$phar = new \Phar($this->pharName);
 
@@ -150,7 +139,7 @@ class stub extends atoum\script
 		return $this;
 	}
 
-	protected function signature()
+	public function signature()
 	{
 		$phar = new \Phar($this->pharName);
 
@@ -161,26 +150,26 @@ class stub extends atoum\script
 		return $this;
 	}
 
-	protected function extract()
+	public function extractTo($directory)
 	{
-		if (is_dir($this->extract) === false)
+		if (is_dir($directory) === false)
 		{
-			throw new exceptions\logic('Path \'' . $this->extract . '\' is not a directory');
+			throw new exceptions\logic('Path \'' . $directory . '\' is not a directory');
 		}
 
-		if (is_writable($this->extract) === false)
+		if (is_writable($directory) === false)
 		{
-			throw new exceptions\logic('Directory \'' . $this->extract . '\' is not writable');
+			throw new exceptions\logic('Directory \'' . $directory . '\' is not writable');
 		}
 
 		$phar = new \Phar($this->getName());
 
-		$phar->extractTo($this->extract);
+		$phar->extractTo($directory);
 
 		return $this;
 	}
 
-	protected function testIt()
+	public function testIt()
 	{
 		define('\mageekguy\atoum\runners\autorun', false);
 

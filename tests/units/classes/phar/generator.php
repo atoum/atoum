@@ -52,7 +52,7 @@ class generator extends atoum\test
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->collection($generator->getArguments())->isEmpty()
+			->object($generator->getArguments())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
 		;
 
 		$name = uniqid();
@@ -66,7 +66,7 @@ class generator extends atoum\test
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->collection($generator->getArguments())->isEmpty()
+			->object($generator->getArguments())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
 		;
 	}
 
@@ -669,10 +669,8 @@ class generator extends atoum\test
 			}
 		);
 
-		$superglobals->_SERVER = array('argv' => array(uniqid(), '-d', 	$directory = uniqid()));
-
 		$this->assert
-			->object($generator->run($superglobals))->isIdenticalTo($generator)
+			->object($generator->run(array('-d', $directory = uniqid())))->isIdenticalTo($generator)
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 			->mock($phar)
 				->call('__construct', array(

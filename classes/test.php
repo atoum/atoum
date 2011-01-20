@@ -629,11 +629,17 @@ abstract class test implements observable, \countable
 
 	protected function extractError($string, $returnValue)
 	{
-		foreach (explode("\n", trim($string)) as $error)
+		$error = trim($string);
+
+		if ($error !== '')
 		{
 			if (preg_match('/ in ([^ ]+) on line (.*)$/', $error, $match) === 1)
 			{
 				$this->score->addError($match[1], $match[2], $this->class, $this->currentMethod, $returnValue, $error);
+			}
+			else
+			{
+				$this->score->addError(null, null, $this->class, $this->currentMethod, $returnValue, $error);
 			}
 		}
 

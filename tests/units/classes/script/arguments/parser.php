@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\script\arguments;
 
 use mageekguy\atoum;
+use mageekguy\atoum\mock;
 use mageekguy\atoum\script;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -24,6 +25,19 @@ class parser extends atoum\test
 
 		$this->assert
 			->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
+		;
+	}
+
+	public function testSetScript()
+	{
+		$parser = new script\arguments\parser();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\script');
+
+		$this->assert
+			->object($parser->setScript($script = new mock\mageekguy\atoum\script(uniqid())))->isIdenticalTo($parser)
+			->object($parser->getScript())->isIdenticalTo($script)
 		;
 	}
 

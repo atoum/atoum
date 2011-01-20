@@ -167,6 +167,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getName = function() { return '__construct'; };
 		$reflectionMethodController->isConstructor = function() { return true; };
 		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
@@ -260,6 +261,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getName = function() { return '__construct'; };
 		$reflectionMethodController->isConstructor = function() { return true; };
 		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
@@ -359,6 +361,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getName = function() { return '__construct'; };
 		$reflectionMethodController->isConstructor = function() { return true; };
 		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
@@ -541,6 +544,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getName = function() use (& $methodName) { return $methodName; };
 		$reflectionMethodController->isConstructor = function() { return false; };
 		$reflectionMethodController->getParameters = function() { return array(); };
+		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
