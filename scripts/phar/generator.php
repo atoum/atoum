@@ -29,7 +29,7 @@ catch (\runtimeException $exception)
 catch (\exception $exception)
 {
 	$generator->writeError(sprintf($generator->getLocale()->_('Unattended exception: %s'), $exception->getMessage()));
-	exit(1);
+	exit(2);
 }
 
 exit(0);

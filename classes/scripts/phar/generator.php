@@ -149,31 +149,31 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function run(array $arguments = null)
+	public function run(array $arguments = array())
 	{
 		$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
 				{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
 				$script->help();
-				},
-				array('-h', '--help')
-				);
+			},
+			array('-h', '--help')
+		);
 
 		$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+			function($script, $argument, $values) {
 				if (sizeof($values) !== 1)
 				{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
 				$script->setDestinationDirectory($values[0]);
-				},
-				array('-d', '--directory')
-				);
+			},
+			array('-d', '--directory')
+		);
 
 		parent::run($arguments);
 
@@ -196,10 +196,6 @@ class generator extends atoum\script
 		$this->writeLabels($options);
 
 		return $this;
-	}
-
-	protected function handleArgument($argument)
-	{
 	}
 
 	protected function generate()

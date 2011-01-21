@@ -52,7 +52,7 @@ class generator extends atoum\test
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->object($generator->getArguments())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
+			->object($generator->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
 			;
 
 		$name = uniqid();
@@ -66,7 +66,7 @@ class generator extends atoum\test
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->object($generator->getArguments())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
+			->object($generator->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
 			;
 	}
 

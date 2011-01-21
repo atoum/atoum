@@ -93,7 +93,7 @@ abstract class script
 		return $this->name;
 	}
 
-	public function getArguments()
+	public function getArgumentsParser()
 	{
 		return $this->argumentsParser;
 	}
@@ -108,9 +108,9 @@ abstract class script
 		return $this->errors;
 	}
 
-	public function run(array $arguments = null)
+	public function run(array $arguments = array())
 	{
-		$this->argumentsParser->parse($arguments);
+		$this->argumentsParser->parse(sizeof($arguments) <= 0 ? null : $arguments);
 
 		return $this;
 	}
