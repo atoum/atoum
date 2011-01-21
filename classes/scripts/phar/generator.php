@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\phar;
+namespace mageekguy\atoum\scripts\phar;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
@@ -26,7 +26,7 @@ class generator extends atoum\script
 		parent::__construct($name, $locale, $adapter);
 
 		$this->pharInjector = function ($name) { return new \phar($name); };
-		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new iterator(new \recursiveDirectoryIterator($directory))); };
+		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new generator\iterator(new \recursiveDirectoryIterator($directory))); };
 	}
 
 	public function setOriginDirectory($directory)
@@ -152,28 +152,28 @@ class generator extends atoum\script
 	public function run(array $arguments = null)
 	{
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
+				function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
 				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
 				$script->help();
-			},
-			array('-h', '--help')
-		);
+				},
+				array('-h', '--help')
+				);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
+				function($script, $argument, $values) {
 				if (sizeof($values) !== 1)
 				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
 				$script->setDestinationDirectory($values[0]);
-			},
-			array('-d', '--directory')
-		);
+				},
+				array('-d', '--directory')
+				);
 
 		parent::run($arguments);
 
@@ -186,12 +186,12 @@ class generator extends atoum\script
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
 			->writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version) . PHP_EOL)
 			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-		;
+			;
 
 		$options = array(
-			'-h, --help' => $this->locale->_('Display this help'),
-			'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
-		);
+				'-h, --help' => $this->locale->_('Display this help'),
+				'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
+				);
 
 		$this->writeLabels($options);
 
@@ -265,14 +265,14 @@ class generator extends atoum\script
 		$phar->setStub($this->adapter->file_get_contents($this->stubFile));
 
 		$phar->setMetadata(array(
-				'version' => atoum\test::getVersion(),
-				'author' => atoum\test::author,
-				'support' => self::mail,
-				'repository' => self::repository,
-				'description' => $description,
-				'licence' => $licence
-			)
-		);
+					'version' => atoum\test::getVersion(),
+					'author' => atoum\test::author,
+					'support' => self::mail,
+					'repository' => self::repository,
+					'description' => $description,
+					'licence' => $licence
+					)
+				);
 
 		$phar->buildFromIterator($fileIterator, $this->originDirectory);
 

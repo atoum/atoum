@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\phar;
+namespace mageekguy\atoum\scripts\phar;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
@@ -25,76 +25,76 @@ class stub extends atoum\script
 		else
 		{
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->help();
-				},
-				array('-h', '--help')
-			);
+					},
+					array('-h', '--help')
+					);
 
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->version();
-				},
-				array('-v', '--version')
-			);
+					},
+					array('-v', '--version')
+					);
 
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->infos();
-				},
-				array('-i', '--infos')
-			);
+					},
+					array('-i', '--infos')
+					);
 
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->signature();
-				},
-				array('-s', '--signature')
-			);
+					},
+					array('-s', '--signature')
+					);
 
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 1)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->extractTo($values[0]);
-				},
-				array('-e', '--extractTo')
-			);
+					},
+					array('-e', '--extractTo')
+					);
 
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
+					function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
 					$script->testIt();
-				},
-				array('--testIt')
-			);
+					},
+					array('--testIt')
+					);
 
 			parent::run($arguments);
 		}
@@ -109,13 +109,13 @@ class stub extends atoum\script
 		$this->writeMessage($this->locale->_('Available options are:') . PHP_EOL);
 
 		$options = array(
-			'-h, --help' => $this->locale->_('Display this help'),
-			'-v, --version' => $this->locale->_('Display version'),
-			'-i, --infos' => $this->locale->_('Display informations'),
-			'-s, --signature' => $this->locale->_('Display phar signature'),
-			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
-			'--testIt' => $this->locale->_('Execute all Atoum unit tests')
-		);
+				'-h, --help' => $this->locale->_('Display this help'),
+				'-v, --version' => $this->locale->_('Display version'),
+				'-i, --infos' => $this->locale->_('Display informations'),
+				'-s, --signature' => $this->locale->_('Display phar signature'),
+				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
+				'--testIt' => $this->locale->_('Execute all Atoum unit tests')
+				);
 
 		$this->writeLabels($options);
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\phar;
+namespace mageekguy\atoum\scripts\phar\generator;
 
 class iterator extends \recursiveFilterIterator
 {

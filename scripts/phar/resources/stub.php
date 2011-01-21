@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\phar;
 
-use \mageekguy\atoum\phar;
+use \mageekguy\atoum\scripts\phar;
 
 require_once('phar://' . __FILE__ . '/classes/autoloader.php');
 

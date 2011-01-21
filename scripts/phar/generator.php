@@ -3,10 +3,11 @@
 namespace mageekguy\atoum\phar;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\scripts;
 
 require_once(__DIR__ . '/../../classes/autoloader.php');
 
-$generator = new atoum\phar\generator(__FILE__);
+$generator = new scripts\phar\generator(__FILE__);
 $generator->setOriginDirectory(__DIR__ . '/../..');
 $generator->setStubFile(__DIR__ . '/resources/stub.php');
 
