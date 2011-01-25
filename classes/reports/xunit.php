@@ -6,10 +6,22 @@ use \mageekguy\atoum;
 
 class xunit extends atoum\report
 {
-	public function __construct()
+	protected $adapter;
+	
+	public function __construct(atoum\adapter $adapter = null)
 	{
 		parent::__construct();
-    
+    	if ($adapter === null)
+		{
+			$adapter = new atoum\adapter();
+		}
+		$this->adapter = $adapter;
+		$xmlLoaded = $this->adapter->extension_loaded('libxml');
+
+		if ($xmlLoaded !== true)
+		{
+			throw new atoum\exceptions\runtime('libxml is mandatory for xunit report.');
+		}
 		$this->addRunnerField(new atoum\report\fields\runner\xunit(), array(atoum\runner::runStop));
 	}
 
@@ -29,6 +41,19 @@ class xunit extends atoum\report
 		parent::runnerStop($runner);
 		return $this->write();
 	}
+	
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+	
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+	
 }
 
 ?>
