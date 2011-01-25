@@ -26,8 +26,7 @@ class xunit extends report\fields\runner
       
       if($this->score != null)
       {
-	      $root = $document->createElement('testsuites');
-	      $document->appendChild($root);
+	      $document->appendChild($root = $document->createElement('testsuites'));
 	      
 	      $durations = $this->score->getDurations();
 	      $errors = $this->score->getErrors();
@@ -37,37 +36,40 @@ class xunit extends report\fields\runner
 	      $classes = array();
 	      $treated = array();
 	      $currentclass = array();
-	      foreach ($durations as $duration)
+	      $clname = null;
+	      $methName = null;
+         $filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
+         $filterMethod = function ($element) use (& $methName) { return ($element['method'] == $methName); };  
+	      
+         foreach ($durations as $duration)
 	      {
-	          if(!in_array($duration['class'], $treated))
+	          if(!isset($classes[$duration['class']]))
 	          {
 	              $currentClass = array();
 	              $clname = $duration['class'];
-	              $treated[] = $clname;
-	              $currentClass['name'] = $clname;
-	              $filter = function ($element) use ($clname) { return ($element['class'] == $clname); }; 
-	              $currentClass['errors'] = array_filter($errors, $filter); 
-	              $currentClass['excepts'] = array_filter($excepts, $filter); 
-	              $currentClass['fails'] = array_filter($fails, $filter);
-	              $currentClass['durations'] = array_filter($durations, $filter); 
-	              $classes[] = $currentClass; 
+	              
+	              $currentClass['errors'] = array_filter($errors, $filterClass); 
+	              $currentClass['excepts']	= array_filter($excepts, $filterClass); 
+	              $currentClass['fails'] = array_filter($fails, $filterClass);
+	              $currentClass['durations'] = array_filter($durations, $filterClass); 
+	              $classes[$clname] = $currentClass; 
 	          }
 	      }
 	      $testsuite = null;
 	      $testcase = null;
 	      
-	      foreach ($classes as $classe)
+	      foreach ($classes as $name => $classe)
 	      {
-	          $cl         = new \ReflectionClass($classe['name']);
-	          $clname     = $cl->getShortName(); 
-	          $package    = $cl->getNamespaceName();
+	          $cl = new \ReflectionClass($name);
+	          $classname = $cl->getShortName(); 
+	          $package = $cl->getNamespaceName();
 	          $testsuite  = $document->createElement('testsuite'); 
-	          $testsuite->setAttribute('name',$clname);
+	          $testsuite->setAttribute('name',$classname);
 	          $testsuite->setAttribute('package',$package);
 	          $testsuite->setAttribute('tests',sizeof($classe['durations']));
 	          $testsuite->setAttribute('failures',sizeof($classe['fails']));
 	          $testsuite->setAttribute('errors',(sizeof($classe['excepts'])+sizeof($classe['errors'])));
-	          $time        = 0;
+	          $time = 0;
 	          foreach ($classe['durations'] as $duration)
 	          {
 	              $time += $duration['value'];
@@ -76,8 +78,8 @@ class xunit extends report\fields\runner
 	              $testcase->setAttribute('name', $methName);
 	              $testcase->setAttribute('time', $duration['value']);
 	              $testcase->setAttribute('classname', $clname);
-	              $filter = function ($element) use ($methName) { return ($element['method'] == $methName); };  
-	              $failures = array_filter($classe['fails'], $filter);
+	              
+	              $failures = array_filter($classe['fails'], $filterMethod);
 	              foreach ($failures as $failure)
 	              {
 	                  $xfail = $document->createElement('failure',$failure['fail']);
@@ -85,7 +87,7 @@ class xunit extends report\fields\runner
 	                  $xfail->setAttribute('message',$failure['asserter']);
 	                  $testcase->appendChild($xfail);
 	              }
-	              $mExcepts = array_filter($classe['excepts'], $filter);
+	              $mExcepts = array_filter($classe['excepts'], $filterMethod);
 	              foreach ($mExcepts as $except)
 	              {
 	                  $xexcept = $document->createElement('error');
