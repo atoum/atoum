@@ -16,7 +16,7 @@ class stub extends atoum\script
 		$this->pharName .= $this->getName();
 	}
 
-	public function run(array $arguments = null)
+	public function run(array $arguments = array())
 	{
 		if (realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
