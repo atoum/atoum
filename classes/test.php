@@ -546,7 +546,9 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod, atoum\runner $runner)
 	{
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $runner->getPath() . '\'); require(\'' . $this->path . '\'); $runner = new ' . $runner->getClass() . '(); $runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false); echo serialize($runner->getScore()); ?>';
+		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
+
+		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\runners\autorun\', false); require(\'' . $runner->getPath() . '\'); require(\'' . $this->path . '\'); $runner = new ' . $runner->getClass() . '(); $runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false); file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore())); ?>';
 
 		$descriptors = array
 			(
@@ -577,7 +579,14 @@ abstract class test implements observable, \countable
 
 			if ($stdOut !== '')
 			{
-				$score = @unserialize($stdOut);
+				$this->extractError($stdOut, $returnValue);
+			}
+
+			if (is_file($tmpFile) === true && is_writable($tmpFile) === true)
+			{
+				$tmpFileContent = file_get_contents($tmpFile);
+
+				$score = @unserialize($tmpFileContent);
 
 				if ($score instanceof score)
 				{
@@ -585,8 +594,10 @@ abstract class test implements observable, \countable
 				}
 				else
 				{
-					$this->extractError($stdOut, $returnValue);
+					$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, 'Unable to retrieve score for ' . $this->currentMethod . ': ' . $tmpFileContent);
 				}
+
+				unlink($tmpFile);
 			}
 		}
 	}
@@ -634,13 +645,13 @@ abstract class test implements observable, \countable
 
 		if ($error !== '')
 		{
-			if (preg_match('/ in ([^ ]+) on line (.*)$/', $error, $match) === 1)
+			if (preg_match('/ in (.+) on line (\d+)/', $error, $match) === 1)
 			{
-				$this->score->addError($match[1], $match[2], $this->class, $this->currentMethod, $returnValue, $error);
+				$this->score->addError($match[1], $match[2], $this->class, $this->currentMethod, $returnValue, preg_replace('/ in (.+) on line (\d+)/', '', $error));
 			}
 			else
 			{
-				$this->score->addError(null, null, $this->class, $this->currentMethod, $returnValue, $error);
+				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, $error);
 			}
 		}
 
