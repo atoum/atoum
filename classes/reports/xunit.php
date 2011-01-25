@@ -3,42 +3,47 @@
 namespace mageekguy\atoum\reports;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class xunit extends atoum\report
 {
-	protected $adapter;
+	protected $adapter = null;
 	
 	public function __construct(atoum\adapter $adapter = null)
 	{
-		parent::__construct();
     	if ($adapter === null)
 		{
 			$adapter = new atoum\adapter();
 		}
-		$this->adapter = $adapter;
-		$xmlLoaded = $this->adapter->extension_loaded('libxml');
 
-		if ($xmlLoaded !== true)
+		$this->setAdapter($adapter);
+
+		if ($this->adapter->extension_loaded('libxml') === false)
 		{
-			throw new atoum\exceptions\runtime('libxml is mandatory for xunit report.');
+			throw new exceptions\runtime('libxml PHP extension is mandatory for xunit report');
 		}
+
+		parent::__construct();
+
 		$this->addRunnerField(new atoum\report\fields\runner\xunit(), array(atoum\runner::runStop));
 	}
 
 	public function __toString()
 	{
 		$string = '';
-		$fields = $this->getRunnerFields(atoum\runner::runStop);
-		foreach ($fields as $field)
+
+		foreach ($this->getRunnerFields(atoum\runner::runStop) as $field)
 		{
-			$string .= (string)$field;
+			$string .= $field;
 		}
+
 		return $string;
 	}
 	
 	public function runnerStop(atoum\runner $runner)
 	{
 		parent::runnerStop($runner);
+
 		return $this->write();
 	}
 	
@@ -53,7 +58,6 @@ class xunit extends atoum\report
 
 		return $this;
 	}
-	
 }
 
 ?>

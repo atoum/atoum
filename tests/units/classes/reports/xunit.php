@@ -16,7 +16,7 @@ class xunit extends atoum\test
 	public function test__construct()
 	{
 		$rep = new reports\xunit();
-		
+
 		$this->assert
 			->array($rep->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
 			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
@@ -37,12 +37,12 @@ class xunit extends atoum\test
 			->array($rep->getTestFields(atoum\test::runStop))->isEqualTo(array())
 			->object($rep->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
-		
+
 		$adapter = new atoum\adapter();
 		$adapter->extension_loaded = function($extension) { return true; };
-		
+
 		$rep = new reports\xunit($adapter);
-		
+
 		$this->assert
 			->array($rep->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
 			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
@@ -64,19 +64,19 @@ class xunit extends atoum\test
 			->object($rep->getAdapter())->isIdenticalTo($adapter)
 			->adapter($adapter)->call('extension_loaded', array('libxml'))
 		;
-		
+
 		$adapter->extension_loaded = function($extension) { return false; };
-		
+
 		$this->assert
 			->exception(function() use ($adapter) {
 							$rep = new reports\xunit($adapter);
 						}
 					)
 			->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-			->hasMessage('libxml is mandatory for xunit report.')
+			->hasMessage('libxml PHP extension is mandatory for xunit report')
 			;
 	}
-	
+
 	public function testSetAdapter()
 	{
 		$rep = new reports\xunit();
