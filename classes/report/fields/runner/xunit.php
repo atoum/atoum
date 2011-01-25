@@ -27,7 +27,7 @@ class xunit extends report\fields\runner
 		{
 			$document = new \DOMDocument('1.0', 'UTF-8');
 			$document->formatOutput = true;
-			$document->appendChild($root = $document->createElement('testSuites'));
+			$document->appendChild($root = $document->createElement('testsuites'));
 
 			$durations = $this->score->getDurations();
 			$errors = $this->score->getErrors();
@@ -59,7 +59,7 @@ class xunit extends report\fields\runner
 				$clname = substr($name, $antiSlashOffset + 1);
 				$package = substr($name, 0, $antiSlashOffset);
 
-				$root->appendChild($testSuite  = $document->createElement('testSuite'));
+				$root->appendChild($testSuite  = $document->createElement('testsuite'));
 
 				$testSuite->setAttribute('name', $clname);
 				$testSuite->setAttribute('package', $package);
@@ -75,7 +75,7 @@ class xunit extends report\fields\runner
 
 					$method = $duration['method'];
 
-					$testSuite->appendChild($testCase = $document->createElement('testCase'));
+					$testSuite->appendChild($testCase = $document->createElement('testcase'));
 
 					$testCase->setAttribute('name', $method);
 					$testCase->setAttribute('time', $duration['value']);
@@ -104,7 +104,7 @@ class xunit extends report\fields\runner
 				{
 					$method = $error['method'];
 
-					$testSuite->appendChild($testCase = $document->createElement('testCase'));
+					$testSuite->appendChild($testCase = $document->createElement('testcase'));
 
 					$testCase->setAttribute('name', $methName);
 					$testCase->setAttribute('time', '0');
