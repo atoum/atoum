@@ -173,29 +173,10 @@ class stub extends atoum\script
 	{
 		define('\mageekguy\atoum\runners\autorun', false);
 
-		$runner = new atoum\runner();
-
 		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator($this->pharName . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
 		}
-
-		$report = new atoum\reports\cli();
-		$report->addRunnerField(new atoum\report\fields\runner\version\string(), array(atoum\runner::runStart));
-		$report->addTestField(new atoum\report\fields\test\run\string(), array(atoum\test::runStart));
-		$report->addTestField(new atoum\report\fields\test\event\string());
-		$report->addTestField(new atoum\report\fields\test\duration\string(), array(atoum\test::runStop));
-		$report->addTestField(new atoum\report\fields\test\memory\string(), array(atoum\test::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\result\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\tests\duration\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\tests\memory\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\duration\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\failures\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\outputs\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\errors\string(), array(atoum\runner::runStop));
-		$report->addRunnerField(new atoum\report\fields\runner\exceptions\string(), array(atoum\runner::runStop));
-
-		$runner->addObserver($report)->run();
 
 		return $this;
 	}
