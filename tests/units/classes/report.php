@@ -159,22 +159,7 @@ class report extends atoum\test
 		;
 	}
 
-	public function testAddDecorator()
-	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\report\decorator');
-
-		$report = new atoum\report();
-
-		$this->assert
-			->array($report->getDecorators())->isEmpty()
-			->object($report->addDecorator($decorator = new mock\mageekguy\atoum\report\decorator()))->isIdenticalTo($report)
-			->array($report->getDecorators())->isIdenticalTo(array($decorator))
-			->object($report->addDecorator($otherDecorator = new mock\mageekguy\atoum\report\decorator()))->isIdenticalTo($report)
-			->array($report->getDecorators())->isIdenticalTo(array($decorator, $otherDecorator))
-		;
-	}
-
+	
 	public function testRunnerStart()
 	{
 		$report = new atoum\report();
@@ -182,7 +167,6 @@ class report extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\report\fields\runner')
-			->generate('\mageekguy\atoum\report\decorator')
 		;
 
 		$field = new mock\mageekguy\atoum\report\fields\runner();
@@ -194,22 +178,10 @@ class report extends atoum\test
 		$report
 			->addRunnerField($field)
 			->addRunnerField($otherField)
-			->addDecorator($decorator = new mock\mageekguy\atoum\report\decorator())
-			->addDecorator($otherDecorator = new mock\mageekguy\atoum\report\decorator())
 		;
-
-		$write = function() {};
-		$decorator->getMockController()->write = $write;
-		$otherDecorator->getMockController()->write = $write;
 
 		$this->assert
 			->object($report->runnerStart($runner = new atoum\runner()))->isIdenticalTo($report)
-			->mock($decorator)
-				->call('write', array($field))
-				->call('write', array($otherField))
-			->mock($otherDecorator)
-				->call('write', array($field))
-				->call('write', array($otherField))
 		;
 	}
 
@@ -220,7 +192,6 @@ class report extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\report\fields\runner')
-			->generate('\mageekguy\atoum\report\decorator')
 		;
 
 		$field = new mock\mageekguy\atoum\report\fields\runner();
@@ -233,22 +204,10 @@ class report extends atoum\test
 		$report
 			->addRunnerField($field)
 			->addRunnerField($otherField)
-			->addDecorator($decorator = new mock\mageekguy\atoum\report\decorator())
-			->addDecorator($otherDecorator = new mock\mageekguy\atoum\report\decorator())
 		;
-
-		$flush = function() {};
-		$decorator->getMockController()->flush = $flush;
-		$otherDecorator->getMockController()->flush = $flush;
 
 		$this->assert
 			->object($report->runnerStop($runner = new atoum\runner()))->isIdenticalTo($report)
-			->mock($decorator)
-				->call('flush', array($field))
-				->call('flush', array($otherField))
-			->mock($otherDecorator)
-				->call('flush', array($field))
-				->call('flush', array($otherField))
 		;
 	}
 
