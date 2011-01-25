@@ -518,6 +518,7 @@ abstract class test implements observable, \countable
 			catch (\exception $exception)
 			{
 				$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 				ob_end_clean();
 
 				throw $exception;
