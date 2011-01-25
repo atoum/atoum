@@ -14,9 +14,6 @@ class cli extends atoum\test
 	{
 		$cli = new reports\cli();
 
-		$decorator = new atoum\report\decorators\string();
-		$decorator->addWriter(new atoum\writers\stdout());
-
 		$this->assert
 			->array($cli->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
 					new report\fields\runner\version\string()
