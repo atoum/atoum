@@ -180,9 +180,6 @@ class stub extends atoum\script
 			require_once($file->getPathname());
 		}
 
-		$stringDecorator = new atoum\report\decorators\string();
-		$stringDecorator->addWriter(new atoum\writers\stdout());
-
 		$report = new atoum\reports\cli();
 		$report->addRunnerField(new atoum\report\fields\runner\version\string(), array(atoum\runner::runStart));
 		$report->addTestField(new atoum\report\fields\test\run\string(), array(atoum\test::runStart));
