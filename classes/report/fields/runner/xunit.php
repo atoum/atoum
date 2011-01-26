@@ -35,7 +35,6 @@ class xunit extends report\fields\runner
 			$fails = $this->score->getFailAssertions();
 			
 			$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
-			$filterMethod = function ($element) use (& $method) { return ($element['method'] == $method); };
 
 			$classes = array();
 
@@ -53,16 +52,17 @@ class xunit extends report\fields\runner
 				}
 			}
 
+			$filterMethod = function ($element) use (& $method) { return ($element['method'] == $method); };
+
 			foreach ($classes as $name => $class)
 			{
 				$antiSlashOffset = strrpos($name, '\\');
 				$clname = substr($name, $antiSlashOffset + 1);
-				$package = substr($name, 0, $antiSlashOffset);
 
 				$root->appendChild($testSuite  = $document->createElement('testsuite'));
 
 				$testSuite->setAttribute('name', $clname);
-				$testSuite->setAttribute('package', $package);
+				$testSuite->setAttribute('package', substr($name, 0, $antiSlashOffset));
 				$testSuite->setAttribute('tests', sizeof($class['durations']));
 				$testSuite->setAttribute('failures', sizeof($class['fails']));
 				$testSuite->setAttribute('errors', sizeof($class['excepts']) + sizeof($class['errors']));

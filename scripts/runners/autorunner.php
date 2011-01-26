@@ -14,7 +14,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 	register_shutdown_function(function() {
 			$runner = new scripts\runner(__FILE__);
-			
+
 			set_error_handler(function($error, $message, $file, $line) use ($runner) {
 					$runner->writeError(sprintf($runner->getLocale()->_('Unattended error: %s'), $message));
 					exit($error);

@@ -7,6 +7,8 @@ use \mageekguy\atoum\exceptions;
 
 class runner extends atoum\script
 {
+	const version = '$Rev: 234 $';
+
 	protected $runner = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
@@ -31,6 +33,30 @@ class runner extends atoum\script
 	public function run(array $arguments = array())
 	{
 		$runner = $this->runner;
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->help();
+			},
+			array('-v', '--version')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->help();
+			},
+			array('-h', '--help')
+		);
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $files) use ($runner) {
@@ -96,6 +122,33 @@ class runner extends atoum\script
 		parent::run($arguments);
 
 		$runner->run();
+	}
+
+	public function version()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('autorunner of \mageekguy\atoum version %s'), self::version) . PHP_EOL)
+		;
+
+		return $this;
+	}
+
+	public function help()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+		;
+
+		$this->writeLabels(
+			array(
+				'-h, --help' => $this->locale->_('Display this help'),
+				'-v, --version' => $this->locale->_('Display version'),
+				'-c <file>+, --configuration-files <file>+' => $this->locale->_('Use configuration files')
+			)
+		);
+
+		return $this;
 	}
 }
 

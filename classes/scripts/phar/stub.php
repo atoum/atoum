@@ -171,8 +171,6 @@ class stub extends atoum\script
 
 	public function testIt()
 	{
-		define('\mageekguy\atoum\runners\autorun', false);
-
 		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator($this->pharName . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
