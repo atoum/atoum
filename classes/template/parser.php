@@ -2,18 +2,34 @@
 
 namespace mageekguy\atoum\template;
 
-namespace \mageekguy\atoum;
+use \mageekguy\atoum;
 
 class parser
 {
 	const defaultNamespace = 'tpl';
 	const eol = "\n";
 
-	private $namespace = '';
+	protected $namespace = '';
+	protected $adapter = null;
 
-	public function __construct($namespace = self::defaultNamespace)
+	public function __construct($namespace = self::defaultNamespace, atoum\adapter $adapter = null)
 	{
-		$this->setNamespace($namespace);
+		if ($adapter === null)
+		{
+			$adapter = new atoum\adapter();
+		}
+
+		$this
+			->setNamespace($namespace)
+			->setAdapter($adapter)
+		;
+	}
+
+	public function setNamespace($namespace)
+	{
+		$this->namespace = (string) $namespace;
+
+		return $this;
 	}
 
 	public function getNamespace()
@@ -21,19 +37,19 @@ class parser
 		return $this->namespace;
 	}
 
-	public function setNamespace($namespace)
+	public function setAdapter(atoum\adapter $adapter)
 	{
-		if (is_string($namespace) == false)
-		{
-			trigger_error('Namespace must be a string', E_USER_ERROR);
-		}
-		else
-		{
-			$this->namespace = $namespace;
-			return $this;
-		}
+		$this->adapter = $adapter;
+
+		return $this;
 	}
 
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	/*
 	public function checkString($string, & $error)
 	{
 		return $this->parse($string, new atoum\template(), $error);
@@ -76,24 +92,21 @@ class parser
 		}
 	}
 
-	public function parseFile(\ogo\fs\file $file, parent $parent = null)
+	public function parseFile($path, parent $parent = null)
 	{
-		if ($file->exists() == false)
+		$string = $this->adapter->file_get_contents($path);
+
+		if ($string === false)
 		{
-			trigger_error('Path \'' . $file->getPath() . '\' is not a file', E_USER_ERROR);
+		}
+
+		if ($this->parse($string, $parent, $error) == true)
+		{
+			return $parent;
 		}
 		else
 		{
-			$file->read($string);
-
-			if ($this->parse($string, $parent, $error) == true)
-			{
-				return $parent;
-			}
-			else
-			{
-				trigger_error($file->getPath() . ': ' . $error, E_USER_ERROR);
-			}
+			trigger_error($file->getPath() . ': ' . $error, E_USER_ERROR);
 		}
 	}
 
@@ -276,6 +289,7 @@ class parser
 
 		return strlen(substr($data, $lastEol)) + 1;
 	}
+	*/
 }
 
 ?>
