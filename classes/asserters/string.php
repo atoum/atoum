@@ -44,6 +44,11 @@ class string extends variable
 		return $this->isEqualTo('', $failMessage);
 	}
 
+	public function isNotEmpty($failMessage = null)
+	{
+		return $this->isNotEqualTo('', $failMessage !== null ? $failMessage : $this->locale->_('string is empty'));
+	}
+
 	public function match($pattern, $failMessage = null)
 	{
 		if (preg_match($pattern, $this->variableIsSet()->variable) === 1)

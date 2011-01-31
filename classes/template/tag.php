@@ -2,11 +2,12 @@
 
 namespace mageekguy\atoum\template;
 
-class tag extends block
+use \mageekguy\atoum;
+
+class tag extends atoum\template
 {
 	private $tag = '';
 	private $id = null;
-	private $html = false;
 	private $line = null;
 	private $offset = null;
 
@@ -41,34 +42,7 @@ class tag extends block
 		return $this->offset;
 	}
 
-	public function getData()
-	{
-		return ($this->htmlIsEnabled() === false ? parent::getData() : htmlentities(parent::getData()));
-	}
-
-	public function htmlIsEnabled()
-	{
-		return ($this->html === true);
-	}
-
-	public function htmlIsDisabled()
-	{
-		return ($this->htmlIsEnabled() === false);
-	}
-
-	public function enableHtml()
-	{
-		$this->html = true;
-		return $this;
-	}
-
-	public function disableHtml()
-	{
-		$this->html = false;
-		return $this;
-	}
-
-	public function setId($id, $check = true)
+	public function setId($id)
 	{
 		if ($this->getById($id) !== null)
 		{

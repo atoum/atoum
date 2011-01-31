@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\template;
 
+use \mageekguy\atoum;
+
 class data
 {
 	protected $parent = null;
@@ -40,9 +42,10 @@ class data
 		return $this;
 	}
 
-	public function setParent(block $parent)
+	public function setParent(atoum\template $parent)
 	{
 		$parent->addChild($this);
+
 		return $this;
 	}
 
