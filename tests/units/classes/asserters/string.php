@@ -121,6 +121,98 @@ class string extends atoum\test
 				->hasMessage($locale->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
 		;
 	}
+
+	public function testIsEmpty()
+	{
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->isEmpty();
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith($string = uniqid());
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->isEmpty();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage($locale->_('strings are not equals') . PHP_EOL . $diff->setReference('')->setData($string))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$asserter->setWith('');
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->object($asserter->isEmpty())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+	}
+
+	public function testIsNotEmpty()
+	{
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->isNotEmpty();
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith('');
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->isNotEmpty();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage($locale->_('string is empty'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$asserter->setWith($string = uniqid());
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+	}
 }
 
 ?>
