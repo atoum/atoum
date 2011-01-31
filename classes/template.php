@@ -87,14 +87,7 @@ class template extends template\data implements \iteratorAggregate
 
 	public function getChild($rank)
 	{
-		if (is_int($rank) === false || $rank < 0)
-		{
-			trigger_error('Rank must be an integer greater than or equal to zero', E_USER_ERROR);
-		}
-		else
-		{
-			return (isset($this->children[$rank]) === false ? null : $this->children[$rank]);
-		}
+		return (isset($this->children[$rank]) === false ? null : $this->children[$rank]);
 	}
 
 	public function getChildren()
@@ -136,31 +129,6 @@ class template extends template\data implements \iteratorAggregate
 		return ($child->parent === $this);
 	}
 
-	public function checkChild(template\data $child)
-	{
-		if ($this->isChild($child) === false)
-		{
-			$id = $child->getId();
-
-			if ($id !== null && $this->getById($id) !== null)
-			{
-				return false;
-			}
-			else
-			{
-				foreach ($child->getChildren() as $child)
-				{
-					if ($this->checkChild($child) === false)
-					{
-						return false;
-					}
-				}
-			}
-		}
-
-		return true;
-	}
-
 	public function addToParent($mixed = array())
 	{
 		$this->setWith($mixed);
@@ -170,26 +138,26 @@ class template extends template\data implements \iteratorAggregate
 
 	public function addChild(template\data $child)
 	{
-		if ($this->checkChild($child) === false)
+		if ($this->isChild($child) === false)
 		{
-			trigger_error('Some id are already defined', E_USER_ERROR);
-		}
-		else
-		{
-			if ($this->isChild($child) === false)
-			{
-				if ($child->parentIsSet() === true)
-				{
-					$child->unsetParent();
-				}
+			$id = $child->getId();
 
-				$child->rank = sizeof($this->children);
-				$this->children[$child->rank] = $child;
-				$child->parent = $this;
+			if ($id !== null && $this->idExists($id) === true)
+			{
+				throw new exceptions\runtime('Id \'' . $id . '\' is already defined');
 			}
 
-			return $this;
+			if ($child->parentIsSet() === true)
+			{
+				$child->unsetParent();
+			}
+
+			$child->rank = sizeof($this->children);
+			$this->children[$child->rank] = $child;
+			$child->parent = $this;
 		}
+
+		return $this;
 	}
 
 	public function deleteChild(template\data $child)
@@ -212,6 +180,11 @@ class template extends template\data implements \iteratorAggregate
 		{
 			throw new exceptions\runtime('Tag \'' . $tag . '\' does not exist');
 		}
+	}
+
+	public function idExists($id)
+	{
+		return ($this->getById($id) !== null);
 	}
 }
 
