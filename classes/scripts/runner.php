@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\scripts;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\runners;
 use \mageekguy\atoum\exceptions;
 
 class runner extends atoum\script
@@ -41,7 +42,7 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->help();
+				$script->version();
 			},
 			array('-v', '--version')
 		);
@@ -94,7 +95,7 @@ class runner extends atoum\script
 
 					foreach ($files as $file)
 					{
-						if (file_exists($file) === false)
+						if (is_file($file) === false)
 						{
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Test file path \'%s\' is invalid'), $file));
 						}
@@ -109,6 +110,34 @@ class runner extends atoum\script
 				},
 				array('-t', '--test-files')
 			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $directories) {
+					if (sizeof($directories) <= 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					foreach ($directories as $directory)
+					{
+						if (is_dir($directory) === false)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Directory path \'%s\' is invalid'), $directory));
+						}
+
+						if (is_readable($directory) === false)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
+						}
+
+						foreach (new \recursiveIteratorIterator(new runners\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
+						{
+							require_once($file->getPathname());
+						}
+					}
+				},
+				array('-d', '--directories')
+			);
 		}
 
 		if ($runner->hasReports() === false)
@@ -121,13 +150,16 @@ class runner extends atoum\script
 
 		parent::run($arguments);
 
-		$runner->run();
+		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
+		{
+			$runner->run();
+		}
 	}
 
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('autorunner of \mageekguy\atoum version %s'), self::version) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('autorunner of \mageekguy\atoum version %s'), self::getVersion()) . PHP_EOL)
 		;
 
 		return $this;
@@ -144,11 +176,18 @@ class runner extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-v, --version' => $this->locale->_('Display version'),
-				'-c <file>+, --configuration-files <file>+' => $this->locale->_('Use configuration files')
+				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration files'),
+				'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
+				'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in directories')
 			)
 		);
 
 		return $this;
+	}
+
+	public static function getVersion()
+	{
+		return substr(self::version, 6, -2);
 	}
 }
 

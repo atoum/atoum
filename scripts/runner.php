@@ -10,7 +10,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 {
 	define(__NAMESPACE__ . '\autorun', true);
 
-	require_once(__DIR__ . '/../../classes/runner.php');
+	require_once(__DIR__ . '/../classes/runner.php');
 
 	register_shutdown_function(function() {
 			$runner = new scripts\runner(__FILE__);

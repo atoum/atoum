@@ -1,5 +1,5 @@
 <?php
 
-require(__DIR__ . '/../../scripts/runners/autorunner.php');
+require(__DIR__ . '/../../scripts/runner.php');
 
 ?>

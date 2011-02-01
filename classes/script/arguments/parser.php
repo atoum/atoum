@@ -10,6 +10,7 @@ class parser implements \iteratorAggregate
 	protected $script = null;
 	protected $values = array();
 	protected $handlers = array();
+	protected $arguments = array();
 
 	public function __construct(atoum\superglobals $superglobals = null)
 	{
@@ -141,6 +142,16 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
+	public function argumentIsHandled($argument)
+	{
+		return (in_array($argument, $this->arguments) === true);
+	}
+
+	public function argumentsAreHandled(array $arguments)
+	{
+		return (sizeof(array_intersect($this->arguments, $arguments)) > 0);
+	}
+
 	public static function isArgument($value)
 	{
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
@@ -150,6 +161,8 @@ class parser implements \iteratorAggregate
 	{
 		if (isset($this->handlers[$argument]) === true)
 		{
+			$this->arguments[] = $argument;
+
 			foreach ($this->handlers[$argument] as $handler)
 			{
 				$handler->__invoke($this->script, $argument, $this->getValues($argument));
