@@ -2,7 +2,7 @@
 
 /*
 Atoum configuration file.
-Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runners/autorunner.php -c path/to/this/file -f path/to/test/file" to use it.
+Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runner.php -c path/to/this/file -f path/to/test/file" to use it.
 */
 
 use \mageekguy\atoum;

@@ -159,7 +159,7 @@ class runner extends atoum\script
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('autorunner of \mageekguy\atoum version %s'), self::getVersion()) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('runner of \mageekguy\atoum version %s'), self::getVersion()) . PHP_EOL)
 		;
 
 		return $this;

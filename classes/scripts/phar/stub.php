@@ -20,7 +20,7 @@ class stub extends atoum\script
 	{
 		if (realpath($_SERVER['argv'][0]) !== $this->getName())
 		{
-			require_once($this->pharName . '/scripts/runners/autorunner.php');
+			require_once($this->pharName . '/scripts/runner.php');
 		}
 		else
 		{
