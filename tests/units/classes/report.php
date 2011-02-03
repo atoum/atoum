@@ -260,7 +260,6 @@ class report extends atoum\test
 					atoum\test::runStart => array(),
 					atoum\test::beforeSetUp => array(),
 					atoum\test::afterSetUp => array(),
-					atoum\test::beforeTestMethod => array(),
 					atoum\test::success => array(),
 					atoum\test::fail => array(),
 					atoum\test::error => array(),

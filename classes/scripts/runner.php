@@ -140,15 +140,15 @@ class runner extends atoum\script
 			);
 		}
 
+		parent::run($arguments);
+
 		if ($runner->hasReports() === false)
 		{
-			$report = new atoum\reports\cli();
+			$report = new atoum\reports\realtime\cli();
 			$report->addWriter(new atoum\writers\stdout());
 
 			$runner->addReport($report);
 		}
-
-		parent::run($arguments);
 
 		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
 		{

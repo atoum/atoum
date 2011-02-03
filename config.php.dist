@@ -9,7 +9,7 @@ use \mageekguy\atoum;
 
 $stdOutWriter = new atoum\writers\stdout();
 
-$cliReport = new atoum\reports\cli();
+$cliReport = new atoum\reports\realtime\cli();
 $cliReport->addWriter($stdOutWriter);
 
 $runner->addReport($cliReport);

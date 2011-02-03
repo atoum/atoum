@@ -9,6 +9,8 @@ abstract class report implements observers\runner, observers\test
 	protected $runnerFields = array();
 
 	private $lastSetFields = array();
+	private $lastEventValue = null;
+	private $lastEventTransmitter = null;
 
 	public function __construct()
 	{
@@ -90,6 +92,26 @@ abstract class report implements observers\runner, observers\test
 		}
 
 		return $fields;
+	}
+
+	public function getLastEventValue()
+	{
+		return $this->lastEventValue;
+	}
+
+	public function getLastEventTransmitter()
+	{
+		return $this->lastEventTransmitter;
+	}
+
+	public function lastEventIsRunnerEvent($event = null)
+	{
+		return ($this->lastEventTransmitter instanceof runner && ($event === null || $this->lastEventValue === $event));
+	}
+
+	public function lastEventIsTestEvent($event = null)
+	{
+		return ($this->lastEventTransmitter instanceof test && ($event === null || $this->lastEventValue === $event));
 	}
 
 	public function getWriters()
@@ -217,6 +239,8 @@ abstract class report implements observers\runner, observers\test
 	private function setRunnerFields(runner $runner, $event)
 	{
 		$this->lastSetFields = array();
+		$this->lastEventValue = $event;
+		$this->lastEventTransmitter = $runner;
 
 		if (isset($this->runnerFields[$event]) === true)
 		{
@@ -234,6 +258,8 @@ abstract class report implements observers\runner, observers\test
 	private function setTestFields(test $test, $event)
 	{
 		$this->lastSetFields = array();
+		$this->lastEventValue = $event;
+		$this->lastEventTransmitter = $test;
 
 		if (isset($this->testFields[$event]) === true)
 		{
