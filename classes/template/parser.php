@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\template;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class parser
 {
@@ -75,23 +76,23 @@ class parser
 			return $this->checkString($string, $error);
 		}
 	}
+	*/
 
-	public function parseString($string, parent $parent = null)
+	public function parseString($string, template $template = null)
 	{
-		if (is_string($string) == false)
-		{
-			trigger_error('Argument must be a string', E_USER_ERROR);
-		}
-		else if ($this->parse($string, $parent, $error) == true)
+		$string = (string) $string;
+
+		if ($this->parse($string, $template, $error) == true)
 		{
 			return $parent;
 		}
 		else
 		{
-			trigger_error($error, E_USER_ERROR);
+			throw new exceptions\runtime($error);
 		}
 	}
 
+	/*
 	public function parseFile($path, parent $parent = null)
 	{
 		$string = $this->adapter->file_get_contents($path);
@@ -123,8 +124,9 @@ class parser
 
 		return $templateParser->parseFile($file, $parent);
 	}
+	*/
 
-	private function parse($string, & $root, & $error)
+	private function parse($string, template $root, & $error)
 	{
 		if ($root === null)
 		{
@@ -289,7 +291,6 @@ class parser
 
 		return strlen(substr($data, $lastEol)) + 1;
 	}
-	*/
 }
 
 ?>
