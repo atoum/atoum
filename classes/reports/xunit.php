@@ -4,11 +4,12 @@ namespace mageekguy\atoum\reports;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
+use \mageekguy\atoum\report\fields;
 
 class xunit extends atoum\report
 {
 	protected $adapter = null;
-	
+
 	public function __construct(atoum\adapter $adapter = null)
 	{
     	if ($adapter === null)
@@ -25,38 +26,24 @@ class xunit extends atoum\report
 
 		parent::__construct();
 
-		$this->addRunnerField(new atoum\report\fields\runner\xunit(), array(atoum\runner::runStop));
+		$this->addRunnerField(new fields\runner\xunit(), array(atoum\runner::runStop));
 	}
 
-	public function __toString()
-	{
-		$string = '';
-
-		foreach ($this->getRunnerFields(atoum\runner::runStop) as $field)
-		{
-			$string .= $field;
-		}
-
-		return $string;
-	}
-	
-	public function runnerStop(atoum\runner $runner)
-	{
-		parent::runnerStop($runner);
-
-		return $this->write();
-	}
-	
 	public function getAdapter()
 	{
 		return $this->adapter;
 	}
-	
+
 	public function setAdapter(atoum\adapter $adapter)
 	{
 		$this->adapter = $adapter;
 
 		return $this;
+	}
+
+	public function runnerStop(atoum\runner $runner)
+	{
+		return parent::runnerStop($runner)->write();
 	}
 }
 

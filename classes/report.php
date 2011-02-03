@@ -4,9 +4,11 @@ namespace mageekguy\atoum;
 
 abstract class report implements observers\runner, observers\test
 {
-	protected $runnerFields = array();
-	protected $testFields = array();
 	protected $writers = array();
+	protected $testFields = array();
+	protected $runnerFields = array();
+
+	private $lastSetFields = array();
 
 	public function __construct()
 	{
@@ -175,32 +177,16 @@ abstract class report implements observers\runner, observers\test
 		return $this;
 	}
 
-	public abstract function __toString();
-
-	protected function setRunnerFields(runner $runner, $event)
+	public function __toString()
 	{
-		if (isset($this->runnerFields[$event]) === true)
+		$string = '';
+
+		foreach ($this->lastSetFields as $field)
 		{
-			foreach ($this->runnerFields[$event] as $field)
-			{
-				$field->setWithRunner($runner, $event);
-			}
+			$string .= $field;
 		}
 
-		return $this;
-	}
-
-	protected function setTestFields(test $test, $event)
-	{
-		if (isset($this->testFields[$event]) === true)
-		{
-			foreach ($this->testFields[$event] as $field)
-			{
-				$field->setWithTest($test, $event);
-			}
-		}
-
-		return $this;
+		return $string;
 	}
 
 	protected function addField(report\field $field, array $events, $propertyName)
@@ -223,6 +209,40 @@ abstract class report implements observers\runner, observers\test
 
 				$this->{$propertyName}[$event][] = $field;
 			}
+		}
+
+		return $this;
+	}
+
+	private function setRunnerFields(runner $runner, $event)
+	{
+		$this->lastSetFields = array();
+
+		if (isset($this->runnerFields[$event]) === true)
+		{
+			foreach ($this->runnerFields[$event] as $field)
+			{
+				$field->setWithRunner($runner, $event);
+			}
+
+			$this->lastSetFields = $this->runnerFields[$event];
+		}
+
+		return $this;
+	}
+
+	private function setTestFields(test $test, $event)
+	{
+		$this->lastSetFields = array();
+
+		if (isset($this->testFields[$event]) === true)
+		{
+			foreach ($this->testFields[$event] as $field)
+			{
+				$field->setWithTest($test, $event);
+			}
+
+			$this->lastSetFields = $this->testFields[$event];
 		}
 
 		return $this;

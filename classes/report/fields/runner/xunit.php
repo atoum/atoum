@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use \mageekguy\atoum\report\fields;
 
-class xunit extends report\fields\runner
+class xunit extends fields\runner
 {
 	protected $score = null;
 
@@ -33,7 +33,7 @@ class xunit extends report\fields\runner
 			$errors = $this->score->getErrors();
 			$excepts = $this->score->getExceptions();
 			$fails = $this->score->getFailAssertions();
-			
+
 			$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
 
 			$classes = array();
