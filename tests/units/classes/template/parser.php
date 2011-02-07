@@ -69,7 +69,7 @@ class parser extends atoum\test
 	{
 		$parser = new template\parser();
 
-		$parser->parse('');
+//		$parser->parseString('');
 
 		/*
 		# String is invalid
