@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\template;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\exceptions;
 
 class tag extends atoum\template
 {
@@ -13,13 +14,38 @@ class tag extends atoum\template
 
 	public function __construct($tag, $data = null, $line = null, $offset = null)
 	{
-		if (self::checkTag($tag, $line, $offset) === true && self::checkLine($line) === true && self::checkOffset($offset) === true)
+		$tag = (string) $tag;
+
+		if ($tag === '')
 		{
-			$this->tag = $tag;
-			$this->line = $line;
-			$this->offset = $offset;
-			parent::__construct($data);
+			throw new exceptions\logic('Tag must not be an empty string');
 		}
+
+		if ($line !== null)
+		{
+			$line = (int) $line;
+
+			if ($line <= 0)
+			{
+				throw new exceptions\logic('Line must be greater than 0');
+			}
+		}
+
+		if ($offset !== null)
+		{
+			$offset = (int) $offset;
+
+			if ($offset <= 0)
+			{
+				throw new exceptions\logic('Offset must be greater than 0');
+			}
+		}
+
+		parent::__construct($data);
+
+		$this->tag = $tag;
+		$this->line = $line;
+		$this->offset = $offset;
 	}
 
 	public function getId()
@@ -44,78 +70,27 @@ class tag extends atoum\template
 
 	public function setId($id)
 	{
+		$id = (string) $id;
+
+		if ($id === '')
+		{
+			throw new exceptions\logic('Id must not be empty');
+		}
+
 		if ($this->getById($id) !== null)
 		{
-			trigger_error('Id \'' . $id . '\' is already defined', E_USER_ERROR);
+			throw new exceptions\logic('Id is already defined');
 		}
-		else
-		{
-			$this->id = $id;
-			return $this;
-		}
+
+		$this->id = $id;
+
+		return $this;
 	}
 
 	public function unsetId()
 	{
 		$this->id = null;
 		return $this;
-	}
-
-	private static function checkLine($line)
-	{
-		if ($line === null || self::isGreaterThanZero($line) === true)
-		{
-			return true;
-		}
-		else
-		{
-			trigger_error('Line must be greater than 0', E_USER_ERROR);
-			return false;
-		}
-	}
-
-	private static function checkOffset($offset)
-	{
-		if ($offset === null || self::isGreaterThanZero($offset) === true)
-		{
-			return true;
-		}
-		else
-		{
-			trigger_error('Offset must be greater than 0', E_USER_ERROR);
-			return false;
-		}
-	}
-
-	private static function checkTag($tag, $line = null, $offset = null)
-	{
-		if (is_string($tag) === true && $tag != '')
-		{
-			return true;
-		}
-		else
-		{
-			$error = $tag != '' ? 'Tag must be a string' : 'Tag must not be empty';
-
-			if ($line !== null)
-			{
-				$error .= ' at line \'' . $line . '\'';
-			}
-
-			if ($offset !== null)
-			{
-				$error .= ' at offset \'' . $offset . '\'';
-			}
-
-			trigger_error($error, E_USER_ERROR);
-
-			return false;
-		}
-	}
-
-	private static function isGreaterThanZero($value)
-	{
-		return (is_numeric($value) === true && $value > 0);
 	}
 }
 

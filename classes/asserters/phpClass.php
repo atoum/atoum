@@ -77,6 +77,18 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 	}
 
+	public function isSubClassOf($parent, $failMessage = null)
+	{
+		if ($this->classIsSet()->class->isSubClassOf($parent) == true)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a sub-class of %s'), $this->class->getName(), $parent));
+		}
+	}
+
 	public function hasNoParent($failMessage = null)
 	{
 		if (($parentClass = $this->classIsSet()->class->getParentClass()) === false)
