@@ -9,7 +9,7 @@ if !exists('b:current_syntax')
 	
 	syn case match
 
-	syntax match atoumValue '\d\+\(\.\d\+\)[^.]*'
+	syntax match atoumValue ':\s\+\zs\d\+\(\.\d\+\)[^.]*'
 	highlight default AtoumValue guifg=Yellow ctermfg=Yellow
 
 	syntax match atoumPrompt '^=*> '
@@ -26,6 +26,19 @@ if !exists('b:current_syntax')
 
 	syntax match atoumModeline '^/\*.\+$'
 	highlight default AtoumModeline guifg=bg ctermfg=bg
+
+	syntax match diffRemoved	"^-.*"
+	syntax match diffAdded	"^+.*"
+
+	syntax match diffSubname	" @@..*"ms=s+3 contained
+	syntax match diffLine	"^@.*" contains=diffSubname
+	syntax match diffLine	"^\<\d\+\>.*"
+	syntax match diffLine	"^\*\*\*\*.*"
+
+	highlight default link diffRemoved Special
+	highlight default link diffAdded Identifier
+	highlight default link diffSubname PreProc
+	highlight default link diffLine Statement
 
 	let b:current_syntax = "atoum"
 endif
