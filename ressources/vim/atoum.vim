@@ -4,9 +4,6 @@
 " Licence:					GPL version 2.0 license
 "=============================================================================
 if !exists('b:current_syntax')
-	:runtime! syntax/diff.vim
-	:unlet b:current_syntax
-	
 	syn case match
 
 	syntax match atoumValue ':\s\+\zs\d\+\(\.\d\+\)[^.]*'
@@ -23,6 +20,12 @@ if !exists('b:current_syntax')
 
 	syntax match atoumSuccess '^> Success ([^)]\+) !'
 	highlight default AtoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
+
+	syntax match atoumError '^==> Error \d\+ .*$'
+	highlight default AtoumError term=bold cterm=bold guifg=DarkRed ctermfg=DarkRed
+
+	syntax match atoumException '^==> Exception .*$'
+	highlight default AtoumException term=bold cterm=bold guifg=Magenta ctermfg=Magenta
 
 	syntax match atoumModeline '^/\*.\+$'
 	highlight default AtoumModeline guifg=bg ctermfg=bg

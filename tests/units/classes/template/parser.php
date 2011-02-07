@@ -69,6 +69,8 @@ class parser extends atoum\test
 	{
 		$parser = new template\parser();
 
+		$parser->parse('');
+
 		/*
 		# String is invalid
 		$invalidArguments = array

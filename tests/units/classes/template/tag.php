@@ -12,7 +12,7 @@ class tag extends atoum\test
 	public function test__construct()
 	{
 		$this->assert
-			->class('\mageekguy\atoum\template\tag')->isSubClassOf('\mageekguy\atoum\template')
+			->class('\mageekguy\atoum\template\tag')->isSubClassOf('\mageekguy\atoum\tempate')
 		;
 
 		$this->assert
