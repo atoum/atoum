@@ -71,6 +71,23 @@ class exception extends \mageekguy\atoum\asserters\object
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('code is %s instead of 0'), $this->variable->getCode()));
 		}
 	}
+	
+	public function hasCode($code, $failMessage = null)
+	{
+		if (self::isException($this->variable) === false)
+		{
+			$this->fail(sprintf($this->locale->_('code not found because %s is not an exception'), $this->variable));
+		}
+
+		if ($this->variable->getCode() === $code)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('code is %s instead of %s'), $this->variable->getCode(),$code));
+		}
+	}
 
 	public function hasMessage($message, $failMessage = null)
 	{

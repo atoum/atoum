@@ -57,6 +57,15 @@ class exception extends atoum\test
 			->exception($asserter->getVariable())->isIdenticalTo($variable)
 		;
 	}
+	
+	public function testHasCode()
+	{
+		$this->assert
+			->exception(function() { throw new atoum\exceptions\runtime('An exception message to test!',33); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('An exception message to test!')
+				->hasCode(33);
+	}
 }
 
 ?>
