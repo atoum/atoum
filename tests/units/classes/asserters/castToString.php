@@ -35,7 +35,7 @@ class castToString extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an object'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,

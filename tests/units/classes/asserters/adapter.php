@@ -93,7 +93,7 @@ class adapter extends atoum\test
 				->hasMessage(sprintf($locale->_('function %s is not called'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -126,7 +126,7 @@ class adapter extends atoum\test
 				->hasMessage(sprintf($locale->_('function %s is not called with this argument'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -142,7 +142,7 @@ class adapter extends atoum\test
 				->hasMessage(sprintf($locale->_('function %s is not called with these arguments'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),

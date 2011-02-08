@@ -96,23 +96,23 @@ class adapter extends atoum\test
 	{
 		$adapter = new atoum\adapter();
 
-		$this->assert->collection($adapter->getCalls())->isEmpty();
+		$this->assert->array($adapter->getCalls())->isEmpty();
 
 		$firstHash = uniqid();
 
 		$adapter->md5($firstHash);
 
 		$this->assert
-			->collection($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash))))
-			->collection($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash)))
 		;
 
 		$secondHash = uniqid();
 		$adapter->md5($secondHash);
 
 		$this->assert
-			->collection($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash))))
-			->collection($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash)))
 		;
 
 		$adapter->md5 = function() {};
@@ -121,8 +121,8 @@ class adapter extends atoum\test
 		$adapter->md5($thirdHash);
 
 		$this->assert
-			->collection($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash), array($thirdHash))))
-			->collection($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash), array($thirdHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
 		;
 
 		$haystack = uniqid();
@@ -132,7 +132,7 @@ class adapter extends atoum\test
 		$adapter->strpos($haystack, $needle, $offset);
 
 		$this->assert
-			->collection($adapter->getCalls())->isEqualTo(array(
+			->array($adapter->getCalls())->isEqualTo(array(
 						'md5' => array(
 							array($firstHash),
 							array($secondHash),
@@ -143,8 +143,8 @@ class adapter extends atoum\test
 						)
 				)
 			)
-			->collection($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
-			->collection($adapter->getCalls('strpos'))->isEqualTo(array(array($haystack, $needle, $offset)))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
+			->array($adapter->getCalls('strpos'))->isEqualTo(array(array($haystack, $needle, $offset)))
 		;
 	}
 }

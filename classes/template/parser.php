@@ -78,13 +78,11 @@ class parser
 	}
 	*/
 
-	public function parseString($string, template $template = null)
+	public function parseString($string, atoum\template $root = null)
 	{
-		$string = (string) $string;
-
-		if ($this->parse($string, $template, $error) == true)
+		if ($this->parse((string) $string, $root, $error) == true)
 		{
-			return $parent;
+			return $root;
 		}
 		else
 		{
@@ -126,7 +124,7 @@ class parser
 	}
 	*/
 
-	private function parse($string, template $root, & $error)
+	private function parse($string, & $root, & $error)
 	{
 		if ($root === null)
 		{
@@ -212,7 +210,6 @@ class parser
 		if ($string != '')
 		{
 			$currentTemplateTag->addChild(new data($string));
-			$offset += strlen($string);
 		}
 
 		if (sizeof($stack) == 0)
@@ -221,7 +218,8 @@ class parser
 		}
 		else
 		{
-			$error = 'Line ' . $line . ' at offset ' . $offset . ' : Tag \'' . $currentTemplateTag->getTag() . '\' must be closed';
+			$error = 'Line ' . $line . ' at offset ' . ($offset + strlen($string)) . ' : Tag \'' . $currentTemplateTag->getTag() . '\' must be closed';
+
 			return false;
 		}
 	}

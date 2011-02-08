@@ -69,7 +69,13 @@ class parser extends atoum\test
 	{
 		$parser = new template\parser();
 
-//		$parser->parseString('');
+		$this->assert
+			->object($root = $parser->parseString(''))->isInstanceOf('\mageekguy\atoum\template')
+			->string($root->getData())->isEmpty()
+			->object($root = $parser->parseString($string = uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->castToString($root->build())->isEqualTo($string)
+		;
 
 		/*
 		# String is invalid

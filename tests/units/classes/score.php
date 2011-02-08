@@ -14,12 +14,12 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
 		;
 
@@ -27,12 +27,12 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 			->object($score->getCoverage())->isIdenticalTo($coverage)
 		;
 	}
@@ -48,10 +48,10 @@ class score extends atoum\test
 		$exception = new \exception();
 
 		$this->assert
-			->collection($score->getExceptions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
 			->integer($score->getExceptionNumber())->isZero()
 			->object($score->addException($file, $line, $class, $method, $exception))->isIdenticalTo($score)
-			->collection($score->getExceptions())->isEqualTo(array(
+			->array($score->getExceptions())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -72,7 +72,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addException($otherFile, $otherLine, $otherClass, $otherMethod, $otherException))->isIdenticalTo($score)
-			->collection($score->getExceptions())->isEqualTo(array(
+			->array($score->getExceptions())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -135,10 +135,10 @@ class score extends atoum\test
 		$reason = uniqid();
 
 		$this->assert
-			->collection($score->getFailAssertions())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
 			->integer($score->getFailNumber())->isZero()
 			->integer($score->addFail($file, $line, $class, $method, $asserter, $reason))->isGreaterThan(0)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -161,7 +161,7 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->addFail($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter, $otherReason))->isGreaterThan(0)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -196,10 +196,10 @@ class score extends atoum\test
 		$message = uniqid();
 
 		$this->assert
-			->collection($score->getErrors())->isEmpty()
+			->array($score->getErrors())->isEmpty()
 			->integer($score->getErrorNumber())->isZero()
 			->object($score->addError($file, $line, $class, $method, $type, $message))->isIdenticalTo($score)
-			->collection($score->getErrors())->isEqualTo(array(
+			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -222,7 +222,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addError($otherFile, $otherLine, $otherClass, $otherMethod, $otherType, $otherMessage))->isIdenticalTo($score)
-			->collection($score->getErrors())->isEqualTo(array(
+			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -248,7 +248,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addError($file, $line, $class, $method, $type, $anAnotherMessage))->isIdenticalTo($score)
-			->collection($score->getErrors())->isEqualTo(array(
+			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -288,10 +288,10 @@ class score extends atoum\test
 		$output = uniqid();
 
 		$this->assert
-			->collection($score->getOutputs())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
 			->integer($score->getOutputNumber())->isZero()
 			->object($score->addOutput($class, $method, $output))->isIdenticalTo($score)
-			->collection($score->getOutputs())->isEqualTo(array(
+			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -308,7 +308,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addOutput($otherClass, $otherMethod, $otherOutput))->isIdenticalTo($score)
-			->collection($score->getOutputs())->isEqualTo(array(
+			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -328,7 +328,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addOutput($class, $method, $moreOutput))->isIdenticalTo($score)
-			->collection($score->getOutputs())->isEqualTo(array(
+			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -359,10 +359,10 @@ class score extends atoum\test
 		$duration = rand(1, PHP_INT_MAX);
 
 		$this->assert
-			->collection($score->getDurations())->isEmpty()
+			->array($score->getDurations())->isEmpty()
 			->integer($score->getDurationNumber())->isZero()
 			->object($score->addDuration($class, $method, $duration))->isIdenticalTo($score)
-			->collection($score->getDurations())->isEqualTo(array(
+			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -379,7 +379,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addDuration($otherClass, $otherMethod, $otherDuration))->isIdenticalTo($score)
-			->collection($score->getDurations())->isEqualTo(array(
+			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -397,7 +397,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addDuration(uniqid(), uniqid(), 0))->isIdenticalTo($score)
-			->collection($score->getDurations())->isEqualTo(array(
+			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -415,7 +415,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addDuration(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-			->collection($score->getDurations())->isEqualTo(array(
+			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -435,7 +435,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addDuration($class, $method, $moreDuration))->isIdenticalTo($score)
-			->collection($score->getDurations())->isEqualTo(array(
+			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -466,9 +466,9 @@ class score extends atoum\test
 		$memoryUsage = rand(1, PHP_INT_MAX);
 
 		$this->assert
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 			->object($score->addMemoryUsage($class, $method, $memoryUsage))->isIdenticalTo($score)
-			->collection($score->getMemoryUsages())->isEqualTo(array(
+			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -484,7 +484,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addMemoryUsage($otherClass, $otherMethod, $otherMemoryUsage))->isIdenticalTo($score)
-			->collection($score->getMemoryUsages())->isEqualTo(array(
+			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -501,7 +501,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addMemoryUsage(uniqid(), uniqid(), 0))->isIdenticalTo($score)
-			->collection($score->getMemoryUsages())->isEqualTo(array(
+			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -518,7 +518,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addMemoryUsage(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-			->collection($score->getMemoryUsages())->isEqualTo(array(
+			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -537,7 +537,7 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->addMemoryUsage($class, $method, $moreMemoryUsage))->isIdenticalTo($score)
-			->collection($score->getMemoryUsages())->isEqualTo(array(
+			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,
@@ -564,20 +564,20 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 			->object($score->reset())->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 		;
 
 		$score->addPass();
@@ -590,20 +590,20 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isGreaterThan(0)
-			->collection($score->getFailAssertions())->isNotEmpty()
-			->collection($score->getExceptions())->isNotEmpty()
-			->collection($score->getErrors())->isNotEmpty()
-			->collection($score->getOutputs())->isNotEmpty()
-			->collection($score->getDurations())->isNotEmpty()
-			->collection($score->getMemoryUsages())->isNotEmpty()
+			->array($score->getFailAssertions())->isNotEmpty()
+			->array($score->getExceptions())->isNotEmpty()
+			->array($score->getErrors())->isNotEmpty()
+			->array($score->getOutputs())->isNotEmpty()
+			->array($score->getDurations())->isNotEmpty()
+			->array($score->getMemoryUsages())->isNotEmpty()
 			->object($score->reset())->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 		;
 	}
 
@@ -614,20 +614,20 @@ class score extends atoum\test
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 			->object($score->merge($otherScore))->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isZero()
-			->collection($score->getFailAssertions())->isEmpty()
-			->collection($score->getExceptions())->isEmpty()
-			->collection($score->getErrors())->isEmpty()
-			->collection($score->getOutputs())->isEmpty()
-			->collection($score->getDurations())->isEmpty()
-			->collection($score->getMemoryUsages())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
+			->array($score->getExceptions())->isEmpty()
+			->array($score->getErrors())->isEmpty()
+			->array($score->getOutputs())->isEmpty()
+			->array($score->getDurations())->isEmpty()
+			->array($score->getMemoryUsages())->isEmpty()
 		;
 
 		$score->addPass();
@@ -800,13 +800,13 @@ class score extends atoum\test
 		$asserter = new atoum\asserters\integer($score, new atoum\locale());
 
 		$this->assert
-			->collection($score->getFailAssertions())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
 		;
 
 		$score->addPass();
 
 		$this->assert
-			->collection($score->getFailAssertions())->isEmpty()
+			->array($score->getFailAssertions())->isEmpty()
 		;
 
 		$file = uniqid();
@@ -819,7 +819,7 @@ class score extends atoum\test
 		$score->addFail($file, $line, $class, $method, $asserter, $reason);
 
 		$this->assert
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => $class,
 						'method' => $method,

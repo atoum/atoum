@@ -5,7 +5,7 @@ namespace mageekguy\atoum\asserters;
 use \mageekguy\atoum\exceptions;
 use \mageekguy\atoum\tools\diffs;
 
-class collection extends \mageekguy\atoum\asserters\variable
+class phpArray extends \mageekguy\atoum\asserters\variable
 {
 	public function setWith($variable)
 	{
@@ -21,6 +21,18 @@ class collection extends \mageekguy\atoum\asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function hasSize($size, $failMessage = null)
+	{
+		if (sizeof($this->variableIsSet()->variable) == $size)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has not size %d'), $this, $size));
+		}
 	}
 
 	public function isEmpty($failMessage = null)

@@ -150,7 +150,7 @@ class variable extends atoum\test
 				->hasMessage(sprintf($locale->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualVariable)) . PHP_EOL . $diff->setReference($notEqualVariable)->setData($asserter->getVariable()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -182,7 +182,7 @@ class variable extends atoum\test
 				->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($otherNotEqualVariable)->setData($asserter->getVariable()))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),

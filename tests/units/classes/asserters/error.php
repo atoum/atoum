@@ -63,7 +63,7 @@ class error extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage($locale->_('error does not exist'))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -85,7 +85,7 @@ class error extends atoum\test
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -97,7 +97,7 @@ class error extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getErrors())->isEmpty()
+			->array($score->getErrors())->isEmpty()
 		;
 
 		$score->reset();
@@ -109,7 +109,7 @@ class error extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('error with message \'%s\' does not exist'), $message))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -131,7 +131,7 @@ class error extends atoum\test
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -143,7 +143,7 @@ class error extends atoum\test
 				)
 			)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($score->getErrors())->isEmpty()
+			->array($score->getErrors())->isEmpty()
 		;
 	}
 }

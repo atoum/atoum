@@ -10,11 +10,11 @@ require_once(__DIR__ . '/../../runner.php');
 /**
 @isolation off
 */
-class collection extends atoum\test
+class phpArray extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
@@ -28,14 +28,14 @@ class collection extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an array'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -57,7 +57,7 @@ class collection extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->collection($asserter->getVariable())->isEqualTo($variable)
+			->array($asserter->getVariable())->isEqualTo($variable)
 		;
 	}
 
@@ -65,7 +65,7 @@ class collection extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\collection($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -87,7 +87,7 @@ class collection extends atoum\test
 				->hasMessage(sprintf($locale->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray)))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),

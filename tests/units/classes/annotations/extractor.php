@@ -45,42 +45,42 @@ class extractor extends atoum\test
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('#');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('//');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('/**/');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('/** */');
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$annotation = uniqid();
@@ -99,7 +99,7 @@ class extractor extends atoum\test
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$annotation = uniqid();
@@ -121,7 +121,7 @@ class extractor extends atoum\test
 
 		$this->assert
 			->object($extractor)->isInstanceOf('\iteratorAggregate')
-			->collection($extractor->getAnnotations())->isEqualTo(array(
+			->array($extractor->getAnnotations())->isEqualTo(array(
 					$annotation => $value
 				)
 			)
@@ -136,19 +136,19 @@ class extractor extends atoum\test
 		$extractor = new annotations\extractor();
 
 		$this->assert
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract(''))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract('#'))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract('//'))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract('/**/'))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract('/***/'))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract('/**' . self::space() . '*/'))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract(
 					'/*' .
 					self::space() .
@@ -159,7 +159,7 @@ class extractor extends atoum\test
 					self::space() .
 					'*/'
 				))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEmpty()
+			->array($extractor->getAnnotations())->isEmpty()
 			->object($extractor->extract(
 					self::space() .
 					'/' .
@@ -173,7 +173,7 @@ class extractor extends atoum\test
 					'/' .
 					self::space()
 				))->isIdenticalTo($extractor)
-			->collection($extractor->getAnnotations())->isEqualTo(array(
+			->array($extractor->getAnnotations())->isEqualTo(array(
 					$annotation => $value
 				)
 			)

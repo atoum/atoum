@@ -76,7 +76,7 @@ class mock extends atoum\test
 				->hasMessage(sprintf($locale->_('%s is not called'), get_class($mock)))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -97,7 +97,7 @@ class mock extends atoum\test
 				->hasMessage($failMessage)
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -156,7 +156,7 @@ class mock extends atoum\test
 				->hasMessage(sprintf($locale->_('method %s::%s() is not called'), get_class($mock), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -187,7 +187,7 @@ class mock extends atoum\test
 				->hasMessage(sprintf($locale->_('method %s::%s() is not called with this argument'), get_class($mock), $method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
@@ -203,7 +203,7 @@ class mock extends atoum\test
 				->hasMessage(sprintf($locale->_('method %s::%s() is not called with these arguments'), get_class($mock),$method))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),

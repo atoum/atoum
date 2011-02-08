@@ -32,7 +32,7 @@ class object extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s is not an object'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -82,7 +82,7 @@ class object extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s has not size %d'), $asserter, 0))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
@@ -130,7 +130,7 @@ class object extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($locale->_('%s has size %d'), $asserter, sizeof($this)))
 			->integer($score->getFailNumber())->isEqualTo(1)
-			->collection($score->getFailAssertions())->isEqualTo(array(
+			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'class' => __CLASS__,
 						'method' => $currentMethod,
