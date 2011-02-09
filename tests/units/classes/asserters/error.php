@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -14,11 +15,12 @@ class error extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getMessage())->isNull()
 			->variable($asserter->getType())->isNull()
 		;
@@ -26,7 +28,7 @@ class error extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->setWith(null, null))->isIdenticalTo($asserter)
@@ -56,7 +58,7 @@ class error extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\error($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })

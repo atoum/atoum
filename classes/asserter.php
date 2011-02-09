@@ -12,16 +12,10 @@ abstract class asserter
 	protected $locale = null;
 	protected $generator = null;
 
-	public function __construct(score $score, locale $locale, asserter\generator $generator = null)
+	public function __construct(score $score, locale $locale, asserter\generator $generator)
 	{
 		$this->score = $score;
 		$this->locale = $locale;
-
-		if ($generator === null)
-		{
-			$generator = new asserter\generator($this->score, $this->locale);
-		}
-
 		$this->generator = $generator;
 	}
 
@@ -43,6 +37,11 @@ abstract class asserter
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+	public function getGenerator()
+	{
+		return $this->generator;
 	}
 
 	public function toString($mixed)
@@ -85,14 +84,7 @@ abstract class asserter
 
 	protected function fail($reason)
 	{
-		$tests = atoum\registry::getInstance()->{atoum\test::getRegistryKey()};
-
-		if (sizeof($tests) <= 0)
-		{
-			throw new exceptions\runtime('There is no test currently running');
-		}
-
-		$test = array_pop($tests);
+		$test = $this->generator->getTest();
 
 		$class = $test->getClass();
 		$method = $test->getCurrentMethod();

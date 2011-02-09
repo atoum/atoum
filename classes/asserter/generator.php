@@ -7,15 +7,20 @@ use mageekguy\atoum\exceptions;
 
 class generator
 {
-	protected $score = null;
+	protected $test = null;
 	protected $locale = null;
 	protected $aliases = array();
 	protected $asserters = array();
 
-	public function __construct(atoum\score $score, atoum\locale $locale)
+	public function __construct(atoum\test $test, atoum\locale $locale = null)
 	{
+		if ($locale === null)
+		{
+			$locale = new atoum\locale();
+		}
+
 		$this
-			->setScore($score)
+			->setTest($test)
 			->setLocale($locale)
 		;
 	}
@@ -31,7 +36,7 @@ class generator
 				throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 			}
 
-			$this->asserters[$class] = new $class($this->score, $this->locale, $this);
+			$this->asserters[$class] = new $class($this->test->getScore(), $this->locale, $this);
 		}
 
 		return $this->asserters[$class];
@@ -49,9 +54,9 @@ class generator
 		return $asserter;
 	}
 
-	public function getScore()
+	public function getTest()
 	{
-		return $this->score;
+		return $this->test;
 	}
 
 	public function getLocale()
@@ -79,9 +84,9 @@ class generator
 		return $asserter;
 	}
 
-	public function setScore(atoum\score $score)
+	public function setTest(atoum\test $test)
 	{
-		$this->score = $score;
+		$this->test = $test;
 		return $this;
 	}
 

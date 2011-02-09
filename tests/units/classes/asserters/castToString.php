@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -11,14 +12,12 @@ class castToString extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\castToString($score, $locale);
+		$asserter = new asserters\castToString($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
@@ -28,7 +27,7 @@ class castToString extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\castToString($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\castToString($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -78,7 +77,7 @@ class castToString extends atoum\test
 
 	public function testToString()
 	{
-		$asserter = new asserters\castToString(new atoum\score(), new atoum\locale());
+		$asserter = new asserters\castToString(new atoum\score(), new atoum\locale(), new asserter\generator($this));
 
 		$asserter->setWith($object = new \exception());
 

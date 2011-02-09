@@ -11,27 +11,35 @@ class generator extends atoum\test
 {
 	public function test__construct()
 	{
-		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
+		$generator = new asserter\generator($this);
 
 		$this->assert
-			->object($generator->getScore())->isIdenticalTo($score)
+			->object($generator->getTest())->isIdenticalTo($this)
+			->object($generator->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+		;
+
+		$generator = new asserter\generator($this, $locale = new atoum\locale());
+
+		$this->assert
+			->object($generator->getTest())->isIdenticalTo($this)
 			->object($generator->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
-	public function testSetScore()
+	public function testSetTest()
 	{
-		$generator = new asserter\generator(new atoum\score(), new atoum\locale());
+		$generator = new asserter\generator(new self(), new atoum\locale());
 
 		$this->assert
-			->object($generator->setScore($score = new atoum\score()))->isIdenticalTo($generator)
-			->object($generator->getScore())->isIdenticalTo($score)
+			->object($generator->getTest())->isNotIdenticalTo($this)
+			->object($generator->setTest($this))->isIdenticalTo($generator)
+			->object($generator->getTest())->isIdenticalTo($this)
 		;
 	}
 
 	public function testSetLocale()
 	{
-		$generator = new asserter\generator(new atoum\score(), new atoum\locale());
+		$generator = new asserter\generator($this, new atoum\locale());
 
 		$this->assert
 			->object($generator->setLocale($locale = new atoum\locale()))->isIdenticalTo($generator)
@@ -41,7 +49,7 @@ class generator extends atoum\test
 
 	public function testSetAlias()
 	{
-		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
+		$generator = new asserter\generator($this, $locale = new atoum\locale());
 
 		$this->assert
 			->object($generator->setAlias($alias = uniqid(), $asserter = uniqid()))->isIdenticalTo($generator)
@@ -51,7 +59,7 @@ class generator extends atoum\test
 
 	public function testResetAliases()
 	{
-		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
+		$generator = new asserter\generator($this, $locale = new atoum\locale());
 
 		$generator->setAlias(uniqid(), uniqid());
 
@@ -62,14 +70,9 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testGetAsserterClass()
-	{
-		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
-	}
-
 	public function test__call()
 	{
-		$generator = new asserter\generator($score = new atoum\score(), $locale = new atoum\locale());
+		$generator = new asserter\generator($this, $locale = new atoum\locale());
 
 		$this->assert
 			->exception(function() use ($generator, & $asserter) {

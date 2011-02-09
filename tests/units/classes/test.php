@@ -299,26 +299,10 @@ namespace mageekguy\atoum\tests\units
 
 		public function testRun()
 		{
-			$registryController = new mock\controller();
-
-			$mockGenerator = new mock\generator();
-			$mockGenerator->generate('\mageekguy\atoum\registry');
-
-			$registry = \mageekguy\atoum\mock\mageekguy\atoum\registry::getInstance();
-			$registry->setMockController($registryController);
-
-			$registryController->__set = function() {};
-			$registryController->__get = function() {};
-			$registryController->__unset = function() {};
-
 			$test = new emptyTest();
-			$test->setRegistryInjector(function() use ($registry) { return $registry; });
 
 			$this->assert
 				->object($test->run())->isIdenticalTo($test)
-				->mock($registry)
-					->call('__set', array(atoum\test::getRegistryKey(), array($test)))
-					->call('__unset', array(atoum\test::getRegistryKey()))
 			;
 		}
 

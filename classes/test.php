@@ -29,7 +29,6 @@ abstract class test implements observable, \countable
 	private $class = '';
 	private $adapter = null;
 	private $asserterGenerator = null;
-	private $registryInjector = null;
 	private $score = null;
 	private $observers = array();
 	private $isolation = true;
@@ -82,7 +81,7 @@ abstract class test implements observable, \countable
 			throw new atoum\asserter\exception('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 		}
 
-		$this->asserterGenerator = new asserter\generator($this->score, $this->locale);
+		$this->asserterGenerator = new asserter\generator($this, $this->locale);
 
 		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
 		{
@@ -187,25 +186,6 @@ abstract class test implements observable, \countable
 	public function getLocale()
 	{
 		return $this->locale;
-	}
-
-	public function setRegistryInjector(\closure $registryInjector)
-	{
-		$closure = new \reflectionMethod($registryInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 0)
-		{
-			throw new exceptions\logic\invalidArgument('Registry injector must take no argument');
-		}
-
-		$this->registryInjector = $registryInjector;
-
-		return $this;
-	}
-
-	public function getRegistry()
-	{
-		return ($this->registryInjector === null ? atoum\registry::getInstance() : $this->registryInjector->__invoke());
 	}
 
 	public function getTestedClassName()
@@ -313,22 +293,6 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), atoum\runner $runner = null)
 	{
-		$registryKey = __CLASS__ . '\running';
-
-		$registry = $this->getRegistry();
-
-		$tests = array();
-
-		if (isset($registry->{$registryKey}) === true)
-		{
-			$tests = $registry->{$registryKey};
-			unset($registry->{$registryKey});
-		}
-
-		array_push($tests, $this);
-
-		$registry->{$registryKey} = $tests;
-
 		$this->callObservers(self::runStart);
 
 		if (sizeof($runTestMethods) > 0)
@@ -420,15 +384,6 @@ abstract class test implements observable, \countable
 
 		$this->callObservers(self::runStop);
 
-		array_pop($tests);
-
-		unset($registry->{$registryKey});
-
-		if (sizeof($tests) > 0)
-		{
-			$registry->{$registryKey} = $tests;
-		}
-
 		return $this;
 	}
 
@@ -465,11 +420,6 @@ abstract class test implements observable, \countable
 	public static function getVersion()
 	{
 		return substr(self::version, 6, -2);
-	}
-
-	public static function getRegistryKey()
-	{
-		return __CLASS__ . '\running';
 	}
 
 	protected function setUp()

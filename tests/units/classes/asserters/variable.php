@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 use \mageekguy\atoum\tools\diffs;
 
@@ -12,14 +13,12 @@ class variable extends atoum\test
 {
 	public function test__construct()
 	{
-		$score = new atoum\score();
-		$locale = new atoum\locale();
-
-		$asserter = new asserters\variable($score, $locale);
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
@@ -27,7 +26,7 @@ class variable extends atoum\test
 
 	public function test__get()
 	{
-		$asserter = new asserters\variable(new atoum\score(), new atoum\locale());
+		$asserter = new asserters\variable(new atoum\score(), new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use ($asserter, & $property) {
@@ -48,7 +47,7 @@ class variable extends atoum\test
 
 	public function testReset()
 	{
-		$asserter = new asserters\variable(new atoum\score(), new atoum\locale());
+		$asserter = new asserters\variable(new atoum\score(), new atoum\locale(), new asserter\generator($this));
 
 		$asserter->setWith(uniqid());
 
@@ -63,7 +62,7 @@ class variable extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$variable = uniqid();
 
@@ -77,7 +76,7 @@ class variable extends atoum\test
 
 	public function testSetByReferenceWith()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$variable = uniqid();
 
@@ -91,7 +90,7 @@ class variable extends atoum\test
 
 	public function testIsSetByReference()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->isSetByReference())->isFalse()
@@ -120,7 +119,7 @@ class variable extends atoum\test
 
 	public function testIsEqualTo()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -206,7 +205,7 @@ class variable extends atoum\test
 
 	public function testIsNotEqualTo()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -247,7 +246,7 @@ class variable extends atoum\test
 
 	public function testIsIdenticalTo()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -288,7 +287,7 @@ class variable extends atoum\test
 
 	public function testIsNull()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -356,7 +355,7 @@ class variable extends atoum\test
 
 	public function testIsReferenceTo()
 	{
-		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\variable($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$variable = uniqid();
 

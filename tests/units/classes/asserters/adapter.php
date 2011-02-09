@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -11,11 +12,12 @@ class adapter extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getAdapter())->isNull()
 		;
 	}
@@ -24,7 +26,7 @@ class adapter extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
@@ -64,7 +66,7 @@ class adapter extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()

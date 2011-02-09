@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -11,19 +12,20 @@ class mock extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserter')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getMock())->isNull()
 		;
 	}
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
@@ -47,7 +49,7 @@ class mock extends atoum\test
 
 	public function testWasCalled()
 	{
-		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use ($asserter) {
@@ -122,7 +124,7 @@ class mock extends atoum\test
 
 	public function testCall($argForTest = null)
 	{
-		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use ($asserter) {

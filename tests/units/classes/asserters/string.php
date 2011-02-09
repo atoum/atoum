@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\asserter;
 use \mageekguy\atoum\asserters;
 use \mageekguy\atoum\tools\diffs;
 
@@ -12,12 +13,13 @@ class string extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserters\variable')
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
@@ -27,7 +29,7 @@ class string extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -77,7 +79,7 @@ class string extends atoum\test
 
 	public function testToString()
 	{
-		$asserter = new asserters\string(new atoum\score(), new atoum\locale());
+		$asserter = new asserters\string(new atoum\score(), new atoum\locale(), new asserter\generator($this));
 
 		$asserter->setWith($variable = uniqid());
 
@@ -94,7 +96,7 @@ class string extends atoum\test
 
 	public function testIsEqualTo()
 	{
-		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -124,7 +126,7 @@ class string extends atoum\test
 
 	public function testIsEmpty()
 	{
-		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -170,7 +172,7 @@ class string extends atoum\test
 
 	public function testIsNotEmpty()
 	{
-		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\string($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
