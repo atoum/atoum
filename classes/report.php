@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-abstract class report implements observers\runner, observers\test
+class report implements observers\runner, observers\test
 {
 	protected $writers = array();
 	protected $testFields = array();
