@@ -131,7 +131,7 @@ class parser
 			$root = new atoum\template();
 		}
 
-		$currentTemplateTag = $root;
+		$currentTag = $root;
 		$error = null;
 		$stack = array();
 		$offset = 1;
@@ -155,7 +155,7 @@ class parser
 					$offset = strlen(substr($data, $lastEol));
 				}
 
-				$currentTemplateTag->addChild(new data($data));
+				$currentTag->addChild(new data($data));
 			}
 
 			$string = substr($string, $tag[5][1] + 1);
@@ -164,7 +164,7 @@ class parser
 			{
 				$child = new tag($tag[2][0], null, $line, $offset);
 
-				$currentTemplateTag->addChild($child);
+				$currentTag->addChild($child);
 
 				if (preg_match_all('%(\w+)="([^"]*)"%', $tag[3][0], $attributes) == true)
 				{
@@ -181,7 +181,7 @@ class parser
 				if ($tag[4][0] == '') # < >
 				{
 					$stack[] = $child;
-					$currentTemplateTag = $child;
+					$currentTag = $child;
 				}
 			}
 			else # </ >
@@ -195,11 +195,11 @@ class parser
 				}
 				else
 				{
-					$currentTemplateTag = end($stack);
+					$currentTag = end($stack);
 
-					if ($currentTemplateTag === false)
+					if ($currentTag === false)
 					{
-						$currentTemplateTag = $root;
+						$currentTag = $root;
 					}
 				}
 			}
@@ -209,7 +209,7 @@ class parser
 
 		if ($string != '')
 		{
-			$currentTemplateTag->addChild(new data($string));
+			$currentTag->addChild(new data($string));
 		}
 
 		if (sizeof($stack) == 0)
@@ -218,7 +218,7 @@ class parser
 		}
 		else
 		{
-			$error = 'Line ' . $line . ' at offset ' . ($offset + strlen($string)) . ' : Tag \'' . $currentTemplateTag->getTag() . '\' must be closed';
+			$error = 'Line ' . $line . ' at offset ' . ($offset + strlen($string)) . ' : Tag \'' . $currentTag->getTag() . '\' must be closed';
 
 			return false;
 		}
@@ -226,68 +226,21 @@ class parser
 
 	private function setAttribute(tag $tag, $attribute, $value, & $error)
 	{
+		$attributeIsSet = true;
+
 		$error = '';
 
-		switch ($attribute)
+		try
 		{
-			case 'html':
-				if ($this->setHtml($tag, $value) == true)
-				{
-					return true;
-				}
-				else
-				{
-					$error = 'Value \'' . $value . '\' of html attribute is invalid';
-					return false;
-				}
-
-			case 'id':
-				$tagWithSameId = $tag->getById($value);
-
-				if ($tagWithSameId === null)
-				{
-					$tag->setId($value);
-					return true;
-				}
-				else
-				{
-					$error = 'Id \'' . $value . '\' is already define at line ' . $tagWithSameId->getLine() . ' at offset ' . $tagWithSameId->getOffset();
-					return false;
-				}
-
-			default:
-				$error = 'Attribute \'' . $attribute . '\' is invalid';
-				return false;
+			$tag->setAttribute($attribute, $value);
 		}
-	}
-
-	private function setHtml(tag $tag, $value)
-	{
-		switch ($value)
+		catch (\exception $exception)
 		{
-			case 'true':
-				$tag->enableHtml();
-				return true;
-
-			case 'false':
-				$tag->disableHtml();
-				return true;
-
-			default:
-				return false;
-		}
-	}
-
-	private static function getOffset($data)
-	{
-		$lastEol = strrpos($data, "\n");
-
-		if ($lastEol === false)
-		{
-			$lastEol = 0;
+			$error = $exception->getMessage();
+			$attributeIsSet = false;
 		}
 
-		return strlen(substr($data, $lastEol)) + 1;
+		return $attributeIsSet;
 	}
 }
 

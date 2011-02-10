@@ -172,6 +172,15 @@ class template extends template\data implements \iteratorAggregate
 		return $this;
 	}
 
+	public function idExists($id)
+	{
+		return ($this->getById($id) !== null);
+	}
+
+	public function setAttribute($name, $value) {}
+
+	public function unsetAttribute($name) {}
+
 	protected function tagExists($tag, & $tags)
 	{
 		$tags = $this->getByTag($tag);
@@ -180,11 +189,6 @@ class template extends template\data implements \iteratorAggregate
 		{
 			throw new exceptions\runtime('Tag \'' . $tag . '\' does not exist');
 		}
-	}
-
-	public function idExists($id)
-	{
-		return ($this->getById($id) !== null);
 	}
 }
 

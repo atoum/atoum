@@ -46,9 +46,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this)) .
-				PHP_EOL .
-				$diff->setReference(array())->setData($this->variable)
+				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this))
 			);
 		}
 	}
@@ -64,9 +62,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is empty'), $this)) .
-				PHP_EOL .
-				$diff->setReference($this->variable)->setData(array())
+				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is empty'), $this))
 			);
 		}
 	}

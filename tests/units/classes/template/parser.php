@@ -71,265 +71,107 @@ class parser extends atoum\test
 
 		$this->assert
 			->object($root = $parser->parseString(''))->isInstanceOf('\mageekguy\atoum\template')
-			->string($root->getData())->isEmpty()
+			->array($root->getChildren())->isEmpty()
+		;
+
+		$this->assert
 			->object($root = $parser->parseString($string = uniqid()))->isInstanceOf('\mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->castToString($root->build())->isEqualTo($string)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString($string = uniqid() . "\n" . uniqid() . "\n"))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />'))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>'))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />'))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->string($root->getChild(0)->getId())->isEqualTo($id)
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>'))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->string($root->getChild(0)->getId())->isEqualTo($id)
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>'))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(3)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string1)
+			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->variable($root->getChild(1)->getId())->isNull()
+			->string($root->getChild(1)->getData())->isEmpty()
+			->integer($root->getChild(1)->getLine())->isEqualTo(1)
+			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(2)->getData())->isEqualTo($string2)
+		;
+
+		$this->assert
+			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(3)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string1)
+			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(1)->getId())->isEqualTo($id)
+			->string($root->getChild(1)->getData())->isEmpty()
+			->integer($root->getChild(1)->getLine())->isEqualTo(1)
+			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
 		/*
-		# String is invalid
-		$invalidArguments = array
-			(
-				1,
-				-1,
-				1.0,
-				-1,0,
-				true,
-				false
-			);
-
-		foreach ($invalidArguments as $argument)
-		{
-			$parser->parseString($argument);
-			$this->assert->error(E_USER_ERROR, 'Argument must be a string')->exists();
-		}
-
-		# Only one line of data
-		$string = uniqid();
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-		;
-
-		# Several lines of data
-		$string = uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n";
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
-		;
-
-		# String with only one tag with no attributes, with space at end
-		$tag = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		# String with only one tag with no attributes, with no space at end
-		$tag = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . '/>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		# String with only one tag with attributes, with space at end
-		$tag = uniqid();
-		$id = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		# String with only one tag with attributes, with no space at end
-		$tag = uniqid();
-		$id = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true"/>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-		;
-
-		# String with only one tag with no attributes and data
-		$tag = uniqid();
-		$data = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . '>' . $data . '</' . template\parser::defaultNamespace . ':' . $tag . '>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0)->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getData())->isEqualTo($data)
-		;
-
-		# String with one tag with no attributes between two string
-		$tag = uniqid();
-		$string0 = uniqid();
-		$string1 = uniqid();
-		$string = $string0 . '<' . template\parser::defaultNamespace . ':' . $tag . ' />' . $string1;
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string0)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(1)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($string0) + 1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEqualTo($string1)
-		;
-
-		# String with one tag with attributes between two string
-		$tag = uniqid();
-		$id = uniqid();
-		$string0 = uniqid();
-		$string1 = uniqid();
-		$string = $string0 . '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />' . $string1;
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string0)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($string0) + 1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEqualTo($string1)
-		;
-
 		# String with one tag with no attributes at end of several lines
 		$string = uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n";
 		$tag = uniqid();

@@ -77,9 +77,12 @@ class tag extends atoum\template
 			throw new exceptions\logic('Id must not be empty');
 		}
 
-		if ($this->getById($id) !== null)
+		if ($tagWithSameId = $this->getById($id) !== null)
 		{
-			throw new exceptions\logic('Id is already defined');
+			$line = $tagWithSameId->getLine();
+			$offset = $tagWithSameId->getOffset();
+
+			throw new exceptions\logic('Id is already defined in line ' . ($line !== null ?: 'unknown') . ' at offset ' . ($offset !== null ?: 'unknown'));
 		}
 
 		$this->id = $id;
@@ -90,6 +93,30 @@ class tag extends atoum\template
 	public function unsetId()
 	{
 		$this->id = null;
+		return $this;
+	}
+
+	public function setAttribute($name, $value)
+	{
+		switch (true)
+		{
+			case $name == 'id':
+				$this->setId($value);
+				break;
+		}
+
+		return $this;
+	}
+
+	public function unsetAttribute($name)
+	{
+		switch (true)
+		{
+			case $name == 'id':
+				$this->unsetId();
+				break;
+		}
+
 		return $this;
 	}
 }

@@ -63,6 +63,152 @@ class phpArray extends atoum\test
 		;
 	}
 
+	public function testHasSize()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->hasSize(rand(0, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, & $size) { $line = __LINE__; $asserter->hasSize($size = rand(1, PHP_INT_MAX)); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s has not size %d'), $asserter, $size))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::hasSize()',
+						'fail' => $failMessage = sprintf($locale->_('%s has not size %d'), $asserter, $size)
+					)
+				)
+			)
+		;
+
+		$this->assert
+			->object($asserter->hasSize(0))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testIsEmpty()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->isEmpty();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(array(uniqid()));
+
+		$score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isEmpty(); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is not empty'), $asserter))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isEmpty()',
+						'fail' => $failMessage = sprintf($locale->_('%s is not empty'), $asserter)
+					)
+				)
+			)
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isEmpty())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+	}
+
+	public function testIsNotEmpty()
+	{
+		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->isNotEmpty();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Variable is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isNotEmpty(); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('%s is empty'), $asserter))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isNotEmpty()',
+						'fail' => $failMessage = sprintf($locale->_('%s is empty'), $asserter)
+					)
+				)
+			)
+		;
+
+		$asserter->setWith(array(uniqid()));
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+	}
+
 	public function testContain()
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
