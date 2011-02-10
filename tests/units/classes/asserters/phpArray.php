@@ -67,7 +67,7 @@ class phpArray extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -113,7 +113,7 @@ class phpArray extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -163,7 +163,7 @@ class phpArray extends atoum\test
 	{
 		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
 
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale());
+		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()

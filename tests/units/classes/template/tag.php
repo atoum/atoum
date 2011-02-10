@@ -99,7 +99,7 @@ class tag extends atoum\test
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Id is already defined')
+				->hasMessage('Id is already defined in line unknown at offset unknown')
 		;
 	}
 

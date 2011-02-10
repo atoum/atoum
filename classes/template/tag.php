@@ -77,7 +77,7 @@ class tag extends atoum\template
 			throw new exceptions\logic('Id must not be empty');
 		}
 
-		if ($tagWithSameId = $this->getById($id) !== null)
+		if (($tagWithSameId = $this->getById($id)) !== null)
 		{
 			$line = $tagWithSameId->getLine();
 			$offset = $tagWithSameId->getOffset();
