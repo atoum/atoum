@@ -99,22 +99,7 @@ class stub extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					require_once(\phar::running() . '/../../scripts/runner.php');
-
-					foreach ($files as $file)
-					{
-						if (is_file($file) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Test file path \'%s\' is invalid'), $file));
-						}
-
-						if (is_readable($file) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read test file \'%s\''), $file));
-						}
-
-						require_once($file);
-					}
+					$script->executeTestFiles($files);
 				},
 				array('-t', '--test-files')
 			);
@@ -126,32 +111,7 @@ class stub extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					foreach ($directories as $directory)
-					{
-						$directory = realpath($directory);
-
-						if ($directory === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $directory));
-						}
-
-						if (is_dir($directory) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a directory'), $directory));
-						}
-
-						if (is_readable($directory) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
-						}
-
-						require_once(\phar::running() . '/../../scripts/runner.php');
-
-						foreach (new \recursiveIteratorIterator(new \mageekguy\atoum\runners\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
-						{
-							require_once($file->getPathname());
-						}
-					}
+					$script->executeDirectories($directories);
 				},
 				array('-d', '--directories')
 			);
@@ -236,6 +196,67 @@ class stub extends atoum\script
 		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
+		}
+
+		return $this;
+	}
+
+	public function executeTestFiles(array $files)
+	{
+		require_once(\phar::running() . '/../../scripts/runner.php');
+
+		foreach ($files as $file)
+		{
+			$file = realpath($file);
+
+			if ($file === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $file));
+			}
+
+			if (is_file($file) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a file'), $file));
+			}
+
+			if (is_readable($file) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read test file \'%s\''), $file));
+			}
+
+			require_once($file);
+		}
+
+		return $this;
+	}
+
+	public function executeDirectories(array $directories)
+	{
+		require_once(\phar::running() . '/../../scripts/runner.php');
+
+		foreach ($directories as $directory)
+		{
+			$directory = realpath($directory);
+
+			if ($directory === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $directory));
+			}
+
+			if (is_dir($directory) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a directory'), $directory));
+			}
+
+			if (is_readable($directory) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
+			}
+
+			foreach (new \recursiveIteratorIterator(new \mageekguy\atoum\runners\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
+			{
+				require_once($file->getPathname());
+			}
 		}
 
 		return $this;
