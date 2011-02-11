@@ -6,8 +6,8 @@ use \mageekguy\atoum;
 use \mageekguy\atoum\mock;
 use \mageekguy\atoum\report;
 use \mageekguy\atoum\report\fields\test;
-require_once(__DIR__ . '/../duration.php');
-require_once(__DIR__ . '/../../../../runner.php');
+
+require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 {

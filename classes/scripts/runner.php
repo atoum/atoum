@@ -120,9 +120,16 @@ class runner extends atoum\script
 
 					foreach ($directories as $directory)
 					{
+						$directory = realpath($directory);
+
+						if ($directory === false)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $directory));
+						}
+
 						if (is_dir($directory) === false)
 						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Directory path \'%s\' is invalid'), $directory));
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a directory'), $directory));
 						}
 
 						if (is_readable($directory) === false)
