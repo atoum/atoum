@@ -26,7 +26,7 @@ class adapter
 
 	public function __call($functionName, $arguments)
 	{
-		if (is_callable($functionName) === false)
+		if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false))
 		{
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
 		}
@@ -39,6 +39,30 @@ class adapter
 	public function getCalls($functionName = null)
 	{
 		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
+	}
+
+	protected static function isLanguageConstruct($functionName)
+	{
+		switch ($functionName)
+		{
+			case 'array':
+			case 'echo':
+			case 'empty':
+			case 'eval':
+			case 'exit':
+			case 'isset':
+			case 'list':
+			case 'print':
+			case 'unset':
+			case 'require':
+			case 'require_once':
+			case 'include':
+			case 'include_once':
+				return true;
+
+			default:
+				return false;
+		}
 	}
 }
 

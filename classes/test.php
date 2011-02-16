@@ -83,6 +83,11 @@ abstract class test implements observable, \countable
 
 		$this->asserterGenerator = new asserter\generator($this, $this->locale);
 
+		$this->assert
+			->setAlias('array', 'phpArray')
+			->setAlias('class', 'phpClass')
+		;
+
 		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
 		{
 			switch ($annotation)
@@ -429,9 +434,6 @@ abstract class test implements observable, \countable
 
 	protected function beforeTestMethod($testMethod)
 	{
-		$this->assert->setAlias('array', 'phpArray');
-		$this->assert->setAlias('class', 'phpClass');
-
 		return $this;
 	}
 
