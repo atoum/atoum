@@ -127,7 +127,42 @@ class builder extends atoum\script
 
 	public function checkUnitTests()
 	{
-		$this->checkout();
+//		$this->checkout();
+
+		$phpCode = '<?php require_once(\'' . $this->workingDirectory . '/scripts/runner.php\'); ?>';
+
+		$descriptors = array
+			(
+				0 => array('pipe', 'r'),
+				1 => array('pipe', 'w'),
+				2 => array('pipe', 'w')
+			);
+
+		$php = proc_open($_SERVER['_'], $descriptors, $pipes);
+
+		if ($php !== false)
+		{
+			fwrite($pipes[0], $phpCode);
+			fclose($pipes[0]);
+
+			$stdOut = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+
+			$stdErr = stream_get_contents($pipes[2]);
+			fclose($pipes[2]);
+
+			$returnValue = proc_close($php);
+
+			if ($stdErr != '')
+			{
+				throw new exceptions\runtime($stdErr);
+			}
+
+			if ($stdOut !== '')
+			{
+				throw new exceptions\runtime($stdOut);
+			}
+		}
 
 		/*
 		$runnerClassFile = $this->workingDirectory . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'runner.php';

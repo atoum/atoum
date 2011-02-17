@@ -336,7 +336,7 @@ class generator extends atoum\test
 	{
 		$generator = new phar\generator(uniqid());
 
-		$stdout = new atoum\writers\stdout();
+		$stdout = new atoum\writers\std\out();
 
 		$this->assert
 			->object($generator->setOutputWriter($stdout))->isIdenticalTo($generator)
@@ -348,7 +348,7 @@ class generator extends atoum\test
 	{
 		$generator = new phar\generator(uniqid());
 
-		$stderr = new atoum\writers\stderr();
+		$stderr = new atoum\writers\std\err();
 
 		$this->assert
 			->object($generator->setErrorWriter($stderr))->isIdenticalTo($generator)
@@ -362,10 +362,10 @@ class generator extends atoum\test
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
-			->generate('\mageekguy\atoum\writers\stdout')
+			->generate('\mageekguy\atoum\writers\std\out')
 			;
 
-		$stdout = new mock\mageekguy\atoum\writers\stdout();
+		$stdout = new mock\mageekguy\atoum\writers\std\out();
 		$stdout->getMockController()->write = function() {};
 
 		$generator->setOutputWriter($stdout);
@@ -383,10 +383,10 @@ class generator extends atoum\test
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
-			->generate('\mageekguy\atoum\writers\stderr')
+			->generate('\mageekguy\atoum\writers\std\err')
 			;
 
-		$stderr = new mock\mageekguy\atoum\writers\stderr();
+		$stderr = new mock\mageekguy\atoum\writers\std\err();
 		$stderr->getMockController()->write = function() {};
 
 		$generator->setErrorWriter($stderr);
@@ -624,17 +624,17 @@ class generator extends atoum\test
 		$generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals));
 
 		$mockGenerator
-			->generate('\mageekguy\atoum\writers\stdout')
-			->generate('\mageekguy\atoum\writers\stderr')
+			->generate('\mageekguy\atoum\writers\std\out')
+			->generate('\mageekguy\atoum\writers\std\err')
 			;
 
-		$stdout = new mock\mageekguy\atoum\writers\stdout();
+		$stdout = new mock\mageekguy\atoum\writers\std\out();
 		$stdout
 			->getMockController()
 			->write = function() {}
 		;
 
-		$stderr = new mock\mageekguy\atoum\writers\stderr();
+		$stderr = new mock\mageekguy\atoum\writers\std\err();
 		$stderr
 			->getMockController()
 			->write = function() {}

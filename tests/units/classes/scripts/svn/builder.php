@@ -41,8 +41,8 @@ class builder extends atoum\test
 			->object($builder->getLocale())->isEqualTo($locale)
 			->object($builder->getAdapter())->isEqualTo($adapter)
 			->object($builder->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
-			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\stdout')
-			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\stderr')
+			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
+			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 		;
 	}
 

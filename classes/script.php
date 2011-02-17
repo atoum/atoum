@@ -47,8 +47,8 @@ abstract class script
 
 		$this
 			->setArgumentsParser(new script\arguments\parser())
-			->setOutputWriter(new atoum\writers\stdout())
-			->setErrorWriter(new atoum\writers\stderr())
+			->setOutputWriter(new atoum\writers\std\out())
+			->setErrorWriter(new atoum\writers\std\err())
 		;
 	}
 

@@ -33,7 +33,7 @@ class adapter
 
 		$this->calls[$functionName][] = $arguments;
 
-		return (isset($this->functions[$functionName]) === false ? call_user_func_array($functionName, $arguments) : ($this->functions[$functionName] instanceof \closure === false ? $this->functions[$functionName] : call_user_func_array($this->functions[$functionName], $arguments)));
+		return (array_key_exists($functionName, $this->functions) === false ? call_user_func_array($functionName, $arguments) : ($this->functions[$functionName] instanceof \closure === false ? $this->functions[$functionName] : call_user_func_array($this->functions[$functionName], $arguments)));
 	}
 
 	public function getCalls($functionName = null)

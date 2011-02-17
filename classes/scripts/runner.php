@@ -151,7 +151,7 @@ class runner extends atoum\script
 		if ($runner->hasReports() === false)
 		{
 			$report = new atoum\reports\realtime\cli();
-			$report->addWriter(new atoum\writers\stdout());
+			$report->addWriter(new atoum\writers\std\out());
 
 			$runner->addReport($report);
 		}
