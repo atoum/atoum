@@ -193,7 +193,7 @@ class stub extends atoum\script
 
 	public function testIt()
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
+		foreach (new \recursiveIteratorIterator(new atoum\runner\directory\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
 		}
@@ -253,7 +253,7 @@ class stub extends atoum\script
 				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
 			}
 
-			foreach (new \recursiveIteratorIterator(new \mageekguy\atoum\runners\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
+			foreach (new \recursiveIteratorIterator(new \mageekguy\atoum\runner\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
 			{
 				require_once($file->getPathname());
 			}

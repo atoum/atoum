@@ -49,6 +49,30 @@ class adapter extends \mageekguy\atoum\asserter
 		return $this;
 	}
 
+	public function notCall($function, array $args = null, $failMessage = null)
+	{
+		$calls = $this->adapterIsSet()->adapter->getCalls($function);
+
+		if (sizeof($calls) <= 0)
+		{
+			$this->pass();
+		}
+		else if ($args === null)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('function %s was called'), $function));
+		}
+		else if (in_array($args, $calls) === true)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('function %s was called with this argument', 'function %s was called with these arguments', sizeof($args)), $function));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	protected function adapterIsSet()
 	{
 		if ($this->adapter === null)

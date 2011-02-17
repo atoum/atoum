@@ -6,9 +6,9 @@ class autoloader
 {
 	protected static $directories = array(__NAMESPACE__ => array(__DIR__));
 
-	public static function register()
+	public static function register($prepend = false)
 	{
-		if (spl_autoload_register(array(__CLASS__, 'getClass')) === false)
+		if (spl_autoload_register(array(__CLASS__, 'getClass'), true, $prepend) === false)
 		{
 			throw new \runtimeException('Unable to register ' . __NAMESPACE__ . ' autoloader');
 		}

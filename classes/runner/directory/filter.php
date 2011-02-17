@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\runners\directory;
+namespace mageekguy\atoum\runner\directory;
 
 use \mageekguy\atoum;
 

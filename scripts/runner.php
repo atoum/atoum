@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\runners;
+namespace mageekguy\atoum\scripts\runner;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\scripts;
@@ -10,9 +10,9 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 {
 	define(__NAMESPACE__ . '\autorun', true);
 
-	require_once(__DIR__ . '/../classes/runner.php');
-
 	register_shutdown_function(function() {
+			require_once(__DIR__ . '/../classes/autoloader.php');
+
 			$runner = new scripts\runner(__FILE__);
 
 			set_error_handler(function($error, $message, $file, $line) use ($runner) {
