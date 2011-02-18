@@ -9,21 +9,9 @@ abstract class std extends atoum\writer
 {
 	protected $resource = null;
 
-	public function __construct(atoum\adapter $adapter = null, $stream)
-	{
-		parent::__construct($adapter);
-
-		$this->resource = $this->adapter->fopen($stream, 'w');
-
-		if ($this->resource === false)
-		{
-			throw new exceptions\runtime('Unable to open ' . $stream . ' stream');
-		}
-	}
-
 	public function __destruct()
 	{
-		if (is_resource($this->resource) === true)
+		if ($this->resource !== null)
 		{
 			$this->adapter->fclose($this->resource);
 		}
@@ -36,9 +24,12 @@ abstract class std extends atoum\writer
 
 	public function flush($something)
 	{
-		$this->adapter->fwrite($this->resource, $something);
+		$this->getResource()->adapter->fwrite($this->resource, $something);
+
 		return $this;
 	}
+
+	protected abstract function getResource();
 }
 
 ?>
