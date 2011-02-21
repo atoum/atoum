@@ -127,7 +127,7 @@ class builder extends atoum\script
 
 	public function checkUnitTests()
 	{
-//		$this->checkout();
+		$this->checkout();
 
 		$phpCode = '<?php require_once(\'' . $this->workingDirectory . '/scripts/runner.php\'); ?>';
 
