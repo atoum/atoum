@@ -10,6 +10,7 @@ class runner extends atoum\script
 	const version = '$Rev: 234 $';
 
 	protected $runner = null;
+	protected $saveScoreInFile = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -86,6 +87,19 @@ class runner extends atoum\script
 		if (realpath($_SERVER['argv'][0]) === $this->getName())
 		{
 			$this->argumentsParser->addHandler(
+				function($script, $argument, $file) {
+					if (sizeof($file) <= 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$this->saveScoreInFile = current($file);
+
+				},
+				array('-ss', '--save-score')
+			);
+
+			$this->argumentsParser->addHandler(
 				function($script, $argument, $files) {
 					if (sizeof($files) <= 0)
 					{
@@ -158,7 +172,11 @@ class runner extends atoum\script
 
 		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
 		{
-			$runner->run();
+			$score = $runner->run();
+
+			if ($this->saveScoreInFile !== null)
+			{
+			}
 		}
 	}
 
@@ -182,9 +200,10 @@ class runner extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-v, --version' => $this->locale->_('Display version'),
-				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration files'),
+				'-ss <file>, --save-score <file>' => $this->locale->_('Save score in <file>'),
+				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 				'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
-				'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in directories')
+				'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>')
 			)
 		);
 

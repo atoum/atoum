@@ -133,18 +133,15 @@ class builder extends atoum\script
 
 		$descriptors = array
 			(
-				0 => array('pipe', 'r'),
+//				0 => array('pipe', 'r'),
 				1 => array('pipe', 'w'),
 				2 => array('pipe', 'w')
 			);
 
-		$php = proc_open($_SERVER['_'], $descriptors, $pipes);
+		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
 
 		if ($php !== false)
 		{
-			fwrite($pipes[0], $phpCode);
-			fclose($pipes[0]);
-
 			$stdOut = stream_get_contents($pipes[1]);
 			fclose($pipes[1]);
 
