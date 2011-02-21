@@ -10,7 +10,7 @@ class runner extends atoum\script
 	const version = '$Rev: 234 $';
 
 	protected $runner = null;
-	protected $saveScoreInFile = null;
+	protected $scoreFile = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -29,6 +29,18 @@ class runner extends atoum\script
 	public function getRunner()
 	{
 		return $this->runner;
+	}
+
+	public function setScoreFile($path)
+	{
+		$this->scoreFile = (string) $path;
+
+		return $this;
+	}
+
+	public function getScoreFile()
+	{
+		return $this->scoreFile;
 	}
 
 	public function run(array $arguments = array())
@@ -87,14 +99,13 @@ class runner extends atoum\script
 		if (realpath($_SERVER['argv'][0]) === $this->getName())
 		{
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $file) {
+				function($script, $argument, $file) use ($runner) {
 					if (sizeof($file) <= 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					$this->saveScoreInFile = current($file);
-
+					$runner->setScoreFile(current($file));
 				},
 				array('-ss', '--save-score')
 			);
@@ -174,8 +185,12 @@ class runner extends atoum\script
 		{
 			$score = $runner->run();
 
-			if ($this->saveScoreInFile !== null)
+			if ($this->scoreFile !== null)
 			{
+				if ($this->adapter->file_put_contents($this->scoreFile, serialize($this->score), \LOCK_EX) === false)
+				{
+					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
+				}
 			}
 		}
 	}

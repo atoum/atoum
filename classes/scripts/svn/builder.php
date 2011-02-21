@@ -129,16 +129,14 @@ class builder extends atoum\script
 	{
 		$this->checkout();
 
-		$phpCode = '<?php require_once(\'' . $this->workingDirectory . '/scripts/runner.php\'); ?>';
+		$descriptors = array(
+			1 => array('pipe', 'w'),
+			2 => array('pipe', 'w')
+		);
 
-		$descriptors = array
-			(
-//				0 => array('pipe', 'r'),
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w')
-			);
+		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'svnbuilder.txt';
 
-		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
+		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ss ' . $tmpFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
 
 		if ($php !== false)
 		{
