@@ -105,7 +105,7 @@ class runner extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					$runner->setScoreFile(current($file));
+					$script->setScoreFile(current($file));
 				},
 				array('-ss', '--save-score')
 			);
