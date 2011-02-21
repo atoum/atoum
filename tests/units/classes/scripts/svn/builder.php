@@ -62,6 +62,17 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testSetScoreFile()
+	{
+		$builder = new svn\builder(uniqid());
+
+		$this->assert
+			->variable($builder->getScoreFile())->isNull()
+			->object($builder->setScoreFile($scoreFile = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getScoreFile())->isEqualTo($scoreFile)
+		;
+	}
+
 	public function testSetUsername()
 	{
 		$adapter = new atoum\adapter();

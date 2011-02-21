@@ -7,7 +7,7 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 
 use \mageekguy\atoum;
 
-$stdOutWriter = new atoum\writers\stdout();
+$stdOutWriter = new atoum\writers\std\out();
 
 $cliReport = new atoum\reports\realtime\cli();
 $cliReport->addWriter($stdOutWriter);

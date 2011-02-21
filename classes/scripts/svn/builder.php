@@ -12,6 +12,7 @@ class builder extends atoum\script
 	protected $lastRevision = null;
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
+	protected $scoreFile = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -57,6 +58,18 @@ class builder extends atoum\script
 	public function getPassword()
 	{
 		return $this->password;
+	}
+
+	public function setScoreFile($path)
+	{
+		$this->scoreFile = (string) $path;
+
+		return $this;
+	}
+
+	public function getScoreFile()
+	{
+		return $this->scoreFile;
 	}
 
 	public function setLastRevision($revisionNumber)
@@ -130,19 +143,15 @@ class builder extends atoum\script
 		$this->checkout();
 
 		$descriptors = array(
-			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w')
 		);
 
-		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'svnbuilder.txt';
+		$scoreFile = $this->scoreFile !== null ? $this->scoreFile : sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'svnbuilder.txt';
 
-		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ss ' . $tmpFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
+		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
 
 		if ($php !== false)
 		{
-			$stdOut = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-
 			$stdErr = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
 
@@ -153,34 +162,20 @@ class builder extends atoum\script
 				throw new exceptions\runtime($stdErr);
 			}
 
-			if ($stdOut !== '')
+			$score = $this->adapter->file_get_contents($scoreFile);
+
+			if ($score === false)
 			{
-				throw new exceptions\runtime($stdOut);
-			}
-		}
-
-		/*
-		$runnerClassFile = $this->workingDirectory . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'runner.php';
-
-		if ($this->adapter->is_file($runnerClassFile) === true && is_readable($runnerClassFile) === true)
-		{
-			require_once($this->workingDirectory . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR . 'runner.php');
-
-			$runner = new atoum\runner();
-
-			$unitTestsDirectory = $this->workingDirectory . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'units' . DIRECTORY_SEPARATOR . 'classes';
-
-			if ($this->adapter->is_dir($unitTestsDirectory) === true && $this->adapter->is_readable($unitTestsDirectory) === true)
-			{
-				foreach (new \recursiveIteratorIterator(new atoum\runners\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
-				{
-					require_once($file->getPathname());
-				}
+				throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
 			}
 
-			$score = $runner->run()->getScore();
+			$score = unserialize($score);
+
+			if ($score === false)
+			{
+				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
+			}
 		}
-		*/
 
 		return $this;
 	}
@@ -221,6 +216,18 @@ class builder extends atoum\script
 				$script->setRepositoryUrl(current($url));
 			},
 			array('-r', '--repository-url')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $file) {
+				if (sizeof($file) <= 0 || sizeof($file) > 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setScoreFile(current($file));
+			},
+			array('-sf', '--score-file')
 		);
 
 		parent::run($arguments);

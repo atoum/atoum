@@ -215,7 +215,7 @@ class runner extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-v, --version' => $this->locale->_('Display version'),
-				'-ss <file>, --save-score <file>' => $this->locale->_('Save score in <file>'),
+				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 				'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
 				'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>')
