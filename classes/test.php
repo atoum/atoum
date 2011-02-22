@@ -500,7 +500,7 @@ abstract class test implements observable, \countable
 	{
 		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
 
-		$phpCode  = '<?php';
+		$phpCode  = '<?php ';
 		$phpCode .= 'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);';
 		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
 		$phpCode .= 'require(\'' . $this->path . '\');';
