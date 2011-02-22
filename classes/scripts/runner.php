@@ -10,6 +10,7 @@ class runner extends atoum\script
 	const version = '$Rev: 234 $';
 
 	protected $runner = null;
+	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $reportsEnabled = true;
 
@@ -30,6 +31,13 @@ class runner extends atoum\script
 	public function getRunner()
 	{
 		return $this->runner;
+	}
+
+	public function runTests($boolean)
+	{
+		$this->runTests = $boolean == true;
+
+		return $this;
 	}
 
 	public function setScoreFile($path)
@@ -74,7 +82,10 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->version();
+				$script
+					->runTests(false)
+					->version()
+				;
 			},
 			array('-v', '--version')
 		);
@@ -86,7 +97,10 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->help();
+				$script
+					->runTests(false)
+					->help()
+				;
 			},
 			array('-h', '--help')
 		);
@@ -214,7 +228,7 @@ class runner extends atoum\script
 
 		parent::run($arguments);
 
-		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
+		if ($this->runTests === true)
 		{
 			if ($this->reportsAreEnabled() === false)
 			{
@@ -249,7 +263,7 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function help()
+	public function help(array $options = array())
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
@@ -257,15 +271,19 @@ class runner extends atoum\script
 		;
 
 		$this->writeLabels(
-			array(
-				'-h, --help' => $this->locale->_('Display this help'),
-				'-v, --version' => $this->locale->_('Display version'),
-				'-nr, --no-reports' => $this->locale->_('Disable all reports'),
-				'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
-				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
-				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
-				'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
-				'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>')
+			array_merge(
+				array(
+					'-h, --help' => $this->locale->_('Display this help'),
+					'-v, --version' => $this->locale->_('Display version'),
+					'-nr, --no-reports' => $this->locale->_('Disable all reports'),
+					'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
+					'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
+					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
+					'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
+					'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>')
+				)
+				,
+				$options
 			)
 		);
 

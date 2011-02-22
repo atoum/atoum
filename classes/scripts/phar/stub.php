@@ -16,124 +16,75 @@ class stub extends atoum\scripts\runner
 
 	public function run(array $arguments = array())
 	{
-//		if (realpath($_SERVER['argv'][0]) !== $this->getName())
-//		{
-//			require_once(\phar::running() . '/scripts/runner.php');
-//		}
-//		else
-		{
-//			$this->argumentsParser->addHandler(
-//				function($script, $argument, $values) {
-//					if (sizeof($values) !== 0)
-//					{
-//						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-//					}
-//
-//					$script->help();
-//				},
-//				array('-h', '--help')
-//			);
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
 
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->infos();
-				},
-				array('-i', '--infos')
-			);
-
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->signature();
-				},
-				array('-s', '--signature')
-			);
-
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 1)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->extractTo($values[0]);
-				},
-				array('-e', '--extractTo')
-			);
-
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->testIt();
-				},
-				array('--testIt')
-			);
-
-			/*
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $files) {
-					if (sizeof($files) <= 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->executeTestFiles($files);
-				},
-				array('-t', '--test-files')
-			);
-
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $directories) {
-					if (sizeof($directories) <= 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->executeDirectories($directories);
-				},
-				array('-d', '--directories')
-			);
-			*/
-
-			parent::run($arguments);
-		}
-
-		return $this;
-	}
-
-	public function help()
-	{
-		$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]') . PHP_EOL, $this->getName()));
-		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
-		$this->writeMessage($this->locale->_('Available options are:') . PHP_EOL);
-
-		$options = array(
-			'-h, --help' => $this->locale->_('Display this help'),
-			'-v, --version' => $this->locale->_('Display version'),
-			'-i, --infos' => $this->locale->_('Display informations'),
-			'-s, --signature' => $this->locale->_('Display phar signature'),
-			'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
-			'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
-			'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in directories'),
-			'--testIt' => $this->locale->_('Execute all Atoum unit tests')
+				$script
+					->runTests(false)
+					->infos()
+				;
+			},
+			array('-i', '--infos')
 		);
 
-		$this->writeLabels($options);
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
 
-		return $this;
+				$script
+					->runTests(false)
+					->signature()
+				;
+			},
+			array('-s', '--signature')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script
+					->runTests(false)
+					->extractTo($values[0])
+				;
+			},
+			array('-e', '--extractTo')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->testIt();
+			},
+			array('--testIt')
+		);
+
+		return parent::run($arguments);
+	}
+
+	public function help(array $options = array())
+	{
+		return parent::help(array(
+				'-i, --infos' => $this->locale->_('Display informations'),
+				'-s, --signature' => $this->locale->_('Display phar signature'),
+				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
+				'--testIt' => $this->locale->_('Execute all Atoum unit tests')
+			)
+		);
 	}
 
 	public function infos()
