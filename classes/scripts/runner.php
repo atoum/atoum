@@ -11,6 +11,7 @@ class runner extends atoum\script
 
 	protected $runner = null;
 	protected $scoreFile = null;
+	protected $reportsEnabled = true;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -43,6 +44,25 @@ class runner extends atoum\script
 		return $this->scoreFile;
 	}
 
+	public function enableReports()
+	{
+		$this->reportsEnabled = true;
+
+		return $this;
+	}
+
+	public function disableReports()
+	{
+		$this->reportsEnabled = false;
+
+		return $this;
+	}
+
+	public function reportsAreEnabled()
+	{
+		return $this->reportsEnabled;
+	}
+
 	public function run(array $arguments = array())
 	{
 		$runner = $this->runner;
@@ -72,7 +92,7 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $files) {
+			function($script, $argument, $files) use ($runner) {
 				if (sizeof($files) <= 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -120,6 +140,18 @@ class runner extends atoum\script
 					$runner->disableCodeCoverage();
 				},
 				array('-ncc', '--no-code-coverage')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $empty) {
+					if (sizeof($empty) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->disableReports();
+				},
+				array('-nr', '--no-reports')
 			);
 
 			$this->argumentsParser->addHandler(
@@ -187,7 +219,11 @@ class runner extends atoum\script
 
 		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
 		{
-			if ($runner->hasReports() === false)
+			if ($this->reportsAreEnabled() === false)
+			{
+				$runner->removeReports();
+			}
+			else if ($runner->hasReports() === false)
 			{
 				$report = new atoum\reports\realtime\cli();
 				$report->addWriter(new atoum\writers\std\out());

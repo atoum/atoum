@@ -54,6 +54,33 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testRemoveObserver()
+	{
+		$runner = new atoum\runner();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\observers\runner');
+
+		$this->assert
+			->array($runner->getObservers())->isEmpty()
+			->object($runner->removeObserver(new mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+			->array($runner->getObservers())->isEmpty()
+		;
+
+		$runner->addObserver($observer1 = new mock\mageekguy\atoum\observers\runner());
+		$runner->addObserver($observer2 = new mock\mageekguy\atoum\observers\runner());
+
+		$this->assert
+			->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
+			->object($runner->removeObserver(new mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+			->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
+			->object($runner->removeObserver($observer1))->isIdenticalTo($runner)
+			->array($runner->getObservers())->isEqualTo(array($observer2))
+			->object($runner->removeObserver($observer2))->isIdenticalTo($runner)
+			->array($runner->getObservers())->isEmpty()
+		;
+	}
+
 	public function testCallObservers()
 	{
 		$runner = new atoum\runner();
@@ -84,6 +111,33 @@ class runner extends atoum\test
 			->array($runner->getTestObservers())->isEmpty()
 			->object($runner->addTestObserver($observer = new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
 			->array($runner->getTestObservers())->isEqualTo(array($observer))
+		;
+	}
+
+	public function testRemoveTestObserver()
+	{
+		$runner = new atoum\runner();
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\observers\test');
+
+		$this->assert
+			->array($runner->getTestObservers())->isEmpty()
+			->object($runner->removeTestObserver(new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
+			->array($runner->getTestObservers())->isEmpty()
+		;
+
+		$runner->addTestObserver($observer1 = new mock\mageekguy\atoum\observers\test());
+		$runner->addTestObserver($observer2 = new mock\mageekguy\atoum\observers\test());
+
+		$this->assert
+			->array($runner->getTestObservers())->isEqualTo(array($observer1, $observer2))
+			->object($runner->removeTestObserver(new mock\mageekguy\atoum\observers\test()))->isIdenticalTo($runner)
+			->array($runner->getTestObservers())->isEqualTo(array($observer1, $observer2))
+			->object($runner->removeTestObserver($observer1))->isIdenticalTo($runner)
+			->array($runner->getTestObservers())->isEqualTo(array($observer2))
+			->object($runner->removeTestObserver($observer2))->isIdenticalTo($runner)
+			->array($runner->getTestObservers())->isEmpty()
 		;
 	}
 
@@ -160,6 +214,86 @@ class runner extends atoum\test
 			->array($runner->getReports())->isEqualTo(array($report))
 			->array($runner->getObservers())->contain($report)
 			->array($runner->getTestObservers())->contain($report)
+		;
+	}
+
+	public function testRemoveReport()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
+			->object($runner->removeReport(new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report1 = new mock\mageekguy\atoum\report();
+		$report2 = new mock\mageekguy\atoum\report();
+
+		$runner
+			->addReport($report1)
+			->addReport($report2)
+		;
+
+		$this->assert
+			->array($runner->getReports())->isEqualTo(array($report1, $report2))
+			->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+			->array($runner->getTestObservers())->isEqualTo(array($report1, $report2))
+			->object($runner->removeReport(new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
+			->array($runner->getReports())->isEqualTo(array($report1, $report2))
+			->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+			->array($runner->getTestObservers())->isEqualTo(array($report1, $report2))
+			->object($runner->removeReport($report1))->isIdenticalTo($runner)
+			->array($runner->getReports())->isEqualTo(array($report2))
+			->array($runner->getObservers())->isEqualTo(array($report2))
+			->array($runner->getTestObservers())->isEqualTo(array($report2))
+			->object($runner->removeReport($report2))->isIdenticalTo($runner)
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
+		;
+	}
+
+	public function testRemoveReports()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
+			->object($runner->removeReports())->isIdenticalTo($runner)
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report1 = new mock\mageekguy\atoum\report();
+		$report2 = new mock\mageekguy\atoum\report();
+
+		$runner
+			->addReport($report1)
+			->addReport($report2)
+		;
+
+		$this->assert
+			->array($runner->getReports())->isEqualTo(array($report1, $report2))
+			->array($runner->getObservers())->isEqualTo(array($report1, $report2))
+			->array($runner->getTestObservers())->isEqualTo(array($report1, $report2))
+			->object($runner->removeReports())->isIdenticalTo($runner)
+			->array($runner->getReports())->isEmpty()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
 		;
 	}
 

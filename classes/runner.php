@@ -114,6 +114,13 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
+	public function removeObserver(atoum\observers\runner $observer)
+	{
+		$this->observers = self::removeFromArray($this->observers, $observer);
+
+		return $this;
+	}
+
 	public function callObservers($method)
 	{
 		foreach ($this->observers as $observer)
@@ -127,6 +134,13 @@ class runner implements observable, adapter\aggregator
 	public function addTestObserver(atoum\observers\test $observer)
 	{
 		$this->testObservers[] = $observer;
+
+		return $this;
+	}
+
+	public function removeTestObserver(atoum\observers\test $observer)
+	{
+		$this->testObservers = self::removeFromArray($this->testObservers, $observer);
 
 		return $this;
 	}
@@ -211,6 +225,26 @@ class runner implements observable, adapter\aggregator
 		;
 	}
 
+	public function removeReport(atoum\report $report)
+	{
+		$this->reports = self::removeFromArray($this->reports, $report);
+
+		return $this
+			->removeObserver($report)
+			->removeTestObserver($report)
+		;
+	}
+
+	public function removeReports()
+	{
+		foreach ($this->reports as $report)
+		{
+			$this->removeReport($report);
+		}
+
+		return $this;
+	}
+
 	public function hasReports()
 	{
 		return (sizeof($this->reports) > 0);
@@ -224,6 +258,19 @@ class runner implements observable, adapter\aggregator
 	public static function getObserverEvents()
 	{
 		return array(self::runStart, self::runStop);
+	}
+
+	protected static function removeFromArray(array $haystack, $needle)
+	{
+		$key = array_search($needle, $haystack, true);
+
+		if ($key !== false)
+		{
+			unset($haystack[$key]);
+			$haystack = array_values($haystack);
+		}
+
+		return $haystack;
 	}
 }
 

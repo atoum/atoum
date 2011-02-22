@@ -140,9 +140,12 @@ class builder extends atoum\script
 
 	public function checkUnitTests()
 	{
+		$noFail = false;
+
 		$this->checkout();
 
 		$descriptors = array(
+			1 => array('pipe', 'w'),
 			2 => array('pipe', 'w')
 		);
 
@@ -152,10 +155,18 @@ class builder extends atoum\script
 
 		if ($php !== false)
 		{
+			$stdOut = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
+
 			$stdErr = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
 
 			$returnValue = proc_close($php);
+
+			if ($stdOut != '')
+			{
+				throw new exceptions\runtime($stdOut);
+			}
 
 			if ($stdErr != '')
 			{
@@ -175,9 +186,44 @@ class builder extends atoum\script
 			{
 				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
 			}
+
+			unlink($scoreFile);
+
+			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
 		}
 
-		return $this;
+		return $noFail;
+	}
+
+	public function buildPhar()
+	{
+		$pharBuilt = false;
+
+		if ($this->checkUnitTests() === true)
+		{
+			$descriptors = array(
+				2 => array('pipe', 'w')
+			);
+
+			$php = proc_open($_SERVER['_'] . ' -f ' . $this->workingDirectory . '/scripts/phar/generator.php -d phar.readonly=0 -- -d ' . $this->destinationDirectory, $descriptors, $pipes);
+
+			if ($php !== false)
+			{
+				$stdErr = stream_get_contents($pipes[2]);
+				fclose($pipes[2]);
+
+				$returnValue = proc_close($php);
+
+				if ($stdErr != '')
+				{
+					throw new exceptions\runtime($stdErr);
+				}
+
+				$pharBuilt = true;
+			}
+		}
+
+		return $pharBuilt;
 	}
 
 	public function run(array $arguments = array())
@@ -232,7 +278,11 @@ class builder extends atoum\script
 
 		parent::run($arguments);
 
-		$this->checkUnitTests();
+//		$this->setLastRevision(270);
+//
+//		var_dump($this->getLogs());
+
+		$this->buildPhar();
 	}
 }
 
