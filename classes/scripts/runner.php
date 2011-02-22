@@ -107,7 +107,7 @@ class runner extends atoum\script
 
 					$script->setScoreFile(current($file));
 				},
-				array('-ss', '--save-score')
+				array('-sf', '--score-file')
 			);
 
 			$this->argumentsParser->addHandler(
@@ -173,21 +173,21 @@ class runner extends atoum\script
 
 		parent::run($arguments);
 
-		if ($runner->hasReports() === false)
-		{
-			$report = new atoum\reports\realtime\cli();
-			$report->addWriter(new atoum\writers\std\out());
-
-			$runner->addReport($report);
-		}
-
 		if ($this->argumentsParser->argumentsAreHandled(array('-v', '--version', '-h', '--help')) === false)
 		{
-			$score = $runner->run();
+			if ($runner->hasReports() === false)
+			{
+				$report = new atoum\reports\realtime\cli();
+				$report->addWriter(new atoum\writers\std\out());
+
+				$runner->addReport($report);
+			}
+
+			$runner->run();
 
 			if ($this->scoreFile !== null)
 			{
-				if ($this->adapter->file_put_contents($this->scoreFile, serialize($score), \LOCK_EX) === false)
+				if ($this->adapter->file_put_contents($this->scoreFile, serialize($runner->getScore()), \LOCK_EX) === false)
 				{
 					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
 				}
