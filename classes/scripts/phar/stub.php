@@ -5,44 +5,34 @@ namespace mageekguy\atoum\scripts\phar;
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
 
-class stub extends atoum\script
+class stub extends atoum\scripts\runner
 {
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
+
+		$this->name = \phar::running(false);
 	}
 
 	public function run(array $arguments = array())
 	{
-		if (realpath($_SERVER['argv'][0]) !== $this->getName())
+//		if (realpath($_SERVER['argv'][0]) !== $this->getName())
+//		{
+//			require_once(\phar::running() . '/scripts/runner.php');
+//		}
+//		else
 		{
-			require_once(\phar::running() . '/scripts/runner.php');
-		}
-		else
-		{
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->help();
-				},
-				array('-h', '--help')
-			);
-
-			$this->argumentsParser->addHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) !== 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->version();
-				},
-				array('-v', '--version')
-			);
+//			$this->argumentsParser->addHandler(
+//				function($script, $argument, $values) {
+//					if (sizeof($values) !== 0)
+//					{
+//						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+//					}
+//
+//					$script->help();
+//				},
+//				array('-h', '--help')
+//			);
 
 			$this->argumentsParser->addHandler(
 				function($script, $argument, $values) {
@@ -92,6 +82,7 @@ class stub extends atoum\script
 				array('--testIt')
 			);
 
+			/*
 			$this->argumentsParser->addHandler(
 				function($script, $argument, $files) {
 					if (sizeof($files) <= 0)
@@ -115,6 +106,7 @@ class stub extends atoum\script
 				},
 				array('-d', '--directories')
 			);
+			*/
 
 			parent::run($arguments);
 		}
@@ -140,13 +132,6 @@ class stub extends atoum\script
 		);
 
 		$this->writeLabels($options);
-
-		return $this;
-	}
-
-	public function version()
-	{
-		$this->writeMessage(sprintf($this->locale->_('Atoum version %s by %s.'), atoum\test::getVersion(), atoum\test::author) . PHP_EOL);
 
 		return $this;
 	}
@@ -196,67 +181,6 @@ class stub extends atoum\script
 		foreach (new \recursiveIteratorIterator(new atoum\runner\directory\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
-		}
-
-		return $this;
-	}
-
-	public function executeTestFiles(array $files)
-	{
-		require_once(\phar::running() . '/../../scripts/runner.php');
-
-		foreach ($files as $file)
-		{
-			$file = realpath($file);
-
-			if ($file === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $file));
-			}
-
-			if (is_file($file) === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a file'), $file));
-			}
-
-			if (is_readable($file) === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read test file \'%s\''), $file));
-			}
-
-			require_once($file);
-		}
-
-		return $this;
-	}
-
-	public function executeDirectories(array $directories)
-	{
-		require_once(\phar::running() . '/../../scripts/runner.php');
-
-		foreach ($directories as $directory)
-		{
-			$directory = realpath($directory);
-
-			if ($directory === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $directory));
-			}
-
-			if (is_dir($directory) === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a directory'), $directory));
-			}
-
-			if (is_readable($directory) === false)
-			{
-				throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
-			}
-
-			foreach (new \recursiveIteratorIterator(new \mageekguy\atoum\runner\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
-			{
-				require_once($file->getPathname());
-			}
 		}
 
 		return $this;

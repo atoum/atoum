@@ -187,9 +187,12 @@ class builder extends atoum\script
 				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
 			}
 
-			unlink($scoreFile);
-
 			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+
+			if (@$this->adapter->unlink($scoreFile) === false)
+			{
+				throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
+			}
 		}
 
 		return $noFail;

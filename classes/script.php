@@ -14,8 +14,7 @@ abstract class script
 	protected $outputWriter = null;
 	protected $errorWriter = null;
 	protected $argumentsParser = null;
-
-	private $name = '';
+	protected $name = '';
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
