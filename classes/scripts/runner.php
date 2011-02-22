@@ -263,6 +263,7 @@ class runner extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-v, --version' => $this->locale->_('Display version'),
+				'-nr, --no-reports' => $this->locale->_('Disable all reports'),
 				'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
 				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
