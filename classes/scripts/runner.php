@@ -72,7 +72,7 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $files) use ($runner) {
+			function($script, $argument, $files) {
 				if (sizeof($files) <= 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -99,7 +99,7 @@ class runner extends atoum\script
 		if (realpath($_SERVER['argv'][0]) === $this->getName())
 		{
 			$this->argumentsParser->addHandler(
-				function($script, $argument, $file) use ($runner) {
+				function($script, $argument, $file) {
 					if (sizeof($file) <= 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -108,6 +108,18 @@ class runner extends atoum\script
 					$script->setScoreFile(current($file));
 				},
 				array('-sf', '--score-file')
+			);
+
+			$this->argumentsParser->addHandler(
+				function($script, $argument, $empty) use (& $runner) {
+					if (sizeof($empty) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$runner->disableCodeCoverage();
+				},
+				array('-ncc', '--no-code-coverage')
 			);
 
 			$this->argumentsParser->addHandler(
@@ -215,6 +227,7 @@ class runner extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-v, --version' => $this->locale->_('Display version'),
+				'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
 				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 				'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 				'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),

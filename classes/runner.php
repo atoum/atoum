@@ -20,6 +20,7 @@ class runner implements observable, adapter\aggregator
 	protected $reports = array();
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
+	protected $codeCoverage = true;
 
 	private $start = null;
 	private $stop = null;
@@ -87,6 +88,25 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
+	public function enableCodeCoverage()
+	{
+		$this->codeCoverage = true;
+
+		return $this;
+	}
+
+	public function disableCodeCoverage()
+	{
+		$this->codeCoverage = false;
+
+		return $this;
+	}
+
+	public function codeCoverageIsEnabled()
+	{
+		return $this->codeCoverage;
+	}
+
 	public function addObserver(atoum\observers\runner $observer)
 	{
 		$this->observers[] = $observer;
@@ -140,7 +160,7 @@ class runner implements observable, adapter\aggregator
 		{
 			$test = new $runTestClass();
 
-			$xdebugLoaded = $this->adapter->extension_loaded('xdebug');
+			$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
 
 			if ($xdebugLoaded === true)
 			{

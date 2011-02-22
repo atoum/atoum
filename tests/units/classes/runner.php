@@ -17,6 +17,7 @@ class runner extends atoum\test
 			->object($runner->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($runner->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 			->variable($runner->getRunningDuration())->isNull()
+			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 		;
 
 		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\adapter());
@@ -25,6 +26,7 @@ class runner extends atoum\test
 			->object($runner->getScore())->isIdenticalTo($score)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
 			->variable($runner->getRunningDuration())->isNull()
+			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 		;
 	}
 
@@ -158,6 +160,32 @@ class runner extends atoum\test
 			->array($runner->getReports())->isEqualTo(array($report))
 			->array($runner->getObservers())->contain($report)
 			->array($runner->getTestObservers())->contain($report)
+		;
+	}
+
+	public function testEnableCodeCoverage()
+	{
+		$runner = new atoum\runner();
+
+		$runner->disableCodeCoverage();
+
+		$this->assert
+			->boolean($runner->codeCoverageIsEnabled())->isFalse()
+			->object($runner->enableCodeCoverage())->isIdenticalTo($runner)
+			->boolean($runner->codeCoverageIsEnabled())->isTrue()
+		;
+	}
+
+	public function testDisableCodeCoverage()
+	{
+		$runner = new atoum\runner();
+
+		$runner->enableCodeCoverage();
+
+		$this->assert
+			->boolean($runner->codeCoverageIsEnabled())->isTrue()
+			->object($runner->disableCodeCoverage())->isIdenticalTo($runner)
+			->boolean($runner->codeCoverageIsEnabled())->isFalse()
 		;
 	}
 }

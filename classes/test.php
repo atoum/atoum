@@ -500,7 +500,20 @@ abstract class test implements observable, \countable
 	{
 		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
 
-		$phpCode = '<?php define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false); require(\'' . $runner->getPath() . '\'); require(\'' . $this->path . '\'); $runner = new ' . $runner->getClass() . '(); $runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false); file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore())); ?>';
+		$phpCode  = '<?php';
+		$phpCode .= 'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);';
+		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
+		$phpCode .= 'require(\'' . $this->path . '\');';
+		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
+		
+		if ($runner->codeCoverageIsEnabled() === false)
+		{
+			$phpCode .= '$runner->disableCodeCoverage();';
+		}
+		
+		$phpCode .= '$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);';
+		$phpCode .= 'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));';
+		$phpCode .= '?>';
 
 		$descriptors = array
 			(

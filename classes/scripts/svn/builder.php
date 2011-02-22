@@ -148,7 +148,7 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreFile !== null ? $this->scoreFile : sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'svnbuilder.txt';
 
-		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
+		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
 
 		if ($php !== false)
 		{
