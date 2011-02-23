@@ -14,7 +14,7 @@ class builder extends atoum\script
 	protected $destinationDirectory = null;
 	protected $scoreFile = null;
 	protected $revisionFile = null;
-	protected $buildPhar = false;
+	protected $buildPhar = true;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -97,7 +97,7 @@ class builder extends atoum\script
 
 	public function getRevisionFile()
 	{
-		return $this->RevisionFile;
+		return $this->revisionFile;
 	}
 
 	public function getLastRevision()
@@ -245,6 +245,8 @@ class builder extends atoum\script
 			}
 		}
 
+		$lastRevision = end($revisions);
+
 		while ($pharBuilt === false && sizeof($revisions) > 0)
 		{
 			$this->setLastRevision(array_pop($revisions));
@@ -274,9 +276,9 @@ class builder extends atoum\script
 			}
 		}
 
-		if ($pharBuilt === true && $this->revisionFile !== null)
+		if ($this->revisionFile !== null)
 		{
-			$this->adapter->file_put_contents($this->revisionFile, $this->getLastRevision(), \LOCK_EX);
+			$this->adapter->file_put_contents($this->revisionFile, $lastRevision, \LOCK_EX);
 		}
 
 		return $pharBuilt;
