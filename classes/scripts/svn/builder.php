@@ -13,6 +13,8 @@ class builder extends atoum\script
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
 	protected $scoreFile = null;
+	protected $revisionFile = null;
+	protected $buildPhar = false;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -22,6 +24,13 @@ class builder extends atoum\script
 		{
 			throw new exceptions\runtime('PHP extension svn is not available, please install it');
 		}
+	}
+
+	public function buildPhar($boolean)
+	{
+		$this->buildPhar = $boolean == true;
+
+		return $this;
 	}
 
 	public function setRepositoryUrl($url)
@@ -77,6 +86,18 @@ class builder extends atoum\script
 		$this->lastRevision = (int) $revisionNumber;
 
 		return $this;
+	}
+
+	public function setRevisionFile($path)
+	{
+		$this->revisionFile = (string) $path;
+
+		return $this;
+	}
+
+	public function getRevisionFile()
+	{
+		return $this->RevisionFile;
 	}
 
 	public function getLastRevision()
@@ -188,42 +209,74 @@ class builder extends atoum\script
 			}
 
 			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
-
-			if (@$this->adapter->unlink($scoreFile) === false)
-			{
-				throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
-			}
 		}
 
 		return $noFail;
 	}
 
-	public function buildPhar()
+	public function build()
 	{
+		if ($this->repositoryUrl === null)
+		{
+			throw new exceptions\runtime('Unable to build phar, destination directory is undefined');
+		}
+
 		$pharBuilt = false;
 
-		if ($this->checkUnitTests() === true)
+		if ($this->revisionFile !== null && $this->adapter->is_file($this->revisionFile) === true)
 		{
-			$descriptors = array(
-				2 => array('pipe', 'w')
-			);
+			$lastRevision = $this->adapter->file_get_contents($this->revisionFile);
 
-			$php = proc_open($_SERVER['_'] . ' -f ' . $this->workingDirectory . '/scripts/phar/generator.php -d phar.readonly=0 -- -d ' . $this->destinationDirectory, $descriptors, $pipes);
-
-			if ($php !== false)
+			if ($this->adapter->is_numeric($lastRevision) === true)
 			{
-				$stdErr = stream_get_contents($pipes[2]);
-				fclose($pipes[2]);
-
-				$returnValue = proc_close($php);
-
-				if ($stdErr != '')
-				{
-					throw new exceptions\runtime($stdErr);
-				}
-
-				$pharBuilt = true;
+				$this->setLastRevision($lastRevision);
 			}
+		}
+
+		$lastRevision = $this->getLastRevision();
+
+		$revisions = array();
+
+		foreach ($this->getLogs() as $log)
+		{
+			if ($lastRevision < $log['rev'])
+			{
+				$revisions[] = $log['rev'];
+			}
+		}
+
+		while ($pharBuilt === false && sizeof($revisions) > 0)
+		{
+			$this->setLastRevision(array_pop($revisions));
+
+			if ($this->checkUnitTests() === true)
+			{
+				$descriptors = array(
+					2 => array('pipe', 'w')
+				);
+
+				$php = proc_open($_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, $pipes);
+
+				if ($php !== false)
+				{
+					$stdErr = stream_get_contents($pipes[2]);
+					fclose($pipes[2]);
+
+					$returnValue = proc_close($php);
+
+					if ($stdErr != '')
+					{
+						throw new exceptions\runtime($stdErr);
+					}
+
+					$pharBuilt = true;
+				}
+			}
+		}
+
+		if ($pharBuilt === true && $this->revisionFile !== null)
+		{
+			$this->adapter->file_put_contents($this->revisionFile, $this->getLastRevision(), \LOCK_EX);
 		}
 
 		return $pharBuilt;
@@ -231,6 +284,21 @@ class builder extends atoum\script
 
 	public function run(array $arguments = array())
 	{
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) != 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script
+					->buildPhar(false)
+					->help()
+				;
+			},
+			array('-h', '--help')
+		);
+
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $directory) {
 				if (sizeof($directory) <= 0 || sizeof($directory) > 1)
@@ -279,13 +347,45 @@ class builder extends atoum\script
 			array('-sf', '--score-file')
 		);
 
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $file) {
+				if (sizeof($file) <= 0 || sizeof($file) > 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setRevisionFile(current($file));
+			},
+			array('-rf', '--revision-file')
+		);
+
 		parent::run($arguments);
 
-//		$this->setLastRevision(270);
-//
-//		var_dump($this->getLogs());
+		if ($this->buildPhar === true)
+		{
+			$this->build();
+		}
+	}
 
-		$this->buildPhar();
+	public function help()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+		;
+
+		$this->writeLabels(
+			array(
+				'-h, --help' => $this->locale->_('Display this help'),
+				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
+				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
+				'-r <url>, --repository-url <url>' => $this->locale->_('Url of subversion repository'),
+				'-w <directory>, --working-directory <directory>' => $this->locale->_('Checkout file from subversion in <directory>'),
+				'-d <directory>, --destination-directory <directory>' => $this->locale->_('Save phar in <directory>'),
+			)
+		);
+
+		return $this;
 	}
 }
 

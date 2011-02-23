@@ -121,6 +121,20 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testSetRevisionFile()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setRevisionFile($file = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getRevisionFile())->isEqualTo($file)
+		;
+	}
+
 	public function testGetLogs()
 	{
 		$adapter = new atoum\adapter();
