@@ -62,14 +62,25 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetScoreFile()
+	public function testSetScoreDirectory()
 	{
 		$builder = new svn\builder(uniqid());
 
 		$this->assert
-			->variable($builder->getScoreFile())->isNull()
-			->object($builder->setScoreFile($scoreFile = uniqid()))->isIdenticalTo($builder)
-			->string($builder->getScoreFile())->isEqualTo($scoreFile)
+			->variable($builder->getScoreDirectory())->isNull()
+			->object($builder->setScoreDirectory($scoreDirectory = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getScoreDirectory())->isEqualTo($scoreDirectory)
+		;
+	}
+
+	public function testSetErrorsDirectory()
+	{
+		$builder = new svn\builder(uniqid());
+
+		$this->assert
+			->variable($builder->getErrorsDirectory())->isNull()
+			->object($builder->setErrorsDirectory($errorsDirectory = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getErrorsDirectory())->isEqualTo($errorsDirectory)
 		;
 	}
 
@@ -230,13 +241,14 @@ class builder extends atoum\test
 		$builder->setWorkingDirectory($workingDirectory = uniqid());
 
 		$adapter->svn_auth_set_parameter = null;
+		$adapter->svn_log = array(rand(1, PHP_INT_MAX));
 		$adapter->svn_checkout = true;
 
 		$this->assert
 			->object($builder->checkout())->isIdenticalTo($builder)
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
-				->call('svn_checkout', array($repositoryUrl, $workingDirectory, SVN_REVISION_HEAD))
+				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $builder->getLastRevision()))
 		;
 
 		$adapter->svn_checkout = false;

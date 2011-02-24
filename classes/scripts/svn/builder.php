@@ -12,7 +12,8 @@ class builder extends atoum\script
 	protected $lastRevision = null;
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
-	protected $scoreFile = null;
+	protected $scoreDirectory = null;
+	protected $errorsDirectory = null;
 	protected $revisionFile = null;
 	protected $buildPhar = true;
 
@@ -69,16 +70,28 @@ class builder extends atoum\script
 		return $this->password;
 	}
 
-	public function setScoreFile($path)
+	public function setScoreDirectory($path)
 	{
-		$this->scoreFile = (string) $path;
+		$this->scoreDirectory = (string) $path;
 
 		return $this;
 	}
 
-	public function getScoreFile()
+	public function getScoreDirectory()
 	{
-		return $this->scoreFile;
+		return $this->scoreDirectory;
+	}
+
+	public function setErrorsDirectory($path)
+	{
+		$this->errorsDirectory = (string) $path;
+
+		return $this;
+	}
+
+	public function getErrorsDirectory()
+	{
+		return $this->errorsDirectory;
 	}
 
 	public function setLastRevision($revisionNumber)
@@ -136,7 +149,7 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to get logs, repository url is undefined');
 		}
 
-		return $this->adapter->svn_log($this->repositoryUrl, $this->lastRevision, SVN_REVISION_HEAD);
+		return $this->adapter->svn_log($this->repositoryUrl, $this->getLastRevision(), \SVN_REVISION_HEAD);
 	}
 
 	public function checkout()
@@ -151,7 +164,21 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to checkout repository, working directory is undefined');
 		}
 
-		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->lastRevision === null ? SVN_REVISION_HEAD : $this->lastRevision) === false)
+		$lastRevision = $this->getLastRevision();
+
+		if ($lastRevision === null)
+		{
+			$revisions = $this->getLastRevisionNumbers();
+
+			if (sizeof($revisions) <= 0)
+			{
+				throw new exceptions\runtime('Unable to retrieve last revision number');
+			}
+
+			$this->setLastRevision(end($revisions));
+		}
+
+		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->getLastRevision()) === false)
 		{
 			throw new exceptions\runtime('Unable to checkout repository \'' . $this->repositoryUrl . '\' in working directory \'' . $this->workingDirectory . '\'');
 		}
@@ -170,7 +197,7 @@ class builder extends atoum\script
 			2 => array('pipe', 'w')
 		);
 
-		$scoreFile = $this->scoreFile !== null ? $this->scoreFile : sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'svnbuilder.txt';
+		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir()) : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getLastRevision();
 
 		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
 
@@ -186,12 +213,12 @@ class builder extends atoum\script
 
 			if ($stdOut != '')
 			{
-				throw new exceptions\runtime($stdOut);
+				$this->writeErrorInErrrosDirectory($stdOut);
 			}
 
 			if ($stdErr != '')
 			{
-				throw new exceptions\runtime($stdErr);
+				$this->writeErrorInErrrosDirectory($stdErr);
 			}
 
 			$score = $this->adapter->file_get_contents($scoreFile);
@@ -206,6 +233,11 @@ class builder extends atoum\script
 			if ($score === false)
 			{
 				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
+			}
+
+			if ($this->scoreDirectory === null)
+			{
+				$this->adapter->unlink($scoreFile);
 			}
 
 			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
@@ -223,9 +255,14 @@ class builder extends atoum\script
 
 		$pharBuilt = false;
 
-		if ($this->revisionFile !== null && $this->adapter->is_file($this->revisionFile) === true)
+		if ($this->revisionFile !== null)
 		{
 			$lastRevision = $this->adapter->file_get_contents($this->revisionFile);
+
+			if ($score === false)
+			{
+				throw new exceptions\runtime('Unable to read last revision from file \'' . $this->revisionFile . '\'');
+			}
 
 			if ($this->adapter->is_numeric($lastRevision) === true)
 			{
@@ -233,23 +270,13 @@ class builder extends atoum\script
 			}
 		}
 
-		$lastRevision = $this->getLastRevision();
-
-		$revisions = array();
-
-		foreach ($this->getLogs() as $log)
-		{
-			if ($lastRevision < $log['rev'])
-			{
-				$revisions[] = $log['rev'];
-			}
-		}
+		$revisions = $this->getLastRevisionNumbers();
 
 		$lastRevision = end($revisions);
 
-		while ($pharBuilt === false && sizeof($revisions) > 0)
+		while (sizeof($revisions) > 0)
 		{
-			$this->setLastRevision(array_pop($revisions));
+			$this->setLastRevision(array_shift($revisions));
 
 			if ($this->checkUnitTests() === true)
 			{
@@ -266,19 +293,25 @@ class builder extends atoum\script
 
 					$returnValue = proc_close($php);
 
-					if ($stdErr != '')
+					if ($stdErr == '')
 					{
-						throw new exceptions\runtime($stdErr);
+						$pharBuilt = true;
 					}
-
-					$pharBuilt = true;
+					else
+					{
+						$this->writeErrorInErrrosDirectory($stdErr);
+					}
 				}
+
+				$revisions = $this->getLastRevisionNumbers($revisions);
+
+				$lastRevision = end($revisions);
 			}
 		}
 
-		if ($this->revisionFile !== null)
+		if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $lastRevision, \LOCK_EX) === false)
 		{
-			$this->adapter->file_put_contents($this->revisionFile, $lastRevision, \LOCK_EX);
+			throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
 		}
 
 		return $pharBuilt;
@@ -303,7 +336,7 @@ class builder extends atoum\script
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $directory) {
-				if (sizeof($directory) <= 0 || sizeof($directory) > 1)
+				if (sizeof($directory) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -315,7 +348,7 @@ class builder extends atoum\script
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $directory) {
-				if (sizeof($directory) <= 0 || sizeof($directory) > 1)
+				if (sizeof($directory) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -327,7 +360,7 @@ class builder extends atoum\script
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $url) {
-				if (sizeof($url) <= 0 || sizeof($url) > 1)
+				if (sizeof($url) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -338,20 +371,20 @@ class builder extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $file) {
-				if (sizeof($file) <= 0 || sizeof($file) > 1)
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->setScoreFile(current($file));
+				$script->setScoreDirectory(current($directory));
 			},
-			array('-sf', '--score-file')
+			array('-sd', '--score-directory')
 		);
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $file) {
-				if (sizeof($file) <= 0 || sizeof($file) > 1)
+				if (sizeof($file) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -359,6 +392,18 @@ class builder extends atoum\script
 				$script->setRevisionFile(current($file));
 			},
 			array('-rf', '--revision-file')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setErrorsDirectory(current($directory));
+			},
+			array('-ed', '--errors-directory')
 		);
 
 		parent::run($arguments);
@@ -380,12 +425,43 @@ class builder extends atoum\script
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
-				'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
+				'-sd <file>, --score-directory <directory>' => $this->locale->_('Save score in <directory>'),
 				'-r <url>, --repository-url <url>' => $this->locale->_('Url of subversion repository'),
 				'-w <directory>, --working-directory <directory>' => $this->locale->_('Checkout file from subversion in <directory>'),
 				'-d <directory>, --destination-directory <directory>' => $this->locale->_('Save phar in <directory>'),
+				'-ed <directory>, --errors-directory <directory>' => $this->locale->_('Save errors in <directory>')
 			)
 		);
+
+		return $this;
+	}
+
+	protected function getLastRevisionNumbers(array $revisions = array())
+	{
+		$lastRevision = $this->getLastRevision();
+
+		foreach ($this->getLogs() as $log)
+		{
+			if ($lastRevision === null || $lastRevision < $log['rev'])
+			{
+				$revisions[] = $log['rev'];
+			}
+		}
+
+		return $revisions;
+	}
+
+	protected function writeErrorInErrrosDirectory($error)
+	{
+		if ($this->errorsDirectory !== null)
+		{
+			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->getLastRevision();
+			
+			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX) === false)
+			{
+				throw new exceptions\runtime('Unable to save error in file \'' . $errorFile . '\'');
+			}
+		}
 
 		return $this;
 	}
