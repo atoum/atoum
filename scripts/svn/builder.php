@@ -10,8 +10,11 @@ require_once(__DIR__ . '/../../classes/autoloader.php');
 $generator = new scripts\svn\builder(__FILE__);
 
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
-		$generator->writeError(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
-		exit($error);
+		if (error_reporting() !== 0)
+		{
+			$generator->writeError(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
+			exit($error);
+		}
 	}
 );
 

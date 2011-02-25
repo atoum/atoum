@@ -12,8 +12,11 @@ $generator->setOriginDirectory(__DIR__ . '/../..');
 $generator->setStubFile(__DIR__ . '/resources/stub.php');
 
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
-		$generator->writeError(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
-		exit($error);
+		if (error_reporting() !== 0)
+		{
+			$generator->writeError(sprintf($generator->getLocale()->_('Unattended error: %s'), $message));
+			exit($error);
+		}
 	}
 );
 

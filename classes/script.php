@@ -116,14 +116,14 @@ abstract class script
 
 	public function writeMessage($message)
 	{
-		$this->outputWriter->write($message);
+		$this->outputWriter->write(rtrim($message) . PHP_EOL);
 
 		return $this;
 	}
 
 	public function writeError($message)
 	{
-		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), $message));
+		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), rtrim($message)) . PHP_EOL);
 
 		return $this;
 	}

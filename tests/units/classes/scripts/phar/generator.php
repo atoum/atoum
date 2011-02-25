@@ -373,7 +373,7 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->writeMessage($message = uniqid()))->isIdenticalTo($generator)
 			->mock($stdout)
-			->call('write', array($message))
+			->call('write', array($message . PHP_EOL))
 			;
 	}
 
@@ -394,7 +394,7 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->writeError($error = uniqid()))->isIdenticalTo($generator)
 			->mock($stderr)
-			->call('write', array(sprintf($generator->getLocale()->_('Error: %s'), $error)))
+			->call('write', array(sprintf($generator->getLocale()->_('Error: %s'), $error) . PHP_EOL))
 			;
 	}
 

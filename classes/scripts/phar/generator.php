@@ -244,21 +244,28 @@ class generator extends atoum\script
 			throw new exceptions\logic('File iterator injector must return a \iterator instance');
 		}
 
-		$description = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
+		$description = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
 
 		if ($description === false)
 		{
 			throw new exceptions\runtime(sprintf($this->locale->_('ABOUT file is missing in \'%s\''), $this->originDirectory));
 		}
 
-		$licence = $this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
+		$licence = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'COPYING');
 
 		if ($licence === false)
 		{
 			throw new exceptions\runtime(sprintf($this->locale->_('COPYING file is missing in \'%s\''), $this->originDirectory));
 		}
 
-		$phar->setStub($this->adapter->file_get_contents($this->stubFile));
+		$stub = @$this->adapter->file_get_contents($this->stubFile);
+
+		if ($stub === false)
+		{
+			throw new exceptions\runtime(sprintf($this->locale->_('Unable to read stub file \'%s\''), $this->stubFile));
+		}
+
+		$phar->setStub($stub);
 
 		$phar->setMetadata(array(
 					'version' => atoum\test::getVersion(),

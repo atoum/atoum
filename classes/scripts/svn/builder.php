@@ -221,7 +221,7 @@ class builder extends atoum\script
 				$this->writeErrorInErrrosDirectory($stdErr);
 			}
 
-			$score = $this->adapter->file_get_contents($scoreFile);
+			$score = @$this->adapter->file_get_contents($scoreFile);
 
 			if ($score === false)
 			{
@@ -257,9 +257,9 @@ class builder extends atoum\script
 
 		if ($this->revisionFile !== null)
 		{
-			$lastRevision = $this->adapter->file_get_contents($this->revisionFile);
+			$lastRevision = @$this->adapter->file_get_contents($this->revisionFile);
 
-			if ($score === false)
+			if ($lastRevision === false)
 			{
 				throw new exceptions\runtime('Unable to read last revision from file \'' . $this->revisionFile . '\'');
 			}
@@ -305,7 +305,10 @@ class builder extends atoum\script
 
 				$revisions = $this->getLastRevisionNumbers($revisions);
 
-				$lastRevision = end($revisions);
+				if (sizeof($revisions) > 0)
+				{
+					$lastRevision = end($revisions);
+				}
 			}
 		}
 

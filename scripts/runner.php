@@ -22,8 +22,11 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 			$runner = new $class(__FILE__);
 
 			set_error_handler(function($error, $message, $file, $line) use ($runner) {
-					$runner->writeError(sprintf($runner->getLocale()->_('Unattended error: %s'), $message));
-					exit($error);
+					if (error_reporting() !== 0)
+					{
+						$runner->writeError(sprintf($runner->getLocale()->_('Unattended error: %s'), $message));
+						exit($error);
+					}
 				}
 			);
 
