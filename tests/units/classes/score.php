@@ -195,11 +195,13 @@ class score extends atoum\test
 		$method = uniqid();
 		$type = rand(1, PHP_INT_MAX);
 		$message = uniqid();
+		$errorFile = uniqid();
+		$errorLine = rand(1, PHP_INT_MAX);
 
 		$this->assert
 			->array($score->getErrors())->isEmpty()
 			->integer($score->getErrorNumber())->isZero()
-			->object($score->addError($file, $line, $class, $method, $type, $message))->isIdenticalTo($score)
+			->object($score->addError($file, $line, $class, $method, $type, $message, $errorFile, $errorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -207,7 +209,9 @@ class score extends atoum\test
 						'file' => $file,
 						'line' => $line,
 						'type' => $type,
-						'message' => $message
+						'message' => $message,
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
 					)
 				)
 			)
@@ -220,9 +224,11 @@ class score extends atoum\test
 		$otherMethod = uniqid();
 		$otherType = rand(1, PHP_INT_MAX);
 		$otherMessage = uniqid();
+		$otherErrorFile = uniqid();
+		$otherErrorLine = rand(1, PHP_INT_MAX);
 
 		$this->assert
-			->object($score->addError($otherFile, $otherLine, $otherClass, $otherMethod, $otherType, $otherMessage))->isIdenticalTo($score)
+			->object($score->addError($otherFile, $otherLine, $otherClass, $otherMethod, $otherType, $otherMessage, $otherErrorFile, $otherErrorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -230,7 +236,9 @@ class score extends atoum\test
 						'file' => $file,
 						'line' => $line,
 						'type' => $type,
-						'message' => $message
+						'message' => $message,
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
 					),
 					array(
 						'class' => $otherClass,
@@ -238,7 +246,9 @@ class score extends atoum\test
 						'file' => $otherFile,
 						'line' => $otherLine,
 						'type' => $otherType,
-						'message' => $otherMessage
+						'message' => $otherMessage,
+						'errorFile' => $otherErrorFile,
+						'errorLine' => $otherErrorLine
 					)
 				)
 			)
@@ -248,7 +258,7 @@ class score extends atoum\test
 		$anAnotherMessage = uniqid();
 
 		$this->assert
-			->object($score->addError($file, $line, $class, $method, $type, $anAnotherMessage))->isIdenticalTo($score)
+			->object($score->addError($file, $line, $class, $method, $type, $anAnotherMessage, $errorFile, $errorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'class' => $class,
@@ -256,7 +266,9 @@ class score extends atoum\test
 						'file' => $file,
 						'line' => $line,
 						'type' => $type,
-						'message' => $message
+						'message' => $message,
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
 					),
 					array(
 						'class' => $otherClass,
@@ -264,7 +276,9 @@ class score extends atoum\test
 						'file' => $otherFile,
 						'line' => $otherLine,
 						'type' => $otherType,
-						'message' => $otherMessage
+						'message' => $otherMessage,
+						'errorFile' => $otherErrorFile,
+						'errorLine' => $otherErrorLine
 					),
 					array(
 						'class' => $class,
@@ -272,7 +286,9 @@ class score extends atoum\test
 						'file' => $file,
 						'line' => $line,
 						'type' => $type,
-						'message' => $anAnotherMessage
+						'message' => $anAnotherMessage,
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
 					),
 				)
 			)
@@ -584,7 +600,7 @@ class score extends atoum\test
 		$score->addPass();
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), new asserter\generator($this)), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addOutput(uniqid(), uniqid(), uniqid());
 		$score->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
@@ -634,7 +650,7 @@ class score extends atoum\test
 		$score->addPass();
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), new asserter\generator($this)), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addOutput(uniqid(), uniqid(), uniqid());
 		$score->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
@@ -660,7 +676,7 @@ class score extends atoum\test
 		$otherScore->addPass();
 		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer($score, new atoum\locale(), new asserter\generator($this)), uniqid());
 		$otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
-		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid());
+		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addOutput(uniqid(), uniqid(), uniqid());
 		$otherScore->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
@@ -704,7 +720,7 @@ class score extends atoum\test
 		$type = rand(1, PHP_INT_MAX - 1);
 		$message = uniqid();
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->variable($score->errorExists(uniqid()))->isNull()
@@ -716,7 +732,7 @@ class score extends atoum\test
 
 		$otherMessage = uniqid();
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $otherMessage);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $otherMessage, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->variable($score->errorExists(uniqid()))->isNull()
@@ -729,7 +745,7 @@ class score extends atoum\test
 
 		$otherType = $type + 1;
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $otherType, $message);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $otherType, $message, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->variable($score->errorExists(uniqid()))->isNull()
@@ -743,7 +759,7 @@ class score extends atoum\test
 			->integer($score->errorExists(null, $otherType))->isEqualTo(2)
 		;
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $otherType, $otherMessage);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $otherType, $otherMessage, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->variable($score->errorExists(uniqid()))->isNull()
@@ -781,7 +797,7 @@ class score extends atoum\test
 		$message = uniqid();
 		$type = rand(1, PHP_INT_MAX);
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->integer($score->errorExists($message, $type))->isEqualTo(0)

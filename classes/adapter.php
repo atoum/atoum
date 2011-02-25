@@ -26,6 +26,16 @@ class adapter
 
 	public function __call($functionName, $arguments)
 	{
+		return $this->invoke($functionName, $arguments);
+	}
+
+	public function getCalls($functionName = null)
+	{
+		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
+	}
+
+	public function invoke($functionName, array $arguments = array())
+	{
 		if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false))
 		{
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
@@ -34,11 +44,6 @@ class adapter
 		$this->calls[$functionName][] = $arguments;
 
 		return (array_key_exists($functionName, $this->functions) === false ? call_user_func_array($functionName, $arguments) : ($this->functions[$functionName] instanceof \closure === false ? $this->functions[$functionName] : call_user_func_array($this->functions[$functionName], $arguments)));
-	}
-
-	public function getCalls($functionName = null)
-	{
-		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
 	}
 
 	protected static function isLanguageConstruct($functionName)

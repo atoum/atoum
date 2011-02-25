@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\tests\units\scripts\svn;
 
 use \mageekguy\atoum;
+use \mageekguy\atoum\mock;
 use \mageekguy\atoum\scripts\svn;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -43,6 +44,21 @@ class builder extends atoum\test
 			->object($builder->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
 			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
+			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+		;
+	}
+
+	public function testSetSuperglobals()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($builder)
+			->object($builder->getSuperglobals())->isIdenticalTo($superglobals);
 		;
 	}
 
@@ -116,7 +132,7 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetLastRevision()
+	public function testSetRevision()
 	{
 		$adapter = new atoum\adapter();
 
@@ -125,10 +141,10 @@ class builder extends atoum\test
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
-			->object($builder->setLastRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->integer($builder->getLastRevision())->isEqualTo($revisionNumber)
-			->object($builder->setLastRevision($revisionNumber = uniqid()))->isIdenticalTo($builder)
-			->integer($builder->getLastRevision())->isEqualTo((int) $revisionNumber)
+			->object($builder->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->integer($builder->getRevision())->isEqualTo($revisionNumber)
+			->object($builder->setRevision($revisionNumber = uniqid()))->isIdenticalTo($builder)
+			->integer($builder->getRevision())->isEqualTo((int) $revisionNumber)
 		;
 	}
 
@@ -172,11 +188,11 @@ class builder extends atoum\test
 			->adapter($adapter)->call('svn_log', array($repositoryUrl, null, SVN_REVISION_HEAD))
 		;
 
-		$builder->setLastRevision($lastRevision = rand(1, PHP_INT_MAX));
+		$builder->setRevision($revision = rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->array($builder->getLogs())->isEmpty()
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $lastRevision, SVN_REVISION_HEAD))
+			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
 		;
 	}
 
@@ -241,14 +257,41 @@ class builder extends atoum\test
 		$builder->setWorkingDirectory($workingDirectory = uniqid());
 
 		$adapter->svn_auth_set_parameter = null;
-		$adapter->svn_log = array(rand(1, PHP_INT_MAX));
 		$adapter->svn_checkout = true;
 
+		$adapter->svn_log = array();
+
 		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->exception(function() use ($builder) {
+						$builder->checkout();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to retrieve last revision number from repository \'' . $repositoryUrl . '\'')
+			->variable($builder->getRevision())->isNull()
+		;
+
+		$adapter->svn_log = array(array('rev' => $revision = 1));
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
 			->object($builder->checkout())->isIdenticalTo($builder)
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
-				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $builder->getLastRevision()))
+				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
+			->integer($builder->getRevision())->isEqualTo($revision)
+		;
+
+		$builder->setRevision($revision = rand(2, PHP_INT_MAX));
+
+		$this->assert
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->object($builder->checkout())->isIdenticalTo($builder)
+			->adapter($adapter)
+				->notCall('svn_auth_set_parameter')
+				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
+			->integer($builder->getRevision())->isEqualTo($revision)
 		;
 
 		$adapter->svn_checkout = false;
@@ -269,7 +312,10 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$builder = new svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate($this->getTestedClassName());
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter = new atoum\adapter());
 	}
 }
 

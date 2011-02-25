@@ -398,7 +398,7 @@ abstract class test implements observable, \countable
 		{
 			list($file, $line) = $this->getBacktrace();
 
-			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr);
+			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr, $errfile, $errline);
 		}
 
 		return true;
@@ -505,12 +505,12 @@ abstract class test implements observable, \countable
 		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
 		$phpCode .= 'require(\'' . $this->path . '\');';
 		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
-		
+
 		if ($runner->codeCoverageIsEnabled() === false)
 		{
 			$phpCode .= '$runner->disableCodeCoverage();';
 		}
-		
+
 		$phpCode .= '$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);';
 		$phpCode .= 'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));';
 		$phpCode .= '?>';

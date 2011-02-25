@@ -79,7 +79,7 @@ class error extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid());
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->object($asserter->exists())->isIdenticalTo($asserter); $otherLine = __LINE__
@@ -125,7 +125,7 @@ class error extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message);
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->object($asserter->exists())->isIdenticalTo($asserter); $otherLine = __LINE__

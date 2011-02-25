@@ -7,9 +7,10 @@ use \mageekguy\atoum\exceptions;
 
 class builder extends atoum\script
 {
+	protected $superglobals = null;
 	protected $repositoryUrl = null;
 	protected $username = null;
-	protected $lastRevision = null;
+	protected $revision = null;
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
 	protected $scoreDirectory = null;
@@ -25,6 +26,8 @@ class builder extends atoum\script
 		{
 			throw new exceptions\runtime('PHP extension svn is not available, please install it');
 		}
+
+		$this->setSuperglobals(new atoum\superglobals());
 	}
 
 	public function buildPhar($boolean)
@@ -70,6 +73,18 @@ class builder extends atoum\script
 		return $this->password;
 	}
 
+	public function setSuperglobals(atoum\superglobals $superglobals)
+	{
+		$this->superglobals = $superglobals;
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
+	}
+
 	public function setScoreDirectory($path)
 	{
 		$this->scoreDirectory = (string) $path;
@@ -94,9 +109,9 @@ class builder extends atoum\script
 		return $this->errorsDirectory;
 	}
 
-	public function setLastRevision($revisionNumber)
+	public function setRevision($revisionNumber)
 	{
-		$this->lastRevision = (int) $revisionNumber;
+		$this->revision = (int) $revisionNumber;
 
 		return $this;
 	}
@@ -113,9 +128,9 @@ class builder extends atoum\script
 		return $this->revisionFile;
 	}
 
-	public function getLastRevision()
+	public function getRevision()
 	{
-		return $this->lastRevision;
+		return $this->revision;
 	}
 
 	public function setDestinationDirectory($path)
@@ -149,7 +164,7 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to get logs, repository url is undefined');
 		}
 
-		return $this->adapter->svn_log($this->repositoryUrl, $this->getLastRevision(), \SVN_REVISION_HEAD);
+		return $this->adapter->svn_log($this->repositoryUrl, $this->getRevision(), \SVN_REVISION_HEAD);
 	}
 
 	public function checkout()
@@ -164,21 +179,21 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to checkout repository, working directory is undefined');
 		}
 
-		$lastRevision = $this->getLastRevision();
+		$revision = $this->getRevision();
 
-		if ($lastRevision === null)
+		if ($revision === null)
 		{
-			$revisions = $this->getLastRevisionNumbers();
+			$revisions = $this->getNextRevisionNumbers();
 
 			if (sizeof($revisions) <= 0)
 			{
-				throw new exceptions\runtime('Unable to retrieve last revision number');
+				throw new exceptions\runtime('Unable to retrieve last revision number from repository \'' . $this->repositoryUrl . '\'');
 			}
 
-			$this->setLastRevision(end($revisions));
+			$this->setRevision(end($revisions));
 		}
 
-		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->getLastRevision()) === false)
+		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->getRevision()) === false)
 		{
 			throw new exceptions\runtime('Unable to checkout repository \'' . $this->repositoryUrl . '\' in working directory \'' . $this->workingDirectory . '\'');
 		}
@@ -197,28 +212,28 @@ class builder extends atoum\script
 			2 => array('pipe', 'w')
 		);
 
-		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir()) : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getLastRevision();
+		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir()) : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getRevision();
 
-		$php = proc_open($_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, $pipes);
+		$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, & $pipes));
 
 		if ($php !== false)
 		{
-			$stdOut = stream_get_contents($pipes[1]);
+			$stdOut = $this->adapter->stream_get_contents($pipes[1]);
 			fclose($pipes[1]);
 
-			$stdErr = stream_get_contents($pipes[2]);
+			$stdErr = $this->adapter->stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
 
-			$returnValue = proc_close($php);
+			$this->adapter->proc_close($php);
 
 			if ($stdOut != '')
 			{
-				$this->writeErrorInErrrosDirectory($stdOut);
+				$this->writeErrorInErrorsDirectory($stdOut);
 			}
 
 			if ($stdErr != '')
 			{
-				$this->writeErrorInErrrosDirectory($stdErr);
+				$this->writeErrorInErrorsDirectory($stdErr);
 			}
 
 			$score = @$this->adapter->file_get_contents($scoreFile);
@@ -257,26 +272,21 @@ class builder extends atoum\script
 
 		if ($this->revisionFile !== null)
 		{
-			$lastRevision = @$this->adapter->file_get_contents($this->revisionFile);
+			$revision = @$this->adapter->file_get_contents($this->revisionFile);
 
-			if ($lastRevision === false)
+			if ($this->adapter->is_numeric($revision) === true)
 			{
-				throw new exceptions\runtime('Unable to read last revision from file \'' . $this->revisionFile . '\'');
-			}
-
-			if ($this->adapter->is_numeric($lastRevision) === true)
-			{
-				$this->setLastRevision($lastRevision);
+				$this->setRevision($revision);
 			}
 		}
 
-		$revisions = $this->getLastRevisionNumbers();
+		$revisions = $this->getNextRevisionNumbers();
 
-		$lastRevision = end($revisions);
+		$revision = end($revisions);
 
 		while (sizeof($revisions) > 0)
 		{
-			$this->setLastRevision(array_shift($revisions));
+			$this->setRevision(array_shift($revisions));
 
 			if ($this->checkUnitTests() === true)
 			{
@@ -284,14 +294,14 @@ class builder extends atoum\script
 					2 => array('pipe', 'w')
 				);
 
-				$php = proc_open($_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, $pipes);
+				$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, & $pipes));
 
 				if ($php !== false)
 				{
-					$stdErr = stream_get_contents($pipes[2]);
+					$stdErr = $this->adapter->stream_get_contents($pipes[2]);
 					fclose($pipes[2]);
 
-					$returnValue = proc_close($php);
+					$this->adapter->proc_close($php);
 
 					if ($stdErr == '')
 					{
@@ -299,20 +309,20 @@ class builder extends atoum\script
 					}
 					else
 					{
-						$this->writeErrorInErrrosDirectory($stdErr);
+						$this->writeErrorInErrorsDirectory($stdErr);
 					}
 				}
 
-				$revisions = $this->getLastRevisionNumbers($revisions);
+				$revisions = $this->getNextRevisionNumbers($revisions);
 
 				if (sizeof($revisions) > 0)
 				{
-					$lastRevision = end($revisions);
+					$revision = end($revisions);
 				}
 			}
 		}
 
-		if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $lastRevision, \LOCK_EX) === false)
+		if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
 		{
 			throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
 		}
@@ -439,13 +449,13 @@ class builder extends atoum\script
 		return $this;
 	}
 
-	protected function getLastRevisionNumbers(array $revisions = array())
+	protected function getNextRevisionNumbers(array $revisions = array())
 	{
-		$lastRevision = $this->getLastRevision();
+		$revision = $this->getRevision();
 
 		foreach ($this->getLogs() as $log)
 		{
-			if ($lastRevision === null || $lastRevision < $log['rev'])
+			if (isset($log['rev']) === true && ($revision === null || $revision < $log['rev']))
 			{
 				$revisions[] = $log['rev'];
 			}
@@ -454,11 +464,11 @@ class builder extends atoum\script
 		return $revisions;
 	}
 
-	protected function writeErrorInErrrosDirectory($error)
+	protected function writeErrorInErrorsDirectory($error)
 	{
 		if ($this->errorsDirectory !== null)
 		{
-			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->getLastRevision();
+			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->getRevision();
 			
 			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX) === false)
 			{

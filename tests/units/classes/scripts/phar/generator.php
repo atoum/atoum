@@ -363,7 +363,7 @@ class generator extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\writers\std\out')
-			;
+		;
 
 		$stdout = new mock\mageekguy\atoum\writers\std\out();
 		$stdout->getMockController()->write = function() {};
@@ -374,7 +374,7 @@ class generator extends atoum\test
 			->object($generator->writeMessage($message = uniqid()))->isIdenticalTo($generator)
 			->mock($stdout)
 			->call('write', array($message . PHP_EOL))
-			;
+		;
 	}
 
 	public function testWriteError()
@@ -384,7 +384,7 @@ class generator extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate('\mageekguy\atoum\writers\std\err')
-			;
+		;
 
 		$stderr = new mock\mageekguy\atoum\writers\std\err();
 		$stderr->getMockController()->write = function() {};
@@ -395,7 +395,7 @@ class generator extends atoum\test
 			->object($generator->writeError($error = uniqid()))->isIdenticalTo($generator)
 			->mock($stderr)
 			->call('write', array(sprintf($generator->getLocale()->_('Error: %s'), $error) . PHP_EOL))
-			;
+		;
 	}
 
 	public function testRun()
