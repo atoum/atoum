@@ -294,6 +294,30 @@ class builder extends atoum\test
 			->integer($builder->getRevision())->isEqualTo($revision)
 		;
 
+		$builder->setUsername($username = uniqid());
+
+		$this->assert
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->object($builder->checkout())->isIdenticalTo($builder)
+			->adapter($adapter)
+				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $username))
+				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD))
+				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
+			->integer($builder->getRevision())->isEqualTo($revision)
+		;
+
+		$builder->setPassword($password = uniqid());
+
+		$this->assert
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->object($builder->checkout())->isIdenticalTo($builder)
+			->adapter($adapter)
+				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $username))
+				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $password))
+				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
+			->integer($builder->getRevision())->isEqualTo($revision)
+		;
+
 		$adapter->svn_checkout = false;
 
 		$this->assert
@@ -316,6 +340,25 @@ class builder extends atoum\test
 		$mockGenerator->generate($this->getTestedClassName());
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+
+		$builder->getMockController()->checkout = function() {};
+
+		$score = new atoum\score();
+
+		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
+		$adapter->tempnam = $tempName = uniqid();
+		$adapter->proc_open = uniqid();
+		$adapter->stream_get_contents = function() {};
+		$adapter->fclose = function() {};
+		$adapter->proc_close = function() {};
+		$adapter->file_get_contents = $scoreFileContents = uniqid();
+		$adapter->unserialize = $score;
+		$adapter->unlink = true;
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isTrue()
+			->mock($builder)->call('checkout')
+		;
 	}
 }
 

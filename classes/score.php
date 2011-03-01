@@ -75,7 +75,7 @@ class score
 		return $this;
 	}
 
-	public function addError($file, $line, $class, $method, $type, $message, $errorFile, $errorLine)
+	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null)
 	{
 		$this->errors[] = array(
 			'class' => $class,

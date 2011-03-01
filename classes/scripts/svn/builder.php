@@ -10,6 +10,7 @@ class builder extends atoum\script
 	protected $superglobals = null;
 	protected $repositoryUrl = null;
 	protected $username = null;
+	protected $password = null;
 	protected $revision = null;
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
@@ -193,6 +194,16 @@ class builder extends atoum\script
 			$this->setRevision(end($revisions));
 		}
 
+		if ($this->username !== null)
+		{
+			$this->adapter->svn_auth_set_parameter(SVN_AUTH_PARAM_DEFAULT_USERNAME, $this->username);
+
+			if ($this->password !== null)
+			{
+				$this->adapter->svn_auth_set_parameter(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $this->password);
+			}
+		}
+
 		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->getRevision()) === false)
 		{
 			throw new exceptions\runtime('Unable to checkout repository \'' . $this->repositoryUrl . '\' in working directory \'' . $this->workingDirectory . '\'');
@@ -212,17 +223,17 @@ class builder extends atoum\script
 			2 => array('pipe', 'w')
 		);
 
-		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir()) : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getRevision();
+		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getRevision();
 
 		$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, & $pipes));
 
 		if ($php !== false)
 		{
 			$stdOut = $this->adapter->stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
+			$this->adapter->fclose($pipes[1]);
 
 			$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-			fclose($pipes[2]);
+			$this->adapter->fclose($pipes[2]);
 
 			$this->adapter->proc_close($php);
 
@@ -243,16 +254,24 @@ class builder extends atoum\script
 				throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
 			}
 
-			$score = unserialize($score);
+			$score = $this->adapter->unserialize($score);
 
 			if ($score === false)
 			{
 				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
 			}
 
+			if ($score instanceof atoum\score === false)
+			{
+				throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
+			}
+
 			if ($this->scoreDirectory === null)
 			{
-				$this->adapter->unlink($scoreFile);
+				if ($this->adapter->unlink($scoreFile) === false)
+				{
+					throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
+				}
 			}
 
 			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
@@ -469,7 +488,7 @@ class builder extends atoum\script
 		if ($this->errorsDirectory !== null)
 		{
 			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->getRevision();
-			
+
 			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX) === false)
 			{
 				throw new exceptions\runtime('Unable to save error in file \'' . $errorFile . '\'');

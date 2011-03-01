@@ -612,7 +612,7 @@ abstract class test implements observable, \countable
 		{
 			if (preg_match('/ in (.+) on line (\d+)/', $error, $match) === 1)
 			{
-				$this->score->addError($match[1], $match[2], $this->class, $this->currentMethod, $returnValue, preg_replace('/ in (.+) on line (\d+)/', '', $error));
+				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, preg_replace('/ in (.+) on line (\d+)/', '', $error), $match[1], $match[2]);
 			}
 			else
 			{
