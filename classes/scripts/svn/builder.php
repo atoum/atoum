@@ -38,6 +38,11 @@ class builder extends atoum\script
 		return $this;
 	}
 
+	public function pharWillBeBuilt()
+	{
+		return $this->buildPhar;
+	}
+
 	public function setRepositoryUrl($url)
 	{
 		$this->repositoryUrl = (string) $url;
@@ -225,64 +230,68 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getRevision();
 
-		$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes', $descriptors, & $pipes));
+		$command = $this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes';
 
-		if ($php !== false)
+		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+
+		if ($php === false)
 		{
-			$stdOut = $this->adapter->stream_get_contents($pipes[1]);
-			$this->adapter->fclose($pipes[1]);
-
-			$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-			$this->adapter->fclose($pipes[2]);
-
-			$this->adapter->proc_close($php);
-
-			if ($stdOut != '')
-			{
-				$this->writeErrorInErrorsDirectory($stdOut);
-			}
-
-			if ($stdErr != '')
-			{
-				$this->writeErrorInErrorsDirectory($stdErr);
-			}
-
-			$score = @$this->adapter->file_get_contents($scoreFile);
-
-			if ($score === false)
-			{
-				throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
-			}
-
-			$score = $this->adapter->unserialize($score);
-
-			if ($score === false)
-			{
-				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
-			}
-
-			if ($score instanceof atoum\score === false)
-			{
-				throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
-			}
-
-			if ($this->scoreDirectory === null)
-			{
-				if ($this->adapter->unlink($scoreFile) === false)
-				{
-					throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
-				}
-			}
-
-			$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+			throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
 		}
+
+		$stdOut = $this->adapter->stream_get_contents($pipes[1]);
+		$this->adapter->fclose($pipes[1]);
+
+		$stdErr = $this->adapter->stream_get_contents($pipes[2]);
+		$this->adapter->fclose($pipes[2]);
+
+		$this->adapter->proc_close($php);
+
+		if ($stdOut != '')
+		{
+			$this->writeErrorInErrorsDirectory($stdOut);
+		}
+
+		if ($stdErr != '')
+		{
+			$this->writeErrorInErrorsDirectory($stdErr);
+		}
+
+		$score = @$this->adapter->file_get_contents($scoreFile);
+
+		if ($score === false)
+		{
+			throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
+		}
+
+		$score = $this->adapter->unserialize($score);
+
+		if ($score === false)
+		{
+			throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
+		}
+
+		if ($score instanceof atoum\score === false)
+		{
+			throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
+		}
+
+		if ($this->scoreDirectory === null)
+		{
+			if ($this->adapter->unlink($scoreFile) === false)
+			{
+				throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
+			}
+		}
+
+		$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
 
 		return $noFail;
 	}
 
 	public function build()
 	{
-		if ($this->repositoryUrl === null)
+		if ($this->destinationDirectory === null)
 		{
 			throw new exceptions\runtime('Unable to build phar, destination directory is undefined');
 		}
@@ -301,22 +310,29 @@ class builder extends atoum\script
 
 		$revisions = $this->getNextRevisionNumbers();
 
-		$revision = end($revisions);
-
-		while (sizeof($revisions) > 0)
+		if (sizeof($revisions) > 0)
 		{
-			$this->setRevision(array_shift($revisions));
+			$revision = end($revisions);
 
-			if ($this->checkUnitTests() === true)
+			$descriptors = array(
+				2 => array('pipe', 'w')
+			);
+
+			while (sizeof($revisions) > 0)
 			{
-				$descriptors = array(
-					2 => array('pipe', 'w')
-				);
+				$this->setRevision(array_shift($revisions));
 
-				$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, & $pipes));
-
-				if ($php !== false)
+				if ($this->checkUnitTests() === true)
 				{
+					$command = $this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory;
+
+					$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, & $pipes));
+
+					if ($php === false)
+					{
+						throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
+					}
+
 					$stdErr = $this->adapter->stream_get_contents($pipes[2]);
 					fclose($pipes[2]);
 
@@ -339,11 +355,11 @@ class builder extends atoum\script
 					$revision = end($revisions);
 				}
 			}
-		}
 
-		if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
-		{
-			throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
+			if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
+			{
+				throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
+			}
 		}
 
 		return $pharBuilt;
@@ -468,22 +484,7 @@ class builder extends atoum\script
 		return $this;
 	}
 
-	protected function getNextRevisionNumbers(array $revisions = array())
-	{
-		$revision = $this->getRevision();
-
-		foreach ($this->getLogs() as $log)
-		{
-			if (isset($log['rev']) === true && ($revision === null || $revision < $log['rev']))
-			{
-				$revisions[] = $log['rev'];
-			}
-		}
-
-		return $revisions;
-	}
-
-	protected function writeErrorInErrorsDirectory($error)
+	public function writeErrorInErrorsDirectory($error)
 	{
 		if ($this->errorsDirectory !== null)
 		{
@@ -496,6 +497,21 @@ class builder extends atoum\script
 		}
 
 		return $this;
+	}
+
+	public function getNextRevisionNumbers(array $revisions = array())
+	{
+		$revision = $this->getRevision();
+
+		foreach ($this->getLogs() as $log)
+		{
+			if (isset($log['rev']) === true && ($revision === null || $revision < $log['rev']))
+			{
+				$revisions[] = $log['rev'];
+			}
+		}
+
+		return $revisions;
 	}
 }
 

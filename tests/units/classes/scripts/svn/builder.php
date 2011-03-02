@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\scripts\svn;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\scripts\svn;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\scripts\svn
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -202,7 +204,7 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$builder = new svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
 			->object($builder->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($builder)
@@ -218,11 +220,28 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$builder = new svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
 			->object($builder->setWorkingDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
 			->string($builder->getWorkingDirectory())->isEqualTo($directory)
+		;
+	}
+
+	public function testBuildPhar()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->boolean($builder->pharWillBeBuilt())->isTrue()
+			->object($builder->buildPhar(false))->isIdenticalTo($builder)
+			->boolean($builder->pharWillBeBuilt())->isFalse()
+			->object($builder->buildPhar(true))->isIdenticalTo($builder)
+			->boolean($builder->pharWillBeBuilt())->isTrue()
 		;
 	}
 
@@ -232,7 +251,7 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$builder = new svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
 			->exception(function() use ($builder) {
@@ -336,18 +355,36 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $php = uniqid();
+
 		$mockGenerator = new mock\generator();
-		$mockGenerator->generate($this->getTestedClassName());
+		$mockGenerator
+			->generate($this->getTestedClassName())
+			->generate('\mageekguy\atoum\score')
+		;
 
-		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter = new atoum\adapter());
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
 
-		$builder->getMockController()->checkout = function() {};
+		$builder
+			->setSuperglobals($superglobals)
+			->setWorkingDirectory($workingDirectory = uniqid())
+		;
 
-		$score = new atoum\score();
+		$builderController = $builder->getMockController();
+		$builderController->checkout = function() {};
+		$builderController->writeErrorInErrorsDirectory = function() {};
+
+		$score = new mock\mageekguy\atoum\score();
+
+		$scoreController = $score->getMockController();
+		$scoreController->getFailNumber = 0;
+		$scoreController->getExceptionNumber = 0;
+		$scoreController->getErrorNumber = 0;
 
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
-		$adapter->tempnam = $tempName = uniqid();
-		$adapter->proc_open = uniqid();
+		$adapter->tempnam = $scoreFile = uniqid();
+		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
 		$adapter->stream_get_contents = function() {};
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};
@@ -358,6 +395,180 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
 			->mock($builder)->call('checkout')
+			->adapter($adapter)
+				->call('sys_get_temp_dir')
+				->call('tempnam', array($tempDirectory, ''))
+				->call('proc_open', array($php . ' ' . $workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . '/tests/units/classes', array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdOut))
+				->call('fclose', array($stdOut))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->call('file_get_contents', array($scoreFile))
+				->call('unserialize', array($scoreFileContents))
+				->call('unlink', array($scoreFile))
+			->mock($score)
+				->call('getFailNumber')
+				->call('getExceptionNumber')
+				->call('getErrorNumber')
+		;
+
+		$adapter->proc_open = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . '/tests/units/classes\'')
+		;
+
+		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+
+		$adapter->stream_get_contents = function($stream) use (& $stdOut, & $stdOutContents) { return $stream != $stdOut ? '' : $stdOutContents = uniqid(); };
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isTrue()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdOutContents))
+		;
+
+		$adapter->stream_get_contents = function($stream) use (& $stdErr, & $stdErrContents) { return $stream != $stdErr ? '' : $stdErrContents = uniqid(); };
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isTrue()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
+		;
+
+		$adapter->file_get_contents = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to read score from file \'' . $scoreFile . '\'')
+		;
+
+		$adapter->file_get_contents = $scoreFileContents;
+
+		$adapter->unserialize = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to unserialize score from file \'' . $scoreFile . '\'')
+		;
+
+		$adapter->unserialize = uniqid();
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Contents of file \'' . $scoreFile . '\' is not a score')
+		;
+
+		$adapter->unserialize = $score;
+
+		$adapter->unlink = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to delete score file \'' . $scoreFile . '\'')
+		;
+
+		$adapter->unlink = true;
+
+		$scoreController->getFailNumber = rand(1, PHP_INT_MAX);
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isFalse()
+		;
+
+		$scoreController->getFailNumber = 0;
+		$scoreController->getExceptionNumber = rand(1, PHP_INT_MAX);
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isFalse()
+		;
+
+		$scoreController->getExceptionNumber = 0;
+		$scoreController->getErrorNumber = rand(1, PHP_INT_MAX);
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isFalse()
+		;
+	}
+
+	public function testBuild()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
+
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $php = uniqid();
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->variable($builder->getDestinationDirectory())->isNull()
+			->exception(function() use ($builder) {
+						$builder->build();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to build phar, destination directory is undefined')
+		;
+
+		$builder->setSuperglobals($superglobals);
+		$builder->setWorkingDirectory($workingDirectory = uniqid());
+		$builder->setDestinationDirectory($destinationDirectory = uniqid());
+
+		$builderController = $builder->getMockController();
+		$builderController->getNextRevisionNumbers = array();
+
+		$adapter->file_get_contents = false;
+
+		$this->assert
+			->boolean($builder->build())->isFalse()
+		;
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+		$builderController->checkUnitTests = false;
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isFalse()
+			->integer($builder->getRevision())->isEqualTo($revision)
+		;
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+		$builderController->checkUnitTests = true;
+
+		$adapter->proc_open = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->build();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory . '\'')
 		;
 	}
 }
