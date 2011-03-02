@@ -177,7 +177,7 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to get logs, repository url is undefined');
 		}
 
-		return $this->adapter->svn_log($this->repositoryUrl, $this->getRevision(), \SVN_REVISION_HEAD);
+		return $this->adapter->svn_log($this->repositoryUrl, $this->revision, \SVN_REVISION_HEAD);
 	}
 
 	public function checkout()
@@ -192,9 +192,7 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to checkout repository, working directory is undefined');
 		}
 
-		$revision = $this->getRevision();
-
-		if ($revision === null)
+		if ($this->revision === null)
 		{
 			$revisions = $this->getNextRevisionNumbers();
 
@@ -216,7 +214,7 @@ class builder extends atoum\script
 			}
 		}
 
-		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->getRevision()) === false)
+		if ($this->adapter->svn_checkout($this->repositoryUrl, $this->workingDirectory, $this->revision) === false)
 		{
 			throw new exceptions\runtime('Unable to checkout repository \'' . $this->repositoryUrl . '\' in working directory \'' . $this->workingDirectory . '\'');
 		}
@@ -235,7 +233,7 @@ class builder extends atoum\script
 			2 => array('pipe', 'w')
 		);
 
-		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->getRevision();
+		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
 		$command = $this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes';
 
@@ -495,9 +493,9 @@ class builder extends atoum\script
 	{
 		if ($this->errorsDirectory !== null)
 		{
-			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->getRevision();
+			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->revision;
 
-			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX) === false)
+			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX | \FILE_APPEND) === false)
 			{
 				throw new exceptions\runtime('Unable to save error in file \'' . $errorFile . '\'');
 			}
@@ -508,11 +506,9 @@ class builder extends atoum\script
 
 	public function getNextRevisionNumbers(array $revisions = array())
 	{
-		$revision = $this->getRevision();
-
 		foreach ($this->getLogs() as $log)
 		{
-			if (isset($log['rev']) === true && ($revision === null || $revision < $log['rev']))
+			if (isset($log['rev']) === true && ($this->revision === null || $this->revision < $log['rev']))
 			{
 				$revisions[] = $log['rev'];
 			}
