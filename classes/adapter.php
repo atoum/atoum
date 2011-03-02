@@ -34,6 +34,13 @@ class adapter
 		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
 	}
 
+	public function resetCalls()
+	{
+		$this->calls = array();
+
+		return $this;
+	}
+
 	public function invoke($functionName, array $arguments = array())
 	{
 		if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false))

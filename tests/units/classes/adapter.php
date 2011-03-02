@@ -147,6 +147,19 @@ class adapter extends atoum\test
 			->array($adapter->getCalls('strpos'))->isEqualTo(array(array($haystack, $needle, $offset)))
 		;
 	}
+
+	public function testResetCalls()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->array($adapter->getCalls())->isNotEmpty()
+			->object($adapter->resetCalls())->isIdenticalTo($adapter)
+			->array($adapter->getCalls())->isEmpty()
+		;
+	}
 }
 
 ?>

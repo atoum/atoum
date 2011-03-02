@@ -139,6 +139,13 @@ class builder extends atoum\script
 		return $this->revision;
 	}
 
+	public function resetRevision()
+	{
+		$this->revision = null;
+
+		return $this;
+	}
+
 	public function setDestinationDirectory($path)
 	{
 		$this->destinationDirectory = (string) $path;
@@ -302,7 +309,7 @@ class builder extends atoum\script
 		{
 			$revision = @$this->adapter->file_get_contents($this->revisionFile);
 
-			if ($this->adapter->is_numeric($revision) === true)
+			if (is_numeric($revision) === true)
 			{
 				$this->setRevision($revision);
 			}
@@ -334,7 +341,7 @@ class builder extends atoum\script
 					}
 
 					$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-					fclose($pipes[2]);
+					$this->adapter->fclose($pipes[2]);
 
 					$this->adapter->proc_close($php);
 
@@ -348,7 +355,7 @@ class builder extends atoum\script
 					}
 				}
 
-				$revisions = $this->getNextRevisionNumbers($revisions);
+				$revisions = array_merge($revisions, $this->getNextRevisionNumbers($revisions));
 
 				if (sizeof($revisions) > 0)
 				{

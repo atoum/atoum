@@ -150,6 +150,23 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testResetRevision()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$builder->setRevision(rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->variable($builder->getRevision())->isNotNull()
+			->object($builder->resetRevision())->isIdenticalTo($builder)
+			->variable($builder->getRevision())->isNull()
+		;
+	}
+
 	public function testSetRevisionFile()
 	{
 		$adapter = new atoum\adapter();
@@ -385,7 +402,7 @@ class builder extends atoum\test
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
-		$adapter->stream_get_contents = function() {};
+		$adapter->stream_get_contents = function() { return ''; };
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};
 		$adapter->file_get_contents = $scoreFileContents = uniqid();
@@ -562,13 +579,152 @@ class builder extends atoum\test
 
 		$adapter->proc_open = false;
 
+		$builder->resetRevision();
+
 		$this->assert
+			->variable($builder->getRevision())->isNull()
 			->exception(function() use ($builder) {
 					$builder->build();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory . '\'')
+			->integer($builder->getRevision())->isEqualTo($revision)
+		;
+
+		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdErr, & $pipes, & $resource) { $pipes = array(2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+		$adapter->stream_get_contents = function() { return ''; };
+		$adapter->fclose = function() {};
+		$adapter->proc_close = function() {};
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+		$builderController->checkUnitTests = true;
+		$builderController->writeErrorInErrorsDirectory = function() {};
+
+		$builder->resetRevision();
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isTrue()
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->adapter($adapter)
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+		;
+
+		$adapter->stream_get_contents = function() use (& $stdErrContents) { return $stdErrContents = uniqid(); };
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+
+		$builder->resetRevision();
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isFalse()
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->adapter($adapter)
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
+		;
+
+		$builder->setRevisionFile($revisionFile = uniqid());
+
+		$adapter->stream_get_contents = function() { return ''; };
+		$adapter->file_get_contents = false;
+		$adapter->file_put_contents = function() {};
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+
+		$builder->resetRevision();
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isTrue()
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->adapter($adapter)
+				->call('file_get_contents', array($revisionFile))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+		;
+
+		$adapter->file_get_contents = false;
+		$adapter->file_put_contents = function() {};
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+
+		$builder->resetRevision();
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isTrue()
+			->integer($builder->getRevision())->isEqualTo($revision)
+			->adapter($adapter)
+				->call('file_get_contents', array($revisionFile))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->call('file_put_contents', array($revisionFile, $revision, \LOCK_EX))
+		;
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+
+		$builder->resetRevision();
+
+		$adapter->file_put_contents = false;
+
+		$this->assert
+			->exception(function() use ($builder) {
+						$builder->build();
+					}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to save last revision in file \'' . $revisionFile . '\'')
+		;
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array(1, 2, 3); };
+
+		$builder->resetRevision();
+
+		$adapter->file_put_contents = function() {};
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isTrue()
+			->integer($builder->getRevision())->isEqualTo(3)
+			->adapter($adapter)
+				->call('file_get_contents', array($revisionFile))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->call('file_put_contents', array($revisionFile, 3, \LOCK_EX))
+		;
+
+		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array(2, 3, 4); };
+
+		$builder->resetRevision();
+
+		$adapter->file_get_contents = 1;
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->boolean($builder->build())->isTrue()
+			->integer($builder->getRevision())->isEqualTo(4)
+			->adapter($adapter)
+				->call('file_get_contents', array($revisionFile))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->call('file_put_contents', array($revisionFile, 4, \LOCK_EX))
 		;
 	}
 }
