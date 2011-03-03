@@ -2,13 +2,14 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\duration;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\runner;
-use \mageekguy\atoum\tests\units\report\fields;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields\runner,
+	\mageekguy\atoum\tests\units\report\fields
+;
 
-require_once(__DIR__.'/../duration.php');
 require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\duration

@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report\fields\runner;
-require_once(__DIR__ . '/../runner.php');
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report\fields\runner
+;
+
 require_once(__DIR__ . '/../../../../runner.php');
 
 class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
@@ -30,7 +32,7 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 		;
 
 		$score = new mock\mageekguy\atoum\score();
-		
+
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 

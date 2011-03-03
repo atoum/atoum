@@ -2,11 +2,13 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\runner;
-require_once(__DIR__.'/../failures.php');
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields\runner
+;
+
 require_once(__DIR__ . '/../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures

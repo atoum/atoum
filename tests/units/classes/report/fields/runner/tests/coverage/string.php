@@ -2,13 +2,15 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\coverage;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\score;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\runner\tests;
-require_once(__DIR__ . '/../coverage.php');
-require_once(__DIR__ . '/../../../../../runner.php');
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\score,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields\runner\tests
+;
+
+require_once(__DIR__ . '/../../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\coverage
 {

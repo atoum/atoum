@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\test\duration;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\test;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields\test
+;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
