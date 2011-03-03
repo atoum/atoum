@@ -74,6 +74,11 @@ abstract class asserter
 		}
 	}
 
+	public function is($label)
+	{
+		return $this->setLabel($label);
+	}
+
 	public function setLabel($label)
 	{
 		if ($label !== null)

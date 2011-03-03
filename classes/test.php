@@ -136,6 +136,7 @@ abstract class test implements observable, \countable
 		switch ($property)
 		{
 			case 'assert':
+			case 'define':
 				return $this->asserterGenerator;
 
 			default:
