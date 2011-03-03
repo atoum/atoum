@@ -324,7 +324,7 @@ class builder extends atoum\test
 		$this->assert
 			->variable($builder->getRevision())->isNull()
 			->object($builder->checkout())->isIdenticalTo($builder)
-			->mock($builder, 'builder')->call('getNextRevisionNumbers')
+			->mock($builder)->call('getNextRevisionNumbers')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
@@ -338,7 +338,7 @@ class builder extends atoum\test
 		$this->assert
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->object($builder->checkout())->isIdenticalTo($builder)
-			->builder->notCall('getNextRevisionNumbers')
+			->mock($builder)->notCall('getNextRevisionNumbers')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
@@ -433,7 +433,7 @@ class builder extends atoum\test
 			->adapter($adapter)
 				->call('sys_get_temp_dir')
 				->call('tempnam', array($tempDirectory, ''))
-				->call('proc_open', array($php . ' ' . $workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . '/tests/units/classes', array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes', array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdOut))
 				->call('fclose', array($stdOut))
 				->call('stream_get_contents', array($stdErr))
@@ -456,7 +456,7 @@ class builder extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . '/tests/units/classes\'')
+				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes\'')
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -606,7 +606,7 @@ class builder extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory . '\'')
+				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory . '\'')
 			->integer($builder->getRevision())->isEqualTo($revision)
 		;
 
@@ -626,7 +626,7 @@ class builder extends atoum\test
 			->boolean($builder->build())->isTrue()
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
@@ -643,7 +643,7 @@ class builder extends atoum\test
 			->boolean($builder->build())->isFalse()
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
@@ -666,7 +666,7 @@ class builder extends atoum\test
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
@@ -685,7 +685,7 @@ class builder extends atoum\test
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
@@ -719,7 +719,7 @@ class builder extends atoum\test
 			->integer($builder->getRevision())->isEqualTo(3)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
@@ -738,11 +738,98 @@ class builder extends atoum\test
 			->integer($builder->getRevision())->isEqualTo(4)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . '/scripts/phar/generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
 				->call('file_put_contents', array($revisionFile, 4, \LOCK_EX))
+		;
+	}
+
+	public function testGetNextRevisionNumbers()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
+
+		$adapter = new atoum\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+
+		$builderController = $builder->getMockController();
+		$builderController->getLogs = array();
+
+		$this->assert
+			->array($builder->getNextRevisionNumbers())->isEmpty()
+		;
+
+		$builderController->getLogs = array(array('rev' => 1));
+
+		$this->assert
+			->array($builder->getNextRevisionNumbers())->isEqualTo(array(1))
+			->array($builder->setRevision(1)->getNextRevisionNumbers())->isEmpty()
+		;
+
+		$builderController->getLogs = array(array('rev' => 2), array('rev' => 3));
+
+		$this->assert
+			->array($builder->getNextRevisionNumbers())->isEqualTo(array(2, 3))
+		;
+	}
+
+	public function testWriteInErrorDirectory()
+	{
+		$adapter = new atoum\adapter();
+		$adapter->extension_loaded = true;
+		$adapter->file_put_contents = function() {};
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->variable($builder->getErrorsDirectory())->isNull()
+			->object($builder->writeErrorInErrorsDirectory(uniqid()))->isIdenticalTo($builder)
+			->adapter($adapter)->notCall('file_put_contents')
+		;
+
+		$builder->setErrorsDirectory($errorDirectory = uniqid());
+
+		$this->assert
+			->variable($builder->getRevision())->isNull()
+			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
+			->exception(function() use ($builder) {
+						$builder->writeErrorInErrorsDirectory(uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Revision is undefined')
+			->adapter($adapter)->notCall('file_put_contents')
+		;
+
+		$builder->setRevision($revision = rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->variable($builder->getRevision())->isEqualTo($revision)
+			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
+			->object($builder->writeErrorInErrorsDirectory($message = uniqid()))->isIdenticalTo($builder)
+			->adapter($adapter)->call('file_put_contents', array($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND))
+		;
+
+		$adapter
+			->resetCalls()
+			->file_put_contents = false
+		;
+
+		$this->assert
+			->variable($builder->getRevision())->isEqualTo($revision)
+			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
+			->exception(function() use ($builder, & $message) {
+						$builder->writeErrorInErrorsDirectory($message = uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to save error in file \'' . $errorDirectory . \DIRECTORY_SEPARATOR . $revision . '\'')
+			->adapter($adapter)->call('file_put_contents', array($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND))
 		;
 	}
 }

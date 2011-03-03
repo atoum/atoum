@@ -235,7 +235,7 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
-		$command = $this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . '/scripts/runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . '/tests/units/classes';
+		$command = $this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes';
 
 		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -329,9 +329,9 @@ class builder extends atoum\script
 
 				if ($this->checkUnitTests() === true)
 				{
-					$command = $this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory;
+					$command = $this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
 
-					$php = $this->adapter->invoke('proc_open', array($this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . '/scripts/phar/generator.php -- -d ' . $this->destinationDirectory, $descriptors, & $pipes));
+					$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
 					if ($php === false)
 					{
@@ -493,6 +493,11 @@ class builder extends atoum\script
 	{
 		if ($this->errorsDirectory !== null)
 		{
+			if ($this->revision === null)
+			{
+				throw new exceptions\logic('Revision is undefined');
+			}
+
 			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->revision;
 
 			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX | \FILE_APPEND) === false)
