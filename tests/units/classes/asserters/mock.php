@@ -234,6 +234,143 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;
 	}
+
+	public function testNotCall($argForTest = null)
+	{
+		$mockGenerator = new atoum\mock\generator();
+		$mockGenerator->generate(__CLASS__);
+
+		$adapter = new atoum\adapter();
+		$adapter->class_exists = true;
+
+		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);
+
+		$method = __FUNCTION__;
+
+		$mock->getMockController()->{$method} = function() {};
+
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter->setWith($mock);
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$mock->{$method}();
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter, $method) {
+					$asserter->notCall($method);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('method %s::%s() is called'), get_class($mock), $method))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$mock->{$method}($arg = uniqid());
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter, $method) {
+					$asserter->notCall($method);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('method %s::%s() is called'), get_class($mock), $method))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter, $method, $arg) {
+					$asserter->notCall($method, array($arg));
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($locale->_('method %s::%s() is called with this argument'), get_class($mock), $method))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
 }
 
 ?>

@@ -8,7 +8,7 @@ class mock extends \mageekguy\atoum\asserter
 {
 	protected $mock = null;
 
-	public function setWith($mock)
+	public function setWith($mock, $label = null)
 	{
 		$this->mock = $mock;
 
@@ -19,9 +19,9 @@ class mock extends \mageekguy\atoum\asserter
 		else
 		{
 			$this->pass();
-
-			return $this;
 		}
+
+		return $this->setLabel($label);
 	}
 
 	public function getMock()
@@ -52,6 +52,30 @@ class mock extends \mageekguy\atoum\asserter
 		else if ($args !== null && in_array($args, $calls) === false)
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('method %s::%s() is not called with this argument', 'method %s::%s() is not called with these arguments', sizeof($args)), get_class($this->mock), $method));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function notCall($method, array $args = null, $failMessage = null)
+	{
+		$calls = $this->mockIsSet()->mock->getMockController()->getCalls($method);
+
+		if (sizeof($calls) <= 0)
+		{
+			$this->pass();
+		}
+		else if ($args === null)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('method %s::%s() is called'), get_class($this->mock), $method));
+		}
+		else if (in_array($args, $calls) === true)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('method %s::%s() is called with this argument', 'method %s::%s() is called with these arguments', sizeof($args)), get_class($this->mock), $method));
 		}
 		else
 		{

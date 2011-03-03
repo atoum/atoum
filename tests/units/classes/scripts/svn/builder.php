@@ -268,7 +268,14 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$builder = new svn\builder(uniqid(), null, $adapter);
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate($this->getTestedClassName())
+		;
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+
+		$builderController = $builder->getMockController();
 
 		$this->assert
 			->exception(function() use ($builder) {
@@ -295,7 +302,7 @@ class builder extends atoum\test
 		$adapter->svn_auth_set_parameter = null;
 		$adapter->svn_checkout = true;
 
-		$adapter->svn_log = array();
+		$builderController->getNextRevisionNumbers = array();
 
 		$this->assert
 			->variable($builder->getRevision())->isNull()
@@ -305,14 +312,19 @@ class builder extends atoum\test
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to retrieve last revision number from repository \'' . $repositoryUrl . '\'')
+			->mock($builder)->call('getNextRevisionNumbers')
 			->variable($builder->getRevision())->isNull()
 		;
 
-		$adapter->svn_log = array(array('rev' => $revision = 1));
+		$builderController
+			->resetCalls()
+			->getNextRevisionNumbers = array($revision = 1)
+		;
 
 		$this->assert
 			->variable($builder->getRevision())->isNull()
 			->object($builder->checkout())->isIdenticalTo($builder)
+			->mock($builder, 'builder')->call('getNextRevisionNumbers')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
@@ -321,9 +333,12 @@ class builder extends atoum\test
 
 		$builder->setRevision($revision = rand(2, PHP_INT_MAX));
 
+		$builderController->resetCalls();
+
 		$this->assert
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->object($builder->checkout())->isIdenticalTo($builder)
+			->builder->notCall('getNextRevisionNumbers')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter')
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
@@ -335,6 +350,7 @@ class builder extends atoum\test
 		$this->assert
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->object($builder->checkout())->isIdenticalTo($builder)
+			->mock($builder)->notCall('getNextRevisionNumbers')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $username))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD))
@@ -347,6 +363,7 @@ class builder extends atoum\test
 		$this->assert
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->object($builder->checkout())->isIdenticalTo($builder)
+			->mock($builder)->notCall('getNextRevisionNumbers')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $username))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $password))
@@ -363,6 +380,7 @@ class builder extends atoum\test
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in working directory \'' . $workingDirectory . '\'')
+			->mock($builder)->notCall('getNextRevisionNumbers')
 		;
 	}
 

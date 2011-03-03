@@ -66,6 +66,13 @@ class controller
 		return ($method === null ? $this->calls : (isset($this->calls[$method]) === false ? array() : $this->calls[$method]));
 	}
 
+	public function resetCalls()
+	{
+		$this->calls = array();
+
+		return $this;
+	}
+
 	public function getReflectionClass($class)
 	{
 		$reflectionClass = null;

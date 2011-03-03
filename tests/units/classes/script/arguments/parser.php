@@ -265,9 +265,9 @@ class parser extends atoum\test
 		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($parser->addHandler($handler = function($script, $argument, $values) {}, $arguments = array($argument = '-a')), $parser)
+			->object($parser->addHandler($handler = function($script, $argument, $values) {}, $arguments = array($argument = '-a')))->isIdenticalTo($parser)
 			->array($parser->getHandlers())->isEqualTo(array($argument => array($handler)))
-			->object($parser->addHandler($handler, $arguments), $parser)
+			->object($parser->addHandler($handler, $arguments))->isIdenticalTo($parser)
 			->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler)))
 			->exception(function() use ($parser, & $argument) {
 						$parser->addHandler(function() {}, $argument = array('-b'));

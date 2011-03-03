@@ -6,9 +6,9 @@ use \mageekguy\atoum\exceptions;
 
 class boolean extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable)
+	public function setWith($variable, $label = null)
 	{
-		parent::setWith($variable);
+		parent::setWith($variable, $label);
 
 		if (self::isBoolean($this->variable) === false)
 		{

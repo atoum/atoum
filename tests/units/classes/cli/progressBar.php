@@ -119,7 +119,7 @@ class progressBar extends atoum\test
 			->string($progressBarString)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
 			->castToString($progressBar)->isEmpty()
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
 			->castToString($progressBar)->isEmpty()
 		;
 
@@ -127,7 +127,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']' . str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
+			->castToString($progressBar, null, "\010")->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']' . str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
 			->castToString($progressBar)->isEmpty()
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
 			->castToString($progressBar)->isEmpty()
@@ -148,7 +148,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString)
 			->castToString($progressBar)->isEmpty()
 		;
 
@@ -160,7 +160,7 @@ class progressBar extends atoum\test
 
 			$this->assert
 				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-				->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+				->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
 				->castToString($progressBar)->isEmpty()
 			;
 		}
@@ -185,7 +185,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString)
 			->castToString($progressBar)->isEmpty()
 		;
 
@@ -197,7 +197,7 @@ class progressBar extends atoum\test
 
 			$this->assert
 				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-				->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+				->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
 				->castToString($progressBar)->isEmpty()
 			;
 		}
@@ -208,7 +208,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . 'F>][59/61]' . "\n" . $nextProgressBarString)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . 'F>][59/61]' . "\n" . $nextProgressBarString)
 			->castToString($progressBar)->isEmpty()
 		;
 
@@ -218,7 +218,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
 			->castToString($progressBar)->isEmpty()
 		;
 
@@ -228,7 +228,7 @@ class progressBar extends atoum\test
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
 			->castToString($progressBar)->isEmpty()
 		;
 	}

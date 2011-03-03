@@ -10,8 +10,10 @@ class error extends \mageekguy\atoum\asserter
 	protected $message = null;
 	protected $type = null;
 
-	public function setWith($message = null, $type = null)
+	public function setWith($message = null, $type = null, $label = null)
 	{
+		$this->setLabel($label);
+
 		$this->message = $message;
 		$this->type = $type;
 

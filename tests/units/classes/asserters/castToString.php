@@ -64,7 +64,7 @@ class castToString extends atoum\test
 		$score->reset();
 
 		$this->assert
-			->object($asserter->setWith($object = new \exception, $charlist = "\010"))->isIdenticalTo($asserter)
+			->object($asserter->setWith($object = new \exception, null, $charlist = "\010"))->isIdenticalTo($asserter)
 		;
 
 		$this->assert

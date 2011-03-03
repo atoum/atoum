@@ -6,9 +6,9 @@ use \mageekguy\atoum\exceptions;
 
 class float extends \mageekguy\atoum\asserters\integer
 {
-	public function setWith($variable)
+	public function setWith($variable, $label = null)
 	{
-		variable::setWith($variable);
+		variable::setWith($variable, $label);
 
 		if (self::isFloat($this->variable) === false)
 		{

@@ -6,9 +6,9 @@ use \mageekguy\atoum\exceptions;
 
 class object extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable, $checkType = true)
+	public function setWith($variable, $label = null, $checkType = true)
 	{
-		parent::setWith($variable);
+		parent::setWith($variable, $label);
 
 		if ($checkType === true)
 		{

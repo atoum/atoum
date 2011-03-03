@@ -488,6 +488,19 @@ class controller extends atoum\test
 				->hasMessage('Method \'' . $unmockedMethod . '\' is not mocked')
 		;
 	}
+
+	public function testResetCalls()
+	{
+		$mockController = new mock\controller();
+		$mockController->{$method = uniqid()} = function() {};
+		$mockController->invoke($method, array());
+
+		$this->assert
+			->array($mockController->getCalls())->isNotEmpty()
+			->object($mockController->resetCalls())->isIdenticalTo($mockController)
+			->array($mockController->getCalls())->isEmpty()
+		;
+	}
 }
 
 ?>

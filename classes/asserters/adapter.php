@@ -8,9 +8,9 @@ class adapter extends \mageekguy\atoum\asserter
 {
 	protected $adapter = null;
 
-	public function setWith($adapter)
+	public function setWith($adapter, $label = null)
 	{
-		$this->adapter = $adapter;
+		$this->setLabel($label)->adapter = $adapter;
 
 		if ($this->adapter instanceof \mageekguy\atoum\adapter === false)
 		{

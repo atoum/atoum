@@ -74,7 +74,17 @@ abstract class asserter
 		}
 	}
 
-	public abstract function setWith($variable);
+	public function setLabel($label)
+	{
+		if ($label !== null)
+		{
+			$this->generator->setLabel($label, $this);
+		}
+
+		return $this;
+	}
+
+	public abstract function setWith($mixed, $label = null);
 
 	protected function pass()
 	{

@@ -49,7 +49,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		return ($this->class === null ? null : $this->class->getName());
 	}
 
-	public function setWith($class)
+	public function setWith($class, $label = null)
 	{
 		try
 		{
@@ -62,7 +62,7 @@ class phpClass extends \mageekguy\atoum\asserter
 
 		$this->pass();
 
-		return $this;
+		return $this->setLabel($label);
 	}
 
 	public function hasParent($parent, $failMessage = null)

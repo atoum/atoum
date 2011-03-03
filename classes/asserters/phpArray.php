@@ -7,9 +7,9 @@ use \mageekguy\atoum\tools\diffs;
 
 class phpArray extends \mageekguy\atoum\asserters\variable
 {
-	public function setWith($variable)
+	public function setWith($variable, $label = null)
 	{
-		parent::setWith($variable);
+		parent::setWith($variable, $label);
 
 		if (self::isArray($this->variable) === false)
 		{

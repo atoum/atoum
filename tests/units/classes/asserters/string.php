@@ -66,7 +66,7 @@ class string extends atoum\test
 		$score->reset();
 
 		$this->assert
-			->object($asserter->setWith($variable = uniqid(), $charlist = "\010"))->isIdenticalTo($asserter)
+			->object($asserter->setWith($variable = uniqid(), null, $charlist = "\010"))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
@@ -87,7 +87,7 @@ class string extends atoum\test
 			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . $variable . '\'')
 		;
 
-		$asserter->setWith($variable = "\010" . uniqid() . "\010", $charlist = "\010");
+		$asserter->setWith($variable = "\010" . uniqid() . "\010", null, $charlist = "\010");
 
 		$this->assert
 			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . addcslashes($variable, "\010") . '\'')

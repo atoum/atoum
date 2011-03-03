@@ -49,7 +49,7 @@ class generator extends atoum\test
 
 	public function testSetAlias()
 	{
-		$generator = new asserter\generator($this, $locale = new atoum\locale());
+		$generator = new asserter\generator($this);
 
 		$this->assert
 			->object($generator->setAlias($alias = uniqid(), $asserter = uniqid()))->isIdenticalTo($generator)
@@ -67,6 +67,35 @@ class generator extends atoum\test
 			->array($generator->getAliases())->isNotEmpty()
 			->object($generator->resetAliases())->isIdenticalTo($generator)
 			->array($generator->getAliases())->isEmpty()
+		;
+	}
+
+	public function testSetLabel()
+	{
+		$generator = new asserter\generator($this);
+
+		$asserter = new atoum\asserters\adapter(new atoum\score(), new atoum\locale(), $generator);
+
+		$asserter->setWith($adapter = new atoum\adapter());
+
+		$this->assert
+			->array($generator->getLabels())->isEmpty()
+			->object($generator->setLabel($label = uniqid(), $asserter))->isIdenticalTo($generator)
+			->array($generator->getLabels())->isEqualTo(array($label => $asserter))
+			->object($generator->{$label})->isNotIdenticalTo($asserter)
+			->object($generator->{$label}->getAdapter())->isIdenticalTo($adapter)
+			->exception(function() use ($generator, $label, $asserter) {
+						$generator->setLabel($label, $asserter);
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Label \'' . $label . '\' is already defined')
+			->exception(function() use ($generator, $asserter) {
+						$generator->setLabel('adapter', $asserter);
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Unable to use \'adapter\' as label because there is an asserter with this name')
 		;
 	}
 

@@ -38,7 +38,7 @@ class output extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, "\010"))->isIdenticalTo($asserter)
+			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, null, "\010"))->isIdenticalTo($asserter)
 			->string($asserter->getVariable())->isEqualTo($output)
 			->string($asserter->getCharlist())->isEqualTo("\010")
 		;

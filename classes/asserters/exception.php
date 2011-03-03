@@ -6,7 +6,7 @@ use \mageekguy\atoum\exceptions;
 
 class exception extends \mageekguy\atoum\asserters\object
 {
-	public function setWith($variable, $check = true)
+	public function setWith($variable, $label = null, $check = true)
 	{
 		$exception = $variable;
 
@@ -21,7 +21,7 @@ class exception extends \mageekguy\atoum\asserters\object
 			catch (\exception $exception) {}
 		}
 
-		parent::setWith($exception, false);
+		parent::setWith($exception, $label, false);
 
 		if ($check === true)
 		{
@@ -71,7 +71,7 @@ class exception extends \mageekguy\atoum\asserters\object
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('code is %s instead of 0'), $this->variable->getCode()));
 		}
 	}
-	
+
 	public function hasCode($code, $failMessage = null)
 	{
 		if (self::isException($this->variable) === false)

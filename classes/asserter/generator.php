@@ -9,6 +9,7 @@ class generator
 {
 	protected $test = null;
 	protected $locale = null;
+	protected $labels = array();
 	protected $aliases = array();
 	protected $asserters = array();
 
@@ -25,21 +26,30 @@ class generator
 		;
 	}
 
-	public function __get($asserter)
+	public function __get($asserterName)
 	{
-		$class = $this->getAsserterClass($asserter);
-
-		if (isset($this->asserters[$class]) === false)
+		if (isset($this->labels[$asserterName]) === true)
 		{
-			if (class_exists($class, true) === false)
+			$asserter = $this->labels[$asserterName];
+		}
+		else
+		{
+			$class = $this->getAsserterClass($asserterName);
+
+			if (isset($this->asserters[$class]) === false)
 			{
-				throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+				if (class_exists($class, true) === false)
+				{
+					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+				}
+
+				$this->asserters[$class] = new $class($this->test->getScore(), $this->locale, $this);
 			}
 
-			$this->asserters[$class] = new $class($this->test->getScore(), $this->locale, $this);
+			$asserter = $this->asserters[$class];
 		}
 
-		return $this->asserters[$class];
+		return $asserter;
 	}
 
 	public function __call($asserter, $arguments)
@@ -62,6 +72,30 @@ class generator
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+	public function getLabels()
+	{
+		return $this->labels;
+	}
+
+	public function setLabel($label, atoum\asserter $asserter)
+	{
+		if (isset($this->labels[$label]) === true)
+		{
+			throw new exceptions\logic\invalidArgument('Label \'' . $label . '\' is already defined');
+		}
+
+		$class = $this->getAsserterClass($label);
+
+		if (class_exists($class, true) === true)
+		{
+			throw new exceptions\logic\invalidArgument('Unable to use \'' . $label . '\' as label because there is an asserter with this name');
+		}
+
+		$this->labels[$label] = clone $asserter;
+
+		return $this;
 	}
 
 	public function getAliases()

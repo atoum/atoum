@@ -13,11 +13,11 @@ class string extends variable
 		return $this->charlist;
 	}
 
-	public function setWith($variable, $charlist = null, $checkType = true)
+	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
 	{
-		$this->charlist = $charlist;
+		parent::setWith($variable, $label);
 
-		parent::setWith($variable);
+		$this->charlist = $charlist;
 
 		if ($checkType === true)
 		{

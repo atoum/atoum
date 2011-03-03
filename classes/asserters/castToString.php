@@ -4,9 +4,9 @@ namespace mageekguy\atoum\asserters;
 
 class castToString extends \mageekguy\atoum\asserters\string
 {
-	public function setWith($variable, $charlist = null, $checkType = true)
+	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
 	{
-		parent::setWith($variable, $charlist, false);
+		parent::setWith($variable, $label, $charlist, false);
 
 		if ($checkType === true)
 		{

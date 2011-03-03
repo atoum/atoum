@@ -4,7 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 class output extends \mageekguy\atoum\asserters\string
 {
-	public function setWith($variable, $charlist = null)
+	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
 	{
 		if ($variable instanceof \closure)
 		{
@@ -13,7 +13,7 @@ class output extends \mageekguy\atoum\asserters\string
 			$variable = ob_get_clean();
 		}
 
-		return parent::setWith($variable, $charlist);
+		return parent::setWith($variable, $label, $charlist, $checkType);
 	}
 }
 
