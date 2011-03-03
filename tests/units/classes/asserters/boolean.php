@@ -118,6 +118,7 @@ class boolean extends atoum\test
 		$this->assert
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => $currentMethod,
 						'file' => __FILE__,

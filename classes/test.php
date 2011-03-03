@@ -433,6 +433,13 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	protected function setCase($case)
+	{
+		$this->score->setCase($case);
+
+		return $this;
+	}
+
 	protected function beforeTestMethod($testMethod)
 	{
 		return $this;

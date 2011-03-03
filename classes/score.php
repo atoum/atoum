@@ -15,6 +15,7 @@ class score
 	private $durations = array();
 	private $memoryUsages = array();
 	private $coverage = null;
+	private $case = null;
 
 	private static $failId = 0;
 
@@ -51,6 +52,7 @@ class score
 	{
 		$this->failAssertions[] = array(
 			'id' => ++self::$failId,
+			'case' => $this->case,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -65,6 +67,7 @@ class score
 	public function addException($file, $line, $class, $method, \exception $exception)
 	{
 		$this->exceptions[] = array(
+			'case' => $this->case,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -78,6 +81,7 @@ class score
 	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null)
 	{
 		$this->errors[] = array(
+			'case' => $this->case,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -96,6 +100,7 @@ class score
 		if ($output != '')
 		{
 			$this->outputs[] = array(
+				'case' => $this->case,
 				'class' => $class,
 				'method' => $method,
 				'value' => $output
@@ -110,6 +115,7 @@ class score
 		if ($duration > 0)
 		{
 			$this->durations[] = array(
+				'case' => $this->case,
 				'class' => $class,
 				'method' => $method,
 				'value' => $duration
@@ -124,6 +130,7 @@ class score
 		if ($memoryUsage > 0)
 		{
 			$this->memoryUsages[] = array(
+				'case' => $this->case,
 				'class' => $class,
 				'method' => $method,
 				'value' => $memoryUsage
@@ -244,6 +251,18 @@ class score
 	public function getCoverage()
 	{
 		return $this->coverage;
+	}
+
+	public function setCase($case)
+	{
+		$this->case = (string) $case;
+
+		return $this;
+	}
+
+	public function getCase()
+	{
+		return $this->case;
 	}
 
 	public function errorExists($message = null, $type = null)

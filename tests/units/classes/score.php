@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter
+;
 
 require_once(__DIR__ . '/../runner.php');
 
@@ -54,6 +56,7 @@ class score extends atoum\test
 			->object($score->addException($file, $line, $class, $method, $exception))->isIdenticalTo($score)
 			->array($score->getExceptions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -75,6 +78,7 @@ class score extends atoum\test
 			->object($score->addException($otherFile, $otherLine, $otherClass, $otherMethod, $otherException))->isIdenticalTo($score)
 			->array($score->getExceptions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -82,6 +86,7 @@ class score extends atoum\test
 						'value' => (string) $exception
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -141,6 +146,7 @@ class score extends atoum\test
 			->integer($score->addFail($file, $line, $class, $method, $asserter, $reason))->isGreaterThan(0)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -164,6 +170,7 @@ class score extends atoum\test
 			->integer($score->addFail($otherFile, $otherLine, $otherClass, $otherMethod, $otherAsserter, $otherReason))->isGreaterThan(0)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -172,6 +179,7 @@ class score extends atoum\test
 						'fail' => $reason
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -204,6 +212,7 @@ class score extends atoum\test
 			->object($score->addError($file, $line, $class, $method, $type, $message, $errorFile, $errorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -231,6 +240,7 @@ class score extends atoum\test
 			->object($score->addError($otherFile, $otherLine, $otherClass, $otherMethod, $otherType, $otherMessage, $otherErrorFile, $otherErrorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -241,6 +251,7 @@ class score extends atoum\test
 						'errorLine' => $errorLine
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -261,6 +272,7 @@ class score extends atoum\test
 			->object($score->addError($file, $line, $class, $method, $type, $anAnotherMessage, $errorFile, $errorLine))->isIdenticalTo($score)
 			->array($score->getErrors())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -271,6 +283,7 @@ class score extends atoum\test
 						'errorLine' => $errorLine
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -281,6 +294,7 @@ class score extends atoum\test
 						'errorLine' => $otherErrorLine
 					),
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -310,6 +324,7 @@ class score extends atoum\test
 			->object($score->addOutput($class, $method, $output))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
@@ -327,11 +342,13 @@ class score extends atoum\test
 			->object($score->addOutput($otherClass, $otherMethod, $otherOutput))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
@@ -347,16 +364,19 @@ class score extends atoum\test
 			->object($score->addOutput($class, $method, $moreOutput))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
 					),
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $moreOutput
@@ -381,6 +401,7 @@ class score extends atoum\test
 			->object($score->addDuration($class, $method, $duration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $duration
@@ -398,11 +419,13 @@ class score extends atoum\test
 			->object($score->addDuration($otherClass, $otherMethod, $otherDuration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherDuration
@@ -416,11 +439,13 @@ class score extends atoum\test
 			->object($score->addDuration(uniqid(), uniqid(), 0))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherDuration
@@ -434,11 +459,13 @@ class score extends atoum\test
 			->object($score->addDuration(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherDuration
@@ -454,16 +481,19 @@ class score extends atoum\test
 			->object($score->addDuration($class, $method, $moreDuration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherDuration
 					),
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $moreDuration
@@ -487,6 +517,7 @@ class score extends atoum\test
 			->object($score->addMemoryUsage($class, $method, $memoryUsage))->isIdenticalTo($score)
 			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $memoryUsage
@@ -503,11 +534,13 @@ class score extends atoum\test
 			->object($score->addMemoryUsage($otherClass, $otherMethod, $otherMemoryUsage))->isIdenticalTo($score)
 			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $memoryUsage
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherMemoryUsage
@@ -520,11 +553,13 @@ class score extends atoum\test
 			->object($score->addMemoryUsage(uniqid(), uniqid(), 0))->isIdenticalTo($score)
 			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $memoryUsage
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherMemoryUsage
@@ -537,11 +572,13 @@ class score extends atoum\test
 			->object($score->addMemoryUsage(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $memoryUsage
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherMemoryUsage
@@ -556,16 +593,19 @@ class score extends atoum\test
 			->object($score->addMemoryUsage($class, $method, $moreMemoryUsage))->isIdenticalTo($score)
 			->array($score->getMemoryUsages())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $memoryUsage
 					),
 					array(
+						'case' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherMemoryUsage
 					),
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $moreMemoryUsage
@@ -838,6 +878,7 @@ class score extends atoum\test
 		$this->assert
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -889,6 +930,18 @@ class score extends atoum\test
 
 		$this->assert
 			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
+		;
+	}
+
+	public function testSetCase()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->object($score->setCase($case = uniqid()))->isIdenticalTo($score)
+			->string($score->getCase())->isEqualTo($case)
+			->object($score->setCase($case = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+			->string($score->getCase())->isEqualTo((string) $case)
 		;
 	}
 }

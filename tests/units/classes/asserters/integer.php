@@ -37,6 +37,7 @@ class integer extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => $currentMethod,
 						'file' => __FILE__,
@@ -92,6 +93,7 @@ class integer extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 						array(
+							'case' => null,
 							'class' => __CLASS__,
 							'method' => $currentMethod,
 							'file' => __FILE__,

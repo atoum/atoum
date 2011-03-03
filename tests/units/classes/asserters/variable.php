@@ -151,6 +151,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -183,6 +184,7 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -191,6 +193,7 @@ class variable extends atoum\test
 						'fail' => $failMessage
 					),
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,

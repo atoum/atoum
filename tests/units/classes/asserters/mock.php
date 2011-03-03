@@ -80,6 +80,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -101,6 +102,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -160,6 +162,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -191,6 +194,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -207,6 +211,7 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
@@ -215,6 +220,7 @@ class mock extends atoum\test
 						'fail' => sprintf($locale->_('method %s::%s() is not called with this argument'), get_class($mock), $method)
 					),
 					array(
+						'case' => null,
 						'class' => __CLASS__,
 						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
 						'file' => __FILE__,
