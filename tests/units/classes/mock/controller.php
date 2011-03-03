@@ -75,7 +75,8 @@ class controller extends atoum\test
 		$this->assert
 			->variable($mockController->{uniqid()})->isNull()
 			->object($mockController->{$method})->isIdenticalTo($function)
-			->string($mockController->{$otherMethod})->isEqualTo($return)
+			->object($mockController->{$otherMethod})->isInstanceOf('\closure')
+			->string($mockController->{$otherMethod}->__invoke())->isEqualTo($return)
 		;
 	}
 
@@ -499,6 +500,60 @@ class controller extends atoum\test
 			->array($mockController->getCalls())->isNotEmpty()
 			->object($mockController->resetCalls())->isIdenticalTo($mockController)
 			->array($mockController->getCalls())->isEmpty()
+		;
+	}
+
+	public function testAtCall()
+	{
+		$mockController = new mock\controller();
+
+		$this->setCase('Call is equal to 0');
+
+		$this->assert
+			->exception(function() use ($mockController) {
+					$mockController->atCall(0);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Call number must be greater than or equal to 1')
+		;
+
+		$this->setCase('Call is equal to 0');
+
+		$this->assert
+			->exception(function() use ($mockController) {
+					$mockController->atCall(- rand(1, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Call number must be greater than or equal to 1')
+		;
+
+		$mockController->{$method = uniqid()} = $return = uniqid();
+
+		$this->setCase('Call is equal to 1');
+
+		$mockController->atCall(1)->{$method} = $returnAt1 = uniqid();
+
+		$this->assert
+			->string($mockController->invoke($method))->isEqualTo($returnAt1)
+			->string($mockController->invoke($method))->isEqualTo($return)
+		;
+
+		unset($mockController->resetCalls()->atCall(1)->{$method});
+
+		$mockController->resetCalls();
+
+		$this->setCase('Call is greater than 1');
+
+		$mockController->atCall(2)->{$method} = $returnAt2 = uniqid();
+		$mockController->atCall(3)->{$method} = $returnAt3 = uniqid();
+
+		$this->assert
+			->string($mockController->invoke($method))->isEqualTo($return)
+			->string($mockController->invoke($method))->isEqualTo($returnAt2)
+			->string($mockController->invoke($method))->isEqualTo($returnAt3)
+			->string($mockController->invoke($method))->isEqualTo($return)
 		;
 	}
 }
