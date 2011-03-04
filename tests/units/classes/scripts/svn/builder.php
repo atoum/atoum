@@ -23,8 +23,8 @@ class builder extends atoum\test
 	public function test__construct()
 	{
 		$adapter = new atoum\adapter();
-
 		$adapter->extension_loaded = false;
+		$adapter->sys_get_temp_dir = $tmpDirectory = uniqid();
 
 		$this->assert
 			->exception(function() use ($adapter) {
@@ -47,6 +47,7 @@ class builder extends atoum\test
 			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
 		;
 	}
 
@@ -245,10 +246,22 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testSetRunFile()
+	{
+		$adapter = new atoum\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setRunFile($runFile = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getRunFile())->isEqualTo($runFile)
+		;
+	}
+
 	public function testBuildPhar()
 	{
 		$adapter = new atoum\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -552,7 +565,6 @@ class builder extends atoum\test
 		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
 
 		$adapter = new atoum\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$superglobals = new atoum\superglobals();
@@ -743,6 +755,46 @@ class builder extends atoum\test
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
 				->call('file_put_contents', array($revisionFile, 4, \LOCK_EX))
+		;
+	}
+
+	public function testRun()
+	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
+
+		$adapter = new atoum\adapter();
+		$adapter->extension_loaded = true;
+		$adapter->file_get_contents = false;
+		$adapter->fopen = $runFileResource = uniqid();
+		$adapter->flock = true;
+		$adapter->getmypid = $pid = uniqid();
+		$adapter->fwrite = function() {};
+		$adapter->fclose = function() {};
+		$adapter->unlink = function() {};
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+
+		$builderController = $builder->getMockController();
+		$builderController->build = function() {};
+
+		$builder->setRunFile($runFile = uniqid());
+
+		$builder->run();
+
+		$this->define
+			->mock($builder)->is('builder')
+		;
+
+		$this->assert
+			->builder->call('build')
+			->adapter($adapter)
+				->call('file_get_contents', array($runFile))
+				->call('fopen', array($runFile, 'w+'))
+				->call('flock', array($runFileResource, \LOCK_EX | \LOCK_NB))
+				->call('fwrite', array($runFileResource, $pid))
+				->call('fclose', array($runFileResource))
+				->call('unlink', array($runFile))
 		;
 	}
 

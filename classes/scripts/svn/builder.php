@@ -17,6 +17,7 @@ class builder extends atoum\script
 	protected $scoreDirectory = null;
 	protected $errorsDirectory = null;
 	protected $revisionFile = null;
+	protected $runFile = null;
 	protected $buildPhar = true;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
@@ -28,7 +29,10 @@ class builder extends atoum\script
 			throw new exceptions\runtime('PHP extension svn is not available, please install it');
 		}
 
-		$this->setSuperglobals(new atoum\superglobals());
+		$this
+			->setSuperglobals(new atoum\superglobals())
+			->setRunFile($this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this)))
+		;
 	}
 
 	public function buildPhar($boolean)
@@ -168,6 +172,18 @@ class builder extends atoum\script
 	public function getWorkingDirectory()
 	{
 		return $this->workingDirectory;
+	}
+
+	public function setRunFile($path)
+	{
+		$this->runFile = $path;
+
+		return $this;
+	}
+
+	public function getRunFile()
+	{
+		return $this->runFile !== null ? $this->runFile : $this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this));
 	}
 
 	public function getLogs()
@@ -461,9 +477,38 @@ class builder extends atoum\script
 
 		parent::run($arguments);
 
-		if ($this->buildPhar === true)
+		$alreadyRun = false;
+
+		$pid = $this->adapter->file_get_contents($this->runFile);
+
+		if (is_numeric($pid) === true)
 		{
+			if ($this->adapter->posix_kill($pid, 0) === true)
+			{
+				$alreadyRun = true;
+			}
+		}
+
+		if ($alreadyRun === false && $this->buildPhar === true)
+		{
+			$runFile = @$this->adapter->fopen($this->runFile, 'w+');
+
+			if ($runFile === false)
+			{
+				throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $this->runFile));
+			}
+
+			if ($this->adapter->flock($runFile, \LOCK_EX | \LOCK_NB) === false)
+			{
+				throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $this->runFile));
+			}
+
+			$this->adapter->fwrite($runFile, $this->adapter->getmypid());
+
 			$this->build();
+
+			$this->adapter->fclose($runFile);
+			@$this->adapter->unlink($this->runFile);
 		}
 	}
 
