@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\scripts\phar;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class generator extends atoum\script
 {

@@ -67,7 +67,7 @@ class controller
 
 		if ($this->at === null)
 		{
-			$isset = (isset($this->returnValues[$method]) === true);
+			$isset = (isset($this->returnValues[$method]) === true || isset($this->atReturnValues[$method]) === true);
 		}
 		else
 		{

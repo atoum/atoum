@@ -7,8 +7,6 @@ use \mageekguy\atoum\exceptions;
 
 class runner extends atoum\script
 {
-	const version = '$Rev: 234 $';
-
 	protected $runner = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
@@ -257,7 +255,7 @@ class runner extends atoum\script
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('runner of \mageekguy\atoum version %s'), self::getVersion()) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('runner of \mageekguy\atoum version %s'), atoum\test::getVersion()) . PHP_EOL)
 		;
 
 		return $this;
@@ -288,11 +286,6 @@ class runner extends atoum\script
 		);
 
 		return $this;
-	}
-
-	public static function getVersion()
-	{
-		return substr(self::version, 6, -2);
 	}
 }
 

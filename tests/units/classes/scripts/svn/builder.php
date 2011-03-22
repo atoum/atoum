@@ -48,6 +48,24 @@ class builder extends atoum\test
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
+			->variable($builder->getTag())->isNull()
+			->string($builder->getTagRegex())->isEqualTo('/\$Rev: \d+ \$/')
+		;
+	}
+
+	public function testSetTag()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setTag($tag = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getTag())->isIdenticalTo($tag)
+			->object($builder->setTag($tag = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getTag())->isIdenticalTo((string) $tag)
 		;
 	}
 
@@ -179,6 +197,45 @@ class builder extends atoum\test
 		$this->assert
 			->object($builder->setRevisionFile($file = uniqid()))->isIdenticalTo($builder)
 			->string($builder->getRevisionFile())->isEqualTo($file)
+		;
+	}
+
+	public function testSetFileIteratorInjector()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$directory = uniqid();
+
+		$mockController = new mock\controller();
+		$mockController
+			->injectInNextMockInstance()
+			->__construct = function() {}
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\recursiveDirectoryIterator');
+
+		$iterator = new mock\recursiveDirectoryIterator($directory);
+
+		$this->assert
+			->exception(function() use ($builder, $directory) {
+					$builder->getFileIterator($directory);
+				}
+			)
+				->isInstanceOf('\unexpectedValueException')
+				->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
+			->exception(function() use ($builder) {
+					$builder->setFileIteratorInjector(function() {});
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('File iterator injector must take one argument')
+			->object($builder->setFileIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($builder)
+			->object($builder->getFileIterator(uniqid()))->isIdenticalTo($iterator)
 		;
 	}
 
@@ -394,6 +451,72 @@ class builder extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in working directory \'' . $workingDirectory . '\'')
 			->mock($builder)->notCall('getNextRevisionNumbers')
+		;
+	}
+
+	public function testTagFiles()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->variable($builder->getTag())->isNull()
+			->object($builder->tagFiles())->isIdenticalTo($builder)
+		;
+
+		$builder
+			->setTag($tag = uniqid())
+		;
+
+		$this->assert
+			->exception(function() use ($builder) {
+						$builder->tagFiles();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to tag files, working directory is undefined')
+		;
+
+		$builder
+			->setWorkingDirectory($workingDirectory = uniqid())
+			->setFileIteratorInjector(function($directory) { return null; })
+		;
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->tagFiles();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('File iterator injector must return a \iterator instance')
+		;
+
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\recursiveDirectoryIterator');
+
+		$builder->setFileIteratorInjector(function($directory) use (& $fileIterator, & $file) {
+				$fileIteratorController = new mock\controller();
+				$fileIteratorController->injectInNextMockInstance();
+				$fileIteratorController->__construct = function() {};
+				$fileIteratorController->atCall(1)->valid = true;
+				$fileIteratorController->atCall(2)->valid = false;
+				$fileIteratorController->current = function() use (& $file) { return ($file = uniqid()); };
+				$fileIteratorController->injectInNextMockInstance();
+				return ($fileIterator = new mock\recursiveDirectoryIterator($directory));
+			}
+		);
+
+		$adapter->file_get_contents = $fileContents = uniqid() . '$rev: ' . rand(1, PHP_INT_MAX) . ' $' . uniqid();
+		$adapter->file_put_contents = function() {};
+
+		$this->assert
+			->object($builder->tagFiles())->isIdenticalTo($builder)
+			->mock($fileIterator)->call('__construct', array($workingDirectory, null))
+			->adapter($adapter)->call('file_get_contents', array($file))
+			->adapter($adapter)->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
 		;
 	}
 

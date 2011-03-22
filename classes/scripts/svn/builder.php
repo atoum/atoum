@@ -2,8 +2,11 @@
 
 namespace mageekguy\atoum\scripts\svn;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\scripts\phar
+;
 
 class builder extends atoum\script
 {
@@ -12,6 +15,8 @@ class builder extends atoum\script
 	protected $username = null;
 	protected $password = null;
 	protected $revision = null;
+	protected $tag = null;
+	protected $tagRegex = '/\$Rev: \d+ \$/';
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
 	protected $scoreDirectory = null;
@@ -19,6 +24,7 @@ class builder extends atoum\script
 	protected $revisionFile = null;
 	protected $runFile = null;
 	protected $buildPhar = true;
+	protected $fileIteratorInjector = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -81,6 +87,23 @@ class builder extends atoum\script
 	public function getPassword()
 	{
 		return $this->password;
+	}
+
+	public function setTag($tag)
+	{
+		$this->tag = (string) $tag;
+
+		return $this;
+	}
+
+	public function getTag()
+	{
+		return $this->tag;
+	}
+
+	public function getTagRegex()
+	{
+		return $this->tagRegex;
 	}
 
 	public function setSuperglobals(atoum\superglobals $superglobals)
@@ -184,6 +207,30 @@ class builder extends atoum\script
 	public function getRunFile()
 	{
 		return $this->runFile !== null ? $this->runFile : $this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this));
+	}
+
+	public function getFileIterator($directory)
+	{
+		if ($this->fileIteratorInjector === null)
+		{
+			$this->setFileIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new phar\generator\iterator(new \recursiveDirectoryIterator($directory))); });
+		}
+
+		return $this->fileIteratorInjector->__invoke($directory);
+	}
+
+	public function setFileIteratorInjector(\closure $fileIteratorInjector)
+	{
+		$closure = new \reflectionMethod($fileIteratorInjector, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\runtime('File iterator injector must take one argument');
+		}
+
+		$this->fileIteratorInjector = $fileIteratorInjector;
+
+		return $this;
 	}
 
 	public function getLogs()
@@ -310,6 +357,31 @@ class builder extends atoum\script
 		return $noFail;
 	}
 
+	public function tagFiles()
+	{
+		if ($this->tag !== null)
+		{
+			if ($this->workingDirectory === null)
+			{
+				throw new exceptions\runtime('Unable to tag files, working directory is undefined');
+			}
+
+			$fileIterator = $this->getFileIterator($this->workingDirectory);
+
+			if ($fileIterator instanceof \iterator === false)
+			{
+				throw new exceptions\logic('File iterator injector must return a \iterator instance');
+			}
+
+			foreach ($fileIterator as $path)
+			{
+				$this->adapter->file_put_contents($path, preg_replace($this->tagRegex, $this->tag, $this->adapter->file_get_contents($path)));
+			}
+		}
+
+		return $this;
+	}
+
 	public function build()
 	{
 		if ($this->destinationDirectory === null)
@@ -345,6 +417,8 @@ class builder extends atoum\script
 
 				if ($this->checkUnitTests() === true)
 				{
+					$this->tagFiles();
+
 					$command = $this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
 
 					$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
@@ -475,11 +549,23 @@ class builder extends atoum\script
 			array('-ed', '--errors-directory')
 		);
 
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $tag) {
+				if (sizeof($tag) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setTag(current($tag));
+			},
+			array('-t', '--tag')
+		);
+
 		parent::run($arguments);
 
 		$alreadyRun = false;
 
-		$pid = $this->adapter->file_get_contents($this->runFile);
+		$pid = @$this->adapter->file_get_contents($this->runFile);
 
 		if (is_numeric($pid) === true)
 		{
