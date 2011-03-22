@@ -425,7 +425,7 @@ abstract class test implements observable, \countable
 
 	public static function getVersion()
 	{
-		return preg_replace('/\$Rev: \(\d+\) \$/', self::version, '\1');
+		return preg_replace('/\$Rev: (\d+) \$/', self::version, '$1');
 	}
 
 	protected function setUp()
