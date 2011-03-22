@@ -359,24 +359,26 @@ class builder extends atoum\script
 
 	public function tagFiles()
 	{
-		if ($this->tag !== null)
+		if ($this->workingDirectory === null)
 		{
-			if ($this->workingDirectory === null)
-			{
-				throw new exceptions\runtime('Unable to tag files, working directory is undefined');
-			}
+			throw new exceptions\runtime('Unable to tag files, working directory is undefined');
+		}
 
-			$fileIterator = $this->getFileIterator($this->workingDirectory);
+		$fileIterator = $this->getFileIterator($this->workingDirectory);
 
-			if ($fileIterator instanceof \iterator === false)
-			{
-				throw new exceptions\logic('File iterator injector must return a \iterator instance');
-			}
+		if ($fileIterator instanceof \iterator === false)
+		{
+			throw new exceptions\logic('File iterator injector must return a \iterator instance');
+		}
 
-			foreach ($fileIterator as $path)
-			{
-				$this->adapter->file_put_contents($path, preg_replace($this->tagRegex, $this->tag, $this->adapter->file_get_contents($path)));
-			}
+		if ($this->tag === null)
+		{
+			$this->setTag('nightly-' . $this->adapter->date('YmdHi'));
+		}
+
+		foreach ($fileIterator as $path)
+		{
+			$this->adapter->file_put_contents($path, preg_replace($this->tagRegex, $this->tag, $this->adapter->file_get_contents($path)));
 		}
 
 		return $this;

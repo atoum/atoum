@@ -463,15 +463,6 @@ class builder extends atoum\test
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
-			->variable($builder->getTag())->isNull()
-			->object($builder->tagFiles())->isIdenticalTo($builder)
-		;
-
-		$builder
-			->setTag($tag = uniqid())
-		;
-
-		$this->assert
 			->exception(function() use ($builder) {
 						$builder->tagFiles();
 					}
@@ -511,6 +502,20 @@ class builder extends atoum\test
 
 		$adapter->file_get_contents = $fileContents = uniqid() . '$rev: ' . rand(1, PHP_INT_MAX) . ' $' . uniqid();
 		$adapter->file_put_contents = function() {};
+		$adapter->date = $date = '197610061400';
+
+		$this->assert
+			->variable($builder->getTag())->isNull()
+			->object($builder->tagFiles())->isIdenticalTo($builder)
+			->mock($fileIterator)->call('__construct', array($workingDirectory, null))
+			->adapter($adapter)->call('date', array('YmdHi'))
+			->adapter($adapter)->call('file_get_contents', array($file))
+			->adapter($adapter)->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), 'nightly-' . $date, $fileContents)))
+		;
+
+		$builder
+			->setTag($tag = uniqid())
+		;
 
 		$this->assert
 			->object($builder->tagFiles())->isIdenticalTo($builder)
@@ -711,6 +716,7 @@ class builder extends atoum\test
 
 		$builderController = $builder->getMockController();
 		$builderController->getNextRevisionNumbers = array();
+		$builderController->tagFiles = function() {};
 
 		$adapter->file_get_contents = false;
 
@@ -759,6 +765,7 @@ class builder extends atoum\test
 		$this->assert
 			->variable($builder->getRevision())->isNull()
 			->boolean($builder->build())->isTrue()
+			->mock($builder)->call('tagFiles')
 			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
