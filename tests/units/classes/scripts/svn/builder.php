@@ -396,7 +396,7 @@ class builder extends atoum\test
 			->object($builder->checkout())->isIdenticalTo($builder)
 			->mock($builder)->call('getNextRevisionNumbers')
 			->adapter($adapter)
-				->notCall('svn_auth_set_parameter')
+				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
 			->integer($builder->getRevision())->isEqualTo($revision)
 		;
@@ -410,7 +410,7 @@ class builder extends atoum\test
 			->object($builder->checkout())->isIdenticalTo($builder)
 			->mock($builder)->notCall('getNextRevisionNumbers')
 			->adapter($adapter)
-				->notCall('svn_auth_set_parameter')
+				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_checkout', array($repositoryUrl, $workingDirectory, $revision))
 			->integer($builder->getRevision())->isEqualTo($revision)
 		;
@@ -531,9 +531,6 @@ class builder extends atoum\test
 
 		$adapter->extension_loaded = true;
 
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = $php = uniqid();
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator
 			->generate($this->getTestedClassName())
@@ -541,9 +538,9 @@ class builder extends atoum\test
 		;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+		$builder->setPhp($php = uniqid());
 
 		$builder
-			->setSuperglobals($superglobals)
 			->setWorkingDirectory($workingDirectory = uniqid())
 		;
 
@@ -695,10 +692,8 @@ class builder extends atoum\test
 		$adapter = new atoum\adapter();
 		$adapter->extension_loaded = true;
 
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = $php = uniqid();
-
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+		$builder->setPhp($php = uniqid());
 
 		$this->assert
 			->variable($builder->getDestinationDirectory())->isNull()
@@ -710,7 +705,6 @@ class builder extends atoum\test
 				->hasMessage('Unable to build phar, destination directory is undefined')
 		;
 
-		$builder->setSuperglobals($superglobals);
 		$builder->setWorkingDirectory($workingDirectory = uniqid());
 		$builder->setDestinationDirectory($destinationDirectory = uniqid());
 

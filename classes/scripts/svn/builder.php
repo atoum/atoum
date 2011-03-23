@@ -10,6 +10,7 @@ use
 
 class builder extends atoum\script
 {
+	protected $php = null;
 	protected $superglobals = null;
 	protected $repositoryUrl = null;
 	protected $username = null;
@@ -39,6 +40,28 @@ class builder extends atoum\script
 			->setSuperglobals(new atoum\superglobals())
 			->setRunFile($this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this)))
 		;
+	}
+
+	public function setPhp($path)
+	{
+		$this->php = (string) $path;
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		if ($this->php === null)
+		{
+			if (isset($this->superglobals->_SERVER['_']) === false)
+			{
+				throw new atoum\asserter\exception('Unable to find PHP executable');
+			}
+
+			$this->setPhp($this->superglobals->_SERVER['_']);
+		}
+
+		return $this->php;
 	}
 
 	public function buildPhar($boolean)
@@ -240,6 +263,8 @@ class builder extends atoum\script
 			throw new exceptions\runtime('Unable to get logs, repository url is undefined');
 		}
 
+		$this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
+
 		return $this->adapter->svn_log($this->repositoryUrl, $this->revision, \SVN_REVISION_HEAD);
 	}
 
@@ -266,6 +291,8 @@ class builder extends atoum\script
 
 			$this->setRevision(end($revisions));
 		}
+
+		$this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
 
 		if ($this->username !== null)
 		{
@@ -298,7 +325,7 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
-		$command = $this->superglobals->_SERVER['_'] . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes';
+		$command = $this->getPhp() . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes';
 
 		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -421,7 +448,7 @@ class builder extends atoum\script
 				{
 					$this->tagFiles();
 
-					$command = $this->superglobals->_SERVER['_'] . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
+					$command = $this->getPhp() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
 
 					$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -477,6 +504,18 @@ class builder extends atoum\script
 				;
 			},
 			array('-h', '--help')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $path) {
+				if (sizeof($path) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setPhp(current($path));
+			},
+			array('-p', '--php')
 		);
 
 		$this->argumentsParser->addHandler(

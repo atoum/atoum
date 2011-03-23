@@ -104,6 +104,18 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
+			function($script, $argument, $path) use ($runner) {
+				if (sizeof($path) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$runner->setPhp(current($path));
+			},
+			array('-p', '--php')
+		);
+
+		$this->argumentsParser->addHandler(
 			function($script, $argument, $files) use ($runner) {
 				if (sizeof($files) <= 0)
 				{
