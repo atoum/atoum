@@ -35,11 +35,11 @@ class adapter extends \mageekguy\atoum\asserter
 
 		if (sizeof($calls) <= 0)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('function %s is not called'), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('function %s was not called'), $function));
 		}
 		else if ($args !== null && in_array($args, $calls) === false)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('function %s is not called with this argument', 'function %s is not called with these arguments', sizeof($args)), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('function %s was not called with this argument', 'function %s was not called with these arguments', sizeof($args)), $function));
 		}
 		else
 		{

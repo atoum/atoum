@@ -284,8 +284,7 @@ class generator extends atoum\test
 
 		$this->assert
 			->exception(function() use ($generator, $pharName) { $generator->getPhar($pharName); })
-			->isInstanceOf('\unexpectedValueException')
-			->hasMessage('Cannot create phar \'' . $pharName . '\', file extension (or combination) not recognised')
+				->isInstanceOf('\unexpectedValueException')
 			->object($generator->setPharInjector(function($name) use ($phar) { return $phar; }))->isIdenticalTo($generator)
 			->object($generator->getPhar(uniqid()))->isIdenticalTo($phar)
 		;
@@ -324,10 +323,7 @@ class generator extends atoum\test
 		$iterator = new mock\recursiveDirectoryIterator($directory);
 
 		$this->assert
-			->exception(function() use ($generator, $directory) {
-					$generator->getFileIterator($directory);
-				}
-			)
+			->exception(function() use ($generator, $directory) { $generator->getFileIterator($directory); })
 				->isInstanceOf('\unexpectedValueException')
 				->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
 			->object($generator->setFileIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($generator)
