@@ -25,6 +25,7 @@ abstract class test implements observable, \countable
 	const runStop = 'testRunStop';
 	const defaultTestsSubNamespace = 'tests\units';
 
+	private $php = null;
 	private $path = '';
 	private $class = '';
 	private $adapter = null;
@@ -159,6 +160,28 @@ abstract class test implements observable, \countable
 	public function getTestsSubNamespace()
 	{
 		return ($this->testsSubNamespace === null ? self::defaultTestsSubNamespace : $this->testsSubNamespace);
+	}
+
+	public function setPhp($path)
+	{
+		$this->php = (string) $path;
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		if ($this->php === null)
+		{
+			if (isset($_SERVER['_']) === false)
+			{
+				throw new atoum\asserter\exception('Unable to find PHP executable');
+			}
+
+			$this->setPhp($_SERVER['_']);
+		}
+
+		return $this->php;
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
@@ -530,7 +553,7 @@ abstract class test implements observable, \countable
 				2 => array('pipe', 'w')
 			);
 
-		$php = proc_open($_SERVER['_'], $descriptors, $pipes);
+		$php = proc_open($this->getPhp(), $descriptors, $pipes);
 
 		if ($php !== false)
 		{

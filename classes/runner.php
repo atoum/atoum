@@ -11,6 +11,7 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
+	protected $php = null;
 	protected $path = '';
 	protected $class = '';
 	protected $score = null;
@@ -51,6 +52,21 @@ class runner implements observable, adapter\aggregator
 		return $this->score;
 	}
 
+	public function getPhp()
+	{
+		if ($this->php === null)
+		{
+			if (isset($_SERVER['_']) === false)
+			{
+				throw new atoum\asserter\exception('Unable to find PHP executable');
+			}
+
+			$this->setPhp($_SERVER['_']);
+		}
+
+		return $this->php;
+	}
+
 	public function getAdapter()
 	{
 		return $this->adapter;
@@ -84,6 +100,13 @@ class runner implements observable, adapter\aggregator
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function setPhp($path)
+	{
+		$this->php = (string) $path;
 
 		return $this;
 	}
@@ -185,6 +208,8 @@ class runner implements observable, adapter\aggregator
 
 			if ($test->isIgnored() === false)
 			{
+				$test->setPhp($this->getPhp());
+
 				foreach ($this->testObservers as $observer)
 				{
 					$test->addObserver($observer);
