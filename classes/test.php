@@ -76,7 +76,7 @@ abstract class test implements observable, \countable
 
 		if ($testedClassName === null)
 		{
-			throw new atoum\asserter\exception('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestsSubNamespace() . '\'');
+			throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestsSubNamespace() . '\'');
 		}
 
 		if ($this->adapter->class_exists($testedClassName) === false)
@@ -531,6 +531,8 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod, atoum\runner $runner)
 	{
+		$php = $this->getPhp();
+
 		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
 
 		$phpCode  = '<?php ';
@@ -538,6 +540,7 @@ abstract class test implements observable, \countable
 		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
 		$phpCode .= 'require(\'' . $this->path . '\');';
 		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
+		$phpCode .= '$runner->setPhp(' . $php . ')';
 
 		if ($runner->codeCoverageIsEnabled() === false)
 		{
@@ -555,7 +558,7 @@ abstract class test implements observable, \countable
 				2 => array('pipe', 'w')
 			);
 
-		$php = proc_open($this->getPhp(), $descriptors, $pipes);
+		$php = proc_open($php, $descriptors, $pipes);
 
 		if ($php !== false)
 		{
