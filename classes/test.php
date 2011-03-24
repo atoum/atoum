@@ -81,7 +81,7 @@ abstract class test implements observable, \countable
 
 		if ($this->adapter->class_exists($testedClassName) === false)
 		{
-			throw new atoum\asserter\exception('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
+			throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 		}
 
 		$this->asserterGenerator = new asserter\generator($this, $this->locale);

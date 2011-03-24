@@ -196,39 +196,44 @@ class runner implements observable, adapter\aggregator
 
 		$this->testNumber = sizeof($runTestClasses);
 
-		foreach ($runTestClasses as $runTestClass)
+		if ($this->testNumber > 0)
 		{
-			$test = new $runTestClass();
+			$php = $this->getPhp();
 
-			$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
-
-			if ($xdebugLoaded === true)
+			foreach ($runTestClasses as $runTestClass)
 			{
-				$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-			}
+				$test = new $runTestClass();
 
-			$this->testMethodNumber += sizeof($test);
+				$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
 
-			if ($test->isIgnored() === false)
-			{
-				$test->setPhp($this->getPhp());
-
-				foreach ($this->testObservers as $observer)
+				if ($xdebugLoaded === true)
 				{
-					$test->addObserver($observer);
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 				}
 
-				$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
+				$this->testMethodNumber += sizeof($test);
+
+				if ($test->isIgnored() === false)
+				{
+					$test->setPhp($php);
+
+					foreach ($this->testObservers as $observer)
+					{
+						$test->addObserver($observer);
+					}
+
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
+				}
+
+				if ($xdebugLoaded === true)
+				{
+					$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
+
+					$this->adapter->xdebug_stop_code_coverage();
+				}
+
+				unset($test);
 			}
-
-			if ($xdebugLoaded === true)
-			{
-				$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
-
-				$this->adapter->xdebug_stop_code_coverage();
-			}
-
-			unset($test);
 		}
 
 		$this->stop = $this->adapter->microtime(true);
