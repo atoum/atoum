@@ -55,7 +55,7 @@ class builder extends atoum\script
 		{
 			if (isset($this->superglobals->_SERVER['_']) === false)
 			{
-				throw new atoum\asserter\exception('Unable to find PHP executable');
+				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
 			$this->setPhp($this->superglobals->_SERVER['_']);

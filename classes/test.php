@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter,
+	\mageekguy\atoum\exceptions
+;
 
 abstract class test implements observable, \countable
 {
@@ -175,7 +177,7 @@ abstract class test implements observable, \countable
 		{
 			if (isset($_SERVER['_']) === false)
 			{
-				throw new atoum\asserter\exception('Unable to find PHP executable');
+				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
 			$this->setPhp($_SERVER['_']);

@@ -2,7 +2,10 @@
 
 namespace mageekguy\atoum;
 
-use \mageekguy\atoum;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 require_once(__DIR__ . '/autoloader.php');
 
@@ -58,7 +61,7 @@ class runner implements observable, adapter\aggregator
 		{
 			if (isset($_SERVER['_']) === false)
 			{
-				throw new atoum\asserter\exception('Unable to find PHP executable');
+				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
 			$this->setPhp($_SERVER['_']);
