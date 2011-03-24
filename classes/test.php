@@ -540,7 +540,7 @@ abstract class test implements observable, \countable
 		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
 		$phpCode .= 'require(\'' . $this->path . '\');';
 		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
-		$phpCode .= '$runner->setPhp(\'' . $php . '\')';
+		$phpCode .= '$runner->setPhp(\'' . $php . '\');';
 
 		if ($runner->codeCoverageIsEnabled() === false)
 		{
