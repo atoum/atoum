@@ -83,6 +83,62 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testGetPhp()
+	{
+		$superglobals = new atoum\superglobals();
+
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+		$builder->setSuperglobals($superglobals);
+
+		$superglobals->_SERVER['_'] = $php = uniqid();
+
+		$this->assert
+			->string($builder->getPhp())->isEqualTo($php)
+		;
+
+		unset($superglobals->_SERVER['_']);
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+		$builder->setSuperglobals($superglobals);
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->getPhp();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+		;
+
+		$builder->setPhp($php = uniqid());
+
+		$this->assert
+			->string($builder->getPhp())->isEqualTo($php)
+		;
+	}
+
+	public function testSetPhp()
+	{
+		$adapter = new atoum\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setPhp($php = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getPhp())->isIdenticalTo($php)
+		;
+
+		$this->assert
+			->object($builder->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getPhp())->isIdenticalTo((string) $php)
+		;
+	}
+
 	public function testSetRepositoryUrl()
 	{
 		$adapter = new atoum\adapter();

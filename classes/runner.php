@@ -41,13 +41,34 @@ class runner implements observable, adapter\aggregator
 			$adapter = new adapter();
 		}
 
-		$this->score = $score;
-		$this->adapter = $adapter;
+		$this
+			->setSuperglobals(new atoum\superglobals())
+			->setAdapter($adapter)
+			->setScore($score)
+		;
 
 		$runnerClass = new \reflectionClass($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setSuperglobals(atoum\superglobals $superglobals)
+	{
+		$this->superglobals = $superglobals;
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
+	}
+
+	public function setScore(score $score)
+	{
+		$this->score = $score;
+		return $this;
 	}
 
 	public function getScore()
@@ -59,12 +80,12 @@ class runner implements observable, adapter\aggregator
 	{
 		if ($this->php === null)
 		{
-			if (isset($_SERVER['_']) === false)
+			if (isset($this->superglobals->_SERVER['_']) === false)
 			{
 				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
-			$this->setPhp($_SERVER['_']);
+			$this->setPhp($this->superglobals->_SERVER['_']);
 		}
 
 		return $this->php;

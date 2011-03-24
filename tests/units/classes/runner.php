@@ -16,6 +16,7 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($runner->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 		;
@@ -25,6 +26,7 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isIdenticalTo($score)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
+			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 		;
@@ -37,6 +39,74 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($runner)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testSetSuperglobals()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->object($runner->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($runner)
+			->object($runner->getSuperglobals())->isIdenticalTo($superglobals);
+		;
+	}
+
+	public function testSetScore()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->object($runner->setScore($score = new atoum\score()))->isIdenticalTo($runner)
+			->object($runner->getScore())->isIdenticalTo($score);
+		;
+	}
+
+	public function testGetPhp()
+	{
+		$superglobals = new atoum\superglobals();
+
+		$runner = new atoum\runner();
+		$runner->setSuperglobals($superglobals);
+
+		$superglobals->_SERVER['_'] = $php = uniqid();
+
+		$this->assert
+			->string($runner->getPhp())->isEqualTo($php)
+		;
+
+		unset($superglobals->_SERVER['_']);
+
+		$runner = new atoum\runner();
+		$runner->setSuperglobals($superglobals);
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->getPhp();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+		;
+
+		$runner->setPhp($php = uniqid());
+
+		$this->assert
+			->string($runner->getPhp())->isEqualTo($php)
+		;
+	}
+
+	public function testSetPhp()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->object($runner->setPhp($php = uniqid()))->isIdenticalTo($runner)
+			->string($runner->getPhp())->isIdenticalTo($php)
+		;
+
+		$this->assert
+			->object($runner->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($runner)
+			->string($runner->getPhp())->isIdenticalTo((string) $php)
 		;
 	}
 
@@ -202,6 +272,21 @@ class runner extends atoum\test
 	{
 		$this->assert
 			->array(atoum\runner::getObserverEvents())->isEqualTo(array(atoum\runner::runStart, atoum\runner::runStop))
+		;
+	}
+
+	public function testHasReports()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->boolean($runner->hasReports())->isFalse()
+		;
+
+		$runner->addReport(new atoum\reports\realtime\cli());
+
+		$this->assert
+			->boolean($runner->hasReports())->isTrue()
 		;
 	}
 

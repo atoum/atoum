@@ -64,6 +64,7 @@ abstract class test implements observable, \countable
 			->setScore($score)
 			->setLocale($locale)
 			->setAdapter($adapter)
+			->setSuperglobals(new atoum\superglobals())
 		;
 
 		$class = new \reflectionClass($this);
@@ -147,6 +148,18 @@ abstract class test implements observable, \countable
 		}
 	}
 
+	public function setSuperglobals(atoum\superglobals $superglobals)
+	{
+		$this->superglobals = $superglobals;
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
+	}
+
 	public function setTestsSubNamespace($testsSubNamespace)
 	{
 		$this->testsSubNamespace = trim((string) $testsSubNamespace, '\\');
@@ -175,12 +188,12 @@ abstract class test implements observable, \countable
 	{
 		if ($this->php === null)
 		{
-			if (isset($_SERVER['_']) === false)
+			if (isset($this->superglobals->_SERVER['_']) === false)
 			{
 				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
-			$this->setPhp($_SERVER['_']);
+			$this->setPhp($this->superglobals->_SERVER['_']);
 		}
 
 		return $this->php;

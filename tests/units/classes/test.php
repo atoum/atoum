@@ -62,6 +62,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
 				->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 				->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -76,6 +77,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isIdenticalTo($score)
 				->object($test->getLocale())->isIdenticalTo($locale)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
+				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -86,6 +88,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
 				->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 				->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -96,8 +99,19 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isIdenticalTo($score)
 				->object($test->getLocale())->isIdenticalTo($locale)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
+				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+			;
+		}
+
+		public function testSetSuperglobals()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($test)
+				->object($test->getSuperglobals())->isIdenticalTo($superglobals);
 			;
 		}
 
@@ -294,6 +308,54 @@ namespace mageekguy\atoum\tests\units
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 				->boolean($test->ignore(false)->methodIsIgnored('testMethod1'))->isFalse()
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+			;
+		}
+
+		public function testGetPhp()
+		{
+			$superglobals = new atoum\superglobals();
+
+			$test = new emptyTest();
+			$test->setSuperglobals($superglobals);
+
+			$superglobals->_SERVER['_'] = $php = uniqid();
+
+			$this->assert
+				->string($test->getPhp())->isEqualTo($php)
+			;
+
+			unset($superglobals->_SERVER['_']);
+
+			$test = new emptyTest();
+			$test->setSuperglobals($superglobals);
+
+			$this->assert
+				->exception(function() use ($test) {
+						$test->getPhp();
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+			;
+
+			$test->setPhp($php = uniqid());
+
+			$this->assert
+				->string($test->getPhp())->isEqualTo($php)
+			;
+		}
+
+		public function testSetPhp()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->setPhp($php = uniqid()))->isIdenticalTo($test)
+				->string($test->getPhp())->isIdenticalTo($php)
+			;
+
+			$this->assert
+				->object($test->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+				->string($test->getPhp())->isIdenticalTo((string) $php)
 			;
 		}
 
