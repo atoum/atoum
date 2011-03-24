@@ -314,8 +314,6 @@ class builder extends atoum\script
 
 	public function checkUnitTests()
 	{
-		$noFail = false;
-
 		$this->checkout();
 
 		$descriptors = array(
@@ -381,9 +379,7 @@ class builder extends atoum\script
 			}
 		}
 
-		$noFail = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
-
-		return $noFail;
+		return $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
 	}
 
 	public function tagFiles()
@@ -493,6 +489,8 @@ class builder extends atoum\script
 
 	public function run(array $arguments = array())
 	{
+		$builder = $this;
+
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $values) {
 				if (sizeof($values) != 0)
@@ -506,6 +504,31 @@ class builder extends atoum\script
 				;
 			},
 			array('-h', '--help')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $files) use ($builder) {
+				if (sizeof($files) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				foreach ($files as $file)
+				{
+					if (file_exists($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file path \'%s\' is invalid'), $file));
+					}
+
+					if (is_readable($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
+					}
+
+					require_once($file);
+				}
+			},
+			array('-c', '--configuration-files')
 		);
 
 		$this->argumentsParser->addHandler(
