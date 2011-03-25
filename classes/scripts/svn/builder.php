@@ -398,7 +398,7 @@ class builder extends atoum\script
 
 		if ($this->tag === null)
 		{
-			$this->setTag('nightly-' . $this->adapter->date('YmdHi'));
+			$this->setTag('nightly-' . $this->getRevision() . '-' . $this->adapter->date('YmdHi'));
 		}
 
 		foreach ($fileIterator as $path)
