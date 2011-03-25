@@ -11,7 +11,7 @@ class out extends atoum\test
 {
 	public function test__construct()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = null;
 		$adapter->fwrite = null;
 
@@ -24,7 +24,7 @@ class out extends atoum\test
 
 	public function testWrite()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = null;
 		$adapter->fwrite = null;
 

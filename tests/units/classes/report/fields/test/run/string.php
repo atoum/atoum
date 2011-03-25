@@ -35,7 +35,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();
@@ -80,7 +80,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();

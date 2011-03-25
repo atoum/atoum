@@ -42,7 +42,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\memory
 		$score = new mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(0, PHP_INT_MAX); };
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();
@@ -75,7 +75,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\memory
 		$score = new mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(0, PHP_INT_MAX); };
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();

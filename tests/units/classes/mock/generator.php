@@ -22,7 +22,7 @@ class generator extends atoum\test
 			->object($generator->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$generator = new mock\generator($adapter);
 
@@ -97,7 +97,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeForUnknownClass()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->class_exists = function() { return false; };
 
@@ -187,7 +187,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$generator = new mock\generator($adapter);
@@ -281,7 +281,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$overloadedMethod = new mock\php\method('__construct');
@@ -381,7 +381,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$generator = new mock\generator($adapter);
@@ -474,7 +474,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$generator = new mock\generator($adapter);
@@ -564,7 +564,7 @@ class generator extends atoum\test
 
 		$reflectionClass = new mock\reflectionClass(null);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); };
 
 		$generator = new mock\generator($adapter);
@@ -640,7 +640,7 @@ class generator extends atoum\test
 
 	public function testGenerate()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$generator = new mock\generator($adapter);
 

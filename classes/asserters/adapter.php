@@ -12,9 +12,9 @@ class adapter extends \mageekguy\atoum\asserter
 	{
 		$this->setLabel($label)->adapter = $adapter;
 
-		if ($this->adapter instanceof \mageekguy\atoum\adapter === false)
+		if ($this->adapter instanceof \mageekguy\atoum\test\adapter === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not an adapter'), $this->toString($this->adapter)));
+			$this->fail(sprintf($this->locale->_('%s is not a test adapter'), $this->toString($this->adapter)));
 		}
 		else
 		{

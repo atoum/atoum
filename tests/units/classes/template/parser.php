@@ -32,7 +32,7 @@ class parser extends atoum\test
 			->object($parser->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$parser = new template\parser($namespace = uniqid(), $adapter = new atoum\adapter());
+		$parser = new template\parser($namespace = uniqid(), $adapter = new atoum\test\adapter());
 
 		$this->assert
 			->string($parser->getNamespace())->isEqualTo((string) $namespace)
@@ -60,7 +60,7 @@ class parser extends atoum\test
 		$parser = new template\parser();
 
 		$this->assert
-			->object($parser->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($parser)
+			->object($parser->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($parser)
 			->object($parser->getAdapter())->isIdenticalTo($adapter)
 		;
 	}

@@ -21,7 +21,7 @@ class runner extends atoum\test
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 		;
 
-		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\adapter());
+		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter());
 
 		$this->assert
 			->object($runner->getScore())->isIdenticalTo($score)
@@ -37,7 +37,7 @@ class runner extends atoum\test
 		$runner = new atoum\runner();
 
 		$this->assert
-			->object($runner->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($runner)
+			->object($runner->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($runner)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
@@ -213,7 +213,7 @@ class runner extends atoum\test
 
 	public function testGetRunningDuration()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
 		$adapter->get_declared_classes = function() { return array(); };
 
@@ -232,7 +232,7 @@ class runner extends atoum\test
 
 	public function testGetTestNumber()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->get_declared_classes = array();
 
@@ -251,7 +251,7 @@ class runner extends atoum\test
 
 	public function testGetTestMethodNumber()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->get_declared_classes = array();
 

@@ -19,7 +19,7 @@ class file extends atoum\test
 			->string($file->getFilename())->isEqualTo('atoum.log')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = function() {};
 		$adapter->fclose = function() {};
 
@@ -48,7 +48,7 @@ class file extends atoum\test
 	{
 		$id = uniqid();
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fwrite = function() {};
 		$adapter->fclose = function() {};
@@ -74,7 +74,7 @@ class file extends atoum\test
 	{
 		$id = uniqid();
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fclose = function() {};
 		$adapter->fwrite = function() {};
@@ -108,7 +108,7 @@ class file extends atoum\test
 	{
 		$id = uniqid();
 		
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fclose = function() {};
 		$adapter->fwrite = function() {};

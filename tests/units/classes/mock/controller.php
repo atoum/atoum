@@ -442,7 +442,7 @@ class controller extends atoum\test
 			->generate(__CLASS__)
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$mock = new mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter);

@@ -30,7 +30,7 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$this->assert
@@ -63,7 +63,7 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter));
@@ -140,7 +140,7 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);
@@ -246,7 +246,7 @@ class mock extends atoum\test
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate(__CLASS__);
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);

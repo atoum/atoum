@@ -38,7 +38,7 @@ class xunit extends atoum\test
 			->object($rep->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = function($extension) { return true; };
 
 		$rep = new reports\xunit($adapter);

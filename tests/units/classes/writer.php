@@ -20,7 +20,7 @@ class writer extends atoum\test
 			->object($writer->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$writer = new mock\mageekguy\atoum\writer($adapter = new atoum\adapter());
+		$writer = new mock\mageekguy\atoum\writer($adapter = new atoum\test\adapter());
 
 		$this->assert
 			->object($writer->getAdapter())->isIdenticalTo($adapter)

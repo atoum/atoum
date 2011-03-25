@@ -69,7 +69,7 @@ namespace mageekguy\atoum\tests\units
 
 			$score = new atoum\score();
 			$locale = new atoum\locale();
-			$adapter = new atoum\adapter();
+			$adapter = new atoum\test\adapter();
 
 			$test = new emptyTest($score, $locale, $adapter);
 
@@ -172,7 +172,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($test)
+				->object($test->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($test)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 			;
 		}

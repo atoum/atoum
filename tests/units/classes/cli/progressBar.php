@@ -17,7 +17,7 @@ class progressBar extends atoum\test
 			->generate('\mageekguy\atoum\test')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$mockController = new mock\controller();
@@ -90,7 +90,7 @@ class progressBar extends atoum\test
 			->generate('\mageekguy\atoum\test')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
 		$mockController = new mock\controller();

@@ -23,7 +23,7 @@ class generator extends atoum\test
 
 	public function test__construct()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return uniqid(); };
 
@@ -72,7 +72,7 @@ class generator extends atoum\test
 
 	public function testSetOriginDirectory()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
@@ -138,7 +138,7 @@ class generator extends atoum\test
 
 	public function testSetDestinationDirectory()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
@@ -215,7 +215,7 @@ class generator extends atoum\test
 
 	public function testSetStubFile()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
@@ -252,7 +252,7 @@ class generator extends atoum\test
 
 	public function testSetPharInjector()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
@@ -292,7 +292,7 @@ class generator extends atoum\test
 
 	public function testSetFileIteratorInjector()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };
@@ -399,7 +399,7 @@ class generator extends atoum\test
 
 	public function testRun()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->php_sapi_name = function() { return 'cli'; };
 		$adapter->realpath = function($path) { return $path; };

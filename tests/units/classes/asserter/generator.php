@@ -76,7 +76,7 @@ class generator extends atoum\test
 
 		$asserter = new atoum\asserters\adapter(new atoum\score(), new atoum\locale(), $generator);
 
-		$asserter->setWith($adapter = new atoum\adapter());
+		$asserter->setWith($adapter = new atoum\test\adapter());
 
 		$this->assert
 			->array($generator->getLabels())->isEmpty()

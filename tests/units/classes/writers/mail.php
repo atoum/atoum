@@ -20,7 +20,7 @@ class mail extends atoum\test
 			->object($mail->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$mail = new writers\mail($adapter);
 
@@ -131,7 +131,7 @@ class mail extends atoum\test
 
 	public function testSend()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$mail = new writers\mail($adapter);
 

@@ -22,7 +22,7 @@ class builder extends atoum\test
 
 	public function test__construct()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = false;
 		$adapter->sys_get_temp_dir = $tmpDirectory = uniqid();
 
@@ -55,7 +55,7 @@ class builder extends atoum\test
 
 	public function testSetTag()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -71,7 +71,7 @@ class builder extends atoum\test
 
 	public function testSetSuperglobals()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -87,7 +87,7 @@ class builder extends atoum\test
 	{
 		$superglobals = new atoum\superglobals();
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -122,7 +122,7 @@ class builder extends atoum\test
 
 	public function testSetPhp()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -141,7 +141,7 @@ class builder extends atoum\test
 
 	public function testSetRepositoryUrl()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -179,7 +179,7 @@ class builder extends atoum\test
 
 	public function testSetUsername()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -195,7 +195,7 @@ class builder extends atoum\test
 
 	public function testSetPassword()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -211,7 +211,7 @@ class builder extends atoum\test
 
 	public function testSetRevision()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -227,7 +227,7 @@ class builder extends atoum\test
 
 	public function testResetRevision()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -244,7 +244,7 @@ class builder extends atoum\test
 
 	public function testSetRevisionFile()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -258,7 +258,7 @@ class builder extends atoum\test
 
 	public function testSetFileIteratorInjector()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -297,7 +297,7 @@ class builder extends atoum\test
 
 	public function testGetLogs()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -331,7 +331,7 @@ class builder extends atoum\test
 
 	public function testSetDestinationDirectory()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -347,7 +347,7 @@ class builder extends atoum\test
 
 	public function testSetWorkingDirectory()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -361,7 +361,7 @@ class builder extends atoum\test
 
 	public function testSetRunFile()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -374,7 +374,7 @@ class builder extends atoum\test
 
 	public function testBuildPhar()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -390,7 +390,7 @@ class builder extends atoum\test
 
 	public function testCheckout()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -512,7 +512,7 @@ class builder extends atoum\test
 
 	public function testTagFiles()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -583,7 +583,7 @@ class builder extends atoum\test
 
 	public function testCheckUnitTests()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
 
@@ -745,7 +745,7 @@ class builder extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
@@ -943,7 +943,7 @@ class builder extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 		$adapter->file_get_contents = false;
 		$adapter->fopen = $runFileResource = uniqid();
@@ -983,7 +983,7 @@ class builder extends atoum\test
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\scripts\svn\builder');
 
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
@@ -1011,7 +1011,7 @@ class builder extends atoum\test
 
 	public function testWriteInErrorDirectory()
 	{
-		$adapter = new atoum\adapter();
+		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 		$adapter->file_put_contents = function() {};
 
