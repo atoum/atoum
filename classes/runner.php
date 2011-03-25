@@ -201,6 +201,12 @@ class runner implements observable, adapter\aggregator
 	{
 		$this->score->reset();
 
+		$php = $this->getPhp();
+
+		$this->score->setPhpPath($php);
+		$this->score->setPhpVersion(\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION . '.' . \PHP_RELEASE_VERSION);
+		$this->score->setAtoumVersion(atoum\test::getVersion());
+
 		$this->start = $this->adapter->microtime(true);
 
 		$this->callObservers(self::runStart);
@@ -219,8 +225,6 @@ class runner implements observable, adapter\aggregator
 
 		if ($this->testNumber > 0)
 		{
-			$php = $this->getPhp();
-
 			foreach ($runTestClasses as $runTestClass)
 			{
 				$test = new $runTestClass();

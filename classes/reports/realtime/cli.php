@@ -14,6 +14,7 @@ class cli extends reports\realtime
 
 		$this
 			->addRunnerField(new fields\runner\version\string(), array(atoum\runner::runStart))
+			->addRunnerField(new fields\runner\php\string(), array(atoum\runner::runStart))
 			->addRunnerField(new fields\runner\tests\duration\string(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\tests\memory\string(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\tests\coverage\string(), array(atoum\runner::runStop))

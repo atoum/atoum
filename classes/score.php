@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class score
 {
@@ -16,6 +18,9 @@ class score
 	private $memoryUsages = array();
 	private $coverage = null;
 	private $case = null;
+	private $phpPath = null;
+	private $phpVersion = null;
+	private $atoumVersion = null;
 
 	private static $failId = 0;
 
@@ -38,6 +43,27 @@ class score
 		$this->outputs = array();
 		$this->durations = array();
 		$this->memoryUsages = array();
+
+		return $this;
+	}
+
+	public function setAtoumVersion($version)
+	{
+		$this->atoumVersion = (string) $version;
+
+		return $this;
+	}
+
+	public function setPhpPath($path)
+	{
+		$this->phpPath = (string) $path;
+
+		return $this;
+	}
+
+	public function setPhpVersion($version)
+	{
+		$this->phpVersion = (string) $version;
 
 		return $this;
 	}
@@ -152,6 +178,21 @@ class score
 		$this->coverage->merge($score->getCoverage());
 
 		return $this;
+	}
+
+	public function getAtoumVersion()
+	{
+		return $this->atoumVersion;
+	}
+
+	public function getPhpPath()
+	{
+		return $this->phpPath;
+	}
+
+	public function getPhpVersion()
+	{
+		return $this->phpVersion;
 	}
 
 	public function getOutputs()

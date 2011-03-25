@@ -30,7 +30,6 @@ abstract class version extends report\fields\runner
 
 		return $this;
 	}
-
 }
 
 ?>

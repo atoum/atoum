@@ -16,6 +16,8 @@ class score extends atoum\test
 		$score = new atoum\score();
 
 		$this->assert
+			->variable($score->getPhpVersion())->isNull()
+			->variable($score->getPhpPath())->isNull()
 			->integer($score->getPassNumber())->isZero()
 			->array($score->getFailAssertions())->isEmpty()
 			->array($score->getExceptions())->isEmpty()
@@ -29,6 +31,8 @@ class score extends atoum\test
 		$score = new atoum\score($coverage = new atoum\score\coverage());
 
 		$this->assert
+			->variable($score->getPhpVersion())->isNull()
+			->variable($score->getPhpPath())->isNull()
 			->integer($score->getPassNumber())->isZero()
 			->array($score->getFailAssertions())->isEmpty()
 			->array($score->getExceptions())->isEmpty()
@@ -612,6 +616,40 @@ class score extends atoum\test
 					)
 				)
 			)
+		;
+	}
+
+	public function testSetAtoumVersion()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->object($score->setAtoumVersion($version = uniqid()))->isIdenticalTo($score)
+			->string($score->getAtoumVersion())->isEqualTo($version)
+			->object($score->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+			->string($score->getAtoumVersion())->isEqualTo((string) $version)
+		;
+	}
+
+	public function testSetPhpPath()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->object($score->setPhpPath($path = uniqid()))->isIdenticalTo($score)
+			->string($score->getPhpPath())->isEqualTo($path)
+			->object($score->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+			->string($score->getPhpPath())->isEqualTo((string) $path)
+		;
+	}
+
+	public function testSetPhpVersion()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->object($score->setPhpVersion(\PHP_VERSION_ID))->isIdenticalTo($score)
+			->string($score->getPhpVersion())->isEqualTo((string) \PHP_VERSION_ID)
 		;
 	}
 

@@ -16,7 +16,8 @@ class cli extends atoum\test
 
 		$this->assert
 			->array($cli->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					new report\fields\runner\version\string()
+					new report\fields\runner\version\string(),
+					new report\fields\runner\php\string()
 				)
 			)
 			->array($cli->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
