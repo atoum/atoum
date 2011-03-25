@@ -15,8 +15,6 @@ class adapter
 	{
 		return call_user_func_array($functionName, $arguments);
 	}
-
-	
 }
 
 ?>

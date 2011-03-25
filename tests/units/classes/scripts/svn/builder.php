@@ -899,7 +899,11 @@ class builder extends atoum\test
 				->hasMessage('Unable to save last revision in file \'' . $revisionFile . '\'')
 		;
 
-		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array(1, 2, 3); };
+		$builderController->resetCalls();
+		$builderController->atCall(1)->getNextRevisionNumbers = array(1, 2, 3);
+		$builderController->atCall(2)->getNextRevisionNumbers = array(2, 3);
+		$builderController->atCall(3)->getNextRevisionNumbers = array(3);
+		$builderController->atCall(4)->getNextRevisionNumbers = array();
 
 		$builder->resetRevision();
 
@@ -918,7 +922,9 @@ class builder extends atoum\test
 				->call('file_put_contents', array($revisionFile, 3, \LOCK_EX))
 		;
 
-		$builderController->getNextRevisionNumbers = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array(2, 3, 4); };
+		$builderController->resetCalls();
+		$builderController->atCall(1)->getNextRevisionNumbers = array(4);
+		$builderController->atCall(2)->getNextRevisionNumbers = array();
 
 		$builder->resetRevision();
 

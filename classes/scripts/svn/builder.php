@@ -470,7 +470,7 @@ class builder extends atoum\script
 					}
 				}
 
-				$revisions = array_merge($revisions, $this->getNextRevisionNumbers($revisions));
+				$revisions = $this->getNextRevisionNumbers();
 
 				if (sizeof($revisions) > 0)
 				{
@@ -706,8 +706,10 @@ class builder extends atoum\script
 		return $this;
 	}
 
-	public function getNextRevisionNumbers(array $revisions = array())
+	public function getNextRevisionNumbers()
 	{
+		$revisions = array();
+
 		foreach ($this->getLogs() as $log)
 		{
 			if (isset($log['rev']) === true && ($this->revision === null || $this->revision < $log['rev']))
