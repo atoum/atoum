@@ -407,6 +407,10 @@ class runner extends atoum\test
 			->boolean($runner->codeCoverageIsEnabled())->isFalse()
 		;
 	}
+
+	public function testRun()
+	{
+	}
 }
 
 ?>

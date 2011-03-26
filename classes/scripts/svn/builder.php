@@ -236,7 +236,7 @@ class builder extends atoum\script
 	{
 		if ($this->fileIteratorInjector === null)
 		{
-			$this->setFileIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new phar\generator\iterator(new \recursiveDirectoryIterator($directory))); });
+			$this->setFileIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); });
 		}
 
 		return $this->fileIteratorInjector->__invoke($directory);

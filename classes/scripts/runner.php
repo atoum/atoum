@@ -227,7 +227,7 @@ class runner extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
 					}
 
-					foreach (new \recursiveIteratorIterator(new atoum\runner\directory\filter(new \recursiveDirectoryIterator($directory))) as $file)
+					foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $file)
 					{
 						require_once($file->getPathname());
 					}

@@ -1,8 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\scripts\phar\generator;
+namespace mageekguy\atoum\src\iterator;
 
-class iterator extends \recursiveFilterIterator
+use \mageekguy\atoum;
+
+class filter extends \recursiveFilterIterator
 {
 	function accept()
 	{

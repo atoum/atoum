@@ -28,7 +28,7 @@ class generator extends atoum\script
 		parent::__construct($name, $locale, $adapter);
 
 		$this->pharInjector = function ($name) { return new \phar($name); };
-		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new generator\iterator(new \recursiveDirectoryIterator($directory))); };
+		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); };
 	}
 
 	public function setOriginDirectory($directory)
