@@ -410,7 +410,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testSetPhpInformations()
+	public function testSetPathsAndVersions()
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -432,16 +432,12 @@ class runner extends atoum\test
 
 		$this->assert
 			->exception(function() use ($runner) {
-					$runner->setPhpInformations();
+					$runner->setPathsAndVersions();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to open \'' . $phpPath . '\'')
 		;
-
-		$adapter->proc_open = null;
-//		$adapter->stream_get_contents[1] = $phpVersion = uniqid();
-//		$adapter->stream_get_contents[2] = '';
 	}
 }
 

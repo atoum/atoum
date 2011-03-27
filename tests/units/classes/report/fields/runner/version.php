@@ -2,16 +2,13 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields\runner;
-require_once(__DIR__ . '/../runner.php');
-require_once(__DIR__ . '/../../../../runner.php');
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields\runner
+;
 
-abstract class version extends \mageekguy\atoum\tests\units\report\fields\runner
-{
-	
-}
+abstract class version extends \mageekguy\atoum\tests\units\report\fields\runner {}
 
 ?>

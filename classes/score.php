@@ -20,6 +20,7 @@ class score
 	private $case = null;
 	private $phpPath = null;
 	private $phpVersion = null;
+	private $atoumPath = null;
 	private $atoumVersion = null;
 
 	private static $failId = 0;
@@ -36,6 +37,10 @@ class score
 
 	public function reset()
 	{
+		$this->phpPath = null;
+		$this->phpVersion = null;
+		$this->atoumPath = null;
+		$this->atoumVersion = null;
 		$this->passAssertions = 0;
 		$this->failAssertions = array();
 		$this->exceptions = array();
@@ -47,8 +52,30 @@ class score
 		return $this;
 	}
 
+	public function setAtoumPath($path)
+	{
+		if ($this->atoumPath !== null)
+		{
+			throw new exceptions\runtime('Atoum path is already set');
+		}
+
+		$this->atoumPath = (string) $path;
+
+		return $this;
+	}
+
 	public function setAtoumVersion($version)
 	{
+		if ($this->atoumVersion !== null)
+		{
+			throw new exceptions\runtime('Atoum version is already set');
+		}
+
+		if ($this->atoumVersion !== null)
+		{
+			throw new exceptions\runtime('Atoum version is already set');
+		}
+
 		$this->atoumVersion = (string) $version;
 
 		return $this;
@@ -56,6 +83,11 @@ class score
 
 	public function setPhpPath($path)
 	{
+		if ($this->phpPath !== null)
+		{
+			throw new exceptions\runtime('PHP path is already set');
+		}
+
 		$this->phpPath = (string) $path;
 
 		return $this;
@@ -63,6 +95,11 @@ class score
 
 	public function setPhpVersion($version)
 	{
+		if ($this->phpVersion !== null)
+		{
+			throw new exceptions\runtime('PHP version is already set');
+		}
+
 		$this->phpVersion = (string) $version;
 
 		return $this;
@@ -178,6 +215,11 @@ class score
 		$this->coverage->merge($score->coverage);
 
 		return $this;
+	}
+
+	public function getAtoumPath()
+	{
+		return $this->atoumPath;
 	}
 
 	public function getAtoumVersion()

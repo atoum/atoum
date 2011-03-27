@@ -8,16 +8,22 @@ use \mageekguy\atoum\report;
 abstract class version extends report\fields\runner
 {
 	protected $author = null;
-	protected $number = null;
+	protected $path = null;
+	protected $version = null;
 
 	public function getAuthor()
 	{
 		return $this->author;
 	}
 
-	public function getNumber()
+	public function getVersion()
 	{
-		return $this->number;
+		return $this->version;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
 	}
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
@@ -25,7 +31,8 @@ abstract class version extends report\fields\runner
 		if ($event === atoum\runner::runStart)
 		{
 			$this->author = atoum\test::author;
-			$this->number = atoum\test::getVersion();
+			$this->path = realpath(dirname($runner->getPath()) . DIRECTORY_SEPARATOR . '..');
+			$this->version = atoum\test::getVersion();
 		}
 
 		return $this;

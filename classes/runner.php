@@ -197,8 +197,13 @@ class runner implements observable, adapter\aggregator
 		return $this->testObservers;
 	}
 
-	public function setPhpInformations()
+	public function setPathsAndVersions()
 	{
+		$this->score
+			->setAtoumVersion(atoum\test::getVersion())
+			->setAtoumPath($this->adapter->realpath($this->getPath() . DIRECTORY_SEPARATOR . '..'))
+		;
+
 		$phpPath = $this->getPhpPath();
 
 		$descriptors = array(
@@ -238,16 +243,14 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null, $setPhpInformations = true)
+	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null, $setPathsAndVersions = true)
 	{
 		$this->score->reset();
 
-		if ($setPhpInformations === true)
+		if ($setPathsAndVersions === true)
 		{
-			$this->setPhpInformations();
+			$this->setPathsAndVersions();
 		}
-
-		$this->score->setAtoumVersion(atoum\test::getVersion());
 
 		$this->start = $this->adapter->microtime(true);
 
