@@ -10,9 +10,14 @@ class adapter extends atoum\adapter
 	protected $calls = array();
 	protected $functions = array();
 
-	public function __set($functionName, $closure)
+	public function __set($functionName, $mixed)
 	{
-		$this->functions[$functionName] = $closure;
+		if ($mixed instanceof \closure === false)
+		{
+			$mixed = function() use ($mixed) { return $mixed; };
+		}
+
+		$this->functions[$functionName] = $mixed;
 	}
 
 	public function __get($functionName)
@@ -24,7 +29,7 @@ class adapter extends atoum\adapter
 	{
 		return (isset($this->functions[$functionName]) === true);
 	}
-	
+
 	public function getCalls($functionName = null)
 	{
 		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
@@ -43,12 +48,12 @@ class adapter extends atoum\adapter
 		{
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
 		}
-		
+
 		$this->calls[$functionName][] = $arguments;
 
-		return (array_key_exists($functionName, $this->functions) === false ? call_user_func_array($functionName, $arguments) : ($this->functions[$functionName] instanceof \closure === false ? $this->functions[$functionName] : call_user_func_array($this->functions[$functionName], $arguments)));
+		return (array_key_exists($functionName, $this->functions) === false ? parent::invoke($functionName, $arguments) : call_user_func_array($this->functions[$functionName], $arguments));
 	}
-	
+
 	protected static function isLanguageConstruct($functionName)
 	{
 		switch ($functionName)

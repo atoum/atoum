@@ -27,7 +27,7 @@ abstract class test implements observable, \countable
 	const runStop = 'testRunStop';
 	const defaultTestsSubNamespace = 'tests\units';
 
-	private $php = null;
+	private $phpPath = null;
 	private $path = '';
 	private $class = '';
 	private $adapter = null;
@@ -177,26 +177,26 @@ abstract class test implements observable, \countable
 		return ($this->testsSubNamespace === null ? self::defaultTestsSubNamespace : $this->testsSubNamespace);
 	}
 
-	public function setPhp($path)
+	public function setPhpPath($path)
 	{
-		$this->php = (string) $path;
+		$this->phpPath = (string) $path;
 
 		return $this;
 	}
 
-	public function getPhp()
+	public function getPhpPath()
 	{
-		if ($this->php === null)
+		if ($this->phpPath === null)
 		{
 			if (isset($this->superglobals->_SERVER['_']) === false)
 			{
 				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
-			$this->setPhp($this->superglobals->_SERVER['_']);
+			$this->setPhpPath($this->superglobals->_SERVER['_']);
 		}
 
-		return $this->php;
+		return $this->phpPath;
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
@@ -544,7 +544,7 @@ abstract class test implements observable, \countable
 
 	protected function runInChildProcess($testMethod, atoum\runner $runner)
 	{
-		$php = $this->getPhp();
+		$phpPath = $this->getPhpPath();
 
 		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
 
@@ -553,14 +553,14 @@ abstract class test implements observable, \countable
 		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
 		$phpCode .= 'require(\'' . $this->path . '\');';
 		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
-		$phpCode .= '$runner->setPhp(\'' . $php . '\');';
+		$phpCode .= '$runner->setPhpPath(\'' . $phpPath . '\');';
 
 		if ($runner->codeCoverageIsEnabled() === false)
 		{
 			$phpCode .= '$runner->disableCodeCoverage();';
 		}
 
-		$phpCode .= '$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);';
+		$phpCode .= '$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false, null, false);';
 		$phpCode .= 'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));';
 		$phpCode .= '?>';
 
@@ -571,7 +571,7 @@ abstract class test implements observable, \countable
 				2 => array('pipe', 'w')
 			);
 
-		$php = proc_open($php, $descriptors, $pipes);
+		$php = proc_open($phpPath, $descriptors, $pipes);
 
 		if ($php !== false)
 		{

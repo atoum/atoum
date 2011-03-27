@@ -14,7 +14,6 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
-	protected $php = null;
 	protected $path = '';
 	protected $class = '';
 	protected $score = null;
@@ -25,6 +24,7 @@ class runner implements observable, adapter\aggregator
 	protected $testNumber = null;
 	protected $testMethodNumber = null;
 	protected $codeCoverage = true;
+	protected $phpPath = null;
 
 	private $start = null;
 	private $stop = null;
@@ -76,19 +76,19 @@ class runner implements observable, adapter\aggregator
 		return $this->score;
 	}
 
-	public function getPhp()
+	public function getPhpPath()
 	{
-		if ($this->php === null)
+		if ($this->phpPath === null)
 		{
 			if (isset($this->superglobals->_SERVER['_']) === false)
 			{
 				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
-			$this->setPhp($this->superglobals->_SERVER['_']);
+			$this->setPhpPath($this->superglobals->_SERVER['_']);
 		}
 
-		return $this->php;
+		return $this->phpPath;
 	}
 
 	public function getAdapter()
@@ -128,9 +128,9 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function setPhp($path)
+	public function setPhpPath($path)
 	{
-		$this->php = (string) $path;
+		$this->phpPath = (string) $path;
 
 		return $this;
 	}
@@ -197,14 +197,56 @@ class runner implements observable, adapter\aggregator
 		return $this->testObservers;
 	}
 
-	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null)
+	public function setPhpInformations()
+	{
+		$phpPath = $this->getPhpPath();
+
+		$descriptors = array(
+			1 => array('pipe', 'w'),
+			2 => array('pipe', 'w'),
+		);
+
+		$php = @$this->adapter->invoke('proc_open', array($phpPath . ' --version', $descriptors, & $pipes));
+
+		if ($php === false)
+		{
+			throw new exceptions\runtime('Unable to open \'' . $phpPath . '\'');
+		}
+
+		$phpVersion = $this->adapter->stream_get_contents($pipes[1]);
+		$this->adapter->fclose($pipes[1]);
+
+		$phpError = $this->adapter->stream_get_contents($pipes[2]);
+		$this->adapter->fclose($pipes[2]);
+
+		$phpStatus = $this->adapter->proc_get_status($php);
+
+		switch ($phpStatus['exitcode'])
+		{
+			case 126:
+			case 127:
+				throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+		}
+
+		$this->adapter->proc_close($php);
+
+		$this->score
+			->setPhpPath($phpPath)
+			->setPhpVersion($phpVersion)
+		;
+
+		return $this;
+	}
+
+	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null, $setPhpInformations = true)
 	{
 		$this->score->reset();
 
-		$php = $this->getPhp();
+		if ($setPhpInformations === true)
+		{
+			$this->setPhpInformations();
+		}
 
-		$this->score->setPhpPath($php);
-		$this->score->setPhpVersion(\PHP_MAJOR_VERSION . '.' . \PHP_MINOR_VERSION . '.' . \PHP_RELEASE_VERSION);
 		$this->score->setAtoumVersion(atoum\test::getVersion());
 
 		$this->start = $this->adapter->microtime(true);
@@ -221,43 +263,44 @@ class runner implements observable, adapter\aggregator
 			$runTestClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) { $class = new \reflectionClass($class); return ($class->isSubClassOf($testBaseClass) === true && $class->getParentClass() !== false && $class->isAbstract() === false); });
 		}
 
-		$this->testNumber = sizeof($runTestClasses);
-
-		if ($this->testNumber > 0)
+		if (sizeof($runTestClasses) > 0)
 		{
+			$phpPath = $this->getPhpPath();
+
 			foreach ($runTestClasses as $runTestClass)
 			{
 				$test = new $runTestClass();
 
-				$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
-
-				if ($xdebugLoaded === true)
-				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-				}
-
-				$this->testMethodNumber += sizeof($test);
-
 				if ($test->isIgnored() === false)
 				{
-					$test->setPhp($php);
+					$this->testNumber++;
+					$this->testMethodNumber += sizeof($test);
+
+					$test->setPhpPath($phpPath);
 
 					foreach ($this->testObservers as $observer)
 					{
 						$test->addObserver($observer);
 					}
 
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
+					$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
+
+					if ($xdebugLoaded === true)
+					{
+						$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+					}
+
+					$test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this);
+
+					if ($xdebugLoaded === true)
+					{
+						$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
+
+						$this->adapter->xdebug_stop_code_coverage();
+					}
+
+					$this->score->merge($test->getScore());
 				}
-
-				if ($xdebugLoaded === true)
-				{
-					$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
-
-					$this->adapter->xdebug_stop_code_coverage();
-				}
-
-				unset($test);
 			}
 		}
 

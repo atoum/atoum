@@ -23,7 +23,8 @@ class adapter extends atoum\test
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->string($adapter->md5)->isEqualTo($return)
+			->object($adapter->md5)->isInstanceOf('\closure')
+			->string($adapter->invoke('md5'))->isEqualTo($return)
 		;
 	}
 
@@ -41,7 +42,7 @@ class adapter extends atoum\test
 
 		$this->assert
 			->boolean(isset($adapter->md5))->isTrue()
-			->variable($adapter->md5)->isEqualTo($return)
+			->object($adapter->md5)->isInstanceOf('\closure')
 		;
 	}
 

@@ -175,7 +175,7 @@ class score
 		$this->outputs = array_merge($this->outputs, $score->outputs);
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
-		$this->coverage->merge($score->getCoverage());
+		$this->coverage->merge($score->coverage);
 
 		return $this;
 	}

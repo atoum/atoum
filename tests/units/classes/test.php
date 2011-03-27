@@ -311,17 +311,17 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testGetPhp()
+		public function testGetPhpPath()
 		{
 			$superglobals = new atoum\superglobals();
 
 			$test = new emptyTest();
 			$test->setSuperglobals($superglobals);
 
-			$superglobals->_SERVER['_'] = $php = uniqid();
+			$superglobals->_SERVER['_'] = $phpPath = uniqid();
 
 			$this->assert
-				->string($test->getPhp())->isEqualTo($php)
+				->string($test->getPhpPath())->isEqualTo($phpPath)
 			;
 
 			unset($superglobals->_SERVER['_']);
@@ -331,31 +331,31 @@ namespace mageekguy\atoum\tests\units
 
 			$this->assert
 				->exception(function() use ($test) {
-						$test->getPhp();
+						$test->getPhpPath();
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 			;
 
-			$test->setPhp($php = uniqid());
+			$test->setPhpPath($phpPath = uniqid());
 
 			$this->assert
-				->string($test->getPhp())->isEqualTo($php)
+				->string($test->getPhpPath())->isEqualTo($phpPath)
 			;
 		}
 
-		public function testSetPhp()
+		public function testSetPhpPath()
 		{
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setPhp($php = uniqid()))->isIdenticalTo($test)
-				->string($test->getPhp())->isIdenticalTo($php)
+				->object($test->setPhpPath($phpPath = uniqid()))->isIdenticalTo($test)
+				->string($test->getPhpPath())->isIdenticalTo($phpPath)
 			;
 
 			$this->assert
-				->object($test->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
-				->string($test->getPhp())->isIdenticalTo((string) $php)
+				->object($test->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+				->string($test->getPhpPath())->isIdenticalTo((string) $phpPath)
 			;
 		}
 

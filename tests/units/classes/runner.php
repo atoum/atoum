@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock
+;
 
 require_once(__DIR__ . '/../runner.php');
 
@@ -62,17 +64,17 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testGetPhp()
+	public function testGetPhpPath()
 	{
 		$superglobals = new atoum\superglobals();
 
 		$runner = new atoum\runner();
 		$runner->setSuperglobals($superglobals);
 
-		$superglobals->_SERVER['_'] = $php = uniqid();
+		$superglobals->_SERVER['_'] = $phpPath = uniqid();
 
 		$this->assert
-			->string($runner->getPhp())->isEqualTo($php)
+			->string($runner->getPhpPath())->isEqualTo($phpPath)
 		;
 
 		unset($superglobals->_SERVER['_']);
@@ -82,31 +84,31 @@ class runner extends atoum\test
 
 		$this->assert
 			->exception(function() use ($runner) {
-					$runner->getPhp();
+					$runner->getPhpPath();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 		;
 
-		$runner->setPhp($php = uniqid());
+		$runner->setPhpPath($phpPath = uniqid());
 
 		$this->assert
-			->string($runner->getPhp())->isEqualTo($php)
+			->string($runner->getPhpPath())->isEqualTo($phpPath)
 		;
 	}
 
-	public function testSetPhp()
+	public function testSetPhpPath()
 	{
 		$runner = new atoum\runner();
 
 		$this->assert
-			->object($runner->setPhp($php = uniqid()))->isIdenticalTo($runner)
-			->string($runner->getPhp())->isIdenticalTo($php)
+			->object($runner->setPhpPath($phpPath = uniqid()))->isIdenticalTo($runner)
+			->string($runner->getPhpPath())->isIdenticalTo($phpPath)
 		;
 
 		$this->assert
-			->object($runner->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($runner)
-			->string($runner->getPhp())->isIdenticalTo((string) $php)
+			->object($runner->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($runner)
+			->string($runner->getPhpPath())->isIdenticalTo((string) $phpPath)
 		;
 	}
 
@@ -245,7 +247,7 @@ class runner extends atoum\test
 		$runner->run();
 
 		$this->assert
-			->integer($runner->getTestNumber())->isZero()
+			->variable($runner->getTestNumber())->isNull();
 		;
 	}
 
@@ -408,8 +410,38 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testRun()
+	public function testSetPhpInformations()
 	{
+		$mockGenerator = new mock\generator();
+		$mockGenerator
+			->generate('\mageekguy\atoum\score')
+		;
+
+		$score = new mock\mageekguy\atoum\score();
+		$scoreController = $score->getMockController();
+
+		$adapter = new atoum\test\adapter();
+
+		$superglobals = new atoum\superglobals();
+
+		$runner = new atoum\runner($score, $adapter);
+		$runner->setSuperglobals($superglobals);
+
+		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+		$adapter->proc_open = false;
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->setPhpInformations();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to open \'' . $phpPath . '\'')
+		;
+
+		$adapter->proc_open = null;
+//		$adapter->stream_get_contents[1] = $phpVersion = uniqid();
+//		$adapter->stream_get_contents[2] = '';
 	}
 }
 

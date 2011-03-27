@@ -14,7 +14,6 @@ class adapter extends atoum\test
 
 		$this->assert->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash));
 	}
-
 }
 
 ?>
