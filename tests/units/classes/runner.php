@@ -428,7 +428,9 @@ class runner extends atoum\test
 		$runner->setSuperglobals($superglobals);
 
 		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+
 		$adapter->proc_open = false;
+		$adapter->realpath = function($path) { return $path; };
 
 		$this->assert
 			->exception(function() use ($runner) {
@@ -437,6 +439,7 @@ class runner extends atoum\test
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to open \'' . $phpPath . '\'')
+			->adapter($adapter)->call('realpath', array($phpPath))
 		;
 	}
 }

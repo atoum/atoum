@@ -204,7 +204,7 @@ class runner implements observable, adapter\aggregator
 			->setAtoumPath($this->adapter->realpath($this->getPath() . DIRECTORY_SEPARATOR . '..'))
 		;
 
-		$phpPath = $this->getPhpPath();
+		$phpPath = $this->adapter->realpath($this->getPhpPath());
 
 		$descriptors = array(
 			1 => array('pipe', 'w'),
