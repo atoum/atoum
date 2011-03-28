@@ -205,8 +205,8 @@ class runner implements observable, adapter\aggregator
 	public function setPathsAndVersions()
 	{
 		$this->score
-			->setAtoumVersion(atoum\test::getVersion())
-			->setAtoumPath($this->adapter->realpath($this->getPath() . DIRECTORY_SEPARATOR . '..'))
+			->setAtoumVersion(atoum\version)
+			->setAtoumPath(atoum\directory)
 		;
 
 		$phpPath = $this->adapter->realpath($this->getPhpPath());

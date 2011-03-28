@@ -11,7 +11,7 @@ class string extends report\fields\runner\version
 
 	public function __toString()
 	{
-		return ($this->author === null || $this->version === null ? '' : self::titlePrompt . sprintf($this->locale->_('Atoum version %s by %s (%s).'), $this->version, $this->author, $this->path) . PHP_EOL);
+		return ($this->author === null || $this->version === null ? '' : self::titlePrompt . sprintf($this->locale->_('Atoum version %s by %s (%s)'), $this->version, $this->author, $this->path) . PHP_EOL);
 	}
 }
 

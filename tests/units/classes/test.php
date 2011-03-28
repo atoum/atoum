@@ -35,8 +35,6 @@ namespace mageekguy\atoum\tests\units
 		public function testClassConstants()
 		{
 			$this->assert
-				->string(atoum\test::version)
-				->string(atoum\test::author)->isEqualTo('Frédéric Hardy')
 				->string(atoum\test::testMethodPrefix)->isEqualTo('test')
 				->string(atoum\test::runStart)->isEqualTo('testRunStart')
 				->string(atoum\test::beforeSetUp)->isEqualTo('beforeTestSetUp')

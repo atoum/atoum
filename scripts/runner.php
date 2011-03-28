@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum;
-
-define(__NAMESPACE__ . '\directory', ($pharPath = \phar::running(false)) ?: realpath(__DIR__ . \DIRECTORY_SEPARATOR . '..'));
-
 namespace mageekguy\atoum\scripts\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+require_once(__DIR__ . '/../define.php');
+
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

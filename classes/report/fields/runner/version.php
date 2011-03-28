@@ -30,9 +30,9 @@ abstract class version extends report\fields\runner
 	{
 		if ($event === atoum\runner::runStart)
 		{
-			$this->author = atoum\test::author;
+			$this->author = atoum\author;
 			$this->path = atoum\directory;
-			$this->version = atoum\test::getVersion();
+			$this->version = atoum\version;
 		}
 
 		return $this;

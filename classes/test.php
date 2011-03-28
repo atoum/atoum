@@ -10,8 +10,6 @@ use
 
 abstract class test implements observable, \countable
 {
-	const version = '$Rev$';
-	const author = 'Frédéric Hardy';
 	const testMethodPrefix = 'test';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -459,11 +457,6 @@ abstract class test implements observable, \countable
 			self::afterTearDown,
 			self::runStop
 		);
-	}
-
-	public static function getVersion()
-	{
-		return preg_replace('/\$Rev: (\d+) \$/', '$1', self::version);
 	}
 
 	protected function setUp()

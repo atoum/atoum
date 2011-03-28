@@ -267,7 +267,7 @@ class runner extends atoum\script
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('runner of \mageekguy\atoum version %s'), atoum\test::getVersion()) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('Atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
 		;
 
 		return $this;

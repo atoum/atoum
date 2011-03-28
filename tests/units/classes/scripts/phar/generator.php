@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\scripts\phar;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\scripts\phar;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\scripts\phar
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -14,10 +16,6 @@ class generator extends atoum\test
 	{
 		$this->assert
 			->string(phar\generator::phar)->isEqualTo('mageekguy.atoum.phar')
-			->string(phar\generator::version)->isEqualTo('0.0.1')
-			->string(phar\generator::author)->isEqualTo('Frédéric Hardy')
-			->string(phar\generator::mail)->isEqualTo('support@atoum.org')
-			->string(phar\generator::repository)->isEqualTo('https://svn.mageekbox.net/repositories/unit/trunk')
 		;
 	}
 
@@ -590,10 +588,10 @@ class generator extends atoum\test
 			)
 			->call('setMetadata', array(
 					array(
-						'version' => atoum\test::getVersion(),
-						'author' => atoum\test::author,
-						'support' => atoum\scripts\phar\generator::mail,
-						'repository' => atoum\scripts\phar\generator::repository,
+						'version' => atoum\version,
+						'author' => atoum\author,
+						'support' => atoum\mail,
+						'repository' => atoum\repository,
 						'description' => $description,
 						'licence' => $licence
 					)
@@ -646,7 +644,6 @@ class generator extends atoum\test
 			->object($generator->run())->isIdenticalTo($generator)
 			->mock($stdout)
 			->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
-			->call('write', array(sprintf($generator->getLocale()->_('Phar generator of \mageekguy\atoum version %s'), atoum\scripts\phar\generator::version) . PHP_EOL))
 			->call('write', array($generator->getLocale()->_('Available options are:') . PHP_EOL))
 			->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL))
 			->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL))
@@ -676,10 +673,10 @@ class generator extends atoum\test
 			)
 			->call('setMetadata', array(
 				array(
-					'version' => atoum\test::getVersion(),
-					'author' => atoum\test::author,
-					'support' => atoum\scripts\phar\generator::mail,
-					'repository' => atoum\scripts\phar\generator::repository,
+					'version' => atoum\version,
+					'author' => atoum\author,
+					'support' => atoum\mail,
+					'repository' => atoum\repository,
 					'description' => $description,
 					'licence' => $licence
 					)

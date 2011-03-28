@@ -9,10 +9,6 @@ use
 
 class generator extends atoum\script
 {
-	const version = '0.0.1';
-	const author = 'Frédéric Hardy';
-	const mail = 'support@atoum.org';
-	const repository = 'https://svn.mageekbox.net/repositories/unit/trunk';
 	const phar = 'mageekguy.atoum.phar';
 
 	protected $help = false;
@@ -186,14 +182,13 @@ class generator extends atoum\script
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
-			->writeMessage(sprintf($this->locale->_('Phar generator of \mageekguy\atoum version %s'), self::version) . PHP_EOL)
 			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-			;
+		;
 
 		$options = array(
-				'-h, --help' => $this->locale->_('Display this help'),
-				'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
-				);
+			'-h, --help' => $this->locale->_('Display this help'),
+			'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
+		);
 
 		$this->writeLabels($options);
 
@@ -270,10 +265,10 @@ class generator extends atoum\script
 		$phar->setStub($stub);
 
 		$phar->setMetadata(array(
-					'version' => atoum\test::getVersion(),
-					'author' => atoum\test::author,
-					'support' => self::mail,
-					'repository' => self::repository,
+					'version' => atoum\version,
+					'author' => atoum\author,
+					'support' => atoum\mail,
+					'repository' => atoum\repository,
 					'description' => $description,
 					'licence' => $licence
 					)

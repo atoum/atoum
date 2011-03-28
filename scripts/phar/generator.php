@@ -2,9 +2,12 @@
 
 namespace mageekguy\atoum\phar;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\scripts;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\scripts
+;
 
+require_once(__DIR__ . '/../../define.php');
 require_once(__DIR__ . '/../../classes/autoloader.php');
 
 $generator = new scripts\phar\generator(__FILE__);

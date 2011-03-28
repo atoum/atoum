@@ -48,9 +48,9 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->variable($version->getPath())->isNull()
 			->variable($version->getVersion())->isNull()
 			->object($version->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($version)
-			->string($version->getAuthor())->isEqualTo(atoum\test::author)
+			->string($version->getAuthor())->isEqualTo(atoum\author)
 			->string($version->getPath())->isEqualTo(realpath(dirname($runner->getPath()) . DIRECTORY_SEPARATOR . '..'))
-			->string($version->getVersion())->isEqualTo(atoum\test::getVersion())
+			->string($version->getVersion())->isEqualTo(atoum\version)
 		;
 	}
 
@@ -63,7 +63,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$this->assert
 			->castToString($version->setWithRunner($runner))->isEmpty()
 			->castToString($version->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($version->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\version\string::titlePrompt . sprintf($version->getLocale()->_('Atoum version %s by %s (%s).'), $version->getVersion(), $version->getAuthor(), $version->getPath()) . PHP_EOL)
+			->castToString($version->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\version\string::titlePrompt . sprintf($version->getLocale()->_('Atoum version %s by %s (%s)'), \mageekguy\atoum\version, \mageekguy\atoum\author, \mageekguy\atoum\directory) . PHP_EOL)
 		;
 	}
 }
