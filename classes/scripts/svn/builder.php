@@ -42,14 +42,14 @@ class builder extends atoum\script
 		;
 	}
 
-	public function setPhp($path)
+	public function setPhpPath($path)
 	{
 		$this->php = (string) $path;
 
 		return $this;
 	}
 
-	public function getPhp()
+	public function getPhpPath()
 	{
 		if ($this->php === null)
 		{
@@ -58,7 +58,7 @@ class builder extends atoum\script
 				throw new exceptions\runtime('Unable to find PHP executable');
 			}
 
-			$this->setPhp($this->superglobals->_SERVER['_']);
+			$this->setPhpPath($this->superglobals->_SERVER['_']);
 		}
 
 		return $this->php;
@@ -323,7 +323,7 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
-		$php = $this->getPhp();
+		$php = $this->getPhpPath();
 
 		$command = $php . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
 
@@ -446,7 +446,7 @@ class builder extends atoum\script
 				{
 					$this->tagFiles();
 
-					$command = $this->getPhp() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
+					$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
 
 					$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -538,7 +538,7 @@ class builder extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->setPhp(current($path));
+				$script->setPhpPath(current($path));
 			},
 			array('-p', '--php')
 		);

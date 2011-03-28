@@ -97,7 +97,7 @@ class builder extends atoum\test
 		$superglobals->_SERVER['_'] = $php = uniqid();
 
 		$this->assert
-			->string($builder->getPhp())->isEqualTo($php)
+			->string($builder->getPhpPath())->isEqualTo($php)
 		;
 
 		unset($superglobals->_SERVER['_']);
@@ -107,16 +107,16 @@ class builder extends atoum\test
 
 		$this->assert
 			->exception(function() use ($builder) {
-					$builder->getPhp();
+					$builder->getPhpPath();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 		;
 
-		$builder->setPhp($php = uniqid());
+		$builder->setPhpPath($php = uniqid());
 
 		$this->assert
-			->string($builder->getPhp())->isEqualTo($php)
+			->string($builder->getPhpPath())->isEqualTo($php)
 		;
 	}
 
@@ -129,13 +129,13 @@ class builder extends atoum\test
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
-			->object($builder->setPhp($php = uniqid()))->isIdenticalTo($builder)
-			->string($builder->getPhp())->isIdenticalTo($php)
+			->object($builder->setPhpPath($php = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getPhpPath())->isIdenticalTo($php)
 		;
 
 		$this->assert
-			->object($builder->setPhp($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->string($builder->getPhp())->isIdenticalTo((string) $php)
+			->object($builder->setPhpPath($php = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getPhpPath())->isIdenticalTo((string) $php)
 		;
 	}
 
@@ -594,7 +594,7 @@ class builder extends atoum\test
 		;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
-		$builder->setPhp($php = uniqid());
+		$builder->setPhpPath($php = uniqid());
 
 		$builder
 			->setWorkingDirectory($workingDirectory = uniqid())
@@ -749,7 +749,7 @@ class builder extends atoum\test
 		$adapter->extension_loaded = true;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
-		$builder->setPhp($php = uniqid());
+		$builder->setPhpPath($php = uniqid());
 
 		$this->assert
 			->variable($builder->getDestinationDirectory())->isNull()

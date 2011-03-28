@@ -16,6 +16,11 @@ class mail extends atoum\test
 		$mail = new writers\mail();
 
 		$this->assert
+			->variable($mail->getTo())->isNull()
+			->variable($mail->getFrom())->isNull()
+			->variable($mail->getSubject())->isNull()
+			->variable($mail->getReplyTo())->isNull()
+			->variable($mail->getMailer())->isNull()
 			->object($mail)->isInstanceOf('\mageekguy\atoum\adapter\aggregator')
 			->object($mail->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
@@ -55,21 +60,6 @@ class mail extends atoum\test
 		$this->assert
 			->object($mail->setSubject($subject = rand(1, PHP_INT_MAX)))->isIdenticalTo($mail)
 			->string($mail->getSubject())->isEqualTo((string) $subject)
-		;
-	}
-
-	public function testSetMessage()
-	{
-		$mail = new writers\mail();
-
-		$this->assert
-			->object($mail->setMessage($message = uniqid()))->isIdenticalTo($mail)
-			->string($mail->getMessage())->isEqualTo($message)
-		;
-
-		$this->assert
-			->object($mail->setMessage($message = rand(1, PHP_INT_MAX)))->isIdenticalTo($mail)
-			->string($mail->getMessage())->isEqualTo((string) $message)
 		;
 	}
 
@@ -129,16 +119,66 @@ class mail extends atoum\test
 		;
 	}
 
-	public function testSend()
+	public function testWrite()
 	{
 		$adapter = new atoum\test\adapter();
+		$adapter->mail = function() {};
 
 		$mail = new writers\mail($adapter);
 
-		$adapter->mail = function() {};
+		$this->assert
+			->exception(function() use ($mail) { $mail->write(uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('To is undefined')
+		;
+
+		$mail
+			->addTo($to = uniqid())
+		;
 
 		$this->assert
-			->object($mail->send())->isIdenticalTo($mail)
+			->exception(function() use ($mail) { $mail->write(uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Subject is undefined')
+		;
+
+		$mail
+			->setSubject($subject = uniqid())
+		;
+
+		$this->assert
+			->exception(function() use ($mail) { $mail->write(uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('From is undefined')
+		;
+
+		$mail
+			->setFrom($from = uniqid())
+		;
+
+		$this->assert
+			->exception(function() use ($mail) { $mail->write(uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Reply to is undefined')
+		;
+
+		$mail
+			->setReplyTo($replyTo = uniqid())
+		;
+
+		$this->assert
+			->exception(function() use ($mail) { $mail->write(uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Mailer is undefined')
+		;
+
+		$mail
+			->setMailer($mailer = uniqid())
+		;
+
+		$this->assert
+			->object($mail->write($message = uniqid()))->isIdenticalTo($mail)
+			->adapter($adapter)->call('mail', array($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer));
 		;
 	}
 }

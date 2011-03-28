@@ -2,20 +2,22 @@
 
 namespace mageekguy\atoum\writers;
 
-use mageekguy\atoum;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class mail extends atoum\writer
 {
-	protected $to = '';
-	protected $from = '';
-	protected $mailer = '';
-	protected $replyTo = '';
-	protected $subject = '';
-	protected $message = '';
+	protected $to = null;
+	protected $from = null;
+	protected $mailer = null;
+	protected $replyTo = null;
+	protected $subject = null;
 
 	public function addTo($to, $realName = null)
 	{
-		if ($this->to !== '')
+		if ($this->to !== null)
 		{
 			$this->to .= ',';
 		}
@@ -47,18 +49,6 @@ class mail extends atoum\writer
 	public function getSubject()
 	{
 		return $this->subject;
-	}
-
-	public function setMessage($message)
-	{
-		$this->message = (string) $message;
-
-		return $this;
-	}
-
-	public function getMessage()
-	{
-		return $this->message;
 	}
 
 	public function setFrom($from, $realName = null)
@@ -111,11 +101,6 @@ class mail extends atoum\writer
 		return $this->mailer;
 	}
 
-	public function send()
-	{
-		return $this->write($this->getMessage());
-	}
-
 	public function write($something)
 	{
 		return $this->flush($something);
@@ -123,6 +108,33 @@ class mail extends atoum\writer
 
 	public function flush($something)
 	{
+		if ($this->to === null)
+		{
+			throw new exceptions\runtime('To is undefined');
+		}
+
+		if ($this->subject === null)
+		{
+			throw new exceptions\runtime('Subject is undefined');
+		}
+
+		if ($this->from === null)
+		{
+			throw new exceptions\runtime('From is undefined');
+		}
+
+		if ($this->replyTo === null)
+		{
+			throw new exceptions\runtime('Reply to is undefined');
+		}
+
+		if ($this->mailer === null)
+		{
+			throw new exceptions\runtime('Mailer is undefined');
+		}
+
+		$this->adapter->mail($this->to, $this->subject, (string) $something, 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->mailer);
+
 		return $this;
 	}
 }
