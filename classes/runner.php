@@ -29,7 +29,7 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null)
+	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null)
 	{
 		if ($score === null)
 		{
@@ -41,8 +41,13 @@ class runner implements observable, adapter\aggregator
 			$adapter = new adapter();
 		}
 
+		if ($superglobals === null)
+		{
+			$superglobals = new superglobals();
+		}
+
 		$this
-			->setSuperglobals(new atoum\superglobals())
+			->setSuperglobals($superglobals)
 			->setAdapter($adapter)
 			->setScore($score)
 		;

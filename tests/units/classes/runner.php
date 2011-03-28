@@ -216,10 +216,19 @@ class runner extends atoum\test
 	public function testGetRunningDuration()
 	{
 		$adapter = new atoum\test\adapter();
+		$adapter->get_declared_classes = array();
+		$adapter->proc_open = function() {};
+		$adapter->stream_get_contents = '';
+		$adapter->fclose = function() {};
+		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_close = function() {};
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
 		$adapter->get_declared_classes = function() { return array(); };
 
-		$runner = new atoum\runner(null, $adapter);
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = uniqid();
+
+		$runner = new atoum\runner(null, $adapter, $superglobals);
 
 		$this->assert
 			->variable($runner->getRunningDuration())->isNull()
@@ -235,10 +244,17 @@ class runner extends atoum\test
 	public function testGetTestNumber()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->get_declared_classes = array();
+		$adapter->proc_open = function() {};
+		$adapter->stream_get_contents = '';
+		$adapter->fclose = function() {};
+		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_close = function() {};
 
-		$runner = new atoum\runner(null, $adapter);
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = uniqid();
+
+		$runner = new atoum\runner(null, $adapter, $superglobals);
 
 		$this->assert
 			->variable($runner->getTestNumber())->isNull();
@@ -254,10 +270,18 @@ class runner extends atoum\test
 	public function testGetTestMethodNumber()
 	{
 		$adapter = new atoum\test\adapter();
-
+		$adapter->get_declared_classes = array();
+		$adapter->proc_open = function() {};
+		$adapter->stream_get_contents = '';
+		$adapter->fclose = function() {};
+		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_close = function() {};
 		$adapter->get_declared_classes = array();
 
-		$runner = new atoum\runner(null, $adapter);
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = uniqid();
+
+		$runner = new atoum\runner(null, $adapter, $superglobals);
 
 		$this->assert
 			->variable($runner->getTestMethodNumber())->isNull();
@@ -424,8 +448,7 @@ class runner extends atoum\test
 
 		$superglobals = new atoum\superglobals();
 
-		$runner = new atoum\runner($score, $adapter);
-		$runner->setSuperglobals($superglobals);
+		$runner = new atoum\runner($score, $adapter, $superglobals);
 
 		$superglobals->_SERVER['_'] = $phpPath = uniqid();
 
