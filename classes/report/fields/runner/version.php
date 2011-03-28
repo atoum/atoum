@@ -31,7 +31,7 @@ abstract class version extends report\fields\runner
 		if ($event === atoum\runner::runStart)
 		{
 			$this->author = atoum\test::author;
-			$this->path = realpath(dirname($runner->getPath()) . DIRECTORY_SEPARATOR . '..');
+			$this->path = atoum\directory;
 			$this->version = atoum\test::getVersion();
 		}
 

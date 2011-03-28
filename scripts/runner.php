@@ -1,5 +1,9 @@
 <?php
 
+namespace mageekguy\atoum;
+
+define(__NAMESPACE__ . '\directory', ($pharPath = \phar::running(false)) ?: realpath(__DIR__ . \DIRECTORY_SEPARATOR . '..'));
+
 namespace mageekguy\atoum\scripts\runner;
 
 use \mageekguy\atoum;
