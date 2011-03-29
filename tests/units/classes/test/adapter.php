@@ -17,13 +17,13 @@ class adapter extends atoum\test
 		$adapter->md5 = $closure;
 
 		$this->assert
-			->object($adapter->md5)->isIdenticalTo($closure)
+			->object($adapter->md5->getClosure())->isIdenticalTo($closure)
 		;
 
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('\closure')
+			->object($adapter->md5)->isInstanceOf('\mageekguy\atoum\adapter\caller')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 		;
 	}
@@ -42,7 +42,7 @@ class adapter extends atoum\test
 
 		$this->assert
 			->boolean(isset($adapter->md5))->isTrue()
-			->object($adapter->md5)->isInstanceOf('\closure')
+			->object($adapter->md5->getClosure())->isInstanceOf('\closure')
 		;
 	}
 
@@ -91,6 +91,15 @@ class adapter extends atoum\test
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Function \'require()\' is not callable by an adapter')
 		;
+
+		$adapter = new atoum\test\adapter();
+		$adapter->md5[0] = 0;
+		$adapter->md5[1] = 1;
+		$adapter->md5[2] = 2;
+
+		$this->assert->integer($adapter->md5())->isEqualTo(1);
+		$this->assert->integer($adapter->md5())->isEqualTo(2);
+		$this->assert->integer($adapter->md5())->isEqualTo(0);
 	}
 
 	public function testGetCalls()

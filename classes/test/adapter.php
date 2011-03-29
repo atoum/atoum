@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\test;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class adapter extends atoum\adapter
 {
@@ -17,12 +19,17 @@ class adapter extends atoum\adapter
 			$mixed = function() use ($mixed) { return $mixed; };
 		}
 
-		$this->functions[$functionName] = $mixed;
+		$this->{$functionName}->setClosure($mixed);
 	}
 
 	public function __get($functionName)
 	{
-		return (isset($this->{$functionName}) === false ? null : $this->functions[$functionName]);
+		if (isset($this->{$functionName}) === false)
+		{
+			$this->functions[$functionName] = new atoum\adapter\caller();
+		}
+
+		return $this->functions[$functionName];
 	}
 
 	public function __isset($functionName)
@@ -51,7 +58,7 @@ class adapter extends atoum\adapter
 
 		$this->calls[$functionName][] = $arguments;
 
-		return (array_key_exists($functionName, $this->functions) === false ? parent::invoke($functionName, $arguments) : call_user_func_array($this->functions[$functionName], $arguments));
+		return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, sizeof($this->calls[$functionName])));
 	}
 
 	protected static function isLanguageConstruct($functionName)
