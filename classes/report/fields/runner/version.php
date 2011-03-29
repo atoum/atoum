@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
+require_once(__DIR__ . '/../../../../constants.php');
+
 use \mageekguy\atoum;
 use \mageekguy\atoum\report;
 

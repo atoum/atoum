@@ -2,8 +2,6 @@
 
 namespace mageekguy\atoum\scripts\runner;
 
-require_once(__DIR__ . '/../define.php');
-
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\exceptions

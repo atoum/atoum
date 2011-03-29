@@ -2,6 +2,8 @@
 
 namespace mageekguy\atoum\scripts\phar;
 
+require_once(__DIR__ . '/../../../constants.php');
+
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\exceptions

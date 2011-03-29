@@ -7,7 +7,6 @@ use
 	\mageekguy\atoum\scripts
 ;
 
-require_once(__DIR__ . '/../../define.php');
 require_once(__DIR__ . '/../../classes/autoloader.php');
 
 $generator = new scripts\phar\generator(__FILE__);
