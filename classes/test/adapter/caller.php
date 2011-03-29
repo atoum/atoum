@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\adapter;
+namespace mageekguy\atoum\test\adapter;
 
 use
 	\mageekguy\atoum\exceptions

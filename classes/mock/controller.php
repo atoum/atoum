@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\mock;
 
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\exceptions
+;
 
 class controller
 {

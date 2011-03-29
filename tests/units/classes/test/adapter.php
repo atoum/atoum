@@ -23,7 +23,7 @@ class adapter extends atoum\test
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('\mageekguy\atoum\adapter\caller')
+			->object($adapter->md5)->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 		;
 	}

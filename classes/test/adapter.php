@@ -26,7 +26,7 @@ class adapter extends atoum\adapter
 	{
 		if (isset($this->{$functionName}) === false)
 		{
-			$this->functions[$functionName] = new atoum\adapter\caller();
+			$this->functions[$functionName] = new adapter\caller();
 		}
 
 		return $this->functions[$functionName];
