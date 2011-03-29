@@ -548,8 +548,8 @@ class builder extends atoum\test
 				$fileIteratorController = new mock\controller();
 				$fileIteratorController->injectInNextMockInstance();
 				$fileIteratorController->__construct = function() {};
-				$fileIteratorController->atCall(1)->valid = true;
-				$fileIteratorController->atCall(2)->valid = false;
+				$fileIteratorController->valid[1] = true;
+				$fileIteratorController->valid[2] = false;
 				$fileIteratorController->current = function() use (& $file) { return ($file = uniqid()); };
 				$fileIteratorController->injectInNextMockInstance();
 				return ($fileIterator = new mock\recursiveDirectoryIterator($directory));
@@ -900,10 +900,10 @@ class builder extends atoum\test
 		;
 
 		$builderController->resetCalls();
-		$builderController->atCall(1)->getNextRevisionNumbers = array(1, 2, 3);
-		$builderController->atCall(2)->getNextRevisionNumbers = array(2, 3);
-		$builderController->atCall(3)->getNextRevisionNumbers = array(3);
-		$builderController->atCall(4)->getNextRevisionNumbers = array();
+		$builderController->getNextRevisionNumbers[1] = array(1, 2, 3);
+		$builderController->getNextRevisionNumbers[2] = array(2, 3);
+		$builderController->getNextRevisionNumbers[3] = array(3);
+		$builderController->getNextRevisionNumbers[4] = array();
 
 		$builder->resetRevision();
 
@@ -923,8 +923,8 @@ class builder extends atoum\test
 		;
 
 		$builderController->resetCalls();
-		$builderController->atCall(1)->getNextRevisionNumbers = array(4);
-		$builderController->atCall(2)->getNextRevisionNumbers = array();
+		$builderController->getNextRevisionNumbers[1] = array(4);
+		$builderController->getNextRevisionNumbers[2] = array();
 
 		$builder->resetRevision();
 

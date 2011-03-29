@@ -37,6 +37,14 @@ class adapter extends atoum\adapter
 		return (isset($this->functions[$functionName]) === true);
 	}
 
+	public function __unset($functionName)
+	{
+		if (isset($this->{$functionName}) === true)
+		{
+			unset($this->functions[$functionName]);
+		}
+	}
+
 	public function getCalls($functionName = null)
 	{
 		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
@@ -47,6 +55,13 @@ class adapter extends atoum\adapter
 		$this->calls = array();
 
 		return $this;
+	}
+
+	public function reset()
+	{
+		$this->functions = array();
+
+		return $this->resetCalls();
 	}
 
 	public function invoke($functionName, array $arguments = array())
