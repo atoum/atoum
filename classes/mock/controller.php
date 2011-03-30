@@ -56,9 +56,9 @@ class controller extends test\adapter
 
 	public function getCalls($method = null)
 	{
-		if ($method !== null && isset($this->functions[$method]) === false)
+		if ($method !== null)
 		{
-			throw new exceptions\logic('Method \'' . $method . '\' is not mocked');
+			$this->checkMethod($method);
 		}
 
 		return parent::getCalls($method);

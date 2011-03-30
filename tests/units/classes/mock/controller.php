@@ -481,12 +481,6 @@ class controller extends atoum\test
 		$this->assert
 			->array($mockController->getCalls())->isEqualTo(array($method => array(array($arg))))
 			->array($mockController->getCalls($method))->isEqualTo(array(array($arg)))
-			->exception(function() use ($mockController, & $unmockedMethod) {
-						$mockController->getCalls($unmockedMethod = uniqid());
-					}
-				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Method \'' . $unmockedMethod . '\' is not mocked')
 		;
 	}
 

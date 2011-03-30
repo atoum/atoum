@@ -8,6 +8,16 @@ require_once(__DIR__ . '/../../runner.php');
 
 class adapter extends atoum\test
 {
+	public function test__construct()
+	{
+		$adapter = new atoum\test\adapter();
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+	}
+
 	public function test__set()
 	{
 		$adapter = new atoum\test\adapter();
@@ -64,6 +74,45 @@ class adapter extends atoum\test
 
 		$this->assert
 			->boolean(isset($adapter->{$function}))->isTrue()
+		;
+	}
+
+	public function test__unset()
+	{
+		$adapter = new atoum\test\adapter();
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+
+		unset($adapter->md5);
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+
+		$adapter->md5 = uniqid();
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCalls())->isNotEmpty()
+		;
+
+		unset($adapter->{uniqid()});
+
+		$this->assert
+			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCalls())->isNotEmpty()
+		;
+
+		unset($adapter->md5);
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
 		;
 	}
 
@@ -167,6 +216,50 @@ class adapter extends atoum\test
 		$this->assert
 			->array($adapter->getCalls())->isNotEmpty()
 			->object($adapter->resetCalls())->isIdenticalTo($adapter)
+			->array($adapter->getCalls())->isEmpty()
+		;
+	}
+
+	public function testReset()
+	{
+		$adapter = new atoum\test\adapter();
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+			->object($adapter->reset())->isIdenticalTo($adapter)
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isNotEmpty()
+			->object($adapter->reset())->isIdenticalTo($adapter)
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+
+		$adapter->md5 = uniqid();
+
+		$this->assert
+			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCalls())->isEmpty()
+			->object($adapter->reset())->isIdenticalTo($adapter)
+			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCalls())->isEmpty()
+		;
+
+		$adapter->md5 = uniqid();
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCalls())->isNotEmpty()
+			->object($adapter->reset())->isIdenticalTo($adapter)
+			->array($adapter->getCallers())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
