@@ -14,12 +14,7 @@ class adapter extends atoum\adapter
 
 	public function __set($functionName, $mixed)
 	{
-		if ($mixed instanceof \closure === false)
-		{
-			$mixed = function() use ($mixed) { return $mixed; };
-		}
-
-		$this->{$functionName}->setClosure($mixed);
+		$this->{$functionName}->return = $mixed;
 	}
 
 	public function __get($functionName)

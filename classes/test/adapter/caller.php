@@ -8,15 +8,45 @@ use
 
 class caller implements \arrayAccess
 {
+	protected $currentCall = null;
 	protected $closuresByCall = array();
+
+	public function __set($keyword, $mixed)
+	{
+		switch ($keyword)
+		{
+			case 'return':
+				if ($mixed instanceof \closure === false)
+				{
+					$mixed = function() use ($mixed) { return $mixed; };
+				}
+
+				$this->setClosure($mixed);
+				break;
+
+			default:
+				throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
+		}
+	}
 
 	public function isEmpty()
 	{
 		return (sizeof($this->closuresByCall) <= 0);
 	}
 
+	public function getCurrentCall()
+	{
+		return $this->currentCall;
+	}
+
 	public function setClosure(\closure $closure, $call = 0)
 	{
+		if ($this->currentCall !== null)
+		{
+			$call = $this->currentCall;
+			$this->currentCall = null;
+		}
+
 		static::checkCall($call);
 
 		$this->closuresByCall[$call] = $closure;
@@ -88,6 +118,13 @@ class caller implements \arrayAccess
 		}
 
 		return call_user_func_array($this->closuresByCall[$call], $arguments);
+	}
+
+	public function atCall($call)
+	{
+		$this->currentCall = (int) $call;
+
+		return $this;
 	}
 
 	protected static function checkCall($call)
