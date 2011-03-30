@@ -51,7 +51,7 @@ class controller extends test\adapter
 
 	public function getMethods()
 	{
-		return $this->functions;
+		return $this->callers;
 	}
 
 	public function getCalls($method = null)
@@ -123,7 +123,7 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value, $key) { $value = $value->getName(); });
 
-			foreach ($this->functions as $method => $closure)
+			foreach ($this->callers as $method => $closure)
 			{
 				if (in_array($method, $methods) === false)
 				{
@@ -133,9 +133,9 @@ class controller extends test\adapter
 
 			foreach ($methods as $method)
 			{
-				if (isset($this->functions[$method]) === false)
+				if (isset($this->callers[$method]) === false)
 				{
-					$this->functions[$method] = null;
+					$this->callers[$method] = null;
 				}
 			}
 
@@ -186,7 +186,7 @@ class controller extends test\adapter
 	{
 		if ($this->mockClass !== null)
 		{
-			if (array_key_exists($method, $this->functions) === false)
+			if (array_key_exists($method, $this->callers) === false)
 			{
 				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
