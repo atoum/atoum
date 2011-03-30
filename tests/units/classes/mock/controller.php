@@ -15,7 +15,7 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCallers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 	}
@@ -255,11 +255,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCallers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->control($aMock))->isIdenticalTo($mockController)
 			->string($mockController->getMockClass())->isEqualTo(get_class($aMock))
-			->array($mockController->getMethods())->isEqualTo(array(
+			->array($mockController->getCallers())->isEqualTo(array(
 					'a' => null,
 					'b' => null
 				)
@@ -429,11 +429,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCallers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCallers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 
@@ -453,11 +453,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNotNull()
-			->array($mockController->getMethods())->isNotEmpty()
+			->array($mockController->getCallers())->isNotEmpty()
 			->array($mockController->getCalls())->isNotEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getMethods())->isEmpty()
+			->array($mockController->getCallers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 	}

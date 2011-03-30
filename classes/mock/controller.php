@@ -49,11 +49,6 @@ class controller extends test\adapter
 		return $this->mockClass;
 	}
 
-	public function getMethods()
-	{
-		return $this->callers;
-	}
-
 	public function getCalls($method = null)
 	{
 		if ($method !== null)
