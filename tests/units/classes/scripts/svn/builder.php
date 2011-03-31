@@ -14,9 +14,12 @@ class builder extends atoum\test
 {
 	public function beforeTestMethod($testMethod)
 	{
-		if (defined('SVN_REVISION_HEAD') === false)
+		if (extension_loaded('svn') === false)
 		{
 			define('SVN_REVISION_HEAD', -1);
+			define('PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS', 1);
+			define('SVN_AUTH_PARAM_DEFAULT_USERNAME', 2);
+			define('SVN_AUTH_PARAM_DEFAULT_PASSWORD', 3);
 		}
 	}
 
@@ -157,7 +160,11 @@ class builder extends atoum\test
 
 	public function testSetScoreDirectory()
 	{
-		$builder = new svn\builder(uniqid());
+		$adapter = new atoum\test\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
 			->variable($builder->getScoreDirectory())->isNull()
@@ -168,7 +175,11 @@ class builder extends atoum\test
 
 	public function testSetErrorsDirectory()
 	{
-		$builder = new svn\builder(uniqid());
+		$adapter = new atoum\test\adapter();
+
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
 			->variable($builder->getErrorsDirectory())->isNull()
@@ -300,6 +311,7 @@ class builder extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$adapter->extension_loaded = true;
+		$adapter->svn_auth_set_parameter = function() {};
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
