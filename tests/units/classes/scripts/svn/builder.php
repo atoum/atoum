@@ -50,16 +50,37 @@ class builder extends atoum\test
 			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->variable($builder->getMailer())->isNull()
 			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
 			->variable($builder->getTag())->isNull()
 			->string($builder->getTagRegex())->isEqualTo('/\$Rev: \d+ \$/')
 		;
 	}
 
+	public function testSetMailer()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setMailer($mailer = new atoum\mailers\mail()))->isIdenticalTo($builder)
+			->object($builder->getMailer())->isIdenticalTo($mailer)
+			->string($builder->getVersionToken())->isEqualTo('[version]')
+			->string($builder->getPhpToken())->isEqualTo('[php]')
+			->string($builder->getStatusToken())->isEqualTo('[status]')
+			->object($builder->setMailer($mailer = new atoum\mailers\mail(), $versionToken = uniqid(), $statusToken = uniqid(), $phpToken = uniqid()))->isIdenticalTo($builder)
+			->object($builder->getMailer())->isIdenticalTo($mailer)
+			->string($builder->getVersionToken())->isEqualTo($versionToken)
+			->string($builder->getStatusToken())->isEqualTo($statusToken)
+			->string($builder->getPhpToken())->isEqualTo($phpToken)
+		;
+	}
+
 	public function testSetTag()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -126,7 +147,6 @@ class builder extends atoum\test
 	public function testSetPhp()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);

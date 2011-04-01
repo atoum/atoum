@@ -67,7 +67,9 @@ class phpClass extends \mageekguy\atoum\asserter
 
 	public function hasParent($parent, $failMessage = null)
 	{
-		if ($this->classIsSet()->class->getParentClass()->getName() == $parent)
+		$parentClass = $this->classIsSet()->class->getParentClass();
+
+		if ($parentClass !== false && $parentClass->getName() == $parent)
 		{
 			return $this->pass();
 		}

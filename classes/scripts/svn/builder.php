@@ -26,6 +26,10 @@ class builder extends atoum\script
 	protected $runFile = null;
 	protected $buildPhar = true;
 	protected $fileIteratorInjector = null;
+	protected $mailer = null;
+	protected $phpToken = '[php]';
+	protected $statusToken = '[status]';
+	protected $versionToken = '[version]';
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -62,6 +66,48 @@ class builder extends atoum\script
 		}
 
 		return $this->php;
+	}
+
+	public function setMailer(atoum\mailer $mailer, $versionToken = null, $statusToken = null, $phpToken = null)
+	{
+		$this->mailer = $mailer;
+
+		if ($versionToken !== null)
+		{
+			$this->versionToken = $versionToken;
+		}
+
+		if ($statusToken !== null)
+		{
+			$this->statusToken = $statusToken;
+		}
+
+		if ($phpToken !== null)
+		{
+			$this->phpToken = $phpToken;
+		}
+
+		return $this;
+	}
+
+	public function getMailer()
+	{
+		return $this->mailer;
+	}
+
+	public function getPhpToken()
+	{
+		return $this->phpToken;
+	}
+
+	public function getStatusToken()
+	{
+		return $this->statusToken;
+	}
+
+	public function getVersionToken()
+	{
+		return $this->versionToken;
 	}
 
 	public function buildPhar($boolean)

@@ -1,19 +1,42 @@
 <?php
 
-namespace mageekguy\atoum\writers;
+namespace mageekguy\atoum;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\exceptions
 ;
 
-class mail extends atoum\writer
+abstract class mailer implements atoum\adapter\aggregator
 {
 	protected $to = null;
 	protected $from = null;
-	protected $mailer = null;
+	protected $xMailer = null;
 	protected $replyTo = null;
 	protected $subject = null;
+	protected $adapter = null;
+
+	public function __construct(atoum\adapter $adapter = null)
+	{
+		if ($adapter === null)
+		{
+			$adapter = new atoum\adapter();
+		}
+
+		$this->setAdapter($adapter);
+	}
+
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
 
 	public function addTo($to, $realName = null)
 	{
@@ -89,54 +112,19 @@ class mail extends atoum\writer
 		return $this->replyTo;
 	}
 
-	public function setMailer($mailer)
+	public function setXMailer($mailer)
 	{
-		$this->mailer = (string) $mailer;
+		$this->xMailer = (string) $mailer;
 
 		return $this;
 	}
 
-	public function getMailer()
+	public function getXMailer()
 	{
-		return $this->mailer;
+		return $this->xMailer;
 	}
 
-	public function write($something)
-	{
-		return $this->flush($something);
-	}
-
-	public function flush($something)
-	{
-		if ($this->to === null)
-		{
-			throw new exceptions\runtime('To is undefined');
-		}
-
-		if ($this->subject === null)
-		{
-			throw new exceptions\runtime('Subject is undefined');
-		}
-
-		if ($this->from === null)
-		{
-			throw new exceptions\runtime('From is undefined');
-		}
-
-		if ($this->replyTo === null)
-		{
-			throw new exceptions\runtime('Reply to is undefined');
-		}
-
-		if ($this->mailer === null)
-		{
-			throw new exceptions\runtime('Mailer is undefined');
-		}
-
-		$this->adapter->mail($this->to, $this->subject, (string) $something, 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->mailer);
-
-		return $this;
-	}
+	public abstract function send($something);
 }
 
 ?>
