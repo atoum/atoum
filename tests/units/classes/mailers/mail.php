@@ -174,7 +174,7 @@ class mail extends atoum\test
 		$this->assert
 			->exception(function() use ($mail) { $mail->send(uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Mailer is undefined')
+				->hasMessage('X-mailer is undefined')
 		;
 
 		$mail

@@ -148,7 +148,7 @@ class mail extends atoum\mailer
 
 		if ($this->xMailer === null)
 		{
-			throw new exceptions\runtime('Mailer is undefined');
+			throw new exceptions\runtime('X-mailer is undefined');
 		}
 
 		$this->adapter->mail($this->to, $this->subject, (string) $something, 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->xMailer);
