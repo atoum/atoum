@@ -124,6 +124,59 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testWasNotCalled()
+	{
+		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->wasNotCalled();
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$mockGenerator = new atoum\mock\generator();
+		$mockGenerator->generate(__CLASS__);
+
+		$adapter = new atoum\test\adapter();
+		$adapter->class_exists = true;
+
+		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter));
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->wasNotCalled())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(0)
+		;
+
+		$mock->getMockController()->{__FUNCTION__} = function() {};
+		$mock->{__FUNCTION__}();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, & $failMessage) { $line = __LINE__; $asserter->wasNotCalled($failMessage = uniqid()); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage($failMessage)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::wasNotCalled()',
+						'fail' => $failMessage
+					)
+				)
+			)
+		;
+	}
+
 	public function testCall($argForTest = null)
 	{
 		$asserter = new asserters\mock($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));

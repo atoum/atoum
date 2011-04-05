@@ -371,7 +371,7 @@ class builder extends atoum\script
 
 		$php = $this->getPhpPath();
 
-		$command = $php . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
+		$command = $php . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
 
 		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -388,9 +388,9 @@ class builder extends atoum\script
 
 		$this->adapter->proc_close($php);
 
-		if ($stdOut != '')
+		if ($this->mailer !== null)
 		{
-			$this->writeErrorInErrorsDirectory($stdOut);
+			$this->mailer->send($stdOut);
 		}
 
 		if ($stdErr != '')

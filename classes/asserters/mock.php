@@ -41,6 +41,18 @@ class mock extends \mageekguy\atoum\asserter
 		}
 	}
 
+	public function wasNotCalled($failMessage = null)
+	{
+		if (sizeof($this->mockIsSet()->mock->getMockController()->getCalls()) <= 0)
+		{
+			return $this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is called'), get_class($this->mock)));
+		}
+	}
+
 	public function call($method, array $args = null, $failMessage = null)
 	{
 		$calls = $this->mockIsSet()->mock->getMockController()->getCalls($method);

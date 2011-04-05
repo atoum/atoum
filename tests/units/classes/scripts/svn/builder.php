@@ -623,6 +623,7 @@ class builder extends atoum\test
 		$mockGenerator
 			->generate($this->getTestedClassName())
 			->generate('\mageekguy\atoum\score')
+			->generate('\mageekguy\atoum\mailers\mail')
 		;
 
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
@@ -643,6 +644,11 @@ class builder extends atoum\test
 		$scoreController->getExceptionNumber = 0;
 		$scoreController->getErrorNumber = 0;
 
+		$mailer = new mock\mageekguy\atoum\mailers\mail();
+
+		$mailerController = $mailer->getMockController();
+		$mailerController->send = function() {};
+
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -659,7 +665,7 @@ class builder extends atoum\test
 			->adapter($adapter)
 				->call('sys_get_temp_dir')
 				->call('tempnam', array($tempDirectory, ''))
-				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdOut))
 				->call('fclose', array($stdOut))
 				->call('stream_get_contents', array($stdErr))
@@ -672,6 +678,8 @@ class builder extends atoum\test
 				->call('getFailNumber')
 				->call('getExceptionNumber')
 				->call('getErrorNumber')
+			->mock($mailer)
+				->wasNotCalled()
 		;
 
 		$adapter->proc_open = false;
@@ -682,7 +690,7 @@ class builder extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -nr -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php . '\'')
+				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php . '\'')
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -691,14 +699,20 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdOutContents))
+			->mock($builder)
+				->notCall('writeErrorInErrorsDirectory', array($stdOutContents))
+			->mock($mailer)
+				->wasNotCalled()
 		;
 
 		$adapter->stream_get_contents = function($stream) use (& $stdErr, & $stdErrContents) { return $stream != $stdErr ? '' : $stdErrContents = uniqid(); };
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory', array($stdErrContents))
+			->mock($mailer)
+				->wasNotCalled()
 		;
 
 		$adapter->file_get_contents = false;
@@ -769,6 +783,64 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
+		;
+
+		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
+		$builder->setPhpPath($php = uniqid());
+
+		$builder
+			->setWorkingDirectory($workingDirectory = uniqid())
+		;
+
+		$builderController = $builder->getMockController();
+		$builderController->checkout = function() {};
+		$builderController->writeErrorInErrorsDirectory = function() {};
+
+		$score = new mock\mageekguy\atoum\score();
+
+		$scoreController = $score->getMockController();
+		$scoreController->getFailNumber = 0;
+		$scoreController->getExceptionNumber = 0;
+		$scoreController->getErrorNumber = 0;
+
+		$mailer = new mock\mageekguy\atoum\mailers\mail();
+		$builder->setMailer($mailer);
+
+		$mailerController = $mailer->getMockController();
+		$mailerController->send = function() {};
+
+		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
+		$adapter->tempnam = $scoreFile = uniqid();
+		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+		$adapter->stream_get_contents = function() { return ''; };
+		$adapter->fclose = function() {};
+		$adapter->proc_close = function() {};
+		$adapter->file_get_contents = $scoreFileContents = uniqid();
+		$adapter->unserialize = $score;
+		$adapter->unlink = true;
+		$adapter->stream_get_contents = function($stream) use (& $stdOut, & $stdOutContents) { return $stream != $stdOut ? '' : $stdOutContents = uniqid(); };
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isTrue()
+			->mock($builder)->call('checkout')
+			->adapter($adapter)
+				->call('sys_get_temp_dir')
+				->call('tempnam', array($tempDirectory, ''))
+				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdOut))
+				->call('fclose', array($stdOut))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->call('file_get_contents', array($scoreFile))
+				->call('unserialize', array($scoreFileContents))
+				->call('unlink', array($scoreFile))
+			->mock($score)
+				->call('getFailNumber')
+				->call('getExceptionNumber')
+				->call('getErrorNumber')
+			->mock($mailer)
+				->call('send', array($stdOutContents))
 		;
 	}
 
