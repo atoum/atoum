@@ -388,11 +388,6 @@ class builder extends atoum\script
 
 		$this->adapter->proc_close($php);
 
-		if ($this->mailer !== null)
-		{
-			$this->mailer->send($stdOut);
-		}
-
 		if ($stdErr != '')
 		{
 			$this->writeErrorInErrorsDirectory($stdErr);
@@ -425,7 +420,17 @@ class builder extends atoum\script
 			}
 		}
 
-		return $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+		$status = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+
+		if ($this->mailer !== null)
+		{
+			$this->mailer
+				->setSubject(sprintf($this->mailer->getSubject(), $status === false ? 'FAIL' : 'SUCCESS', $this->getRevision()))
+				->send($stdOut)
+			;
+		}
+
+		return $status;
 	}
 
 	public function tagFiles()

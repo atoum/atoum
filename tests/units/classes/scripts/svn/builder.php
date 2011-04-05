@@ -785,6 +785,9 @@ class builder extends atoum\test
 			->boolean($builder->checkUnitTests())->isFalse()
 		;
 
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
 		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
 		$builder->setPhpPath($php = uniqid());
 
@@ -804,10 +807,15 @@ class builder extends atoum\test
 		$scoreController->getErrorNumber = 0;
 
 		$mailer = new mock\mageekguy\atoum\mailers\mail();
-		$builder->setMailer($mailer);
+		$builder
+			->setRevision($revision = rand(1, PHP_INT_MAX))
+			->setMailer($mailer)
+		;
 
 		$mailerController = $mailer->getMockController();
 		$mailerController->send = function() {};
+		$mailerController->getSubject = $subject = '[%1$s] Nightly build of revision %2$d';
+		$mailerController->setSubject = function() use ($mailer) { return $mailer; };
 
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
@@ -840,6 +848,7 @@ class builder extends atoum\test
 				->call('getExceptionNumber')
 				->call('getErrorNumber')
 			->mock($mailer)
+				->call('setSubject', array(sprintf($subject, 'SUCCESS', $revision)))
 				->call('send', array($stdOutContents))
 		;
 	}
