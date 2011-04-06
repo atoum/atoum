@@ -830,25 +830,28 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($builder)->call('checkout')
-			->adapter($adapter)
-				->call('sys_get_temp_dir')
-				->call('tempnam', array($tempDirectory, ''))
-				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdOut))
-				->call('fclose', array($stdOut))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('file_get_contents', array($scoreFile))
-				->call('unserialize', array($scoreFileContents))
-				->call('unlink', array($scoreFile))
-			->mock($score)
-				->call('getFailNumber')
-				->call('getExceptionNumber')
-				->call('getErrorNumber')
 			->mock($mailer)
 				->call('setSubject', array(sprintf($subject, 'SUCCESS', $revision)))
+				->call('send', array($stdOutContents))
+		;
+
+		$mailerController->getSubject = $subject = uniqid();
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isTrue()
+			->mock($mailer)
+				->call('setSubject', array($subject))
+				->call('send', array($stdOutContents))
+		;
+
+		$scoreController->getFailNumber = rand(1, PHP_INT_MAX);
+
+		$mailerController->getSubject = $subject = '[%1$s] Nightly build of revision %2$d';
+
+		$this->assert
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($mailer)
+				->call('setSubject', array(sprintf($subject, 'FAIL', $revision)))
 				->call('send', array($stdOutContents))
 		;
 	}
