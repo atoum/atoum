@@ -660,13 +660,15 @@ class builder extends atoum\test
 		$adapter->unserialize = $score;
 		$adapter->unlink = true;
 
+		$command = $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
+
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
 			->mock($builder)->call('checkout')
 			->adapter($adapter)
 				->call('sys_get_temp_dir')
 				->call('tempnam', array($tempDirectory, ''))
-				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('proc_open', array($command, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
 				->call('proc_get_status', array($resource))
 				->call('stream_get_contents', array($stdOut))
 				->call('fclose', array($stdOut))
@@ -696,6 +698,52 @@ class builder extends atoum\test
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+
+		$adapter->proc_get_status = array('exitcode' => 126, 'running' => false);
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to find \'' . $php . '\' or it is not executable')
+		;
+
+		$adapter->proc_get_status = array('exitcode' => 127, 'running' => false);
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to find \'' . $php . '\' or it is not executable')
+		;
+
+		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(1, 125), 'running' => false);
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+		;
+
+		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(128, PHP_INT_MAX), 'running' => false);
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->checkUnitTests();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+		;
+
+		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
 
 		$adapter->stream_get_contents = function($stream) use (& $stdOut, & $stdOutContents) { return $stream != $stdOut ? '' : $stdOutContents = uniqid(); };
 
