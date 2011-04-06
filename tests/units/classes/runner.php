@@ -221,7 +221,7 @@ class runner extends atoum\test
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
 		$adapter->proc_close = function() {};
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
 		$adapter->get_declared_classes = function() { return array(); };
@@ -249,7 +249,7 @@ class runner extends atoum\test
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
 		$adapter->proc_close = function() {};
 
 		$superglobals = new atoum\superglobals();
@@ -275,7 +275,7 @@ class runner extends atoum\test
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
 		$adapter->proc_close = function() {};
 		$adapter->get_declared_classes = array();
 

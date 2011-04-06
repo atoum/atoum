@@ -652,6 +652,7 @@ class builder extends atoum\test
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
 		$adapter->stream_get_contents = function() { return ''; };
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};
@@ -666,6 +667,7 @@ class builder extends atoum\test
 				->call('sys_get_temp_dir')
 				->call('tempnam', array($tempDirectory, ''))
 				->call('proc_open', array($php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
+				->call('proc_get_status', array($resource))
 				->call('stream_get_contents', array($stdOut))
 				->call('fclose', array($stdOut))
 				->call('stream_get_contents', array($stdErr))
@@ -820,6 +822,7 @@ class builder extends atoum\test
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
+		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
 		$adapter->stream_get_contents = function() { return ''; };
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};

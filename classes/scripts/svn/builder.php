@@ -369,15 +369,30 @@ class builder extends atoum\script
 
 		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
-		$php = $this->getPhpPath();
+		$phpPath = $this->getPhpPath();
 
-		$command = $php . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
+		$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
 
 		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
 		if ($php === false)
 		{
 			throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
+		}
+
+		$phpStatus = $this->adapter->proc_get_status($php);
+
+		if ($phpStatus['running'] === false)
+		{
+			switch ($phpStatus['exitcode'])
+			{
+				case 126:
+				case 127:
+					throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+
+				default:
+					throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+			}
 		}
 
 		$stdOut = $this->adapter->stream_get_contents($pipes[1]);

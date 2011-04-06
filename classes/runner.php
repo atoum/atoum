@@ -231,11 +231,14 @@ class runner implements observable, adapter\aggregator
 
 		$phpStatus = $this->adapter->proc_get_status($php);
 
-		switch ($phpStatus['exitcode'])
+		if ($phpStatus['running'] === false)
 		{
-			case 126:
-			case 127:
-				throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+			switch ($phpStatus['exitcode'])
+			{
+				case 126:
+				case 127:
+					throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+			}
 		}
 
 		$this->adapter->proc_close($php);
