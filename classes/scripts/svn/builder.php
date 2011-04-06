@@ -30,6 +30,7 @@ class builder extends atoum\script
 	protected $phpToken = '[php]';
 	protected $statusToken = '[status]';
 	protected $versionToken = '[version]';
+	protected $runnerConfigurationFiles = array();
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -66,6 +67,18 @@ class builder extends atoum\script
 		}
 
 		return $this->php;
+	}
+
+	public function getRunnerConfigurationFiles()
+	{
+		return $this->runnerConfigurationFiles;
+	}
+
+	public function addRunnerConfigurationFile($file)
+	{
+		$this->runnerConfigurationFiles[] = (string) $file;
+
+		return $this;
 	}
 
 	public function setMailer(atoum\mailer $mailer, $versionToken = null, $statusToken = null, $phpToken = null)
@@ -373,6 +386,11 @@ class builder extends atoum\script
 
 		$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
 
+		foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
+		{
+			$command .= ' -c ' . $runnerConfigurationFile;
+		}
+
 		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
 		if ($php === false)
@@ -598,6 +616,31 @@ class builder extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
+			function($script, $argument, $files) use ($builder) {
+				if (sizeof($files) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				foreach ($files as $file)
+				{
+					if (file_exists($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Runner configuration file path \'%s\' is invalid'), $file));
+					}
+
+					if (is_readable($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read runner configuration file \'%s\''), $file));
+					}
+
+					$script->addRunnerConfigurationFile($file);
+				}
+			},
+			array('-rc', '--runner-configuration-files')
+		);
+
+		$this->argumentsParser->addHandler(
 			function($script, $argument, $path) {
 				if (sizeof($path) != 1)
 				{
@@ -740,6 +783,9 @@ class builder extends atoum\script
 		$this->writeLabels(
 			array(
 				'-h, --help' => $this->locale->_('Display this help'),
+				'-c <file>, --configuration-file <file>' => $this->locale->_('Use <file> as configuration file for builder'),
+				'-rc <file>, --runner-configuration-file <file>' => $this->locale->_('Use <file> as configuration file for runner'),
+				'-t <tag>, --tag <tag>' => $this->locale->_('Tag <tag> will be used as version number'),
 				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
 				'-sd <file>, --score-directory <directory>' => $this->locale->_('Save score in <directory>'),
 				'-r <url>, --repository-url <url>' => $this->locale->_('Url of subversion repository'),

@@ -50,6 +50,7 @@ class builder extends atoum\test
 			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->array($builder->getRunnerConfigurationFiles())->isEmpty()
 			->variable($builder->getMailer())->isNull()
 			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
 			->variable($builder->getTag())->isNull()
@@ -96,7 +97,6 @@ class builder extends atoum\test
 	public function testSetSuperglobals()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -110,15 +110,13 @@ class builder extends atoum\test
 	public function testGetPhp()
 	{
 		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $php = uniqid();
 
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
 		$builder->setSuperglobals($superglobals);
-
-		$superglobals->_SERVER['_'] = $php = uniqid();
 
 		$this->assert
 			->string($builder->getPhpPath())->isEqualTo($php)
@@ -165,7 +163,6 @@ class builder extends atoum\test
 	public function testSetRepositoryUrl()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -181,7 +178,6 @@ class builder extends atoum\test
 	public function testSetScoreDirectory()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -196,7 +192,6 @@ class builder extends atoum\test
 	public function testSetErrorsDirectory()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -211,7 +206,6 @@ class builder extends atoum\test
 	public function testSetUsername()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -227,7 +221,6 @@ class builder extends atoum\test
 	public function testSetPassword()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -243,7 +236,6 @@ class builder extends atoum\test
 	public function testSetRevision()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -259,7 +251,6 @@ class builder extends atoum\test
 	public function testResetRevision()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -276,7 +267,6 @@ class builder extends atoum\test
 	public function testSetRevisionFile()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -287,10 +277,22 @@ class builder extends atoum\test
 		;
 	}
 
+	public function testAddRunnerConfigurationFile()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->addRunnerConfigurationFile($file = uniqid()))->isIdenticalTo($builder)
+			->array($builder->getRunnerConfigurationFiles())->isEqualTo(array($file))
+		;
+	}
+
 	public function testSetFileIteratorInjector()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -329,7 +331,6 @@ class builder extends atoum\test
 	public function testGetLogs()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 		$adapter->svn_auth_set_parameter = function() {};
 
@@ -364,7 +365,6 @@ class builder extends atoum\test
 	public function testSetDestinationDirectory()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -380,7 +380,6 @@ class builder extends atoum\test
 	public function testSetWorkingDirectory()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -423,7 +422,6 @@ class builder extends atoum\test
 	public function testCheckout()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$mockGenerator = new mock\generator();
@@ -545,7 +543,6 @@ class builder extends atoum\test
 	public function testTagFiles()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$builder = new svn\builder(uniqid(), null, $adapter);
@@ -616,7 +613,6 @@ class builder extends atoum\test
 	public function testCheckUnitTests()
 	{
 		$adapter = new atoum\test\adapter();
-
 		$adapter->extension_loaded = true;
 
 		$mockGenerator = new mock\generator();
