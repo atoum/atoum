@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\reports;
+namespace mageekguy\atoum\reports\asynchronous;
 
 use \mageekguy\atoum;
 use \mageekguy\atoum\exceptions;
 use \mageekguy\atoum\report\fields;
 
-class xunit extends atoum\report
+class xunit extends atoum\reports\asynchronous
 {
 	protected $adapter = null;
 

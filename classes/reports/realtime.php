@@ -4,7 +4,7 @@ namespace mageekguy\atoum\reports;
 
 use \mageekguy\atoum;
 
-class realtime extends atoum\report
+abstract class realtime extends atoum\report
 {
 	public function runnerStart(atoum\runner $runner)
 	{

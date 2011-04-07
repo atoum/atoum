@@ -9,9 +9,55 @@ class string extends report\fields\test\run
 {
 	const titlePrompt = '> ';
 
+	protected $label = '';
+
+	public function __construct($label = null, $prompt = null, atoum\locale $locale = null)
+	{
+		parent::__construct($locale);
+
+		if ($label === null)
+		{
+			$label = $this->locale->_('Run %s...');
+		}
+
+		if ($prompt === null)
+		{
+			$prompt = static::titlePrompt;
+		}
+
+		$this
+			->setLabel($label)
+			->setPrompt($prompt)
+		;
+	}
+
+	public function getLabel()
+	{
+		return $this->label;
+	}
+
+	public function setLabel($label)
+	{
+		$this->label = (string) $label;
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
+
+	public function setPrompt($prompt)
+	{
+		$this->prompt = (string) $prompt;
+
+		return $this;
+	}
+
 	public function __toString()
 	{
-		$string = self::titlePrompt;
+		$string = $this->prompt;
 
 		if ($this->testClass === null)
 		{
@@ -19,7 +65,7 @@ class string extends report\fields\test\run
 		}
 		else
 		{
-			$string .= sprintf($this->locale->_('Run %s...'), $this->testClass);
+			$string .= sprintf($this->label, $this->testClass);
 		}
 
 		$string .= PHP_EOL;

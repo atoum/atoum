@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 {
+	public function testClass()
+	{
+		$this->assert
+			->class('\mageekguy\atoum\report\fields\test\run\string')->isSubClassOf('\mageekguy\atoum\report\fields\test')
+		;
+	}
+
 	public function testClassConstants()
 	{
 		$this->assert
@@ -25,6 +32,14 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$this->assert
 			->object($run)->isInstanceOf('\mageekguy\atoum\report\fields\test')
 			->variable($run->getTestClass())->isNull()
+		;
+
+		$run = new test\run\string($label = uniqid(), $prompt = uniqid(), $locale = new atoum\locale());
+
+		$this->assert
+			->string($run->getLabel())->isEqualTo($label)
+			->string($run->getPrompt())->isEqualTo($prompt)
+			->object($run->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
@@ -75,7 +90,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 	public function test__toString()
 	{
-		$run = new test\run\string($locale = new atoum\locale());
+		$run = new test\run\string(null, null, $locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
@@ -103,6 +118,44 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 			->castToString($run->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo(test\run\string::titlePrompt . $locale->_('There is currently no test running.') . PHP_EOL)
 			->castToString($run->setWithTest($test, atoum\test::afterTearDown))->isEqualTo(test\run\string::titlePrompt . $locale->_('There is currently no test running.') . PHP_EOL)
 			->castToString($run->setWithTest($test, atoum\test::runStart))->isEqualTo(test\run\string::titlePrompt . sprintf($locale->_('Run %s...'), $test->getClass()) . PHP_EOL)
+		;
+
+		$run = new test\run\string($label = uniqid(), $prompt = uniqid(), $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($run)->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeSetUp))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterSetUp))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeTestMethod))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::fail))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::error))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::exception))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::success))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . $locale->_($label) . PHP_EOL)
+		;
+
+		$run = new test\run\string($label = uniqid() . ' %s', $prompt = uniqid(), $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($run)->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeSetUp))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterSetUp))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeTestMethod))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::fail))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::error))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::exception))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::success))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($prompt . $locale->_('There is currently no test running.') . PHP_EOL)
+			->castToString($run->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . sprintf($locale->_($label), $test->getClass()) . PHP_EOL)
 		;
 	}
 }
