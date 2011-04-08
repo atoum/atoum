@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 class report implements observers\runner, observers\test
 {
+	protected $locale = null;
 	protected $writers = array();
 	protected $testFields = array();
 	protected $runnerFields = array();
@@ -12,7 +13,7 @@ class report implements observers\runner, observers\test
 	private $lastEventValue = null;
 	private $lastEventTransmitter = null;
 
-	public function __construct()
+	public function __construct(locale $locale = null)
 	{
 		$this->runnerFields = array(
 			runner::runStart => array(),
@@ -33,16 +34,35 @@ class report implements observers\runner, observers\test
 			test::afterTearDown => array(),
 			test::runStop => array(),
 		);
+
+		if ($locale === null)
+		{
+			$locale = new locale();
+		}
+
+		$this->setLocale($locale);
+	}
+
+	public function setLocale(locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function addRunnerField(report\fields\runner $field, array $events = array())
 	{
-		return $this->addField($field, $events, 'runnerFields');
+		return $this->addField($field->setLocale($this->locale), $events, 'runnerFields');
 	}
 
 	public function addTestField(report\fields\test $field, array $events = array())
 	{
-		return $this->addField($field, $events, 'testFields');
+		return $this->addField($field->setLocale($this->locale), $events, 'testFields');
 	}
 
 	public function addWriter(writer $writer)

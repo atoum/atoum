@@ -26,7 +26,7 @@ class builder extends atoum\test
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					new report\fields\runner\version\string(),
+					new report\fields\runner\version\string($report->getLocale()),
 					new report\fields\runner\php\string()
 				)
 			)

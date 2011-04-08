@@ -10,6 +10,7 @@ class string extends report\fields\test\run
 	const titlePrompt = '> ';
 
 	protected $label = '';
+	protected $prompt = '';
 
 	public function __construct($label = null, $prompt = null, atoum\locale $locale = null)
 	{

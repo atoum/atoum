@@ -13,6 +13,13 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 {
+	public function testClass()
+	{
+		$this->assert
+			->class('\mageekguy\atoum\report\fields\test\duration\string')->isSubClassOf('\mageekguy\atoum\report\fields\test')
+		;
+	}
+
 	public function testClassConstants()
 	{
 		$this->assert
@@ -25,9 +32,21 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 		$duration = new test\duration\string();
 
 		$this->assert
-			->object($duration)->isInstanceOf('\mageekguy\atoum\report\fields\test')
 			->object($duration->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($duration->getValue())->isNull()
+			->string($duration->getSingularLabel())->isEqualTo('Test duration: %4.2f second.')
+			->string($duration->getPluralLabel())->isEqualTo('Test duration: %4.2f seconds.')
+			->string($duration->getPrompt())->isEqualTo(test\duration\string::titlePrompt)
+		;
+
+		$duration = new test\duration\string($locale = new atoum\locale(), $singularLabel = uniqid(), $pluralLabel = uniqid(), $prompt = uniqid());
+
+		$this->assert
+			->object($duration->getLocale())->isIdenticalTo($locale)
+			->variable($duration->getValue())->isNull()
+			->string($duration->getSingularLabel())->isEqualTo($singularLabel)
+			->string($duration->getPluralLabel())->isEqualTo($pluralLabel)
+			->string($duration->getPrompt())->isEqualTo($prompt)
 		;
 	}
 
@@ -64,6 +83,42 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 		;
 	}
 
+	public function testSetPrompt()
+	{
+		$duration = new test\duration\string();
+
+		$this->assert
+			->object($duration->setPrompt($prompt = uniqid()))->isIdenticalTo($duration)
+			->string($duration->getPrompt())->isEqualTo($prompt)
+			->object($duration->setPrompt($prompt = rand(1, PHP_INT_MAX)))->isIdenticalTo($duration)
+			->string($duration->getPrompt())->isEqualTo((string) $prompt)
+		;
+	}
+
+	public function testSetSingularLabel()
+	{
+		$duration = new test\duration\string();
+
+		$this->assert
+			->object($duration->setSingularLabel($label = uniqid()))->isIdenticalTo($duration)
+			->string($duration->getSingularLabel())->isEqualTo($label)
+			->object($duration->setSingularLabel($label = rand(1, PHP_INT_MAX)))->isIdenticalTo($duration)
+			->string($duration->getSingularLabel())->isEqualTo((string) $label)
+		;
+	}
+
+	public function testSetPluralLabel()
+	{
+		$duration = new test\duration\string();
+
+		$this->assert
+			->object($duration->setPluralLabel($label = uniqid()))->isIdenticalTo($duration)
+			->string($duration->getPluralLabel())->isEqualTo($label)
+			->object($duration->setPluralLabel($label = rand(1, PHP_INT_MAX)))->isIdenticalTo($duration)
+			->string($duration->getPluralLabel())->isEqualTo((string) $label)
+		;
+	}
+
 	public function test__toString()
 	{
 		$mockGenerator = new mock\generator();
@@ -73,7 +128,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 		;
 
 		$score = new mock\mageekguy\atoum\score();
-		$score->getMockController()->getTotalDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
+		$score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX);
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -91,6 +146,26 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\duration
 			->castToString($duration->setWithTest($test))->isEqualTo(test\duration\string::titlePrompt . $locale->_('Test duration: unknown.') . PHP_EOL)
 			->castToString($duration->setWithTest($test, atoum\test::runStart))->isEqualTo(test\duration\string::titlePrompt . $locale->_('Test duration: unknown.') . PHP_EOL)
 			->castToString($duration->setWithTest($test, atoum\test::runStop))->isEqualTo(test\duration\string::titlePrompt . sprintf($locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $runningDuration), $runningDuration) . PHP_EOL)
+		;
+
+		$duration = new test\duration\string($locale = new atoum\locale(), $singularLabel = uniqid(), $pluralLabel = uniqid(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($duration)->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test))->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $pluralLabel . PHP_EOL)
+		;
+
+		$score->getMockController()->getTotalDuration = $runningDuration = rand(1, 1000) / 1000;
+
+		$duration = new test\duration\string($locale = new atoum\locale(), $singularLabel = uniqid(), $pluralLabel = uniqid(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($duration)->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test))->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . $locale->_('Test duration: unknown.') . PHP_EOL)
+			->castToString($duration->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $singularLabel . PHP_EOL)
 		;
 	}
 }

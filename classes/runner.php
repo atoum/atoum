@@ -17,6 +17,7 @@ class runner implements observable, adapter\aggregator
 	protected $path = '';
 	protected $class = '';
 	protected $score = null;
+	protected $locale = null;
 	protected $adapter = null;
 	protected $observers = array();
 	protected $testObservers = array();
@@ -50,12 +51,25 @@ class runner implements observable, adapter\aggregator
 			->setSuperglobals($superglobals)
 			->setAdapter($adapter)
 			->setScore($score)
+			->setLocale(new locale())
 		;
 
 		$runnerClass = new \reflectionClass($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setLocale(locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function setSuperglobals(atoum\superglobals $superglobals)
@@ -287,7 +301,10 @@ class runner implements observable, adapter\aggregator
 					$this->testNumber++;
 					$this->testMethodNumber += sizeof($test);
 
-					$test->setPhpPath($phpPath);
+					$test
+						->setLocale($this->locale)
+						->setPhpPath($phpPath)
+					;
 
 					foreach ($this->testObservers as $observer)
 					{

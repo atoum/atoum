@@ -17,6 +17,7 @@ class report extends atoum\test
 			->object($report)
 				->isInstanceOf('\mageekguy\atoum\observers\runner')
 				->isInstanceOf('\mageekguy\atoum\observers\test')
+			->object($report->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->array($report->getRunnerFields())->isEqualTo(array(
 					atoum\runner::runStart => array(),
 					atoum\runner::runStop => array()
@@ -37,6 +38,45 @@ class report extends atoum\test
 					atoum\test::runStop => array()
 				)
 			)
+		;
+
+		$report = new atoum\report($locale = new atoum\locale());
+
+		$this->assert
+			->object($report)
+				->isInstanceOf('\mageekguy\atoum\observers\runner')
+				->isInstanceOf('\mageekguy\atoum\observers\test')
+			->object($report->getLocale())->isIdenticalTo($locale)
+			->array($report->getRunnerFields())->isEqualTo(array(
+					atoum\runner::runStart => array(),
+					atoum\runner::runStop => array()
+				)
+			)
+			->array($report->getTestFields())->isEqualTo(array(
+					atoum\test::runStart => array(),
+					atoum\test::beforeSetUp => array(),
+					atoum\test::afterSetUp => array(),
+					atoum\test::beforeTestMethod => array(),
+					atoum\test::success => array(),
+					atoum\test::fail => array(),
+					atoum\test::error => array(),
+					atoum\test::exception => array(),
+					atoum\test::afterTestMethod => array(),
+					atoum\test::beforeTearDown => array(),
+					atoum\test::afterTearDown => array(),
+					atoum\test::runStop => array()
+				)
+			)
+		;
+	}
+
+	public function testSetLocale()
+	{
+		$report = new atoum\report();
+
+		$this->assert
+			->object($report->setLocale($locale = new atoum\locale()))->isIdenticalTo($report)
+			->object($report->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
@@ -61,18 +101,21 @@ class report extends atoum\test
 					'runnerStop' => array($field)
 				)
 			)
+			->object($field->getLocale())->isIdenticalTo($report->getLocale())
 			->object($report->addRunnerField($otherField = new mock\mageekguy\atoum\report\fields\runner()))->isIdenticalTo($report)
 			->array($report->getRunnerFields())->isIdenticalTo(array(
 					'runnerStart' => array($field, $otherField),
 					'runnerStop' => array($field, $otherField)
 				)
 			)
+			->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
 			->object($report->addRunnerField($runnerStopField = new mock\mageekguy\atoum\report\fields\runner(), array('runnerStop')))->isIdenticalTo($report)
 			->array($report->getRunnerFields())->isIdenticalTo(array(
 					'runnerStart' => array($field, $otherField),
 					'runnerStop' => array($field, $otherField, $runnerStopField)
 				)
 			)
+			->object($runnerStopField->getLocale())->isIdenticalTo($report->getLocale())
 		;
 
 		$this->assert
@@ -126,6 +169,7 @@ class report extends atoum\test
 					atoum\test::runStop => array($field)
 				)
 			)
+			->object($field->getLocale())->isIdenticalTo($report->getLocale())
 			->object($report->addTestField($otherField = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
 					atoum\test::runStart => array($field, $otherField),
@@ -142,6 +186,7 @@ class report extends atoum\test
 					atoum\test::runStop => array($field, $otherField)
 				)
 			)
+			->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
 			->object($report->addTestField($beforeTestSetUpField = new mock\mageekguy\atoum\report\fields\test(), array(atoum\test::beforeSetUp)))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
 					atoum\test::runStart => array($field, $otherField),
@@ -158,6 +203,7 @@ class report extends atoum\test
 					atoum\test::runStop => array($field, $otherField)
 				)
 			)
+			->object($beforeTestSetUpField->getLocale())->isIdenticalTo($report->getLocale())
 		;
 	}
 

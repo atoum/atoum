@@ -9,6 +9,31 @@ require_once(__DIR__ . '/../runner.php');
 /** @isolation off */
 class locale extends atoum\test
 {
+	public function test__construct()
+	{
+		$locale = new atoum\locale();
+
+		$this->assert
+			->variable($locale->get())->isNull()
+		;
+
+		$locale = new atoum\locale($value = uniqid());
+
+		$this->assert
+			->string($locale->get())->isEqualTo($value)
+		;
+	}
+
+	public function testSet()
+	{
+		$locale = new atoum\locale();
+
+		$this->assert
+			->object($locale->set($value = uniqid()))->isIdenticalTo($locale)
+			->string($locale->get())->isEqualTo($value)
+		;
+	}
+
 	public function test_()
 	{
 		$locale = new atoum\locale();

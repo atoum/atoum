@@ -6,6 +6,8 @@ use \mageekguy\atoum;
 
 abstract class field
 {
+	protected $locale = null;
+
 	public function __construct(atoum\locale $locale = null)
 	{
 		if ($locale === null)
@@ -13,7 +15,14 @@ abstract class field
 			$locale = new atoum\locale();
 		}
 
+		$this->setLocale($locale);
+	}
+
+	public function setLocale(atoum\locale $locale)
+	{
 		$this->locale = $locale;
+
+		return $this;
 	}
 
 	public function getLocale()
