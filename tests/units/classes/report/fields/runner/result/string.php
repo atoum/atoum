@@ -54,6 +54,18 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		;
 	}
 
+	public function testSetPrompt()
+	{
+		$field = new runner\result\string();
+
+		$this->assert
+			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo((string) $prompt)
+		;
+	}
+
 	public function testSetWithRunner()
 	{
 		$field = new runner\result\string();
@@ -150,18 +162,33 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 		$scoreController->getFailNumber = function() use (& $failNumber) { return $failNumber = rand(1, PHP_INT_MAX); };
 
+		$field = new runner\result\string();
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
 		$field = new runner\result\string($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
-				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
-				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
-				sprintf($locale->__('%s failure', '%s failures', $failNumber), $failNumber),
-				sprintf($locale->__('%s error', '%s errors', $errorNumber), $errorNumber),
-				sprintf($locale->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
 			)
 		;
 	}

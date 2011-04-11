@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests\duration;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\runner\tests\duration
 {
@@ -27,7 +29,7 @@ class string extends report\fields\runner\tests\duration
 				)
 			);
 		}
-		
+
 		$string .= PHP_EOL;
 
 		return $string;
