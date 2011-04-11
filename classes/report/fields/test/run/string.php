@@ -2,46 +2,27 @@
 
 namespace mageekguy\atoum\report\fields\test\run;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\test\run
 {
-	const titlePrompt = '> ';
+	const defaultPrompt = '> ';
 
-	protected $label = '';
 	protected $prompt = '';
 
-	public function __construct($label = null, $prompt = null, atoum\locale $locale = null)
+	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
 		parent::__construct($locale);
 
-		if ($label === null)
-		{
-			$label = $this->locale->_('Run %s...');
-		}
-
 		if ($prompt === null)
 		{
-			$prompt = static::titlePrompt;
+			$prompt = static::defaultPrompt;
 		}
 
-		$this
-			->setLabel($label)
-			->setPrompt($prompt)
-		;
-	}
-
-	public function getLabel()
-	{
-		return $this->label;
-	}
-
-	public function setLabel($label)
-	{
-		$this->label = (string) $label;
-
-		return $this;
+		$this->setPrompt($prompt);
 	}
 
 	public function getPrompt()
@@ -66,7 +47,7 @@ class string extends report\fields\test\run
 		}
 		else
 		{
-			$string .= sprintf($this->label, $this->testClass);
+			$string .= sprintf('Run %s...', $this->testClass);
 		}
 
 		$string .= PHP_EOL;

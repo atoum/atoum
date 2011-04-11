@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\report\fields\test\event;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\cli;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\cli,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\exceptions
+;
 
 class string extends report\fields\test\event
 {
