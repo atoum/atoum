@@ -335,7 +335,7 @@ abstract class test implements observable, \countable
 
 	public function run(array $runTestMethods = array(), atoum\runner $runner = null)
 	{
-		if ($this->isolation === false && $this->phpPath !== $this->superglobals->_SERVER['_'])
+		if ($this->isolation === false && (isset($this->superglobals->_SERVER['_']) === false || $this->phpPath !== $this->superglobals->_SERVER['_']))
 		{
 			$this->runInChildProcess($runner);
 		}
