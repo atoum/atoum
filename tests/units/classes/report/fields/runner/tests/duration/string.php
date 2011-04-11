@@ -13,27 +13,56 @@ require_once(__DIR__ . '/../../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\duration
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\fields\runner')
+		;
+	}
+
 	public function testClassConstant()
 	{
 		$this->assert
-			->string(tests\duration\string::titlePrompt)->isEqualTo('> ')
+			->string(tests\duration\string::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$duration = new tests\duration\string();
+		$field = new tests\duration\string();
 
 		$this->assert
-			->object($duration)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestNumber())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->string($field->getPrompt())->isEqualTo(tests\duration\string::defaultPrompt)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+		;
+
+		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+		;
+	}
+
+	public function testSetPrompt()
+	{
+		$field = new tests\duration\string();
+
+		$this->assert
+			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo((string) $prompt)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$duration = new tests\duration\string($locale = new atoum\locale());
+		$field = new tests\duration\string();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -50,17 +79,17 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 		$runnerController->getScore = function () use ($score) { return $score; };
 
 		$this->assert
-			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestNumber())->isNull()
-			->object($duration->setWithRunner($runner))->isIdenticalTo($duration)
-			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestNumber())->isNull()
-			->object($duration->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($duration)
-			->variable($duration->getValue())->isNull()
-			->variable($duration->getTestNumber())->isNull()
-			->object($duration->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($duration)
-			->integer($duration->getValue())->isEqualTo($totalDuration)
-			->integer($duration->getTestNumber())->isEqualTo($testsNumber)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner))->isIdenticalTo($field)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->integer($field->getValue())->isEqualTo($totalDuration)
+			->integer($field->getTestNumber())->isEqualTo($testsNumber)
 		;
 	}
 
@@ -80,35 +109,62 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = 1; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$duration = new tests\duration\string($locale = new atoum\locale());
+		$field = new tests\duration\string();
 
 		$this->assert
-			->castToString($duration)->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(tests\duration\string::titlePrompt . sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+		;
+
+		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
 
-		$duration = new tests\duration\string($locale = new atoum\locale());
+		$field = new tests\duration\string();
 
 		$this->assert
-			->castToString($duration)->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(tests\duration\string::titlePrompt . sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+		;
+
+		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
 		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = rand(2, PHP_INT_MAX); };
 
-		$duration = new tests\duration\string($locale = new atoum\locale());
+		$field = new tests\duration\string();
 
 		$this->assert
-			->castToString($duration)->isEqualTo($locale->_(tests\duration\string::titlePrompt . 'Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(tests\duration\string::titlePrompt . $locale->_('Total test duration: unknown.') . PHP_EOL)
-			->castToString($duration->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(tests\duration\string::titlePrompt . sprintf($locale->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($locale->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+			->castToString($field)->isEqualTo($field->getLocale()->_($field->getPrompt() . 'Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
+		;
+
+		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getLocale()->_($field->getPrompt() . 'Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 	}
 }

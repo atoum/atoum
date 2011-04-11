@@ -9,11 +9,35 @@ use
 
 class string extends report\fields\runner\tests\duration
 {
-	const titlePrompt = '> ';
+	const defaultPrompt = '> ';
+
+	public function __construct(atoum\locale $locale = null, $prompt = null)
+	{
+		parent::__construct($locale);
+
+		if ($prompt === null)
+		{
+			$prompt = static::defaultPrompt;
+		}
+
+		$this->setPrompt($prompt);
+	}
+
+	public function setPrompt($prompt)
+	{
+		$this->prompt = (string) $prompt;
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
 
 	public function __toString()
 	{
-		$string = self::titlePrompt;
+		$string = $this->prompt;
 
 		if ($this->value === null)
 		{
