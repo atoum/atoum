@@ -7,7 +7,6 @@ use
 	\mageekguy\atoum\report\fields\runner
 ;
 
-require_once(__DIR__ . '/../runner.php');
 require_once(__DIR__ . '/../../../../runner.php');
 
 abstract class result extends \mageekguy\atoum\tests\units\report\fields\runner {}
