@@ -9,7 +9,7 @@ use
 	\mageekguy\atoum\report\fields\runner
 ;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 {
@@ -94,7 +94,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 	public function test__toString()
 	{
-		$field = new runner\failures\string($locale = new atoum\locale());
+		$field = new runner\failures\string();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -136,15 +136,27 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 		$score->getMockController()->getFailAssertions = function() use ($fails) { return $fails; };
 
-		$field = new runner\failures\string($locale = new atoum\locale());
+		$field = new runner\failures\string();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo(runner\failures\string::defaultTitlePrompt . sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
-				runner\failures\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
-				runner\failures\string::defaultMethodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
+				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+			)
+		;
+
+		$field = new runner\failures\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
+				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}

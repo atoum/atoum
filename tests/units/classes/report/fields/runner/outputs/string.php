@@ -94,7 +94,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function test__toString()
 	{
-		$field = new runner\outputs\string($locale = new atoum\locale());
+		$field = new runner\outputs\string();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -130,14 +130,27 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 		$score->getMockController()->getOutputs = function() use ($fields) { return $fields; };
 
-		$field = new runner\outputs\string($locale = new atoum\locale());
+		$field = new runner\outputs\string();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo(runner\outputs\string::defaultTitlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
-				runner\outputs\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
-				runner\outputs\string::defaultMethodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$firstOtherValue . PHP_EOL .
+				$secondOtherValue . PHP_EOL
+			)
+		;
+
+		$field = new runner\outputs\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+				$value . PHP_EOL .
+				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)

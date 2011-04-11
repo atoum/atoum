@@ -9,37 +9,37 @@ use
 
 class string extends report\fields\runner\result
 {
-	const defaultTitlePrompt = '> ';
+	const defaultPrompt = '> ';
 
-	protected $titlePrompt = '';
+	protected $prompt = '';
 
-	public function __construct(atoum\locale $locale = null, $titlePrompt = null)
+	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
+		if ($prompt === null)
 		{
-			$titlePrompt = static::defaultTitlePrompt;
+			$prompt = static::defaultPrompt;
 		}
 
-		$this->setTitlePrompt($titlePrompt);
+		$this->setPrompt($prompt);
 	}
 
-	public function setTitlePrompt($prompt)
+	public function setPrompt($prompt)
 	{
-		$this->titlePrompt = (string) $prompt;
+		$this->prompt = (string) $prompt;
 
 		return $this;
 	}
 
-	public function getTitlePrompt()
+	public function getPrompt()
 	{
-		return $this->titlePrompt;
+		return $this->prompt;
 	}
 
 	public function __toString()
 	{
-		$string = static::defaultTitlePrompt;
+		$string = $this->prompt;
 
 		if ($this->testNumber === null )
 		{

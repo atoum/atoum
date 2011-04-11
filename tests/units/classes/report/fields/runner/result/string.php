@@ -13,10 +13,17 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\field')
+		;
+	}
+
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\result\string::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\result\string::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
@@ -31,11 +38,20 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailNumber())->isNull()
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
-			->string($field->getTitlePrompt())->isEqualTo(runner\result\string::defaultTitlePrompt)
+			->string($field->getPrompt())->isEqualTo(runner\result\string::defaultPrompt)
 		;
 
-		$field = new runner\result\string($locale = new atoum\locale());
+		$field = new runner\result\string($locale = new atoum\locale(), $prompt = uniqid());
 
+		$this->assert
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->variable($field->getTestNumber())->isNull()
+			->variable($field->getTestMethodNumber())->isNull()
+			->variable($field->getFailNumber())->isNull()
+			->variable($field->getErrorNumber())->isNull()
+			->variable($field->getExceptionNumber())->isNull()
+			->string($field->getPrompt())->isEqualTo($prompt)
+		;
 	}
 
 	public function testSetWithRunner()
@@ -120,10 +136,10 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		$field = new runner\result\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($field)->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(runner\result\string::defaultTitlePrompt . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !') . PHP_EOL,
+			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !') . PHP_EOL,
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
@@ -134,13 +150,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 		$scoreController->getFailNumber = function() use (& $failNumber) { return $failNumber = rand(1, PHP_INT_MAX); };
 
-		$field = new runner\result\string($locale = new atoum\locale());
+		$field = new runner\result\string($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
-			->castToString($field)->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(runner\result\string::defaultTitlePrompt . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(runner\result\string::defaultTitlePrompt . sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($locale->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
 				sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
 				sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
 				sprintf($locale->__('%s failure', '%s failures', $failNumber), $failNumber),

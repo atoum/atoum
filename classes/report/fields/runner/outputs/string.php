@@ -67,11 +67,11 @@ class string extends report\fields\runner\outputs
 
 			if ($sizeOfOutputs > 0)
 			{
-				$string .= static::defaultTitlePrompt . sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs) . PHP_EOL;
+				$string .= $this->titlePrompt . sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs) . PHP_EOL;
 
 				foreach ($outputs as $output)
 				{
-					$string .= static::defaultMethodPrompt . $output['class'] . '::' . $output['method'] . '():' . PHP_EOL;
+					$string .= $this->methodPrompt . $output['class'] . '::' . $output['method'] . '():' . PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{

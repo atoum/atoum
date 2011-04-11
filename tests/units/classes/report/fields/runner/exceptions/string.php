@@ -149,11 +149,26 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 		$score->getMockController()->getExceptions = function() use ($fields) { return $fields; };
 
-		$field = new runner\exceptions\string($locale = new atoum\locale());
+		$field = new runner\exceptions\string();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($locale->__('There is %d exception:', 'There are %d exceptions:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+				$field->getExceptionPrompt() . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
+				$value . PHP_EOL .
+				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$field->getExceptionPrompt() . sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine) . PHP_EOL .
+				$firstOtherValue . PHP_EOL .
+				$secondOtherValue . PHP_EOL
+			)
+		;
+
+		$field = new runner\exceptions\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $exceptionPrompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
 				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
 				$field->getExceptionPrompt() . sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
 				$value . PHP_EOL .

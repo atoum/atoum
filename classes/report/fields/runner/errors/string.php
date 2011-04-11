@@ -85,7 +85,7 @@ class string extends report\fields\runner\errors
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= self::defaultTitlePrompt . sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
+				$string .= $this->titlePrompt . sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -94,13 +94,13 @@ class string extends report\fields\runner\errors
 				{
 					if ($error['class'] !== $class || $error['method'] !== $method)
 					{
-						$string .= self::defaultMethodPrompt . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
+						$string .= $this->methodPrompt . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
 
 						$class = $error['class'];
 						$method = $error['method'];
 					}
 
-					$string .= self::defaultErrorPrompt;
+					$string .= $this->errorPrompt;
 
 					$type = self::getType($error['type']);
 
