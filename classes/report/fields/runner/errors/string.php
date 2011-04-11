@@ -2,14 +2,76 @@
 
 namespace mageekguy\atoum\report\fields\runner\errors;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\runner\errors
 {
-	const titlePrompt = '> ';
-	const methodPrompt = '=> ';
-	const errorPrompt = '==> ';
+	const defaultTitlePrompt = '> ';
+	const defaultMethodPrompt = '=> ';
+	const defaultErrorPrompt = '==> ';
+
+	protected $titlePrompt = '';
+	protected $methodPrompt = '';
+	protected $errorPrompt = '';
+
+	public function __construct(atoum\locale $locale = null, $titlePrompt = null, $methodPrompt = null, $errorPrompt = null)
+	{
+		parent::__construct($locale);
+
+		if ($titlePrompt === null)
+		{
+			$titlePrompt = static::defaultTitlePrompt;
+		}
+
+		if ($methodPrompt === null)
+		{
+			$methodPrompt = static::defaultMethodPrompt;
+		}
+
+		if ($errorPrompt === null)
+		{
+			$errorPrompt = static::defaultErrorPrompt;
+		}
+
+		$this
+			->setTitlePrompt($titlePrompt)
+			->setMethodPrompt($methodPrompt)
+			->setErrorPrompt($errorPrompt)
+		;
+	}
+
+	public function setTitlePrompt($prompt)
+	{
+		return $this->setPrompt($this->titlePrompt, $prompt);
+	}
+
+	public function getTitlePrompt()
+	{
+		return $this->titlePrompt;
+	}
+
+	public function setMethodPrompt($prompt)
+	{
+		return $this->setPrompt($this->methodPrompt, $prompt);
+	}
+
+	public function getMethodPrompt()
+	{
+		return $this->methodPrompt;
+	}
+
+	public function setErrorPrompt($prompt)
+	{
+		return $this->setPrompt($this->errorPrompt, $prompt);
+	}
+
+	public function getErrorPrompt()
+	{
+		return $this->errorPrompt;
+	}
 
 	public function __toString()
 	{
@@ -23,7 +85,7 @@ class string extends report\fields\runner\errors
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= self::titlePrompt . sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
+				$string .= self::defaultTitlePrompt . sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -32,13 +94,13 @@ class string extends report\fields\runner\errors
 				{
 					if ($error['class'] !== $class || $error['method'] !== $method)
 					{
-						$string .= self::methodPrompt . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
+						$string .= self::defaultMethodPrompt . $error['class'] . '::' . $error['method'] . '():' . PHP_EOL;
 
 						$class = $error['class'];
 						$method = $error['method'];
 					}
 
-					$string .= self::errorPrompt;
+					$string .= self::defaultErrorPrompt;
 
 					$type = self::getType($error['type']);
 
@@ -166,6 +228,13 @@ class string extends report\fields\runner\errors
 		}
 
 		return $string;
+	}
+
+	protected function setPrompt(& $property, $prompt)
+	{
+		$property = (string) $prompt;
+
+		return $this;
 	}
 }
 

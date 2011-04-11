@@ -13,20 +13,69 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner')
+		;
+	}
+
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(runner\outputs\string::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\outputs\string::defaultMethodPrompt)->isEqualTo('=> ')
+		;
+	}
+
 	public function test__construct()
 	{
-		$outputs = new runner\outputs\string();
+		$field = new runner\outputs\string();
 
 		$this->assert
-			->object($outputs)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($outputs->getRunner())->isNull()
-			->object($outputs->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->string($field->getTitlePrompt())->isEqualTo(runner\outputs\string::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\outputs\string::defaultMethodPrompt)
+		;
+
+		$field = new runner\outputs\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+
+		$this->assert
+			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
+		;
+	}
+
+	public function testSetTitlePrompt()
+	{
+		$field = new runner\outputs\string();
+
+		$this->assert
+			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getTitlePrompt())->isEqualTo($prompt)
+			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+		;
+	}
+
+	public function testSetMethodPrompt()
+	{
+		$field = new runner\outputs\string();
+
+		$this->assert
+			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getMethodPrompt())->isEqualTo($prompt)
+			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$outputs = new runner\outputs\string();
+		$field = new runner\outputs\string();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -34,18 +83,18 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$this->assert
-			->object($outputs->setWithRunner($runner))->isIdenticalTo($outputs)
-			->object($outputs->getRunner())->isIdenticalTo($runner)
-			->object($outputs->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($outputs)
-			->object($outputs->getRunner())->isIdenticalTo($runner)
-			->object($outputs->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($outputs)
-			->object($outputs->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function test__toString()
 	{
-		$outputs = new runner\outputs\string($locale = new atoum\locale());
+		$field = new runner\outputs\string($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -60,13 +109,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
 		$this->assert
-			->castToString($outputs)->isEmpty()
-			->castToString($outputs->setWithRunner($runner))->isEmpty()
-			->castToString($outputs->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
-			->castToString($outputs->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEmpty()
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
-		$outputss = array(
+		$fields = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -79,16 +128,16 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 			)
 		);
 
-		$score->getMockController()->getOutputs = function() use ($outputss) { return $outputss; };
+		$score->getMockController()->getOutputs = function() use ($fields) { return $fields; };
 
-		$outputs = new runner\outputs\string($locale = new atoum\locale());
+		$field = new runner\outputs\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($outputs)->isEmpty()
-			->castToString($outputs->setWithRunner($runner))->isEqualTo(runner\outputs\string::titlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($outputss)), sizeof($outputss)) . PHP_EOL .
-				runner\outputs\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\outputs\string::defaultTitlePrompt . sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+				runner\outputs\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
-				runner\outputs\string::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				runner\outputs\string::defaultMethodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)

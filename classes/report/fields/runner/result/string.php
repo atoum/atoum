@@ -2,16 +2,44 @@
 
 namespace mageekguy\atoum\report\fields\runner\result;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\runner\result
 {
-	const titlePrompt = '> ';
+	const defaultTitlePrompt = '> ';
+
+	protected $titlePrompt = '';
+
+	public function __construct(atoum\locale $locale = null, $titlePrompt = null)
+	{
+		parent::__construct($locale);
+
+		if ($titlePrompt === null)
+		{
+			$titlePrompt = static::defaultTitlePrompt;
+		}
+
+		$this->setTitlePrompt($titlePrompt);
+	}
+
+	public function setTitlePrompt($prompt)
+	{
+		$this->titlePrompt = (string) $prompt;
+
+		return $this;
+	}
+
+	public function getTitlePrompt()
+	{
+		return $this->titlePrompt;
+	}
 
 	public function __toString()
 	{
-		$string = self::titlePrompt;
+		$string = static::defaultTitlePrompt;
 
 		if ($this->testNumber === null )
 		{

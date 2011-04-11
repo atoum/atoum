@@ -13,29 +13,84 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner')
+		;
+	}
+
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\errors\string::titlePrompt)->isEqualTo('> ')
-			->string(runner\errors\string::methodPrompt)->isEqualTo('=> ')
-			->string(runner\errors\string::errorPrompt)->isEqualTo('==> ')
+			->string(runner\errors\string::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\errors\string::defaultMethodPrompt)->isEqualTo('=> ')
+			->string(runner\errors\string::defaultErrorPrompt)->isEqualTo('==> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$errors = new runner\errors\string();
+		$field = new runner\errors\string();
 
 		$this->assert
-			->object($errors)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($errors->getRunner())->isNull()
-			->object($errors->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->string($field->getTitlePrompt())->isEqualTo(runner\errors\string::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\errors\string::defaultMethodPrompt)
+			->string($field->getErrorPrompt())->isEqualTo(runner\errors\string::defaultErrorPrompt)
+		;
+
+		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+
+		$this->assert
+			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
+			->string($field->getErrorPrompt())->isEqualTo($errorPrompt)
+		;
+	}
+
+	public function testSetTitlePrompt()
+	{
+		$field = new runner\errors\string();
+
+		$this->assert
+			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getTitlePrompt())->isEqualTo($prompt)
+			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+		;
+	}
+
+	public function testSetMethodPrompt()
+	{
+		$field = new runner\errors\string();
+
+		$this->assert
+			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getMethodPrompt())->isEqualTo($prompt)
+			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
+		;
+	}
+
+	public function testSetErrorPrompt()
+	{
+		$field = new runner\errors\string();
+
+		$this->assert
+			->object($field->setErrorPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getErrorPrompt())->isEqualTo($prompt)
+			->object($field->setErrorPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getErrorPrompt())->isEqualTo((string) $prompt)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$errors = new runner\errors\string();
+		$field = new runner\errors\string();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -43,12 +98,12 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$runner = new mock\mageekguy\atoum\runner();
 
 		$this->assert
-			->object($errors->setWithRunner($runner))->isIdenticalTo($errors)
-			->object($errors->getRunner())->isIdenticalTo($runner)
-			->object($errors->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($errors)
-			->object($errors->getRunner())->isIdenticalTo($runner)
-			->object($errors->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($errors)
-			->object($errors->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
+			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->object($field->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
@@ -65,17 +120,17 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->setCase('There is no error in score');
 
 		$score->getMockController()->getErrors = function() { return array(); };
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEmpty()
-			->castToString($errors->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
-			->castToString($errors->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEmpty()
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
 		$this->setCase('There is errors with file, line and no case in score');
@@ -107,16 +162,16 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine) . PHP_EOL .
 				$message . PHP_EOL .
-				runner\errors\string::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
@@ -151,16 +206,16 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case) . PHP_EOL .
 				$message . PHP_EOL .
-				runner\errors\string::methodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
@@ -184,13 +239,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -213,13 +268,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -242,13 +297,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -271,13 +326,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -300,13 +355,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -329,13 +384,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$errors = new runner\errors\string($locale = new atoum\locale());
+		$field = new runner\errors\string($locale = new atoum\locale());
 
 		$this->assert
-			->castToString($errors)->isEmpty()
-			->castToString($errors->setWithRunner($runner))->isEqualTo(runner\errors\string::titlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				runner\errors\string::methodPrompt . $class . '::' . $method . '():' . PHP_EOL .
-				runner\errors\string::errorPrompt . sprintf($locale->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(runner\errors\string::defaultTitlePrompt . sprintf($locale->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
+				runner\errors\string::defaultMethodPrompt . $class . '::' . $method . '():' . PHP_EOL .
+				runner\errors\string::defaultErrorPrompt . sprintf($locale->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
