@@ -22,7 +22,7 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$testRunField = new fields\test\run\string('Test class %s:', '');
+		$testRunField = new fields\test\run\string(null, '');
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(

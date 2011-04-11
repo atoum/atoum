@@ -12,7 +12,7 @@ class builder extends atoum\reports\asynchronous
 	{
 		parent::__construct();
 
-		$testRunField = new fields\test\run\string('Test class %s:', '');
+		$testRunField = new fields\test\run\string(null, '');
 
 		$this
 			->addRunnerField(new fields\runner\version\string(), array(atoum\runner::runStart))
