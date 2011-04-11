@@ -47,7 +47,7 @@ class string extends report\fields\test\run
 		}
 		else
 		{
-			$string .= sprintf('Run %s...', $this->testClass);
+			$string .= sprintf('%s:', $this->testClass);
 		}
 
 		$string .= PHP_EOL;

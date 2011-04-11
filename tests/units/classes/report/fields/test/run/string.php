@@ -131,7 +131,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 			->castToString($field->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
 			->castToString($field->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
 			->castToString($field->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Run %s...'), $test->getClass()) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('%s:'), $test->getClass()) . PHP_EOL)
 		;
 	}
 }

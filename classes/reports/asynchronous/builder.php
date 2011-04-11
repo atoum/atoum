@@ -2,33 +2,49 @@
 
 namespace mageekguy\atoum\reports\asynchronous;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
-use \mageekguy\atoum\report\fields;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\report\fields
+;
 
 class builder extends atoum\reports\asynchronous
 {
-	public function __construct()
+	public function __construct(atoum\locale $locale = null)
 	{
-		parent::__construct();
+		parent::__construct($locale);
+
+		$runnerVersionField = new fields\runner\version\string(null, '');
+		$runnerPhpField = new fields\runner\php\string(null, '', '   ');
+		$runnerDurationField = new fields\runner\duration\string(null, '');
+		$runnerResultField = new fields\runner\result\string(null, '');
+		$runnerFailuresField = new fields\runner\failures\string(null, '', '   ');
+		$runnerOutputsField = new fields\runner\outputs\string(null, '', '   ');
+		$runnerErrorsField = new fields\runner\errors\string(null, '', '   ', '      ');
+		$runnerExceptionsField = new fields\runner\exceptions\string(null, '', '   ', '      ');
+		$runnerTestsDurationField = new fields\runner\tests\duration\string(null, '');
+		$runnerTestsMemoryField = new fields\runner\tests\memory\string(null, '');
+		$runnerTestsCoverageField = new fields\runner\tests\coverage\string(null, '', '   ', '      ');
 
 		$testRunField = new fields\test\run\string(null, '');
+		$testDurationField = new fields\test\duration\string(null, '   ');
+		$testMemoryField = new fields\test\memory\string(null, '   ');
 
 		$this
-			->addRunnerField(new fields\runner\version\string(), array(atoum\runner::runStart))
-			->addRunnerField(new fields\runner\php\string(), array(atoum\runner::runStart))
-			->addRunnerField(new fields\runner\tests\duration\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\tests\memory\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\tests\coverage\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\duration\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\result\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\failures\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\outputs\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\errors\string(), array(atoum\runner::runStop))
-			->addRunnerField(new fields\runner\exceptions\string(), array(atoum\runner::runStop))
+			->addRunnerField($runnerVersionField, array(atoum\runner::runStart))
+			->addRunnerField($runnerPhpField, array(atoum\runner::runStart))
+			->addRunnerField($runnerTestsDurationField, array(atoum\runner::runStop))
+			->addRunnerField($runnerTestsMemoryField, array(atoum\runner::runStop))
+			->addRunnerField($runnerTestsCoverageField, array(atoum\runner::runStop))
+			->addRunnerField($runnerDurationField, array(atoum\runner::runStop))
+			->addRunnerField($runnerResultField, array(atoum\runner::runStop))
+			->addRunnerField($runnerFailuresField, array(atoum\runner::runStop))
+			->addRunnerField($runnerOutputsField, array(atoum\runner::runStop))
+			->addRunnerField($runnerErrorsField, array(atoum\runner::runStop))
+			->addRunnerField($runnerExceptionsField, array(atoum\runner::runStop))
 			->addTestField($testRunField, array(atoum\test::runStart))
-			->addTestField(new fields\test\duration\string(), array(atoum\test::runStop))
-			->addTestField(new fields\test\memory\string(), array(atoum\test::runStop))
+			->addTestField($testDurationField, array(atoum\test::runStop))
+			->addTestField($testMemoryField, array(atoum\test::runStop))
 		;
 	}
 }

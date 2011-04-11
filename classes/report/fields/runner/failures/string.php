@@ -35,7 +35,6 @@ class string extends report\fields\runner\failures
 		;
 	}
 
-
 	public function setTitlePrompt($prompt)
 	{
 		return $this->setPrompt($this->titlePrompt, $prompt);

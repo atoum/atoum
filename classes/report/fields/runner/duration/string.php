@@ -10,9 +10,6 @@ class string extends report\fields\runner\duration
 	const defaultPrompt = '> ';
 
 	protected $prompt = '';
-	protected $singularLabel = '';
-	protected $pluralLabel = '';
-	protected $unknownLabel = '';
 
 	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
@@ -56,13 +53,6 @@ class string extends report\fields\runner\duration
 		$string .= PHP_EOL;
 
 		return $string;
-	}
-
-	protected function setLabel(& $property, $label)
-	{
-		$property = (string) $label;
-
-		return $this;
 	}
 }
 

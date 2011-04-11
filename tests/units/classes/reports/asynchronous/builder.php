@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\report\fields;
-use \mageekguy\atoum\reports\asynchronous as reports;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\report\fields,
+	\mageekguy\atoum\reports\asynchronous as reports
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -22,24 +24,38 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
+		$runnerVersionField = new fields\runner\version\string(null, '');
+		$runnerPhpField = new fields\runner\php\string(null, '', '   ');
+		$runnerDurationField = new fields\runner\duration\string(null, '');
+		$runnerResultField = new fields\runner\result\string(null, '');
+		$runnerFailuresField = new fields\runner\failures\string(null, '', '   ');
+		$runnerOutputsField = new fields\runner\outputs\string(null, '', '   ');
+		$runnerErrorsField = new fields\runner\errors\string(null, '', '   ', '      ');
+		$runnerExceptionsField = new fields\runner\exceptions\string(null, '', '   ', '      ');
+		$runnerTestsDurationField = new fields\runner\tests\duration\string(null, '');
+		$runnerTestsMemoryField = new fields\runner\tests\memory\string(null, '');
+		$runnerTestsCoverageField = new fields\runner\tests\coverage\string(null, '', '   ', '      ');
+
 		$testRunField = new fields\test\run\string(null, '');
+		$testDurationField = new fields\test\duration\string(null, '   ');
+		$testMemoryField = new fields\test\memory\string(null, '   ');
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					new report\fields\runner\version\string($report->getLocale()),
-					new report\fields\runner\php\string()
+					$runnerVersionField,
+					$runnerPhpField
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					new report\fields\runner\tests\duration\string(),
-					new report\fields\runner\tests\memory\string(),
-					new report\fields\runner\tests\coverage\string(),
-					new report\fields\runner\duration\string(),
-					new report\fields\runner\result\string(),
-					new report\fields\runner\failures\string(),
-					new report\fields\runner\outputs\string(),
-					new report\fields\runner\errors\string(),
-					new report\fields\runner\exceptions\string()
+					$runnerTestsDurationField,
+					$runnerTestsMemoryField,
+					$runnerTestsCoverageField,
+					$runnerDurationField,
+					$runnerResultField,
+					$runnerFailuresField,
+					$runnerOutputsField,
+					$runnerErrorsField,
+					$runnerExceptionsField
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
@@ -57,8 +73,8 @@ class builder extends atoum\test
 			->array($report->getTestFields(atoum\test::beforeTearDown))->isEmpty()
 			->array($report->getTestFields(atoum\test::afterTearDown))->isEmpty()
 			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
-					new report\fields\test\duration\string(),
-					new report\fields\test\memory\string()
+					$testDurationField,
+					$testMemoryField
 				)
 			)
 		;
