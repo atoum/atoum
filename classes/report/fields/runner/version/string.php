@@ -2,14 +2,18 @@
 
 namespace mageekguy\atoum\report\fields\runner\version;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\runner\version
 {
 	const defaultPrompt = '> ';
 
-	public function __construct(atoum\locale $locale =null, $prompt = null, $label = null)
+	protected $prompt = '';
+
+	public function __construct(atoum\locale $locale =null, $prompt = null)
 	{
 		parent::__construct($locale);
 
@@ -18,15 +22,7 @@ class string extends report\fields\runner\version
 			$prompt = static::defaultPrompt;
 		}
 
-		if ($label === null)
-		{
-			$label = $this->locale->_('Atoum version %s by %s (%s)');
-		}
-
-		$this
-			->setPrompt($prompt)
-			->setLabel($label)
-		;
+		$this->setPrompt($prompt);
 	}
 
 	public function setPrompt($prompt)
@@ -41,21 +37,9 @@ class string extends report\fields\runner\version
 		return $this->prompt;
 	}
 
-	public function setLabel($label)
-	{
-		$this->label = (string) $label;
-
-		return $this;
-	}
-
-	public function getLabel()
-	{
-		return $this->label;
-	}
-
 	public function __toString()
 	{
-		return ($this->author === null || $this->version === null ? '' : $this->prompt . sprintf($this->label, $this->version, $this->author, $this->path) . PHP_EOL);
+		return ($this->author === null || $this->version === null ? '' : $this->prompt . sprintf($this->locale->_('Atoum version %s by %s (%s)'), $this->version, $this->author, $this->path) . PHP_EOL);
 	}
 }
 

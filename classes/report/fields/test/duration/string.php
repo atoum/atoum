@@ -2,41 +2,27 @@
 
 namespace mageekguy\atoum\report\fields\test\duration;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\test\duration
 {
-	const titlePrompt = '=> ';
+	const defaultPrompt = '=> ';
 
 	protected $prompt = '';
-	protected $singularLabel = '';
-	protected $pluralLabel = '';
 
-	public function __construct(atoum\locale $locale = null, $singularLabel = null, $pluralLabel = null, $prompt = null)
+	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
 		parent::__construct($locale);
 
-		if ($singularLabel === null)
-		{
-			$singularLabel = $this->locale->_('Test duration: %4.2f second.');
-		}
-
-		if ($pluralLabel === null)
-		{
-			$pluralLabel = $this->locale->_('Test duration: %4.2f seconds.');
-		}
-
 		if ($prompt === null)
 		{
-			$prompt = static::titlePrompt;
+			$prompt = static::defaultPrompt;
 		}
 
-		$this
-			->setSingularLabel($singularLabel)
-			->setPluralLabel($pluralLabel)
-			->setPrompt($prompt)
-		;
+		$this->setPrompt($prompt);
 	}
 
 	public function setPrompt($prompt)
@@ -52,26 +38,6 @@ class string extends report\fields\test\duration
 
 	}
 
-	public function setSingularLabel($label)
-	{
-		return $this->setLabel($this->singularLabel, $label);
-	}
-
-	public function getSingularLabel()
-	{
-		return $this->singularLabel;
-	}
-
-	public function setPluralLabel($label)
-	{
-		return $this->setLabel($this->pluralLabel, $label);
-	}
-
-	public function getPluralLabel()
-	{
-		return $this->pluralLabel;
-	}
-
 	public function __toString()
 	{
 		$string = $this->prompt;
@@ -82,19 +48,12 @@ class string extends report\fields\test\duration
 		}
 		else
 		{
-			$string .= sprintf($this->locale->__($this->singularLabel, $this->pluralLabel, $this->value), $this->value);
+			$string .= sprintf($this->locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $this->value), $this->value);
 		}
 
 		$string .= PHP_EOL;
 
 		return $string;
-	}
-
-	protected function setLabel(& $property, $label)
-	{
-		$property = (string) $label;
-
-		return $this;
 	}
 }
 
