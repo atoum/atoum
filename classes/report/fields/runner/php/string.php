@@ -55,9 +55,9 @@ class string extends report\fields\runner\php
 
 	public function __toString()
 	{
-		return self::defaultTitlePrompt . sprintf($this->locale->_('PHP path: %s'), $this->phpPath) . PHP_EOL
-			. self::defaultTitlePrompt . $this->locale->_('PHP version:') . PHP_EOL
-			. self::defaultVersionPrompt . str_replace(PHP_EOL, PHP_EOL . self::defaultVersionPrompt, rtrim($this->phpVersion)) . PHP_EOL
+		return $this->titlePrompt . sprintf($this->locale->_('PHP path: %s'), $this->phpPath) . PHP_EOL
+			. $this->titlePrompt . $this->locale->_('PHP version:') . PHP_EOL
+			. $this->versionPrompt . str_replace(PHP_EOL, PHP_EOL . $this->versionPrompt, rtrim($this->phpVersion)) . PHP_EOL
 		;
 	}
 

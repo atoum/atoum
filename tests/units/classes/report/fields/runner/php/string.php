@@ -124,8 +124,30 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 			)
 		;
 
+		$field = new runner\php\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field->setWithRunner($runner);
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
+				. $field->getVersionPrompt() . $phpVersion . PHP_EOL
+			)
+		;
+
 		$scoreController->getPhpVersion = ($phpVersionLine1 = uniqid()) . PHP_EOL . ($phpVersionLine2 = uniqid());
 
+		$field = new runner\php\string();
+		$field->setWithRunner($runner);
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
+				. $field->getVersionPrompt() . $phpVersionLine1 . PHP_EOL
+				. $field->getVersionPrompt() . $phpVersionLine2 . PHP_EOL
+			)
+		;
+
+		$field = new runner\php\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
 		$field->setWithRunner($runner);
 
 		$this->assert
