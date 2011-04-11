@@ -2,16 +2,44 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests\memory;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 class string extends report\fields\runner\tests\memory
 {
-	const titlePrompt = '> ';
+	const defaultPrompt = '> ';
+
+	protected $prompt = '';
+
+	public function __construct(atoum\locale $locale = null, $prompt = null)
+	{
+		parent::__construct($locale);
+
+		if ($prompt === null)
+		{
+			$prompt = static::defaultPrompt;
+		}
+
+		$this->setPrompt($prompt);
+	}
+
+	public function setPrompt($prompt)
+	{
+		$this->prompt = (string) $prompt;
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
 
 	public function __toString()
 	{
-		$string = self::titlePrompt;
+		$string = $this->prompt;
 
 		if ($this->value === null)
 		{

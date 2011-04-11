@@ -13,27 +13,56 @@ require_once(__DIR__ . '/../../../../../../runner.php');
 
 class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\memory
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\fields\runner')
+		;
+	}
+
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(tests\memory\string::titlePrompt)->isEqualTo('> ')
+			->string(tests\memory\string::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$memory = new tests\memory\string();
+		$field = new tests\memory\string();
 
 		$this->assert
-			->object($memory)->isInstanceOf('\mageekguy\atoum\report\fields\runner')
-			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestNumber())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->string($field->getPrompt())->isEqualTo(tests\memory\string::defaultPrompt)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+		;
+
+		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+		;
+	}
+
+	public function testSetPrompt()
+	{
+		$field = new tests\memory\string();
+
+		$this->assert
+			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getPrompt())->isEqualTo((string) $prompt)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$memory = new tests\memory\string($locale = new atoum\locale());
+		$field = new tests\memory\string($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -50,17 +79,17 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); };
 
 		$this->assert
-			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestNumber())->isNull()
-			->object($memory->setWithRunner($runner))->isIdenticalTo($memory)
-			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestNumber())->isNull()
-			->object($memory->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($memory)
-			->variable($memory->getValue())->isNull()
-			->variable($memory->getTestNumber())->isNull()
-			->object($memory->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($memory)
-			->integer($memory->getValue())->isEqualTo($totalMemoryUsage)
-			->integer($memory->getTestNumber())->isEqualTo($testNumber)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner))->isIdenticalTo($field)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->integer($field->getValue())->isEqualTo($totalMemoryUsage)
+			->integer($field->getTestNumber())->isEqualTo($testNumber)
 		;
 	}
 
@@ -80,24 +109,42 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = 1; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$memory = new tests\memory\string($locale = new atoum\locale());
+		$field = new tests\memory\string();
 
 		$this->assert
-			->castToString($memory)->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner))->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(tests\memory\string::titlePrompt . sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
+		;
+
+		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
 
-		$memory = new tests\memory\string($locale = new atoum\locale());
+		$field = new tests\memory\string();
 
 		$this->assert
-			->castToString($memory)->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner))->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner, atoum\runner::runStart))->isEqualTo(tests\memory\string::titlePrompt . $locale->_('Total test memory usage: unknown.') . PHP_EOL)
-			->castToString($memory->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(tests\memory\string::titlePrompt . sprintf($locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
+		;
+
+		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 	}
 }

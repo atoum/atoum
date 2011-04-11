@@ -11,6 +11,8 @@ class string extends report\fields\runner\tests\duration
 {
 	const defaultPrompt = '> ';
 
+	protected $prompt = '';
+
 	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
 		parent::__construct($locale);
