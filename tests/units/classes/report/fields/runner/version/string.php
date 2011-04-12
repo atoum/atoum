@@ -79,7 +79,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->variable($field->getVersion())->isNull()
 			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
 			->string($field->getAuthor())->isEqualTo(atoum\author)
-			->string($field->getPath())->isEqualTo(realpath(dirname($runner->getPath()) . DIRECTORY_SEPARATOR . '..'))
+			->string($field->getPath())->isEqualTo(\mageekguy\atoum\directory)
 			->string($field->getVersion())->isEqualTo(atoum\version)
 		;
 	}
