@@ -2,10 +2,13 @@
 
 namespace mageekguy\atoum\writers;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\report\writers
+;
 
-abstract class std extends atoum\writer
+abstract class std extends atoum\writer implements writers\realtime, writers\asynchronous
 {
 	protected $resource = null;
 

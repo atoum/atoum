@@ -2,16 +2,19 @@
 
 namespace mageekguy\atoum\writers;
 
-use mageekguy\atoum;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\report\writers
+;
 
-class file extends atoum\writer
+class file extends atoum\writer implements writers\realtime, writers\asynchronous
 {
 	protected $filename = null;
-	
+
 	private $handler = null;
 
-	const defaultFileName = 'atoum.log'; 
-	
+	const defaultFileName = 'atoum.log';
+
 	public function __construct($filename = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($adapter);

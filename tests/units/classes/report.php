@@ -11,7 +11,10 @@ class report extends atoum\test
 {
 	public function test__construct()
 	{
-		$report = new atoum\report();
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->object($report)
@@ -40,7 +43,7 @@ class report extends atoum\test
 			)
 		;
 
-		$report = new atoum\report($locale = new atoum\locale());
+		$report = new mock\mageekguy\atoum\report($locale = new atoum\locale());
 
 		$this->assert
 			->object($report)
@@ -72,7 +75,10 @@ class report extends atoum\test
 
 	public function testSetLocale()
 	{
-		$report = new atoum\report();
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->object($report->setLocale($locale = new atoum\locale()))->isIdenticalTo($report)
@@ -84,10 +90,11 @@ class report extends atoum\test
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator
+			->generate('\mageekguy\atoum\report')
 			->generate('\mageekguy\atoum\report\fields\runner')
 		;
 
-		$report = new atoum\report();
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getRunnerFields())->isEqualTo(array(
@@ -132,10 +139,11 @@ class report extends atoum\test
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator
+			->generate('\mageekguy\atoum\report')
 			->generate('\mageekguy\atoum\report\fields\test')
 		;
 
-		$report = new atoum\report();
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(
@@ -209,12 +217,13 @@ class report extends atoum\test
 
 	public function testRunnerStart()
 	{
-		$report = new atoum\report();
-
 		$mockGenerator = new mock\generator();
 		$mockGenerator
+			->generate('\mageekguy\atoum\report')
 			->generate('\mageekguy\atoum\report\fields\runner')
 		;
+
+		$report = new mock\mageekguy\atoum\report();
 
 		$field = new mock\mageekguy\atoum\report\fields\runner();
 		$field->getMockController()->setWithRunner = function() use ($field) { return $field; };
@@ -236,10 +245,11 @@ class report extends atoum\test
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator
+			->generate('\mageekguy\atoum\report')
 			->generate('\mageekguy\atoum\report\fields\runner')
 		;
 
-		$report = new atoum\report();
+		$report = new mock\mageekguy\atoum\report();
 
 		$field = new mock\mageekguy\atoum\report\fields\runner();
 		$field->getMockController()->setWithRunner = function() use ($field) { return $field; };
@@ -260,7 +270,10 @@ class report extends atoum\test
 
 	public function testGetRunnerFields()
 	{
-		$report = new atoum\report();
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getRunnerFields())->isEqualTo(array(
@@ -278,7 +291,10 @@ class report extends atoum\test
 
 	public function testGetTestFields()
 	{
-		$report = new atoum\report();
+		$mockGenerator = new mock\generator();
+		$mockGenerator->generate('\mageekguy\atoum\report');
+
+		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(

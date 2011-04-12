@@ -2,7 +2,10 @@
 
 namespace mageekguy\atoum\reports;
 
-use \mageekguy\atoum;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 abstract class asynchronous extends atoum\report
 {
@@ -119,6 +122,13 @@ abstract class asynchronous extends atoum\report
 	public function getTestFieldsAsString($event)
 	{
 		return $this->getFieldsAsString($this->testFields, $event);
+	}
+
+	public function addWriter(report\writers\asynchronous $writer)
+	{
+		$this->writers[] = $writer;
+
+		return $this;
 	}
 
 	protected function getFieldsAsString(array $fields, $event)

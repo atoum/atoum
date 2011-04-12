@@ -65,13 +65,6 @@ class report implements observers\runner, observers\test
 		return $this->addField($field->setLocale($this->locale), $events, 'testFields');
 	}
 
-	public function addWriter(writer $writer)
-	{
-		$this->writers[] = $writer;
-
-		return $this;
-	}
-
 	public function getRunnerFields($event = null)
 	{
 		$fields = array();
@@ -209,16 +202,6 @@ class report implements observers\runner, observers\test
 		return $this->setRunnerFields($runner, __FUNCTION__);
 	}
 
-	public function write()
-	{
-		foreach ($this->writers as $writer)
-		{
-			$writer->write((string) $this);
-		}
-
-		return $this;
-	}
-
 	public function __toString()
 	{
 		$string = '';
@@ -229,6 +212,16 @@ class report implements observers\runner, observers\test
 		}
 
 		return $string;
+	}
+
+	protected function write()
+	{
+		foreach ($this->writers as $writer)
+		{
+			$writer->write((string) $this);
+		}
+
+		return $this;
 	}
 
 	protected function addField(report\field $field, array $events, $propertyName)

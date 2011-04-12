@@ -2,7 +2,10 @@
 
 namespace mageekguy\atoum\reports;
 
-use \mageekguy\atoum;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
 abstract class realtime extends atoum\report
 {
@@ -69,6 +72,13 @@ abstract class realtime extends atoum\report
 	public function afterTestTearDown(atoum\test $test)
 	{
 		return parent::afterTestTearDown($test)->write();
+	}
+
+	public function addWriter(report\writers\realtime $writer)
+	{
+		$this->writers[] = $writer;
+
+		return $this;
 	}
 
 	public function runnerStop(atoum\runner $runner)
