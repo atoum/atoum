@@ -1,12 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace mageekguy\atoum\reports\asynchronous;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\reports;
-use \mageekguy\atoum\report\fields;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\reports,
+	\mageekguy\atoum\report\fields
+;
 
-class vim extends reports\realtime
+class vim extends reports\asynchronous
 {
 	public function __construct()
 	{
@@ -31,14 +33,7 @@ class vim extends reports\realtime
 
 	public function __toString()
 	{
-		$string = parent::__toString();
-
-		if ($this->lastEventIsRunnerEvent(atoum\runner::runStop) === true)
-		{
-			$string .= '/* vim: set ft=atoum: */';
-		}
-
-		return $string;
+		return parent::__toString() . '/* vim: set ft=atoum: */';
 	}
 }
 

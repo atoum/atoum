@@ -17,6 +17,7 @@ class mail extends atoum\test
 			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\mailer')
 		;
 	}
+
 	public function test__construct()
 	{
 		$mail = new mailers\mail();
@@ -124,7 +125,17 @@ class mail extends atoum\test
 		;
 	}
 
-	public function testWrite()
+	public function testSetContentType()
+	{
+		$mail = new mailers\mail();
+
+		$this->assert
+			->object($mail->setContentType($type = 'text/plain', $charset = 'utf-8'))->isIdenticalTo($mail)
+			->array($mail->getContentType())->isEqualTo(array($type, $charset))
+		;
+	}
+
+	public function testSend()
 	{
 		$adapter = new atoum\test\adapter();
 		$adapter->mail = function() {};
@@ -137,9 +148,7 @@ class mail extends atoum\test
 				->hasMessage('To is undefined')
 		;
 
-		$mail
-			->addTo($to = uniqid())
-		;
+		$mail->addTo($to = uniqid());
 
 		$this->assert
 			->exception(function() use ($mail) { $mail->send(uniqid()); })
@@ -147,9 +156,7 @@ class mail extends atoum\test
 				->hasMessage('Subject is undefined')
 		;
 
-		$mail
-			->setSubject($subject = uniqid())
-		;
+		$mail->setSubject($subject = uniqid());
 
 		$this->assert
 			->exception(function() use ($mail) { $mail->send(uniqid()); })
@@ -157,9 +164,7 @@ class mail extends atoum\test
 				->hasMessage('From is undefined')
 		;
 
-		$mail
-			->setFrom($from = uniqid())
-		;
+		$mail->setFrom($from = uniqid());
 
 		$this->assert
 			->exception(function() use ($mail) { $mail->send(uniqid()); })
@@ -167,9 +172,7 @@ class mail extends atoum\test
 				->hasMessage('Reply to is undefined')
 		;
 
-		$mail
-			->setReplyTo($replyTo = uniqid())
-		;
+		$mail->setReplyTo($replyTo = uniqid());
 
 		$this->assert
 			->exception(function() use ($mail) { $mail->send(uniqid()); })
@@ -177,13 +180,18 @@ class mail extends atoum\test
 				->hasMessage('X-mailer is undefined')
 		;
 
-		$mail
-			->setXMailer($mailer = uniqid())
-		;
+		$mail->setXMailer($mailer = uniqid());
 
 		$this->assert
 			->object($mail->send($message = uniqid()))->isIdenticalTo($mail)
 			->adapter($adapter)->call('mail', array($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer));
+		;
+
+		$mail->setContentType($type = uniqid(), $charset = uniqid());
+
+		$this->assert
+			->object($mail->send($message = uniqid()))->isIdenticalTo($mail)
+			->adapter($adapter)->call('mail', array($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer . "\r\n" . 'Content-Type: ' . $type . '; charset="' . $charset . '"'));
 		;
 	}
 }

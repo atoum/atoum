@@ -13,6 +13,7 @@ class mail extends atoum\mailer
 	protected $from = null;
 	protected $xMailer = null;
 	protected $replyTo = null;
+	protected $contentType = null;
 	protected $subject = null;
 	protected $adapter = null;
 
@@ -124,6 +125,18 @@ class mail extends atoum\mailer
 		return $this->xMailer;
 	}
 
+	public function setContentType($type = 'text/plain', $charset = 'utf-8')
+	{
+		$this->contentType = array($type, $charset);
+
+		return $this;
+	}
+
+	public function getContentType()
+	{
+		return $this->contentType;
+	}
+
 	public function send($something)
 	{
 		if ($this->to === null)
@@ -151,7 +164,14 @@ class mail extends atoum\mailer
 			throw new exceptions\runtime('X-mailer is undefined');
 		}
 
-		$this->adapter->mail($this->to, $this->subject, (string) $something, 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->xMailer);
+		$headers = 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->xMailer;
+
+		if ($this->contentType !== null)
+		{
+			$headers .= "\r\n" . 'Content-Type: ' . $this->contentType[0] . '; charset="' . $this->contentType[1] . '"';
+		}
+
+		$this->adapter->mail($this->to, $this->subject, (string) $something, $headers);
 
 		return $this;
 	}
