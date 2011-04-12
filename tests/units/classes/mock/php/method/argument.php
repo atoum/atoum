@@ -7,7 +7,6 @@ use \mageekguy\atoum\mock\php;
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-/** @isolation off */
 class argument extends atoum\test
 {
 	public function test__construct()

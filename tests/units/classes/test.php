@@ -232,19 +232,6 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testIsolate()
-		{
-			$test = new emptyTest();
-
-			$this->assert
-				->boolean($test->isIsolated())->isTrue()
-				->object($test->isolate(false))->isIdenticalTo($test)
-				->boolean($test->isIsolated())->isFalse()
-				->object($test->isolate(true))->isIdenticalTo($test)
-				->boolean($test->isIsolated())->isTrue()
-			;
-		}
-
 		public function testGetCurrentMethod()
 		{
 			$test = new emptyTest();

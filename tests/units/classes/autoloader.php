@@ -6,7 +6,6 @@ use \mageekguy\atoum;
 
 require_once(__DIR__ . '/../runner.php');
 
-/** @isolation off */
 class autoloader extends atoum\test
 {
 	public function testGetPath()

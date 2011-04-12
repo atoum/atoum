@@ -6,7 +6,6 @@ use \mageekguy\atoum;
 
 require_once(__DIR__ . '/../runner.php');
 
-/** @isolation off */
 class locale extends atoum\test
 {
 	public function test__construct()

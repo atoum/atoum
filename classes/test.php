@@ -32,7 +32,6 @@ abstract class test implements observable, \countable
 	private $asserterGenerator = null;
 	private $score = null;
 	private $observers = array();
-	private $isolation = true;
 	private $ignore = false;
 	private $testMethods = array();
 	private $runTestMethods = array();
@@ -94,10 +93,6 @@ abstract class test implements observable, \countable
 		{
 			switch ($annotation)
 			{
-				case 'isolation':
-					$this->isolation = $value == 'on';
-					break;
-
 				case 'ignore':
 					$this->ignore = $value == 'on';
 					break;
@@ -116,10 +111,6 @@ abstract class test implements observable, \countable
 				{
 					switch ($annotation)
 					{
-						case 'isolation':
-							$annotations['isolation'] = $value == 'on';
-							break;
-
 						case 'ignore':
 							$annotations['ignore'] = $value == 'on';
 							break;
@@ -322,116 +313,98 @@ abstract class test implements observable, \countable
 		return (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
 	}
 
-	public function isolate($boolean)
-	{
-		$this->isolation = ($boolean == true);
-		return $this;
-	}
-
-	public function isIsolated()
-	{
-		return ($this->isolation === true);
-	}
-
 	public function run(array $runTestMethods = array(), atoum\runner $runner = null)
 	{
-		if ($this->isolation === false && (isset($this->superglobals->_SERVER['_']) === false || $this->phpPath !== $this->superglobals->_SERVER['_']))
-		{
-			$this->runInChildProcess($runner);
-		}
-		else
-		{
-			$this->callObservers(self::runStart);
+		$this->callObservers(self::runStart);
 
-			if (sizeof($runTestMethods) > 0)
+		if (sizeof($runTestMethods) > 0)
+		{
+			$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
+
+			if (sizeof($unknownTestMethods) > 0)
 			{
-				$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
-
-				if (sizeof($unknownTestMethods) > 0)
-				{
-					throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
-				}
-
-				$this->runTestMethods = $runTestMethods;
+				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
 			}
 
-			if (sizeof($this->runTestMethods) > 0)
+			$this->runTestMethods = $runTestMethods;
+		}
+
+		if (sizeof($this->runTestMethods) > 0)
+		{
+			try
 			{
-				try
+				if ($runner !== null)
 				{
-					if ($runner !== null)
-					{
-						$this->callObservers(self::beforeSetUp);
-						$this->setUp();
-						$this->callObservers(self::afterSetUp);
-					}
-
-					foreach ($this->runTestMethods as $testMethodName)
-					{
-						$failNumber = $this->score->getFailNumber();
-						$errorNumber = $this->score->getErrorNumber();
-						$exceptionNumber = $this->score->getExceptionNumber();
-
-						$this->currentMethod = $testMethodName;
-
-						$this->callObservers(self::beforeTestMethod);
-
-						if ($runner === null || (isset($this->testMethods[$testMethodName]['isolation']) === false ? $this->isolation : $this->testMethods[$testMethodName]['isolation']) === false)
-						{
-							$this->runTestMethod($testMethodName);
-						}
-						else
-						{
-							$this->runInChildProcess($runner, $testMethodName);
-						}
-
-						switch (true)
-						{
-							case $failNumber < $this->score->getFailNumber():
-								$this->callObservers(self::fail);
-								break;
-
-							case $errorNumber < $this->score->getErrorNumber():
-								$this->callObservers(self::error);
-								break;
-
-							case $exceptionNumber < $this->score->getExceptionNumber():
-								$this->callObservers(self::exception);
-								break;
-
-							default:
-								$this->callObservers(self::success);
-						}
-
-						$this->callObservers(self::afterTestMethod);
-
-						$this->currentMethod = null;
-					}
-
-					if ($runner !== null)
-					{
-						$this
-							->callObservers(self::beforeTearDown)
-							->tearDown()
-							->callObservers(self::afterTearDown)
-						;
-					}
+					$this->callObservers(self::beforeSetUp);
+					$this->setUp();
+					$this->callObservers(self::afterSetUp);
 				}
-				catch (\exception $exception)
+
+				foreach ($this->runTestMethods as $testMethodName)
+				{
+					$failNumber = $this->score->getFailNumber();
+					$errorNumber = $this->score->getErrorNumber();
+					$exceptionNumber = $this->score->getExceptionNumber();
+
+					$this->currentMethod = $testMethodName;
+
+					$this->callObservers(self::beforeTestMethod);
+
+					if ($runner === null)
+					{
+						$this->runTestMethod($testMethodName);
+					}
+					else
+					{
+						$this->runInChildProcess($runner, $testMethodName);
+					}
+
+					switch (true)
+					{
+						case $failNumber < $this->score->getFailNumber():
+							$this->callObservers(self::fail);
+							break;
+
+						case $errorNumber < $this->score->getErrorNumber():
+							$this->callObservers(self::error);
+							break;
+
+						case $exceptionNumber < $this->score->getExceptionNumber():
+							$this->callObservers(self::exception);
+							break;
+
+						default:
+							$this->callObservers(self::success);
+					}
+
+					$this->callObservers(self::afterTestMethod);
+
+					$this->currentMethod = null;
+				}
+
+				if ($runner !== null)
 				{
 					$this
-						->callObservers(self::exception)
-						->callObservers(self::runStop)
 						->callObservers(self::beforeTearDown)
 						->tearDown()
 						->callObservers(self::afterTearDown)
-						->addExceptionToScore($exception)
 					;
 				}
 			}
-
-			$this->callObservers(self::runStop);
+			catch (\exception $exception)
+			{
+				$this
+					->callObservers(self::exception)
+					->callObservers(self::runStop)
+					->callObservers(self::beforeTearDown)
+					->tearDown()
+					->callObservers(self::afterTearDown)
+					->addExceptionToScore($exception)
+				;
+			}
 		}
+
+		$this->callObservers(self::runStop);
 
 		return $this;
 	}
@@ -542,29 +515,9 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	protected function runInChildProcess(atoum\runner $runner, $testMethod = null)
+	protected function runInChildProcess(atoum\runner $runner, $testMethod)
 	{
 		$phpPath = $this->getPhpPath();
-
-		$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
-
-		$phpCode  = '<?php ';
-		$phpCode .= 'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);';
-		$phpCode .= 'require(\'' . $runner->getPath() . '\');';
-		$phpCode .= 'require(\'' . $this->path . '\');';
-		$phpCode .= '$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');';
-		$phpCode .= '$runner = new ' . $runner->getClass() . '();';
-		$phpCode .= '$runner->setLocale($locale);';
-		$phpCode .= '$runner->setPhpPath(\'' . $phpPath . '\');';
-
-		if ($runner->codeCoverageIsEnabled() === false)
-		{
-			$phpCode .= '$runner->disableCodeCoverage();';
-		}
-
-		$phpCode .= '$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(' . ($testMethod === null ? '' : '\'' . $testMethod . '\'') . ')), false, null, false);';
-		$phpCode .= 'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));';
-		$phpCode .= '?>';
 
 		$descriptors = array
 			(
@@ -577,7 +530,22 @@ abstract class test implements observable, \countable
 
 		if ($php !== false)
 		{
-			fwrite($pipes[0], $phpCode);
+			$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
+
+			fwrite($pipes[0],
+				'<?php ' .
+				'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
+				'require(\'' . $runner->getPath() . '\');' .
+				'require(\'' . $this->path . '\');' .
+				'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
+				'$runner = new ' . $runner->getClass() . '();' .
+				'$runner->setLocale($locale);' .
+				'$runner->setPhpPath(\'' . $phpPath . '\');' .
+				($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
+				'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false, null, false);' .
+				'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));' .
+				'?>'
+			);
 			fclose($pipes[0]);
 
 			$stdOut = stream_get_contents($pipes[1]);
