@@ -216,7 +216,7 @@ class runner implements observable, adapter\aggregator
 		return $this->testObservers;
 	}
 
-	public function setPathsAndVersions()
+	public function setPathAndVersionInScore()
 	{
 		$this->score
 			->setAtoumVersion(atoum\version)
@@ -265,13 +265,13 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null, $setPathsAndVersions = true)
+	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null)
 	{
 		$this->score->reset();
 
-		if ($setPathsAndVersions === true)
+		if ($runInChildProcess === true)
 		{
-			$this->setPathsAndVersions();
+			$this->setPathAndVersionInScore();
 		}
 
 		$this->start = $this->adapter->microtime(true);

@@ -435,7 +435,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testSetPathsAndVersions()
+	public function testSetPathAndVersionInScore()
 	{
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -458,7 +458,7 @@ class runner extends atoum\test
 
 		$this->assert
 			->exception(function() use ($runner) {
-					$runner->setPathsAndVersions();
+					$runner->setPathAndVersionInScore();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')

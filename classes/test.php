@@ -542,7 +542,7 @@ abstract class test implements observable, \countable
 				'$runner->setLocale($locale);' .
 				'$runner->setPhpPath(\'' . $phpPath . '\');' .
 				($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
-				'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false, null, false);' .
+				'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);' .
 				'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));' .
 				'?>'
 			);
