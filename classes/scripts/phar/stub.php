@@ -129,7 +129,7 @@ class stub extends atoum\scripts\runner
 
 	public function testIt()
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\runner\directory\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
+		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
 		{
 			require_once($file->getPathname());
 		}
