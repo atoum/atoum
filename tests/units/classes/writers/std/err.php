@@ -9,6 +9,17 @@ require_once(__DIR__ . '/../../../runner.php');
 
 class err extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->class('\mageekguy\atoum\writers\std\err')
+				->isSubClassOf('\mageekguy\atoum\writers\std')
+				->hasInterface('\mageekguy\atoum\adapter\aggregator')
+				->hasInterface('\mageekguy\atoum\report\writers\realtime')
+				->hasInterface('\mageekguy\atoum\report\writers\asynchronous')
+		;
+	}
+
 	public function test__construct()
 	{
 		$adapter = new atoum\test\adapter();

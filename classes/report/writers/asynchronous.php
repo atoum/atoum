@@ -2,4 +2,7 @@
 
 namespace mageekguy\atoum\report\writers;
 
-interface asynchronous {}
+interface asynchronous
+{
+	public function asynchronousWrite($string);
+}

@@ -111,7 +111,12 @@ abstract class asynchronous extends atoum\report
 	{
 		$this->string .= parent::runnerStop($runner)->getRunnerFieldsAsString(__FUNCTION__);
 
-		return $this->write();
+		foreach ($this->writers as $writer)
+		{
+			$writer->asynchronousWrite((string) $this);
+		}
+
+		return $this;
 	}
 
 	public function getRunnerFieldsAsString($event)
@@ -126,9 +131,7 @@ abstract class asynchronous extends atoum\report
 
 	public function addWriter(report\writers\asynchronous $writer)
 	{
-		$this->writers[] = $writer;
-
-		return $this;
+		return $this->doAddWriter($writer);
 	}
 
 	protected function getFieldsAsString(array $fields, $event)

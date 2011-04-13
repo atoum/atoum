@@ -27,6 +27,16 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		return $this;
 	}
 
+	public function realtimeWrite($something)
+	{
+		return $this->write($something);
+	}
+
+	public function asynchronousWrite($something)
+	{
+		return $this->write($something);
+	}
+
 	protected abstract function getResource();
 }
 

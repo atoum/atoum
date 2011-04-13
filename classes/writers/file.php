@@ -43,6 +43,16 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this;
 	}
 
+	public function realtimeWrite($something)
+	{
+		return $this->write($something);
+	}
+
+	public function asynchronousWrite($something)
+	{
+		return $this->write($something);
+	}
+
 	public function setFilename($filename)
 	{
 		if($this->adapter->is_null($this->handler))

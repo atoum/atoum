@@ -2,4 +2,7 @@
 
 namespace mageekguy\atoum\report\writers;
 
-interface realtime {}
+interface realtime
+{
+	public function realtimeWrite($string);
+}

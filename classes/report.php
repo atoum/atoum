@@ -214,12 +214,9 @@ class report implements observers\runner, observers\test
 		return $string;
 	}
 
-	protected function write()
+	protected function doAddWriter($writer)
 	{
-		foreach ($this->writers as $writer)
-		{
-			$writer->write((string) $this);
-		}
+		$this->writers[] = $writer;
 
 		return $this;
 	}

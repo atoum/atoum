@@ -9,12 +9,21 @@ require_once(__DIR__ . '/../../runner.php');
 
 class file extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->class('\mageekguy\atoum\writers\file')
+				->hasInterface('\mageekguy\atoum\adapter\aggregator')
+				->hasInterface('\mageekguy\atoum\report\writers\realtime')
+				->hasInterface('\mageekguy\atoum\report\writers\asynchronous')
+		;
+	}
+
 	public function test__construct()
 	{
 		$file = new writers\file();
 
 		$this->assert
-			->object($file)->isInstanceOf('\mageekguy\atoum\adapter\aggregator')
 			->object($file->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 			->string($file->getFilename())->isEqualTo('atoum.log')
 		;
@@ -43,7 +52,7 @@ class file extends atoum\test
 			->string(writers\file::defaultFileName)->isEqualTo('atoum.log')
 		;
 	}
-	
+
 	public function test__destruct()
 	{
 		$id = uniqid();
@@ -54,20 +63,20 @@ class file extends atoum\test
 		$adapter->fclose = function() {};
 		$adapter->is_writable = function() { return true; };
 		$adapter->is_null = function() { return true; };
-		
+
 		$file = new writers\file(null, $adapter);
 
 		$file->write('something');
-		
+
 		$adapter->is_null = function() { return false; };
-		
+
 		unset($file);
 
 		$this->assert
 			->adapter($adapter)->call('is_null', array($id))
 			->adapter($adapter)->call('fclose', array($id))
 			;
-			
+
 	}
 
 	public function testWrite()
@@ -83,7 +92,7 @@ class file extends atoum\test
 
 		$file = new writers\file(null,$adapter);
 		$obj = $file->write($string = uniqid());
-		
+
 		$this->assert
 			->object($obj)->isIdenticalTo($file)
 			->adapter($adapter)->call('is_null', array(null))
@@ -94,7 +103,7 @@ class file extends atoum\test
 			->object($file->write($string = (uniqid() . "\n")))->isIdenticalTo($file)
 			->adapter($adapter)->call('fwrite', array($id, $string))
 		;
-		
+
 		$adapter->is_null = function() { return false; };
 
 		$this->assert
@@ -103,11 +112,11 @@ class file extends atoum\test
 			->adapter($adapter)->call('fwrite', array($id, $string))
 		;
 	}
-	
+
 	public function testSetFilename()
 	{
 		$id = uniqid();
-		
+
 		$adapter = new atoum\test\adapter();
 		$adapter->fopen = function() use ($id) { return $id; };
 		$adapter->fclose = function() {};
@@ -116,38 +125,38 @@ class file extends atoum\test
 		$adapter->is_null = function() { return true; };
 
 		$file = new writers\file(null,$adapter);
-		
+
 		$this->assert
 			->string($file->getFilename())->isEqualTo('atoum.log')
-			;	
-			
+			;
+
 		$file->setFilename('anotherName');
-		
+
 		$this->assert
 			->string($file->getFilename())->isEqualTo('anotherName')
 			;
-				
+
 		$adapter->is_null = function() { return false; };
-			
+
 		$obj = $file->write($string = uniqid());
-		
+
 		$file->setFilename('anotherNameAgain');
-		
+
 		$this->assert
 			->string($file->getFilename())->isEqualTo('anotherName')
 			;
 	}
-	
+
 	public function testGetFilename()
 	{
 		$file = new writers\file();
 
 		$this->assert
 			->string($file->getFilename())->isEqualTo('atoum.log')
-			;	
-			
+			;
+
 		$file->setFilename('anotherName');
-		
+
 		$this->assert
 			->string($file->getFilename())->isEqualTo('anotherName')
 			;

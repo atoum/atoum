@@ -76,14 +76,22 @@ abstract class realtime extends atoum\report
 
 	public function addWriter(report\writers\realtime $writer)
 	{
-		$this->writers[] = $writer;
-
-		return $this;
+		return $this->doAddWriter($writer);
 	}
 
 	public function runnerStop(atoum\runner $runner)
 	{
 		return parent::runnerStop($runner)->write();
+	}
+
+	protected function write()
+	{
+		foreach ($this->writers as $writer)
+		{
+			$writer->realtimeWrite((string) $this);
+		}
+
+		return $this;
 	}
 }
 
