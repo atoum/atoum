@@ -2,20 +2,18 @@
 
 namespace mageekguy\atoum;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
-use mageekguy\atoum\exceptions;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\exceptions
+;
 
 abstract class asserter
 {
-	protected $score = null;
-	protected $locale = null;
 	protected $generator = null;
 
-	public function __construct(score $score, locale $locale, asserter\generator $generator)
+	public function __construct(asserter\generator $generator)
 	{
-		$this->score = $score;
-		$this->locale = $locale;
 		$this->generator = $generator;
 	}
 
@@ -31,12 +29,12 @@ abstract class asserter
 
 	public function getScore()
 	{
-		return $this->score;
+		return $this->generator->getScore();
 	}
 
 	public function getLocale()
 	{
-		return $this->locale;
+		return $this->generator->getLocale();
 	}
 
 	public function getGenerator()
@@ -49,28 +47,28 @@ abstract class asserter
 		switch (true)
 		{
 			case is_bool($mixed):
-				return sprintf($this->locale->_('boolean(%s)'), ($mixed == false ? $this->locale->_('false') : $this->locale->_('true')));
+				return sprintf($this->getLocale()->_('boolean(%s)'), ($mixed == false ? $this->getLocale()->_('false') : $this->getLocale()->_('true')));
 
 			case is_integer($mixed):
-				return sprintf($this->locale->_('integer(%s)'), $mixed);
+				return sprintf($this->getLocale()->_('integer(%s)'), $mixed);
 
 			case is_float($mixed):
-				return sprintf($this->locale->_('float(%s)'), $mixed);
+				return sprintf($this->getLocale()->_('float(%s)'), $mixed);
 
 			case is_null($mixed):
 				return 'null';
 
 			case is_object($mixed):
-				return sprintf($this->locale->_('object(%s)'), get_class($mixed));
+				return sprintf($this->getLocale()->_('object(%s)'), get_class($mixed));
 
 			case is_resource($mixed):
-				return sprintf($this->locale->_('resource(%s)'), $mixed);
+				return sprintf($this->getLocale()->_('resource(%s)'), $mixed);
 
 			case is_string($mixed):
-				return sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), $mixed);
+				return sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($mixed), $mixed);
 
 			case is_array($mixed):
-				return sprintf($this->locale->_('array(%s)'), sizeof($mixed));
+				return sprintf($this->getLocale()->_('array(%s)'), sizeof($mixed));
 		}
 	}
 
@@ -93,7 +91,7 @@ abstract class asserter
 
 	protected function pass()
 	{
-		$this->score->addPass();
+		$this->getScore()->addPass();
 		return $this;
 	}
 
@@ -127,7 +125,7 @@ abstract class asserter
 			}
 		}
 
-		throw new asserter\exception($reason, $this->score->addFail($file, $line, $class, $method, get_class($this) . '::' . $function . '()', $reason));
+		throw new asserter\exception($reason, $this->getScore()->addFail($file, $line, $class, $method, get_class($this) . '::' . $function . '()', $reason));
 	}
 }
 

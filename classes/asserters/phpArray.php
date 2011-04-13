@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
-use \mageekguy\atoum\tools\diffs;
+use
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\tools\diffs
+;
 
 class phpArray extends \mageekguy\atoum\asserters\variable
 {
@@ -13,7 +15,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 
 		if (self::isArray($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not an array'), $this));
+			$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
 		}
 		else
 		{
@@ -31,7 +33,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
 		}
 	}
 
@@ -46,7 +48,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not empty'), $this))
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not empty'), $this))
 			);
 		}
 	}
@@ -62,7 +64,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is empty'), $this))
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is empty'), $this))
 			);
 		}
 	}
@@ -75,7 +77,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not contain %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->toString($variable)));
 		}
 	}
 

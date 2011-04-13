@@ -27,7 +27,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		{
 			if (self::isException($exception) === false)
 			{
-				$this->fail(sprintf($this->locale->_('%s is not an exception'), $this));
+				$this->fail(sprintf($this->getLocale()->_('%s is not an exception'), $this));
 			}
 			else
 			{
@@ -59,7 +59,7 @@ class exception extends \mageekguy\atoum\asserters\object
 	{
 		if (self::isException($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('%s is not an exception'), $this->variable));
 		}
 
 		if ($this->variable->getCode() === 0)
@@ -68,7 +68,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('code is %s instead of 0'), $this->variable->getCode()));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of 0'), $this->variable->getCode()));
 		}
 	}
 
@@ -76,7 +76,7 @@ class exception extends \mageekguy\atoum\asserters\object
 	{
 		if (self::isException($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('code not found because %s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('code not found because %s is not an exception'), $this->variable));
 		}
 
 		if ($this->variable->getCode() === $code)
@@ -85,7 +85,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('code is %s instead of %s'), $this->variable->getCode(),$code));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of %s'), $this->variable->getCode(),$code));
 		}
 	}
 
@@ -93,7 +93,7 @@ class exception extends \mageekguy\atoum\asserters\object
 	{
 		if (self::isException($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('message not found because %s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('message not found because %s is not an exception'), $this->variable));
 		}
 
 		if ($this->variable->getMessage() == (string) $message)
@@ -102,7 +102,7 @@ class exception extends \mageekguy\atoum\asserters\object
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('message \'%s\' is not identical to \'%s\''), $this->variable->getMessage(), $message));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('message \'%s\' is not identical to \'%s\''), $this->variable->getMessage(), $message));
 		}
 	}
 

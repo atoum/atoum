@@ -57,7 +57,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 		catch (\exception $exception)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a class'), $class));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a class'), $class));
 		}
 
 		$this->pass();
@@ -75,7 +75,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
 		}
 	}
 
@@ -87,7 +87,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a sub-class of %s'), $this->class->getName(), $parent));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a sub-class of %s'), $this->class->getName(), $parent));
 		}
 	}
 
@@ -99,7 +99,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('class %s has parent %s'), $this->class->getName(), $parentClass));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('class %s has parent %s'), $this->class->getName(), $parentClass));
 		}
 	}
 
@@ -111,7 +111,7 @@ class phpClass extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
 		}
 	}
 

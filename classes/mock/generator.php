@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\mock;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class generator
 {

@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\asserter;
 
-use mageekguy\atoum;
-use mageekguy\atoum\asserter;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\asserter
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -15,35 +17,18 @@ class generator extends atoum\test
 
 		$this->assert
 			->object($generator->getTest())->isIdenticalTo($this)
-			->object($generator->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-		;
-
-		$generator = new asserter\generator($this, $locale = new atoum\locale());
-
-		$this->assert
-			->object($generator->getTest())->isIdenticalTo($this)
-			->object($generator->getLocale())->isIdenticalTo($locale)
+			->object($generator->getLocale())->isIdenticalTo($this->getLocale())
 		;
 	}
 
 	public function testSetTest()
 	{
-		$generator = new asserter\generator(new self(), new atoum\locale());
+		$generator = new asserter\generator($this);
 
 		$this->assert
-			->object($generator->getTest())->isNotIdenticalTo($this)
-			->object($generator->setTest($this))->isIdenticalTo($generator)
-			->object($generator->getTest())->isIdenticalTo($this)
-		;
-	}
-
-	public function testSetLocale()
-	{
-		$generator = new asserter\generator($this, new atoum\locale());
-
-		$this->assert
-			->object($generator->setLocale($locale = new atoum\locale()))->isIdenticalTo($generator)
-			->object($generator->getLocale())->isIdenticalTo($locale)
+			->object($generator->setTest($test = new self()))->isIdenticalTo($generator)
+			->object($generator->getTest())->isIdenticalTo($test)
+			->object($generator->getLocale())->isIdenticalTo($test->getLocale())
 		;
 	}
 
@@ -74,7 +59,7 @@ class generator extends atoum\test
 	{
 		$generator = new asserter\generator($this);
 
-		$asserter = new atoum\asserters\adapter(new atoum\score(), new atoum\locale(), $generator);
+		$asserter = new atoum\asserters\adapter($generator);
 
 		$asserter->setWith($adapter = new atoum\test\adapter());
 

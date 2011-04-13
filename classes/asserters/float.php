@@ -12,7 +12,7 @@ class float extends \mageekguy\atoum\asserters\integer
 
 		if (self::isFloat($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a float'), $this));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a float'), $this));
 		}
 		else
 		{

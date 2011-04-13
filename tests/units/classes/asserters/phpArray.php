@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\asserters;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
-use \mageekguy\atoum\asserters;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter,
+	\mageekguy\atoum\asserters
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -12,11 +14,11 @@ class phpArray extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
+		$asserter = new asserters\phpArray($generator = new asserter\generator($this));
 
 		$this->assert
-			->object($asserter->getScore())->isIdenticalTo($score)
-			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getScore())->isIdenticalTo($this->getScore())
+			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
@@ -25,24 +27,22 @@ class phpArray extends atoum\test
 
 	public function testSetWith()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not an array'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => $currentMethod,
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not an array'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($variable))
 					)
 				)
 			)
@@ -63,9 +63,7 @@ class phpArray extends atoum\test
 
 	public function testHasSize()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -84,18 +82,18 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $size) { $line = __LINE__; $asserter->hasSize($size = rand(1, PHP_INT_MAX)); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s has not size %d'), $asserter, $size))
+				->hasMessage(sprintf($test->getLocale()->_('%s has not size %d'), $asserter, $size))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::hasSize()',
-						'fail' => $failMessage = sprintf($locale->_('%s has not size %d'), $asserter, $size)
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s has not size %d'), $asserter, $size)
 					)
 				)
 			)
@@ -110,9 +108,7 @@ class phpArray extends atoum\test
 
 	public function testIsEmpty()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -131,18 +127,18 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isEmpty(); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not empty'), $asserter))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not empty'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEmpty()',
-						'fail' => $failMessage = sprintf($locale->_('%s is not empty'), $asserter)
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s is not empty'), $asserter)
 					)
 				)
 			)
@@ -161,9 +157,7 @@ class phpArray extends atoum\test
 
 	public function testIsNotEmpty()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -182,18 +176,18 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isNotEmpty(); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is empty'), $asserter))
+				->hasMessage(sprintf($test->getLocale()->_('%s is empty'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isNotEmpty()',
-						'fail' => $failMessage = sprintf($locale->_('%s is empty'), $asserter)
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s is empty'), $asserter)
 					)
 				)
 			)
@@ -212,9 +206,7 @@ class phpArray extends atoum\test
 
 	public function testContain()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\phpArray($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
@@ -233,18 +225,18 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->contain($notInArray = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray)))
+				->hasMessage(sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray)))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::contain()',
-						'fail' => $failMessage = sprintf($locale->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray))
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray))
 					)
 				)
 			)

@@ -14,7 +14,7 @@ class adapter extends \mageekguy\atoum\asserter
 
 		if ($this->adapter instanceof \mageekguy\atoum\test\adapter === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a test adapter'), $this->toString($this->adapter)));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->toString($this->adapter)));
 		}
 		else
 		{
@@ -35,11 +35,11 @@ class adapter extends \mageekguy\atoum\asserter
 
 		if (sizeof($calls) <= 0)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('function %s was not called'), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s was not called'), $function));
 		}
 		else if ($args !== null && in_array($args, $calls) === false)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('function %s was not called with this argument', 'function %s was not called with these arguments', sizeof($args)), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('function %s was not called with this argument', 'function %s was not called with these arguments', sizeof($args)), $function));
 		}
 		else
 		{
@@ -59,11 +59,11 @@ class adapter extends \mageekguy\atoum\asserter
 		}
 		else if ($args === null)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('function %s was called'), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s was called'), $function));
 		}
 		else if (in_array($args, $calls) === true)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('function %s was called with this argument', 'function %s was called with these arguments', sizeof($args)), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('function %s was called with this argument', 'function %s was called with these arguments', sizeof($args)), $function));
 		}
 		else
 		{

@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\asserters;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
-use \mageekguy\atoum\asserters;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter,
+	\mageekguy\atoum\asserters
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -12,11 +14,11 @@ class exception extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\exception($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
+		$asserter = new asserters\exception($generator = new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($score)
-			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getLocale())->isIdenticalTo($test->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getVariable())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
@@ -25,24 +27,24 @@ class exception extends atoum\test
 
 	public function testSetWith()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
+		$this->mock('\mageekguy\atoum\test');
 
-		$asserter = new asserters\exception($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\exception(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not an exception'), $asserter->toString($variable)))
+				->hasMessage(sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => $currentMethod,
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not an exception'), $asserter->toString($variable))
+						'fail' => sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($variable))
 					)
 				)
 			)

@@ -12,7 +12,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 
 		if (self::isInteger($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not an integer'), $this));
+			$this->fail(sprintf($this->getLocale()->_('%s is not an integer'), $this));
 		}
 		else
 		{
@@ -44,7 +44,7 @@ class integer extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not greater than  %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not greater than  %s'), $this, $this->toString($variable)));
 		}
 	}
 

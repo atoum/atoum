@@ -12,7 +12,7 @@ class boolean extends \mageekguy\atoum\asserters\variable
 
 		if (self::isBoolean($this->variable) === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a boolean'), $this));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a boolean'), $this));
 		}
 		else
 		{
@@ -24,12 +24,12 @@ class boolean extends \mageekguy\atoum\asserters\variable
 
 	public function isTrue($failMessage = null)
 	{
-		return $this->isEqualTo(true, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not true'), $this));
+		return $this->isEqualTo(true, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not true'), $this));
 	}
 
 	public function isFalse($failMessage = null)
 	{
-		return $this->isEqualTo(false, $failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not false'), $this));
+		return $this->isEqualTo(false, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not false'), $this));
 	}
 
 	protected static function check($variable, $method)

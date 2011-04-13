@@ -14,7 +14,7 @@ class mock extends \mageekguy\atoum\asserter
 
 		if ($this->mock instanceof \mageekguy\atoum\mock\aggregator === false)
 		{
-			$this->fail(sprintf($this->locale->_('%s is not a mock'), $this->toString($this->mock)));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a mock'), $this->toString($this->mock)));
 		}
 		else
 		{
@@ -37,7 +37,7 @@ class mock extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not called'), get_class($this->mock)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not called'), get_class($this->mock)));
 		}
 	}
 
@@ -49,7 +49,7 @@ class mock extends \mageekguy\atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is called'), get_class($this->mock)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is called'), get_class($this->mock)));
 		}
 	}
 
@@ -59,11 +59,11 @@ class mock extends \mageekguy\atoum\asserter
 
 		if (sizeof($calls) <= 0)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('method %s::%s() is not called'), get_class($this->mock), $method));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($this->mock), $method));
 		}
 		else if ($args !== null && in_array($args, $calls) === false)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('method %s::%s() is not called with this argument', 'method %s::%s() is not called with these arguments', sizeof($args)), get_class($this->mock), $method));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('method %s::%s() is not called with this argument', 'method %s::%s() is not called with these arguments', sizeof($args)), get_class($this->mock), $method));
 		}
 		else
 		{
@@ -83,11 +83,11 @@ class mock extends \mageekguy\atoum\asserter
 		}
 		else if ($args === null)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('method %s::%s() is called'), get_class($this->mock), $method));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s::%s() is called'), get_class($this->mock), $method));
 		}
 		else if (in_array($args, $calls) === true)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->__('method %s::%s() is called with this argument', 'method %s::%s() is called with these arguments', sizeof($args)), get_class($this->mock), $method));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('method %s::%s() is called with this argument', 'method %s::%s() is called with these arguments', sizeof($args)), get_class($this->mock), $method));
 		}
 		else
 		{

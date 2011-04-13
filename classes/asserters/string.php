@@ -23,7 +23,7 @@ class string extends variable
 		{
 			if (self::isString($this->variable) === false)
 			{
-				$this->fail(sprintf($this->locale->_('%s is not a string'), $this));
+				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
 			}
 			else
 			{
@@ -36,7 +36,7 @@ class string extends variable
 
 	public function toString($mixed)
 	{
-		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
+		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
 	}
 
 	public function isEmpty($failMessage = null)
@@ -46,7 +46,7 @@ class string extends variable
 
 	public function isNotEmpty($failMessage = null)
 	{
-		return $this->isNotEqualTo('', $failMessage !== null ? $failMessage : $this->locale->_('string is empty'));
+		return $this->isNotEqualTo('', $failMessage !== null ? $failMessage : $this->getLocale()->_('string is empty'));
 	}
 
 	public function match($pattern, $failMessage = null)
@@ -57,13 +57,13 @@ class string extends variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s does not match %s'), $this, $pattern));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not match %s'), $this, $pattern));
 		}
 	}
 
 	public function isEqualTo($variable, $failMessage = null)
 	{
-		return parent::isEqualTo($variable, $failMessage !== null ? $failMessage : $this->locale->_('strings are not equals'));
+		return parent::isEqualTo($variable, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
 	}
 
 	protected static function check($variable, $method)

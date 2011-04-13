@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
-use \mageekguy\atoum\tools\diffs;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\tools\diffs
+;
 
 class variable extends atoum\asserter
 {
@@ -72,7 +74,7 @@ class variable extends atoum\asserter
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not equal to %s'), $this, $this->toString($variable))) .
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->toString($variable))) .
 				PHP_EOL .
 				$diff->setReference($variable)->setData($this->variable)
 			);
@@ -89,7 +91,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is equal to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->toString($variable)));
 		}
 	}
 
@@ -103,7 +105,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not identical to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->toString($variable)));
 		}
 	}
 
@@ -117,7 +119,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is identical to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->toString($variable)));
 		}
 	}
 
@@ -129,7 +131,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not null'), $this));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not null'), $this));
 		}
 	}
 
@@ -141,7 +143,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is null'), $this));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is null'), $this));
 		}
 	}
 
@@ -160,7 +162,7 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->toString($reference)));
 			}
 		}
 		else
@@ -176,7 +178,7 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->toString($reference)));
 			}
 		}
 

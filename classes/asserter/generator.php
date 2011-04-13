@@ -2,28 +2,21 @@
 
 namespace mageekguy\atoum\asserter;
 
-use mageekguy\atoum;
-use mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class generator
 {
 	protected $test = null;
-	protected $locale = null;
 	protected $labels = array();
 	protected $aliases = array();
 	protected $asserters = array();
 
-	public function __construct(atoum\test $test, atoum\locale $locale = null)
+	public function __construct(atoum\test $test)
 	{
-		if ($locale === null)
-		{
-			$locale = new atoum\locale();
-		}
-
-		$this
-			->setTest($test)
-			->setLocale($locale)
-		;
+		$this->setTest($test);
 	}
 
 	public function __get($asserterName)
@@ -43,7 +36,7 @@ class generator
 					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 				}
 
-				$this->asserters[$class] = new $class($this->test->getScore(), $this->locale, $this);
+				$this->asserters[$class] = new $class($this);
 			}
 
 			$asserter = $this->asserters[$class];
@@ -69,9 +62,14 @@ class generator
 		return $this->test;
 	}
 
+	public function getScore()
+	{
+		return $this->test->getScore();
+	}
+
 	public function getLocale()
 	{
-		return $this->locale;
+		return $this->test->getLocale();
 	}
 
 	public function getLabels()
@@ -121,12 +119,6 @@ class generator
 	public function setTest(atoum\test $test)
 	{
 		$this->test = $test;
-		return $this;
-	}
-
-	public function setLocale(atoum\locale $locale)
-	{
-		$this->locale = $locale;
 		return $this;
 	}
 

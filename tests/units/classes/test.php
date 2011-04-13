@@ -119,7 +119,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->mock)->isIdenticalTo($mockGenerator)
 			;
 
-			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale()));
+			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest()));
 
 			$this->assert
 				->object($test->assert)->isIdenticalTo($asserterGenerator)

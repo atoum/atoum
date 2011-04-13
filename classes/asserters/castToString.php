@@ -12,7 +12,7 @@ class castToString extends \mageekguy\atoum\asserters\string
 		{
 			if (self::isObject($variable) === false)
 			{
-				$this->fail(sprintf($this->locale->_('%s is not an object'), $this->toString($variable)));
+				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this->toString($variable)));
 			}
 			else
 			{

@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\asserters;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
-use \mageekguy\atoum\asserters;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter,
+	\mageekguy\atoum\asserters
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -12,19 +14,18 @@ class phpClass extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
+		$asserter = new asserters\phpClass($generator = new asserter\generator($this));
 
 		$this->assert
-			->object($asserter)->isInstanceOf('\mageekguy\atoum\asserter')
-			->object($asserter->getScore())->isIdenticalTo($score)
-			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getScore())->isIdenticalTo($this->getScore())
+			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
 		;
 	}
 
 	public function testGetClass()
 	{
-		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$this->assert
 			->variable($asserter->getClass())->isNull()
@@ -39,7 +40,7 @@ class phpClass extends atoum\test
 
 	public function testSetReflectionClassInjector()
 	{
-		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
@@ -58,7 +59,7 @@ class phpClass extends atoum\test
 
 	public function testGetReflectionClass()
 	{
-		$asserter = new asserters\phpClass(new atoum\score(), new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
@@ -89,7 +90,7 @@ class phpClass extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$mockGenerator = new atoum\mock\generator();
 		$mockGenerator->generate('\reflectionClass');
@@ -106,12 +107,12 @@ class phpClass extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not a class'), $class))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a class'), $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->object($asserter->setWith(__CLASS__))->isIdenticalTo($asserter)
@@ -123,7 +124,7 @@ class phpClass extends atoum\test
 
 	public function testHasParent()
 	{
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use ($asserter) {
@@ -162,7 +163,7 @@ class phpClass extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not the parent of class %s'), $parent, $class))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not the parent of class %s'), $parent, $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
 		;
@@ -178,7 +179,7 @@ class phpClass extends atoum\test
 
 	public function testHasNoParent()
 	{
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use ($asserter) {
@@ -221,7 +222,7 @@ class phpClass extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('class %s has parent %s'), $className, $parentClass))
+				->hasMessage(sprintf($test->getLocale()->_('class %s has parent %s'), $className, $parentClass))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
@@ -229,7 +230,7 @@ class phpClass extends atoum\test
 
 	public function testHasInterface()
 	{
-		$asserter = new asserters\phpClass($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use ($asserter) {
@@ -264,7 +265,7 @@ class phpClass extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('Class %s does not implement interface %s'), $class, $interface))
+				->hasMessage(sprintf($test->getLocale()->_('Class %s does not implement interface %s'), $class, $interface))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
 		;

@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\asserters;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\asserter;
-use \mageekguy\atoum\asserters;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserter,
+	\mageekguy\atoum\asserters
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -12,11 +14,11 @@ class adapter extends atoum\test
 {
 	public function test__construct()
 	{
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), $generator = new asserter\generator($this));
+		$asserter = new asserters\adapter($generator = new asserter\generator($this));
 
 		$this->assert
-			->object($asserter->getScore())->isIdenticalTo($score)
-			->object($asserter->getLocale())->isIdenticalTo($locale)
+			->object($asserter->getScore())->isIdenticalTo($this->getScore())
+			->object($asserter->getLocale())->isIdenticalTo($this->getLOcale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getAdapter())->isNull()
 		;
@@ -24,14 +26,12 @@ class adapter extends atoum\test
 
 	public function testSetWith()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('%s is not a test adapter'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($variable)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
@@ -40,11 +40,11 @@ class adapter extends atoum\test
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => $currentMethod,
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($locale->_('%s is not a test adapter'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($variable))
 					)
 				)
 			)
@@ -65,9 +65,7 @@ class adapter extends atoum\test
 
 	public function testCall()
 	{
-		$currentMethod = substr(__METHOD__, strrpos(__METHOD__, ':') + 1);
-
-		$asserter = new asserters\adapter($score = new atoum\score(), $locale = new atoum\locale(), new asserter\generator($this));
+		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -95,18 +93,18 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->call($function); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('function %s was not called'), $function))
+				->hasMessage(sprintf($test->getLocale()->_('function %s was not called'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('function %s was not called'), $function)
+						'fail' => sprintf($test->getLocale()->_('function %s was not called'), $function)
 					)
 				)
 			)
@@ -129,44 +127,44 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->call($function, array(uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('function %s was not called with this argument'), $function))
+				->hasMessage(sprintf($test->getLocale()->_('function %s was not called with this argument'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('function %s was not called with this argument'), $function)
+						'fail' => sprintf($test->getLocale()->_('function %s was not called with this argument'), $function)
 					)
 				)
 			)
 			->exception(function() use (& $otherLine, $asserter, $function) { $otherLine = __LINE__; $asserter->call($function, array(uniqid(), uniqid())); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($locale->_('function %s was not called with these arguments'), $function))
+				->hasMessage(sprintf($test->getLocale()->_('function %s was not called with these arguments'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('function %s was not called with this argument'), $function)
+						'fail' => sprintf($test->getLocale()->_('function %s was not called with this argument'), $function)
 					),
 					array(
 						'case' => null,
 						'class' => __CLASS__,
-						'method' => substr(__METHOD__, strrpos(__METHOD__, ':') + 1),
+						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $otherLine,
 						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($locale->_('function %s was not called with these arguments'), $function)
+						'fail' => sprintf($test->getLocale()->_('function %s was not called with these arguments'), $function)
 					)
 				)
 			)

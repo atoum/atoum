@@ -84,8 +84,6 @@ abstract class test implements observable, \countable
 			throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 		}
 
-		$this->asserterGenerator = new asserter\generator($this, $this->locale);
-
 		$this->assert
 			->setAlias('array', 'phpArray')
 			->setAlias('class', 'phpClass')
@@ -181,7 +179,7 @@ abstract class test implements observable, \countable
 
 	public function setAsserterGenerator(asserter\generator $generator)
 	{
-		$this->asserterGenerator = $generator->setTest($this)->setLocale($this->locale);
+		$this->asserterGenerator = $generator->setTest($this);
 
 		return $this;
 	}

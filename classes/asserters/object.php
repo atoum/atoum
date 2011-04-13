@@ -14,7 +14,7 @@ class object extends \mageekguy\atoum\asserters\variable
 		{
 			if (self::isObject($this->variable) === false)
 			{
-				$this->fail(sprintf($this->locale->_('%s is not an object'), $this));
+				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this));
 			}
 			else
 			{
@@ -39,7 +39,7 @@ class object extends \mageekguy\atoum\asserters\variable
 			}
 		}
 
-		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->locale->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : $this->toString($variable)));
+		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : $this->toString($variable)));
 
 		return $this;
 	}
@@ -52,7 +52,7 @@ class object extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
 		}
 	}
 
@@ -64,7 +64,7 @@ class object extends \mageekguy\atoum\asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->locale->_('%s has size %d'), $this, sizeof($this->variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d'), $this, sizeof($this->variable)));
 		}
 	}
 
