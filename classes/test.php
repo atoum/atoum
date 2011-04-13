@@ -37,6 +37,7 @@ abstract class test implements observable, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 	private $testsSubNamespace = null;
+	private $mockGenerator = null;
 
 	public static $runningTest = null;
 
@@ -131,6 +132,22 @@ abstract class test implements observable, \countable
 			case 'assert':
 			case 'define':
 				return $this->asserterGenerator;
+
+			case 'mock':
+				return ($this->mockGenerator ?: new atoum\mock\generator());
+
+			default:
+				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
+		}
+	}
+
+	public function __call($method, $arguments)
+	{
+		switch ($method)
+		{
+			case 'mock':
+				$this->mock->generate(isset($arguments[0]) === false ? null : $arguments[0], isset($arguments[1]) === false ? null : $arguments[1], isset($arguments[2]) === false ? null : $arguments[2]);
+				return $this;
 
 			default:
 				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');

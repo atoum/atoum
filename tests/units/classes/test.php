@@ -103,6 +103,26 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function test__get()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->assert)->isInstanceOf('\mageekguy\atoum\asserter\generator')
+				->object($test->define)->isInstanceOf('\mageekguy\atoum\asserter\generator')
+				->object($test->mock)->isInstanceOf('\mageekguy\atoum\mock\generator')
+			;
+
+			$this->assert
+				->exception(function() use ($test, & $property) {
+						$test->{$property = uniqid()};
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($test) . '\'')
+			;
+		}
+
 		public function testSetSuperglobals()
 		{
 			$test = new emptyTest();
