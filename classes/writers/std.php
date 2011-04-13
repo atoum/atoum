@@ -22,11 +22,6 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 
 	public function write($something)
 	{
-		return $this->flush($something);
-	}
-
-	public function flush($something)
-	{
 		$this->getResource()->adapter->fwrite($this->resource, $something);
 
 		return $this;

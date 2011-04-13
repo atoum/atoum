@@ -29,11 +29,6 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function write($something)
 	{
-		return $this->flush($something);
-	}
-
-	public function flush($something)
-	{
 		if($this->adapter->is_null($this->handler))
 		{
 			$dir = $this->adapter->dirname($this->filename);
@@ -42,7 +37,9 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 				$this->handler = $this->adapter->fopen($this->filename, 'w');
 			}
 		}
+
 		$this->adapter->fwrite($this->handler, $something);
+
 		return $this;
 	}
 
