@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
 	\mageekguy\atoum\asserter,
 	\mageekguy\atoum\exceptions
 ;
@@ -131,10 +132,10 @@ abstract class test implements observable, \countable
 		{
 			case 'assert':
 			case 'define':
-				return $this->asserterGenerator;
+				return $this->getAsserterGenerator();
 
 			case 'mock':
-				return ($this->mockGenerator ?: new atoum\mock\generator());
+				return $this->getMockGenerator();
 
 			default:
 				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
@@ -164,6 +165,30 @@ abstract class test implements observable, \countable
 	public function getSuperglobals()
 	{
 		return $this->superglobals;
+	}
+
+	public function setMockGenerator(mock\generator $generator)
+	{
+		$this->mockGenerator = $generator;
+
+		return $this;
+	}
+
+	public function getMockGenerator()
+	{
+		return $this->mockGenerator ?: $this->setMockGenerator(new mock\generator())->mockGenerator;
+	}
+
+	public function setAsserterGenerator(asserter\generator $generator)
+	{
+		$this->asserterGenerator = $generator->setTest($this)->setLocale($this->locale);
+
+		return $this;
+	}
+
+	public function getAsserterGenerator()
+	{
+		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
 	}
 
 	public function setTestsSubNamespace($testsSubNamespace)

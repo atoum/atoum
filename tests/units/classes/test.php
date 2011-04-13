@@ -113,6 +113,18 @@ namespace mageekguy\atoum\tests\units
 				->object($test->mock)->isInstanceOf('\mageekguy\atoum\mock\generator')
 			;
 
+			$test->setMockGenerator($mockGenerator = new mock\generator());
+
+			$this->assert
+				->object($test->mock)->isIdenticalTo($mockGenerator)
+			;
+
+			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale()));
+
+			$this->assert
+				->object($test->assert)->isIdenticalTo($asserterGenerator)
+			;
+
 			$this->assert
 				->exception(function() use ($test, & $property) {
 						$test->{$property = uniqid()};
@@ -130,6 +142,58 @@ namespace mageekguy\atoum\tests\units
 			$this->assert
 				->object($test->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($test)
 				->object($test->getSuperglobals())->isIdenticalTo($superglobals);
+			;
+		}
+
+		public function testGetMockGenerator()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->getMockGenerator())->isInstanceOf('\mageekguy\atoum\mock\generator')
+			;
+
+			$test->setMockGenerator($mockGenerator = new mock\generator());
+
+			$this->assert
+				->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+			;
+		}
+
+		public function testSetMockGenerator()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->setMockGenerator($mockGenerator = new mock\generator()))->isIdenticalTo($test)
+				->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+			;
+		}
+
+		public function testGetAsserterGenerator()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->getAsserterGenerator())->isInstanceOf('\mageekguy\atoum\asserter\generator')
+			;
+
+			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale()));
+
+			$this->assert
+				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
+			;
+		}
+
+		public function testSetAsserterGenerator()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale())))->isIdenticalTo($test)
+				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
+				->object($asserterGenerator->getTest())->isIdenticalTo($test)
+				->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
 			;
 		}
 
