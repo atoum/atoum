@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class exception extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\exception($generator = new asserter\generator($test = new self($score = new atoum\score())));

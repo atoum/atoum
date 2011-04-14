@@ -13,6 +13,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class float extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\integer')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\float($generator = new asserter\generator($this));

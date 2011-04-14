@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class output extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\string')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\output($generator = new asserter\generator($this));

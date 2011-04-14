@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class mock extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\mock($generator = new asserter\generator($this));

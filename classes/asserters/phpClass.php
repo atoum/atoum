@@ -2,9 +2,12 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
-class phpClass extends \mageekguy\atoum\asserter
+class phpClass extends atoum\asserter
 {
 	protected $class = null;
 	protected $reflectionClassInjector = null;
