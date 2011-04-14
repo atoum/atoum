@@ -4,8 +4,10 @@ namespace mageekguy\atoum\scripts;
 
 require_once(__DIR__ . '/../../constants.php');
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class runner extends atoum\script
 {
@@ -50,25 +52,6 @@ class runner extends atoum\script
 	public function getScoreFile()
 	{
 		return $this->scoreFile;
-	}
-
-	public function enableReports()
-	{
-		$this->reportsEnabled = true;
-
-		return $this;
-	}
-
-	public function disableReports()
-	{
-		$this->reportsEnabled = false;
-
-		return $this;
-	}
-
-	public function reportsAreEnabled()
-	{
-		return $this->reportsEnabled;
 	}
 
 	public function run(array $arguments = array())
@@ -167,18 +150,6 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $empty) {
-				if (sizeof($empty) > 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->disableReports();
-			},
-			array('-nr', '--no-reports')
-		);
-
-		$this->argumentsParser->addHandler(
 			function($script, $argument, $files) {
 				if (sizeof($files) <= 0)
 				{
@@ -242,11 +213,7 @@ class runner extends atoum\script
 
 		if ($this->runTests === true)
 		{
-			if ($this->reportsAreEnabled() === false)
-			{
-				$runner->removeReports();
-			}
-			else if ($runner->hasReports() === false)
+			if ($runner->hasReports() === false)
 			{
 				$report = new atoum\reports\realtime\cli();
 				$report->addWriter(new atoum\writers\std\out());
@@ -287,7 +254,6 @@ class runner extends atoum\script
 				array(
 					'-h, --help' => $this->locale->_('Display this help'),
 					'-v, --version' => $this->locale->_('Display version'),
-					'-nr, --no-reports' => $this->locale->_('Disable all reports'),
 					'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
 					'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
