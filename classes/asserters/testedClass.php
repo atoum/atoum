@@ -14,6 +14,11 @@ class testedClass extends phpClass
 		parent::__construct($generator);
 		parent::setWith($generator->getTest()->getTestedClassName());
 	}
+
+	public function setWith($class, $label = null)
+	{
+		throw new exceptions\logic\badMethodCall('Unable to call method ' . __METHOD__ . '()');
+	}
 }
 
 ?>

@@ -16,7 +16,7 @@ class boolean extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass()->isSubclassOf('\mageekguy\atoum\asserters\variable')
+			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\variable')
 		;
 	}
 

@@ -9,14 +9,14 @@ use
 
 require_once(__DIR__ . '/../../../runner.php');
 
-class invalidArgument extends atoum\test
+class badMethodCall extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
 			->testedClass
 				->isSubclassOf('\logicException')
-				->isSubclassOf('\invalidArgumentException')
+				->isSubclassOf('\badMethodCallException')
 				->isSubclassOf('\mageekguy\atoum\exception')
 		;
 	}
