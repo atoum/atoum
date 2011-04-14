@@ -2,24 +2,31 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock
+;
 
 require_once(__DIR__ . '/../runner.php');
 
 class report extends atoum\test
 {
+	public function testTestedClass()
+	{
+		$this->assert
+			->testedClass
+				->isSubclassOf('\mageekguy\atoum\observers\runner')
+				->isSubclassOf('\mageekguy\atoum\observers\test')
+		;
+	}
 	public function test__construct()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\report');
+		$this->mock->generate('\mageekguy\atoum\report');
 
 		$report = new mock\mageekguy\atoum\report();
 
 		$this->assert
-			->object($report)
-				->isInstanceOf('\mageekguy\atoum\observers\runner')
-				->isInstanceOf('\mageekguy\atoum\observers\test')
+			->variable($report->getTitle())->isNull()
 			->object($report->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->array($report->getRunnerFields())->isEqualTo(array(
 					atoum\runner::runStart => array(),
@@ -41,14 +48,13 @@ class report extends atoum\test
 					atoum\test::runStop => array()
 				)
 			)
+			->array($report->getWriters())->isEmpty()
 		;
 
 		$report = new mock\mageekguy\atoum\report($locale = new atoum\locale());
 
 		$this->assert
-			->object($report)
-				->isInstanceOf('\mageekguy\atoum\observers\runner')
-				->isInstanceOf('\mageekguy\atoum\observers\test')
+			->variable($report->getTitle())->isNull()
 			->object($report->getLocale())->isIdenticalTo($locale)
 			->array($report->getRunnerFields())->isEqualTo(array(
 					atoum\runner::runStart => array(),
@@ -70,6 +76,19 @@ class report extends atoum\test
 					atoum\test::runStop => array()
 				)
 			)
+			->array($report->getWriters())->isEmpty()
+		;
+	}
+
+	public function testSetTitle()
+	{
+		$report = new atoum\report();
+
+		$this->assert
+			->object($report->setTitle($title = uniqid()))->isEqualTo($report)
+			->string($report->getTitle())->isEqualTo($title)
+			->object($report->setTitle($title = rand(1, PHP_INT_MAX)))->isEqualTo($report)
+			->string($report->getTitle())->isEqualTo((string) $title)
 		;
 	}
 

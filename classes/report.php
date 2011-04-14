@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 class report implements observers\runner, observers\test
 {
+	protected $title = null;
 	protected $locale = null;
 	protected $writers = array();
 	protected $testFields = array();
@@ -41,6 +42,18 @@ class report implements observers\runner, observers\test
 		}
 
 		$this->setLocale($locale);
+	}
+
+	public function setTitle($title)
+	{
+		$this->title = (string) $title;
+
+		return $this;
+	}
+
+	public function getTitle()
+	{
+		return $this->title;
 	}
 
 	public function setLocale(locale $locale)
