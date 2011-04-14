@@ -13,6 +13,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class boolean extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass()->isSubclassOf('\mageekguy\atoum\asserters\variable')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\boolean($generator = new asserter\generator($this));

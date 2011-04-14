@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class adapter extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\asserter')
+		;
+	}
+
 	public function test__construct()
 	{
 		$asserter = new asserters\adapter($generator = new asserter\generator($this));
