@@ -18,6 +18,8 @@ class builder extends atoum\script
 	protected $revision = null;
 	protected $tag = null;
 	protected $tagRegex = '/\$Rev: \d+ \$/';
+	protected $unitTestRunnerScript = null;
+	protected $pharGeneratorScript = null;
 	protected $workingDirectory = null;
 	protected $destinationDirectory = null;
 	protected $scoreDirectory = null;
@@ -25,6 +27,7 @@ class builder extends atoum\script
 	protected $revisionFile = null;
 	protected $runFile = null;
 	protected $buildPhar = true;
+	protected $reportTitle = null;
 	protected $fileIteratorInjector = null;
 	protected $mailer = null;
 	protected $phpToken = '[php]';
@@ -224,13 +227,6 @@ class builder extends atoum\script
 		return $this->errorsDirectory;
 	}
 
-	public function setRevision($revisionNumber)
-	{
-		$this->revision = (int) $revisionNumber;
-
-		return $this;
-	}
-
 	public function setRevisionFile($path)
 	{
 		$this->revisionFile = (string) $path;
@@ -241,6 +237,25 @@ class builder extends atoum\script
 	public function getRevisionFile()
 	{
 		return $this->revisionFile;
+	}
+
+	public function setReportTitle($title)
+	{
+		$this->reportTitle = (string) $title;
+
+		return $this;
+	}
+
+	public function getReportTitle()
+	{
+		return $this->reportTitle;
+	}
+
+	public function setRevision($revisionNumber)
+	{
+		$this->revision = (int) $revisionNumber;
+
+		return $this;
 	}
 
 	public function getRevision()
@@ -277,6 +292,30 @@ class builder extends atoum\script
 	public function getWorkingDirectory()
 	{
 		return $this->workingDirectory;
+	}
+
+	public function setUnitTestRunnerScript($path)
+	{
+		$this->unitTestRunnerScript = (string) $path;
+
+		return $this;
+	}
+
+	public function getUnitTestRunnerScript()
+	{
+		return $this->unitTestRunnerScript;
+	}
+
+	public function setPharGeneratorScript($path)
+	{
+		$this->pharGeneratorScript = (string) $path;
+
+		return $this;
+	}
+
+	public function getPharGeneratorScript()
+	{
+		return $this->pharGeneratorScript;
 	}
 
 	public function setRunFile($path)
@@ -373,94 +412,99 @@ class builder extends atoum\script
 
 	public function checkUnitTests()
 	{
-		$this->checkout();
+		$status = true;
 
-		$descriptors = array(
-			1 => array('pipe', 'w'),
-			2 => array('pipe', 'w')
-		);
-
-		$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
-
-		$phpPath = $this->getPhpPath();
-
-		$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'runner.php -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
-
-		foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
+		if ($this->unitTestRunnerScript !== null)
 		{
-			$command .= ' -c ' . $runnerConfigurationFile;
-		}
+			$this->checkout();
 
-		$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+			$descriptors = array(
+				1 => array('pipe', 'w'),
+				2 => array('pipe', 'w')
+			);
 
-		if ($php === false)
-		{
-			throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-		}
+			$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
 
-		$phpStatus = $this->adapter->proc_get_status($php);
+			$phpPath = $this->getPhpPath();
 
-		if ($phpStatus['running'] === false)
-		{
-			switch ($phpStatus['exitcode'])
+			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
+
+			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
-				case 126:
-				case 127:
-					throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
-
-				default:
-					throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+				$command .= ' -c ' . $runnerConfigurationFile;
 			}
-		}
 
-		$stdOut = $this->adapter->stream_get_contents($pipes[1]);
-		$this->adapter->fclose($pipes[1]);
+			$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
-		$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-		$this->adapter->fclose($pipes[2]);
-
-		$this->adapter->proc_close($php);
-
-		if ($stdErr != '')
-		{
-			$this->writeErrorInErrorsDirectory($stdErr);
-		}
-
-		$score = @$this->adapter->file_get_contents($scoreFile);
-
-		if ($score === false)
-		{
-			throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
-		}
-
-		$score = $this->adapter->unserialize($score);
-
-		if ($score === false)
-		{
-			throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
-		}
-
-		if ($score instanceof atoum\score === false)
-		{
-			throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
-		}
-
-		if ($this->scoreDirectory === null)
-		{
-			if ($this->adapter->unlink($scoreFile) === false)
+			if ($php === false)
 			{
-				throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
+				throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
 			}
-		}
 
-		$status = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+			$phpStatus = $this->adapter->proc_get_status($php);
 
-		if ($this->mailer !== null)
-		{
-			$this->mailer
-				->setSubject(sprintf($this->mailer->getSubject(), $status === false ? 'FAIL' : 'SUCCESS', $this->getRevision()))
-				->send($stdOut)
-			;
+			if ($phpStatus['running'] === false)
+			{
+				switch ($phpStatus['exitcode'])
+				{
+					case 126:
+					case 127:
+						throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+
+					default:
+						throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+				}
+			}
+
+			$stdOut = $this->adapter->stream_get_contents($pipes[1]);
+			$this->adapter->fclose($pipes[1]);
+
+			$stdErr = $this->adapter->stream_get_contents($pipes[2]);
+			$this->adapter->fclose($pipes[2]);
+
+			$this->adapter->proc_close($php);
+
+			if ($stdErr != '')
+			{
+				$this->writeErrorInErrorsDirectory($stdErr);
+			}
+
+			$score = @$this->adapter->file_get_contents($scoreFile);
+
+			if ($score === false)
+			{
+				throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
+			}
+
+			$score = $this->adapter->unserialize($score);
+
+			if ($score === false)
+			{
+				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
+			}
+
+			if ($score instanceof atoum\score === false)
+			{
+				throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
+			}
+
+			if ($this->scoreDirectory === null)
+			{
+				if ($this->adapter->unlink($scoreFile) === false)
+				{
+					throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
+				}
+			}
+
+			$status = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
+
+			if ($this->mailer !== null)
+			{
+				$this->mailer
+					->setSubject(sprintf($this->mailer->getSubject(), $status === false ? 'FAIL' : 'SUCCESS', $this->getRevision()))
+					->send($stdOut)
+				;
+			}
 		}
 
 		return $status;
@@ -495,76 +539,79 @@ class builder extends atoum\script
 
 	public function build()
 	{
-		if ($this->destinationDirectory === null)
-		{
-			throw new exceptions\runtime('Unable to build phar, destination directory is undefined');
-		}
-
 		$pharBuilt = false;
 
-		if ($this->revisionFile !== null)
+		if ($this->pharGeneratorScript !== null)
 		{
-			$revision = @$this->adapter->file_get_contents($this->revisionFile);
-
-			if (is_numeric($revision) === true)
+			if ($this->destinationDirectory === null)
 			{
-				$this->setRevision($revision);
+				throw new exceptions\runtime('Unable to build phar, destination directory is undefined');
 			}
-		}
 
-		$revisions = $this->getNextRevisionNumbers();
-
-		if (sizeof($revisions) > 0)
-		{
-			$revision = end($revisions);
-
-			$descriptors = array(
-				2 => array('pipe', 'w')
-			);
-
-			while (sizeof($revisions) > 0)
+			if ($this->revisionFile !== null)
 			{
-				$this->setRevision(array_shift($revisions));
+				$revision = @$this->adapter->file_get_contents($this->revisionFile);
 
-				if ($this->checkUnitTests() === true)
+				if (is_numeric($revision) === true)
 				{
-					$this->tagFiles();
-
-					$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'scripts' . \DIRECTORY_SEPARATOR . 'phar' . \DIRECTORY_SEPARATOR . 'generator.php -- -d ' . $this->destinationDirectory;
-
-					$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
-
-					if ($php === false)
-					{
-						throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-					}
-
-					$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-					$this->adapter->fclose($pipes[2]);
-
-					$this->adapter->proc_close($php);
-
-					if ($stdErr == '')
-					{
-						$pharBuilt = true;
-					}
-					else
-					{
-						$this->writeErrorInErrorsDirectory($stdErr);
-					}
-				}
-
-				$revisions = $this->getNextRevisionNumbers();
-
-				if (sizeof($revisions) > 0)
-				{
-					$revision = end($revisions);
+					$this->setRevision($revision);
 				}
 			}
 
-			if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
+			$revisions = $this->getNextRevisionNumbers();
+
+			if (sizeof($revisions) > 0)
 			{
-				throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
+				$revision = end($revisions);
+
+				$descriptors = array(
+					2 => array('pipe', 'w')
+				);
+
+				while (sizeof($revisions) > 0)
+				{
+					$this->setRevision(array_shift($revisions));
+
+					if ($this->checkUnitTests() === true)
+					{
+						$this->tagFiles();
+
+						$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript . ' -- -d ' . $this->destinationDirectory;
+
+						$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+
+						if ($php === false)
+						{
+							throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
+						}
+
+						$stdErr = $this->adapter->stream_get_contents($pipes[2]);
+						$this->adapter->fclose($pipes[2]);
+
+						$this->adapter->proc_close($php);
+
+						if ($stdErr == '')
+						{
+							$pharBuilt = true;
+						}
+						else
+						{
+							$this->writeErrorInErrorsDirectory($stdErr);
+						}
+					}
+
+					$revisions = $this->getNextRevisionNumbers();
+
+					if (sizeof($revisions) > 0)
+					{
+						$revision = end($revisions);
+					}
+				}
+
+				if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
+				{
+					throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
+				}
 			}
 		}
 
@@ -734,6 +781,42 @@ class builder extends atoum\script
 				$script->setTag(current($tag));
 			},
 			array('-t', '--tag')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $unitTestRunnerScript) {
+				if (sizeof($unitTestRunnerScript) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setUnitTestRunnerScript(current($unitTestRunnerScript));
+			},
+			array('-utrs', '--unit-test-runner-script')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $pharGeneratorScript) {
+				if (sizeof($pharGeneratorScript) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setPharGeneratorScript(current($pharGeneratorScript));
+			},
+			array('-pgs', '--phar-generator-script')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $reportTitle) {
+				if (sizeof($reportTitle) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setReportTitle(current($reportTitle));
+			},
+			array('-rt', '--report-title')
 		);
 
 		parent::run($arguments);
