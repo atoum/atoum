@@ -1,7 +1,6 @@
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
-" Date:						Fri Apr 17 09:58:00 CEST 2009
-" Licence:					GPL version 2.0 license
+" Licence:					BSD
 "=============================================================================
 if !exists('b:current_syntax')
 	syn case match

@@ -12,7 +12,7 @@ class mail extends atoum\writer implements report\writers\asynchronous
 {
 	protected $mailer = null;
 
-	public function __construct(atoum\adapter $adapter = null, atoum\mailer $mailer = null)
+	public function __construct(atoum\mailer $mailer = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($adapter);
 
@@ -45,6 +45,18 @@ class mail extends atoum\writer implements report\writers\asynchronous
 
 	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
+		$mailerSubject = $this->mailer->getSubject();
+
+		if ($mailerSubject === null)
+		{
+			$reportTitle = $report->getTitle();
+
+			if ($reportTitle !== null)
+			{
+				$this->mailer->setSubject($reportTitle);
+			}
+		}
+
 		return $this->write((string) $report);
 	}
 }

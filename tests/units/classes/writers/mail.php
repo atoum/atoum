@@ -18,8 +18,15 @@ class mail extends atoum\test
 		$writer = new writers\mail();
 
 		$this->assert
-			->object($writer->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 			->object($writer->getMailer())->isInstanceOf('\mageekguy\atoum\mailers\mail')
+			->object($writer->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+		;
+
+		$writer = new writers\mail($mailer = new atoum\mailers\mail(), $adapter = new atoum\adapter());
+
+		$this->assert
+			->object($writer->getMailer())->isIdenticalTo($mailer)
+			->object($writer->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
@@ -61,17 +68,39 @@ class mail extends atoum\test
 
 	public function testWriteAsynchronousReport()
 	{
-		$this->mock($this->getTestedClassName());
+		$this
+			->mock($this->getTestedClassName())
+			->mock('\mageekguy\atoum\reports\asynchronous')
+		;
 
-		$writer = new mock\mageekguy\atoum\writers\mail();
+		$mailer = new atoum\mailers\mail();
+
+		$writer = new mock\mageekguy\atoum\writers\mail($mailer);
 
 		$writer->getMockController()->write = $writer;
 
-		$this->mock('\mageekguy\atoum\reports\asynchronous');
+		$report = new mock\mageekguy\atoum\reports\asynchronous();
 
 		$this->assert
-			->object($writer->writeAsynchronousReport($report = new mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
+			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
+			->variable($mailer->getSubject())->isNull()
+		;
+
+		$report->setTitle($title = uniqid());
+
+		$this->assert
+			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
+			->mock($writer)->call('write', array((string) $report))
+			->string($mailer->getSubject())->isEqualTo($title)
+		;
+
+		$mailer->setSubject($mailerSubject = uniqid());
+
+		$this->assert
+			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
+			->mock($writer)->call('write', array((string) $report))
+			->string($mailer->getSubject())->isEqualTo($mailerSubject)
 		;
 	}
 }
