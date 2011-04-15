@@ -26,6 +26,7 @@ class runner implements observable, adapter\aggregator
 	protected $testMethodNumber = null;
 	protected $codeCoverage = true;
 	protected $phpPath = null;
+	protected $defaultReportTitle = null;
 
 	private $start = null;
 	private $stop = null;
@@ -82,6 +83,17 @@ class runner implements observable, adapter\aggregator
 	public function getSuperglobals()
 	{
 		return $this->superglobals;
+	}
+
+	public function setDefaultReportTitle($title)
+	{
+		$this->defaultReportTitle = (string) $title;
+		return $this;
+	}
+
+	public function getDefaultReportTitle()
+	{
+		return ($this->defaultReportTitle !== null ? $this->defaultReportTitle : $this->locale->_('Unit tests report, the %s at %s'));
 	}
 
 	public function setScore(score $score)

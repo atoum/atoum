@@ -19,9 +19,11 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isInstanceOf('\mageekguy\atoum\score')
 			->object($runner->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($runner->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
+			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %s at %s'))
 		;
 
 		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter());
@@ -29,9 +31,11 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isIdenticalTo($score)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
+			->object($runner->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
+			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %s at %s'))
 		;
 	}
 
@@ -62,6 +66,16 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->setScore($score = new atoum\score()))->isIdenticalTo($runner)
 			->object($runner->getScore())->isIdenticalTo($score);
+		;
+	}
+
+	public function testSetDefaultReportTtitle()
+	{
+		$runner = new atoum\runner();
+
+		$this->assert
+			->object($runner->setDefaultReportTitle($title = uniqid()))->isIdenticalTo($runner)
+			->string($runner->getDefaultReportTitle())->isEqualTo($title)
 		;
 	}
 
