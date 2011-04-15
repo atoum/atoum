@@ -205,7 +205,7 @@ class builder extends atoum\script
 
 	public function setScoreDirectory($path)
 	{
-		$this->scoreDirectory = (string) $path;
+		$this->scoreDirectory = static::cleanDirectoryPath($path);
 
 		return $this;
 	}
@@ -217,7 +217,7 @@ class builder extends atoum\script
 
 	public function setErrorsDirectory($path)
 	{
-		$this->errorsDirectory = (string) $path;
+		$this->errorsDirectory = static::cleanDirectoryPath($path);
 
 		return $this;
 	}
@@ -225,6 +225,30 @@ class builder extends atoum\script
 	public function getErrorsDirectory()
 	{
 		return $this->errorsDirectory;
+	}
+
+	public function setDestinationDirectory($path)
+	{
+		$this->destinationDirectory = static::cleanDirectoryPath($path);
+
+		return $this;
+	}
+
+	public function getDestinationDirectory()
+	{
+		return $this->destinationDirectory;
+	}
+
+	public function setWorkingDirectory($path)
+	{
+		$this->workingDirectory = static::cleanDirectoryPath($path);
+
+		return $this;
+	}
+
+	public function getWorkingDirectory()
+	{
+		return $this->workingDirectory;
 	}
 
 	public function setRevisionFile($path)
@@ -268,30 +292,6 @@ class builder extends atoum\script
 		$this->revision = null;
 
 		return $this;
-	}
-
-	public function setDestinationDirectory($path)
-	{
-		$this->destinationDirectory = (string) $path;
-
-		return $this;
-	}
-
-	public function getDestinationDirectory()
-	{
-		return $this->destinationDirectory;
-	}
-
-	public function setWorkingDirectory($path)
-	{
-		$this->workingDirectory = (string) $path;
-
-		return $this;
-	}
-
-	public function getWorkingDirectory()
-	{
-		return $this->workingDirectory;
 	}
 
 	public function setUnitTestRunnerScript($path)
@@ -427,7 +427,7 @@ class builder extends atoum\script
 
 			$phpPath = $this->getPhpPath();
 
-			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
+			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg($this->reportTitle)) . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
@@ -540,6 +540,7 @@ class builder extends atoum\script
 	public function build()
 	{
 		$pharBuilt = false;
+
 
 		if ($this->pharGeneratorScript !== null)
 		{
@@ -914,6 +915,11 @@ class builder extends atoum\script
 		}
 
 		return $revisions;
+	}
+
+	protected function cleanDirectoryPath($path)
+	{
+		return rtrim($path, DIRECTORY_SEPARATOR);
 	}
 }
 

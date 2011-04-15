@@ -66,27 +66,6 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetMailer()
-	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$builder = new svn\builder(uniqid(), null, $adapter);
-
-		$this->assert
-			->object($builder->setMailer($mailer = new atoum\mailers\mail()))->isIdenticalTo($builder)
-			->object($builder->getMailer())->isIdenticalTo($mailer)
-			->string($builder->getVersionToken())->isEqualTo('[version]')
-			->string($builder->getPhpToken())->isEqualTo('[php]')
-			->string($builder->getStatusToken())->isEqualTo('[status]')
-			->object($builder->setMailer($mailer = new atoum\mailers\mail(), $versionToken = uniqid(), $statusToken = uniqid(), $phpToken = uniqid()))->isIdenticalTo($builder)
-			->object($builder->getMailer())->isIdenticalTo($mailer)
-			->string($builder->getVersionToken())->isEqualTo($versionToken)
-			->string($builder->getStatusToken())->isEqualTo($statusToken)
-			->string($builder->getPhpToken())->isEqualTo($phpToken)
-		;
-	}
-
 	public function testSetTag()
 	{
 		$adapter = new atoum\test\adapter();
@@ -242,9 +221,12 @@ class builder extends atoum\test
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
-			->variable($builder->getScoreDirectory())->isNull()
 			->object($builder->setScoreDirectory($scoreDirectory = uniqid()))->isIdenticalTo($builder)
 			->string($builder->getScoreDirectory())->isEqualTo($scoreDirectory)
+			->object($builder->setScoreDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getScoreDirectory())->isEqualTo($directory)
+			->object($builder->setScoreDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($builder)
+			->string($builder->getScoreDirectory())->isEqualTo($directory)
 		;
 	}
 
@@ -256,9 +238,46 @@ class builder extends atoum\test
 		$builder = new svn\builder(uniqid(), null, $adapter);
 
 		$this->assert
-			->variable($builder->getErrorsDirectory())->isNull()
 			->object($builder->setErrorsDirectory($errorsDirectory = uniqid()))->isIdenticalTo($builder)
 			->string($builder->getErrorsDirectory())->isEqualTo($errorsDirectory)
+			->object($builder->setErrorsDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getErrorsDirectory())->isEqualTo($directory)
+			->object($builder->setErrorsDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($builder)
+			->string($builder->getErrorsDirectory())->isEqualTo($directory)
+		;
+	}
+
+	public function testSetDestinationDirectory()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getDestinationDirectory())->isEqualTo($directory)
+			->object($builder->setDestinationDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getDestinationDirectory())->isEqualTo($directory)
+			->object($builder->setDestinationDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($builder)
+			->string($builder->getDestinationDirectory())->isEqualTo($directory)
+		;
+	}
+
+	public function testSetWorkingDirectory()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$builder = new svn\builder(uniqid(), null, $adapter);
+
+		$this->assert
+			->object($builder->setWorkingDirectory($directory = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getWorkingDirectory())->isEqualTo($directory)
+			->object($builder->setWorkingDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getWorkingDirectory())->isEqualTo((string) $directory)
+			->object($builder->setWorkingDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($builder)
+			->string($builder->getWorkingDirectory())->isEqualTo($directory)
 		;
 	}
 
@@ -418,34 +437,6 @@ class builder extends atoum\test
 		$this->assert
 			->array($builder->getLogs())->isEmpty()
 			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
-		;
-	}
-
-	public function testSetDestinationDirectory()
-	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$builder = new svn\builder(uniqid(), null, $adapter);
-
-		$this->assert
-			->object($builder->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($builder)
-			->string($builder->getDestinationDirectory())->isEqualTo($directory)
-			->object($builder->setDestinationDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->string($builder->getDestinationDirectory())->isEqualTo($directory)
-		;
-	}
-
-	public function testSetWorkingDirectory()
-	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$builder = new svn\builder(uniqid(), null, $adapter);
-
-		$this->assert
-			->object($builder->setWorkingDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->string($builder->getWorkingDirectory())->isEqualTo($directory)
 		;
 	}
 
@@ -686,6 +677,8 @@ class builder extends atoum\test
 			->setPhpPath($php = uniqid())
 			->setWorkingDirectory($workingDirectory = uniqid())
 			->setUnitTestRunnerScript($unitTestRunnerScript = uniqid())
+			->setReportTitle($reportTitle = uniqid())
+			->addRunnerConfigurationFile($runnerConfigurationFile = uniqid())
 		;
 
 		$builderController = $builder->getMockController();
@@ -699,11 +692,6 @@ class builder extends atoum\test
 		$scoreController->getExceptionNumber = 0;
 		$scoreController->getErrorNumber = 0;
 
-		$mailer = new mock\mageekguy\atoum\mailers\mail();
-
-		$mailerController = $mailer->getMockController();
-		$mailerController->send = function() {};
-
 		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
 		$adapter->tempnam = $scoreFile = uniqid();
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -715,7 +703,7 @@ class builder extends atoum\test
 		$adapter->unserialize = $score;
 		$adapter->unlink = true;
 
-		$command = $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . $unitTestRunnerScript . ' -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php;
+		$command = $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . $unitTestRunnerScript . ' -drt ' . escapeshellarg($reportTitle) . ' -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php . ' -c ' . $runnerConfigurationFile ;
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
@@ -737,8 +725,6 @@ class builder extends atoum\test
 				->call('getFailNumber')
 				->call('getExceptionNumber')
 				->call('getErrorNumber')
-			->mock($mailer)
-				->wasNotCalled()
 		;
 
 		$adapter->proc_open = false;
@@ -749,7 +735,7 @@ class builder extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . $unitTestRunnerScript . ' -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php . '\'')
+				->hasMessage('Unable to execute \'' . $command . '\'')
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -806,8 +792,6 @@ class builder extends atoum\test
 			->boolean($builder->checkUnitTests())->isTrue()
 			->mock($builder)
 				->notCall('writeErrorInErrorsDirectory', array($stdOutContents))
-			->mock($mailer)
-				->wasNotCalled()
 		;
 
 		$adapter->stream_get_contents = function($stream) use (& $stdErr, & $stdErrContents) { return $stream != $stdErr ? '' : $stdErrContents = uniqid(); };
@@ -816,8 +800,6 @@ class builder extends atoum\test
 			->boolean($builder->checkUnitTests())->isTrue()
 			->mock($builder)
 				->call('writeErrorInErrorsDirectory', array($stdErrContents))
-			->mock($mailer)
-				->wasNotCalled()
 		;
 
 		$adapter->file_get_contents = false;
@@ -888,78 +870,6 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-		;
-
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$builder = new mock\mageekguy\atoum\scripts\svn\builder(uniqid(), null, $adapter);
-
-		$builder
-			->setPhpPath($php = uniqid())
-			->setWorkingDirectory($workingDirectory = uniqid())
-			->setUnitTestRunnerScript($unitTestRunnerScript = uniqid())
-		;
-
-		$builderController = $builder->getMockController();
-		$builderController->checkout = function() {};
-		$builderController->writeErrorInErrorsDirectory = function() {};
-
-		$score = new mock\mageekguy\atoum\score();
-
-		$scoreController = $score->getMockController();
-		$scoreController->getFailNumber = 0;
-		$scoreController->getExceptionNumber = 0;
-		$scoreController->getErrorNumber = 0;
-
-		$mailer = new mock\mageekguy\atoum\mailers\mail();
-		$builder
-			->setRevision($revision = rand(1, PHP_INT_MAX))
-			->setMailer($mailer)
-		;
-
-		$mailerController = $mailer->getMockController();
-		$mailerController->send = function() {};
-		$mailerController->getSubject = $subject = '[%1$s] Nightly build of revision %2$d';
-		$mailerController->setSubject = function() use ($mailer) { return $mailer; };
-
-		$adapter->sys_get_temp_dir = $tempDirectory = uniqid();
-		$adapter->tempnam = $scoreFile = uniqid();
-		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
-		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
-		$adapter->stream_get_contents = function() { return ''; };
-		$adapter->fclose = function() {};
-		$adapter->proc_close = function() {};
-		$adapter->file_get_contents = $scoreFileContents = uniqid();
-		$adapter->unserialize = $score;
-		$adapter->unlink = true;
-		$adapter->stream_get_contents = function($stream) use (& $stdOut, & $stdOutContents) { return $stream != $stdOut ? '' : $stdOutContents = uniqid(); };
-
-		$this->assert
-			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($mailer)
-				->call('setSubject', array(sprintf($subject, 'SUCCESS', $revision)))
-				->call('send', array($stdOutContents))
-		;
-
-		$mailerController->getSubject = $subject = uniqid();
-
-		$this->assert
-			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($mailer)
-				->call('setSubject', array($subject))
-				->call('send', array($stdOutContents))
-		;
-
-		$scoreController->getFailNumber = rand(1, PHP_INT_MAX);
-
-		$mailerController->getSubject = $subject = '[%1$s] Nightly build of revision %2$d';
-
-		$this->assert
-			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($mailer)
-				->call('setSubject', array(sprintf($subject, 'FAIL', $revision)))
-				->call('send', array($stdOutContents))
 		;
 	}
 
