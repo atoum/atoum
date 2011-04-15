@@ -4,7 +4,8 @@ namespace mageekguy\atoum\writers;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\reports
 ;
 
 class mail extends atoum\writer implements report\writers\asynchronous
@@ -42,9 +43,9 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		return $this;
 	}
 
-	public function asynchronousWrite($something)
+	public function asynchronousWrite(reports\asynchronous $report)
 	{
-		return $this->write($something);
+		return $this->write((string) $report);
 	}
 }
 

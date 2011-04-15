@@ -306,6 +306,14 @@ class runner implements observable, adapter\aggregator
 
 		if (sizeof($runTestClasses) > 0)
 		{
+			foreach ($this->reports as $report)
+			{
+				if ($report->getTitle() === null)
+				{
+					$report->setTitle($this->getDefaultReportTitle());
+				}
+			}
+
 			$phpPath = $this->getPhpPath();
 
 			foreach ($runTestClasses as $runTestClass)

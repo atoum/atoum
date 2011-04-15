@@ -4,6 +4,7 @@ namespace mageekguy\atoum\writers;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\reports,
 	mageekguy\atoum\report\writers
 ;
 
@@ -43,14 +44,14 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this;
 	}
 
-	public function realtimeWrite($something)
+	public function realtimeWrite(reports\realtime $report)
 	{
-		return $this->write($something);
+		return $this->write((string) $report);
 	}
 
-	public function asynchronousWrite($something)
+	public function asynchronousWrite(reports\asynchronous $report)
 	{
-		return $this->write($something);
+		return $this->write((string) $report);
 	}
 
 	public function setFilename($filename)

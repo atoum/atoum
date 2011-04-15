@@ -113,7 +113,7 @@ abstract class asynchronous extends atoum\report
 
 		foreach ($this->writers as $writer)
 		{
-			$writer->asynchronousWrite((string) $this);
+			$writer->asynchronousWrite($this);
 		}
 
 		return $this;

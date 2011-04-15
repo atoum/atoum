@@ -67,9 +67,11 @@ class mail extends atoum\test
 
 		$writer->getMockController()->write = $writer;
 
+		$this->mock('\mageekguy\atoum\reports\asynchronous');
+
 		$this->assert
-			->object($writer->asynchronousWrite($something = uniqid()))->isIdenticalTo($writer)
-			->mock($writer)->call('write', array($something))
+			->object($writer->asynchronousWrite($report = new mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
+			->mock($writer)->call('write', array((string) $report))
 		;
 	}
 }

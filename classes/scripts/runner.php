@@ -101,6 +101,18 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
+			function($script, $argument, $defaultReportTitle) use ($runner) {
+				if (sizeof($defaultReportTitle) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$runner->setDefaultReportTitle(current($defaultReportTitle));
+			},
+			array('-drt', '--default-report-title')
+		);
+
+		$this->argumentsParser->addHandler(
 			function($script, $argument, $files) use ($runner) {
 				if (sizeof($files) <= 0)
 				{
@@ -258,7 +270,8 @@ class runner extends atoum\script
 					'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 					'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
-					'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>')
+					'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>'),
+					'-drt <string>, --default-report-title <string>' => $this->locale->_('Define default report title')
 				)
 				,
 				$options
