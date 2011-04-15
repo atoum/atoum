@@ -6,5 +6,5 @@ use \mageekguy\atoum\reports;
 
 interface asynchronous
 {
-	public function asynchronousWrite(reports\asynchronous $report);
+	public function writeAsynchronousReport(reports\asynchronous $report);
 }

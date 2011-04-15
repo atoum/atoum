@@ -43,7 +43,7 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		return $this;
 	}
 
-	public function asynchronousWrite(reports\asynchronous $report)
+	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
 		return $this->write((string) $report);
 	}

@@ -88,7 +88,7 @@ abstract class realtime extends atoum\report
 	{
 		foreach ($this->writers as $writer)
 		{
-			$writer->realtimeWrite($this);
+			$writer->writeRealtimeReport($this);
 		}
 
 		return $this;

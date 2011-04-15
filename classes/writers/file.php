@@ -44,12 +44,12 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this;
 	}
 
-	public function realtimeWrite(reports\realtime $report)
+	public function writeRealtimeReport(reports\realtime $report)
 	{
 		return $this->write((string) $report);
 	}
 
-	public function asynchronousWrite(reports\asynchronous $report)
+	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
 		return $this->write((string) $report);
 	}

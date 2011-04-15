@@ -59,7 +59,7 @@ class mail extends atoum\test
 		;
 	}
 
-	public function testAsynchronousWrite()
+	public function testWriteAsynchronousReport()
 	{
 		$this->mock($this->getTestedClassName());
 
@@ -70,7 +70,7 @@ class mail extends atoum\test
 		$this->mock('\mageekguy\atoum\reports\asynchronous');
 
 		$this->assert
-			->object($writer->asynchronousWrite($report = new mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
+			->object($writer->writeAsynchronousReport($report = new mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
 		;
 	}
