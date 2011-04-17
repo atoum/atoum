@@ -2,12 +2,13 @@
 
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
-use mageekguy\atoum\asserter\exception;
-
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\reports\asynchronous as reports;
-use \mageekguy\atoum\mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report,
+	mageekguy\atoum\asserter\exception,
+	\mageekguy\atoum\reports\asynchronous as reports
+;
 
 require_once(__DIR__ . '/../../runner.php');
 

@@ -14,16 +14,16 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 {
 	public function test__construct()
 	{
-		$xun = new runner\xunit();
+		$xunit = new runner\xunit();
 
 		$this->assert
-			->object($xun)->isInstanceOf('\mageekguy\atoum\report\fields\runner');
+			->object($xunit)->isInstanceOf('\mageekguy\atoum\report\fields\runner');
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$xun = new runner\xunit();
+		$xunit = new runner\xunit();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -37,15 +37,12 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
 		$this->assert
-			->object($xun->setWithRunner($runner))->isIdenticalTo($xun)
-			->mock($runner)
-				->integer(sizeof($runner->getMockController()->getCalls()))->isEqualTo(0)
-			->object($xun->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($xun)
-			->mock($runner)
-				->integer(sizeof($runner->getMockController()->getCalls()))->isEqualTo(0)
-			->object($xun->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($xun)
-			->mock($runner)
-				->call('getScore')
+			->object($xunit->setWithRunner($runner))->isIdenticalTo($xunit)
+			->mock($runner)->notCall('getScore')
+			->object($xunit->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($xunit)
+			->mock($runner)->notCall('getScore')
+			->object($xunit->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($xunit)
+			->mock($runner)->call('getScore')
 		;
 	}
 }

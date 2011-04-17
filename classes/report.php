@@ -6,6 +6,7 @@ class report implements observers\runner, observers\test
 {
 	protected $title = null;
 	protected $locale = null;
+	protected $adapter = null;
 	protected $writers = array();
 	protected $testFields = array();
 	protected $runnerFields = array();
@@ -14,7 +15,7 @@ class report implements observers\runner, observers\test
 	private $lastEventValue = null;
 	private $lastEventTransmitter = null;
 
-	public function __construct(locale $locale = null)
+	public function __construct(locale $locale = null, adapter $adapter = null)
 	{
 		$this->runnerFields = array(
 			runner::runStart => array(),
@@ -42,6 +43,13 @@ class report implements observers\runner, observers\test
 		}
 
 		$this->setLocale($locale);
+
+		if ($adapter === null)
+		{
+			$adapter = new adapter();
+		}
+
+		$this->setAdapter($adapter);
 	}
 
 	public function setTitle($title)
@@ -66,6 +74,19 @@ class report implements observers\runner, observers\test
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+
+	public function setAdapter(adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
 	}
 
 	public function addRunnerField(report\fields\runner $field, array $events = array())

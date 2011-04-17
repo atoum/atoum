@@ -93,7 +93,7 @@ class runner implements observable, adapter\aggregator
 
 	public function getDefaultReportTitle()
 	{
-		return ($this->defaultReportTitle !== null ? $this->defaultReportTitle : $this->locale->_('Unit tests report, the %s at %s'));
+		return ($this->defaultReportTitle !== null ? $this->defaultReportTitle : $this->locale->_('Unit tests report, the %1$s at %2$s'));
 	}
 
 	public function setScore(score $score)

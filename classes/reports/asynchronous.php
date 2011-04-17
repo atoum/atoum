@@ -10,6 +10,7 @@ use
 abstract class asynchronous extends atoum\report
 {
 	protected $string = '';
+	protected $fail = false;
 
 	public function __toString()
 	{
@@ -60,6 +61,8 @@ abstract class asynchronous extends atoum\report
 
 	public function testAssertionFail(atoum\test $test)
 	{
+		$this->fail = true;
+
 		$this->string .= parent::testAssertionFail($test)->getTestFieldsAsString(__FUNCTION__);
 
 		return $this;
@@ -67,6 +70,8 @@ abstract class asynchronous extends atoum\report
 
 	public function testError(atoum\test $test)
 	{
+		$this->fail = true;
+
 		$this->string .= parent::testError($test)->getTestFieldsAsString(__FUNCTION__);
 
 		return $this;
@@ -74,6 +79,8 @@ abstract class asynchronous extends atoum\report
 
 	public function testException(atoum\test $test)
 	{
+		$this->fail = true;
+
 		$this->string .= parent::testException($test)->getTestFieldsAsString(__FUNCTION__);
 
 		return $this;
@@ -110,6 +117,11 @@ abstract class asynchronous extends atoum\report
 	public function runnerStop(atoum\runner $runner)
 	{
 		$this->string .= parent::runnerStop($runner)->getRunnerFieldsAsString(__FUNCTION__);
+
+		if ($this->title !== null)
+		{
+			$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
+		}
 
 		foreach ($this->writers as $writer)
 		{

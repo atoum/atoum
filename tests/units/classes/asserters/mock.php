@@ -76,6 +76,8 @@ class mock extends atoum\test
 
 		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter));
 
+		$mock->getMockController()->resetCalls();
+
 		$score->reset();
 
 		$this->assert
@@ -152,6 +154,8 @@ class mock extends atoum\test
 		$adapter->class_exists = true;
 
 		$asserter->setWith($mock = new atoum\mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter));
+
+		$mock->getMockController()->resetCalls();
 
 		$score->reset();
 

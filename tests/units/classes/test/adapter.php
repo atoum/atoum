@@ -263,6 +263,17 @@ class adapter extends atoum\test
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
+
+	public function testAddCall()
+	{
+		$adapter = new atoum\test\adapter();
+
+		$this->assert
+			->array($adapter->getCalls())->isEmpty()
+			->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
+			->array($adapter->getCalls($method))->isEqualTo(array($args))
+		;
+	}
 }
 
 ?>

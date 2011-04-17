@@ -116,7 +116,7 @@ class controller extends test\adapter
 				}
 			);
 
-			array_walk($methods, function(& $value, $key) { $value = $value->getName(); });
+			array_walk($methods, function(& $value) { $value = $value->getName(); });
 
 			foreach ($this->callers as $method => $closure)
 			{

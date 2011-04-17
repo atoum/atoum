@@ -69,6 +69,13 @@ class adapter extends atoum\adapter
 		return $this->resetCalls();
 	}
 
+	public function addCall($functionName, array $arguments = array())
+	{
+		$this->calls[$functionName][] = $arguments;
+
+		return $this;
+	}
+
 	public function invoke($functionName, array $arguments = array())
 	{
 		if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false))
@@ -76,7 +83,7 @@ class adapter extends atoum\adapter
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
 		}
 
-		$this->calls[$functionName][] = $arguments;
+		$this->addCall($functionName, $arguments);
 
 		return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, sizeof($this->calls[$functionName])));
 	}

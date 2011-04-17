@@ -23,7 +23,7 @@ class runner extends atoum\test
 			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
-			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %s at %s'))
+			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %1$s at %2$s'))
 		;
 
 		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter());
@@ -35,7 +35,7 @@ class runner extends atoum\test
 			->object($runner->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
-			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %s at %s'))
+			->string($runner->getDefaultReportTitle())->isEqualTo($runner->getLocale()->_('Unit tests report, the %1$s at %2$s'))
 		;
 	}
 
