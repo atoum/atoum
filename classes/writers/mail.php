@@ -11,8 +11,9 @@ use
 class mail extends atoum\writer implements report\writers\asynchronous
 {
 	protected $mailer = null;
+	protected $locale = null;
 
-	public function __construct(atoum\mailer $mailer = null, atoum\adapter $adapter = null)
+	public function __construct(atoum\mailer $mailer = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($adapter);
 
@@ -22,6 +23,13 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		}
 
 		$this->setMailer($mailer);
+
+		if ($locale === null)
+		{
+			$locale = new atoum\locale();
+		}
+
+		$this->setLocale($locale);
 	}
 
 	public function setMailer(atoum\mailer $mailer)
@@ -34,6 +42,18 @@ class mail extends atoum\writer implements report\writers\asynchronous
 	public function getMailer()
 	{
 		return $this->mailer;
+	}
+
+	public function setLocale(atoum\locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
 	}
 
 	public function write($something)
@@ -51,10 +71,13 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		{
 			$reportTitle = $report->getTitle();
 
-			if ($reportTitle !== null)
+
+			if ($reportTitle === null)
 			{
-				$this->mailer->setSubject($reportTitle);
+				$reportTitle = sprintf($this->locale->_('Unit tests report, the %1$s at %2$s'), $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')));
 			}
+
+			$this->mailer->setSubject($reportTitle);
 		}
 
 		return $this->write((string) $report);

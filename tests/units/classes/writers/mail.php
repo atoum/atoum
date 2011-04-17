@@ -19,13 +19,15 @@ class mail extends atoum\test
 
 		$this->assert
 			->object($writer->getMailer())->isInstanceOf('\mageekguy\atoum\mailers\mail')
+			->object($writer->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->object($writer->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$writer = new writers\mail($mailer = new atoum\mailers\mail(), $adapter = new atoum\adapter());
+		$writer = new writers\mail($mailer = new atoum\mailers\mail(), $locale = new atoum\locale(), $adapter = new atoum\adapter());
 
 		$this->assert
 			->object($writer->getMailer())->isIdenticalTo($mailer)
+			->object($writer->getLocale())->isIdenticalTo($locale)
 			->object($writer->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
@@ -46,6 +48,16 @@ class mail extends atoum\test
 		$this->assert
 			->object($writer->setMailer($mailer = new mailers\mail()))->isIdenticalTo($writer)
 			->object($writer->getMailer())->isIdenticalTo($mailer)
+		;
+	}
+
+	public function testSetLocale()
+	{
+		$writer = new writers\mail();
+
+		$this->assert
+			->object($writer->setLocale($locale = new atoum\locale()))->isIdenticalTo($writer)
+			->object($writer->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
@@ -70,22 +82,33 @@ class mail extends atoum\test
 	{
 		$this
 			->mock($this->getTestedClassName())
+			->mock('\mageekguy\atoum\locale')
 			->mock('\mageekguy\atoum\reports\asynchronous')
 		;
 
 		$mailer = new atoum\mailers\mail();
 
-		$writer = new mock\mageekguy\atoum\writers\mail($mailer);
-
+		$writer = new mock\mageekguy\atoum\writers\mail($mailer, $locale = new mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
 		$writer->getMockController()->write = $writer;
+
+		$adapter->date = function($arg) { return $arg; };
 
 		$report = new mock\mageekguy\atoum\reports\asynchronous();
 
 		$this->assert
 			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
-			->variable($mailer->getSubject())->isNull()
+			->string($mailer->getSubject())->isEqualTo('Unit tests report, the Y-m-d at H:i:s')
+			->mock($locale)
+				->call('_', array('Unit tests report, the %1$s at %2$s'))
+				->call('_', array('Y-m-d'))
+				->call('_', array('H:i:s'))
 		;
+
+		$mailer = new atoum\mailers\mail();
+
+		$writer = new mock\mageekguy\atoum\writers\mail($mailer, $locale = new mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
+		$writer->getMockController()->write = $writer;
 
 		$report->setTitle($title = uniqid());
 
@@ -93,6 +116,7 @@ class mail extends atoum\test
 			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
 			->string($mailer->getSubject())->isEqualTo($title)
+			->mock($locale)->notCall('_')
 		;
 
 		$mailer->setSubject($mailerSubject = uniqid());
