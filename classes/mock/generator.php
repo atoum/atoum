@@ -277,7 +277,12 @@ class generator
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
 					$methodCode .= "\t\t" . 'else' . PHP_EOL;
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', array(' . $parameters . '));' . PHP_EOL;
+
+					if ($isConstructor === false)
+					{
+						$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', array(' . $parameters . '));' . PHP_EOL;
+					}
+
 					$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'parent::' . $methodName . '(' . $parameters . ');' . PHP_EOL;
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
 				}

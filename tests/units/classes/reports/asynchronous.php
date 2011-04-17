@@ -2,20 +2,15 @@
 
 namespace mageekguy\atoum\tests\units\reports;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock\mageekguy\atoum as mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock\mageekguy\atoum as mock
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
 class asynchronous extends atoum\test
 {
-	public function testGetFail()
-	{
-		$this
-			->mock('\mageekguy\atoum\reports\asynchronous')
-		;
-	}
-
 	public function testRunnerStop()
 	{
 		$this
@@ -49,6 +44,22 @@ class asynchronous extends atoum\test
 			->mock($writer)->call('writeAsynchronousReport', array($report))
 			->mock($locale)->call('_', array('SUCCESS'))
 			->string($report->getTitle())->isEqualTo($title)
+		;
+
+		$writer->getMockController()->resetCalls();
+		$locale->getMockCoNtroller()->resetCalls();
+
+		$report
+			->setTitle($title = '%3$s')
+		;
+
+		$this->assert
+			->object($report->runnerStop($runner))->isIdenticalTo($report)
+			->mock($writer)->call('writeAsynchronousReport', array($report))
+			->mock($locale)->call('_', array('Y-m-d'))
+			->mock($locale)->call('_', array('H:i:s'))
+			->mock($locale)->call('_', array('SUCCESS'))
+			->string($report->getTitle())->isEqualTo('SUCCESS')
 		;
 
 		$writer->getMockController()->resetCalls();

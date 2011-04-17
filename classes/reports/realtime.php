@@ -11,6 +11,11 @@ abstract class realtime extends atoum\report
 {
 	public function runnerStart(atoum\runner $runner)
 	{
+		if ($this->title !== null)
+		{
+			$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')));
+		}
+
 		return parent::runnerStart($runner)->write();
 	}
 
