@@ -6,5 +6,5 @@ use \mageekguy\atoum\reports;
 
 interface realtime
 {
-	public function writeRealtimeReport(reports\realtime $report);
+	public function writeRealtimeReport(reports\realtime $report, $event);
 }

@@ -76,7 +76,6 @@ class report implements observers\runner, observers\test
 		return $this->locale;
 	}
 
-
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;

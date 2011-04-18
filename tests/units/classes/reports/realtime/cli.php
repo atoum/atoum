@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\reports\realtime;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
-use \mageekguy\atoum\reports\realtime as reports;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report,
+	 \mageekguy\atoum\reports\realtime as reports
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
