@@ -4,7 +4,7 @@ namespace mageekguy\atoum;
 
 use \mageekguy\atoum\exceptions;
 
-class adapter
+class adapter implements adapter\definition
 {
 	public function __call($functionName, $arguments)
 	{
