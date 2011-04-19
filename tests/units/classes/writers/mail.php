@@ -93,10 +93,8 @@ class mail extends atoum\test
 
 		$adapter->date = function($arg) { return $arg; };
 
-		$report = new mock\mageekguy\atoum\reports\asynchronous();
-
 		$this->assert
-			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
+			->object($writer->writeAsynchronousReport($report = new mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
 			->string($mailer->getSubject())->isEqualTo('Unit tests report, the Y-m-d at H:i:s')
 			->mock($locale)
@@ -110,10 +108,8 @@ class mail extends atoum\test
 		$writer = new mock\mageekguy\atoum\writers\mail($mailer, $locale = new mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
 		$writer->getMockController()->write = $writer;
 
-		$report->setTitle($title = uniqid());
-
 		$this->assert
-			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
+			->object($writer->writeAsynchronousReport($report->setTitle($title = uniqid())))->isIdenticalTo($writer)
 			->mock($writer)->call('write', array((string) $report))
 			->string($mailer->getSubject())->isEqualTo($title)
 			->mock($locale)->notCall('_')

@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report\fields;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report\fields
+;
 
 class xunit extends fields\runner
 {

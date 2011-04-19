@@ -93,7 +93,7 @@ class runner implements observable, adapter\aggregator
 
 	public function getDefaultReportTitle()
 	{
-		return ($this->defaultReportTitle !== null ? $this->defaultReportTitle : $this->locale->_('Unit tests report, the %1$s at %2$s' . PHP_EOL));
+		return $this->defaultReportTitle;
 	}
 
 	public function setScore(score $score)
@@ -288,11 +288,14 @@ class runner implements observable, adapter\aggregator
 
 		$this->start = $this->adapter->microtime(true);
 
-		foreach ($this->reports as $report)
+		if ($this->defaultReportTitle !== null)
 		{
-			if ($report->getTitle() === null)
+			foreach ($this->reports as $report)
 			{
-				$report->setTitle($this->getDefaultReportTitle());
+				if ($report->getTitle() === null)
+				{
+					$report->setTitle($this->defaultReportTitle);
+				}
 			}
 		}
 
