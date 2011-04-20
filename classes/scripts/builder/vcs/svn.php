@@ -90,7 +90,7 @@ class svn implements atoum\adapter\aggregator
 		return $this->password;
 	}
 
-	public function getLogs()
+	public function getNextRevisions()
 	{
 		if ($this->repositoryUrl === null)
 		{
@@ -99,7 +99,17 @@ class svn implements atoum\adapter\aggregator
 
 		$this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
 
-		return $this->adapter->svn_log($this->repositoryUrl, $this->revision, \SVN_REVISION_HEAD);
+		$nextRevisions = array();
+
+		foreach ($this->adapter->svn_log($this->repositoryUrl, $this->revision, \SVN_REVISION_HEAD) as $log)
+		{
+			if (is_array($log) && isset($log['rev']) === true)
+			{
+				$nextRevisions[] = $log['rev'];
+			}
+		}
+
+		return $nextRevisions;
 	}
 
 	public function checkoutInDirectory($directory)

@@ -19,6 +19,7 @@ class report extends atoum\test
 				->isSubclassOf('\mageekguy\atoum\observers\test')
 		;
 	}
+
 	public function test__construct()
 	{
 		$this->mock->generate('\mageekguy\atoum\report');

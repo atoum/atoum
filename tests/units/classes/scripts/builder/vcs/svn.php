@@ -96,7 +96,7 @@ class svn extends atoum\test
 		;
 	}
 
-	public function testGetLogs()
+	public function testGetNextRevisions()
 	{
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
@@ -105,27 +105,53 @@ class svn extends atoum\test
 
 		$this->assert
 			->exception(function() use ($svn) {
-						$svn->getLogs();
+						$svn->getNextRevisions();
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to get logs, repository url is undefined')
+			->adapter($adapter)->notCall('svn_log')
 		;
 
 		$svn->setRepositoryUrl($repositoryUrl = uniqid());
 
 		$adapter->svn_auth_set_parameter = function() {};
 		$adapter->svn_log = array();
+		$adapter->resetCalls();
 
 		$this->assert
-			->array($svn->getLogs())->isEmpty()
+			->array($svn->getNextRevisions())->isEmpty()
 			->adapter($adapter)->call('svn_log', array($repositoryUrl, null, SVN_REVISION_HEAD))
 		;
 
 		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
 
+		$adapter->resetCalls();
+
 		$this->assert
-			->array($svn->getLogs())->isEmpty()
+			->array($svn->getNextRevisions())->isEmpty()
+			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+		;
+
+		$adapter->resetCalls();
+
+		$adapter->svn_log = array(uniqid() => uniqid());
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEmpty()
+			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+		;
+
+		$adapter->resetCalls();
+
+		$adapter->svn_log = array(
+			array('rev' => $revision1 = uniqid()),
+			array('rev' => $revision2 = uniqid()),
+			array('rev' => $revision3 = uniqid())
+		);
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
 			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
 		;
 	}

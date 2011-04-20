@@ -54,7 +54,6 @@ class builder extends atoum\test
 			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
 			->string($builder->getTagRegex())->isEqualTo('/\$Rev: \d+ \$/')
 			->variable($builder->getTag())->isNull()
-			->variable($builder->getMailer())->isNull()
 			->variable($builder->getWorkingDirectory())->isNull()
 			->variable($builder->getDestinationDirectory())->isNull()
 			->variable($builder->getErrorsDirectory())->isNull()
