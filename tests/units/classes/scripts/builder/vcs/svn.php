@@ -96,66 +96,6 @@ class svn extends atoum\test
 		;
 	}
 
-	public function testGetNextRevisions()
-	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->exception(function() use ($svn) {
-						$svn->getNextRevisions();
-					}
-				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to get logs, repository url is undefined')
-			->adapter($adapter)->notCall('svn_log')
-		;
-
-		$svn->setRepositoryUrl($repositoryUrl = uniqid());
-
-		$adapter->svn_auth_set_parameter = function() {};
-		$adapter->svn_log = array();
-		$adapter->resetCalls();
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, null, SVN_REVISION_HEAD))
-		;
-
-		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
-
-		$adapter->resetCalls();
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
-		;
-
-		$adapter->resetCalls();
-
-		$adapter->svn_log = array(uniqid() => uniqid());
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
-		;
-
-		$adapter->resetCalls();
-
-		$adapter->svn_log = array(
-			array('rev' => $revision1 = uniqid()),
-			array('rev' => $revision2 = uniqid()),
-			array('rev' => $revision3 = uniqid())
-		);
-
-		$this->assert
-			->array($svn->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
-		;
-	}
-
 	public function testSetUsername()
 	{
 		$adapter = new atoum\test\adapter();
@@ -183,6 +123,74 @@ class svn extends atoum\test
 			->string($svn->getPassword())->isEqualTo($password)
 			->object($svn->setPassword($password = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
 			->string($svn->getPassword())->isEqualTo((string) $password)
+		;
+	}
+
+	public function testGetNextRevisions()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$svn = new vcs\svn($adapter);
+
+		$adapter->svn_auth_set_parameter = function() {};
+
+		$this->assert
+			->exception(function() use ($svn) {
+						$svn->getNextRevisions();
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to get logs, repository url is undefined')
+			->adapter($adapter)
+				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
+				->notCall('svn_log')
+		;
+
+		$svn->setRepositoryUrl($repositoryUrl = uniqid());
+
+		$adapter->svn_auth_set_parameter = function() {};
+		$adapter->svn_log = array();
+		$adapter->resetCalls();
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEmpty()
+			->adapter($adapter)
+				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
+				->call('svn_log', array($repositoryUrl, null, SVN_REVISION_HEAD))
+		;
+
+		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
+
+		$adapter->resetCalls();
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEmpty()
+			->adapter($adapter)
+				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
+				->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+		;
+
+		$adapter->resetCalls();
+
+		$adapter->svn_log = array(uniqid() => uniqid());
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEmpty()
+			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+		;
+
+		$adapter->resetCalls();
+
+		$adapter->svn_log = array(
+			array('rev' => $revision1 = uniqid()),
+			array('rev' => $revision2 = uniqid()),
+			array('rev' => $revision3 = uniqid())
+		);
+
+		$this->assert
+			->array($svn->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
+			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
 		;
 	}
 
