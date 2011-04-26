@@ -6,7 +6,7 @@ use \mageekguy\atoum;
 use \mageekguy\atoum\script;
 use \mageekguy\atoum\exceptions;
 
-abstract class script
+abstract class script implements atoum\adapter\aggregator
 {
 	const padding = '   ';
 
@@ -25,18 +25,18 @@ abstract class script
 			$locale = new atoum\locale();
 		}
 
-		$this->locale = $locale;
+		$this->setLocale($locale);
 
 		if ($adapter === null)
 		{
 			$adapter = new atoum\adapter();
 		}
 
-		$this->adapter = $adapter;
+		$this->setAdapter($adapter);
 
 		if (isset($this->adapter->exit) === false)
 		{
-			$adapter->exit = function($code) { exit($code); };
+			$this->adapter->exit = function($code) { exit($code); };
 		}
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -72,6 +72,13 @@ abstract class script
 		return $this;
 	}
 
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
 	public function getAdapter()
 	{
 		return $this->adapter;
@@ -95,6 +102,13 @@ abstract class script
 	public function getArgumentsParser()
 	{
 		return $this->argumentsParser;
+	}
+
+	public function setLocale(atoum\locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
 	}
 
 	public function getLocale()

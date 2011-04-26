@@ -194,7 +194,7 @@ class svn extends atoum\test
 		;
 	}
 
-	public function testCheckoutInDirectory()
+	public function testExportRepository()
 	{
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
@@ -203,11 +203,11 @@ class svn extends atoum\test
 
 		$this->assert
 			->exception(function() use ($svn) {
-						$svn->checkoutInDirectory(uniqid());
+						$svn->exportRepository(uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository, its url is undefined')
+				->hasMessage('Unable to export repository, repository url is undefined')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
@@ -223,7 +223,7 @@ class svn extends atoum\test
 
 		$this->assert
 			->exception(function() use ($svn, & $directory) {
-						$svn->checkoutInDirectory($directory = uniqid());
+						$svn->exportRepository($directory = uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
@@ -241,7 +241,7 @@ class svn extends atoum\test
 
 		$this->assert
 			->exception(function() use ($svn, & $directory) {
-						$svn->checkoutInDirectory($directory = uniqid());
+						$svn->exportRepository($directory = uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
@@ -259,7 +259,7 @@ class svn extends atoum\test
 
 		$this->assert
 			->exception(function() use ($svn, & $directory) {
-						$svn->checkoutInDirectory($directory = uniqid());
+						$svn->exportRepository($directory = uniqid());
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
@@ -276,7 +276,7 @@ class svn extends atoum\test
 		$adapter->resetCalls();
 
 		$this->assert
-			->object($svn->checkoutInDirectory($directory = uniqid()))->isIdenticalTo($svn)
+			->object($svn->exportRepository($directory = uniqid()))->isIdenticalTo($svn)
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
