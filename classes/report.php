@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-class report implements observers\runner, observers\test
+class report implements observers\runner, observers\test, adapter\aggregator
 {
 	protected $title = null;
 	protected $locale = null;

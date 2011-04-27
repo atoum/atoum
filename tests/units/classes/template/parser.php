@@ -2,13 +2,22 @@
 
 namespace mageekguy\atoum\tests\units\template;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\template;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\template
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
 class parser extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->hasInterface('\mageekguy\atoum\adapter\aggregator')
+		;
+	}
+
 	public function test__construct()
 	{
 		$parser = new template\parser();

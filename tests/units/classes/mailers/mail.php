@@ -14,7 +14,9 @@ class mail extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\mailer')
+			->class($this->getTestedClassName())
+				->isSubClassOf('\mageekguy\atoum\mailer')
+				->hasInterface('\mageekguy\atoum\adapter\aggregator')
 		;
 	}
 

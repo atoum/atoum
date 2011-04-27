@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\mock;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -12,6 +14,13 @@ class generator extends atoum\test
 	public function setUp()
 	{
 		$this->assert->setAlias('class', 'phpClass');
+	}
+
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->hasInterface('\mageekguy\atoum\adapter\aggregator')
+		;
 	}
 
 	public function test__construct()
@@ -27,6 +36,16 @@ class generator extends atoum\test
 		$generator = new mock\generator($adapter);
 
 		$this->assert
+			->object($generator->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$generator = new mock\generator();
+
+		$this->assert
+			->object($generator->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($generator)
 			->object($generator->getAdapter())->isIdenticalTo($adapter)
 		;
 	}

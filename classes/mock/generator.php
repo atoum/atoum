@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class generator
+class generator implements atoum\adapter\aggregator
 {
 	protected $adapter = null;
 	protected $shuntedMethods = array();
@@ -21,7 +21,14 @@ class generator
 			$adapter = new atoum\adapter();
 		}
 
+		$this->setAdapter($adapter);
+	}
+
+	public function setAdapter(atoum\adapter $adapter)
+	{
 		$this->adapter = $adapter;
+
+		return $this;
 	}
 
 	public function getAdapter()

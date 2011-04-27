@@ -122,6 +122,13 @@ class runner implements observable, adapter\aggregator
 		return $this->phpPath;
 	}
 
+	public function setAdapter(adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
 	public function getAdapter()
 	{
 		return $this->adapter;
@@ -150,13 +157,6 @@ class runner implements observable, adapter\aggregator
 	public function getObservers()
 	{
 		return $this->observers;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
 	}
 
 	public function setPhpPath($path)

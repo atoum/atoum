@@ -9,7 +9,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-abstract class test implements observable, \countable
+abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
 	const runStart = 'testRunStart';

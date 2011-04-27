@@ -17,6 +17,7 @@ class report extends atoum\test
 			->testedClass
 				->isSubclassOf('\mageekguy\atoum\observers\runner')
 				->isSubclassOf('\mageekguy\atoum\observers\test')
+				->isSubclassOf('\mageekguy\atoum\adapter\aggregator')
 		;
 	}
 

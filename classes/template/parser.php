@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\template;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
-class parser
+class parser implements atoum\adapter\aggregator
 {
 	const defaultNamespace = 'tpl';
 	const eol = "\n";
