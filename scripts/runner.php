@@ -26,7 +26,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 			set_error_handler(function($error, $message, $file, $line) use ($runner) {
 					if (error_reporting() !== 0)
 					{
-						$runner->writeError(sprintf($runner->getLocale()->_('Unattended error: %s'), $message));
+						$runner->writeError(sprintf($runner->getLocale()->_('Error: %s'), $message));
 						exit($error);
 					}
 				}
@@ -36,15 +36,10 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 			{
 				$runner->run();
 			}
-			catch (exceptions\logic\invalidArgument $exception)
-			{
-				$runner->writeError($exception->getMessage());
-				exit(1);
-			}
 			catch (\exception $exception)
 			{
-				$runner->writeError(sprintf($runner->getLocale()->_('Unattended exception: %s'), $exception->getMessage()));
-				exit(2);
+				$runner->writeError(sprintf($runner->getLocale()->_('Exception: %s'), $exception->getMessage()));
+				exit($exception->getCode());
 			}
 
 			exit(0);

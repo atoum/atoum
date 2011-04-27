@@ -244,31 +244,6 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetRevision()
-	{
-		$builder = new scripts\builder(uniqid());
-
-		$this->assert
-			->object($builder->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->integer($builder->getRevision())->isEqualTo($revisionNumber)
-			->object($builder->setRevision($revisionNumber = uniqid()))->isIdenticalTo($builder)
-			->integer($builder->getRevision())->isEqualTo((int) $revisionNumber)
-		;
-	}
-
-	public function testResetRevision()
-	{
-		$builder = new scripts\builder(uniqid());
-
-		$builder->setRevision(rand(1, PHP_INT_MAX));
-
-		$this->assert
-			->variable($builder->getRevision())->isNotNull()
-			->object($builder->resetRevision())->isIdenticalTo($builder)
-			->variable($builder->getRevision())->isNull()
-		;
-	}
-
 	public function testSetRevisionFile()
 	{
 		$builder = new scripts\builder(uniqid());
@@ -316,7 +291,7 @@ class builder extends atoum\test
 					$builder->setFileIteratorInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('File iterator injector must take one argument')
 			->object($builder->setFileIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($builder)
 			->object($builder->getFileIterator(uniqid()))->isIdenticalTo($iterator)
@@ -344,14 +319,24 @@ class builder extends atoum\test
 						$builder->tagFiles();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to tag files, working directory is undefined')
 		;
 
-		$builder
-			->setWorkingDirectory($workingDirectory = uniqid())
-			->setFileIteratorInjector(function($directory) { return null; })
+		$builder->setWorkingDirectory($workingDirectory = uniqid());
+
+		$this->assert
+			->exception(function() use ($builder) {
+					$builder->tagFiles();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Unable to tag files, tag is undefined')
 		;
+
+		$builder->setTag($tag = uniqid());
+
+		$builder->setFileIteratorInjector(function($directory) { return null; });
 
 		$this->assert
 			->exception(function() use ($builder) {
@@ -362,8 +347,7 @@ class builder extends atoum\test
 				->hasMessage('File iterator injector must return a \iterator instance')
 		;
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\recursiveDirectoryIterator');
+		$this->mock('\recursiveDirectoryIterator');
 
 		$builder->setFileIteratorInjector(function($directory) use (& $fileIterator, & $file) {
 				$fileIteratorController = new mock\controller();
@@ -379,15 +363,14 @@ class builder extends atoum\test
 
 		$adapter->file_get_contents = $fileContents = uniqid() . '$rev: ' . rand(1, PHP_INT_MAX) . ' $' . uniqid();
 		$adapter->file_put_contents = function() {};
-		$adapter->date = $date = '197610061400';
 
 		$this->assert
-			->variable($builder->getTag())->isNull()
-			->object($builder->tagFiles())->isIdenticalTo($builder)
-			->mock($fileIterator)->call('__construct', array($workingDirectory, null))
-			->adapter($adapter)->call('date', array('YmdHi'))
-			->adapter($adapter)->call('file_get_contents', array($file))
-			->adapter($adapter)->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), 'nightly-' . $date, $fileContents)))
+			->object($builder->tagFiles($tag = uniqid()))->isIdenticalTo($builder)
+			->mock($fileIterator)
+				->call('__construct', array($workingDirectory, null))
+			->adapter($adapter)
+				->call('file_get_contents', array($file))
+				->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
 		;
 
 		$builder
@@ -397,8 +380,9 @@ class builder extends atoum\test
 		$this->assert
 			->object($builder->tagFiles())->isIdenticalTo($builder)
 			->mock($fileIterator)->call('__construct', array($workingDirectory, null))
-			->adapter($adapter)->call('file_get_contents', array($file))
-			->adapter($adapter)->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
+			->adapter($adapter)
+				->call('file_get_contents', array($file))
+				->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
 		;
 	}
 
@@ -450,7 +434,7 @@ class builder extends atoum\test
 					$builder->checkUnitTests();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to check unit tests, working directory is undefined')
 		;
 
@@ -461,7 +445,7 @@ class builder extends atoum\test
 					$builder->checkUnitTests();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to check unit tests, version control system is undefined')
 		;
 
@@ -476,7 +460,7 @@ class builder extends atoum\test
 					$builder->checkUnitTests();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to check unit tests, unit tests runner script is undefined')
 		;
 
@@ -724,7 +708,7 @@ class builder extends atoum\test
 						$builder->createPhar();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to create phar, version control system is undefined')
 		;
 
@@ -740,7 +724,7 @@ class builder extends atoum\test
 						$builder->createPhar();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to create phar, destination directory is undefined')
 		;
 
@@ -751,7 +735,7 @@ class builder extends atoum\test
 						$builder->createPhar();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
 				->hasMessage('Unable to create phar, working directory is undefined')
 		;
 
@@ -779,14 +763,12 @@ class builder extends atoum\test
 		$adapter->proc_open = false;
 
 		$this->assert
-			->variable($builder->getRevision())->isNull()
 			->exception(function() use ($builder) {
 					$builder->createPhar();
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\'')
-			->integer($builder->getRevision())->isEqualTo($revision)
 			->mock($vcs)
 				->call('setRevision', array($revision))
 				->call('exportRepository', array($workingDirectory))
@@ -796,32 +778,54 @@ class builder extends atoum\test
 		$adapter->stream_get_contents = function() { return ''; };
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};
+		$adapter->date = $date = uniqid();
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
 
 		$this->assert
-			->variable($builder->resetRevision()->getRevision())->isNull()
 			->boolean($builder->createPhar())->isTrue()
-			->mock($builder)->call('tagFiles')
-			->integer($builder->getRevision())->isEqualTo($revision)
+			->mock($builder)->call('tagFiles', array('nightly-' . $revision . '-' . $date))
 			->adapter($adapter)
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
 				->call('fclose', array($stdErr))
 				->call('proc_close', array($resource))
+				->call('date', array('YmdHi'))
 			->mock($vcs)
 				->call('setRevision', array($revision))
 				->call('exportRepository', array($workingDirectory))
 		;
 
-		$adapter->stream_get_contents = function() use (& $stdErrContents) { return $stdErrContents = uniqid(); };
+		$adapter->resetCalls();
+
+		$builder->getMockController()->resetCalls();
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
 
 		$this->assert
-			->variable($builder->resetRevision()->getRevision())->isNull()
+			->boolean($builder->createPhar($tag = uniqid()))->isTrue()
+			->mock($builder)->call('tagFiles', array($tag))
+			->adapter($adapter)
+				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
+				->call('stream_get_contents', array($stdErr))
+				->call('fclose', array($stdErr))
+				->call('proc_close', array($resource))
+				->notCall('date')
+			->mock($vcs)
+				->call('setRevision', array($revision))
+				->call('exportRepository', array($workingDirectory))
+		;
+
+		$adapter->resetCalls();
+
+		$builder->getMockController()->resetCalls();
+
+		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
+
+		$adapter->stream_get_contents = function() use (& $stdErrContents) { return $stdErrContents = uniqid(); };
+
+		$this->assert
 			->boolean($builder->createPhar())->isFalse()
-			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
@@ -841,12 +845,8 @@ class builder extends atoum\test
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
 
-		$builder->resetRevision();
-
 		$this->assert
-			->variable($builder->resetRevision()->getRevision())->isNull()
 			->boolean($builder->createPhar())->isTrue()
-			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
@@ -864,9 +864,7 @@ class builder extends atoum\test
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
 
 		$this->assert
-			->variable($builder->resetRevision()->getRevision())->isNull()
 			->boolean($builder->createPhar())->isTrue()
-			->integer($builder->getRevision())->isEqualTo($revision)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
@@ -880,8 +878,6 @@ class builder extends atoum\test
 		;
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
-
-		$builder->resetRevision();
 
 		$adapter->file_put_contents = false;
 
@@ -900,14 +896,10 @@ class builder extends atoum\test
 		$vcsController->getNextRevisions[3] = array(3);
 		$vcsController->getNextRevisions[4] = array();
 
-		$builder->resetRevision();
-
 		$adapter->file_put_contents = function() {};
 
 		$this->assert
-			->variable($builder->getRevision())->isNull()
 			->boolean($builder->createPhar())->isTrue()
-			->integer($builder->getRevision())->isEqualTo(3)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
@@ -926,14 +918,10 @@ class builder extends atoum\test
 		$vcsController->getNextRevisions[1] = array(4);
 		$vcsController->getNextRevisions[2] = array();
 
-		$builder->resetRevision();
-
 		$adapter->file_get_contents = 1;
 
 		$this->assert
-			->variable($builder->getRevision())->isNull()
 			->boolean($builder->createPhar())->isTrue()
-			->integer($builder->getRevision())->isEqualTo(4)
 			->adapter($adapter)
 				->call('file_get_contents', array($revisionFile))
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
@@ -994,7 +982,6 @@ class builder extends atoum\test
 		$adapter->file_put_contents = function() {};
 
 		$this->assert
-			->variable($builder->getRevision())->isNull()
 			->variable($builder->getErrorsDirectory())->isNull()
 			->object($builder->writeErrorInErrorsDirectory(uniqid()))->isIdenticalTo($builder)
 			->adapter($adapter)->notCall('file_put_contents')
@@ -1003,7 +990,6 @@ class builder extends atoum\test
 		$builder->setErrorsDirectory($errorDirectory = uniqid());
 
 		$this->assert
-			->variable($builder->getRevision())->isNull()
 			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
 			->exception(function() use ($builder) {
 						$builder->writeErrorInErrorsDirectory(uniqid());
@@ -1014,10 +1000,16 @@ class builder extends atoum\test
 			->adapter($adapter)->notCall('file_put_contents')
 		;
 
-		$builder->setRevision($revision = rand(1, PHP_INT_MAX));
+		$this->mock('\mageekguy\atoum\scripts\builder\vcs');
+
+		$vcsController = new mock\controller();
+		$vcsController->__construct = function() {};
+
+		$builder->setVcs($vcs = new mock\mageekguy\atoum\scripts\builder\vcs(null, $vcsController));
+
+		$vcs->setRevision($revision = rand(1, PHP_INT_MAX));
 
 		$this->assert
-			->variable($builder->getRevision())->isEqualTo($revision)
 			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
 			->object($builder->writeErrorInErrorsDirectory($message = uniqid()))->isIdenticalTo($builder)
 			->adapter($adapter)->call('file_put_contents', array($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND))
@@ -1029,7 +1021,6 @@ class builder extends atoum\test
 		;
 
 		$this->assert
-			->variable($builder->getRevision())->isEqualTo($revision)
 			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
 			->exception(function() use ($builder, & $message) {
 						$builder->writeErrorInErrorsDirectory($message = uniqid());

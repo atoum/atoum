@@ -226,25 +226,6 @@ class builder extends atoum\script
 		return $this->reportTitle;
 	}
 
-	public function setRevision($revisionNumber)
-	{
-		$this->revision = (int) $revisionNumber;
-
-		return $this;
-	}
-
-	public function getRevision()
-	{
-		return $this->revision;
-	}
-
-	public function resetRevision()
-	{
-		$this->revision = null;
-
-		return $this;
-	}
-
 	public function setUnitTestRunnerScript($path)
 	{
 		$this->unitTestRunnerScript = (string) $path;
@@ -297,7 +278,7 @@ class builder extends atoum\script
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new exceptions\runtime('File iterator injector must take one argument');
+			throw new exceptions\logic('File iterator injector must take one argument');
 		}
 
 		$this->fileIteratorInjector = $fileIteratorInjector;
@@ -313,30 +294,27 @@ class builder extends atoum\script
 		{
 			if ($this->workingDirectory === null)
 			{
-				throw new exceptions\runtime('Unable to check unit tests, working directory is undefined');
+				throw new exceptions\logic('Unable to check unit tests, working directory is undefined');
 			}
 
 			if ($this->vcs === null)
 			{
-				throw new exceptions\runtime('Unable to check unit tests, version control system is undefined');
+				throw new exceptions\logic('Unable to check unit tests, version control system is undefined');
 			}
 
 			if ($this->unitTestRunnerScript === null)
 			{
-				throw new exceptions\runtime('Unable to check unit tests, unit tests runner script is undefined');
+				throw new exceptions\logic('Unable to check unit tests, unit tests runner script is undefined');
 			}
 
-			$this->vcs
-				->setRevision($this->revision)
-				->exportRepository($this->workingDirectory)
-			;
+			$this->vcs->exportRepository($this->workingDirectory);
 
 			$descriptors = array(
 				1 => array('pipe', 'w'),
 				2 => array('pipe', 'w')
 			);
 
-			$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->revision;
+			$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->vcs->getRevision();
 
 			$phpPath = $this->getPhpPath();
 
@@ -415,11 +393,21 @@ class builder extends atoum\script
 		return $status;
 	}
 
-	public function tagFiles()
+	public function tagFiles($tag = null)
 	{
 		if ($this->workingDirectory === null)
 		{
-			throw new exceptions\runtime('Unable to tag files, working directory is undefined');
+			throw new exceptions\logic('Unable to tag files, working directory is undefined');
+		}
+
+		if ($tag !== null)
+		{
+			$this->setTag($tag);
+		}
+
+		if ($this->tag == '')
+		{
+			throw new exceptions\logic('Unable to tag files, tag is undefined');
 		}
 
 		$fileIterator = $this->getFileIterator($this->workingDirectory);
@@ -427,11 +415,6 @@ class builder extends atoum\script
 		if ($fileIterator instanceof \iterator === false)
 		{
 			throw new exceptions\logic('File iterator injector must return a \iterator instance');
-		}
-
-		if ($this->tag === null)
-		{
-			$this->setTag('nightly-' . $this->getRevision() . '-' . $this->adapter->date('YmdHi'));
 		}
 
 		foreach ($fileIterator as $path)
@@ -442,7 +425,7 @@ class builder extends atoum\script
 		return $this;
 	}
 
-	public function createPhar()
+	public function createPhar($tag = null)
 	{
 		$pharBuilt = true;
 
@@ -450,17 +433,17 @@ class builder extends atoum\script
 		{
 			if ($this->vcs === null)
 			{
-				throw new exceptions\runtime('Unable to create phar, version control system is undefined');
+				throw new exceptions\logic('Unable to create phar, version control system is undefined');
 			}
 
 			if ($this->destinationDirectory === null)
 			{
-				throw new exceptions\runtime('Unable to create phar, destination directory is undefined');
+				throw new exceptions\logic('Unable to create phar, destination directory is undefined');
 			}
 
 			if ($this->workingDirectory === null)
 			{
-				throw new exceptions\runtime('Unable to create phar, working directory is undefined');
+				throw new exceptions\logic('Unable to create phar, working directory is undefined');
 			}
 
 			if ($this->revisionFile !== null)
@@ -469,7 +452,7 @@ class builder extends atoum\script
 
 				if (is_numeric($revision) === true)
 				{
-					$this->setRevision($revision);
+					$this->vcs->setRevision($revision);
 				}
 			}
 
@@ -477,29 +460,26 @@ class builder extends atoum\script
 
 			if (sizeof($revisions) > 0)
 			{
-				$revision = end($revisions);
-
 				$descriptors = array(
 					2 => array('pipe', 'w')
 				);
 
+				$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript . ' -- -d ' . $this->destinationDirectory;
+
 				while (sizeof($revisions) > 0)
 				{
-					$this->setRevision(array_shift($revisions));
+					$revision = array_shift($revisions);
+
+					$this->vcs->setRevision($revision);
 
 					if ($this->checkUnitTests() === true)
 					{
 						if ($this->checkUnitTests === false)
 						{
-							$this->vcs
-								->setRevision($this->revision)
-								->exportRepository($this->workingDirectory)
-							;
+							$this->vcs->exportRepository($this->workingDirectory);
 						}
 
-						$this->tagFiles();
-
-						$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript . ' -- -d ' . $this->destinationDirectory;
+						$this->tagFiles($tag !== null ? $tag : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'));
 
 						$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -523,11 +503,6 @@ class builder extends atoum\script
 					}
 
 					$revisions = $this->vcs->getNextRevisions();
-
-					if (sizeof($revisions) > 0)
-					{
-						$revision = end($revisions);
-					}
 				}
 
 				if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
@@ -807,12 +782,14 @@ class builder extends atoum\script
 	{
 		if ($this->errorsDirectory !== null)
 		{
-			if ($this->revision === null)
+			$revision = $this->vcs === null ? null : $this->vcs->getRevision();
+
+			if ($revision === null)
 			{
 				throw new exceptions\logic('Revision is undefined');
 			}
 
-			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $this->revision;
+			$errorFile = $this->errorsDirectory . \DIRECTORY_SEPARATOR . $revision;
 
 			if ($this->adapter->file_put_contents($errorFile, $error, \LOCK_EX | \FILE_APPEND) === false)
 			{
