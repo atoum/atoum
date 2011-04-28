@@ -53,6 +53,9 @@ class tagger extends atoum\test
 			->object($tagger->setSrcDirectory($directory = uniqid()))->isIdenticalTo($tagger)
 			->string($tagger->getSrcDirectory())->isEqualTo($directory)
 			->string($tagger->getDestinationDirectory())->isEqualTo($directory)
+			->object($tagger->setSrcDirectory(($otherDirectory = uniqid()) . \DIRECTORY_SEPARATOR))->isIdenticalTo($tagger)
+			->string($tagger->getSrcDirectory())->isEqualTo($otherDirectory)
+			->string($tagger->getDestinationDirectory())->isEqualTo($directory)
 			->object($tagger->setSrcDirectory($otherDirectory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($tagger)
 			->string($tagger->getSrcDirectory())->isEqualTo((string) $otherDirectory)
 			->string($tagger->getDestinationDirectory())->isEqualTo($directory)
@@ -65,6 +68,8 @@ class tagger extends atoum\test
 
 		$this->assert
 			->object($tagger->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($tagger)
+			->string($tagger->getDestinationDirectory())->isEqualTo($directory)
+			->object($tagger->setDestinationDirectory(($directory = uniqid()) . \DIRECTORY_SEPARATOR))->isIdenticalTo($tagger)
 			->string($tagger->getDestinationDirectory())->isEqualTo($directory)
 			->object($tagger->setDestinationDirectory($directory = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($tagger)
 			->string($tagger->getDestinationDirectory())->isEqualTo((string) $directory)
@@ -125,7 +130,7 @@ class tagger extends atoum\test
 		;
 
 		$tagger
-			->setSrcDirectory(uniqid())
+			->setSrcDirectory($srcDirectory = uniqid())
 			->setSrcIteratorInjector(function($directory) {})
 		;
 
@@ -138,7 +143,13 @@ class tagger extends atoum\test
 				->hasMessage('Unable to tag, src iterator injector does not return an iterator')
 		;
 
-		$srcIterator = new \arrayIterator(array($file1 = uniqid(), $file2 = uniqid(), $file3 = uniqid(), $file4 = uniqid()));
+		$srcIterator = new \arrayIterator(array(
+				$file1 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename1 = uniqid()),
+				$file2 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename2 = uniqid()),
+				$file3 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename3 = uniqid()),
+				$file4 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename4 = uniqid())
+			)
+		);
 
 		$tagger->setSrcIteratorInjector(function($directory) use ($srcIterator) { return $srcIterator; });
 
@@ -152,13 +163,55 @@ class tagger extends atoum\test
 			->object($tagger->tagVersion($version = uniqid()))->isIdenticalTo($tagger)
 			->adapter($adapter)
 				->call('file_get_contents', array($file1))
-				->call('file_put_contents', array($file1, $file1Part1 . $version . $file1Part2))
+				->call('file_put_contents', array($file1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
 				->call('file_get_contents', array($file2))
-				->call('file_put_contents', array($file2, $contentOfFile2))
+				->call('file_put_contents', array($file2, $contentOfFile2, \LOCK_EX))
 				->call('file_get_contents', array($file3))
-				->call('file_put_contents', array($file3, $file3Part1 . $version . $file3Part2))
+				->call('file_put_contents', array($file3, $file3Part1 . $version . $file3Part2, \LOCK_EX))
 				->call('file_get_contents', array($file4))
-				->call('file_put_contents', array($file4, $contentOfFile4))
+				->call('file_put_contents', array($file4, $contentOfFile4, \LOCK_EX))
+		;
+
+		$adapter->resetCalls()->file_get_contents[2] = false;
+
+		$this->assert
+			->exception(function() use ($tagger) {
+					$tagger->tagVersion(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to tag, path \'' . $file2 . '\' is unreadable')
+		;
+
+		$adapter->resetCalls();
+		$adapter->file_get_contents[2] = $contentOfFile2;
+		$adapter->file_put_contents[2] = false;
+
+		$this->assert
+			->exception(function() use ($tagger) {
+					$tagger->tagVersion(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to tag, path \'' . $file2 . '\' is unwritable')
+		;
+
+		$adapter->resetCalls();
+		unset($adapter->file_put_contents[2]);
+
+		$tagger->setDestinationDirectory($destinationDirectory = uniqid());
+
+		$this->assert
+			->object($tagger->tagVersion($version = uniqid()))->isIdenticalTo($tagger)
+			->adapter($adapter)
+				->call('file_get_contents', array($file1))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
+				->call('file_get_contents', array($file2))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename2, $contentOfFile2, \LOCK_EX))
+				->call('file_get_contents', array($file3))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename3, $file3Part1 . $version . $file3Part2, \LOCK_EX))
+				->call('file_get_contents', array($file4))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename4, $contentOfFile4, \LOCK_EX))
 		;
 	}
 }

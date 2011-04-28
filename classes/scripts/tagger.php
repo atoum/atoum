@@ -42,7 +42,7 @@ class tagger extends atoum\script
 
 	public function setSrcDirectory($directory)
 	{
-		$this->srcDirectory = (string) $directory;
+		$this->srcDirectory = rtrim((string) $directory, \DIRECTORY_SEPARATOR);
 
 		if ($this->destinationDirectory === null)
 		{
@@ -59,7 +59,7 @@ class tagger extends atoum\script
 
 	public function setDestinationDirectory($directory)
 	{
-		$this->destinationDirectory = (string) $directory;
+		$this->destinationDirectory = rtrim((string) $directory, \DIRECTORY_SEPARATOR);
 
 		return $this;
 	}
@@ -109,7 +109,19 @@ class tagger extends atoum\script
 
 		foreach ($srcIterator as $path)
 		{
-			$this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $version, $this->adapter->file_get_contents($path)));
+			$fileContents = @$this->adapter->file_get_contents($path);
+
+			if ($fileContents === false)
+			{
+				throw new exceptions\runtime('Unable to tag, path \'' . $path . '\' is unreadable');
+			}
+
+			$path = $this->destinationDirectory == $this->srcDirectory ? $path : $this->destinationDirectory . \DIRECTORY_SEPARATOR . substr($path, strlen($this->srcDirectory) + 1);
+
+			if ($this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $version, $fileContents), \LOCK_EX) === false)
+			{
+				throw new exceptions\runtime('Unable to tag, path \'' . $path . '\' is unwritable');
+			}
 		}
 
 		return $this;
