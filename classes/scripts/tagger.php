@@ -9,11 +9,31 @@ use
 
 class tagger extends atoum\script
 {
-	const versionTag = '<tagger:version />';
+	const defaultVersionPattern = '/([\'"])\$Rev: \d+ \$\1/';
 
+	protected $versionPattern = null;
 	protected $srcDirectory = null;
 	protected $destinationDirectory = null;
 	protected $srcIteratorInjector = null;
+
+	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	{
+		parent::__construct($name, $locale, $adapter);
+
+		$this->setVersionPattern(static::defaultVersionPattern);
+	}
+
+	public function getVersionPattern()
+	{
+		return $this->versionPattern;
+	}
+
+	public function setVersionPattern($pattern)
+	{
+		$this->versionPattern = (string) $pattern;
+
+		return $this;
+	}
 
 	public function getSrcDirectory()
 	{
@@ -89,7 +109,7 @@ class tagger extends atoum\script
 
 		foreach ($srcIterator as $path)
 		{
-			$this->adapter->file_put_contents($path, str_replace(self::versionTag, $version, $this->adapter->file_get_contents($path)));
+			$this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $version, $this->adapter->file_get_contents($path)));
 		}
 
 		return $this;

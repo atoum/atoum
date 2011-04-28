@@ -18,7 +18,7 @@ class tagger extends atoum\test
 			->testedClass
 				->isSubclassOf('\mageekguy\atoum\script')
 				->hasInterface('\mageekguy\atoum\adapter\aggregator')
-			->string(\mageekguy\atoum\scripts\tagger::versionTag)->isEqualTo('<tagger:version />')
+			->string(\mageekguy\atoum\scripts\tagger::defaultVersionPattern)->isEqualTo('/([\'"])\$Rev: \d+ \$\1/')
 		;
 	}
 
@@ -29,6 +29,19 @@ class tagger extends atoum\test
 		$this->assert
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
+			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger::defaultVersionPattern)
+		;
+	}
+
+	public function testSetVersionPattern()
+	{
+		$tagger = new scripts\tagger(uniqid());
+
+		$this->assert
+			->object($tagger->setVersionPattern($pattern = uniqid()))->isIdenticalTo($tagger)
+			->string($tagger->getVersionPattern())->isEqualTo($pattern)
+			->object($tagger->setVersionPattern($pattern = rand(1, PHP_INT_MAX)))->isIdenticalTo($tagger)
+			->string($tagger->getVersionPattern())->isEqualTo((string) $pattern)
 		;
 	}
 
@@ -125,13 +138,14 @@ class tagger extends atoum\test
 				->hasMessage('Unable to tag, src iterator injector does not return an iterator')
 		;
 
-		$srcIterator = new \arrayIterator(array($file1 = uniqid(), $file2 = uniqid(), $file3 = uniqid()));
+		$srcIterator = new \arrayIterator(array($file1 = uniqid(), $file2 = uniqid(), $file3 = uniqid(), $file4 = uniqid()));
 
 		$tagger->setSrcIteratorInjector(function($directory) use ($srcIterator) { return $srcIterator; });
 
-		$adapter->file_get_contents[1] = ($file1Part1 = uniqid()) . \mageekguy\atoum\scripts\tagger::versionTag . ($file1Part2 = uniqid());
+		$adapter->file_get_contents[1] = ($file1Part1 = uniqid()) . '\'$Rev: ' . rand(1, PHP_INT_MAX) . ' $\'' . ($file1Part2 = uniqid());
 		$adapter->file_get_contents[2] = $contentOfFile2 = uniqid();
-		$adapter->file_get_contents[3] = ($file3Part1 = uniqid()) . \mageekguy\atoum\scripts\tagger::versionTag . ($file3Part2 = uniqid());
+		$adapter->file_get_contents[3] = ($file3Part1 = uniqid()) . '"$Rev: ' . rand(1, PHP_INT_MAX) . ' $"' . ($file3Part2 = uniqid());
+		$adapter->file_get_contents[4] = $contentOfFile4 = uniqid() . '\'$Rev: ' . rand(1, PHP_INT_MAX) . ' $"' . uniqid();
 		$adapter->file_put_contents = function() {};
 
 		$this->assert
@@ -143,6 +157,8 @@ class tagger extends atoum\test
 				->call('file_put_contents', array($file2, $contentOfFile2))
 				->call('file_get_contents', array($file3))
 				->call('file_put_contents', array($file3, $file3Part1 . $version . $file3Part2))
+				->call('file_get_contents', array($file4))
+				->call('file_put_contents', array($file4, $contentOfFile4))
 		;
 	}
 }
