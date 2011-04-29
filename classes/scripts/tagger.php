@@ -11,6 +11,7 @@ class tagger extends atoum\script
 {
 	const defaultVersionPattern = '/([\'"])\$Rev: \d+ \$\1/';
 
+	protected $stopRun = false;
 	protected $version = null;
 	protected $versionPattern = null;
 	protected $srcDirectory = null;
@@ -148,6 +149,18 @@ class tagger extends atoum\script
 	public function run(array $arguments = array())
 	{
 		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) != 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->help();
+			},
+			array('-h', '--help')
+		);
+
+		$this->argumentsParser->addHandler(
 			function($script, $argument, $directory) {
 				if (sizeof($directory) != 1)
 				{
@@ -197,7 +210,32 @@ class tagger extends atoum\script
 
 		parent::run($arguments);
 
-		$this->tagVersion();
+		if ($this->stopRun === false)
+		{
+			$this->tagVersion();
+		}
+	}
+
+	public function help()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+		;
+
+		$this->writeLabels(
+			array(
+				'-h, --help' => $this->locale->_('Display this help'),
+				'-v <string>, --version <string>' => $this->locale->_('Use <string> as version value'),
+				'-vp <regex>, --version-pattern <regex>' => $this->locale->_('Use <regex> to set version in source files'),
+				'-s <directory>, --src-directory <directory>' => $this->locale->_('Use <directory> as source directory'),
+				'-d <directory>, --destination-directory <directory>' => $this->locale->_('Save tagged files in <directory>'),
+			)
+		);
+
+		$this->stopRun = true;
+
+		return $this;
 	}
 }
 
