@@ -519,12 +519,8 @@ class builder extends atoum\test
 		$adapter->proc_open = false;
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $command . '\'')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to execute \'' . $command . '\''))
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -532,45 +528,29 @@ class builder extends atoum\test
 		$adapter->proc_get_status = array('exitcode' => 126, 'running' => false);
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to find \'' . $php . '\' or it is not executable')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to find \'' . $php . '\' or it is not executable'))
 		;
 
 		$adapter->proc_get_status = array('exitcode' => 127, 'running' => false);
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to find \'' . $php . '\' or it is not executable')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to find \'' . $php . '\' or it is not executable'))
 		;
 
 		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(1, 125), 'running' => false);
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\''))
 		;
 
 		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(128, PHP_INT_MAX), 'running' => false);
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\''))
 		;
 
 		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
@@ -586,44 +566,33 @@ class builder extends atoum\test
 		$adapter->stream_get_contents = function($stream) use (& $stdErr, & $stdErrContents) { return $stream != $stdErr ? '' : $stdErrContents = uniqid(); };
 
 		$this->assert
-			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($builder)
-				->call('writeErrorInErrorsDirectory', array($stdErrContents))
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
 		;
 
+		$adapter->stream_get_contents = '';
 		$adapter->file_get_contents = false;
 
+		$builder->getMockController()->resetCalls();
+
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to read score from file \'' . $scoreFile . '\'')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to read score from file \'' . $scoreFile . '\''))
 		;
 
 		$adapter->file_get_contents = $scoreFileContents;
-
 		$adapter->unserialize = false;
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to unserialize score from file \'' . $scoreFile . '\'')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to unserialize score from file \'' . $scoreFile . '\''))
 		;
 
 		$adapter->unserialize = uniqid();
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Contents of file \'' . $scoreFile . '\' is not a score')
+			->boolean($builder->checkUnitTests())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Contents of file \'' . $scoreFile . '\' is not a score'))
 		;
 
 		$adapter->unserialize = $score;
@@ -763,12 +732,8 @@ class builder extends atoum\test
 		$adapter->proc_open = false;
 
 		$this->assert
-			->exception(function() use ($builder) {
-					$builder->createPhar();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\'')
+			->boolean($builder->createPhar())->isFalse()
+			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\''))
 			->mock($vcs)
 				->call('setRevision', array($revision))
 				->call('exportRepository', array($workingDirectory))

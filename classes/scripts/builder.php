@@ -325,58 +325,69 @@ class builder extends atoum\script
 				$command .= ' -c ' . $runnerConfigurationFile;
 			}
 
-			$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
-
-			if ($php === false)
+			try
 			{
-				throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-			}
+				$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
-			$phpStatus = $this->adapter->proc_get_status($php);
-
-			if ($phpStatus['running'] === false)
-			{
-				switch ($phpStatus['exitcode'])
+				if ($php === false)
 				{
-					case 126:
-					case 127:
-						throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
-
-					default:
-						throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+					throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
 				}
+
+				$phpStatus = $this->adapter->proc_get_status($php);
+
+				if ($phpStatus['running'] === false)
+				{
+					switch ($phpStatus['exitcode'])
+					{
+						case 126:
+						case 127:
+							throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+
+						default:
+							throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+					}
+				}
+
+				$stdOut = $this->adapter->stream_get_contents($pipes[1]);
+				$this->adapter->fclose($pipes[1]);
+
+				$stdErr = $this->adapter->stream_get_contents($pipes[2]);
+				$this->adapter->fclose($pipes[2]);
+
+				$this->adapter->proc_close($php);
+
+				if ($stdErr != '')
+				{
+					throw new exceptions\runtime($stdErr);
+				}
+
+				$score = @$this->adapter->file_get_contents($scoreFile);
+
+				if ($score === false)
+				{
+					throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
+				}
+
+				$score = $this->adapter->unserialize($score);
+
+				if ($score === false)
+				{
+					throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
+				}
+
+				if ($score instanceof atoum\score === false)
+				{
+					throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
+				}
+
+				$status = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
 			}
-
-			$stdOut = $this->adapter->stream_get_contents($pipes[1]);
-			$this->adapter->fclose($pipes[1]);
-
-			$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-			$this->adapter->fclose($pipes[2]);
-
-			$this->adapter->proc_close($php);
-
-			if ($stdErr != '')
+			catch (\exception $exception)
 			{
-				$this->writeErrorInErrorsDirectory($stdErr);
-			}
+				$this->writeErrorInErrorsDirectory($exception->getMessage());
 
-			$score = @$this->adapter->file_get_contents($scoreFile);
-
-			if ($score === false)
-			{
-				throw new exceptions\runtime('Unable to read score from file \'' . $scoreFile . '\'');
-			}
-
-			$score = $this->adapter->unserialize($score);
-
-			if ($score === false)
-			{
-				throw new exceptions\runtime('Unable to unserialize score from file \'' . $scoreFile . '\'');
-			}
-
-			if ($score instanceof atoum\score === false)
-			{
-				throw new exceptions\runtime('Contents of file \'' . $scoreFile . '\' is not a score');
+				$status = false;
 			}
 
 			if ($this->scoreDirectory === null)
@@ -386,8 +397,6 @@ class builder extends atoum\script
 					throw new exceptions\runtime('Unable to delete score file \'' . $scoreFile . '\'');
 				}
 			}
-
-			$status = $score->getFailNumber() === 0 && $score->getExceptionNumber() === 0 && $score->getErrorNumber() === 0;
 		}
 
 		return $status;
@@ -472,42 +481,49 @@ class builder extends atoum\script
 
 					$this->vcs->setRevision($revision);
 
-					if ($this->checkUnitTests() === true)
+					try
 					{
-						if ($this->checkUnitTests === false)
+						if ($this->checkUnitTests() === true)
 						{
-							$this->vcs->exportRepository($this->workingDirectory);
+							if ($this->checkUnitTests === false)
+							{
+								$this->vcs->exportRepository($this->workingDirectory);
+							}
+
+							$this->tagFiles($tag !== null ? $tag : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'));
+
+							$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+
+							if ($php === false)
+							{
+								throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
+							}
+
+							$stdErr = $this->adapter->stream_get_contents($pipes[2]);
+
+							$this->adapter->fclose($pipes[2]);
+
+							$this->adapter->proc_close($php);
+
+							if ($stdErr != '')
+							{
+								throw new exceptions\runtime($stdErr);
+							}
 						}
+					}
+					catch (\exception $exception)
+					{
+						$pharBuilt = false;
 
-						$this->tagFiles($tag !== null ? $tag : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'));
+						$this->writeErrorInErrorsDirectory($exception->getMessage());
+					}
 
-						$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
-
-						if ($php === false)
-						{
-							throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-						}
-
-						$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-
-						$this->adapter->fclose($pipes[2]);
-
-						$this->adapter->proc_close($php);
-
-						if ($stdErr != '')
-						{
-							$this->writeErrorInErrorsDirectory($stdErr);
-
-							$pharBuilt = false;
-						}
+					if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
+					{
+						throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
 					}
 
 					$revisions = $this->vcs->getNextRevisions();
-				}
-
-				if ($this->revisionFile !== null && $this->adapter->file_put_contents($this->revisionFile, $revision, \LOCK_EX) === false)
-				{
-					throw new exceptions\runtime('Unable to save last revision in file \'' . $this->revisionFile . '\'');
 				}
 			}
 		}

@@ -11,6 +11,7 @@ class tagger extends atoum\script
 {
 	const defaultVersionPattern = '/([\'"])\$Rev: \d+ \$\1/';
 
+	protected $version = null;
 	protected $versionPattern = null;
 	protected $srcDirectory = null;
 	protected $destinationDirectory = null;
@@ -21,6 +22,18 @@ class tagger extends atoum\script
 		parent::__construct($name, $locale, $adapter);
 
 		$this->setVersionPattern(static::defaultVersionPattern);
+	}
+
+	public function getVersion()
+	{
+		return $this->version;
+	}
+
+	public function setVersion($version)
+	{
+		$this->version = (string) $version;
+
+		return $this;
 	}
 
 	public function getVersionPattern()
@@ -93,11 +106,16 @@ class tagger extends atoum\script
 		return $this->srcIteratorInjector->__invoke($this->srcDirectory);
 	}
 
-	public function tagVersion($version)
+	public function tagVersion()
 	{
 		if ($this->srcDirectory === null)
 		{
 			throw new exceptions\logic('Unable to tag, src directory is undefined');
+		}
+
+		if ($this->version === null)
+		{
+			throw new exceptions\logic('Unable to tag, version is undefined');
 		}
 
 		$srcIterator = $this->getSrcIterator();
@@ -118,13 +136,68 @@ class tagger extends atoum\script
 
 			$path = $this->destinationDirectory == $this->srcDirectory ? $path : $this->destinationDirectory . \DIRECTORY_SEPARATOR . substr($path, strlen($this->srcDirectory) + 1);
 
-			if ($this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $version, $fileContents), \LOCK_EX) === false)
+			if ($this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $this->version, $fileContents), \LOCK_EX) === false)
 			{
 				throw new exceptions\runtime('Unable to tag, path \'' . $path . '\' is unwritable');
 			}
 		}
 
 		return $this;
+	}
+
+	public function run(array $arguments = array())
+	{
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setDestinationDirectory(current($directory));
+			},
+			array('-d', '--destination-directory')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setSrcDirectory(current($directory));
+			},
+			array('-s', '--src-directory')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $versionPattern) {
+				if (sizeof($versionPattern) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setVersionPattern(current($versionPattern));
+			},
+			array('-vp', '--version-pattern')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $version) {
+				if (sizeof($version) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setVersion(current($version));
+			},
+			array('-v', '--version')
+		);
+
+		parent::run($arguments);
+
+		$this->tagVersion();
 	}
 }
 

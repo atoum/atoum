@@ -29,7 +29,20 @@ class tagger extends atoum\test
 		$this->assert
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
+			->variable($tagger->getVersion())->isNull()
 			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger::defaultVersionPattern)
+		;
+	}
+
+	public function testSetVersion()
+	{
+		$tagger = new scripts\tagger(uniqid());
+
+		$this->assert
+			->object($tagger->setVersion($version = uniqid()))->isIdenticalTo($tagger)
+			->string($tagger->getVersion())->isEqualTo($version)
+			->object($tagger->setVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($tagger)
+			->string($tagger->getVersion())->isEqualTo((string) $version)
 		;
 	}
 
@@ -129,8 +142,19 @@ class tagger extends atoum\test
 				->hasMessage('Unable to tag, src directory is undefined')
 		;
 
+		$tagger->setSrcDirectory($srcDirectory = uniqid());
+
+		$this->assert
+			->exception(function() use ($tagger) {
+					$tagger->tagVersion(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Unable to tag, version is undefined')
+		;
+
 		$tagger
-			->setSrcDirectory($srcDirectory = uniqid())
+			->setVersion($version = uniqid())
 			->setSrcIteratorInjector(function($directory) {})
 		;
 
@@ -160,7 +184,7 @@ class tagger extends atoum\test
 		$adapter->file_put_contents = function() {};
 
 		$this->assert
-			->object($tagger->tagVersion($version = uniqid()))->isIdenticalTo($tagger)
+			->object($tagger->tagVersion())->isIdenticalTo($tagger)
 			->adapter($adapter)
 				->call('file_get_contents', array($file1))
 				->call('file_put_contents', array($file1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
@@ -202,7 +226,7 @@ class tagger extends atoum\test
 		$tagger->setDestinationDirectory($destinationDirectory = uniqid());
 
 		$this->assert
-			->object($tagger->tagVersion($version = uniqid()))->isIdenticalTo($tagger)
+			->object($tagger->tagVersion())->isIdenticalTo($tagger)
 			->adapter($adapter)
 				->call('file_get_contents', array($file1))
 				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
