@@ -126,6 +126,42 @@ class svn extends atoum\test
 		;
 	}
 
+	public function testSetDirectoryIteratorInjector()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$svn = new vcs\svn($adapter);
+
+		$this->assert
+			->exception(function() use ($svn) {
+					$svn->setDirectoryIteratorInjector(function() {});
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Directory iterator injector must take one argument')
+		;
+
+		$directoryIterator = new \directoryIterator(__DIR__);
+
+		$this->assert
+			->object($svn->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($svn)
+			->object($svn->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
+		;
+	}
+
+	public function testGetDirectoryIterator()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$svn = new vcs\svn($adapter);
+
+		$this->assert
+			->object($svn->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+		;
+	}
+
 	public function testGetNextRevisions()
 	{
 		$adapter = new atoum\test\adapter();

@@ -10,6 +10,32 @@ use
 
 class svn extends builder\vcs implements atoum\adapter\aggregator
 {
+	protected $directoryIteratorInjector = null;
+
+	public function setDirectoryIteratorInjector(\closure $directoryIteratorInjector)
+	{
+		$closure = new \reflectionMethod($directoryIteratorInjector, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\logic('Directory iterator injector must take one argument');
+		}
+
+		$this->directoryIteratorInjector = $directoryIteratorInjector;
+
+		return $this;
+	}
+
+	public function getDirectoryIterator($directory)
+	{
+		if ($this->directoryIteratorInjector === null)
+		{
+			$this->setDirectoryIteratorInjector(function($directory) { return new \directoryIterator($directory); });
+		}
+
+		return $this->directoryIteratorInjector->__invoke($directory);
+	}
+
 	public function getNextRevisions()
 	{
 		if ($this->repositoryUrl === null)
@@ -39,7 +65,10 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 			throw new exceptions\runtime('Unable to export repository, repository url is undefined');
 		}
 
-		$this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
+		$this
+//			->deleteDirectoryContents($path)
+			->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)
+		;
 
 		if ($this->username !== null)
 		{
@@ -54,6 +83,33 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 		if ($this->adapter->svn_checkout($this->repositoryUrl, $directory, $this->revision) === false)
 		{
 			throw new exceptions\runtime('Unable to checkout repository \'' . $this->repositoryUrl . '\' in directory \'' . $directory . '\'');
+		}
+
+		return $this;
+	}
+
+	protected function deleteDirectoryContents($directory, $deleteDirectory = false)
+	{
+		foreach ($this->getDirectoryIterator($directory) as $inode)
+		{
+			$path = $inode->getPathname();
+
+			if ($inode->isDot() === false)
+			{
+				if ($inode->isDir() === false)
+				{
+					$this->adapter->unlink($path);
+				}
+				else
+				{
+					$this->deleteDirectoryContents($path, true);
+
+					if ($deleteDirectory === true)
+					{
+						$this->adapter->rmdir($path);
+					}
+				}
+			}
 		}
 
 		return $this;
