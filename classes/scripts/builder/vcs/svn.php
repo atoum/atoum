@@ -66,7 +66,7 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 		}
 
 		$this
-//			->deleteDirectoryContents($path)
+//			->deleteContents($path)
 			->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)
 		;
 
@@ -88,9 +88,9 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	protected function deleteDirectoryContents($directory, $deleteDirectory = false)
+	public function deleteDirectoryContents($path)
 	{
-		foreach ($this->getDirectoryIterator($directory) as $inode)
+		foreach ($this->getDirectoryIterator($path) as $inode)
 		{
 			$path = $inode->getPathname();
 
@@ -102,12 +102,8 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 				}
 				else
 				{
-					$this->deleteDirectoryContents($path, true);
-
-					if ($deleteDirectory === true)
-					{
-						$this->adapter->rmdir($path);
-					}
+					$this->deleteDirectoryContents($path);
+					$this->adapter->rmdir($path);
 				}
 			}
 		}

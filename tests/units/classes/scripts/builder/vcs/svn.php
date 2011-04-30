@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
 	\mageekguy\atoum\scripts\builder\vcs
 ;
 
@@ -318,6 +319,100 @@ class svn extends atoum\test
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
 				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+		;
+	}
+
+	public function testDeleteDirectoryContents()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+		$adapter->unlink = function() {};
+		$adapter->rmdir = function() {};
+
+		$this
+			->mock('\mageekguy\atoum\scripts\builder\vcs\svn')
+			->mock('\directoryIterator')
+		;
+
+		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
+
+		$directoryFile1Controller = new mock\controller();
+		$directoryFile1Controller->__construct = function() {};
+		$directoryFile1Controller->getPathname = $directoryFile1Path = uniqid();
+		$directoryFile1Controller->isDir = false;
+		$directoryFile1Controller->isDot = false;
+
+		$directoryFile1 = new mock\directoryIterator($directoryFile1Path, $directoryFile1Controller);
+
+		$directoryFile2Controller = new mock\controller();
+		$directoryFile2Controller->__construct = function() {};
+		$directoryFile2Controller->getPathname = $directoryFile2Path = uniqid();
+		$directoryFile2Controller->isDir = false;
+		$directoryFile2Controller->isDot = false;
+
+		$directoryFile2 = new mock\directoryIterator($directoryFile2Path, $directoryFile2Controller);
+
+		$directoryController = new mock\controller();
+		$directoryController->__construct = function() {};
+		$directoryController->next = function() {};
+		$directoryController->rewind = function() {};
+		$directoryController->isDir = true;
+		$directoryController->isDot = false;
+		$directoryController->getPathname = $directoryPath = uniqid();
+		$directoryController->valid = false;
+		$directoryController->valid[1] = true;
+		$directoryController->current[1] = $directoryFile1;
+		$directoryController->valid[2] = true;
+		$directoryController->current[2] = $directoryFile2;
+
+		$directory = new mock\directoryIterator($directoryPath, $directoryController);
+
+		$file1Controller = new mock\controller();
+		$file1Controller->__construct = function() {};
+		$file1Controller->getPathname = $file1Path = uniqid();
+		$file1Controller->isDir = false;
+		$file1Controller->isDot = false;
+
+		$file1 = new mock\directoryIterator(uniqid(), $file1Controller);
+
+		$file2Controller = new mock\controller();
+		$file2Controller->__construct = function() {};
+		$file2Controller->getPathname = $file2Path = uniqid();
+		$file2Controller->isDir = false;
+		$file2Controller->isDot = false;
+
+		$file2 = new mock\directoryIterator(uniqid(), $file2Controller);
+
+		$rootController = new mock\controller();
+		$rootController->__construct = function() {};
+		$rootController->getPathname = $rootPath = uniqid();
+		$rootController->next = function() {};
+		$rootController->rewind = function() {};
+		$rootController->valid = false;
+		$rootController->valid[1] = true;
+		$rootController->current[1] = $file1;
+		$rootController->valid[2] = true;
+		$rootController->current[2] = $directory;
+		$rootController->valid[3] = true;
+		$rootController->current[3] = $file2;
+
+		$root = new mock\directoryIterator(uniqid(), $rootController);
+
+		$svnController->getDirectoryIterator[1] = $root;
+		$svnController->getDirectoryIterator[2] = $directory;
+
+		$this->assert
+			->object($svn->deleteDirectoryContents($rootPath))->isIdenticalTo($svn)
+			->mock($svn)
+				->call('getDirectoryIterator', array($rootPath))
+				->call('getDirectoryIterator', array($directoryPath))
+			->adapter($adapter)
+				->call('unlink', array($directoryFile1Path))
+				->call('unlink', array($directoryFile2Path))
+				->call('unlink', array($file1Path))
+				->call('unlink', array($file2Path))
+				->call('rmdir', array($directoryPath))
+				->notCall('rmdir', array($rootPath))
 		;
 	}
 }
