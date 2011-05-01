@@ -10,7 +10,7 @@ use
 class tagger extends atoum\script
 {
 	protected $tagger = null;
-	protected $stopRun = false;
+	protected $tagVersion = true;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -97,7 +97,7 @@ class tagger extends atoum\script
 
 		parent::run($arguments);
 
-		if ($this->stopRun === false)
+		if ($this->tagVersion === true)
 		{
 			$tagger->tagVersion();
 		}
@@ -122,7 +122,7 @@ class tagger extends atoum\script
 			)
 		);
 
-		$this->stopRun = true;
+		$this->tagVersion = false;
 
 		return $this;
 	}

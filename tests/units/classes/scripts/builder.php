@@ -48,8 +48,7 @@ class builder extends atoum\test
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->array($builder->getRunnerConfigurationFiles())->isEmpty()
 			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
-			->string($builder->getTagRegex())->isEqualTo('/\$Rev: \d+ \$/')
-			->variable($builder->getTag())->isNull()
+			->variable($builder->getVersion())->isNull()
 			->variable($builder->getWorkingDirectory())->isNull()
 			->variable($builder->getDestinationDirectory())->isNull()
 			->variable($builder->getErrorsDirectory())->isNull()
@@ -59,18 +58,19 @@ class builder extends atoum\test
 			->variable($builder->getPharGeneratorScript())->isNull()
 			->variable($builder->getReportTitle())->isNull()
 			->variable($builder->getVcs())->isNull()
+			->variable($builder->getTagger())->isNull()
 		;
 	}
 
-	public function testSetTag()
+	public function testSetVersion()
 	{
 		$builder = new scripts\builder(uniqid());
 
 		$this->assert
-			->object($builder->setTag($tag = uniqid()))->isIdenticalTo($builder)
-			->string($builder->getTag())->isIdenticalTo($tag)
-			->object($builder->setTag($tag = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
-			->string($builder->getTag())->isIdenticalTo((string) $tag)
+			->object($builder->setVersion($tag = uniqid()))->isIdenticalTo($builder)
+			->string($builder->getVersion())->isIdenticalTo($tag)
+			->object($builder->setVersion($tag = rand(1, PHP_INT_MAX)))->isIdenticalTo($builder)
+			->string($builder->getVersion())->isIdenticalTo((string) $tag)
 		;
 	}
 
@@ -155,6 +155,16 @@ class builder extends atoum\test
 		$this->assert
 			->object($builder->setVcs($vcs = new mock\mageekguy\atoum\scripts\builder\vcs(null, $vcsController)))->isIdenticalTo($builder)
 			->object($builder->getVcs())->isIdenticalTo($vcs)
+		;
+	}
+
+	public function testSetTagger()
+	{
+		$builder = new scripts\builder(uniqid());
+
+		$this->assert
+			->object($builder->setTagger($tagger = new atoum\tagger()))->isIdenticalTo($builder)
+			->object($builder->getTagger())->isIdenticalTo($tagger)
 		;
 	}
 
@@ -305,84 +315,6 @@ class builder extends atoum\test
 		$this->assert
 			->object($builder->setRunFile($runFile = uniqid()))->isIdenticalTo($builder)
 			->string($builder->getRunFile())->isEqualTo($runFile)
-		;
-	}
-
-	public function testTagFiles()
-	{
-		$adapter = new atoum\test\adapter();
-
-		$builder = new scripts\builder(uniqid(), null, $adapter);
-
-		$this->assert
-			->exception(function() use ($builder) {
-						$builder->tagFiles();
-					}
-				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Unable to tag files, working directory is undefined')
-		;
-
-		$builder->setWorkingDirectory($workingDirectory = uniqid());
-
-		$this->assert
-			->exception(function() use ($builder) {
-					$builder->tagFiles();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Unable to tag files, tag is undefined')
-		;
-
-		$builder->setTag($tag = uniqid());
-
-		$builder->setFileIteratorInjector(function($directory) { return null; });
-
-		$this->assert
-			->exception(function() use ($builder) {
-					$builder->tagFiles();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('File iterator injector must return a \iterator instance')
-		;
-
-		$this->mock('\recursiveDirectoryIterator');
-
-		$builder->setFileIteratorInjector(function($directory) use (& $fileIterator, & $file) {
-				$fileIteratorController = new mock\controller();
-				$fileIteratorController->injectInNextMockInstance();
-				$fileIteratorController->__construct = function() {};
-				$fileIteratorController->valid[1] = true;
-				$fileIteratorController->valid[2] = false;
-				$fileIteratorController->current = function() use (& $file) { return ($file = uniqid()); };
-				$fileIteratorController->injectInNextMockInstance();
-				return ($fileIterator = new mock\recursiveDirectoryIterator($directory));
-			}
-		);
-
-		$adapter->file_get_contents = $fileContents = uniqid() . '$rev: ' . rand(1, PHP_INT_MAX) . ' $' . uniqid();
-		$adapter->file_put_contents = function() {};
-
-		$this->assert
-			->object($builder->tagFiles($tag = uniqid()))->isIdenticalTo($builder)
-			->mock($fileIterator)
-				->call('__construct', array($workingDirectory, null))
-			->adapter($adapter)
-				->call('file_get_contents', array($file))
-				->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
-		;
-
-		$builder
-			->setTag($tag = uniqid())
-		;
-
-		$this->assert
-			->object($builder->tagFiles())->isIdenticalTo($builder)
-			->mock($fileIterator)->call('__construct', array($workingDirectory, null))
-			->adapter($adapter)
-				->call('file_get_contents', array($file))
-				->call('file_put_contents', array($file, preg_replace($builder->getTagRegex(), $tag, $fileContents)))
 		;
 	}
 
@@ -658,13 +590,19 @@ class builder extends atoum\test
 	public function testCreatePhar()
 	{
 		$this
+			->mock('\mageekguy\atoum\tagger')
 			->mock('\mageekguy\atoum\scripts\builder')
 			->mock('\mageekguy\atoum\scripts\builder\vcs')
 		;
 
 		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, $adapter = new atoum\test\adapter());
 
-		$builder->disablePharCreation();
+		$builder
+			->setTagger($tagger = new mock\mageekguy\atoum\tagger())
+			->disablePharCreation()
+		;
+
+		$tagger->getMockController()->tagVersion = function() {};
 
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
@@ -716,7 +654,6 @@ class builder extends atoum\test
 		;
 
 		$builderController = $builder->getMockController();
-		$builderController->tagFiles = function() {};
 		$builderController->writeErrorInErrorsDirectory = function() {};
 
 		$adapter->file_get_contents = false;
@@ -749,7 +686,9 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
-			->mock($builder)->call('tagFiles', array('nightly-' . $revision . '-' . $date))
+			->mock($tagger)
+				->call('setVersion', array('nightly-' . $revision . '-' . $date))
+				->call('tagVersion')
 			->adapter($adapter)
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))
@@ -769,7 +708,9 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->createPhar($tag = uniqid()))->isTrue()
-			->mock($builder)->call('tagFiles', array($tag))
+			->mock($tagger)
+				->call('setVersion', array($tag))
+				->call('tagVersion')
 			->adapter($adapter)
 				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
 				->call('stream_get_contents', array($stdErr))

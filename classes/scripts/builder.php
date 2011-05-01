@@ -11,12 +11,12 @@ use
 
 class builder extends atoum\script
 {
-	protected $vcs = null;
 	protected $php = null;
+	protected $vcs = null;
+	protected $tagger = null;
 	protected $superglobals = null;
 	protected $revision = null;
-	protected $tag = null;
-	protected $tagRegex = '/\$Rev: \d+ \$/';
+	protected $version = null;
 	protected $unitTestRunnerScript = null;
 	protected $pharGeneratorScript = null;
 	protected $workingDirectory = null;
@@ -25,7 +25,7 @@ class builder extends atoum\script
 	protected $errorsDirectory = null;
 	protected $revisionFile = null;
 	protected $runFile = null;
-	protected $createPhar = true;
+	protected $pharCreationEnabled = true;
 	protected $checkUnitTests = true;
 	protected $reportTitle = null;
 	protected $fileIteratorInjector = null;
@@ -51,6 +51,18 @@ class builder extends atoum\script
 	public function getVcs()
 	{
 		return $this->vcs;
+	}
+
+	public function setTagger(atoum\tagger $tagger)
+	{
+		$this->tagger = $tagger;
+
+		return $this;
+	}
+
+	public function getTagger()
+	{
+		return $this->tagger;
 	}
 
 	public function setPhpPath($path)
@@ -89,21 +101,21 @@ class builder extends atoum\script
 
 	public function enablePharCreation()
 	{
-		$this->createPhar = true;
+		$this->pharCreationEnabled = true;
 
 		return $this;
 	}
 
 	public function disablePharCreation()
 	{
-		$this->createPhar = false;
+		$this->pharCreationEnabled = false;
 
 		return $this;
 	}
 
 	public function pharCreationIsEnabled()
 	{
-		return $this->createPhar;
+		return $this->pharCreationEnabled;
 	}
 
 	public function disableUnitTestChecking()
@@ -125,21 +137,16 @@ class builder extends atoum\script
 		return $this->checkUnitTests;
 	}
 
-	public function setTag($tag)
+	public function setVersion($version)
 	{
-		$this->tag = (string) $tag;
+		$this->version = (string) $version;
 
 		return $this;
 	}
 
-	public function getTag()
+	public function getVersion()
 	{
-		return $this->tag;
-	}
-
-	public function getTagRegex()
-	{
-		return $this->tagRegex;
+		return $this->version;
 	}
 
 	public function setSuperglobals(atoum\superglobals $superglobals)
@@ -402,43 +409,11 @@ class builder extends atoum\script
 		return $status;
 	}
 
-	public function tagFiles($tag = null)
-	{
-		if ($this->workingDirectory === null)
-		{
-			throw new exceptions\logic('Unable to tag files, working directory is undefined');
-		}
-
-		if ($tag !== null)
-		{
-			$this->setTag($tag);
-		}
-
-		if ($this->tag == '')
-		{
-			throw new exceptions\logic('Unable to tag files, tag is undefined');
-		}
-
-		$fileIterator = $this->getFileIterator($this->workingDirectory);
-
-		if ($fileIterator instanceof \iterator === false)
-		{
-			throw new exceptions\logic('File iterator injector must return a \iterator instance');
-		}
-
-		foreach ($fileIterator as $path)
-		{
-			$this->adapter->file_put_contents($path, preg_replace($this->tagRegex, $this->tag, $this->adapter->file_get_contents($path)));
-		}
-
-		return $this;
-	}
-
-	public function createPhar($tag = null)
+	public function createPhar($version = null)
 	{
 		$pharBuilt = true;
 
-		if ($this->createPhar === true)
+		if ($this->pharCreationEnabled === true)
 		{
 			if ($this->vcs === null)
 			{
@@ -490,7 +465,14 @@ class builder extends atoum\script
 								$this->vcs->exportRepository($this->workingDirectory);
 							}
 
-							$this->tagFiles($tag !== null ? $tag : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'));
+							if ($this->tagger !== null)
+							{
+								$this->tagger
+									->setSrcDirectory($this->workingDirectory)
+									->setVersion($version !== null ? $version : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'))
+									->tagVersion()
+								;
+							}
 
 							$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
 
@@ -685,15 +667,15 @@ class builder extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $tag) {
-				if (sizeof($tag) != 1)
+			function($script, $argument, $version) {
+				if (sizeof($version) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->setTag(current($tag));
+				$script->setVersion(current($version));
 			},
-			array('-t', '--tag')
+			array('-v', '--version')
 		);
 
 		$this->argumentsParser->addHandler(
@@ -738,35 +720,32 @@ class builder extends atoum\script
 
 		$pid = @$this->adapter->file_get_contents($this->runFile);
 
-		if (is_numeric($pid) === true)
+		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
 		{
-			if ($this->adapter->posix_kill($pid, 0) === true)
+			if ($this->pharCreationEnabled === true)
 			{
-				$alreadyRun = true;
+				$runFile = @$this->adapter->fopen($this->runFile, 'w+');
+
+				if ($runFile === false)
+				{
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $this->runFile));
+				}
+
+				if ($this->adapter->flock($runFile, \LOCK_EX | \LOCK_NB) === false)
+				{
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $this->runFile));
+				}
+
+				$this->adapter->fwrite($runFile, $this->adapter->getmypid());
+
+				$this->createPhar($this->version);
+
+				$this->adapter->fclose($runFile);
+				@$this->adapter->unlink($this->runFile);
 			}
 		}
 
-		if ($alreadyRun === false && $this->createPhar === true)
-		{
-			$runFile = @$this->adapter->fopen($this->runFile, 'w+');
-
-			if ($runFile === false)
-			{
-				throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $this->runFile));
-			}
-
-			if ($this->adapter->flock($runFile, \LOCK_EX | \LOCK_NB) === false)
-			{
-				throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $this->runFile));
-			}
-
-			$this->adapter->fwrite($runFile, $this->adapter->getmypid());
-
-			$this->createPhar();
-
-			$this->adapter->fclose($runFile);
-			@$this->adapter->unlink($this->runFile);
-		}
+		return $this;
 	}
 
 	public function help()
@@ -781,7 +760,7 @@ class builder extends atoum\script
 				'-h, --help' => $this->locale->_('Display this help'),
 				'-c <file>, --configuration-file <file>' => $this->locale->_('Use <file> as configuration file for builder'),
 				'-rc <file>, --runner-configuration-file <file>' => $this->locale->_('Use <file> as configuration file for runner'),
-				'-t <tag>, --tag <tag>' => $this->locale->_('Tag <tag> will be used as version number'),
+				'-v <string>, --v <string>' => $this->locale->_('Version <string> will be used as version name'),
 				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
 				'-sd <file>, --score-directory <directory>' => $this->locale->_('Save score in <directory>'),
 				'-r <url>, --repository-url <url>' => $this->locale->_('Url of subversion repository'),
