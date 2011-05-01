@@ -9,7 +9,7 @@ use
 
 class tagger extends atoum\script
 {
-	const defaultVersionPattern = '/([\'"])\$Rev: \d+ \$\1/';
+	const defaultVersionPattern = '/\$Rev: [^ ]+ \$/';
 
 	protected $stopRun = false;
 	protected $version = null;
@@ -136,6 +136,13 @@ class tagger extends atoum\script
 			}
 
 			$path = $this->destinationDirectory == $this->srcDirectory ? $path : $this->destinationDirectory . \DIRECTORY_SEPARATOR . substr($path, strlen($this->srcDirectory) + 1);
+
+			$directory = $this->adapter->dirname($path);
+
+			if ($this->adapter->is_dir($directory) === false)
+			{
+				$this->adapter->mkdir($directory, 0777, true);
+			}
 
 			if ($this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $this->version, $fileContents), \LOCK_EX) === false)
 			{

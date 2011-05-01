@@ -18,7 +18,7 @@ class tagger extends atoum\test
 			->testedClass
 				->isSubclassOf('\mageekguy\atoum\script')
 				->hasInterface('\mageekguy\atoum\adapter\aggregator')
-			->string(\mageekguy\atoum\scripts\tagger::defaultVersionPattern)->isEqualTo('/([\'"])\$Rev: \d+ \$\1/')
+			->string(\mageekguy\atoum\scripts\tagger::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/')
 		;
 	}
 
@@ -133,6 +133,9 @@ class tagger extends atoum\test
 	{
 		$tagger = new scripts\tagger(uniqid(), null, $adapter = new atoum\test\adapter());
 
+		$adapter->is_dir = true;
+		$adapter->mkdir = function() {};
+
 		$this->assert
 			->exception(function() use ($tagger) {
 					$tagger->tagVersion(uniqid());
@@ -171,7 +174,6 @@ class tagger extends atoum\test
 				$file1 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename1 = uniqid()),
 				$file2 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename2 = uniqid()),
 				$file3 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename3 = uniqid()),
-				$file4 = $srcDirectory . \DIRECTORY_SEPARATOR . ($basename4 = uniqid())
 			)
 		);
 
@@ -180,20 +182,17 @@ class tagger extends atoum\test
 		$adapter->file_get_contents[1] = ($file1Part1 = uniqid()) . '\'$Rev: ' . rand(1, PHP_INT_MAX) . ' $\'' . ($file1Part2 = uniqid());
 		$adapter->file_get_contents[2] = $contentOfFile2 = uniqid();
 		$adapter->file_get_contents[3] = ($file3Part1 = uniqid()) . '"$Rev: ' . rand(1, PHP_INT_MAX) . ' $"' . ($file3Part2 = uniqid());
-		$adapter->file_get_contents[4] = $contentOfFile4 = uniqid() . '\'$Rev: ' . rand(1, PHP_INT_MAX) . ' $"' . uniqid();
 		$adapter->file_put_contents = function() {};
 
 		$this->assert
 			->object($tagger->tagVersion())->isIdenticalTo($tagger)
 			->adapter($adapter)
 				->call('file_get_contents', array($file1))
-				->call('file_put_contents', array($file1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
+				->call('file_put_contents', array($file1, $file1Part1 . '\'' . $version . '\'' . $file1Part2, \LOCK_EX))
 				->call('file_get_contents', array($file2))
 				->call('file_put_contents', array($file2, $contentOfFile2, \LOCK_EX))
 				->call('file_get_contents', array($file3))
-				->call('file_put_contents', array($file3, $file3Part1 . $version . $file3Part2, \LOCK_EX))
-				->call('file_get_contents', array($file4))
-				->call('file_put_contents', array($file4, $contentOfFile4, \LOCK_EX))
+				->call('file_put_contents', array($file3, $file3Part1 . '"' . $version . '"' . $file3Part2, \LOCK_EX))
 		;
 
 		$adapter->resetCalls()->file_get_contents[2] = false;
@@ -228,14 +227,32 @@ class tagger extends atoum\test
 		$this->assert
 			->object($tagger->tagVersion())->isIdenticalTo($tagger)
 			->adapter($adapter)
+				->call('is_dir', array($destinationDirectory))
+				->notCall('mkdir')
 				->call('file_get_contents', array($file1))
-				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename1, $file1Part1 . $version . $file1Part2, \LOCK_EX))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename1, $file1Part1 . '\'' . $version . '\'' . $file1Part2, \LOCK_EX))
 				->call('file_get_contents', array($file2))
 				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename2, $contentOfFile2, \LOCK_EX))
 				->call('file_get_contents', array($file3))
-				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename3, $file3Part1 . $version . $file3Part2, \LOCK_EX))
-				->call('file_get_contents', array($file4))
-				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename4, $contentOfFile4, \LOCK_EX))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename3, $file3Part1 . '"' . $version . '"' . $file3Part2, \LOCK_EX))
+		;
+
+		$adapter
+			->resetCalls()
+			->is_dir = false
+		;
+
+		$this->assert
+			->object($tagger->tagVersion())->isIdenticalTo($tagger)
+			->adapter($adapter)
+				->call('is_dir', array($destinationDirectory))
+				->call('mkdir', array($destinationDirectory, 0777, true))
+				->call('file_get_contents', array($file1))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename1, $file1Part1 . '\'' . $version . '\'' . $file1Part2, \LOCK_EX))
+				->call('file_get_contents', array($file2))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename2, $contentOfFile2, \LOCK_EX))
+				->call('file_get_contents', array($file3))
+				->call('file_put_contents', array($destinationDirectory . \DIRECTORY_SEPARATOR . $basename3, $file3Part1 . '"' . $version . '"' . $file3Part2, \LOCK_EX))
 		;
 	}
 }
