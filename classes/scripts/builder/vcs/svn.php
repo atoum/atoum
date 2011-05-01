@@ -66,7 +66,7 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 		}
 
 		$this
-//			->deleteContents($path)
+			->deleteDirectoryContents($directory)
 			->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)
 		;
 

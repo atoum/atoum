@@ -233,10 +233,14 @@ class svn extends atoum\test
 
 	public function testExportRepository()
 	{
+		$this->mock('\mageekguy\atoum\scripts\builder\vcs\svn');
+
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
-		$svn = new vcs\svn($adapter);
+		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+
+		$svn->getMockController()->deleteDirectoryContents = $svn;
 
 		$this->assert
 			->exception(function() use ($svn) {
@@ -270,9 +274,14 @@ class svn extends atoum\test
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
 				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+			->mock($svn)
+				->call('deleteDirectoryContents', array($directory))
 		;
 
-		$svn->setUsername(uniqid());
+		$svn
+			->setUsername(uniqid())
+			->getMockController()->resetCalls()
+		;
 
 		$adapter->resetCalls();
 
@@ -288,9 +297,14 @@ class svn extends atoum\test
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
 				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+			->mock($svn)
+				->call('deleteDirectoryContents', array($directory))
 		;
 
-		$svn->setPassword(uniqid());
+		$svn
+			->setPassword(uniqid())
+			->getMockController()->resetCalls()
+		;
 
 		$adapter->resetCalls();
 
@@ -306,10 +320,13 @@ class svn extends atoum\test
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
 				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+			->mock($svn)
+				->call('deleteDirectoryContents', array($directory))
 		;
 
-		$adapter->svn_checkout = true;
+		$svn->getMockController()->resetCalls();
 
+		$adapter->svn_checkout = true;
 		$adapter->resetCalls();
 
 		$this->assert
@@ -319,6 +336,8 @@ class svn extends atoum\test
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
 				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+			->mock($svn)
+				->call('deleteDirectoryContents', array($directory))
 		;
 	}
 
