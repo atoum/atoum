@@ -1,13 +1,14 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace mageekguy\atoum\scripts\tagger;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\adapter,
 	\mageekguy\atoum\exceptions
 ;
 
-class tagger implements adapter\aggregator
+class engine implements adapter\aggregator
 {
 	const defaultVersionPattern = '/\$Rev: [^ ]+ \$/';
 

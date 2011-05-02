@@ -1,51 +1,52 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace mageekguy\atoum\tests\units\scripts\tagger;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\mock
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\scripts\tagger
 ;
 
-require_once(__DIR__ . '/../runner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
-class tagger extends atoum\test
+class engine extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
 			->testedClass
 				->hasInterface('\mageekguy\atoum\adapter\aggregator')
-			->string(\mageekguy\atoum\tagger::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/')
+			->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/')
 		;
 	}
 
 	public function test__construct()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
 			->variable($tagger->getVersion())->isNull()
-			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\tagger::defaultVersionPattern)
+			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
 			->object($tagger->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
 		;
 
-		$tagger = new atoum\tagger($adapter = new atoum\adapter());
+		$tagger = new tagger\engine($adapter = new atoum\adapter());
 
 		$this->assert
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
 			->variable($tagger->getVersion())->isNull()
-			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\tagger::defaultVersionPattern)
+			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
 			->object($tagger->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
 	public function testSetAdapter()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->object($tagger->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($tagger)
@@ -55,7 +56,7 @@ class tagger extends atoum\test
 
 	public function testSetVersion()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->object($tagger->setVersion($version = uniqid()))->isIdenticalTo($tagger)
@@ -67,7 +68,7 @@ class tagger extends atoum\test
 
 	public function testSetVersionPattern()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->object($tagger->setVersionPattern($pattern = uniqid()))->isIdenticalTo($tagger)
@@ -79,7 +80,7 @@ class tagger extends atoum\test
 
 	public function testSetSrcDirectory()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->object($tagger->setSrcDirectory($directory = uniqid()))->isIdenticalTo($tagger)
@@ -96,7 +97,7 @@ class tagger extends atoum\test
 
 	public function testSetDestinationDirectory()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->object($tagger->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($tagger)
@@ -110,7 +111,7 @@ class tagger extends atoum\test
 
 	public function testSetSrcIteratorInjector()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$tagger->setSrcDirectory(__DIR__);
 
@@ -129,7 +130,7 @@ class tagger extends atoum\test
 
 	public function testGetSrcIterator()
 	{
-		$tagger = new atoum\tagger();
+		$tagger = new tagger\engine();
 
 		$this->assert
 			->exception(function() use ($tagger) {
@@ -150,7 +151,7 @@ class tagger extends atoum\test
 
 	public function testTagVersion()
 	{
-		$tagger = new atoum\tagger($adapter = new atoum\test\adapter());
+		$tagger = new tagger\engine($adapter = new atoum\test\adapter());
 
 		$adapter->is_dir = true;
 		$adapter->mkdir = function() {};

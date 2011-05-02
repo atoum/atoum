@@ -24,50 +24,50 @@ class tagger extends atoum\test
 		$tagger = new scripts\tagger(uniqid());
 
 		$this->assert
-			->object($tagger->getTagger())->isInstanceOf('\mageekguy\atoum\tagger')
-			->object($tagger->getTagger()->getAdapter())->isIdenticalTo($tagger->getAdapter())
+			->object($tagger->getEngine())->isInstanceOf('\mageekguy\atoum\scripts\tagger\engine')
+			->object($tagger->getEngine()->getAdapter())->isIdenticalTo($tagger->getAdapter())
 		;
 	}
 
-	public function testSetTagger()
+	public function testSetEngine()
 	{
 		$tagger = new scripts\tagger(uniqid());
 
 		$this->assert
-			->object($tagger->setTagger($internalTagger = new atoum\tagger()))->isIdenticalTo($tagger)
-			->object($tagger->getTagger())->isIdenticalTo($internalTagger)
+			->object($tagger->setEngine($engine = new scripts\tagger\engine()))->isIdenticalTo($tagger)
+			->object($tagger->getEngine())->isIdenticalTo($engine)
 		;
 	}
 
 	public function testRun()
 	{
 		$this
-			->mock('\mageekguy\atoum\tagger')
 			->mock('\mageekguy\atoum\scripts\tagger')
+			->mock('\mageekguy\atoum\scripts\tagger\engine')
 		;
 
 		$tagger = new mock\mageekguy\atoum\scripts\tagger(uniqid());
 
 		$tagger
-			->setTagger($internalTagger = new mock\mageekguy\atoum\tagger())
+			->setEngine($engine = new mock\mageekguy\atoum\scripts\tagger\engine())
 			->getMockController()->writeMessage = $tagger
 		;
 
-		$internalTagger->getMockController()->tagVersion = function() {};
+		$engine->getMockController()->tagVersion = function() {};
 
 		$this->assert
 			->object($tagger->run())->isIdenticalTo($tagger)
-			->mock($internalTagger)
+			->mock($engine)
 				->call('tagVersion')
 		;
 
-		$internalTagger->getMockController()->resetCalls();
+		$engine->getMockController()->resetCalls();
 
 		$this->assert
 			->object($tagger->run(array('-h')))->isIdenticalTo($tagger)
 			->mock($tagger)
 				->call('help')
-			->mock($internalTagger)
+			->mock($engine)
 				->notCall('tagVersion')
 		;
 	}

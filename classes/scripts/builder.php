@@ -13,7 +13,7 @@ class builder extends atoum\script
 {
 	protected $php = null;
 	protected $vcs = null;
-	protected $tagger = null;
+	protected $taggerEngine = null;
 	protected $superglobals = null;
 	protected $revision = null;
 	protected $version = null;
@@ -53,16 +53,16 @@ class builder extends atoum\script
 		return $this->vcs;
 	}
 
-	public function setTagger(atoum\tagger $tagger)
+	public function setTaggerEngine(atoum\scripts\tagger\engine $engine)
 	{
-		$this->tagger = $tagger;
+		$this->taggerEngine = $engine;
 
 		return $this;
 	}
 
-	public function getTagger()
+	public function getTaggerEngine()
 	{
-		return $this->tagger;
+		return $this->taggerEngine;
 	}
 
 	public function setPhpPath($path)
@@ -465,9 +465,9 @@ class builder extends atoum\script
 								$this->vcs->exportRepository($this->workingDirectory);
 							}
 
-							if ($this->tagger !== null)
+							if ($this->taggerEngine !== null)
 							{
-								$this->tagger
+								$this->taggerEngine
 									->setSrcDirectory($this->workingDirectory)
 									->setVersion($version !== null ? $version : 'nightly-' . $revision . '-' . $this->adapter->date('YmdHi'))
 									->tagVersion()

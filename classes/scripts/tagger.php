@@ -4,36 +4,37 @@ namespace mageekguy\atoum\scripts;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\scripts\tagger
 ;
 
 class tagger extends atoum\script
 {
-	protected $tagger = null;
+	protected $engine = null;
 	protected $tagVersion = true;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
 
-		$this->setTagger(new atoum\tagger($this->adapter));
+		$this->setEngine(new tagger\engine($this->adapter));
 	}
 
-	public function setTagger(atoum\tagger $tagger)
+	public function setEngine(tagger\engine $engine)
 	{
-		$this->tagger = $tagger;
+		$this->engine = $engine;
 
 		return $this;
 	}
 
-	public function getTagger()
+	public function getEngine()
 	{
-		return $this->tagger;
+		return $this->engine;
 	}
 
 	public function run(array $arguments = array())
 	{
-		$tagger = $this->tagger;
+		$engine = $this->engine;
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $values) {
@@ -48,49 +49,49 @@ class tagger extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) use ($tagger) {
+			function($script, $argument, $directory) use ($engine) {
 				if (sizeof($directory) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$tagger->setDestinationDirectory(current($directory));
+				$engine->setDestinationDirectory(current($directory));
 			},
 			array('-d', '--destination-directory')
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) use ($tagger) {
+			function($script, $argument, $directory) use ($engine) {
 				if (sizeof($directory) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$tagger->setSrcDirectory(current($directory));
+				$engine->setSrcDirectory(current($directory));
 			},
 			array('-s', '--src-directory')
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $versionPattern) use ($tagger) {
+			function($script, $argument, $versionPattern) use ($engine) {
 				if (sizeof($versionPattern) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$tagger->setVersionPattern(current($versionPattern));
+				$engine->setVersionPattern(current($versionPattern));
 			},
 			array('-vp', '--version-pattern')
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $version) use ($tagger) {
+			function($script, $argument, $version) use ($engine) {
 				if (sizeof($version) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$tagger->setVersion(current($version));
+				$engine->setVersion(current($version));
 			},
 			array('-v', '--version')
 		);
@@ -99,7 +100,7 @@ class tagger extends atoum\script
 
 		if ($this->tagVersion === true)
 		{
-			$tagger->tagVersion();
+			$engine->tagVersion();
 		}
 
 		return $this;

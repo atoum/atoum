@@ -58,7 +58,7 @@ class builder extends atoum\test
 			->variable($builder->getPharGeneratorScript())->isNull()
 			->variable($builder->getReportTitle())->isNull()
 			->variable($builder->getVcs())->isNull()
-			->variable($builder->getTagger())->isNull()
+			->variable($builder->getTaggerEngine())->isNull()
 		;
 	}
 
@@ -158,13 +158,13 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetTagger()
+	public function testSetTaggerEngine()
 	{
 		$builder = new scripts\builder(uniqid());
 
 		$this->assert
-			->object($builder->setTagger($tagger = new atoum\tagger()))->isIdenticalTo($builder)
-			->object($builder->getTagger())->isIdenticalTo($tagger)
+			->object($builder->setTaggerEngine($taggerEngine = new atoum\scripts\tagger\engine()))->isIdenticalTo($builder)
+			->object($builder->getTaggerEngine())->isIdenticalTo($taggerEngine)
 		;
 	}
 
@@ -590,19 +590,19 @@ class builder extends atoum\test
 	public function testCreatePhar()
 	{
 		$this
-			->mock('\mageekguy\atoum\tagger')
 			->mock('\mageekguy\atoum\scripts\builder')
 			->mock('\mageekguy\atoum\scripts\builder\vcs')
+			->mock('\mageekguy\atoum\scripts\tagger\engine')
 		;
 
 		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, $adapter = new atoum\test\adapter());
 
 		$builder
-			->setTagger($tagger = new mock\mageekguy\atoum\tagger())
+			->setTaggerEngine($taggerEngine = new mock\mageekguy\atoum\scripts\tagger\engine())
 			->disablePharCreation()
 		;
 
-		$tagger->getMockController()->tagVersion = function() {};
+		$taggerEngine->getMockController()->tagVersion = function() {};
 
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
@@ -686,7 +686,7 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
-			->mock($tagger)
+			->mock($taggerEngine)
 				->call('setVersion', array('nightly-' . $revision . '-' . $date))
 				->call('tagVersion')
 			->adapter($adapter)
@@ -708,7 +708,7 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->createPhar($tag = uniqid()))->isTrue()
-			->mock($tagger)
+			->mock($taggerEngine)
 				->call('setVersion', array($tag))
 				->call('tagVersion')
 			->adapter($adapter)
