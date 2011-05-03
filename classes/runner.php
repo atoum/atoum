@@ -13,6 +13,8 @@ class runner implements observable, adapter\aggregator
 {
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
+	const atoumVersionConstant = 'mageekguy\atoum\version';
+	const atoumDirectoryConstant = 'mageekguy\atoum\directory';
 
 	protected $path = '';
 	protected $class = '';
@@ -231,15 +233,14 @@ class runner implements observable, adapter\aggregator
 	public function setPathAndVersionInScore()
 	{
 		$this->score
-			->setAtoumVersion(atoum\version)
-			->setAtoumPath(atoum\directory)
+			->setAtoumVersion($this->adapter->defined(static::atoumVersionConstant) === false ? null : $this->adapter->constant(static::atoumVersionConstant))
+			->setAtoumPath($this->adapter->defined(static::atoumDirectoryConstant) === false ? null : $this->adapter->constant(static::atoumDirectoryConstant))
 		;
 
 		$phpPath = $this->adapter->realpath($this->getPhpPath());
 
 		$descriptors = array(
 			1 => array('pipe', 'w'),
-			2 => array('pipe', 'w'),
 		);
 
 		$php = @$this->adapter->invoke('proc_open', array($phpPath . ' --version', $descriptors, & $pipes));
@@ -249,16 +250,12 @@ class runner implements observable, adapter\aggregator
 			throw new exceptions\runtime('Unable to open \'' . $phpPath . '\'');
 		}
 
-		$phpVersion = $this->adapter->stream_get_contents($pipes[1]);
-		$this->adapter->fclose($pipes[1]);
-
-		$phpError = $this->adapter->stream_get_contents($pipes[2]);
-		$this->adapter->fclose($pipes[2]);
-
 		$phpStatus = $this->adapter->proc_get_status($php);
 
 		if ($phpStatus['running'] === false)
 		{
+			$this->adapter->proc_close($php);
+
 			switch ($phpStatus['exitcode'])
 			{
 				case 126:
@@ -266,6 +263,9 @@ class runner implements observable, adapter\aggregator
 					throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
 			}
 		}
+
+		$phpVersion = $this->adapter->stream_get_contents($pipes[1]);
+		$this->adapter->fclose($pipes[1]);
 
 		$this->adapter->proc_close($php);
 

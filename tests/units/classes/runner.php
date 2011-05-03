@@ -8,10 +8,22 @@ use
 ;
 
 require_once(__DIR__ . '/../runner.php');
-require_once(__DIR__ . '/../../../constants.php');
 
 class runner extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass
+				->hasInterface('\mageekguy\atoum\observable')
+				->hasInterface('\mageekguy\atoum\adapter\aggregator')
+			->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')
+			->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('mageekguy\atoum\directory')
+			->string(atoum\runner::runStart)->isEqualTo('runnerStart')
+			->string(atoum\runner::runStop)->isEqualTo('runnerStop')
+		;
+	}
+
 	public function test__construct()
 	{
 		$runner = new atoum\runner();
@@ -254,6 +266,8 @@ class runner extends atoum\test
 		$this->assert
 			->integer($runner->getRunningDuration())->isEqualTo(100)
 		;
+
+		$adapter->defined = true;
 	}
 
 	public function testGetTestNumber()
@@ -460,6 +474,7 @@ class runner extends atoum\test
 		$scoreController = $score->getMockController();
 
 		$adapter = new atoum\test\adapter();
+		$adapter->defined = false;
 
 		$superglobals = new atoum\superglobals();
 
@@ -477,7 +492,138 @@ class runner extends atoum\test
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to open \'' . $phpPath . '\'')
-			->adapter($adapter)->call('realpath', array($phpPath))
+			->adapter($adapter)
+				->call('realpath', array($phpPath))
+				->call('defined', array(atoum\runner::atoumVersionConstant))
+				->call('defined', array(atoum\runner::atoumDirectoryConstant))
+			->mock($score)
+				->call('setAtoumVersion', array(null))
+				->call('setAtoumPath', array(null))
+				->notCAll('setPhpPath')
+				->notCall('setPhpVersion')
+		;
+
+		$adapter->resetCalls();
+		$adapter->proc_open = function($cmd, $descriptors, & $pipes) use (& $php, & $stdOut) {
+			$pipes = array(1 => $stdOut = uniqid());
+			return $php = uniqid();
+		};
+		$adapter->stream_get_contents = $phpVersion = uniqid();
+		$adapter->fclose = function() {};
+		$adapter->proc_close = function() {};
+		$adapter->proc_get_status = array(
+			'running' => false,
+			'exitcode' => 126
+		);
+
+		$score->reset();
+		$scoreController->resetCalls();
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->setPathAndVersionInScore();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to find \'' . $phpPath . '\' or it is not executable')
+			->adapter($adapter)
+				->call('realpath', array($phpPath))
+				->call('defined', array(atoum\runner::atoumVersionConstant))
+				->call('defined', array(atoum\runner::atoumDirectoryConstant))
+				->call('proc_close', array($php))
+			->mock($score)
+				->call('setAtoumVersion', array(null))
+				->call('setAtoumPath', array(null))
+				->notCAll('setPhpPath')
+				->notCall('setPhpVersion')
+		;
+
+		$adapter->resetCalls();
+
+		$adapter->proc_get_status = array(
+			'running' => false,
+			'exitcode' => 127
+		);
+
+		$score->reset();
+		$scoreController->reset();
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->setPathAndVersionInScore();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to find \'' . $phpPath . '\' or it is not executable')
+			->adapter($adapter)
+				->call('realpath', array($phpPath))
+				->call('defined', array(atoum\runner::atoumVersionConstant))
+				->call('defined', array(atoum\runner::atoumDirectoryConstant))
+				->call('proc_close', array($php))
+			->mock($score)
+				->call('setAtoumVersion', array(null))
+				->call('setAtoumPath', array(null))
+				->notCAll('setPhpPath')
+				->notCall('setPhpVersion')
+		;
+
+		$adapter->resetCalls();
+		$adapter->proc_get_status = array(
+			'running' => true
+		);
+
+		$score->reset();
+		$scoreController->resetCalls();
+
+		$this->assert
+			->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
+			->adapter($adapter)
+				->call('realpath', array($phpPath))
+				->call('defined', array(atoum\runner::atoumVersionConstant))
+				->call('defined', array(atoum\runner::atoumDirectoryConstant))
+				->call('stream_get_contents', array($stdOut))
+				->call('fclose', array($stdOut))
+				->call('proc_close', array($php))
+			->mock($score)
+				->call('setAtoumVersion', array(null))
+				->call('setAtoumPath', array(null))
+				->call('setPhpPath', array($phpPath))
+				->call('setPhpVersion', array($phpVersion))
+		;
+
+		$adapter->defined = true;
+		$adapter->constant = function($constantName) use (& $atoumVersion, & $atoumDirectory) {
+			switch ($constantName)
+			{
+				case atoum\runner::atoumVersionConstant:
+					return $atoumVersion = uniqid();
+
+				case atoum\runner::atoumDirectoryConstant:
+					return $atoumDirectory = uniqid();
+			}
+		};
+
+		$adapter->resetCalls();
+
+		$score->reset();
+		$scoreController->resetCalls();
+
+		$this->assert
+			->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
+			->adapter($adapter)
+				->call('realpath', array($phpPath))
+				->call('defined', array(atoum\runner::atoumVersionConstant))
+				->call('constant', array(atoum\runner::atoumVersionConstant))
+				->call('defined', array(atoum\runner::atoumDirectoryConstant))
+				->call('constant', array(atoum\runner::atoumDirectoryConstant))
+				->call('stream_get_contents', array($stdOut))
+				->call('fclose', array($stdOut))
+				->call('proc_close', array($php))
+			->mock($score)
+				->call('setAtoumVersion', array($atoumVersion))
+				->call('setAtoumPath', array($atoumDirectory))
+				->call('setPhpPath', array($phpPath))
+				->call('setPhpVersion', array($phpVersion))
 		;
 	}
 }
