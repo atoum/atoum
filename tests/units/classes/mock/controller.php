@@ -296,7 +296,7 @@ class controller extends atoum\test
 		$this->assert
 			->array($mockController->getCalls())->isEmpty()
 			->string($mockController->invoke('test'))->isEqualTo($return)
-			->sizeof($mockController->getCalls())->isEqualTo(1)
+			->sizeOf($mockController->getCalls())->isEqualTo(1)
 			->array($mockController->getCalls('test'))->isEqualTo(array(array()))
 			->string($mockController->invoke('test', array($argument1)))->isEqualTo($return)
 			->array($mockController->getCalls())->isEqualTo(array(

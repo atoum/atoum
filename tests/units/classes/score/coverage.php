@@ -391,7 +391,7 @@ class coverage extends atoum\test
 		$coverage = new score\coverage();
 
 		$this->assert
-			->sizeof($coverage)->isZero()
+			->sizeOf($coverage)->isZero()
 		;
 
 		$mockGenerator = new mock\generator();
@@ -442,7 +442,7 @@ class coverage extends atoum\test
 		);
 
 		$this->assert
-			->sizeof($coverage->addXdebugData($this, $xdebugData))->isEqualTo(1)
+			->sizeOf($coverage->addXdebugData($this, $xdebugData))->isEqualTo(1)
 		;
 	}
 

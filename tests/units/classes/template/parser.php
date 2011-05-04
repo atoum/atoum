@@ -325,7 +325,7 @@ class parser extends atoum\test
 
 		$this->assert->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
 			->and
@@ -354,7 +354,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -378,7 +378,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -403,7 +403,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -428,7 +428,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -455,7 +455,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -487,7 +487,7 @@ class parser extends atoum\test
 		$this->assert
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
 			->and
 			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
 			->and
@@ -526,7 +526,7 @@ class parser extends atoum\test
 		$this->assert
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
 			->and
 			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
 			->and
@@ -560,7 +560,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string . '<' . template\parser::defaultNamespace . ':' . $tag . ' />');
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -591,7 +591,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($string . '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />');
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -623,7 +623,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . $secondTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -667,7 +667,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . $secondTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -709,7 +709,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . template\parser::eol . $secondTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -757,7 +757,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . template\parser::eol . $secondTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
 			->and
 			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
 			->and
@@ -804,7 +804,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstOpenTag . $secondTag . $firstCloseTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and
@@ -843,7 +843,7 @@ class parser extends atoum\test
 		$ogoHtmlTemplateRoot = $parser->parseString($firstOpenTag . $secondTag . $firstCloseTag);
 
 		$this->assert
-			->sizeof($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
+			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
 			->and
 			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
 			->and

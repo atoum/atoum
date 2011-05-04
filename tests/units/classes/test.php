@@ -335,7 +335,7 @@ namespace mageekguy\atoum\tests\units
 		public function testCount()
 		{
 			$this->assert
-				->sizeof(new emptyTest())->isEqualTo(0)
+				->sizeOf(new emptyTest())->isEqualTo(0)
 			;
 
 			$test = new notEmptyTest();
@@ -344,8 +344,8 @@ namespace mageekguy\atoum\tests\units
 				->boolean($test->isIgnored())->isTrue()
 				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeof($test)->isEqualTo(1)
-				->sizeof($test->ignore(false))->isEqualTo(2)
+				->sizeOf($test)->isEqualTo(1)
+				->sizeOf($test->ignore(false))->isEqualTo(2)
 			;
 		}
 
@@ -355,7 +355,7 @@ namespace mageekguy\atoum\tests\units
 
 			$this->assert
 				->boolean($test->ignore(false)->isIgnored())->isFalse()
-				->sizeof($test)->isZero()
+				->sizeOf($test)->isZero()
 				->array($test->getTestMethods())->isEmpty()
 			;
 
@@ -365,12 +365,12 @@ namespace mageekguy\atoum\tests\units
 				->boolean($test->isIgnored())->isTrue()
 				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeof($test)->isEqualTo(1)
+				->sizeOf($test)->isEqualTo(1)
 				->array($test->getTestMethods())->isEqualTo(array('testMethod2'))
 				->boolean($test->ignore(false)->isIgnored())->isFalse()
 				->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeof($test)->isEqualTo(2)
+				->sizeOf($test)->isEqualTo(2)
 				->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
 			;
 		}
