@@ -139,6 +139,67 @@ class iterator extends atoum\test
 		;
 	}
 
+	public function testPrev()
+	{
+		$iterator = new php\iterator();
+
+		$this->assert
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator->append($value1 = uniqid());
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator->append($value2 = uniqid())->end();
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$innerIterator = new php\iterator();
+
+		$iterator->append($innerIterator)->end();
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+	}
+
 	public function testNext()
 	{
 		$iterator = new php\iterator();
@@ -186,6 +247,157 @@ class iterator extends atoum\test
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(2)
+		;
+	}
+
+	public function testRewind()
+	{
+		$iterator = new php\iterator();
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->object($iterator->rewind())->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append(uniqid());
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->object($iterator->rewind())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+		;
+
+		$iterator->append(uniqid())->next();
+
+		$this->assert
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+		;
+
+		$innerIterator = new php\iterator();
+		$innerIterator
+			->append(uniqid())
+			->append(uniqid())
+			->next();
+		;
+
+		$iterator->append($innerIterator)->end();
+
+		$this->assert
+			->integer($iterator->key())->isEqualTo(3)
+			->object($iterator->rewind())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->integer($innerIterator->key())->isEqualTo(1)
+		;
+	}
+
+	public function testEnd()
+	{
+		$iterator = new php\iterator();
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->end())->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator->append($value1 = uniqid());
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->end())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+		;
+
+		$iterator->append($value2 = uniqid());
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->end())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+		;
+
+		$innerIterator = new php\iterator();
+		$innerIterator
+			->append($value3 = uniqid())
+			->append($value4 = uniqid())
+		;
+
+		$iterator->append($innerIterator);
+
+		$this->assert
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->end())->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(3)
+			->string($iterator->current())->isEqualTo($value4)
+		;
+	}
+
+	public function testAppend()
+	{
+		$iterator = new php\iterator();
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->append($value1 = uniqid()))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+		;
+
+		$iterator = new php\iterator();
+
+		$innerIterator = new php\iterator();
+		$innerIterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+		;
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->append($innerIterator))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+		;
+
+		$iterator->end()->next();
+
+		$otherInnerIterator = new php\iterator();
+		$otherInnerIterator
+			->append($value3 = uniqid())
+			->append($value4 = uniqid())
+			->end()
+		;
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->integer($otherInnerIterator->key())->isEqualTo(1)
+			->string($otherInnerIterator->current())->isEqualTo($value4)
+			->object($iterator->append($otherInnerIterator))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->integer($otherInnerIterator->key())->isZero()
+			->string($otherInnerIterator->current())->isEqualTo($value3)
+		;
+
+		$this->assert
+			->exception(function() use ($iterator, $innerIterator) {
+					$iterator->append($innerIterator);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to append iterator, it has already a parent')
 		;
 	}
 }
