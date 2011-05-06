@@ -12,6 +12,7 @@ class iterator implements \iterator, \countable
 	protected $size = 0;
 	protected $values = array();
 	protected $parent = null;
+	protected $excludedValues = array();
 
 	public function valid()
 	{
@@ -74,6 +75,11 @@ class iterator implements \iterator, \countable
 				$currentValue->end();
 			}
 
+			if (in_array($this->current(), $this->excludedValues) === true)
+			{
+				$this->prev();
+			}
+
 			$this->key--;
 		}
 
@@ -114,6 +120,11 @@ class iterator implements \iterator, \countable
 				$currentValue->rewind();
 			}
 
+			if (in_array($this->current(), $this->excludedValues) === true)
+			{
+				$this->next();
+			}
+
 			$this->key++;
 		}
 
@@ -135,6 +146,11 @@ class iterator implements \iterator, \countable
 			}
 
 			$this->key = 0;
+
+			if (in_array($this->current(), $this->excludedValues) === true)
+			{
+				$this->next();
+			}
 		}
 
 		return $this;
@@ -155,6 +171,11 @@ class iterator implements \iterator, \countable
 			}
 
 			$this->key = $this->size - 1;
+
+			if (in_array($this->current(), $this->excludedValues) === true)
+			{
+				$this->prev();
+			}
 		}
 
 		return $this;
@@ -181,6 +202,7 @@ class iterator implements \iterator, \countable
 			$size = sizeof($value->rewind());
 
 			$value->parent = $this;
+			$value->excludedValues = array_unique(array_merge($this->excludedValues, $value->excludedValues));
 		}
 
 		$this->size += $size;
@@ -196,6 +218,21 @@ class iterator implements \iterator, \countable
 	public function count()
 	{
 		return $this->size;
+	}
+
+	public function excludeValue($value)
+	{
+		if (in_array($value, $this->excludedValues) === false)
+		{
+			$this->excludedValues[] = $value;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedValues()
+	{
+		return $this->excludedValues;
 	}
 }
 
