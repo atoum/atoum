@@ -549,6 +549,17 @@ class iterator extends atoum\test
 			->sizeOf($iterator)->isZero()
 			->array($innerIterator->getExcludedValues())->isEqualTo(array($excludedValue1, $excludedValue2))
 		;
+
+		$iterator = new php\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+			->append($value3 = uniqid())
+		;
+
+		$this->assert
+			->string($iterator->current())->isEqualTo($value1)
+		;
 	}
 
 	public function testExcludeValue()
@@ -560,6 +571,37 @@ class iterator extends atoum\test
 			->array($iterator->getExcludedValues())->isEqualTo(array($excludedValue))
 			->object($iterator->excludeValue($excludedValue))->isIdenticalTo($iterator)
 			->array($iterator->getExcludedValues())->isEqualTo(array($excludedValue))
+		;
+	}
+
+	public function testReset()
+	{
+		$iterator = new php\iterator();
+
+		$this->assert
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->sizeof($iterator)->isZero()
+			->object($iterator->reset())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->sizeof($iterator)->isZero()
+		;
+
+		$iterator->append($value = uniqid());
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->variable($iterator->current())->isEqualTo($value)
+			->sizeof($iterator)->isEqualTo(1)
+			->object($iterator->reset())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->sizeof($iterator)->isZero()
 		;
 	}
 }

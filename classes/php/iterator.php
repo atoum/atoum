@@ -234,6 +234,17 @@ class iterator implements \iterator, \countable
 	{
 		return $this->excludedValues;
 	}
+
+	public function reset()
+	{
+		$this->key = null;
+		$this->size = 0;
+		$this->values = array();
+		$this->parent = null;
+		$this->excludedValues = array();
+
+		return $this;
+	}
 }
 
 ?>
