@@ -245,6 +245,13 @@ class iterator implements \iterator, \countable
 
 		return $this;
 	}
+
+	public function getInnerIterator()
+	{
+		$currentValue = current($this->values);
+
+		return ($currentValue instanceof self === false ? null : $currentValue);
+	}
 }
 
 ?>

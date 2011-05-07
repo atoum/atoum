@@ -604,6 +604,30 @@ class iterator extends atoum\test
 			->sizeOf($iterator)->isZero()
 		;
 	}
+
+	public function testGetInnerIterator()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->variable($iterator->getInnerIterator())->isNull()
+		;
+
+		$innerIterator = new tokenizer\iterator();
+		$innerIterator->append(uniqid());
+
+		$iterator
+			->append(uniqid())
+			->append($innerIterator)
+			->append(uniqid())
+		;
+
+		$this->assert
+			->variable($iterator->getInnerIterator())->isNull()
+			->object($iterator->next()->getInnerIterator())->isIdenticalTo($innerIterator)
+			->variable($iterator->next()->getInnerIterator())->isNull()
+		;
+	}
 }
 
 ?>
