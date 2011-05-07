@@ -582,12 +582,12 @@ class iterator extends atoum\test
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
-			->sizeof($iterator)->isZero()
+			->sizeOf($iterator)->isZero()
 			->object($iterator->reset())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
-			->sizeof($iterator)->isZero()
+			->sizeOf($iterator)->isZero()
 		;
 
 		$iterator->append($value = uniqid());
@@ -596,12 +596,12 @@ class iterator extends atoum\test
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
 			->variable($iterator->current())->isEqualTo($value)
-			->sizeof($iterator)->isEqualTo(1)
+			->sizeOf($iterator)->isEqualTo(1)
 			->object($iterator->reset())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
-			->sizeof($iterator)->isZero()
+			->sizeOf($iterator)->isZero()
 		;
 	}
 }
