@@ -1,16 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\tokenizer\script;
+namespace mageekguy\atoum\tests\units\php\tokenizer;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\php\tokenizer,
-	\mageekguy\atoum\php\tokenizer\script
+	\mageekguy\atoum\php\tokenizer
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
 
-class iterator extends atoum\test
+class scriptizer extends atoum\test
 {
 	public function testClass()
 	{
@@ -22,13 +21,13 @@ class iterator extends atoum\test
 
 	public function test__construct()
 	{
-		$script = new script\iterator('');
+		$script = new tokenizer\scriptizer('');
 
 		$this->assert
 			->sizeof($script)->isZero()
 		;
 
-		$script = new script\iterator($value = uniqid());
+		$script = new tokenizer\scriptizer($value = uniqid());
 
 		$this->assert
 			->sizeof($script)->isEqualTo(1)
@@ -38,7 +37,7 @@ class iterator extends atoum\test
 
 	public function testParseString()
 	{
-		$script = new script\iterator();
+		$script = new tokenizer\scriptizer();
 
 		$this->assert
 			->sizeof($script)->isZero()

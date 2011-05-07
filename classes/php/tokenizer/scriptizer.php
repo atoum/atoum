@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer\script;
+namespace mageekguy\atoum\php\tokenizer;
 
 use
 	\mageekguy\atoum\php\tokenizer
 ;
 
-class iterator extends tokenizer\iterator
+class scriptizer extends tokenizer\iterator
 {
 	public function __construct($string = '')
 	{
