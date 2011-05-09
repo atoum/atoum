@@ -33,6 +33,31 @@ class iterator extends atoum\test
 		;
 	}
 
+	public function test__toString()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->castToString($iterator)->isEmpty()
+		;
+
+		$iterator->append($value1 = uniqid());
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->castToString($iterator)->isEqualTo($value1)
+			->integer($iterator->key())->isZero()
+		;
+
+		$iterator->append($value2 = rand(1, PHP_INT_MAX))->end();
+
+		$this->assert
+			->integer($iterator->key())->isEqualTo(1)
+			->castToString($iterator)->isEqualTo($value1 . $value2)
+			->integer($iterator->key())->isZero()
+		;
+	}
+
 	public function testValid()
 	{
 		$iterator = new tokenizer\iterator();
@@ -626,6 +651,22 @@ class iterator extends atoum\test
 			->variable($iterator->getInnerIterator())->isNull()
 			->object($iterator->next()->getInnerIterator())->isIdenticalTo($innerIterator)
 			->variable($iterator->next()->getInnerIterator())->isNull()
+		;
+	}
+
+	public function testGetParent()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->variable($iterator->getParent())->isNull()
+		;
+
+		$parentIterator = new tokenizer\iterator();
+		$parentIterator->append($iterator);
+
+		$this->assert
+			->object($iterator->getParent())->isIdenticalTo($parentIterator)
 		;
 	}
 }

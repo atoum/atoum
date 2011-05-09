@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\php\tokenizer
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
 class token extends atoum\test
 {
@@ -19,6 +19,21 @@ class token extends atoum\test
 			->string($token->getTag())->isEqualTo($tag)
 			->string($token->getValue())->isEqualTo($value)
 			->integer($token->getLine())->isEqualTo($line)
+		;
+	}
+
+	public function test__toString()
+	{
+		$token = new tokenizer\token($tag = uniqid(), $value = uniqid(), $line = rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->castToString($token)->isEqualTo($value)
+		;
+
+		$token = new tokenizer\token($tag = uniqid(), null, $line = rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->castToString($token)->isEqualTo($tag)
 		;
 	}
 }

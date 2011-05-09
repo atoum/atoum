@@ -14,6 +14,23 @@ class iterator implements \iterator, \countable
 	protected $parent = null;
 	protected $excludedValues = array();
 
+	public function __toString()
+	{
+		$string = '';
+
+		if (sizeof($this) > 0)
+		{
+			foreach ($this as $value)
+			{
+				$string .= $value;
+			}
+
+			$this->rewind();
+		}
+
+		return $string;
+	}
+
 	public function valid()
 	{
 		return ($this->key !== null && $this->key >= 0 && $this->key < $this->size);
@@ -251,6 +268,11 @@ class iterator implements \iterator, \countable
 		$currentValue = current($this->values);
 
 		return ($currentValue instanceof self === false ? null : $currentValue);
+	}
+
+	public function getParent()
+	{
+		return $this->parent;
 	}
 }
 

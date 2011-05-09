@@ -19,6 +19,11 @@ class token
 		$this->line = $line;
 	}
 
+	public function __toString()
+	{
+		return (string) ($this->value ?: $this->tag);
+	}
+
 	public function getTag()
 	{
 		return $this->tag;
