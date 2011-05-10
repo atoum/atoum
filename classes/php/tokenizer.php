@@ -31,7 +31,9 @@ class tokenizer implements \iteratorAggregate
 	public function tokenize($string)
 	{
 		$currentNamespace = null;
+		$currentClass = null;
 		$currentIterator = $this->iterator;
+		$classCurlyBraces = array();
 
 		foreach (token_get_all($string) as $token)
 		{
@@ -46,20 +48,45 @@ class tokenizer implements \iteratorAggregate
 
 					if ($currentNamespace === null)
 					{
-						$currentIterator->append($namespaceIterator = new tokenizer\iterator());
-						$currentIterator = $currentNamespace = $namespaceIterator;
+						$currentIterator->append($currentNamespace = new tokenizer\iterator());
+						$currentIterator = $currentNamespace;
+					}
+					break;
+
+				case T_CLASS:
+					if ($currentClass === null)
+					{
+						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator = $currentClass;
 					}
 					break;
 
 				case T_CLOSE_TAG:
+					if ($currentClass !== null)
+					{
+						$currentIterator = $currentClass->getParent();
+						$currentClass = null;
+					}
+
 					if ($currentNamespace !== null)
 					{
 						$currentIterator = $currentNamespace->getParent();
 						$currentNamespace = null;
 					}
+					break;
 			}
 
 			$currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+			switch ($token[0])
+			{
+				case '}':
+					if ($currentClass !== null)
+					{
+						$currentIterator = $currentClass->getParent();
+					}
+					break;
+			}
 		}
 
 		return $this;

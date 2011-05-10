@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\php\tokenizer
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
 class iterator extends atoum\test
 {
@@ -55,6 +55,25 @@ class iterator extends atoum\test
 			->integer($iterator->key())->isEqualTo(1)
 			->castToString($iterator)->isEqualTo($value1 . $value2)
 			->integer($iterator->key())->isZero()
+		;
+
+		$innerInnerIterator = new tokenizer\iterator();
+		$innerInnerIterator->append($value3 = uniqid());
+
+		$innerIterator = new tokenizer\iterator();
+		$innerIterator
+			->append($value2 = uniqid())
+			->append($innerInnerIterator)
+		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($innerIterator)
+		;
+
+		$this->assert
+			->castToString($iterator)->isEqualTo($value1 . $value2 . $value3)
 		;
 	}
 
@@ -249,12 +268,69 @@ class iterator extends atoum\test
 		;
 
 		$this->assert
+			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
 			->string($iterator->current())->isEqualTo($value3)
 			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(0)
 			->string($iterator->current())->isEqualTo($value1)
 			->object($iterator->prev())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+			->append($value3 = uniqid())
+			->end()
+		;
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->prev(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->end()->prev(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->end()->prev(3))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+			->append($value3 = uniqid())
+			->append($value4 = uniqid())
+			->end()
+			->excludeValue($value2)
+		;
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(3)
+			->string($iterator->current())->isEqualTo($value4)
+			->object($iterator->prev(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->end()->prev(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->end()->prev(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 		;
@@ -269,6 +345,10 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 			->object($iterator->next())->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->next(rand(2, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
@@ -324,6 +404,58 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+			->append($value3 = uniqid())
+		;
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->next(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->rewind()->next(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->rewind()->next(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append($value1 = uniqid())
+			->append($value2 = uniqid())
+			->append($value3 = uniqid())
+			->append($value4 = uniqid())
+			->excludeValue($value2)
+		;
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->next(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->rewind()->next(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(3)
+			->string($iterator->current())->isEqualTo($value4)
+			->object($iterator->rewind()->next(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
 	}
 
 	public function testCount()
@@ -352,6 +484,33 @@ class iterator extends atoum\test
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(2)
+		;
+
+		$innerInnerIterator = new tokenizer\iterator();
+		$innerInnerIterator->append(uniqid());
+
+		$innerIterator = new tokenizer\iterator();
+		$innerIterator
+			->append(uniqid())
+			->append($innerInnerIterator)
+		;
+
+		$iterator = new tokenizer\iterator();
+		$iterator
+			->append(uniqid())
+			->append($innerIterator)
+		;
+
+		$innerIterator->append(uniqid());
+
+		$this->assert
+			->sizeOf($iterator)->isEqualTo(4)
+		;
+
+		$innerInnerIterator->append(uniqid());
+
+		$this->assert
+			->sizeOf($iterator)->isEqualTo(5)
 		;
 	}
 
@@ -667,6 +826,85 @@ class iterator extends atoum\test
 
 		$this->assert
 			->object($iterator->getParent())->isIdenticalTo($parentIterator)
+		;
+	}
+
+	public function testSeek()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->seek(rand(0, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append($value1 = uniqid());
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->seek(0))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->seek(rand(1, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator->rewind()->append($value2 = uniqid());
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->seek(0))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->seek(1))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->seek(rand(2, PHP_INT_MAX)))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+		;
+
+		$iterator->rewind()->append($value3 = uniqid());
+
+		$this->assert
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->seek(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->seek(3))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isFalse()
+			->variable($iterator->key())->isNull()
+			->variable($iterator->current())->isNull()
+			->object($iterator->seek(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->rewind()->prev()->seek(1))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(1)
+			->variable($iterator->current())->isEqualTo($value2)
+			->object($iterator->rewind()->seek(2))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isEqualTo(2)
+			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->seek(0))->isIdenticalTo($iterator)
+			->boolean($iterator->valid())->isTrue()
+			->integer($iterator->key())->isZero()
+			->variable($iterator->current())->isEqualTo($value1)
 		;
 	}
 }

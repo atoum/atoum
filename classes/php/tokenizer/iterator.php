@@ -58,9 +58,9 @@ class iterator implements \iterator, \countable
 		return $this->key < 0 || $this->key >= $this->size ? null : $this->key;
 	}
 
-	public function prev()
+	public function prev($offset = 1)
 	{
-		if ($this->valid() === true)
+		while ($offset && $this->valid() === true)
 		{
 			$currentKey = key($this->values);
 			$currentValue = current($this->values);
@@ -98,14 +98,16 @@ class iterator implements \iterator, \countable
 			}
 
 			$this->key--;
+
+			$offset--;
 		}
 
 		return $this;
 	}
 
-	public function next()
+	public function next($offset = 1)
 	{
-		if ($this->valid() === true)
+		while ($offset > 0 && $this->valid() === true)
 		{
 			$currentKey = key($this->values);
 			$currentValue = current($this->values);
@@ -132,7 +134,7 @@ class iterator implements \iterator, \countable
 				$currentValue = current($this->values);
 			}
 
-			if ($currentValue instanceof self === true && key($this->values) !== $currentKey)
+			if ($currentValue instanceof self && key($this->values) !== $currentKey)
 			{
 				$currentValue->rewind();
 			}
@@ -143,6 +145,8 @@ class iterator implements \iterator, \countable
 			}
 
 			$this->key++;
+
+			$offset--;
 		}
 
 		return $this;
@@ -224,9 +228,13 @@ class iterator implements \iterator, \countable
 
 		$this->size += $size;
 
-		if ($this->parent !== null)
+		$parent = $this->parent;
+
+		while ($parent !== null)
 		{
-			$this->parent->size += $size;
+			$parent->size += $size;
+
+			$parent = $parent->parent;
 		}
 
 		return $this;
@@ -273,6 +281,29 @@ class iterator implements \iterator, \countable
 	public function getParent()
 	{
 		return $this->parent;
+	}
+
+	public function seek($key)
+	{
+		if ($key > sizeof($this) / 2)
+		{
+			$this->end();
+		}
+		else if ($this->valid() === false)
+		{
+			$this->rewind();
+		}
+
+		if ($key > $this->key)
+		{
+			$this->next($key - $this->key);
+		}
+		else
+		{
+			$this->prev($this->key - $key);
+		}
+
+		return $this;
 	}
 }
 
