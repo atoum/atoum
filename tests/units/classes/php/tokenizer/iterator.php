@@ -41,7 +41,7 @@ class iterator extends atoum\test
 			->castToString($iterator)->isEmpty()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isZero()
@@ -49,7 +49,7 @@ class iterator extends atoum\test
 			->integer($iterator->key())->isZero()
 		;
 
-		$iterator->append($value2 = rand(1, PHP_INT_MAX))->end();
+		$iterator->append($value2 = new tokenizer\token(uniqid(), rand(1, PHP_INT_MAX)))->end();
 
 		$this->assert
 			->integer($iterator->key())->isEqualTo(1)
@@ -58,17 +58,17 @@ class iterator extends atoum\test
 		;
 
 		$innerInnerIterator = new tokenizer\iterator();
-		$innerInnerIterator->append($value3 = uniqid());
+		$innerInnerIterator->append($value3 = new tokenizer\token(uniqid()));
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append($value2 = uniqid())
+			->append($value2 = new tokenizer\token(uniqid()))
 			->append($innerInnerIterator)
 		;
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
 			->append($innerIterator)
 		;
 
@@ -85,7 +85,7 @@ class iterator extends atoum\test
 			->boolean($iterator->valid())->isFalse()
 		;
 
-		$iterator->append($value = uniqid());
+		$iterator->append($value = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
@@ -100,7 +100,7 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 		;
 
-		$iterator->append(uniqid());
+		$iterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isZero()
@@ -112,7 +112,7 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 		;
 
-		$iterator->append(uniqid());
+		$iterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isEqualTo(1)
@@ -126,14 +126,14 @@ class iterator extends atoum\test
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append(uniqid())
-			->append(uniqid())
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
+			->append(new tokenizer\token(uniqid()))
+			->append(new tokenizer\token(uniqid()))
 		;
 
 		$iterator
 			->append($innerIterator)
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
 		;
 
 		$iterator->rewind();
@@ -157,41 +157,41 @@ class iterator extends atoum\test
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->variable($iterator->next()->current())->isNull()
 		;
 
-		$iterator->append($value2 = uniqid());
+		$iterator->append($value2 = new tokenizer\token(uniqid()));
 
 		$this->assert
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->variable($iterator->next()->current())->isNull()
 		;
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append($value3 = uniqid())
-			->append($value4 = uniqid())
-			->append($value5 = uniqid())
+			->append($value3 = new tokenizer\token(uniqid()))
+			->append($value4 = new tokenizer\token(uniqid()))
+			->append($value5 = new tokenizer\token(uniqid()))
 		;
 
 		$iterator
 			->append($innerIterator)
-			->append($value6 = uniqid())
+			->append($value6 = new tokenizer\token(uniqid()))
 		;
 
 		$iterator->rewind();
 
 		$this->assert
-			->string($iterator->current())->isEqualTo($value1)
-			->string($iterator->next()->current())->isEqualTo($value2)
-			->string($iterator->next()->current())->isEqualTo($value3)
-			->string($iterator->next()->current())->isEqualTo($value4)
-			->string($iterator->next()->current())->isEqualTo($value5)
-			->string($iterator->next()->current())->isEqualTo($value6)
+			->object($iterator->current())->isEqualTo($value1)
+			->object($iterator->next()->current())->isEqualTo($value2)
+			->object($iterator->next()->current())->isEqualTo($value3)
+			->object($iterator->next()->current())->isEqualTo($value4)
+			->object($iterator->next()->current())->isEqualTo($value5)
+			->object($iterator->next()->current())->isEqualTo($value6)
 			->variable($iterator->next()->current())->isNull()
 		;
 	}
@@ -210,28 +210,28 @@ class iterator extends atoum\test
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->append($value2 = uniqid())->end();
+		$iterator->append($value2 = new tokenizer\token(uniqid()))->end();
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -245,11 +245,11 @@ class iterator extends atoum\test
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -260,9 +260,9 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 			->end()
 			->excludeValue($value2)
 		;
@@ -270,11 +270,11 @@ class iterator extends atoum\test
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(0)
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->prev())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -283,24 +283,24 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 			->end()
 		;
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->prev(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->end()->prev(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->end()->prev(3))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -309,10 +309,10 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
-			->append($value4 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
+			->append($value4 = new tokenizer\token(uniqid()))
 			->end()
 			->excludeValue($value2)
 		;
@@ -320,15 +320,15 @@ class iterator extends atoum\test
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(3)
-			->string($iterator->current())->isEqualTo($value4)
+			->object($iterator->current())->isEqualTo($value4)
 			->object($iterator->prev(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->end()->prev(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->end()->prev(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -354,12 +354,12 @@ class iterator extends atoum\test
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(0)
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->next())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -368,18 +368,18 @@ class iterator extends atoum\test
 
 		$iterator
 			->append(new tokenizer\iterator())
-			->append($value2 = uniqid())
+			->append($value2 = new tokenizer\token(uniqid()))
 			->rewind();
 		;
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(0)
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->next())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->next())->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -388,18 +388,18 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 			->excludeValue($value2)
 		;
 
 		$this->assert
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->next())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->next())->isIdenticalTo($iterator)
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
@@ -407,23 +407,23 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->next(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->rewind()->next(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->rewind()->next(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -432,25 +432,25 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
-			->append($value4 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
+			->append($value4 = new tokenizer\token(uniqid()))
 			->excludeValue($value2)
 		;
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->next(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->rewind()->next(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(3)
-			->string($iterator->current())->isEqualTo($value4)
+			->object($iterator->current())->isEqualTo($value4)
 			->object($iterator->rewind()->next(rand(3, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -466,7 +466,7 @@ class iterator extends atoum\test
 			->sizeOf($iterator)->isEqualTo(0)
 		;
 
-		$iterator->append(uniqid());
+		$iterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(1)
@@ -480,34 +480,34 @@ class iterator extends atoum\test
 			->sizeOf($iterator)->isEqualTo(1)
 		;
 
-		$innerIterator->append(uniqid());
+		$innerIterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(2)
 		;
 
 		$innerInnerIterator = new tokenizer\iterator();
-		$innerInnerIterator->append(uniqid());
+		$innerInnerIterator->append(new tokenizer\token(uniqid()));
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
 			->append($innerInnerIterator)
 		;
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
 			->append($innerIterator)
 		;
 
-		$innerIterator->append(uniqid());
+		$innerIterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(4)
 		;
 
-		$innerInnerIterator->append(uniqid());
+		$innerInnerIterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->sizeOf($iterator)->isEqualTo(5)
@@ -524,7 +524,7 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 		;
 
-		$iterator->append(uniqid());
+		$iterator->append(new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isZero()
@@ -532,7 +532,7 @@ class iterator extends atoum\test
 			->integer($iterator->key())->isZero()
 		;
 
-		$iterator->append(uniqid())->next();
+		$iterator->append(new tokenizer\token(uniqid()))->next();
 
 		$this->assert
 			->integer($iterator->key())->isEqualTo(1)
@@ -542,8 +542,8 @@ class iterator extends atoum\test
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append(uniqid())
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
+			->append(new tokenizer\token(uniqid()))
 			->next();
 		;
 
@@ -559,19 +559,19 @@ class iterator extends atoum\test
 		$iterator = new tokenizer\iterator();
 
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 			->excludeValue($value1)
 			->end()
 		;
 
 		$this->assert
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->rewind())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 		;
 	}
 
@@ -587,57 +587,57 @@ class iterator extends atoum\test
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->end())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 		;
 
-		$iterator->append($value2 = uniqid());
+		$iterator->append($value2 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->end())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 		;
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append($value3 = uniqid())
-			->append($value4 = uniqid())
+			->append($value3 = new tokenizer\token(uniqid()))
+			->append($value4 = new tokenizer\token(uniqid()))
 		;
 
 		$iterator->append($innerIterator);
 
 		$this->assert
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->end())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(3)
-			->string($iterator->current())->isEqualTo($value4)
+			->object($iterator->current())->isEqualTo($value4)
 		;
 
 		$iterator = new tokenizer\iterator();
 
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 			->excludeValue($value3)
 		;
 
 		$this->assert
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->end())->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 		;
 	}
 
@@ -648,17 +648,17 @@ class iterator extends atoum\test
 		$this->assert
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
-			->object($iterator->append($value1 = uniqid()))->isIdenticalTo($iterator)
+			->object($iterator->append($value1 = new tokenizer\token(uniqid())))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 		;
 
 		$iterator = new tokenizer\iterator();
 
 		$innerIterator = new tokenizer\iterator();
 		$innerIterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
@@ -666,15 +666,15 @@ class iterator extends atoum\test
 			->variable($iterator->current())->isNull()
 			->object($iterator->append($innerIterator))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 		;
 
 		$iterator->end()->next();
 
 		$otherInnerIterator = new tokenizer\iterator();
 		$otherInnerIterator
-			->append($value3 = uniqid())
-			->append($value4 = uniqid())
+			->append($value3 = new tokenizer\token(uniqid()))
+			->append($value4 = new tokenizer\token(uniqid()))
 			->end()
 		;
 
@@ -682,12 +682,12 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 			->integer($otherInnerIterator->key())->isEqualTo(1)
-			->string($otherInnerIterator->current())->isEqualTo($value4)
+			->object($otherInnerIterator->current())->isEqualTo($value4)
 			->object($iterator->append($otherInnerIterator))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->integer($otherInnerIterator->key())->isZero()
-			->string($otherInnerIterator->current())->isEqualTo($value3)
+			->object($otherInnerIterator->current())->isEqualTo($value3)
 		;
 
 		$this->assert
@@ -736,13 +736,13 @@ class iterator extends atoum\test
 
 		$iterator = new tokenizer\iterator();
 		$iterator
-			->append($value1 = uniqid())
-			->append($value2 = uniqid())
-			->append($value3 = uniqid())
+			->append($value1 = new tokenizer\token(uniqid()))
+			->append($value2 = new tokenizer\token(uniqid()))
+			->append($value3 = new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 		;
 	}
 
@@ -774,7 +774,7 @@ class iterator extends atoum\test
 			->sizeOf($iterator)->isZero()
 		;
 
-		$iterator->append($value = uniqid());
+		$iterator->append($value = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
@@ -789,27 +789,27 @@ class iterator extends atoum\test
 		;
 	}
 
-	public function testGetInnerIterator()
+	public function testGetValue()
 	{
 		$iterator = new tokenizer\iterator();
 
 		$this->assert
-			->variable($iterator->getInnerIterator())->isNull()
+			->variable($iterator->getValue())->isNull()
 		;
 
 		$innerIterator = new tokenizer\iterator();
-		$innerIterator->append(uniqid());
+		$innerIterator->append(new tokenizer\token(uniqid()));
 
 		$iterator
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
 			->append($innerIterator)
-			->append(uniqid())
+			->append(new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
-			->variable($iterator->getInnerIterator())->isNull()
-			->object($iterator->next()->getInnerIterator())->isIdenticalTo($innerIterator)
-			->variable($iterator->next()->getInnerIterator())->isNull()
+			->variable($iterator->getValue())->isNull()
+			->object($iterator->next()->getValue())->isIdenticalTo($innerIterator)
+			->variable($iterator->next()->getValue())->isNull()
 		;
 	}
 
@@ -842,49 +842,49 @@ class iterator extends atoum\test
 			->variable($iterator->key())->isNull()
 		;
 
-		$iterator->append($value1 = uniqid());
+		$iterator->append($value1 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->seek(0))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->seek(rand(1, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->rewind()->append($value2 = uniqid());
+		$iterator->rewind()->append($value2 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->seek(0))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->seek(1))->isIdenticalTo($iterator)
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->seek(rand(2, PHP_INT_MAX)))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
 			->variable($iterator->current())->isNull()
 		;
 
-		$iterator->rewind()->append($value3 = uniqid());
+		$iterator->rewind()->append($value3 = new tokenizer\token(uniqid()));
 
 		$this->assert
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()
-			->string($iterator->current())->isEqualTo($value1)
+			->object($iterator->current())->isEqualTo($value1)
 			->object($iterator->seek(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->seek(3))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->key())->isNull()
@@ -892,7 +892,7 @@ class iterator extends atoum\test
 			->object($iterator->seek(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
-			->string($iterator->current())->isEqualTo($value2)
+			->object($iterator->current())->isEqualTo($value2)
 			->object($iterator->rewind()->prev()->seek(1))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(1)
@@ -900,7 +900,7 @@ class iterator extends atoum\test
 			->object($iterator->rewind()->seek(2))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isEqualTo(2)
-			->string($iterator->current())->isEqualTo($value3)
+			->object($iterator->current())->isEqualTo($value3)
 			->object($iterator->seek(0))->isIdenticalTo($iterator)
 			->boolean($iterator->valid())->isTrue()
 			->integer($iterator->key())->isZero()

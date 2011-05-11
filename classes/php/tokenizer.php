@@ -33,7 +33,6 @@ class tokenizer implements \iteratorAggregate
 		$currentNamespace = null;
 		$currentClass = null;
 		$currentIterator = $this->iterator;
-		$classCurlyBraces = array();
 
 		foreach (token_get_all($string) as $token)
 		{
@@ -84,6 +83,7 @@ class tokenizer implements \iteratorAggregate
 					if ($currentClass !== null)
 					{
 						$currentIterator = $currentClass->getParent();
+						$currentClass = null;
 					}
 					break;
 			}

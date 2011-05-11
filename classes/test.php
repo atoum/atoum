@@ -149,7 +149,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this;
 
 			default:
-				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
+				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');
 		}
 	}
 
@@ -484,7 +484,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	protected function setCase($case)
+	protected function startCase($case)
 	{
 		$this->score->setCase($case);
 

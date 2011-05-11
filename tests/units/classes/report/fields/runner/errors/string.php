@@ -122,7 +122,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$field = new runner\errors\string();
 
-		$this->setCase('There is no error in score with default prompts');
+		$this->startCase('There is no error in score with default prompts');
 
 		$score->getMockController()->getErrors = function() { return array(); };
 
@@ -133,7 +133,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
-		$this->setCase('There is errors with file, line and no case in score with default prompts');
+		$this->startCase('There is errors with file, line and no case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -192,7 +192,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with file, line and case in score with default prompts');
+		$this->startCase('There is errors with file, line and case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -251,7 +251,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with no file, no line and no case in score with default prompts');
+		$this->startCase('There is errors with no file, no line and no case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -291,7 +291,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with no file, no line and case in score with default prompts');
+		$this->startCase('There is errors with no file, no line and case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -331,7 +331,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with no file, line and no case in score with default prompts');
+		$this->startCase('There is errors with no file, line and no case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -371,7 +371,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with no file, line and case in score with default prompts');
+		$this->startCase('There is errors with no file, line and case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -411,7 +411,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with file, no line and no case in score with default prompts');
+		$this->startCase('There is errors with file, no line and no case in score with default prompts');
 
 		$allErrors = array(
 			array(
@@ -451,7 +451,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$this->setCase('There is errors with file, no line and case in score with default prompts');
+		$this->startCase('There is errors with file, no line and case in score with default prompts');
 
 		$allErrors = array(
 			array(

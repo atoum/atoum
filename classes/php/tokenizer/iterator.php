@@ -3,16 +3,18 @@
 namespace mageekguy\atoum\php\tokenizer;
 
 use
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\php\tokenizer\iterator
 ;
 
-class iterator implements \iterator, \countable
+class iterator extends iterator\value
 {
 	protected $key = null;
 	protected $size = 0;
 	protected $values = array();
 	protected $parent = null;
 	protected $excludedValues = array();
+	protected $innerIteratorKey = null;
 
 	public function __toString()
 	{
@@ -202,7 +204,7 @@ class iterator implements \iterator, \countable
 		return $this;
 	}
 
-	public function append($value)
+	public function append(iterator\value $value)
 	{
 		$this->values[] = $value;
 
@@ -220,7 +222,14 @@ class iterator implements \iterator, \countable
 				throw new exceptions\runtime('Unable to append iterator, it has already a parent');
 			}
 
-			$size = sizeof($value->rewind());
+			$size = sizeof($value);
+
+			if ($size > 0)
+			{
+				$value->rewind();
+			}
+
+			$this->innerIteratorKey = $value->key();
 
 			$value->parent = $this;
 			$value->excludedValues = array_unique(array_merge($this->excludedValues, $value->excludedValues));
@@ -228,13 +237,16 @@ class iterator implements \iterator, \countable
 
 		$this->size += $size;
 
-		$parent = $this->parent;
-
-		while ($parent !== null)
+		if ($size > 0)
 		{
-			$parent->size += $size;
+			$parent = $this->parent;
 
-			$parent = $parent->parent;
+			while ($parent !== null)
+			{
+				$parent->size += $size;
+
+				$parent = $parent->parent;
+			}
 		}
 
 		return $this;
@@ -271,7 +283,7 @@ class iterator implements \iterator, \countable
 		return $this;
 	}
 
-	public function getInnerIterator()
+	public function getValue()
 	{
 		$currentValue = current($this->values);
 
