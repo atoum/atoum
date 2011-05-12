@@ -603,7 +603,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			if ($stdOut !== '')
 			{
-				$this->extractError($stdOut, $returnValue);
+				$this->score->addOutput($this->class, $this->currentMethod, $stdOut);
 			}
 
 			if (is_file($tmpFile) === true && is_writable($tmpFile) === true)
@@ -672,10 +672,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			if (preg_match('/ in (.+) on line (\d+)/', $error, $match) === 1)
 			{
 				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, preg_replace('/ in (.+) on line (\d+)/', '', $error), $match[1], $match[2]);
-			}
-			else
-			{
-				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, $error);
 			}
 		}
 

@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tools\diffs;
 
-use \mageekguy\atoum\tools;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\tools,
+	\mageekguy\atoum\exceptions
+;
 
 class variable extends tools\diff
 {
@@ -15,12 +17,12 @@ class variable extends tools\diff
 
 	public function setReference($mixed)
 	{
-		return parent::setReference(var_export($mixed, true));
+		return parent::setReference(self::dumpAsString($mixed));
 	}
 
 	public function setData($mixed)
 	{
-		return parent::setData(var_export($mixed, true));
+		return parent::setData(self::dumpAsString($mixed));
 	}
 
 	public function make()
@@ -36,6 +38,15 @@ class variable extends tools\diff
 		}
 
 		return parent::make();
+	}
+
+	protected static function dumpAsString($mixed)
+	{
+		ob_start();
+
+		var_dump($mixed);
+
+		return trim(ob_get_clean());
 	}
 }
 

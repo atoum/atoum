@@ -9,6 +9,7 @@ abstract class value implements \iterator, \countable
 	public abstract function end();
 	public abstract function append(value $value);
 	public abstract function getValue();
+	public abstract function setParent(value $parent);
 	public abstract function getParent();
 	public abstract function seek($key);
 }

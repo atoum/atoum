@@ -9,16 +9,22 @@ use
 
 class token extends iterator\value
 {
+	protected $parent = null;
 	protected $key = 0;
 	protected $tag = '';
 	protected $string = null;
 	protected $line = null;
 
-	public function __construct($tag, $string = null, $line = null)
+	public function __construct($tag, $string = null, $line = null, iterator\value $parent = null)
 	{
 		$this->tag = $tag;
 		$this->string = $string;
 		$this->line = $line;
+
+		if ($parent !== null)
+		{
+			$this->setParent($parent);
+		}
 	}
 
 	public function __toString()
@@ -112,7 +118,19 @@ class token extends iterator\value
 
 	public function getParent()
 	{
-		return null;
+		return $this->parent;
+	}
+
+	public function setParent(iterator\value $parent)
+	{
+		if ($this->parent !== null)
+		{
+			throw new exceptions\runtime('Token has already a parent');
+		}
+
+		$this->parent = $parent;
+
+		return $this;
 	}
 
 	public function getValue()

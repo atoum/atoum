@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\tools\diffs;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\tools;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\tools
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -25,7 +27,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->object($diff->setReference($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getReference())->isEqualTo(var_export($variable, true))
+			->string($diff->getReference())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
@@ -35,7 +37,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->object($diff->setData($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getData())->isEqualTo(var_export($variable, true))
+			->string($diff->getData())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
@@ -74,8 +76,17 @@ class variable extends atoum\test
 		$diff->setData($reference);
 
 		$this->assert
-			->array($diff->make())->isEqualTo(array(var_export($reference, true)))
+			->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))
 		;
+	}
+
+	protected static function dumpAsString($mixed)
+	{
+		ob_start();
+
+		var_dump($mixed);
+
+		return trim(ob_get_clean());
 	}
 }
 

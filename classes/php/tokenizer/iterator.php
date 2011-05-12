@@ -13,8 +13,7 @@ class iterator extends iterator\value
 	protected $size = 0;
 	protected $values = array();
 	protected $parent = null;
-	protected $excludedValues = array();
-	protected $innerIteratorKey = null;
+	protected $skipedValues = array();
 
 	public function __toString()
 	{
@@ -35,7 +34,7 @@ class iterator extends iterator\value
 
 	public function valid()
 	{
-		return ($this->key !== null && $this->key >= 0 && $this->key < $this->size);
+		return (current($this->values) !== false);
 	}
 
 	public function current()
@@ -44,12 +43,7 @@ class iterator extends iterator\value
 
 		if ($this->valid() === true)
 		{
-			$value = current($this->values);
-
-			if ($value instanceof self)
-			{
-				$value = $value->current();
-			}
+			$value = current($this->values)->current();
 		}
 
 		return $value;
@@ -62,41 +56,29 @@ class iterator extends iterator\value
 
 	public function prev($offset = 1)
 	{
-		while ($offset && $this->valid() === true)
+		while (($valid = $this->valid()) === true && $offset > 0)
 		{
-			$currentKey = key($this->values);
 			$currentValue = current($this->values);
 
-			if ($currentValue instanceof self === false)
+			$currentValue->prev();
+
+			while ($currentValue->valid() === false && $valid === true)
 			{
 				prev($this->values);
-				$currentValue = current($this->values);
-			}
-			else
-			{
-				$currentValue->prev();
 
-				if ($currentValue->valid() === false)
+				if (($valid = $this->valid()) === true)
 				{
-					prev($this->values);
 					$currentValue = current($this->values);
+					$currentValue->end();
 				}
 			}
 
-			while ($currentValue instanceof self && sizeof($currentValue) <= 0)
+			if ($valid === true)
 			{
-				prev($this->values);
-				$currentValue = current($this->values);
-			}
-
-			if ($currentValue instanceof self === true && key($this->values) !== $currentKey)
-			{
-				$currentValue->end();
-			}
-
-			if (in_array($this->current(), $this->excludedValues) === true)
-			{
-				$this->prev();
+				while (in_array($this->current(), $this->skipedValues) === true && $this->valid() === true)
+				{
+					$this->prev();
+				}
 			}
 
 			$this->key--;
@@ -109,41 +91,29 @@ class iterator extends iterator\value
 
 	public function next($offset = 1)
 	{
-		while ($offset > 0 && $this->valid() === true)
+		while (($valid = $this->valid()) === true && $offset > 0)
 		{
-			$currentKey = key($this->values);
 			$currentValue = current($this->values);
 
-			if ($currentValue instanceof self === false)
+			$currentValue->next();
+
+			while ($currentValue->valid() === false && $valid === true)
 			{
 				next($this->values);
-				$currentValue = current($this->values);
-			}
-			else
-			{
-				$currentValue->next();
 
-				if ($currentValue->valid() === false)
+				if (($valid = $this->valid()) === true)
 				{
-					next($this->values);
 					$currentValue = current($this->values);
+					$currentValue->rewind();
 				}
 			}
 
-			while ($currentValue instanceof self && sizeof($currentValue) <= 0)
+			if ($valid === true)
 			{
-				next($this->values);
-				$currentValue = current($this->values);
-			}
-
-			if ($currentValue instanceof self && key($this->values) !== $currentKey)
-			{
-				$currentValue->rewind();
-			}
-
-			if (in_array($this->current(), $this->excludedValues) === true)
-			{
-				$this->next();
+				while (in_array($this->current(), $this->skipedValues) === true && $this->valid() === true)
+				{
+					$this->next();
+				}
 			}
 
 			$this->key++;
@@ -162,17 +132,26 @@ class iterator extends iterator\value
 
 			$currentValue = current($this->values);
 
-			while ($currentValue instanceof self && $currentValue->rewind()->valid() == false)
+			$valid = true;
+
+			while ($currentValue->rewind()->valid() == false && $valid === true)
 			{
 				next($this->values);
-				$currentValue = current($this->values);
+
+				if (($valid = $this->valid()) === true)
+				{
+					$currentValue = current($this->values);
+				}
 			}
 
 			$this->key = 0;
 
-			if (in_array($this->current(), $this->excludedValues) === true)
+			if ($valid === true)
 			{
-				$this->next();
+				while (in_array($this->current(), $this->skipedValues) === true && $this->valid() === true)
+				{
+					$this->next();
+				}
 			}
 		}
 
@@ -187,17 +166,26 @@ class iterator extends iterator\value
 
 			$currentValue = current($this->values);
 
-			while ($currentValue instanceof self && $currentValue->end()->valid() == false)
+			$valid = true;
+
+			while ($currentValue->end()->valid() == false && $valid === true)
 			{
 				prev($this->values);
-				$currentValue = current($this->values);
+
+				if (($valid = $this->valid()) === true)
+				{
+					$currentValue = current($this->values);
+				}
 			}
 
 			$this->key = $this->size - 1;
 
-			if (in_array($this->current(), $this->excludedValues) === true)
+			if ($valid === true)
 			{
-				$this->prev();
+				while (in_array($this->current(), $this->skipedValues) === true && $this->valid() === true)
+				{
+					$this->prev();
+				}
 			}
 		}
 
@@ -213,32 +201,14 @@ class iterator extends iterator\value
 			$this->key = 0;
 		}
 
-		$size = 1;
-
-		if ($value instanceof self)
-		{
-			if ($value->parent !== null)
-			{
-				throw new exceptions\runtime('Unable to append iterator, it has already a parent');
-			}
-
-			$size = sizeof($value);
-
-			if ($size > 0)
-			{
-				$value->rewind();
-			}
-
-			$this->innerIteratorKey = $value->key();
-
-			$value->parent = $this;
-			$value->excludedValues = array_unique(array_merge($this->excludedValues, $value->excludedValues));
-		}
-
-		$this->size += $size;
+		$size = sizeof($value);
 
 		if ($size > 0)
 		{
+			$value->rewind();
+
+			$this->size += $size;
+
 			$parent = $this->parent;
 
 			while ($parent !== null)
@@ -249,6 +219,8 @@ class iterator extends iterator\value
 			}
 		}
 
+		$value->setParent($this);
+
 		return $this;
 	}
 
@@ -257,19 +229,19 @@ class iterator extends iterator\value
 		return $this->size;
 	}
 
-	public function excludeValue($value)
+	public function skipValue($value)
 	{
-		if (in_array($value, $this->excludedValues) === false)
+		if (in_array($value, $this->skipedValues) === false)
 		{
-			$this->excludedValues[] = $value;
+			$this->skipedValues[] = $value;
 		}
 
 		return $this;
 	}
 
-	public function getExcludedValues()
+	public function getSkipedValues()
 	{
-		return $this->excludedValues;
+		return $this->skipedValues;
 	}
 
 	public function reset()
@@ -278,16 +250,26 @@ class iterator extends iterator\value
 		$this->size = 0;
 		$this->values = array();
 		$this->parent = null;
-		$this->excludedValues = array();
+		$this->skipedValues = array();
 
 		return $this;
 	}
 
 	public function getValue()
 	{
-		$currentValue = current($this->values);
+		return (current($this->values) ?: null);
+	}
 
-		return ($currentValue instanceof self === false ? null : $currentValue);
+	public function setParent(iterator\value $parent)
+	{
+		if ($this->parent !== null)
+		{
+			throw new exceptions\runtime('Iterator has already a parent');
+		}
+
+		$this->parent = $parent;
+
+		return $this;
 	}
 
 	public function getParent()
