@@ -83,7 +83,7 @@ class stub extends atoum\scripts\runner
             
 				$script
 				   ->runTests(false)
-				   ->useScript($values[0], $argument);
+				   ->useScript($values[0]);
 				return;
 			},
 			array('-u', '--use')
@@ -104,7 +104,7 @@ class stub extends atoum\scripts\runner
 		);
 	}
 
-	public function useScript($script, $originArgument)
+	public function useScript($script)
 	{
 	   $scriptName = '\mageekguy\atoum\scripts\\'.$script;
 	   if ($this->adapter->class_exists($scriptName) === false)
@@ -120,25 +120,20 @@ class stub extends atoum\scripts\runner
 	   }
 	   
 	   $superglobals = $this->getArgumentsParser()->getSuperglobals();
-	   $arguments = new \arrayIterator(array_slice($superglobals->_SERVER['argv'], 1));
-	   $argsToDel = array();
+	   $arguments = array_slice($superglobals->_SERVER['argv'], 1);
 	   
 		if (sizeof($arguments) > 0)
 		{
-			$value = '';
-			while ($arguments->valid() === true && $value != $originArgument)
-			{
-			   $value = $arguments->current();
-				$argsToDel[] = $value;
-				$arguments->next();
+		   do
+		   {
+			   $value = array_shift($arguments);
 			}
-         $value = $arguments->current();
-			$argsToDel[] = $value;
+		   while (sizeof($arguments) > 0 && $value != $script);
+			
 		}
-	   $scriptArgs = array_diff($arguments->getArrayCopy(), $argsToDel);
-	   array_unshift($scriptArgs, __FILE__);
+	   array_unshift($arguments, __FILE__);
 	   
-	   $superglobals->_SERVER = array('argv' => $scriptArgs);
+	   $superglobals->_SERVER = array('argv' => $arguments);
 	   $runScript->getArgumentsParser()->setSuperglobals($superglobals);
 	   
 	   $this->writeLabel($this->locale->_('Running script:'), $script);
