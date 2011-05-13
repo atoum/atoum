@@ -2,15 +2,18 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\asserters,
+	\mageekguy\atoum\exceptions
+;
 
-class boolean extends \mageekguy\atoum\asserters\variable
+class boolean extends asserters\variable
 {
-	public function setWith($variable, $label = null)
+	public function setWith($value, $label = null)
 	{
-		parent::setWith($variable, $label);
+		parent::setWith($value, $label);
 
-		if (self::isBoolean($this->variable) === false)
+		if (self::isBoolean($this->value) === false)
 		{
 			$this->fail(sprintf($this->getLocale()->_('%s is not a boolean'), $this));
 		}
@@ -32,17 +35,17 @@ class boolean extends \mageekguy\atoum\asserters\variable
 		return $this->isEqualTo(false, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not false'), $this));
 	}
 
-	protected static function check($variable, $method)
+	protected static function check($value, $method)
 	{
-		if (self::isBoolean($variable) === false)
+		if (self::isBoolean($value) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a boolean');
 		}
 	}
 
-	protected static function isBoolean($variable)
+	protected static function isBoolean($value)
 	{
-		return (is_bool($variable) === true);
+		return (is_bool($value) === true);
 	}
 }
 

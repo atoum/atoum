@@ -2,17 +2,20 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\asserters,
+	\mageekguy\atoum\exceptions
+;
 
-class object extends \mageekguy\atoum\asserters\variable
+class object extends asserters\variable
 {
-	public function setWith($variable, $label = null, $checkType = true)
+	public function setWith($value, $label = null, $checkType = true)
 	{
-		parent::setWith($variable, $label);
+		parent::setWith($value, $label);
 
 		if ($checkType === true)
 		{
-			if (self::isObject($this->variable) === false)
+			if (self::isObject($this->value) === false)
 			{
 				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this));
 			}
@@ -25,28 +28,28 @@ class object extends \mageekguy\atoum\asserters\variable
 		return $this;
 	}
 
-	public function isInstanceOf($variable)
+	public function isInstanceOf($value)
 	{
 		try
 		{
-			self::check($variable, __METHOD__);
+			self::check($value, __METHOD__);
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($variable) === false)
+			if (self::classExists($value) === false)
 			{
 				throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
 			}
 		}
 
-		$this->variable instanceof $variable ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($variable) === true ? $variable : $this->toString($variable)));
+		$this->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->toString($value)));
 
 		return $this;
 	}
 
 	public function hasSize($size, $failMessage = null)
 	{
-		if (sizeof($this->variableIsSet()->variable) == $size)
+		if (sizeof($this->valueIsSet()->value) == $size)
 		{
 			return $this->pass();
 		}
@@ -58,37 +61,37 @@ class object extends \mageekguy\atoum\asserters\variable
 
 	public function isEmpty($failMessage = null)
 	{
-		if (sizeof($this->variable) == 0)
+		if (sizeof($this->value) == 0)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d'), $this, sizeof($this->variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d'), $this, sizeof($this->value)));
 		}
 	}
 
-	protected function variableIsSet($message = 'Object is undefined')
+	protected function valueIsSet($message = 'Object is undefined')
 	{
-		return parent::variableIsSet($message);
+		return parent::valueIsSet($message);
 	}
 
-	protected static function check($variable, $method)
+	protected static function check($value, $method)
 	{
-		if (self::isObject($variable) === false)
+		if (self::isObject($value) === false)
 		{
 			throw new exceptions\logic('Argument of ' . $method . '() must be a class instance');
 		}
 	}
 
-	protected static function isObject($variable)
+	protected static function isObject($value)
 	{
-		return (is_object($variable) === true);
+		return (is_object($value) === true);
 	}
 
-	protected static function classExists($variable)
+	protected static function classExists($value)
 	{
-		return (class_exists($variable) === true || interface_exists($variable) === true);
+		return (class_exists($value) === true || interface_exists($value) === true);
 	}
 }
 

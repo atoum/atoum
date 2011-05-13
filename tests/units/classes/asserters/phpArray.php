@@ -27,7 +27,7 @@ class phpArray extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -37,9 +37,9 @@ class phpArray extends atoum\test
 		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -49,22 +49,22 @@ class phpArray extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = array()))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($value = array()))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->array($asserter->getVariable())->isEqualTo($variable)
+			->array($asserter->getValue())->isEqualTo($value)
 		;
 	}
 
@@ -79,7 +79,7 @@ class phpArray extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith(array());
@@ -124,7 +124,7 @@ class phpArray extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith(array(uniqid()));
@@ -173,7 +173,7 @@ class phpArray extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith(array());
@@ -222,10 +222,10 @@ class phpArray extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
-		$asserter->setWith(array(uniqid(), uniqid(), $variable = uniqid(), uniqid(), uniqid()));
+		$asserter->setWith(array(uniqid(), uniqid(), $value = uniqid(), uniqid(), uniqid()));
 
 		$score->reset();
 
@@ -250,7 +250,7 @@ class phpArray extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->contain($variable))->isIdenticalTo($asserter)
+			->object($asserter->contain($value))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;

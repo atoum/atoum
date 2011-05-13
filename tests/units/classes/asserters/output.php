@@ -27,7 +27,7 @@ class output extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -38,13 +38,13 @@ class output extends atoum\test
 
 		$this->assert
 			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }))->isIdenticalTo($asserter)
-			->string($asserter->getVariable())->isEqualTo($output)
+			->string($asserter->getValue())->isEqualTo($output)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
 		$this->assert
 			->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, null, "\010"))->isIdenticalTo($asserter)
-			->string($asserter->getVariable())->isEqualTo($output)
+			->string($asserter->getValue())->isEqualTo($output)
 			->string($asserter->getCharlist())->isEqualTo("\010")
 		;
 	}

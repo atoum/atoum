@@ -2,9 +2,12 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
-class adapter extends \mageekguy\atoum\asserter
+class adapter extends atoum\asserter
 {
 	protected $adapter = null;
 

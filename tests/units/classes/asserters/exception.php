@@ -27,7 +27,7 @@ class exception extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($score)
 			->object($asserter->getLocale())->isIdenticalTo($test->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -39,9 +39,9 @@ class exception extends atoum\test
 		$asserter = new asserters\exception(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($variable)))
+				->hasMessage(sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -51,22 +51,22 @@ class exception extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($variable))
+						'fail' => sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = new \exception()))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($value = new \exception()))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->exception($asserter->getVariable())->isIdenticalTo($variable)
+			->exception($asserter->getValue())->isIdenticalTo($value)
 		;
 	}
 

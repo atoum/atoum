@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\template;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class tag extends atoum\template
 {
@@ -103,6 +105,9 @@ class tag extends atoum\template
 			case $name == 'id':
 				$this->setId($value);
 				break;
+
+			default:
+				throw new exceptions\logic('Attribute \'' . $name . '\' is unknown');
 		}
 
 		return $this;

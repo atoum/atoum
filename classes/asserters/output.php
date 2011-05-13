@@ -2,18 +2,20 @@
 
 namespace mageekguy\atoum\asserters;
 
-class output extends \mageekguy\atoum\asserters\string
+use \mageekguy\atoum\asserters;
+
+class output extends asserters\string
 {
-	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
+	public function setWith($value, $label = null, $charlist = null, $checkType = true)
 	{
-		if ($variable instanceof \closure)
+		if ($value instanceof \closure)
 		{
 			ob_start();
-			$variable();
-			$variable = ob_get_clean();
+			$value();
+			$value = ob_get_clean();
 		}
 
-		return parent::setWith($variable, $label, $charlist, $checkType);
+		return parent::setWith($value, $label, $charlist, $checkType);
 	}
 }
 

@@ -2,13 +2,16 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\asserters,
+	\mageekguy\atoum\exceptions
+;
 
-class exception extends \mageekguy\atoum\asserters\object
+class exception extends asserters\object
 {
-	public function setWith($variable, $label = null, $check = true)
+	public function setWith($value, $label = null, $check = true)
 	{
-		$exception = $variable;
+		$exception = $value;
 
 		if ($exception instanceof \closure)
 		{
@@ -16,7 +19,7 @@ class exception extends \mageekguy\atoum\asserters\object
 
 			try
 			{
-				$variable();
+				$value();
 			}
 			catch (\exception $exception) {}
 		}
@@ -38,85 +41,85 @@ class exception extends \mageekguy\atoum\asserters\object
 		return $this;
 	}
 
-	public function isInstanceOf($variable, $failMessage = null)
+	public function isInstanceOf($value, $failMessage = null)
 	{
 		try
 		{
-			self::check($variable, __METHOD__);
+			self::check($value, __METHOD__);
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($variable) === false || ($variable !== '\exception' && is_subclass_of($variable, '\exception') === false))
+			if (self::classExists($value) === false || ($value !== '\exception' && is_subclass_of($value, '\exception') === false))
 			{
 				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
 			}
 		}
 
-		return parent::isInstanceOf($variable, $failMessage);
+		return parent::isInstanceOf($value, $failMessage);
 	}
 
 	public function hasDefaultCode($failMessage = null)
 	{
-		if (self::isException($this->variable) === false)
+		if (self::isException($this->value) === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('%s is not an exception'), $this->value));
 		}
 
-		if ($this->variable->getCode() === 0)
+		if ($this->value->getCode() === 0)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of 0'), $this->variable->getCode()));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of 0'), $this->value->getCode()));
 		}
 	}
 
 	public function hasCode($code, $failMessage = null)
 	{
-		if (self::isException($this->variable) === false)
+		if (self::isException($this->value) === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('code not found because %s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('code not found because %s is not an exception'), $this->value));
 		}
 
-		if ($this->variable->getCode() === $code)
+		if ($this->value->getCode() === $code)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of %s'), $this->variable->getCode(),$code));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('code is %s instead of %s'), $this->value->getCode(),$code));
 		}
 	}
 
 	public function hasMessage($message, $failMessage = null)
 	{
-		if (self::isException($this->variable) === false)
+		if (self::isException($this->value) === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('message not found because %s is not an exception'), $this->variable));
+			$this->fail(sprintf($this->getLocale()->_('message not found because %s is not an exception'), $this->value));
 		}
 
-		if ($this->variable->getMessage() == (string) $message)
+		if ($this->value->getMessage() == (string) $message)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('message \'%s\' is not identical to \'%s\''), $this->variable->getMessage(), $message));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('message \'%s\' is not identical to \'%s\''), $this->value->getMessage(), $message));
 		}
 	}
 
-	protected static function check($variable, $method)
+	protected static function check($value, $method)
 	{
-		if (self::isException($variable) === false)
+		if (self::isException($value) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an exception instance');
 		}
 	}
 
-	protected static function isException($variable)
+	protected static function isException($value)
 	{
-		return (parent::isObject($variable) === true && $variable instanceof \exception === true);
+		return (parent::isObject($value) === true && $value instanceof \exception === true);
 	}
 }
 

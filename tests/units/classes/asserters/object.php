@@ -27,7 +27,7 @@ class object extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -37,9 +37,9 @@ class object extends atoum\test
 		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -49,22 +49,22 @@ class object extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = $this))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($value = $this))->isIdenticalTo($asserter); $line = __LINE__
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->object($asserter->getVariable())->isIdenticalTo($variable)
+			->object($asserter->getValue())->isIdenticalTo($value)
 		;
 	}
 

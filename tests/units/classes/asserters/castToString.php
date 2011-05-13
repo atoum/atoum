@@ -27,7 +27,7 @@ class castToString extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -37,9 +37,9 @@ class castToString extends atoum\test
 		$asserter = new asserters\castToString(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -49,12 +49,12 @@ class castToString extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->integer($asserter->getVariable())->isEqualTo($variable)
+			->integer($asserter->getValue())->isEqualTo($value)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
@@ -65,7 +65,7 @@ class castToString extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->string($asserter->getVariable())->isEqualTo((string) $object)
+			->string($asserter->getValue())->isEqualTo((string) $object)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
@@ -78,7 +78,7 @@ class castToString extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isZero()
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->string($asserter->getVariable())->isEqualTo((string) $object)
+			->string($asserter->getValue())->isEqualTo((string) $object)
 			->string($asserter->getCharlist())->isEqualTo($charlist)
 		;
 	}

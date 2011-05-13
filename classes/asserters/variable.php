@@ -11,12 +11,12 @@ use
 class variable extends atoum\asserter
 {
 	protected $isSet = false;
+	protected $value = null;
 	protected $isSetByReference = false;
-	protected $variable = null;
 
 	public function __toString()
 	{
-		return $this->toString($this->variable);
+		return $this->toString($this->value);
 	}
 
 	public function wasSet()
@@ -24,18 +24,18 @@ class variable extends atoum\asserter
 		return ($this->isSet === true);
 	}
 
-	public function setWith($variable, $label = null)
+	public function setWith($value, $label = null)
 	{
-		$this->variable = $variable;
+		$this->value = $value;
 		$this->isSet = true;
 		$this->isSetByReference = false;
 
 		return $this->setLabel($label);
 	}
 
-	public function setByReferenceWith(& $variable)
+	public function setByReferenceWith(& $value)
 	{
-		$this->variable = & $variable;
+		$this->value = & $value;
 		$this->isSet = true;
 		$this->isSetByReference = true;
 
@@ -44,16 +44,16 @@ class variable extends atoum\asserter
 
 	public function reset()
 	{
-		$this->variable = null;
+		$this->value = null;
 		$this->isSet = false;
 		$this->isSetByReference = false;
 
 		return $this;
 	}
 
-	public function getVariable()
+	public function getValue()
 	{
-		return $this->variable;
+		return $this->value;
 	}
 
 	public function isSetByReference()
@@ -61,11 +61,11 @@ class variable extends atoum\asserter
 		return ($this->isSet === true && $this->isSetByReference === true);
 	}
 
-	public function isEqualTo($variable, $failMessage = null)
+	public function isEqualTo($value, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
+		self::check($value, __METHOD__);
 
-		if ($this->variableIsSet()->variable == $variable)
+		if ($this->valueIsSet()->value == $value)
 		{
 			return $this->pass();
 		}
@@ -74,58 +74,58 @@ class variable extends atoum\asserter
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->toString($variable))) .
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->toString($value))) .
 				PHP_EOL .
-				$diff->setReference($variable)->setData($this->variable)
+				$diff->setReference($value)->setData($this->value)
 			);
 		}
 	}
 
-	public function isNotEqualTo($variable, $failMessage = null)
+	public function isNotEqualTo($value, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
+		self::check($value, __METHOD__);
 
-		if ($this->variableIsSet()->variable != $variable)
+		if ($this->valueIsSet()->value != $value)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->toString($value)));
 		}
 	}
 
-	public function isIdenticalTo($variable, $failMessage = null)
+	public function isIdenticalTo($value, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
+		self::check($value, __METHOD__);
 
-		if ($this->variableIsSet()->variable === $variable)
+		if ($this->valueIsSet()->value === $value)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->toString($value)));
 		}
 	}
 
-	public function isNotIdenticalTo($variable, $failMessage = null)
+	public function isNotIdenticalTo($value, $failMessage = null)
 	{
-		self::check($variable, __METHOD__);
+		self::check($value, __METHOD__);
 
-		if ($this->variableIsSet()->variable !== $variable)
+		if ($this->valueIsSet()->value !== $value)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->toString($value)));
 		}
 	}
 
 	public function isNull($failMessage = null)
 	{
-		if ($this->variableIsSet()->variable === null)
+		if ($this->valueIsSet()->value === null)
 		{
 			return $this->pass();
 		}
@@ -137,7 +137,7 @@ class variable extends atoum\asserter
 
 	public function isNotNull($failMessage = null)
 	{
-		if ($this->variableIsSet()->variable !== null)
+		if ($this->valueIsSet()->value !== null)
 		{
 			return $this->pass();
 		}
@@ -149,14 +149,14 @@ class variable extends atoum\asserter
 
 	public function isReferenceTo(& $reference, $failMessage = null)
 	{
-		if ($this->variableIsSet()->isSetByReference() === false)
+		if ($this->valueIsSet()->isSetByReference() === false)
 		{
-			throw new exceptions\logic('Variable is not set by reference');
+			throw new exceptions\logic('Value is not set by reference');
 		}
 
-		if (is_object($this->variable) === true && is_object($reference) === true)
+		if (is_object($this->value) === true && is_object($reference) === true)
 		{
-			if ($this->variable === $reference)
+			if ($this->value === $reference)
 			{
 				return $this->pass();
 			}
@@ -169,7 +169,7 @@ class variable extends atoum\asserter
 		{
 			$tmp = $reference;
 			$reference = uniqid(mt_rand());
-			$isReference = ($this->variable === $reference);
+			$isReference = ($this->value === $reference);
 			$reference = $tmp;
 
 			if ($isReference === true)
@@ -185,7 +185,7 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
-	protected function variableIsSet($message = 'Variable is undefined')
+	protected function valueIsSet($message = 'Value is undefined')
 	{
 		if ($this->isSet === false)
 		{
@@ -195,7 +195,7 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
-	protected static function check($variable, $method) {}
+	protected static function check($value, $method) {}
 }
 
 ?>

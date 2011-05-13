@@ -36,9 +36,9 @@ class adapter extends atoum\test
 		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
@@ -51,12 +51,12 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getAdapter())->isEqualTo($variable)
+			->string($asserter->getAdapter())->isEqualTo($value)
 		;
 
 		$this->assert

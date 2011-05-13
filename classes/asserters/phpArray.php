@@ -3,17 +3,18 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	\mageekguy\atoum\asserters,
 	\mageekguy\atoum\exceptions,
 	\mageekguy\atoum\tools\diffs
 ;
 
-class phpArray extends \mageekguy\atoum\asserters\variable
+class phpArray extends asserters\variable
 {
-	public function setWith($variable, $label = null)
+	public function setWith($value, $label = null)
 	{
-		parent::setWith($variable, $label);
+		parent::setWith($value, $label);
 
-		if (self::isArray($this->variable) === false)
+		if (self::isArray($this->value) === false)
 		{
 			$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
 		}
@@ -27,7 +28,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 
 	public function hasSize($size, $failMessage = null)
 	{
-		if (sizeof($this->variableIsSet()->variable) == $size)
+		if (sizeof($this->valueIsSet()->value) == $size)
 		{
 			return $this->pass();
 		}
@@ -39,7 +40,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 
 	public function isEmpty($failMessage = null)
 	{
-		if (sizeof($this->variableIsSet()->variable) == 0)
+		if (sizeof($this->valueIsSet()->value) == 0)
 		{
 			return $this->pass();
 		}
@@ -55,7 +56,7 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 
 	public function isNotEmpty($failMessage = null)
 	{
-		if (sizeof($this->variableIsSet()->variable) > 0)
+		if (sizeof($this->valueIsSet()->value) > 0)
 		{
 			return $this->pass();
 		}
@@ -69,29 +70,29 @@ class phpArray extends \mageekguy\atoum\asserters\variable
 		}
 	}
 
-	public function contain($variable, $failMessage = null)
+	public function contain($value, $failMessage = null)
 	{
-		if (in_array($variable, $this->variableIsSet()->variable) === true)
+		if (in_array($value, $this->valueIsSet()->value) === true)
 		{
 			return $this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->toString($variable)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->toString($value)));
 		}
 	}
 
-	protected static function check($variable, $method)
+	protected static function check($value, $method)
 	{
-		if (self::isArray($variable) === false)
+		if (self::isArray($value) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an array');
 		}
 	}
 
-	protected static function isArray($variable)
+	protected static function isArray($value)
 	{
-		return (is_array($variable) === true);
+		return (is_array($value) === true);
 	}
 }
 

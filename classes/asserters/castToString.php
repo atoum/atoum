@@ -2,31 +2,33 @@
 
 namespace mageekguy\atoum\asserters;
 
-class castToString extends \mageekguy\atoum\asserters\string
+use \mageekguy\atoum\asserters;
+
+class castToString extends asserters\string
 {
-	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
+	public function setWith($value, $label = null, $charlist = null, $checkType = true)
 	{
-		parent::setWith($variable, $label, $charlist, false);
+		parent::setWith($value, $label, $charlist, false);
 
 		if ($checkType === true)
 		{
-			if (self::isObject($variable) === false)
+			if (self::isObject($value) === false)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this->toString($variable)));
+				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this->toString($value)));
 			}
 			else
 			{
 				$this->pass();
-				$this->variable = (string) $variable;
+				$this->value = (string) $value;
 			}
 		}
 
 		return $this;
 	}
 
-	protected static function isObject($variable)
+	protected static function isObject($value)
 	{
-		return (is_object($variable) === true);
+		return (is_object($value) === true);
 	}
 }
 

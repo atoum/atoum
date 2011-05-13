@@ -28,7 +28,7 @@ class string extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -38,9 +38,9 @@ class string extends atoum\test
 		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -50,36 +50,36 @@ class string extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->integer($asserter->getVariable())->isEqualTo($variable)
+			->integer($asserter->getValue())->isEqualTo($value)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = uniqid()))->isIdenticalTo($asserter)
+			->object($asserter->setWith($value = uniqid()))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 			->variable($asserter->getCharlist())->isNull()
 		;
 
 		$score->reset();
 
 		$this->assert
-			->object($asserter->setWith($variable = uniqid(), null, $charlist = "\010"))->isIdenticalTo($asserter)
+			->object($asserter->setWith($value = uniqid(), null, $charlist = "\010"))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isZero()
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 			->string($asserter->getCharlist())->isEqualTo($charlist)
 		;
 	}
@@ -88,16 +88,16 @@ class string extends atoum\test
 	{
 		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$asserter->setWith($variable = uniqid());
+		$asserter->setWith($value = uniqid());
 
 		$this->assert
-			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . $variable . '\'')
+			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . $value . '\'')
 		;
 
-		$asserter->setWith($variable = "\010" . uniqid() . "\010", null, $charlist = "\010");
+		$asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010");
 
 		$this->assert
-			->string((string) $asserter)->isEqualTo('string(' . strlen($variable) . ') \'' . addcslashes($variable, "\010") . '\'')
+			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
 		;
 	}
 
@@ -112,7 +112,7 @@ class string extends atoum\test
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-					->hasMessage('Variable is undefined')
+					->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith($firstString = uniqid());
@@ -142,7 +142,7 @@ class string extends atoum\test
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-					->hasMessage('Variable is undefined')
+					->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith($string = uniqid());
@@ -188,7 +188,7 @@ class string extends atoum\test
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-					->hasMessage('Variable is undefined')
+					->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith('');

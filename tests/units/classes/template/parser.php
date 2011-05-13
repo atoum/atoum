@@ -201,38 +201,47 @@ class parser extends atoum\test
 		;
 	}
 
-	/*
 	public function testCheckString()
 	{
 		$parser = new template\parser();
 
-		$this->assert->boolean($parser->checkString(uniqid(), $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . uniqid() . ':' . uniqid() . ' />', $error))->isTrue();
+		$this->assert
+			->object($parser->checkString(uniqid()))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . uniqid() . ':' . uniqid() . ' />'))->isIdenticalTo($parser)
+		;
 
 		$tag = uniqid();
 
-		$this->assert->boolean($parser->checkString('<', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace, $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag, $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="true" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="false" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="true" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="false" />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' />', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue();
-		$this->assert->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >', $error))->isTrue();
-
 		$this->assert
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="" />', $error))->isFalse()
-			->and
+			->object($parser->checkString('<'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>'))->isIdenticalTo($parser)
+			->exception(function() use ($parser, $tag) {
+						$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+					->hasMessage('Id must not be empty')
+			/*
+			->string($error)->isEqualTo('Line 1 at offset 1 : Id must not be empty')
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="true" />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="false" />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="true" />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="false" />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' />', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >', $error))->isTrue()
+			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />', $error))->isFalse()
 			->string($error)->isEqualTo('Line 1 at offset 1 : Value \'\' of html attribute is invalid')
+			*/
 		;
 
+		/*
 		$id = uniqid();
 		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" />';
 		$this->assert
@@ -295,8 +304,10 @@ class parser extends atoum\test
 			->and
 			->string($error)->isEqualTo('Line 5 at offset ' . (strlen($firstTag) + 5) . ' : Tag \'' . $notOpenTag . '\' is not open')
 		;
+		*/
 	}
 
+	/*
 	public function testParseString()
 	{
 		$parser = new template\parser();

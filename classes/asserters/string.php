@@ -13,15 +13,15 @@ class string extends variable
 		return $this->charlist;
 	}
 
-	public function setWith($variable, $label = null, $charlist = null, $checkType = true)
+	public function setWith($value, $label = null, $charlist = null, $checkType = true)
 	{
-		parent::setWith($variable, $label);
+		parent::setWith($value, $label);
 
 		$this->charlist = $charlist;
 
 		if ($checkType === true)
 		{
-			if (self::isString($this->variable) === false)
+			if (self::isString($this->value) === false)
 			{
 				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
 			}
@@ -51,7 +51,7 @@ class string extends variable
 
 	public function match($pattern, $failMessage = null)
 	{
-		if (preg_match($pattern, $this->variableIsSet()->variable) === 1)
+		if (preg_match($pattern, $this->valueIsSet()->value) === 1)
 		{
 			return $this->pass();
 		}
@@ -61,22 +61,22 @@ class string extends variable
 		}
 	}
 
-	public function isEqualTo($variable, $failMessage = null)
+	public function isEqualTo($value, $failMessage = null)
 	{
-		return parent::isEqualTo($variable, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
+		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
 	}
 
-	protected static function check($variable, $method)
+	protected static function check($value, $method)
 	{
-		if (self::isString($variable) === false)
+		if (self::isString($value) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a string');
 		}
 	}
 
-	protected static function isString($variable)
+	protected static function isString($value)
 	{
-		return (is_string($variable) === true);
+		return (is_string($value) === true);
 	}
 }
 

@@ -4,7 +4,7 @@ namespace mageekguy\atoum\template;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\template\parser
 ;
 
 class parser implements atoum\adapter\aggregator
@@ -14,6 +14,9 @@ class parser implements atoum\adapter\aggregator
 
 	protected $namespace = '';
 	protected $adapter = null;
+	protected $errorLine = null;
+	protected $errorOffset = null;
+	protected $errorMessage = null;
 
 	public function __construct($namespace = self::defaultNamespace, atoum\adapter $adapter = null)
 	{
@@ -52,12 +55,12 @@ class parser implements atoum\adapter\aggregator
 		return $this->adapter;
 	}
 
-	/*
-	public function checkString($string, & $error)
+	public function checkString($string)
 	{
-		return $this->parse($string, new atoum\template(), $error);
+		return $this->parse($string, new atoum\template());
 	}
 
+	/*
 	public function checkFile($file, & $error)
 	{
 		$error = null;
@@ -82,14 +85,9 @@ class parser implements atoum\adapter\aggregator
 
 	public function parseString($string, atoum\template $root = null)
 	{
-		if ($this->parse((string) $string, $root, $error) == true)
-		{
-			return $root;
-		}
-		else
-		{
-			throw new exceptions\runtime($error);
-		}
+		$this->parse((string) $string, $root);
+
+		return $root;
 	}
 
 	/*
@@ -113,20 +111,20 @@ class parser implements atoum\adapter\aggregator
 
 	public static function getTemplateFromString($string, parent $parent = null, $namespace = self::defaultNamespace)
 	{
-		$templateParser = new self($namespace);
+		$templateParser = new static($namespace);
 
 		return $templateParser->parseString($string, $parent);
 	}
 
 	public static function getTemplateFromFile(\ogo\fs\file $file, parent $parent = null, $namespace = self::defaultNamespace)
 	{
-		$templateParser = new self($namespace);
+		$templateParser = new static($namespace);
 
 		return $templateParser->parseFile($file, $parent);
 	}
 	*/
 
-	private function parse($string, & $root, & $error)
+	private function parse($string, & $root)
 	{
 		if ($root === null)
 		{
@@ -134,10 +132,11 @@ class parser implements atoum\adapter\aggregator
 		}
 
 		$currentTag = $root;
-		$error = null;
+
 		$stack = array();
-		$offset = 1;
+
 		$line = 1;
+		$offset = 1;
 
 		while (preg_match('%<(/)?' . $this->namespace . ':([^\s/>]+)(?(1)\s*|((?:\s+\w+="[^"]*")*)\s*(/?))(>)%', $string, $tag, PREG_OFFSET_CAPTURE) == true)
 		{
@@ -172,10 +171,13 @@ class parser implements atoum\adapter\aggregator
 				{
 					foreach ($attributes[1] as $index => $attribute)
 					{
-						if ($this->setAttribute($child, $attribute, $attributes[2][$index], $error) == false)
+						try
 						{
-							$error = 'Line ' . $line . ' at offset ' . $offset . ' : ' . $error;
-							return false;
+							$child->setAttribute($attribute, $attributes[2][$index]);
+						}
+						catch (\exception $exception)
+						{
+							throw new parser\exception($exception->getMessage(), $line, $offset, $exception);
 						}
 					}
 				}
@@ -192,8 +194,7 @@ class parser implements atoum\adapter\aggregator
 
 				if ($stackedTemplateTag === null || $stackedTemplateTag->getTag() != $tag[2][0])
 				{
-					$error = 'Line ' . $line . ' at offset ' . $offset . ' : Tag \'' . $tag[2][0] . '\' is not open';
-					return false;
+					throw new parser\exception('Tag \'' . $tag[2][0] . '\' is not open', $line, $offset);
 				}
 				else
 				{
@@ -214,35 +215,12 @@ class parser implements atoum\adapter\aggregator
 			$currentTag->addChild(new data($string));
 		}
 
-		if (sizeof($stack) == 0)
+		if (sizeof($stack) > 0)
 		{
-			return true;
-		}
-		else
-		{
-			$error = 'Line ' . $line . ' at offset ' . ($offset + strlen($string)) . ' : Tag \'' . $currentTag->getTag() . '\' must be closed';
-
-			return false;
-		}
-	}
-
-	private function setAttribute(tag $tag, $attribute, $value, & $error)
-	{
-		$attributeIsSet = true;
-
-		$error = '';
-
-		try
-		{
-			$tag->setAttribute($attribute, $value);
-		}
-		catch (\exception $exception)
-		{
-			$error = $exception->getMessage();
-			$attributeIsSet = false;
+			throw new parser\exception('Tag \'' . $currentTag->getTag() . '\' must be closed', $line, $offset + strlen($string));
 		}
 
-		return $attributeIsSet;
+		return $this;
 	}
 }
 

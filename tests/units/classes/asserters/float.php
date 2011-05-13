@@ -28,7 +28,7 @@ class float extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -38,9 +38,9 @@ class float extends atoum\test
 		$asserter = new asserters\float(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a float'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a float'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -50,22 +50,22 @@ class float extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a float'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not a float'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 
 		$this->assert
-			->object($asserter->setWith($variable = (float) rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
+			->object($asserter->setWith($value = (float) rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->float($asserter->getVariable())->isEqualTo($variable)
+			->float($asserter->getValue())->isEqualTo($value)
 		;
 	}
 
@@ -73,27 +73,27 @@ class float extends atoum\test
 	{
 		$asserter = new asserters\float(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$asserter->setWith($variable = (float) rand(1, PHP_INT_MAX));
+		$asserter->setWith($value = (float) rand(1, PHP_INT_MAX));
 
 		$score->reset();
 
 		$this->assert
-			->object($asserter->isEqualTo($variable))->isIdenticalTo($asserter)
+			->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;
 
 		$diff = new diffs\variable();
 
-		$diff->setReference(- $variable)->setData($variable);
+		$diff->setReference(- $value)->setData($value);
 
 		$this->assert
-			->exception(function() use ($asserter, $variable, & $line) {
-						$line = __LINE__; $asserter->isEqualTo(- $variable);
+			->exception(function() use ($asserter, $value, & $line) {
+						$line = __LINE__; $asserter->isEqualTo(- $value);
 					}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable)) . PHP_EOL . $diff)
+				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $value)) . PHP_EOL . $diff)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -104,7 +104,7 @@ class float extends atoum\test
 							'file' => __FILE__,
 							'line' => $line,
 							'asserter' => get_class($asserter) . '::isEqualTo()',
-							'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $variable) . PHP_EOL . $diff)
+							'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $value) . PHP_EOL . $diff)
 						)
 					)
 				)

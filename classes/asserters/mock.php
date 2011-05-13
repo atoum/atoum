@@ -2,9 +2,13 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\asserters,
+	\mageekguy\atoum\exceptions
+;
 
-class mock extends \mageekguy\atoum\asserter
+class mock extends atoum\asserter
 {
 	protected $mock = null;
 

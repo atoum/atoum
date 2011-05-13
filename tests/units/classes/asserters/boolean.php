@@ -28,7 +28,7 @@ class boolean extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getVariable())->isNull()
+			->variable($asserter->getValue())->isNull()
 			->boolean($asserter->wasSet())->isFalse()
 		;
 	}
@@ -43,7 +43,7 @@ class boolean extends atoum\test
 				}
 			)
 				->isInstanceOf('\logicException')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith(true);
@@ -80,7 +80,7 @@ class boolean extends atoum\test
 				}
 			)
 				->isInstanceOf('\logicException')
-				->hasMessage('Variable is undefined')
+				->hasMessage('Value is undefined')
 		;
 
 		$asserter->setWith(false);
@@ -112,9 +112,9 @@ class boolean extends atoum\test
 		$asserter = new asserters\boolean(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $variable) { $line = __LINE__; $asserter->setWith($variable = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($variable)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
@@ -127,12 +127,12 @@ class boolean extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($variable))
+						'fail' => sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($value))
 					)
 				)
 			)
 			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getVariable())->isEqualTo($variable)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 
 		$this->assert
@@ -142,7 +142,7 @@ class boolean extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->boolean($asserter->getVariable())->isTrue()
+			->boolean($asserter->getValue())->isTrue()
 		;
 	}
 }
