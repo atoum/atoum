@@ -2,17 +2,21 @@
 
 namespace mageekguy\atoum\scripts\phar;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\scripts;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\scripts,
+	\mageekguy\atoum\exceptions
+;
 
-class stub extends atoum\scripts\runner
+class stub extends atoum\script
 {
+	const defaultScript = 'runner';
+	const scriptsDirectory = 'scripts';
+	const scriptsExtension = '.php';
+
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
-
-		$this->name = \phar::running(false);
 	}
 
 	public function run(array $arguments = array())
@@ -24,10 +28,19 @@ class stub extends atoum\scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script
-					->runTests(false)
-					->infos()
-				;
+				$script->help();
+			},
+			array('-h', '--help')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->infos();
 			},
 			array('-i', '--infos')
 		);
@@ -39,10 +52,7 @@ class stub extends atoum\scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script
-					->runTests(false)
-					->signature()
-				;
+				$script->signature();
 			},
 			array('-s', '--signature')
 		);
@@ -54,10 +64,7 @@ class stub extends atoum\scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script
-					->runTests(false)
-					->extractTo($values[0])
-				;
+				$script->extractTo($values[0]);
 			},
 			array('-e', '--extractTo')
 		);
@@ -73,18 +80,15 @@ class stub extends atoum\scripts\runner
 			},
 			array('--testIt')
 		);
-		
+
 		$this->argumentsParser->addHandler(
-	      function($script, $argument, $values) {
-				if (sizeof($values) !== 1)
+	      function($script, $argument, $values, $position) {
+				if ($position !== 1 || sizeof($values) !== 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
-            
-				$script
-				   ->runTests(false)
-				   ->useScript($values[0]);
-				return;
+
+				$script->useScript($values[0]);
 			},
 			array('-u', '--use')
 		);
@@ -94,53 +98,40 @@ class stub extends atoum\scripts\runner
 
 	public function help(array $options = array())
 	{
-		return parent::help(array(
-				'-i, --infos' => $this->locale->_('Display informations'),
-				'-s, --signature' => $this->locale->_('Display phar signature'),
-				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
-				'--testIt' => $this->locale->_('Execute all Atoum unit tests'),
-				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run the \mageekguy\atoum\scripts\<script> with <args> as arguments')
+		$this
+			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+		;
+
+		$this->writeLabels(
+			array_merge(
+				array(
+					'-i, --infos' => $this->locale->_('Display informations'),
+					'-s, --signature' => $this->locale->_('Display phar signature'),
+					'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
+					'--testIt' => $this->locale->_('Execute all Atoum unit tests'),
+					'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
+				)
+				,
+				$options
 			)
 		);
+
+		return $this;
 	}
 
 	public function useScript($script)
 	{
-	   $scriptName = '\mageekguy\atoum\scripts\\'.$script;
-	   if ($this->adapter->class_exists($scriptName) === false)
-	   {
-	      throw new exceptions\logic('The class \'' . $scriptName. ' doesn\'t exist');
-	   }
-	   
-	   $runScript = new $scriptName(__FILE__);
-	   
-	   if (is_a($runScript, '\mageekguy\atoum\script') === false)
-	   {
-	      throw new exceptions\logic('The class \'' . $scriptName. ' is not a \mageekguy\atoum\script instance');
-	   }
-	   
-	   $superglobals = $this->getArgumentsParser()->getSuperglobals();
-	   $arguments = array_slice($superglobals->_SERVER['argv'], 1);
-	   
-		if (sizeof($arguments) > 0)
+		$scriptFile = self::getScriptFile($script);
+
+		if (file_exists($scriptFile) === false)
 		{
-		   do
-		   {
-			   $value = array_shift($arguments);
-			}
-		   while (sizeof($arguments) > 0 && $value != $script);
-			
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
 		}
-	   array_unshift($arguments, __FILE__);
-	   
-	   $superglobals->_SERVER = array('argv' => $arguments);
-	   $runScript->getArgumentsParser()->setSuperglobals($superglobals);
-	   
-	   $this->writeLabel($this->locale->_('Running script:'), $script);
-	   $runScript->run();
-      exit;
+
+		require_once($scriptFile);
 	}
-	
+
 	public function infos()
 	{
 		$phar = new \phar(\phar::running());
@@ -189,6 +180,11 @@ class stub extends atoum\scripts\runner
 		}
 
 		return $this;
+	}
+
+	protected static function getScriptFile($scriptName)
+	{
+		return \Phar::running() . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
 	}
 }
 

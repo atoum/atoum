@@ -26,7 +26,8 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 			set_error_handler(function($error, $message, $file, $line) use ($runner) {
 					if (error_reporting() !== 0)
 					{
-						$runner->writeError(sprintf($runner->getLocale()->_('Error: %s'), $message));
+						$runner->writeError($message);
+
 						exit($error);
 					}
 				}
@@ -38,7 +39,8 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 			}
 			catch (\exception $exception)
 			{
-				$runner->writeError(sprintf($runner->getLocale()->_('Exception: %s'), $exception->getMessage()));
+				$runner->writeError($exception->getMessage());
+
 				exit($exception->getCode());
 			}
 

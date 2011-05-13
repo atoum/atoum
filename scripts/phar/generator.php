@@ -16,7 +16,8 @@ $generator->setStubFile(__DIR__ . '/resources/stub.php');
 set_error_handler(function($error, $message, $file, $line) use ($generator) {
 		if (error_reporting() !== 0)
 		{
-			$generator->writeError(sprintf($generator->getLocale()->_('Error: %s'), $message));
+			$generator->writeError($message);
+
 			exit($error);
 		}
 	}
@@ -28,7 +29,8 @@ try
 }
 catch (\exception $exception)
 {
-	$generator->writeError(sprintf($generator->getLocale()->_('Exception: %s'), $exception->getMessage()));
+	$generator->writeError($exception->getMessage());
+
 	exit($exception->getCode());
 }
 

@@ -2,15 +2,16 @@
 
 namespace mageekguy\atoum\script\arguments;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class parser implements \iteratorAggregate
 {
 	protected $script = null;
 	protected $values = array();
 	protected $handlers = array();
-	protected $arguments = array();
 
 	public function __construct(atoum\superglobals $superglobals = null)
 	{
@@ -89,6 +90,8 @@ class parser implements \iteratorAggregate
 
 			$arguments->next();
 
+			$key = 0;
+
 			while ($arguments->valid() === true)
 			{
 				$value = $arguments->current();
@@ -99,7 +102,7 @@ class parser implements \iteratorAggregate
 				}
 				else
 				{
-					$this->triggerHandlers($argument);
+					$this->triggerHandlers();
 
 					$argument = $value;
 
@@ -109,7 +112,7 @@ class parser implements \iteratorAggregate
 				$arguments->next();
 			}
 
-			$this->triggerHandlers($argument);
+			$this->triggerHandlers();
 		}
 
 		return $this;
@@ -124,7 +127,7 @@ class parser implements \iteratorAggregate
 	{
 		$invoke = new \reflectionMethod($handler, '__invoke');
 
-		if ($invoke->getNumberOfParameters() != 3)
+		if ($invoke->getNumberOfParameters() < 3)
 		{
 			throw new exceptions\runtime('Handler must take three arguments');
 		}
@@ -144,12 +147,12 @@ class parser implements \iteratorAggregate
 
 	public function argumentIsHandled($argument)
 	{
-		return (in_array($argument, $this->arguments) === true);
+		return (isset($this->values[$argument]) === true);
 	}
 
 	public function argumentsAreHandled(array $arguments)
 	{
-		return (sizeof(array_intersect($this->arguments, $arguments)) > 0);
+		return (sizeof(array_intersect(array_keys($this->values), $arguments)) > 0);
 	}
 
 	public static function isArgument($value)
@@ -157,15 +160,21 @@ class parser implements \iteratorAggregate
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 
-	protected function triggerHandlers($argument)
+	protected function triggerHandlers()
 	{
-		if (isset($this->handlers[$argument]) === true)
-		{
-			$this->arguments[] = $argument;
+		$lastArgument = array_slice($this->values, -1);
 
+		list($argument, $values) = each($lastArgument);
+
+		if (isset($this->handlers[$argument]) === false)
+		{
+			unset($this->values[$argument]);
+		}
+		else
+		{
 			foreach ($this->handlers[$argument] as $handler)
 			{
-				$handler->__invoke($this->script, $argument, $this->getValues($argument));
+				$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
 			}
 		}
 

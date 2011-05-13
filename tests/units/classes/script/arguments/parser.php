@@ -63,6 +63,17 @@ class parser extends atoum\test
 		$parser->parse(array('-a'));
 
 		$this->assert
+			->array($parser->getValues())->isEmpty()
+			->variable($parser->getValues('-a'))->isNull()
+			->variable($parser->getValues(uniqid()))->isNull()
+		;
+
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('-a'))
+			->parse(array('-a'))
+		;
+
+		$this->assert
 			->array($parser->getValues())->isEqualTo(array('-a' => array()))
 			->array($parser->getValues('-a'))->isEmpty()
 			->variable($parser->getValues(uniqid()))->isNull()
@@ -76,7 +87,10 @@ class parser extends atoum\test
 			->variable($parser->getValues(uniqid()))->isNull()
 		;
 
-		$parser->parse(array('-a', 'a1', 'a2', '-b'));
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('-b'))
+			->parse(array('-a', 'a1', 'a2', '-b'))
+		;
 
 		$this->assert
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
@@ -132,12 +146,20 @@ class parser extends atoum\test
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a');
 
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('-a'))
+		;
+
 		$this->assert
 			->object($parser->parse())->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array()))
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b');
+
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('-b'))
+		;
 
 		$this->assert
 			->object($parser->parse())->isIdenticalTo($parser)
@@ -173,6 +195,10 @@ class parser extends atoum\test
 		;
 
 		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c');
+
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('--c'))
+		;
 
 		$this->assert
 			->object($parser->parse())->isIdenticalTo($parser)

@@ -14,7 +14,8 @@ $tagger = new scripts\tagger(__FILE__);
 set_error_handler(function($error, $message, $file, $line) use ($tagger) {
 		if (error_reporting() !== 0)
 		{
-			$tagger->writeError(sprintf($tagger->getLocale()->_('Error: %s'), $message));
+			$tagger->writeError($message);
+
 			exit($error);
 		}
 	}
@@ -26,7 +27,8 @@ try
 }
 catch (\exception $exception)
 {
-	$tagger->writeError(sprintf($tagger->getLocale()->_('Exception: %s'), $exception->getMessage()));
+	$tagger->writeError($exception->getMessage());
+
 	exit($exception->getCode());
 }
 
