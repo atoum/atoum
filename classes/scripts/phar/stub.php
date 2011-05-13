@@ -93,6 +93,18 @@ class stub extends atoum\script
 			array('-u', '--use')
 		);
 
+		$this->argumentsParser->addHandler(
+	      function($script, $argument, $values) {
+				if (sizeof($values) > 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->showScripts();
+			},
+			array('-ss', '--show-scripts')
+		);
+
 		return parent::run($arguments);
 	}
 
@@ -110,7 +122,8 @@ class stub extends atoum\script
 					'-s, --signature' => $this->locale->_('Display phar signature'),
 					'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
 					'--testIt' => $this->locale->_('Execute all Atoum unit tests'),
-					'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
+					'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
+					'-ss, --show-scripts' => $this->locale->_('Show available scripts')
 				)
 				,
 				$options
@@ -118,6 +131,19 @@ class stub extends atoum\script
 		);
 
 		return $this;
+	}
+
+	public function showScripts()
+	{
+		$this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
+
+		foreach (new \directoryIterator(\phar::running() . '/' . self::scriptsDirectory) as $inode)
+		{
+			if ($inode->isFile() === true)
+			{
+				$this->writeMessage(self::padding . $inode->getBasename(self::scriptsExtension));
+			}
+		}
 	}
 
 	public function useScript($script)
