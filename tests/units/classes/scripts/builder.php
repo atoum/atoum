@@ -863,9 +863,7 @@ class builder extends atoum\test
 
 		$builder->run();
 
-		$this->define
-			->mock($builder)->is('builder')
-		;
+		$this->define->mock($builder)->label = 'builder';
 
 		$this->assert
 			->builder->call('createPhar')

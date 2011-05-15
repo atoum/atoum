@@ -22,6 +22,19 @@ abstract class asserter
 		return $this->generator->__get($asserter);
 	}
 
+	public function __set($property, $value)
+	{
+		switch ($property)
+		{
+			case 'label':
+				$this->setLabel($value);
+				break;
+
+			default:
+				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' does not exist');
+		}
+	}
+
 	public function __call($asserter, $arguments)
 	{
 		return $this->generator->__call($asserter, $arguments);
@@ -70,11 +83,6 @@ abstract class asserter
 			case is_array($mixed):
 				return sprintf($this->getLocale()->_('array(%s)'), sizeof($mixed));
 		}
-	}
-
-	public function is($label)
-	{
-		return $this->setLabel($label);
 	}
 
 	public function setLabel($label)

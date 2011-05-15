@@ -45,6 +45,11 @@ class generator
 		return $asserter;
 	}
 
+	public function __set($asserter, $class)
+	{
+		$this->setAlias($asserter, $class);
+	}
+
 	public function __call($asserter, $arguments)
 	{
 		$asserter = $this->{$asserter};
@@ -119,12 +124,13 @@ class generator
 	public function setTest(atoum\test $test)
 	{
 		$this->test = $test;
+
 		return $this;
 	}
 
-	public function setAlias($alias, $asserter)
+	public function setAlias($alias, $asserterClass)
 	{
-		$this->aliases[$alias] = $asserter;
+		$this->aliases[$alias] = $asserterClass;
 
 		return $this;
 	}

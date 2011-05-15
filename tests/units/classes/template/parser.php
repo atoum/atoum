@@ -203,6 +203,8 @@ class parser extends atoum\test
 
 	public function testCheckString()
 	{
+		$this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+
 		$parser = new template\parser();
 
 		$this->assert
@@ -218,13 +220,15 @@ class parser extends atoum\test
 			->object($parser->checkString('<' . template\parser::defaultNamespace . ':'))->isIdenticalTo($parser)
 			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag))->isIdenticalTo($parser)
 			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>'))->isIdenticalTo($parser)
-			->exception(function() use ($parser, $tag) {
+			->parserException(function() use ($parser, $tag) {
 						$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
 					}
 				)
 					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
 					->isInstanceOf('\mageekguy\atoum\template\parser\exception')
 					->hasMessage('Id must not be empty')
+					->hasErrorLine(1)
+					->hasErrorOffset(1)
 			/*
 			->string($error)->isEqualTo('Line 1 at offset 1 : Id must not be empty')
 			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />', $error))->isTrue()
