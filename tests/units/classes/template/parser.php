@@ -221,53 +221,63 @@ class parser extends atoum\test
 			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag))->isIdenticalTo($parser)
 			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>'))->isIdenticalTo($parser)
 			->parserException(function() use ($parser, $tag) {
-						$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
-					}
-				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-					->isInstanceOf('\mageekguy\atoum\template\parser\exception')
-					->hasMessage('Id must not be empty')
-					->hasErrorLine(1)
-					->hasErrorOffset(1)
-			/*
-			->string($error)->isEqualTo('Line 1 at offset 1 : Id must not be empty')
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="true" />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' html="false" />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="true" />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" html="false" />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' />', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >', $error))->isTrue()
-			->boolean($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />', $error))->isFalse()
-			->string($error)->isEqualTo('Line 1 at offset 1 : Value \'\' of html attribute is invalid')
-			*/
+					$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id must not be empty')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >'))->isIdenticalTo($parser)
 		;
 
-		/*
-		$id = uniqid();
-		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" />';
+		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . ($id = uniqid()) . '" />';
+
 		$this->assert
-			->boolean($parser->checkString($tagWithId . $tagWithId, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 1 at offset ' . (strlen($tagWithId) + 1) . ' : Id \'' . $id . '\' is already define at line 1 at offset 1')
+			->parserException(function() use ($parser, $tagWithId) {
+					$parser->checkString($tagWithId . $tagWithId);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
+				->hasErrorLine(1)
+				->hasErrorOffset(41)
 		;
 
 		$tagWithInvalidAttribute = '<' . template\parser::defaultNamespace . ':' . $tag . ' foo="bar" />';
+
 		$this->assert
-			->boolean($parser->checkString($tagWithInvalidAttribute, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 1 at offset 1 : Attribute \'foo\' is invalid')
+			->parserException(function() use ($parser, $tagWithInvalidAttribute) {
+					$parser->checkString($tagWithInvalidAttribute);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Attribute \'foo\' is unknown')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
 		;
 
 		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+
 		$this->assert
-			->boolean($parser->checkString($firstTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 1 at offset ' . (strlen($firstTag) + 1) . ' : Tag \'' . $tag . '\' must be closed')
+			->parserException(function() use ($parser, $firstTag) {
+					$parser->checkString($firstTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(1)
+				->hasErrorOffset(20)
 		;
 
+		/*
 		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
 		$this->assert
 			->boolean($parser->checkString("\n\n\n\n" . $firstTag, $error))->isFalse()

@@ -84,7 +84,7 @@ class tag extends atoum\template
 			$line = $tagWithSameId->getLine();
 			$offset = $tagWithSameId->getOffset();
 
-			throw new exceptions\logic('Id is already defined in line ' . ($line !== null ?: 'unknown') . ' at offset ' . ($offset !== null ?: 'unknown'));
+			throw new exceptions\logic('Id \'' . $id . '\' is already defined in line ' . ($line !== null ?: 'unknown') . ' at offset ' . ($offset !== null ?: 'unknown'));
 		}
 
 		$this->id = $id;
