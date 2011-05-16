@@ -82,7 +82,7 @@ class runner extends atoum\script
 
 				$script
 					->runTests(false)
-					->help()
+					->helpRunner()
 				;
 			},
 			array('-h', '--help')
@@ -254,7 +254,7 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function help(array $options = array())
+	public function helpRunner(array $options = array())
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
