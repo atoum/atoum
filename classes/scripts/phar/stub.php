@@ -8,7 +8,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class stub extends atoum\script
+class stub extends scripts\runner
 {
 	const defaultScript = 'runner';
 	const scriptsDirectory = 'scripts';
