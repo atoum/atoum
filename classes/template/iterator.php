@@ -23,7 +23,7 @@ class iterator extends \ArrayIterator
 			$tags = array_merge($tags, $child->getByTag($tag));
 		}
 
-		return new self($tags);
+		return new static($tags);
 	}
 
 	public function __set($tag, $value)

@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\template;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\test,
 	\mageekguy\atoum\template
 ;
 
@@ -71,6 +72,355 @@ class parser extends atoum\test
 		$this->assert
 			->object($parser->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($parser)
 			->object($parser->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testCheckString()
+	{
+		$this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+
+		$parser = new template\parser();
+
+		$this->assert
+			->object($parser->checkString(uniqid()))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . uniqid() . ':' . uniqid() . ' />'))->isIdenticalTo($parser)
+		;
+
+		$tag = uniqid();
+
+		$this->assert
+			->object($parser->checkString('<'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>'))->isIdenticalTo($parser)
+			->parserException(function() use ($parser, $tag) {
+					$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id must not be empty')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
+			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >'))->isIdenticalTo($parser)
+		;
+
+		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . ($id = uniqid()) . '" />';
+
+		$this->assert
+			->parserException(function() use ($parser, $tagWithId) {
+					$parser->checkString($tagWithId . $tagWithId);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
+				->hasErrorLine(1)
+				->hasErrorOffset(41)
+		;
+
+		$tagWithInvalidAttribute = '<' . template\parser::defaultNamespace . ':' . $tag . ' foo="bar" />';
+
+		$this->assert
+			->parserException(function() use ($parser, $tagWithInvalidAttribute) {
+					$parser->checkString($tagWithInvalidAttribute);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Attribute \'foo\' is unknown')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+		;
+
+		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag) {
+					$parser->checkString($firstTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$eols = str_repeat("\n", rand(1, 10));
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag, $eols) {
+					$parser->checkString($eols . $firstTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$spaces = str_repeat(' ', rand(1, 10));
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag, $eols, $spaces) {
+					$parser->checkString($eols . $spaces . $firstTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+		;
+
+		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+		$secondTag = '</' . template\parser::defaultNamespace . ':' . ($notOpenTag = uniqid()) . '  ' . "\t" . '    >';
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag, $secondTag) {
+					$parser->checkString($firstTag . $secondTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+			->parserException(function() use ($parser, $firstTag, $secondTag, $eols) {
+					$parser->checkString($eols . $firstTag . $secondTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+			->parserException(function() use ($parser, $firstTag, $secondTag, $eols, $spaces) {
+					$parser->checkString($eols . $spaces . $firstTag . $secondTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+		;
+	}
+
+	public function testCheckFile()
+	{
+		$this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+
+		$parser = new template\parser(null, $adapter = new test\adapter());
+
+		$adapter->file_get_contents = false;
+
+		$this->assert
+			->exception(function() use ($parser, & $path) {
+					$parser->checkFile($path = uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to get contents from file \'' . $path . '\'')
+		;
+
+		$adapter->file_get_contents = '<' . uniqid() . ':' . uniqid() . ' />';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace;
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid());
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="" />';
+
+		$this->assert
+			->parserException(function() use ($parser, $tag) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id must not be empty')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . ($id = uniqid()) . '" />';
+
+		$adapter->file_get_contents = $tagWithId . $tagWithId;
+
+		$this->assert
+			->parserException(function() use ($parser, $tagWithId) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
+				->hasErrorLine(1)
+				->hasErrorOffset(41)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . ' foo="bar" />';
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Attribute \'foo\' is unknown')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+		;
+
+		$adapter->file_get_contents = $firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = ($eols = str_repeat("\n", rand(1, 10))) . ($firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>');
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = ($eols = str_repeat("\n", rand(1, 10))) . ($spaces = str_repeat(' ', rand(1, 10))) . ($firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>');
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+		;
+
+		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+		$secondTag = '</' . template\parser::defaultNamespace . ':' . ($notOpenTag = uniqid()) . '  ' . "\t" . '    >';
+
+		$adapter->file_get_contents = $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = $eols . $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = $eols . $spaces . $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag, $secondTag, $eols, $spaces) {
+					$parser->checkFile($eols . $spaces . $firstTag . $secondTag);
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
 		;
 	}
 
@@ -191,711 +541,159 @@ class parser extends atoum\test
 			->integer($root->getChild(1)->getLine())->isEqualTo(7)
 			->integer($root->getChild(1)->getOffset())->isEqualTo(1)
 		;
-
-		$this->assert
-			->exception(function() use ($parser) {
-					$parser->parseString('<' . template\parser::defaultNamespace . ':' . uniqid() . ' id="' . ($id = uniqid()) . '">' . "\n" . '<' . template\parser::defaultNamespace . ':' . uniqid() . ' id="' . $id . '">');
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-		;
 	}
 
-	public function testCheckString()
+	public function testParseFile()
 	{
-		$this->define->parserException = '\mageekguy\atoum\tests\units\asserters\template\parser\exception';
+		$parser = new template\parser(null, $adapter = new test\adapter());
 
-		$parser = new template\parser();
-
-		$this->assert
-			->object($parser->checkString(uniqid()))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . uniqid() . ':' . uniqid() . ' />'))->isIdenticalTo($parser)
-		;
-
-		$tag = uniqid();
+		$adapter->file_get_contents = false;
 
 		$this->assert
-			->object($parser->checkString('<'))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':'))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '/>'))->isIdenticalTo($parser)
-			->parserException(function() use ($parser, $tag) {
-					$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
+			->exception(function() use ($parser, & $path) {
+					$parser->parseFile($path = uniqid());
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
-				->hasMessage('Id must not be empty')
-				->hasErrorLine(1)
-				->hasErrorOffset(1)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />'))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>'))->isIdenticalTo($parser)
-			->object($parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >'))->isIdenticalTo($parser)
+				->hasMessage('Unable to get contents from file \'' . $path . '\'')
 		;
 
-		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . ($id = uniqid()) . '" />';
+		$adapter->file_get_contents = '';
 
 		$this->assert
-			->parserException(function() use ($parser, $tagWithId) {
-					$parser->checkString($tagWithId . $tagWithId);
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
-				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
-				->hasErrorLine(1)
-				->hasErrorOffset(41)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->isEmpty()
 		;
 
-		$tagWithInvalidAttribute = '<' . template\parser::defaultNamespace . ':' . $tag . ' foo="bar" />';
+		$adapter->file_get_contents = $string = uniqid();
 
 		$this->assert
-			->parserException(function() use ($parser, $tagWithInvalidAttribute) {
-					$parser->checkString($tagWithInvalidAttribute);
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
-				->hasMessage('Attribute \'foo\' is unknown')
-				->hasErrorLine(1)
-				->hasErrorOffset(1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+		$adapter->file_get_contents = $string = uniqid() . "\n" . uniqid() . "\n";
 
 		$this->assert
-			->parserException(function() use ($parser, $firstTag) {
-					$parser->checkString($firstTag);
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
-				->hasMessage('Tag \'' . $tag . '\' must be closed')
-				->hasErrorLine(1)
-				->hasErrorOffset(20)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
-		/*
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$this->assert
-			->boolean($parser->checkString("\n\n\n\n" . $firstTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 5 at offset ' . (strlen($firstTag) + 1) . ' : Tag \'' . $tag . '\' must be closed')
-		;
-
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$this->assert
-			->boolean($parser->checkString("\n\n\n\n    " . $firstTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 5 at offset ' . (strlen($firstTag) + 5) . ' : Tag \'' . $tag . '\' must be closed')
-		;
-
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$notOpenTag = uniqid();
-		$secondTag = '</' . template\parser::defaultNamespace . ':' . $notOpenTag . '  ' . "\t" . '    >';
-		$this->assert
-			->boolean($parser->checkString($firstTag . $secondTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 1 at offset ' . (strlen($firstTag) + 1) . ' : Tag \'' . $notOpenTag . '\' is not open')
-		;
-
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$notOpenTag = uniqid();
-		$secondTag = '</' . template\parser::defaultNamespace . ':' . $notOpenTag . '  ' . "\t" . '    >';
-		$this->assert
-			->boolean($parser->checkString("\n\n\n\n" . $firstTag . $secondTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 5 at offset ' . (strlen($firstTag) + 1) . ' : Tag \'' . $notOpenTag . '\' is not open')
-		;
-
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
-		$notOpenTag = uniqid();
-		$secondTag = '</' . template\parser::defaultNamespace . ':' . $notOpenTag . '  ' . "\t" . '    >';
-		$this->assert
-			->boolean($parser->checkString("\n\n\n\n    " . $firstTag . $secondTag, $error))->isFalse()
-			->and
-			->string($error)->isEqualTo('Line 5 at offset ' . (strlen($firstTag) + 5) . ' : Tag \'' . $notOpenTag . '\' is not open')
-		;
-		*/
-	}
-
-	/*
-	public function testParseString()
-	{
-		$parser = new template\parser();
-
-		# String is invalid
-		$invalidArguments = array
-			(
-				1,
-				-1,
-				1.0,
-				-1,0,
-				true,
-				false
-			);
-
-		foreach ($invalidArguments as $argument)
-		{
-			$parser->parseString($argument);
-			$this->assert->error(E_USER_ERROR, 'Argument must be a string')->exists();
-		}
-
-		# Only one line of data
-		$string = uniqid();
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
-
-		$this->assert->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-		;
-
-		# Several lines of data
-		$string = uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n";
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />';
 
 		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
 		;
 
-		# String with only one tag with no attributes, with space at end
-		$tag = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
 
 		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
 		;
 
-		# String with only one tag with no attributes, with no space at end
-		$tag = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . '/>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />';
 
 		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->string($root->getChild(0)->getId())->isEqualTo($id)
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
 		;
 
-		# String with only one tag with attributes, with space at end
-		$tag = uniqid();
-		$id = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>';
 
 		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->string($root->getChild(0)->getId())->isEqualTo($id)
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
 		;
 
-		# String with only one tag with attributes, with no space at end
-		$tag = uniqid();
-		$id = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true"/>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>';
 
 		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(1)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(0)->getTag())->isEqualTo($tag)
+			->variable($root->getChild(0)->getId())->isNull()
+			->string($root->getChild(0)->getData())->isEmpty()
+			->integer($root->getChild(0)->getLine())->isEqualTo(1)
+			->integer($root->getChild(0)->getOffset())->isEqualTo(1)
 		;
 
-		# String with only one tag with no attributes and data
-		$tag = uniqid();
-		$data = uniqid();
-		$string = '<' . template\parser::defaultNamespace . ':' . $tag . '>' . $data . '</' . template\parser::defaultNamespace . ':' . $tag . '>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
 
 		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isFalse()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0)->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getData())->isEqualTo($data)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(3)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string1)
+			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->variable($root->getChild(1)->getId())->isNull()
+			->string($root->getChild(1)->getData())->isEmpty()
+			->integer($root->getChild(1)->getLine())->isEqualTo(1)
+			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
-		# String with one tag with no attributes between two string
-		$tag = uniqid();
-		$string0 = uniqid();
-		$string1 = uniqid();
-		$string = $string0 . '<' . template\parser::defaultNamespace . ':' . $tag . ' />' . $string1;
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
 
 		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string0)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(1)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($string0) + 1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEqualTo($string1)
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->array($root->getChildren())->hasSize(3)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string1)
+			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->string($root->getChild(1)->getId())->isEqualTo($id)
+			->string($root->getChild(1)->getData())->isEmpty()
+			->integer($root->getChild(1)->getLine())->isEqualTo(1)
+			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
+			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
-		# String with one tag with attributes between two string
-		$tag = uniqid();
-		$id = uniqid();
-		$string0 = uniqid();
-		$string1 = uniqid();
-		$string = $string0 . '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />' . $string1;
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string);
+		$adapter->file_get_contents = ($string = str_repeat("\n", 6)) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
 
 		$this->assert
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->string($ogoHtmlTemplateRoot->getData())->isEmpty()
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string0)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($string0) + 1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEqualTo($string1)
-		;
-
-		# String with one tag with no attributes at end of several lines
-		$string = uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n";
-		$tag = uniqid();
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string . '<' . template\parser::defaultNamespace . ':' . $tag . ' />');
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(1)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(6)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(1)
-		;
-
-		# String with one tag with attributes at end of several lines
-		$string = uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n" . uniqid() . "\n";
-		$tag = uniqid();
-		$id = uniqid();
-
-		$ogoHtmlTemplateRoot = $parser->parseString($string . '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . $id . '" html="true" />');
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEqualTo($string)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getId())->isEqualTo($id)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(6)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(1)
-		;
-
-		# String with no end of line and just tags with no attributes
-		$tag1 = uniqid();
-		$tag2 = uniqid();
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . ' />';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . ' />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . $secondTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag2)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(1)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($firstTag) + 1)
-		;
-
-		# String with no end of line and just tags with attributes
-		$tag1 = uniqid();
-		$id1 = uniqid();
-		$tag2 = uniqid();
-		$id2 = uniqid();
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . ' id="' . $id1 . '" html="true" />';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . ' id="' . $id2 . '" html="true" />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . $secondTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(2)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id1)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getTag())->isEqualTo($tag2)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getId())->isEqualTo($id2)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(1)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(1)->getOffset())->isEqualTo(strlen($firstTag) + 1)
-		;
-
-		# String with end of line and just tags with no attributes
-		$tag1 = uniqid();
-		$tag2 = uniqid();
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . ' />';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . ' />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . template\parser::eol . $secondTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEqualTo(template\parser::eol)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getTag())->isEqualTo($tag2)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(2)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(2)->htmlIsDisabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(2)->getLine())->isEqualTo(2)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(2)->getOffset())->isEqualTo(1)
-		;
-
-		# String with end of line and just tags with attributes
-		$tag1 = uniqid();
-		$id1 = uniqid();
-		$tag2 = uniqid();
-		$id2 = uniqid();
-		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . ' id="' . $id1 . '" html="true" />';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . ' id="' . $id2 . '" html="true" />';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstTag . template\parser::eol . $secondTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(3)
-			->and
-			->object($ogoHtmlTemplateRoot)->isInstanceOf('ogoHtmlTemplateRoot')
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id1)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(1))->isInstanceOf('ogoHtmlTemplateData')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(1)->getData())->isEqualTo(template\parser::eol)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(2))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getTag())->isEqualTo($tag2)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getId())->isEqualTo($id2)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(2)->htmlIsEnabled())->isTrue()
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(2)->getData())->isEmpty()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(2)->getLine())->isEqualTo(2)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(2)->getOffset())->isEqualTo(1)
-		;
-
-		# String with tag in a tag without attributes
-		$tag1 = uniqid();
-		$tag2 = uniqid();
-		$firstOpenTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . '>';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . '/>';
-		$firstCloseTag = '</' . template\parser::defaultNamespace . ':' . $tag1 . '>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstOpenTag . $secondTag . $firstCloseTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsDisabled())->isTrue()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0)->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getTag())->isEqualTo($tag2)
-			->and
-			->variable($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getId())->isNull()
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->htmlIsDisabled())->isTrue()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getOffset())->isEqualTo(strlen($firstOpenTag) + 1)
-		;
-
-		# String with tag in a tag with attributes
-		$tag1 = uniqid();
-		$id1 = uniqid();
-		$tag2 = uniqid();
-		$id2 = uniqid();
-		$firstOpenTag = '<' . template\parser::defaultNamespace . ':' . $tag1 . ' id="' . $id1 . '" html="true">';
-		$secondTag = '<' . template\parser::defaultNamespace . ':' . $tag2 . ' id="' . $id2 . '" html="true" />';
-		$firstCloseTag = '</' . template\parser::defaultNamespace . ':' . $tag1 . '>';
-
-		$ogoHtmlTemplateRoot = $parser->parseString($firstOpenTag . $secondTag . $firstCloseTag);
-
-		$this->assert
-			->sizeOf($ogoHtmlTemplateRoot->getChildren())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getTag())->isEqualTo($tag1)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getId())->isEqualTo($id1)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getOffset())->isEqualTo(1)
-			->and
-			->object($ogoHtmlTemplateRoot->getChild(0)->getChild(0))->isInstanceOf('ogoHtmlTemplateTag')
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getTag())->isEqualTo($tag2)
-			->and
-			->string($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getId())->isEqualTo($id2)
-			->and
-			->boolean($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->htmlIsEnabled())->isTrue()
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getLine())->isEqualTo(1)
-			->and
-			->integer($ogoHtmlTemplateRoot->getChild(0)->getChild(0)->getOffset())->isEqualTo(strlen($firstOpenTag) + 1)
+			->object($root = $parser->parseFile(uniqid()))
+			->array($root->getChildren())->hasSize(2)
+			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->string($root->getChild(0)->getData())->isEqualTo($string)
+			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->variable($root->getChild(1)->getId())->isNull()
+			->string($root->getChild(1)->getData())->isEmpty()
+			->integer($root->getChild(1)->getLine())->isEqualTo(7)
+			->integer($root->getChild(1)->getOffset())->isEqualTo(1)
 		;
 	}
-	*/
 }
 
 ?>

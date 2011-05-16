@@ -4,13 +4,14 @@ namespace mageekguy\atoum\template;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions,
 	\mageekguy\atoum\template\parser
 ;
 
 class parser implements atoum\adapter\aggregator
 {
-	const defaultNamespace = 'tpl';
 	const eol = "\n";
+	const defaultNamespace = 'tpl';
 
 	protected $namespace = '';
 	protected $adapter = null;
@@ -18,11 +19,16 @@ class parser implements atoum\adapter\aggregator
 	protected $errorOffset = null;
 	protected $errorMessage = null;
 
-	public function __construct($namespace = self::defaultNamespace, atoum\adapter $adapter = null)
+	public function __construct($namespace = null, atoum\adapter $adapter = null)
 	{
 		if ($adapter === null)
 		{
 			$adapter = new atoum\adapter();
+		}
+
+		if ($namespace === null)
+		{
+			$namespace = self::defaultNamespace;
 		}
 
 		$this
@@ -57,31 +63,13 @@ class parser implements atoum\adapter\aggregator
 
 	public function checkString($string)
 	{
-		return $this->parse($string, new atoum\template());
+		return $this->parse($string);
 	}
 
-	/*
-	public function checkFile($file, & $error)
+	public function checkFile($path)
 	{
-		$error = null;
-
-		if ($file->exists() === true)
-		{
-			$error = 'Path \'' . $file->getPath() . '\' is not a file';
-			return false;
-		}
-		else if ($file->isReadable() === false)
-		{
-			$error = 'Unable to read file \'' . $file->getRealPath() . '\'';
-			return false;
-		}
-		else
-		{
-			$file->read($string);
-			return $this->checkString($string, $error);
-		}
+		return $this->checkString($this->getFileContents($path));
 	}
-	*/
 
 	public function parseString($string, atoum\template $root = null)
 	{
@@ -90,41 +78,14 @@ class parser implements atoum\adapter\aggregator
 		return $root;
 	}
 
-	/*
-	public function parseFile($path, parent $parent = null)
+	public function parseFile($path, atoum\template $root = null)
 	{
-		$string = $this->adapter->file_get_contents($path);
+		$this->parse($this->getfileContents($path), $root);
 
-		if ($string === false)
-		{
-		}
-
-		if ($this->parse($string, $parent, $error) == true)
-		{
-			return $parent;
-		}
-		else
-		{
-			trigger_error($file->getPath() . ': ' . $error, E_USER_ERROR);
-		}
+		return $root;
 	}
 
-	public static function getTemplateFromString($string, parent $parent = null, $namespace = self::defaultNamespace)
-	{
-		$templateParser = new static($namespace);
-
-		return $templateParser->parseString($string, $parent);
-	}
-
-	public static function getTemplateFromFile(\ogo\fs\file $file, parent $parent = null, $namespace = self::defaultNamespace)
-	{
-		$templateParser = new static($namespace);
-
-		return $templateParser->parseFile($file, $parent);
-	}
-	*/
-
-	private function parse($string, & $root)
+	protected function parse($string, & $root = null)
 	{
 		if ($root === null)
 		{
@@ -221,6 +182,18 @@ class parser implements atoum\adapter\aggregator
 		}
 
 		return $this;
+	}
+
+	protected function getFileContents($path)
+	{
+		$fileContents = $this->adapter->file_get_contents($path);
+
+		if ($fileContents === false)
+		{
+			throw new exceptions\runtime('Unable to get contents from file \'' . $path . '\'');
+		}
+
+		return $fileContents;
 	}
 }
 
