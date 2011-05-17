@@ -35,13 +35,6 @@ class runner extends atoum\script
 		return $this->runner;
 	}
 
-	public function runTests($boolean)
-	{
-		$this->runTests = $boolean == true;
-
-		return $this;
-	}
-
 	public function setScoreFile($path)
 	{
 		$this->scoreFile = (string) $path;
@@ -65,10 +58,7 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script
-					->runTests(false)
-					->version()
-				;
+				$script->version();
 			},
 			array('-v', '--version')
 		);
@@ -80,10 +70,7 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script
-					->runTests(false)
-					->helpRunner()
-				;
+				$script->help();
 			},
 			array('-h', '--help')
 		);
@@ -251,10 +238,12 @@ class runner extends atoum\script
 			->writeMessage(sprintf($this->locale->_('Atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
 		;
 
+		$this->runTests = false;
+
 		return $this;
 	}
 
-	public function helpRunner(array $options = array())
+	public function help(array $options = array())
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
@@ -277,6 +266,8 @@ class runner extends atoum\script
 				$options
 			)
 		);
+
+		$this->runTests = false;
 
 		return $this;
 	}
