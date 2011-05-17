@@ -8,35 +8,18 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class stub extends atoum\script
+class stub extends scripts\runner
 {
-	const defaultScript = 'runner';
 	const scriptsDirectory = 'scripts';
 	const scriptsExtension = '.php';
-
-	protected $script = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
-
-		$this->script = self::getScriptFile(self::defaultScript);
 	}
 
 	public function run(array $arguments = array())
 	{
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->help();
-			},
-			array('-h', '--help')
-		);
-
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
@@ -111,24 +94,12 @@ class stub extends atoum\script
 
 		parent::run($arguments);
 
-		if ($this->script !== null)
-		{
-			require_once($this->script);
-		}
-
 		return $this;
 	}
 
-	public function help()
+	public function help(array $options = array())
 	{
-		$this
-			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
-			->writeMessage(sprintf($this->locale->_('Default script: %s'), self::defaultScript) . PHP_EOL)
-			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-		;
-
-		$this->writeLabels(
-			array(
+		return parent::help(array(
 				'-i, --infos' => $this->locale->_('Display informations, do not run any script'),
 				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
 				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>, do not run any script'),
@@ -137,10 +108,6 @@ class stub extends atoum\script
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
 			)
 		);
-
-		$this->script = null;
-
-		return $this;
 	}
 
 	public function listScripts()
@@ -151,13 +118,11 @@ class stub extends atoum\script
 		{
 			if ($inode->isFile() === true)
 			{
-				$script = $inode->getBasename(self::scriptsExtension);
-
-				$this->writeMessage(self::padding . $script . ($script !== self::defaultScript ? '' : ' (default script)'));
+				$this->writeMessage(self::padding . $inode->getBasename(self::scriptsExtension));
 			}
 		}
 
-		$this->script = null;
+		$this->runTests = false;
 
 		return $this;
 	}
@@ -185,7 +150,7 @@ class stub extends atoum\script
 			->writeLabels($phar->getMetadata())
 		;
 
-		$this->script = null;
+		$this->runTests = false;
 
 		return $this;
 	}
@@ -198,7 +163,7 @@ class stub extends atoum\script
 
 		$this->writeLabel($this->locale->_('Signature'), $signature['hash']);
 
-		$this->script = null;
+		$this->runTests = false;
 
 		return $this;
 	}
@@ -219,7 +184,7 @@ class stub extends atoum\script
 
 		$phar->extractTo($directory);
 
-		$this->script = null;
+		$this->runTests = false;
 
 		return $this;
 	}
@@ -230,8 +195,6 @@ class stub extends atoum\script
 		{
 			require_once($file->getPathname());
 		}
-
-		$this->script = null;
 
 		return $this;
 	}
