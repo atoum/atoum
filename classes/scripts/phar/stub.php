@@ -100,9 +100,9 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->showScripts();
+				$script->listScripts();
 			},
-			array('-ss', '--show-scripts')
+			array('-ls', '--list-scripts')
 		);
 
 		return parent::run($arguments);
@@ -123,7 +123,7 @@ class stub extends scripts\runner
 					'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
 					'--testIt' => $this->locale->_('Execute all Atoum unit tests'),
 					'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
-					'-ss, --show-scripts' => $this->locale->_('Show available scripts')
+					'-ls, --list-scripts' => $this->locale->_('List available scripts')
 				)
 				,
 				$options
@@ -133,7 +133,7 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function showScripts()
+	public function listScripts()
 	{
 		$this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
 
