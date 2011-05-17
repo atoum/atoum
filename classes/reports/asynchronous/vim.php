@@ -10,9 +10,9 @@ use
 
 class vim extends reports\asynchronous
 {
-	public function __construct()
+	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
-		parent::__construct();
+		parent::__construct($locale, $adapter);
 
 		$this
 			->addRunnerField(new fields\runner\version\string(), array(atoum\runner::runStart))

@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum;
 
-use \mageekguy\atoum\template;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum\template,
+	\mageekguy\atoum\exceptions
+;
 
 class template extends template\data implements \iteratorAggregate
 {

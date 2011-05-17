@@ -10,9 +10,9 @@ use
 
 class builder extends atoum\reports\asynchronous
 {
-	public function __construct(atoum\locale $locale = null)
+	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
-		parent::__construct($locale);
+		parent::__construct($locale, $adapter);
 
 		$runnerVersionField = new fields\runner\version\string(null, '');
 		$runnerPhpField = new fields\runner\php\string(null, '', '   ');

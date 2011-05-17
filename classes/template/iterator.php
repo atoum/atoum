@@ -4,11 +4,11 @@ namespace mageekguy\atoum\template;
 
 class iterator extends \ArrayIterator
 {
-	public function __call($function, $arguments)
+	public function __call($method, $arguments)
 	{
 		foreach ($this as $child)
 		{
-			call_user_func_array(array($child, $function), $arguments);
+			call_user_func_array(array($child, $method), $arguments);
 		}
 
 		return $this;

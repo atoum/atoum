@@ -78,6 +78,13 @@ class builder extends atoum\test
 				)
 			)
 		;
+
+		$report = new reports\builder($locale = new atoum\locale(), $adapter = new atoum\adapter());
+
+		$this->assert
+			->object($report->getLocale())->isIdenticalTo($locale)
+			->object($report->getAdapter())->isIdenticalTo($adapter)
+		;
 	}
 }
 
