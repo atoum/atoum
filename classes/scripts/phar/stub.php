@@ -113,14 +113,8 @@ class stub extends scripts\runner
 	public function listScripts()
 	{
 		$this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
-
-		foreach (new \directoryIterator(\phar::running() . '/' . self::scriptsDirectory) as $inode)
-		{
-			if ($inode->isFile() === true)
-			{
-				$this->writeMessage(self::padding . $inode->getBasename(self::scriptsExtension));
-			}
-		}
+		$this->writeMessage(self::padding . 'builder');
+		$this->writeMessage(self::padding . 'tagger');
 
 		$this->runTests = false;
 
@@ -129,16 +123,24 @@ class stub extends scripts\runner
 
 	public function useScript($script)
 	{
-		$scriptFile = self::getScriptFile($script);
-
-		if (file_exists($scriptFile) === false)
+		switch ($script)
 		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
+			case 'builder':
+			case 'tagger':
+				$scriptFile = self::getScriptFile($script);
+
+				if (file_exists($scriptFile) === false)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script file %s does not exist for script %s'), $scriptFile, $script));
+				}
+
+				require_once($scriptFile);
+
+				exit(0);
+
+			default:
+				throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
 		}
-
-		require_once($scriptFile);
-
-		exit(0);
 	}
 
 	public function infos()
