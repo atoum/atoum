@@ -12,6 +12,13 @@ class mock extends atoum\asserter
 {
 	protected $mock = null;
 
+	public function reset()
+	{
+		$this->mock->getMockController()->resetCalls();
+
+		return $this;
+	}
+
 	public function setWith($mock, $label = null)
 	{
 		$this->mock = $mock;

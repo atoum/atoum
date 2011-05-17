@@ -40,6 +40,11 @@ abstract class asserter
 		return $this->generator->__call($asserter, $arguments);
 	}
 
+	public function reset()
+	{
+		return $this;
+	}
+
 	public function getScore()
 	{
 		return $this->generator->getScore();

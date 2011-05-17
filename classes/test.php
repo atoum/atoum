@@ -128,9 +128,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		switch ($property)
 		{
-			case 'assert':
 			case 'define':
 				return $this->getAsserterGenerator();
+
+			case 'assert':
+				return $this->getAsserterGenerator()->resetAsserters();
 
 			case 'mock':
 				return $this->getMockGenerator();

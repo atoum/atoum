@@ -5,16 +5,18 @@ namespace mageekguy\atoum\reports\asynchronous\coverage;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\reports,
-	\mageekguy\atoum\template
+	\mageekguy\atoum\template,
+	\mageekguy\atoum\exceptions
 ;
 
 class html extends reports\asynchronous
 {
+	protected $projectName = '';
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 
-	public function __construct($templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($locale, $adapter);
 
@@ -24,6 +26,7 @@ class html extends reports\asynchronous
 		}
 
 		$this
+			->setProjectName($projectName)
 			->setTemplatesDirectory($templatesDirectory)
 			->setDestinationDirectory($destinationDirectory)
 			->setTemplateParser($parser)
@@ -66,12 +69,45 @@ class html extends reports\asynchronous
 		return $this->templateParser;
 	}
 
+	public function setProjectName($projectName)
+	{
+		$this->projectName = (string) $projectName;
+
+		return $this;
+	}
+
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
 	public function runnerStop(atoum\runner $runner)
 	{
 		$coverage = $runner->getScore()->getCoverage();
 
 		if (sizeof($coverage) > 0)
 		{
+			$classes = $coverage->getClasses();
+			$methods = $coverage->getMethods();
+
+			$index = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
+
+			$codeCoverage = $index->getById('codeCoverage');
+
+			if ($codeCoverage !== null)
+			{
+				$index->projectName = $this->projectName;
+
+				foreach ($classes as $className => $classFile)
+				{
+					$codeCoverage->classFile = $classFile;
+					$codeCoverage->classDate = $this->adapter->filemtime($classFile);
+					$codeCoverage->classUrl = $classFile;
+					$codeCoverage->build();
+				}
+			}
+
+			$this->adapter->file_put_contents($this->destinationDirectory . '/index.html', (string) $index->build());
 		}
 
 		return $this;

@@ -9,7 +9,7 @@
 	</head>
 	<body>
 		<div id="page">
-			<h1><tpl:title /></h1>
+			<h1><tpl:projectName /></h1>
 			<div id="content">
 				<table cellpadding="0" cellspacing="0">
 					<tr><th>Class</th><th>Last update</th></tr>

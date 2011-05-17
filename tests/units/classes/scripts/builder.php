@@ -861,11 +861,11 @@ class builder extends atoum\test
 
 		$builder->setRunFile($runFile = uniqid());
 
-		$builder->run();
 
 		$this->define->mock($builder)->label = 'builder';
 
 		$this->assert
+			->object($builder->run())->isIdenticalTo($builder)
 			->builder->call('createPhar')
 			->adapter($adapter)
 				->call('file_get_contents', array($runFile))

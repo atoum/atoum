@@ -62,6 +62,16 @@ class generator
 		return $asserter;
 	}
 
+	public function resetAsserters()
+	{
+		foreach ($this->asserters as $asserter)
+		{
+			$asserter->reset();
+		}
+
+		return $this;
+	}
+
 	public function getTest()
 	{
 		return $this->test;
