@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\reports\realtime;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\reports;
-use \mageekguy\atoum\report\fields;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\reports,
+	\mageekguy\atoum\report\fields
+;
 
 class cli extends reports\realtime
 {
