@@ -123,15 +123,16 @@ class stub extends atoum\script
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('Default script: %s'), self::defaultScript) . PHP_EOL)
 			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
 		;
 
 		$this->writeLabels(
 			array(
-				'-i, --infos' => $this->locale->_('Display informations'),
-				'-s, --signature' => $this->locale->_('Display phar signature'),
-				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>'),
-				'--testIt' => $this->locale->_('Execute all Atoum unit tests'),
+				'-i, --infos' => $this->locale->_('Display informations, do not run any script'),
+				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
+				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>, do not run any script'),
+				'--testIt' => $this->locale->_('Execute all Atoum unit tests, do not run default script'),
 				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
 			)
@@ -150,7 +151,9 @@ class stub extends atoum\script
 		{
 			if ($inode->isFile() === true)
 			{
-				$this->writeMessage(self::padding . $inode->getBasename(self::scriptsExtension));
+				$script = $inode->getBasename(self::scriptsExtension);
+
+				$this->writeMessage(self::padding . $script . ($script !== self::defaultScript ? '' : ' (default script)'));
 			}
 		}
 
