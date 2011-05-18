@@ -137,26 +137,26 @@ class html extends reports\asynchronous
 
 	public function cleanDestinationDirectory()
 	{
-		return $this->cleanDirectory($this->destinationDirectory);
+		return $this->cleanDirectory($this->getDirectoryIterator($this->destinationDirectory));
 	}
 
-	protected function cleanDirectory($path)
+	protected function cleanDirectory(\directoryIterator $directories)
 	{
-		foreach ($this->getDirectoryIterator($path) as $inode)
+		foreach ($directories as $directory)
 		{
-			if ($inode->isDot() === false)
+			if ($directory->isDot() === false)
 			{
-				$inodePath = $inode->getPathname();
+				$path = $directory->getPathname();
 
-				if ($inode->isDir() === false)
+				if ($directory->isDir() === false)
 				{
-					$this->adapter->unlink($inodePath);
+					$this->adapter->unlink($path);
 				}
 				else
 				{
 					$this
-						->cleanDirectory($inodePath)
-						->adapter->rmdir($inodePath)
+						->cleanDirectory($directory)
+						->adapter->rmdir($path)
 					;
 				}
 			}

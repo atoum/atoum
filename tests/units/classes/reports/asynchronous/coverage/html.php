@@ -113,6 +113,121 @@ class html extends atoum\test
 		;
 	}
 
+	public function testCleanDestinationDirectory()
+	{
+		$report = new coverage\html(uniqid(), uniqid(), uniqid(), null, null, $adapter = new test\adapter());
+
+		$adapter->rmdir = function() {};
+		$adapter->unlink = function() {};
+
+		$this
+			->mock('\directoryIterator')
+		;
+
+		$directory11Controller = new mock\controller();
+		$directory11Controller->__construct = function() {};
+		$directory11Controller->isDir = false;
+		$directory11Controller->isDot = false;
+		$directory11Controller->getPathname = $directory11Path = uniqid();
+
+		$directory11 = new mock\directoryIterator(uniqid(), $directory11Controller);
+
+		$directory12Controller = new mock\controller();
+		$directory12Controller->__construct = function() {};
+		$directory12Controller->isDir = false;
+		$directory12Controller->isDot = false;
+		$directory12Controller->getPathname = $directory12Path = uniqid();
+
+		$directory12 = new mock\directoryIterator(uniqid(), $directory12Controller);
+
+		$directory1Controller = new mock\controller();
+		$directory1Controller->__construct = function() {};
+		$directory1Controller->isDir = true;
+		$directory1Controller->isDot = false;
+		$directory1Controller->getPathname = $directory1Path = uniqid();
+		$directory1Controller->current == null;
+		$directory1Controller->current[1] = $directory11;
+		$directory1Controller->current[2] = $directory12;
+		$directory1Controller->valid = false;
+		$directory1Controller->valid[1] = true;
+		$directory1Controller->valid[2] = true;
+		$directory1Controller->next = function() {};
+		$directory1Controller->rewind = function() {};
+
+		$directory1 = new mock\directoryIterator(uniqid(), $directory1Controller);
+
+		$directory2Controller = new mock\controller();
+		$directory2Controller->__construct = function() {};
+		$directory2Controller->isDir = false;
+		$directory2Controller->isDot = false;
+		$directory2Controller->getPathname = $directory2Path = uniqid();
+
+		$directory2 = new mock\directoryIterator(uniqid(), $directory2Controller);
+
+		$directory31Controller = new mock\controller();
+		$directory31Controller->__construct = function() {};
+		$directory31Controller->isDir = false;
+		$directory31Controller->isDot = false;
+		$directory31Controller->getPathname = $directory31Path = uniqid();
+
+		$directory31 = new mock\directoryIterator(uniqid(), $directory31Controller);
+
+		$directory32Controller = new mock\controller();
+		$directory32Controller->__construct = function() {};
+		$directory32Controller->isDir = false;
+		$directory32Controller->isDot = false;
+		$directory32Controller->getPathname = $directory32Path = uniqid();
+
+		$directory32 = new mock\directoryIterator(uniqid(), $directory32Controller);
+
+		$directory3Controller = new mock\controller();
+		$directory3Controller->__construct = function() {};
+		$directory3Controller->isDir = true;
+		$directory3Controller->isDot = false;
+		$directory3Controller->getPathname = $directory3Path = uniqid();
+		$directory3Controller->current == null;
+		$directory3Controller->current[1] = $directory31;
+		$directory3Controller->current[2] = $directory32;
+		$directory3Controller->valid = false;
+		$directory3Controller->valid[1] = true;
+		$directory3Controller->valid[2] = true;
+		$directory3Controller->next = function() {};
+		$directory3Controller->rewind = function() {};
+
+		$directory3 = new mock\directoryIterator(uniqid(), $directory3Controller);
+
+		$directoryController = new mock\controller();
+		$directoryController->__construct = function() {};
+		$directoryController->getPathname = $directoryPath = uniqid();
+		$directoryController->current == null;
+		$directoryController->current[1] = $directory1;
+		$directoryController->current[2] = $directory2;
+		$directoryController->current[3] = $directory3;
+		$directoryController->valid = false;
+		$directoryController->valid[1] = true;
+		$directoryController->valid[2] = true;
+		$directoryController->valid[3] = true;
+		$directoryController->next = function() {};
+		$directoryController->rewind = function() {};
+
+		$directory = new mock\directoryIterator(uniqid(), $directoryController);
+
+		$report->setDirectoryIteratorInjector(function() use ($directory) { return $directory; });
+
+		$this->assert
+			->object($report->cleanDestinationDirectory())->isIdenticalTo($report)
+			->adapter($adapter)
+				->call('unlink', array($directory11Path))
+				->call('unlink', array($directory12Path))
+				->call('rmdir', array($directory1Path))
+				->call('unlink', array($directory2Path))
+				->call('unlink', array($directory31Path))
+				->call('unlink', array($directory32Path))
+				->call('rmdir', array($directory3Path))
+				->notCall('rmdir', array($directoryPath))
+		;
+	}
+
 	public function testRunnerStop()
 	{
 		$this
