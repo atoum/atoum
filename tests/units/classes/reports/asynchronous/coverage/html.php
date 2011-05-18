@@ -92,6 +92,27 @@ class html extends atoum\test
 		;
 	}
 
+	public function testSetDirectoryIteratorInjector()
+	{
+		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$directoryIterator = new \directoryIterator(__DIR__);
+
+		$this->assert
+			->object($report->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($report)
+			->object($report->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
+		;
+	}
+
+	public function testGetDirectoryIterator()
+	{
+		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($report->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+		;
+	}
+
 	public function testRunnerStop()
 	{
 		$this
@@ -117,6 +138,7 @@ class html extends atoum\test
 			->addChild(new template\tag('classUrl'))
 			->addChild(new template\tag('classFile'))
 			->addChild(new template\tag('classDate'))
+			->addChild(new template\tag('className'))
 		;
 
 		$indexTemplate = new mock\mageekguy\atoum\template();
@@ -129,10 +151,12 @@ class html extends atoum\test
 		$templateParserController = $templateParser->getMockController();
 		$templateParserController->parseFile = $indexTemplate;
 
-		$report = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, null, $adapter = new test\adapter());
+		$report = new mock\mageekguy\atoum\reports\asynchronous\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, null, $adapter = new test\adapter());
+		$reportController = $report->getMockController();
+		$reportController->cleanDestinationDirectory = function() {};
 
 		$adapter->file_put_contents = function() {};
-		$adapter->filemtime = $filemtime = rand(1, PHP_INT_MAX);
+		$adapter->filemtime = $filemtime = time();
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
@@ -162,6 +186,8 @@ class html extends atoum\test
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
+			->mock($report)
+				->call('cleanDestinationDirectory')
 			->mock($runner)->call('getScore')
 			->mock($coverage)
 				->call('count')
@@ -173,8 +199,8 @@ class html extends atoum\test
 				->call('getById', array('codeCoverage', true))
 				->call('build')
 			->mock($codeCoverageTemplate)
-				->call('__set', array('classDate', $filemtime))
-				->call('__set', array('classFile', $classFile))
+				->call('__set', array('classDate', date('Y-m-d H:i:s', $filemtime)))
+				->call('__set', array('className', $className))
 				->call('build')
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))

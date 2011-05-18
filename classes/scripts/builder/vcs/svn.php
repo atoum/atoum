@@ -92,10 +92,10 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 	{
 		foreach ($this->getDirectoryIterator($path) as $inode)
 		{
-			$path = $inode->getPathname();
-
 			if ($inode->isDot() === false)
 			{
+				$path = $inode->getPathname();
+
 				if ($inode->isDir() === false)
 				{
 					$this->adapter->unlink($path);

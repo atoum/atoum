@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\score;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\score;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\score,
+	\mageekguy\atoum\exceptions
+;
 
 class coverage implements \countable
 {

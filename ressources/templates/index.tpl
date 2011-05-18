@@ -13,7 +13,7 @@
 			<div id="content">
 				<table cellpadding="0" cellspacing="0">
 					<tr><th>Class</th><th>Last update</th></tr>
-					<tpl:class id="codeCoverage"><tr><td><a href="<tpl:classUrl />"><tpl:classFile /></a></td><td class="date"><tpl:classDate /></td></tr></tpl:class>
+					<tpl:class id="codeCoverage"><tr><td><a href="<tpl:classUrl />"><tpl:className /></a></td><td class="date"><tpl:classDate /></td></tr></tpl:class>
 				</table>
 			</div>
 		<div>
