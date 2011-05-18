@@ -95,6 +95,11 @@ class html extends reports\asynchronous
 
 			$index = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
 
+			if (isset($index->projectName) === true)
+			{
+				$index->projectName = $this->projectName;
+			}
+
 			$codeCoverage = $index->getById('codeCoverage');
 
 			if ($codeCoverage !== null)
@@ -105,14 +110,54 @@ class html extends reports\asynchronous
 
 				foreach ($classes as $className => $classFile)
 				{
-					$codeCoverage->className = $className;
-					$codeCoverage->classDate = date('Y-m-d H:i:s', $this->adapter->filemtime($classFile));
-					$codeCoverage->classUrl = $classFile;
+					if (isset($codeCoverage->className) === true)
+					{
+						$codeCoverage->className = $className;
+					}
+
+					if (isset($codeCoverage->classDate) === true)
+					{
+						$codeCoverage->classDate = date('Y-m-d H:i:s', $this->adapter->filemtime($classFile));
+					}
+
+					if (isset($codeCoverage->classUrl) === true)
+					{
+						$codeCoverage->classUrl = ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR);
+					}
+
 					$codeCoverage->build();
 				}
 			}
 
 			$this->adapter->file_put_contents($this->destinationDirectory . '/index.html', (string) $index->build());
+
+			$classCodeCoverage = $this->templateParser->parseFile($this->templatesDirectory . '/classCodeCoverage.tpl');
+
+			if (isset($classCodeCoverage->projectName) === true)
+			{
+				$classCodeCoverage->projectName = $this->projectName;
+			}
+
+			foreach ($methods as $className => $classMethods)
+			{
+				if (isset($classCodeCoverage->className) === true)
+				{
+					$classCodeCoverage->className = $className;
+				}
+
+				$file = $this->destinationDirectory . '/' . ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR) . '.html';
+
+				$directory = $this->adapter->dirname($file);
+
+				if ($this->adapter->is_dir($directory) === false)
+				{
+					$this->adapter->mkdir($directory, 0777, true);
+				}
+
+				$this->adapter->file_put_contents($file, (string) $classCodeCoverage->build());
+
+				$classCodeCoverage->resetData();
+			}
 		}
 
 		return $this;
@@ -137,26 +182,26 @@ class html extends reports\asynchronous
 
 	public function cleanDestinationDirectory()
 	{
-		return $this->cleanDirectory($this->getDirectoryIterator($this->destinationDirectory));
+		return $this->cleanDirectory($this->destinationDirectory);
 	}
 
-	protected function cleanDirectory(\directoryIterator $directories)
+	protected function cleanDirectory($path)
 	{
-		foreach ($directories as $directory)
+		foreach ($this->getDirectoryIterator($path) as $inode)
 		{
-			if ($directory->isDot() === false)
+			if ($inode->isDot() === false)
 			{
-				$path = $directory->getPathname();
+				$inodePath = $inode->getPathname();
 
-				if ($directory->isDir() === false)
+				if ($inode->isDir() === false)
 				{
-					$this->adapter->unlink($path);
+					$this->adapter->unlink($inodePath);
 				}
 				else
 				{
 					$this
-						->cleanDirectory($directory)
-						->adapter->rmdir($path)
+						->cleanDirectory($inodePath)
+						->adapter->rmdir($inodePath)
 					;
 				}
 			}

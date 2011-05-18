@@ -115,7 +115,7 @@ class html extends atoum\test
 
 	public function testCleanDestinationDirectory()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid(), null, null, $adapter = new test\adapter());
+		$report = new coverage\html(uniqid(), uniqid(), $destinationDirectory = uniqid(), null, null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
@@ -212,7 +212,53 @@ class html extends atoum\test
 
 		$directory = new mock\directoryIterator(uniqid(), $directoryController);
 
-		$report->setDirectoryIteratorInjector(function() use ($directory) { return $directory; });
+		$report->setDirectoryIteratorInjector(function($path) use (
+				$directory11,
+				$directory11Path,
+				$directory12,
+				$directory12Path,
+				$directory1,
+				$directory1Path,
+				$directory2,
+				$directory2Path,
+				$directory31,
+				$directory31Path,
+				$directory32,
+				$directory32Path,
+				$directory3,
+				$directory3Path,
+				$directory,
+				$destinationDirectory
+			)
+			{
+				switch ($path)
+				{
+					case $directory11Path:
+						return $directory11;
+
+					case $directory12Path:
+						return $directory12;
+
+					case $directory1Path:
+						return $directory1;
+
+					case $directory2Path:
+						return $directory2;
+
+					case $directory31Path:
+						return $directory31;
+
+					case $directory32Path:
+						return $directory32;
+
+					case $directory3Path:
+						return $directory3;
+
+					case $destinationDirectory:
+						return $directory;
+				}
+			}
+		);
 
 		$this->assert
 			->object($report->cleanDestinationDirectory())->isIdenticalTo($report)
@@ -270,6 +316,7 @@ class html extends atoum\test
 		$reportController = $report->getMockController();
 		$reportController->cleanDestinationDirectory = function() {};
 
+		$adapter->mkdir = function() {};
 		$adapter->file_put_contents = function() {};
 		$adapter->filemtime = $filemtime = time();
 
@@ -308,7 +355,9 @@ class html extends atoum\test
 				->call('count')
 				->call('getClasses')
 				->call('getMethods')
-			->mock($templateParser)->call('parseFile', array($templatesDirectory . '/index.tpl', null))
+			->mock($templateParser)
+				->call('parseFile', array($templatesDirectory . '/index.tpl', null))
+				->call('parseFile', array($templatesDirectory . '/classCodeCoverage.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
 				->call('getById', array('codeCoverage', true))
@@ -316,6 +365,7 @@ class html extends atoum\test
 			->mock($codeCoverageTemplate)
 				->call('__set', array('classDate', date('Y-m-d H:i:s', $filemtime)))
 				->call('__set', array('className', $className))
+				->call('__set', array('classUrl', ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR)))
 				->call('build')
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))

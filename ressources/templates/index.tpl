@@ -4,7 +4,7 @@
 	<head>
 		<meta http-equiv="Content-Language" content="en" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<title><tpl:title /></title>
+		<title><tpl:projectName /></title>
 		<link rel="stylesheet" media="screen" type="text/css" href="/screen.css" title="Screen" />
 	</head>
 	<body>
