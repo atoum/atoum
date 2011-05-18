@@ -115,7 +115,7 @@ class html extends atoum\test
 
 	public function testCleanDestinationDirectory()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), $destinationDirectory = uniqid(), null, null, $adapter = new test\adapter());
+		$report = new coverage\html(uniqid(), uniqid(), $directoryPath = uniqid(), null, null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
@@ -198,7 +198,7 @@ class html extends atoum\test
 
 		$directoryController = new mock\controller();
 		$directoryController->__construct = function() {};
-		$directoryController->getPathname = $directoryPath = uniqid();
+		$directoryController->getPathname = $directoryPath;
 		$directoryController->current == null;
 		$directoryController->current[1] = $directory1;
 		$directoryController->current[2] = $directory2;
@@ -228,7 +228,7 @@ class html extends atoum\test
 				$directory3,
 				$directory3Path,
 				$directory,
-				$destinationDirectory
+				$directoryPath
 			)
 			{
 				switch ($path)
@@ -254,7 +254,7 @@ class html extends atoum\test
 					case $directory3Path:
 						return $directory3;
 
-					case $destinationDirectory:
+					case $directoryPath:
 						return $directory;
 				}
 			}
