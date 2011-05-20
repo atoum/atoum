@@ -1,0 +1,28 @@
+* {margin: 0; padding: 0; font-family:verdana,arial,helvetica,sans-serif; font-size: 10px;}
+body {background: #eee;}
+a {color: #669; text-decoration: none;}
+a:visited {color: #444;}
+a:hover {color: #000;}
+h1 {font-size: 18px; font-weight: bold; margin: 0.5em 0; color: #665;}
+#page {margin: 2em;}
+#content {background: #fff; border: solid 1px #ddd; z-index: -999;}
+table {width: 100%; border-collapse: collapse}
+th, td {padding: 0.2em; border: solid 1px #eee;}
+th {color: #fff; background: #669;}
+td.bar {padding: 0;}
+td.date {text-align: right;}
+h2 {font-family: arial,helvetica,sans-serif; border-bottom: inset 1px; height: 20px; font-size: 14px; font-weight: bold; padding: 2px;}
+div.bar {position: relative; width: 100%; height: 20px; padding: 0;}
+div.bar div.label {position: absolute; top: 0; left: 0; background: none; padding: 2px 0 2px 4px;}
+div.bar div.graph {position: absolute; top: 0; left: 0; background: #8eff9b; height: 20px;}
+div.bar div.background {position: absolute; top: 0; left: 0; width: 100%; background: #ff8c76; height: 20px;}
+li {list-style-type: none;}
+li.class, li.methods li {border: solid 1px #eee; border-left: none; border-top: none; height: 20px; left: 4px;}
+li.class {font-weight: bold;}
+li.methods {margin-left: 40px;}
+ul.classesSummary li.class {font-weight: normal;}
+table.source {overflow: auto;}
+table.source td.number {width: 36px; text-align: right; background: #ddd;}
+table.source td.coverage {text-align: right; background: #cfcdff;}
+table.source td.notCovered {background: #ff8c76;}
+table.source td.covered {background: #8eff9b;}
