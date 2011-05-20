@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum\tests\units\score;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\score;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\score
+;
 
 require_once(__DIR__ . '/../../runner.php');
 

@@ -213,22 +213,22 @@ class html extends atoum\test
 		$directory = new mock\directoryIterator(uniqid(), $directoryController);
 
 		$report->setDirectoryIteratorInjector(function($path) use (
-				$directory11,
 				$directory11Path,
-				$directory12,
+				$directory11,
 				$directory12Path,
-				$directory1,
+				$directory12,
 				$directory1Path,
-				$directory2,
+				$directory1,
 				$directory2Path,
-				$directory31,
+				$directory2,
 				$directory31Path,
-				$directory32,
+				$directory31,
 				$directory32Path,
-				$directory3,
+				$directory32,
 				$directory3Path,
-				$directory,
-				$directoryPath
+				$directory3,
+				$directoryPath,
+				$directory
 			)
 			{
 				switch ($path)
@@ -274,6 +274,19 @@ class html extends atoum\test
 		;
 	}
 
+	public function testSetRootUrl()
+	{
+		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($report->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($report)
+			->string($report->getRootUrl())->isIdenticalTo($rootUrl)
+			->object($report->setRootUrl($rootUrl = rand(1, PHP_INT_MAX)))->isIdenticalTo($report)
+			->string($report->getRootUrl())->isIdenticalTo((string) $rootUrl)
+		;
+
+	}
+
 	public function testRunnerStop()
 	{
 		$this
@@ -287,46 +300,6 @@ class html extends atoum\test
 		;
 
 		$coverage = new mock\mageekguy\atoum\score\coverage();
-
-		$score = new mock\mageekguy\atoum\score();
-		$score->getMockController()->getCoverage = $coverage;
-
-		$runner = new mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = $score;
-
-		$codeCoverageTemplate = new mock\mageekguy\atoum\template\tag('class', 'codeCoverage');
-		$codeCoverageTemplate
-			->addChild(new template\tag('classUrl'))
-			->addChild(new template\tag('classFile'))
-			->addChild(new template\tag('classDate'))
-			->addChild(new template\tag('className'))
-		;
-
-		$indexTemplate = new mock\mageekguy\atoum\template();
-		$indexTemplate->addChild(new template\tag('projectName'));
-		$indexTemplateController = $indexTemplate->getMockController();
-		$indexTemplateController->getById = $codeCoverageTemplate;
-		$indexTemplateController->build = $buildOfIndexTemplate = uniqid();
-
-		$templateParser = new mock\mageekguy\atoum\template\parser();
-		$templateParserController = $templateParser->getMockController();
-		$templateParserController->parseFile = $indexTemplate;
-
-		$report = new mock\mageekguy\atoum\reports\asynchronous\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, null, $adapter = new test\adapter());
-		$reportController = $report->getMockController();
-		$reportController->cleanDestinationDirectory = function() {};
-
-		$adapter->mkdir = function() {};
-		$adapter->file_put_contents = function() {};
-		$adapter->filemtime = $filemtime = time();
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($runner)->call('getScore')
-			->mock($score)->call('getCoverage')
-			->mock($coverage)->call('count')
-		;
-
 		$coverageController = $coverage->getMockController();
 		$coverageController->count = rand(1, PHP_INT_MAX);
 		$coverageController->getClasses = array(
@@ -345,6 +318,107 @@ class html extends atoum\test
 						)
 				)
 		);
+		$coverageController->getValueForClass = $classCoverageValue = rand(1, 10) / 10;
+		$coverageController->getValueForMethod = $methodCoverageValue = rand(1, 10) / 10;
+
+
+		$score = new mock\mageekguy\atoum\score();
+		$score->getMockController()->getCoverage = $coverage;
+
+		$runner = new mock\mageekguy\atoum\runner();
+		$runner->getMockController()->getScore = $score;
+
+		$coverageTemplate = new mock\mageekguy\atoum\template\tag('class', 'codeCoverage');
+		$coverageTemplateController = $coverageTemplate->getMockController();
+		$coverageTemplateController->__set = function() {};
+		$coverageTemplateController->__isset = true;
+
+		$indexTemplate = new mock\mageekguy\atoum\template();
+		$indexTemplateController = $indexTemplate->getMockController();
+		$indexTemplateController->__set = function() {};
+		$indexTemplateController->__isset = true;
+		$indexTemplateController->getById = $coverageTemplate;
+		$indexTemplateController->build = $buildOfIndexTemplate = uniqid();
+
+		$methodTemplate = new mock\mageekguy\atoum\template();
+		$methodTemplateController = $methodTemplate->getMockController();
+		$methodTemplateController->__set = function() {};
+		$methodTemplateController->__isset = true;
+
+		$sourceTemplate = new mock\mageekguy\atoum\template();
+		$sourceTemplateController = $sourceTemplate->getMockController();
+		$sourceTemplateController->__set = function() {};
+		$sourceTemplateController->__isset = true;
+
+		$blankLineTemplate = new mock\mageekguy\atoum\template();
+		$blankLineTemplateController = $blankLineTemplate->getMockController();
+		$blankLineTemplateController->__set = function() {};
+		$blankLineTemplateController->__isset = true;
+
+		$coveredLineTemplate = new mock\mageekguy\atoum\template();
+		$coveredLineTemplateController = $coveredLineTemplate->getMockController();
+		$coveredLineTemplateController->__set = function() {};
+		$coveredLineTemplateController->__isset = true;
+
+		$notCoveredLineTemplate = new mock\mageekguy\atoum\template();
+		$notCoveredLineTemplateController = $notCoveredLineTemplate->getMockController();
+		$notCoveredLineTemplateController->__set = function() {};
+		$notCoveredLineTemplateController->__isset = true;
+
+		$classTemplate = new mock\mageekguy\atoum\template();
+		$classTemplateController = $classTemplate->getMockController();
+		$classTemplateController->__set = function() {};
+		$classTemplateController->__isset = true;
+		$classTemplateController->getById = function ($id) use ($methodTemplate, $sourceTemplate, $blankLineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
+			switch ($id)
+			{
+				case 'method':
+					return $methodTemplate;
+
+				case 'source':
+					return $sourceTemplate;
+
+				case 'blankLine':
+					return $blankLineTemplate;
+
+				case 'coveredLine':
+					return $coveredLineTemplate;
+
+				case 'notCoveredLine':
+					return $notCoveredLineTemplate;
+			}
+		};
+
+		$templateParser = new mock\mageekguy\atoum\template\parser();
+
+		$report = new mock\mageekguy\atoum\reports\asynchronous\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, null, $adapter = new test\adapter());
+		$reportController = $report->getMockController();
+		$reportController->cleanDestinationDirectory = function() {};
+
+		$templateParserController = $templateParser->getMockController();
+		$templateParserController->parseFile = function($path) use ($templatesDirectory, $indexTemplate, $classTemplate){
+			switch ($path)
+			{
+				case $templatesDirectory . '/index.tpl':
+					return $indexTemplate;
+
+				case $templatesDirectory . '/class.tpl':
+					return $classTemplate;
+			}
+		};
+
+		$adapter->mkdir = function() {};
+		$adapter->file_put_contents = function() {};
+		$adapter->filemtime = $filemtime = time();
+		$adapter->fopen = false;
+		$adapter->copy = function() {};
+
+		$this->assert
+			->object($report->runnerStop($runner))->isIdenticalTo($report)
+			->mock($runner)->call('getScore')
+			->mock($score)->call('getCoverage')
+			->mock($coverage)->call('count')
+		;
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
@@ -357,16 +431,24 @@ class html extends atoum\test
 				->call('getMethods')
 			->mock($templateParser)
 				->call('parseFile', array($templatesDirectory . '/index.tpl', null))
-				->call('parseFile', array($templatesDirectory . '/classCodeCoverage.tpl', null))
+				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
-				->call('getById', array('codeCoverage', true))
+				->call('getById', array('coverage', true))
 				->call('build')
-			->mock($codeCoverageTemplate)
-				->call('__set', array('classDate', date('Y-m-d H:i:s', $filemtime)))
+			->mock($coverageTemplate)
 				->call('__set', array('className', $className))
+				->call('__set', array('classDate', date('Y-m-d H:i:s', $filemtime)))
 				->call('__set', array('classUrl', ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR)))
 				->call('build')
+			->mock($coverage)
+				->call('getValueForMethod', array($className, $methodName))
+			->mock($classTemplate)
+				->call('__set', array('className', $className))
+				->call('__set', array('classCoverageValue', round($classCoverageValue * 100, 2)))
+			->mock($methodTemplate)
+				->call('__set', array('methodName', $methodName))
+				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))
 				->call('filemtime', array($classFile))
