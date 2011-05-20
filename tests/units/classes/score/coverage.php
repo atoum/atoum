@@ -89,7 +89,7 @@ class coverage extends atoum\test
 		$methodController->__construct = function() {};
 		$methodController->isAbstract = false;
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
@@ -182,6 +182,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
@@ -238,6 +239,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
@@ -323,6 +325,7 @@ class coverage extends atoum\test
 		$otherMethodController->getName = function() use (& $otherMethodName) { return $otherMethodName; };
 		$otherMethodController->isAbstract = false;
 		$otherMethodController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; };
+		$otherMethodController->getDeclaringClass = function() use (& $otherClassName) { return $otherClassName; };
 		$otherMethodController->getStartLine = 5;
 		$otherMethodController->getEndLine = 9;
 
@@ -407,6 +410,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
@@ -467,6 +471,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
@@ -522,6 +527,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
@@ -666,6 +672,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
@@ -814,6 +821,7 @@ class coverage extends atoum\test
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 

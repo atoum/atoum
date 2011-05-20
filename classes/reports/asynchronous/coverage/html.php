@@ -205,9 +205,12 @@ class html extends reports\asynchronous
 
 							$methodLines = array();
 
-							foreach ($reflection->getMethods() as $method)
+							foreach ($reflection->getMethods(ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_FINAL) as $method)
 							{
-								$methodLines[$method->getStartLine()] = $method->getName();
+								if ($method->getDeclaringClass()->getName() === $className)
+								{
+									$methodLines[$method->getStartLine()] = $method->getName();
+								}
 							}
 
 							$lineNumber = 1;

@@ -82,9 +82,9 @@ class coverage implements \countable
 				{
 					$this->classes[$testedClass->getName()] = $testedClassFile;
 
-					foreach ($testedClass->getMethods() as $method)
+					foreach ($testedClass->getMethods(\ReflectionMethod::IS_STATIC | \ReflectionMethod::IS_PUBLIC | \ReflectionMethod::IS_PROTECTED | \ReflectionMethod::IS_PRIVATE | \ReflectionMethod::IS_FINAL) as $method)
 					{
-						if ($method->isAbstract() === false && $method->getFileName() === $testedClassFile)
+						if ($method->getDeclaringClass() === $testedClass->getName())
 						{
 							for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 							{

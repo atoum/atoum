@@ -149,6 +149,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 		$methodController->__construct = function() {};
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
