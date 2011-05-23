@@ -209,7 +209,7 @@ class html extends reports\asynchronous
 
 					if ($lineTemplate !== null && $coveredLineTemplate !== null && $notCoveredLineTemplate !== null)
 					{
-						$srcFile = $this->adapter->fopen($classFile, 'r');
+						$srcFile = $this->adapter->fopen($classes[$className], 'r');
 
 						if ($srcFile !== false)
 						{
@@ -239,68 +239,41 @@ class html extends reports\asynchronous
 								switch (true)
 								{
 									case isset($methods[$currentMethod]) === false || (isset($methods[$currentMethod][$lineNumber]) === false || $methods[$currentMethod][$lineNumber] == -2):
-										$lineTemplate->lineNumber = $lineNumber;
-										$lineTemplate->code = $line;
-
-										if (isset($methodLines[$lineNumber]) === true)
-										{
-											foreach ($lineTemplate->getByTag('anchor') as $anchorTemplate)
-											{
-												$anchorTemplate->resetData();
-												$anchorTemplate->method = $currentMethod;
-												$anchorTemplate->build();
-											}
-										}
-
-										$lineTemplate
-											->addToParent()
-											->resetData()
-										;
+										$lineTemplateName = 'lineTemplate';
 										break;
 
 									case isset($methods[$currentMethod]) === true && isset($methods[$currentMethod][$lineNumber]) === true && $methods[$currentMethod][$lineNumber] == -1:
-										$notCoveredLineTemplate->lineNumber = $lineNumber;
-										$notCoveredLineTemplate->code = $line;
-
-										if (isset($methodLines[$lineNumber]) === true)
-										{
-											foreach ($notCoveredLineTemplate->getByTag('anchor') as $anchorTemplate)
-											{
-												$anchorTemplate->resetData();
-												$anchorTemplate->method = $currentMethod;
-												$anchorTemplate->build();
-											}
-										}
-
-										$notCoveredLineTemplate
-											->addToParent()
-											->resetData()
-										;
+										$lineTemplateName = 'notCoveredLineTemplate';
 										break;
 
 									default:
-										$coveredLineTemplate->lineNumber = $lineNumber;
-										$coveredLineTemplate->code = $line;
-
-										if (isset($methodLines[$lineNumber]) === true)
-										{
-											foreach ($coveredLineTemplate->getByTag('anchor') as $anchorTemplate)
-											{
-												$anchorTemplate->resetData();
-												$anchorTemplate->method = $currentMethod;
-												$anchorTemplate->build();
-											}
-										}
-
-										$coveredLineTemplate
-											->addToParent()
-											->resetData()
-										;
+										$lineTemplateName = 'coveredLineTemplate';
 								}
+
+								${$lineTemplateName}->lineNumber = $lineNumber;
+								${$lineTemplateName}->code = $line;
+
+								if (isset($methodLines[$lineNumber]) === true)
+								{
+									foreach (${$lineTemplateName}->getByTag('anchor') as $anchorTemplate)
+									{
+										$anchorTemplate->resetData();
+										$anchorTemplate->method = $currentMethod;
+										$anchorTemplate->build();
+									}
+								}
+
+								${$lineTemplateName}
+									->addToParent()
+									->resetData()
+								;
 							}
+
+							$this->adapter->fclose($srcFile);
 
 							$sourceFileTemplate->build();
 						}
+
 					}
 				}
 
