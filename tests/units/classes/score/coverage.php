@@ -85,22 +85,25 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
-		$methodController = new mock\controller();
-		$methodController->__construct = function() {};
-		$methodController->isAbstract = false;
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getStartLine = 6;
-		$methodController->getEndLine = 8;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->isAbstract = false;
+		$methodController->getName = function() use (& $methodName) { return $methodName; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
+		$methodController->getName = function() use (& $methodName) { return $methodName; };
+		$methodController->getStartLine = 6;
+		$methodController->getEndLine = 8;
+
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
-		$coverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
+		$coverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
 
 		$classFile = uniqid();
 		$className = uniqid();
@@ -177,22 +180,25 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
-		$coverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
+		$coverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
 
 		$classFile = uniqid();
 		$className = uniqid();
@@ -234,19 +240,22 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
@@ -275,7 +284,7 @@ class coverage extends atoum\test
 		$coverage = new score\coverage();
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$this->assert
@@ -320,19 +329,22 @@ class coverage extends atoum\test
 			)
 		;
 
+		$otherClassController = new mock\controller();
+		$otherClassController->__construct = function() {};
+		$otherClassController->getName = function() use (& $otherClassName) { return $otherClassName; };
+		$otherClassController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; };
+
+		$otherClass = new mock\reflectionClass($class, $otherClassController);
+
 		$otherMethodController = new mock\controller();
 		$otherMethodController->__construct = function() {};
 		$otherMethodController->getName = function() use (& $otherMethodName) { return $otherMethodName; };
 		$otherMethodController->isAbstract = false;
 		$otherMethodController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; };
-		$otherMethodController->getDeclaringClass = function() use (& $otherClassName) { return $otherClassName; };
+		$otherMethodController->getDeclaringClass = function() use ($otherClass) { return $otherClass; };
 		$otherMethodController->getStartLine = 5;
 		$otherMethodController->getEndLine = 9;
 
-		$otherClassController = new mock\controller();
-		$otherClassController->__construct = function() {};
-		$otherClassController->getName = function() use (& $otherClassName) { return $otherClassName; };
-		$otherClassController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; };
 		$otherClassController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $otherMethodController));
 
 		$otherClassFile = uniqid();
@@ -364,7 +376,7 @@ class coverage extends atoum\test
 		);
 
 		$otherCoverage
-			->setReflectionClassInjector(function($class) use ($otherClassController) { return new mock\reflectionClass($class, $otherClassController); })
+			->setReflectionClassInjector(function($class) use ($otherClass) { return $otherClass; })
 		;
 
 		$this->assert
@@ -405,23 +417,26 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$classFile = uniqid();
@@ -466,19 +481,22 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
@@ -498,7 +516,7 @@ class coverage extends atoum\test
 		);
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$coverage->addXdebugData($this, $xdebugData);
@@ -522,19 +540,22 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
@@ -562,7 +583,7 @@ class coverage extends atoum\test
 		);
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$coverage->addXdebugData($this, $xdebugData);
@@ -667,19 +688,22 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class =  new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() { return uniqid(); };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
@@ -707,7 +731,7 @@ class coverage extends atoum\test
 		);
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$coverage->addXdebugData($this, $xdebugData);
@@ -816,19 +840,22 @@ class coverage extends atoum\test
 			->generate('\reflectionMethod')
 		;
 
+		$classController = new mock\controller();
+		$classController->__construct = function() {};
+		$classController->getName = function() use (& $className) { return $className; };
+		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
 		$methodController->getName = function() use (& $methodName) { return $methodName; };
 		$methodController->isAbstract = false;
 		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
+		$methodController->getDeclaringClass = function() use ($class) { return $class; };
 		$methodController->getStartLine = 4;
 		$methodController->getEndLine = 8;
 
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$classFile = uniqid();
@@ -857,7 +884,7 @@ class coverage extends atoum\test
 		);
 
 		$coverage
-			->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); })
+			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
 		$coverage->addXdebugData($this, $xdebugData);

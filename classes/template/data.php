@@ -38,9 +38,11 @@ class data
 
 	public function addData($data)
 	{
+		$data = (string) $data;
+
 		if ($data != '')
 		{
-			$this->data .= (string) $data;
+			$this->data .= $data;
 		}
 
 		return $this;

@@ -35,11 +35,11 @@
 				</ul>
 				<table cellpadding="0" cellspacing="0" class="source">
 					<tr><th>Line</th><th>Code</th></tr>
-					<tpl:source id="source">
-						<tpl:codeLine id="blankLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:codeLine>
-						<tpl:codeLine id="coveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:codeLine>
-						<tpl:codeLine id="notCoveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="notCovered"><pre><tpl:code /></pre></td></tr></tpl:codeLine>
-					</tpl:source>
+					<tpl:sourceFile id="sourceFile">
+						<tpl:line id="line"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:line>
+						<tpl:line id="coveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:line>
+						<tpl:line id="notCoveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="notCovered"><pre><tpl:code /></pre></td></tr></tpl:line>
+					</tpl:sourceFile>
 				</table>
 			</div>
 		</div>

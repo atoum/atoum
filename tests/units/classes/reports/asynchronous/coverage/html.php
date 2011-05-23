@@ -434,11 +434,10 @@ class html extends atoum\test
 				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
-				->call('getById', array('coverage', true))
+				->call('getById', array('class', true))
 				->call('build')
 			->mock($coverageTemplate)
 				->call('__set', array('className', $className))
-				->call('__set', array('classDate', date('Y-m-d H:i:s', $filemtime)))
 				->call('__set', array('classUrl', ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR)))
 				->call('build')
 			->mock($coverage)
@@ -451,7 +450,6 @@ class html extends atoum\test
 				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))
-				->call('filemtime', array($classFile))
 		;
 	}
 }

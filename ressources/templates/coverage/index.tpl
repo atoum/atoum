@@ -12,7 +12,7 @@
 			<h1><tpl:projectName /></h1>
 			<div id="content">
 				<table cellpadding="0" cellspacing="0">
-					<tpl:coverage id="coverage">
+					<tpl:class id="class">
 					<tr>
 						<td class="bar">
 							<div class="bar">
@@ -22,7 +22,7 @@
 							</div>
 						</td>
 					</tr>
-					</tpl:coverage>
+					</tpl:class>
 				</table>
 			</div>
 		<div>

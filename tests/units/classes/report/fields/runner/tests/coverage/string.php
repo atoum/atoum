@@ -145,22 +145,25 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
-		$methodController = new mock\controller();
-		$methodController->__construct = function() {};
-		$methodController->isAbstract = false;
-		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = function() use (& $className) { return $className; };
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getStartLine = 6;
-		$methodController->getEndLine = 8;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
+
+		$class = new mock\reflectionClass(uniqid(), $classController);
+
+		$methodController = new mock\controller();
+		$methodController->__construct = function() {};
+		$methodController->isAbstract = false;
+		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
+		$methodController->getDeclaringClass = $class;
+		$methodController->getName = function() use (& $methodName) { return $methodName; };
+		$methodController->getStartLine = 6;
+		$methodController->getEndLine = 8;
+
 		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
-		$scoreCoverage->setReflectionClassInjector(function($class) use ($classController) { return new mock\reflectionClass($class, $classController); });
+		$scoreCoverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
 
 		$classFile = uniqid();
 		$className = uniqid();
