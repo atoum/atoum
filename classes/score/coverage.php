@@ -88,12 +88,9 @@ class coverage implements \countable
 						{
 							for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 							{
-								if (isset($data[$testedClassFile][$line]) === true)
+								if (isset($data[$testedClassFile][$line]) === true && (isset($this->methods[$testedClass->getName()][$method->getName()][$line]) === false || $this->methods[$testedClass->getName()][$method->getName()][$line] < $data[$testedClassFile][$line]))
 								{
-									if (isset($this->methods[$testedClass->getName()][$method->getName()][$line]) === false || $this->methods[$testedClass->getName()][$method->getName()][$line] < $data[$testedClassFile][$line])
-									{
-										$this->methods[$testedClass->getName()][$method->getName()][$line] = $data[$testedClassFile][$line];
-									}
+									$this->methods[$testedClass->getName()][$method->getName()][$line] = $data[$testedClassFile][$line];
 								}
 							}
 						}
