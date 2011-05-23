@@ -1,121 +1,151 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous\coverage;
+namespace mageekguy\atoum\tests\units\report\fields\runner\coverage;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\test,
 	\mageekguy\atoum\mock,
 	\mageekguy\atoum\template,
-	\mageekguy\atoum\reports\asynchronous\coverage
+	\mageekguy\atoum\report\fields\runner\coverage
 ;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once(__DIR__ . '/../../../../../runner.php');
 
 class html extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\reports\asynchronous')
+			->testedClass->isSubclassOf('\mageekguy\atoum\report\fields\runner\coverage\string')
+			->string(coverage\html::defaultPrompt)->isEqualTo('> ')
+			->string(coverage\html::defaultAlternatePrompt)->isEqualTo('=> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$report = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
+		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
 
 		$this->assert
-			->string($report->getProjectName())->isEqualTo($projectName)
-			->string($report->getTemplatesDirectory())->isEqualTo($templatesDirectory)
-			->string($report->getDestinationDirectory())->isEqualTo($destinationDirectory)
-			->object($report->getTemplateParser())->isInstanceOf('\mageekguy\atoum\template\parser')
-			->object($report->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->object($report->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->string($field->getProjectName())->isEqualTo($projectName)
+			->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
+			->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
+			->object($field->getTemplateParser())->isInstanceOf('\mageekguy\atoum\template\parser')
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->string($field->getPrompt())->isEqualTo(coverage\html::defaultPrompt)
+			->string($field->getAlternatePrompt())->isEqualTo(coverage\html::defaultAlternatePrompt)
+			->variable($field->getCoverage())->isNull()
 		;
 
-		$report = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser = new template\parser(), $locale = new atoum\locale(), $adapter = new atoum\adapter());
+		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser = new template\parser(), $adapter = new atoum\adapter(), $locale = new atoum\locale(), $prompt = uniqid(), $alternatePrompt = uniqid());
 
 		$this->assert
-			->string($report->getProjectName())->isEqualTo($projectName)
-			->string($report->getTemplatesDirectory())->isEqualTo($templatesDirectory)
-			->string($report->getDestinationDirectory())->isEqualTo($destinationDirectory)
-			->object($report->getTemplateParser())->isEqualTo($templateParser)
-			->object($report->getLocale())->isIdenticalTo($locale)
-			->object($report->getAdapter())->isIdenticalTo($adapter)
+			->string($field->getProjectName())->isEqualTo($projectName)
+			->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
+			->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
+			->object($field->getTemplateParser())->isEqualTo($templateParser)
+			->object($field->getAdapter())->isIdenticalTo($adapter)
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->string($field->getPrompt())->isEqualTo($prompt)
+			->string($field->getAlternatePrompt())->isEqualTo($alternatePrompt)
+			->variable($field->getCoverage())->isNull()
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
+
+		$this->assert
+			->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
+			->object($field->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testSetAlternatePrompt()
+	{
+		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
+
+		$this->assert
+			->object($field->setAlternatePrompt($alternatePrompt = uniqid()))->isIdenticalTo($field)
+			->string($field->getAlternatePrompt())->isIdenticalTo($alternatePrompt)
+			->object($field->setAlternatePrompt($alternatePrompt = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getAlternatePrompt())->isIdenticalTo((string) $alternatePrompt)
 		;
 	}
 
 	public function testSetTemplatesDirectory()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->setTemplatesDirectory($directory = uniqid()))->isIdenticalTo($report)
-			->string($report->getTemplatesDirectory())->isEqualTo($directory)
-			->object($report->setTemplatesDirectory($directory = rand(1, PHP_INT_MAX)))->isIdenticalTo($report)
-			->string($report->getTemplatesDirectory())->isIdenticalTo((string) $directory)
+			->object($field->setTemplatesDirectory($directory = uniqid()))->isIdenticalTo($field)
+			->string($field->getTemplatesDirectory())->isEqualTo($directory)
+			->object($field->setTemplatesDirectory($directory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getTemplatesDirectory())->isIdenticalTo((string) $directory)
 		;
 	}
 
 	public function testSetDestinationDirectory()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($report)
-			->string($report->getDestinationDirectory())->isEqualTo($directory)
-			->object($report->setDestinationDirectory($directory = rand(1, PHP_INT_MAX)))->isIdenticalTo($report)
-			->string($report->getDestinationDirectory())->isIdenticalTo((string) $directory)
+			->object($field->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($field)
+			->string($field->getDestinationDirectory())->isEqualTo($directory)
+			->object($field->setDestinationDirectory($directory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getDestinationDirectory())->isIdenticalTo((string) $directory)
 		;
 	}
 
 	public function testSetTemplateParser()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->setTemplateParser($templateParser = new template\parser()))->isIdenticalTo($report)
-			->object($report->getTemplateParser())->isIdenticalTo($templateParser)
+			->object($field->setTemplateParser($templateParser = new template\parser()))->isIdenticalTo($field)
+			->object($field->getTemplateParser())->isIdenticalTo($templateParser)
 		;
 	}
 
 	public function testSetProjectName()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->setProjectName($projectName = uniqid()))->isIdenticalTo($report)
-			->string($report->getProjectName())->isIdenticalTo($projectName)
-			->object($report->setProjectName($projectName = rand(1, PHP_INT_MAX)))->isIdenticalTo($report)
-			->string($report->getProjectName())->isIdenticalTo((string) $projectName)
+			->object($field->setProjectName($projectName = uniqid()))->isIdenticalTo($field)
+			->string($field->getProjectName())->isIdenticalTo($projectName)
+			->object($field->setProjectName($projectName = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getProjectName())->isIdenticalTo((string) $projectName)
 		;
 	}
 
 	public function testSetDirectoryIteratorInjector()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$directoryIterator = new \directoryIterator(__DIR__);
 
 		$this->assert
-			->object($report->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($report)
-			->object($report->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
+			->object($field->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
+			->object($field->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
 		;
 	}
 
 	public function testGetDirectoryIterator()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+			->object($field->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
 		;
 	}
 
 	public function testCleanDestinationDirectory()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), $directoryPath = uniqid(), null, null, $adapter = new test\adapter());
+		$field = new coverage\html(uniqid(), uniqid(), $directoryPath = uniqid(), null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
@@ -212,7 +242,7 @@ class html extends atoum\test
 
 		$directory = new mock\directoryIterator(uniqid(), $directoryController);
 
-		$report->setDirectoryIteratorInjector(function($path) use (
+		$field->setDirectoryIteratorInjector(function($path) use (
 				$directory11Path,
 				$directory11,
 				$directory12Path,
@@ -261,7 +291,7 @@ class html extends atoum\test
 		);
 
 		$this->assert
-			->object($report->cleanDestinationDirectory())->isIdenticalTo($report)
+			->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
 			->adapter($adapter)
 				->call('unlink', array($directory11Path))
 				->call('unlink', array($directory12Path))
@@ -276,19 +306,40 @@ class html extends atoum\test
 
 	public function testSetRootUrl()
 	{
-		$report = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($report->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($report)
-			->string($report->getRootUrl())->isIdenticalTo($rootUrl)
-			->object($report->setRootUrl($rootUrl = rand(1, PHP_INT_MAX)))->isIdenticalTo($report)
-			->string($report->getRootUrl())->isIdenticalTo((string) $rootUrl)
+			->object($field->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($field)
+			->string($field->getRootUrl())->isIdenticalTo($rootUrl)
+			->object($field->setRootUrl($rootUrl = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->string($field->getRootUrl())->isIdenticalTo((string) $rootUrl)
 		;
 
 	}
 
-	public function testRunnerStop()
+	public function testSetWithRunner()
 	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($field->setWithRunner($runner = new atoum\runner()))->isIdenticalTo($field)
+			->variable($field->getCoverage())->isNull()
+		;
+
+		$this->assert
+			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->object($field->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
+		;
+	}
+
+	public function test__toString()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->castToString($field)->isEqualTo('> Code coverage: unknown.' . PHP_EOL)
+		;
+
 		$this
 			->mock('\mageekguy\atoum\score')
 			->mock('\mageekguy\atoum\score\coverage')
@@ -296,7 +347,7 @@ class html extends atoum\test
 			->mock('\mageekguy\atoum\template')
 			->mock('\mageekguy\atoum\template\tag')
 			->mock('\mageekguy\atoum\template\parser')
-			->mock('\mageekguy\atoum\reports\asynchronous\coverage\html')
+			->mock($this->getTestedClassName())
 		;
 
 		$coverage = new mock\mageekguy\atoum\score\coverage();
@@ -318,9 +369,9 @@ class html extends atoum\test
 						)
 				)
 		);
+		$coverageController->getValue = $coverageValue = rand(1, 10) / 10;
 		$coverageController->getValueForClass = $classCoverageValue = rand(1, 10) / 10;
 		$coverageController->getValueForMethod = $methodCoverageValue = rand(1, 10) / 10;
-
 
 		$score = new mock\mageekguy\atoum\score();
 		$score->getMockController()->getCoverage = $coverage;
@@ -391,9 +442,11 @@ class html extends atoum\test
 
 		$templateParser = new mock\mageekguy\atoum\template\parser();
 
-		$report = new mock\mageekguy\atoum\reports\asynchronous\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, null, $adapter = new test\adapter());
-		$reportController = $report->getMockController();
-		$reportController->cleanDestinationDirectory = function() {};
+		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, $adapter = new test\adapter());
+		$fieldController = $field->getMockController();
+		$fieldController->cleanDestinationDirectory = function() {};
+
+		$field->setWithRunner($runner, atoum\runner::runStop);
 
 		$templateParserController = $templateParser->getMockController();
 		$templateParserController->parseFile = function($path) use ($templatesDirectory, $indexTemplate, $classTemplate){
@@ -414,17 +467,11 @@ class html extends atoum\test
 		$adapter->copy = function() {};
 
 		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($runner)->call('getScore')
-			->mock($score)->call('getCoverage')
+			->object($field->getCoverage())->isIdenticalTo($coverage)
+			->castToString($field)->isIdenticalTo('> ' . sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . '=> Details of code coverage are available at /.' . PHP_EOL)
 			->mock($coverage)->call('count')
-		;
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($report)
+			->mock($field)
 				->call('cleanDestinationDirectory')
-			->mock($runner)->call('getScore')
 			->mock($coverage)
 				->call('count')
 				->call('getClasses')

@@ -37,19 +37,10 @@ class report implements observers\runner, observers\test, adapter\aggregator
 			test::runStop => array(),
 		);
 
-		if ($locale === null)
-		{
-			$locale = new locale();
-		}
-
-		$this->setLocale($locale);
-
-		if ($adapter === null)
-		{
-			$adapter = new adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this
+			->setLocale($locale ?: new locale())
+			->setAdapter($adapter ?: new adapter())
+		;
 	}
 
 	public function setTitle($title)

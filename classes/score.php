@@ -27,12 +27,7 @@ class score
 
 	public function __construct(score\coverage $coverage = null)
 	{
-		if ($coverage === null)
-		{
-			$coverage = new score\coverage();
-		}
-
-		$this->coverage = $coverage;
+		$this->coverage = $coverage ?: new score\coverage();
 	}
 
 	public function reset()

@@ -1,112 +1,52 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous\coverage;
+namespace mageekguy\atoum\report\fields\runner\coverage;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\reports,
-	\mageekguy\atoum\template,
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\template
 ;
 
-class html extends reports\asynchronous
+class html extends report\fields\runner\coverage\string
 {
+	const defaultAlternatePrompt = '=> ';
+
+	protected $adapter = null;
 	protected $rootUrl = '';
 	protected $projectName = '';
+	protected $alternatePrompt = '';
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 	protected $directoryIteratorInjector = null;
 
-	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\adapter $adapter = null, atoum\locale $locale = null, $prompt = null, $alternatePrompt = null)
 	{
-		parent::__construct($locale, $adapter);
-
-		if ($parser === null)
-		{
-			$parser = new template\parser();
-		}
+		parent::__construct($locale, $prompt);
 
 		$this
 			->setProjectName($projectName)
 			->setTemplatesDirectory($templatesDirectory)
 			->setDestinationDirectory($destinationDirectory)
-			->setTemplateParser($parser)
+			->setTemplateParser($parser ?: new template\parser())
+			->setAdapter($adapter ?: new atoum\adapter())
+			->setAlternatePrompt($alternatePrompt ?: self::defaultAlternatePrompt)
 			->setRootUrl('/')
 		;
 	}
 
-	public function setTemplatesDirectory($path)
+	public function __toString()
 	{
-		$this->templatesDirectory = (string) $path;
+		$string = parent::__toString();
 
-		return $this;
-	}
-
-	public function getTemplatesDirectory()
-	{
-		return $this->templatesDirectory;
-	}
-
-	public function setDestinationDirectory($path)
-	{
-		$this->destinationDirectory = (string) $path;
-
-		return $this;
-	}
-
-	public function getDestinationDirectory()
-	{
-		return $this->destinationDirectory;
-	}
-
-	public function setTemplateParser(template\parser $parser)
-	{
-		$this->templateParser = $parser;
-
-		return $this;
-	}
-
-	public function getTemplateParser()
-	{
-		return $this->templateParser;
-	}
-
-	public function setProjectName($projectName)
-	{
-		$this->projectName = (string) $projectName;
-
-		return $this;
-	}
-
-	public function getProjectName()
-	{
-		return $this->projectName;
-	}
-
-	public function setRootUrl($rootUrl)
-	{
-		$this->rootUrl = (string) $rootUrl;
-
-		return $this;
-	}
-
-	public function getRootUrl()
-	{
-		return $this->rootUrl;
-	}
-
-	public function runnerStop(atoum\runner $runner)
-	{
-		$coverage = $runner->getScore()->getCoverage();
-
-		if (sizeof($coverage) > 0)
+		if (sizeof($this->coverage) > 0)
 		{
 			$this->cleanDestinationDirectory();
 
 			$this->adapter->copy($this->templatesDirectory . '/screen.css', $this->destinationDirectory . '/screen.css');
 
-			$classes = $coverage->getClasses();
+			$classes = $this->coverage->getClasses();
 
 			$indexTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
 
@@ -140,7 +80,7 @@ class html extends reports\asynchronous
 
 					if (isset($classTemplate->classCoverageValue) === true)
 					{
-						$classTemplate->classCoverageValue = round($coverage->getValueForClass($className) * 100, 2);
+						$classTemplate->classCoverageValue = round($this->coverage->getValueForClass($className) * 100, 2);
 					}
 
 					$classTemplate->build();
@@ -178,7 +118,7 @@ class html extends reports\asynchronous
 				$notCoveredLineTemplate = $sourceFileTemplate->getById('notCoveredLine');
 			}
 
-			foreach ($coverage->getMethods() as $className => $methods)
+			foreach ($this->coverage->getMethods() as $className => $methods)
 			{
 				if (isset($classTemplate->className) === true)
 				{
@@ -187,7 +127,7 @@ class html extends reports\asynchronous
 
 				if (isset($classTemplate->classCoverageValue) === true)
 				{
-					$classTemplate->classCoverageValue = round($coverage->getValueForClass($className) * 100, 2);
+					$classTemplate->classCoverageValue = round($this->coverage->getValueForClass($className) * 100, 2);
 				}
 
 				if ($methodTemplate !== null)
@@ -201,7 +141,7 @@ class html extends reports\asynchronous
 
 						if (isset($methodTemplate->methodCoverageValue) === true)
 						{
-							$methodTemplate->methodCoverageValue = round($coverage->getValueForMethod($className, $methodName) * 100, 2);
+							$methodTemplate->methodCoverageValue = round($this->coverage->getValueForMethod($className, $methodName) * 100, 2);
 						}
 
 						$methodTemplate->build();
@@ -300,9 +240,95 @@ class html extends reports\asynchronous
 					$sourceFileTemplate->resetData();
 				}
 			}
+
+			$string .= $this->alternatePrompt . sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl) . PHP_EOL;
 		}
 
+		return $string;
+	}
+
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
 		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setAlternatePrompt($prompt)
+	{
+		$this->alternatePrompt = (string) $prompt;
+
+		return $this;
+	}
+
+	public function getAlternatePrompt()
+	{
+		return $this->alternatePrompt;
+	}
+
+	public function setTemplatesDirectory($path)
+	{
+		$this->templatesDirectory = (string) $path;
+
+		return $this;
+	}
+
+	public function getTemplatesDirectory()
+	{
+		return $this->templatesDirectory;
+	}
+
+	public function setDestinationDirectory($path)
+	{
+		$this->destinationDirectory = (string) $path;
+
+		return $this;
+	}
+
+	public function getDestinationDirectory()
+	{
+		return $this->destinationDirectory;
+	}
+
+	public function setTemplateParser(template\parser $parser)
+	{
+		$this->templateParser = $parser;
+
+		return $this;
+	}
+
+	public function getTemplateParser()
+	{
+		return $this->templateParser;
+	}
+
+	public function setProjectName($projectName)
+	{
+		$this->projectName = (string) $projectName;
+
+		return $this;
+	}
+
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
+	public function setRootUrl($rootUrl)
+	{
+		$this->rootUrl = (string) $rootUrl;
+
+		return $this;
+	}
+
+	public function getRootUrl()
+	{
+		return $this->rootUrl;
 	}
 
 	public function setDirectoryIteratorInjector(\closure $directoryIteratorInjector)

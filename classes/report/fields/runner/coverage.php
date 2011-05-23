@@ -7,20 +7,20 @@ use
 	\mageekguy\atoum\report
 ;
 
-abstract class duration extends report\fields\runner
+abstract class coverage extends report\fields\runner
 {
-	protected $value = null;
+	protected $coverage = null;
 
-	public function getValue()
+	public function getCoverage()
 	{
-		return $this->value;
+		return $this->coverage;
 	}
 
 	public function setWithRunner(atoum\runner $runner, $event = null)
 	{
 		if ($event === atoum\runner::runStop)
 		{
-			$this->value = $runner->getRunningDuration();
+			$this->coverage = $runner->getScore()->getCoverage();
 		}
 
 		return $this;
