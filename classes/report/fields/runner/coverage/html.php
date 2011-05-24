@@ -5,7 +5,8 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report,
-	\mageekguy\atoum\template
+	\mageekguy\atoum\template,
+	\mageekguy\atoum\exceptions
 ;
 
 class html extends report\fields\runner\coverage\string
@@ -20,6 +21,7 @@ class html extends report\fields\runner\coverage\string
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 	protected $directoryIteratorInjector = null;
+	protected $reflectionClassInjector = null;
 
 	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\adapter $adapter = null, atoum\locale $locale = null, $prompt = null, $alternatePrompt = null)
 	{
@@ -34,6 +36,41 @@ class html extends report\fields\runner\coverage\string
 			->setAlternatePrompt($alternatePrompt ?: self::defaultAlternatePrompt)
 			->setRootUrl('/')
 		;
+	}
+
+	public function setReflectionClassInjector(\closure $reflectionClassInjector)
+	{
+		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
+		}
+
+		$this->reflectionClassInjector = $reflectionClassInjector;
+
+		return $this;
+	}
+
+	public function getReflectionClass($class)
+	{
+		$reflectionClass = null;
+
+		if ($this->reflectionClassInjector === null)
+		{
+			$reflectionClass = new \reflectionClass($class);
+		}
+		else
+		{
+			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
+
+			if ($reflectionClass instanceof \reflectionClass === false)
+			{
+				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
+			}
+		}
+
+		return $reflectionClass;
 	}
 
 	public function __toString()
@@ -153,11 +190,9 @@ class html extends report\fields\runner\coverage\string
 
 						if ($srcFile !== false)
 						{
-							$reflection = new \reflectionClass($className);
-
 							$methodLines = array();
 
-							foreach ($reflection->getMethods() as $method)
+							foreach ($this->getReflectionClass($className)->getMethods() as $method)
 							{
 								if ($method->isAbstract() === false && $method->getDeclaringClass()->getName() === $className)
 								{

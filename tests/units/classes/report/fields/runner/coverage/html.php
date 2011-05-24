@@ -332,6 +332,50 @@ class html extends atoum\test
 		;
 	}
 
+	public function testSetReflectionClassInjector()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->mock('\reflectionClass');
+
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+
+		$reflectionClass = new mock\reflectionClass(uniqid(), $reflectionClassController);
+
+		$this->assert
+			->object($field->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))->isIdenticalTo($field)
+			->object($field->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClass)
+			->exception(function() use ($field) {
+						$field->setReflectionClassInjector(function() {});
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Reflection class injector must take one argument')
+		;
+	}
+
+	public function testGetReflectionClass()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($field->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->string($field->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
+		;
+
+		$field->setReflectionClassInjector(function($class) {});
+
+		$this->assert
+			->exception(function() use ($field) {
+						$field->getReflectionClass(uniqid());
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+				->hasMessage('Reflection class injector must return a \reflectionClass instance')
+		;
+	}
+
 	public function test__toString()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
@@ -347,6 +391,8 @@ class html extends atoum\test
 			->mock('\mageekguy\atoum\template')
 			->mock('\mageekguy\atoum\template\tag')
 			->mock('\mageekguy\atoum\template\parser')
+			->mock('\reflectionClass')
+			->mock('\reflectionMethod')
 			->mock($this->getTestedClassName())
 		;
 
@@ -359,13 +405,22 @@ class html extends atoum\test
 		$coverageController->getMethods = array(
 			$className =>
 				array(
-					$methodName = uniqid() =>
+					$method1Name = uniqid() =>
 						array(
-							1 => 1,
-							2 => 1,
-							3 => 0,
-							4 => 1,
-							5 => 1
+							5 => 1,
+							6 => 1,
+							7 => -1,
+							8 => 1,
+							9 => -2
+						),
+					$method3Name = uniqid() =>
+						array(
+							10 => -2
+						),
+					$method4Name = uniqid() =>
+						array(
+							11 => 1,
+							12 => -2
 						)
 				)
 		);
@@ -396,15 +451,15 @@ class html extends atoum\test
 		$methodTemplateController->__set = function() {};
 		$methodTemplateController->__isset = true;
 
-		$sourceTemplate = new mock\mageekguy\atoum\template();
-		$sourceTemplateController = $sourceTemplate->getMockController();
-		$sourceTemplateController->__set = function() {};
-		$sourceTemplateController->__isset = true;
+		$sourceFileTemplate = new mock\mageekguy\atoum\template();
+		$sourceFileTemplateController = $sourceFileTemplate->getMockController();
+		$sourceFileTemplateController->__set = function() {};
+		$sourceFileTemplateController->__isset = true;
 
-		$blankLineTemplate = new mock\mageekguy\atoum\template();
-		$blankLineTemplateController = $blankLineTemplate->getMockController();
-		$blankLineTemplateController->__set = function() {};
-		$blankLineTemplateController->__isset = true;
+		$lineTemplate = new mock\mageekguy\atoum\template();
+		$lineTemplateController = $lineTemplate->getMockController();
+		$lineTemplateController->__set = function() {};
+		$lineTemplateController->__isset = true;
 
 		$coveredLineTemplate = new mock\mageekguy\atoum\template();
 		$coveredLineTemplateController = $coveredLineTemplate->getMockController();
@@ -416,21 +471,11 @@ class html extends atoum\test
 		$notCoveredLineTemplateController->__set = function() {};
 		$notCoveredLineTemplateController->__isset = true;
 
-		$classTemplate = new mock\mageekguy\atoum\template();
-		$classTemplateController = $classTemplate->getMockController();
-		$classTemplateController->__set = function() {};
-		$classTemplateController->__isset = true;
-		$classTemplateController->getById = function ($id) use ($methodTemplate, $sourceTemplate, $blankLineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
+		$sourceFileTemplateController->getById = function ($id) use ($lineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
 			switch ($id)
 			{
-				case 'method':
-					return $methodTemplate;
-
-				case 'source':
-					return $sourceTemplate;
-
-				case 'blankLine':
-					return $blankLineTemplate;
+				case 'line':
+					return $lineTemplate;
 
 				case 'coveredLine':
 					return $coveredLineTemplate;
@@ -440,11 +485,78 @@ class html extends atoum\test
 			}
 		};
 
+		$classTemplate = new mock\mageekguy\atoum\template();
+		$classTemplateController = $classTemplate->getMockController();
+		$classTemplateController->__set = function() {};
+		$classTemplateController->__isset = true;
+		$classTemplateController->getById = function ($id) use ($methodTemplate, $sourceFileTemplate, $lineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
+			switch ($id)
+			{
+				case 'method':
+					return $methodTemplate;
+
+				case 'sourceFile':
+					return $sourceFileTemplate;
+			}
+		};
+
+
+		$reflectedClassController = new mock\controller();
+		$reflectedClassController->__construct = function() {};
+		$reflectedClassController->getName = $className;
+
+		$reflectedClass = new mock\reflectionClass(uniqid(), $reflectedClassController);
+
+		$otherReflectedClassController = new mock\controller();
+		$otherReflectedClassController->__construct = function() {};
+		$otherReflectedClassController->getName = uniqid();
+
+		$otherReflectedClass = new mock\reflectionClass(uniqid(), $otherReflectedClassController);
+
+		$reflectedMethod1Controller = new mock\controller();
+		$reflectedMethod1Controller->__construct = function() {};
+		$reflectedMethod1Controller->getName = $method1Name;
+		$reflectedMethod1Controller->isAbstract = false;
+		$reflectedMethod1Controller->getDeclaringClass = $reflectedClass;
+		$reflectedMethod1Controller->getStartLine = 5;
+
+		$reflectedMethod1 = new mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod1Controller);
+
+		$reflectedMethod2Controller = new mock\controller();
+		$reflectedMethod2Controller->__construct = function() {};
+		$reflectedMethod2Controller->getName = $method2Name = uniqid();
+		$reflectedMethod2Controller->isAbstract = false;
+		$reflectedMethod2Controller->getDeclaringClass = $otherReflectedClass;
+		$reflectedMethod2Controller->getStartLine = 5;
+
+		$reflectedMethod2 = new mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod2Controller);
+
+		$reflectedMethod3Controller = new mock\controller();
+		$reflectedMethod3Controller->__construct = function() {};
+		$reflectedMethod3Controller->getName = $method3Name;
+		$reflectedMethod3Controller->isAbstract = true;
+		$reflectedMethod3Controller->getDeclaringClass = $reflectedClass;
+		$reflectedMethod3Controller->getStartLine = 10;
+
+		$reflectedMethod3 = new mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod3Controller);
+
+		$reflectedMethod4Controller = new mock\controller();
+		$reflectedMethod4Controller->__construct = function() {};
+		$reflectedMethod4Controller->getName = $method4Name;
+		$reflectedMethod4Controller->isAbstract = false;
+		$reflectedMethod4Controller->getDeclaringClass = $reflectedClass;
+		$reflectedMethod4Controller->getStartLine = 11;
+
+		$reflectedMethod4 = new mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod4Controller);
+
+		$reflectedClassController->getMethods = array($reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4);
+
 		$templateParser = new mock\mageekguy\atoum\template\parser();
 
 		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, $adapter = new test\adapter());
 		$fieldController = $field->getMockController();
 		$fieldController->cleanDestinationDirectory = function() {};
+		$fieldController->getReflectionClass = $reflectedClass;
 
 		$field->setWithRunner($runner, atoum\runner::runStop);
 
@@ -463,7 +575,24 @@ class html extends atoum\test
 		$adapter->mkdir = function() {};
 		$adapter->file_put_contents = function() {};
 		$adapter->filemtime = $filemtime = time();
-		$adapter->fopen = false;
+		$adapter->fopen = function() {};
+		$adapter->fgets = false;
+		$adapter->fgets[1] = $line1 = uniqid();
+		$adapter->fgets[2] = $line2 = uniqid();
+		$adapter->fgets[3] = $line3 = uniqid();
+		$adapter->fgets[4] = $line4 = uniqid();
+		$adapter->fgets[5] = $line5 = uniqid();
+		$adapter->fgets[6] = $line6 = uniqid();
+		$adapter->fgets[7] = $line7 = uniqid();
+		$adapter->fgets[8] = $line8 = uniqid();
+		$adapter->fgets[9] = $line9 = uniqid();
+		$adapter->fgets[10] = $line10 = uniqid();
+		$adapter->fgets[11] = $line11 = uniqid();
+		$adapter->fgets[12] = $line12 = uniqid();
+		$adapter->fgets[13] = $line13 = uniqid();
+		$adapter->fgets[14] = $line14 = uniqid();
+		$adapter->fgets[15] = $line15 = uniqid();
+		$adapter->fclose = function() {};
 		$adapter->copy = function() {};
 
 		$this->assert
@@ -488,15 +617,16 @@ class html extends atoum\test
 				->call('__set', array('classUrl', ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR)))
 				->call('build')
 			->mock($coverage)
-				->call('getValueForMethod', array($className, $methodName))
+				->call('getValueForMethod', array($className, $method1Name))
 			->mock($classTemplate)
 				->call('__set', array('className', $className))
 				->call('__set', array('classCoverageValue', round($classCoverageValue * 100, 2)))
 			->mock($methodTemplate)
-				->call('__set', array('methodName', $methodName))
+				->call('__set', array('methodName', $method1Name))
 				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))
+				->call('fopen')
 		;
 	}
 }
