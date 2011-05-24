@@ -9,21 +9,30 @@
 	</head>
 	<body>
 		<div id="page">
-			<h1><tpl:projectName /></h1>
+			<h1>Code coverage of <tpl:projectName /></h1>
 			<div id="content">
-				<table cellpadding="0" cellspacing="0">
-					<tpl:class id="class">
-					<tr>
-						<td class="bar">
-							<div class="bar">
-								<div class="background"></div>
-								<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-								<div class="label"><a href="<tpl:rootUrl /><tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
-							</div>
-						</td>
-					</tr>
-					</tpl:class>
-				</table>
+				<ul class="projectSummary">
+					<li class="project">
+						<div class="bar">
+							<div class="background"></div>
+							<div class="graph" style="width: <tpl:coverageValue />%"></div>
+							<div class="label"><tpl:projectName /></a> <span><tpl:coverageValue />%</span></div>
+						</div>
+					</li>
+					<li class="classes">
+						<ul>
+							<tpl:class id="class">
+								<li>
+									<div class="bar">
+										<div class="background"></div>
+										<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
+										<div class="label"><a href="<tpl:rootUrl /><tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
+									</div>
+								</li>
+							</tpl:class>
+						</ul>
+					</li>
+				</ul>
 			</div>
 		<div>
 	</body>

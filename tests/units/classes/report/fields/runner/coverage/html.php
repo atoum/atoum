@@ -575,7 +575,7 @@ class html extends atoum\test
 		$adapter->mkdir = function() {};
 		$adapter->file_put_contents = function() {};
 		$adapter->filemtime = $filemtime = time();
-		$adapter->fopen = function() {};
+		$adapter->fopen = $classResource = uniqid();
 		$adapter->fgets = false;
 		$adapter->fgets[1] = $line1 = uniqid();
 		$adapter->fgets[2] = $line2 = uniqid();
@@ -610,6 +610,7 @@ class html extends atoum\test
 				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
+				->call('__set', array('coverageValue', round($coverageValue * 100, 2)))
 				->call('getById', array('class', true))
 				->call('build')
 			->mock($coverageTemplate)
@@ -623,11 +624,31 @@ class html extends atoum\test
 				->call('__set', array('classCoverageValue', round($classCoverageValue * 100, 2)))
 			->mock($methodTemplate)
 				->call('__set', array('methodName', $method1Name))
+				->notCall('__set', array('methodName', $method2Name))
+				->notCall('__set', array('methodName', $method3Name))
+				->call('__set', array('methodName', $method4Name))
 				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
+			->mock($lineTemplate)
+				->call('__set', array('code', $line1))
+				->call('__set', array('code', $line2))
+				->call('__set', array('code', $line3))
+				->call('__set', array('code', $line4))
+				->call('__set', array('code', $line9))
+				->call('__set', array('code', $line12))
+			->mock($coveredLineTemplate)
+				->call('__set', array('code', $line5))
+				->call('__set', array('code', $line6))
+				->call('__set', array('code', $line8))
+				->call('__set', array('code', $line11))
+			->mock($notCoveredLineTemplate)
+				->call('__set', array('code', $line7))
 			->adapter($adapter)
 				->call('file_put_contents', array($destinationDirectory . '/index.html', $buildOfIndexTemplate))
-				->call('fopen')
+				->call('fopen', array($classFile, 'r'))
+				->call('fgets', array($classResource))
+				->call('fclose', array($classResource))
 		;
+
 	}
 }
 

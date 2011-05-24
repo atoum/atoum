@@ -97,6 +97,11 @@ class html extends report\fields\runner\coverage\string
 				$indexTemplate->rootUrl = $this->rootUrl;
 			}
 
+			if (isset($indexTemplate->coverageValue) === true)
+			{
+				$indexTemplate->coverageValue = round($this->coverage->getValue() * 100, 2);
+			}
+
 			$classTemplate = $indexTemplate->getById('class');
 
 			if ($classTemplate !== null)
@@ -169,7 +174,14 @@ class html extends report\fields\runner\coverage\string
 
 				if ($methodTemplate !== null)
 				{
-					foreach (array_keys($methods) as $methodName)
+					$reflectedMethods = array();
+
+					foreach (array_filter($this->getReflectionClass($className)->getMethods(), function($reflectedMethod) use ($className) { return $reflectedMethod->isAbstract() === false && $reflectedMethod->getDeclaringClass()->getName() === $className; }) as $reflectedMethod)
+					{
+						$reflectedMethods[$reflectedMethod->getName()] = $reflectedMethod;
+					}
+
+					foreach (array_intersect(array_keys($reflectedMethods), array_keys($methods)) as $methodName)
 					{
 						if (isset($methodTemplate->methodName) === true)
 						{
@@ -192,12 +204,9 @@ class html extends report\fields\runner\coverage\string
 						{
 							$methodLines = array();
 
-							foreach ($this->getReflectionClass($className)->getMethods() as $method)
+							foreach ($reflectedMethods as $reflectedMethodName => $reflectedMethod)
 							{
-								if ($method->isAbstract() === false && $method->getDeclaringClass()->getName() === $className)
-								{
-									$methodLines[$method->getStartLine()] = $method->getName();
-								}
+								$methodLines[$reflectedMethod->getStartLine()] = $reflectedMethodName;
 							}
 
 							$currentMethod = null;
@@ -208,8 +217,6 @@ class html extends report\fields\runner\coverage\string
 								{
 									$currentMethod = $methodLines[$lineNumber];
 								}
-
-								$line = htmlentities($line, ENT_QUOTES, 'UTF-8');
 
 								switch (true)
 								{
@@ -226,7 +233,7 @@ class html extends report\fields\runner\coverage\string
 								}
 
 								${$lineTemplateName}->lineNumber = $lineNumber;
-								${$lineTemplateName}->code = $line;
+								${$lineTemplateName}->code = htmlentities($line, ENT_QUOTES, 'UTF-8');
 
 								if (isset($methodLines[$lineNumber]) === true)
 								{

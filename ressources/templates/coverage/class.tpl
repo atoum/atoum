@@ -9,18 +9,18 @@
 	</head>
 	<body>
 		<div id="page">
-			<h1>Code coverage of class <tpl:className /></h1>
+			<h1><a href="<tpl:rootUrl />"><tpl:projectName /></a> :  code coverage of <tpl:className /></h1>
 			<div id="content">
-				<ul class="classesSummary">
+				<ul class="classSummary">
 					<li class="class">
 						<div class="bar">
 							<div class="background"></div>
 							<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-							<div class="label"><a href="#<tpl:className />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
+							<div class="label"><tpl:className /> <span><tpl:classCoverageValue />%</span></div>
 						</div>
 					</li>
 					<li class="methods">
-						<ul class="methods">
+						<ul>
 							<tpl:method id="method">
 								<li>
 									<div class="bar">
@@ -34,7 +34,7 @@
 					</li>
 				</ul>
 				<table cellpadding="0" cellspacing="0" class="source">
-					<tr><th>Line</th><th>Code</th></tr>
+					<tr><th class="number">Line</th><th>Code</th></tr>
 					<tpl:sourceFile id="sourceFile">
 						<tpl:line id="line"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:line>
 						<tpl:line id="coveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:line>
