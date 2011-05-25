@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\mock;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\mock;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock
+;
 
 require_once(__DIR__ . '/../../runner.php');
 

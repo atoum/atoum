@@ -69,28 +69,33 @@ class coverage implements \countable
 		return $this->methods;
 	}
 
-	public function addXdebugData(atoum\test $test, array $data)
+	public function addXdebugDataForTest(atoum\test $test, array $data)
+	{
+		return $this->addXdebugDataForClass($test->getTestedClassName(), $data);
+	}
+
+	public function addXdebugDataForClass($class, array $data)
 	{
 		if (sizeof($data) > 0)
 		{
 			try
 			{
-				$testedClass = $this->getReflectionClass($test->getTestedClassName());
-				$testedClassFile = $testedClass->getFileName();
+				$reflectedClass = $this->getReflectionClass($class);
+				$reflectedClassFile = $reflectedClass->getFileName();
 
-				if (isset($data[$testedClassFile]) === true)
+				if (isset($data[$reflectedClassFile]) === true)
 				{
-					$this->classes[$testedClass->getName()] = $testedClassFile;
+					$this->classes[$reflectedClass->getName()] = $reflectedClassFile;
 
-					foreach ($testedClass->getMethods() as $method)
+					foreach ($reflectedClass->getMethods() as $method)
 					{
-						if ($method->isAbstract() === false && $method->getDeclaringClass()->getName() === $testedClass->getName())
+						if ($method->isAbstract() === false && $method->getDeclaringClass()->getName() === $reflectedClass->getName())
 						{
 							for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 							{
-								if (isset($data[$testedClassFile][$line]) === true && (isset($this->methods[$testedClass->getName()][$method->getName()][$line]) === false || $this->methods[$testedClass->getName()][$method->getName()][$line] < $data[$testedClassFile][$line]))
+								if (isset($data[$reflectedClassFile][$line]) === true && (isset($this->methods[$reflectedClass->getName()][$method->getName()][$line]) === false || $this->methods[$reflectedClass->getName()][$method->getName()][$line] < $data[$reflectedClassFile][$line]))
 								{
-									$this->methods[$testedClass->getName()][$method->getName()][$line] = $data[$testedClassFile][$line];
+									$this->methods[$reflectedClass->getName()][$method->getName()][$line] = $data[$reflectedClassFile][$line];
 								}
 							}
 						}

@@ -188,7 +188,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 			)
 		);
 
-		$scoreCoverage->addXdebugData($this, $xdebugData);
+		$scoreCoverage->addXdebugDataForTest($this, $xdebugData);
 
 		$field = new tests\coverage\string();
 

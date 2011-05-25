@@ -71,12 +71,12 @@ class coverage extends atoum\test
 		;
 	}
 
-	public function testAddXdebugData()
+	public function testAddXdebugDataForTest()
 	{
 		$coverage = new score\coverage();
 
 		$this->assert
-			->object($coverage->addXdebugData($this, array()))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 		;
 
 		$mockGenerator = new mock\generator();
@@ -129,7 +129,7 @@ class coverage extends atoum\test
 		);
 
 		$this->assert
-			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -150,7 +150,7 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->object($coverage->addXdebugData($this, $xdebugData))->isIdenticalTo($coverage)
+			->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -223,7 +223,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->array($coverage->getMethods())->isNotEmpty()
@@ -299,7 +299,7 @@ class coverage extends atoum\test
 			->array($coverage->getMethods())->isEmpty()
 		;
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
@@ -380,7 +380,7 @@ class coverage extends atoum\test
 		;
 
 		$this->assert
-			->object($coverage->merge($otherCoverage->addXdebugData($this, $otherXdebugData)))->isIdenticalTo($coverage)
+			->object($coverage->merge($otherCoverage->addXdebugDataForTest($this, $otherXdebugData)))->isIdenticalTo($coverage)
 			->array($coverage->getMethods())->isEqualTo(array(
 					$className => array(
 						$methodName => array(
@@ -463,7 +463,7 @@ class coverage extends atoum\test
 		);
 
 		$this->assert
-			->sizeOf($coverage->addXdebugData($this, $xdebugData))->isEqualTo(1)
+			->sizeOf($coverage->addXdebugDataForTest($this, $xdebugData))->isEqualTo(1)
 		;
 	}
 
@@ -519,7 +519,7 @@ class coverage extends atoum\test
 			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
@@ -586,7 +586,7 @@ class coverage extends atoum\test
 			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->float($coverage->getValue())->isEqualTo(0.0)
@@ -613,7 +613,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->float($coverage->getValue())->isEqualTo(1 / 4)
@@ -640,7 +640,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->float($coverage->getValue())->isEqualTo(2 / 4)
@@ -667,7 +667,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->float($coverage->getValue())->isEqualTo(1.0)
@@ -734,7 +734,7 @@ class coverage extends atoum\test
 			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -762,7 +762,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -790,7 +790,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -818,7 +818,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -887,7 +887,7 @@ class coverage extends atoum\test
 			->setReflectionClassInjector(function($className) use ($class) { return $class; })
 		;
 
-		$coverage->addXdebugData($this, $xdebugData);
+		$coverage->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
@@ -916,7 +916,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
@@ -945,7 +945,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
@@ -974,7 +974,7 @@ class coverage extends atoum\test
 			)
 		);
 
-		$coverage->reset()->addXdebugData($this, $xdebugData);
+		$coverage->reset()->addXdebugDataForTest($this, $xdebugData);
 
 		$this->assert
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()

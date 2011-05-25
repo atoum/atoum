@@ -37,6 +37,7 @@ class html extends atoum\test
 			->string($field->getPrompt())->isEqualTo(coverage\html::defaultPrompt)
 			->string($field->getAlternatePrompt())->isEqualTo(coverage\html::defaultAlternatePrompt)
 			->variable($field->getCoverage())->isNull()
+			->array($field->getSrcDirectories())->isEmpty()
 		;
 
 		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser = new template\parser(), $adapter = new atoum\adapter(), $locale = new atoum\locale(), $prompt = uniqid(), $alternatePrompt = uniqid());
@@ -51,6 +52,7 @@ class html extends atoum\test
 			->string($field->getPrompt())->isEqualTo($prompt)
 			->string($field->getAlternatePrompt())->isEqualTo($alternatePrompt)
 			->variable($field->getCoverage())->isNull()
+			->array($field->getSrcDirectories())->isEmpty()
 		;
 	}
 
@@ -301,6 +303,20 @@ class html extends atoum\test
 				->call('unlink', array($directory32Path))
 				->call('rmdir', array($directory3Path))
 				->notCall('rmdir', array($directoryPath))
+		;
+	}
+
+	public function testAddSrcDirectory()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($field->addSrcDirectory($srcDirectory = uniqid()))->isIdenticalTo($field)
+			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory))
+			->object($field->addSrcDirectory($srcDirectory))->isIdenticalTo($field)
+			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory))
+			->object($field->addSrcDirectory($otherSrcDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
+			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory, (string) $otherSrcDirectory))
 		;
 	}
 

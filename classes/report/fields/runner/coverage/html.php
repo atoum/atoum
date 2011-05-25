@@ -17,6 +17,7 @@ class html extends report\fields\runner\coverage\string
 	protected $rootUrl = '';
 	protected $projectName = '';
 	protected $alternatePrompt = '';
+	protected $srcDirectories = array();
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
@@ -76,6 +77,30 @@ class html extends report\fields\runner\coverage\string
 	public function __toString()
 	{
 		$string = parent::__toString();
+
+		if ($this->adapter->extension_loaded('xdebug') === true)
+		{
+			foreach ($this->srcDirectories as $srcDirectory)
+			{
+				foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($srcDirectory))) as $file)
+				{
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+
+					$declaredClasses = $this->adapter->get_declared_classes();
+
+					require_once($file->getPathname());
+
+					$xDebugData = $this->adapter->xdebug_get_code_coverage();
+
+					$this->adapter->xdebug_stop_code_coverage();
+
+					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
+					{
+						$this->coverage->addXdebugDataForClass($class, $xDebugData);
+					}
+				}
+			}
+		}
 
 		if (sizeof($this->coverage) > 0)
 		{
@@ -311,6 +336,23 @@ class html extends report\fields\runner\coverage\string
 	public function getAlternatePrompt()
 	{
 		return $this->alternatePrompt;
+	}
+
+	public function addSrcDirectory($srcDirectory)
+	{
+		$srcDirectory = (string) $srcDirectory;
+
+		if (in_array($srcDirectory, $this->srcDirectories) === false)
+		{
+			$this->srcDirectories[] = $srcDirectory;
+		}
+
+		return $this;
+	}
+
+	public function getSrcDirectories()
+	{
+		return $this->srcDirectories;
 	}
 
 	public function setTemplatesDirectory($path)

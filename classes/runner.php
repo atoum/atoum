@@ -349,7 +349,7 @@ class runner implements observable, adapter\aggregator
 
 					if ($xdebugLoaded === true)
 					{
-						$this->score->getCoverage()->addXdebugData($test, $this->adapter->xdebug_get_code_coverage());
+						$this->score->getCoverage()->addXdebugDataForTest($test, $this->adapter->xdebug_get_code_coverage());
 
 						$this->adapter->xdebug_stop_code_coverage();
 					}
