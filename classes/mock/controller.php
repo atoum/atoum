@@ -143,6 +143,7 @@ class controller extends test\adapter
 	public function injectInNextMockInstance()
 	{
 		self::$injectInNextInstance = $this;
+
 		return $this;
 	}
 
@@ -186,6 +187,8 @@ class controller extends test\adapter
 				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
 		}
+
+		return $this;
 	}
 }
 

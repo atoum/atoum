@@ -81,6 +81,7 @@ class argument
 	{
 		$this->defaultValue = $defaultValue;
 		$this->defaultValueIsSet = true;
+
 		return $this;
 	}
 

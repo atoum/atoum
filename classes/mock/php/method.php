@@ -2,7 +2,10 @@
 
 namespace mageekguy\atoum\mock\php;
 
-use \mageekguy\atoum;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\exceptions
+;
 
 class method
 {
@@ -49,6 +52,11 @@ class method
 
 	public function returnReference()
 	{
+		if ($this->isConstructor === true)
+		{
+			throw new exceptions\logic('Constructor can not return a reference');
+		}
+
 		$this->returnReference = true;
 
 		return $this;

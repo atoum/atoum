@@ -16,12 +16,7 @@ class generator implements atoum\adapter\aggregator
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this->setAdapter($adapter ?: new atoum\adapter());
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
