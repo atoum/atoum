@@ -14,16 +14,13 @@ abstract class mailer implements atoum\adapter\aggregator
 	protected $xMailer = null;
 	protected $replyTo = null;
 	protected $subject = null;
+	protected $contentType = null;
 	protected $adapter = null;
+
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this->setAdapter($adapter ?: new atoum\adapter());
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
@@ -122,6 +119,18 @@ abstract class mailer implements atoum\adapter\aggregator
 	public function getXMailer()
 	{
 		return $this->xMailer;
+	}
+
+	public function setContentType($type = 'text/plain', $charset = 'utf-8')
+	{
+		$this->contentType = array($type, $charset);
+
+		return $this;
+	}
+
+	public function getContentType()
+	{
+		return $this->contentType;
 	}
 
 	public abstract function send($something);

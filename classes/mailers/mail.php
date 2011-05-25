@@ -9,133 +9,7 @@ use
 
 class mail extends atoum\mailer
 {
-	protected $to = null;
-	protected $from = null;
-	protected $xMailer = null;
-	protected $replyTo = null;
-	protected $contentType = null;
-	protected $subject = null;
-	protected $adapter = null;
-
-	public function __construct(atoum\adapter $adapter = null)
-	{
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		$this->setAdapter($adapter);
-	}
-
-	public function setAdapter(atoum\adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
-	public function addTo($to, $realName = null)
-	{
-		if ($this->to !== null)
-		{
-			$this->to .= ',';
-		}
-
-		if ($realName === null)
-		{
-			$this->to .= $to;
-		}
-		else
-		{
-			$this->to .= $realName . ' <' . $to . '>';
-		}
-
-		return $this;
-	}
-
-	public function getTo()
-	{
-		return $this->to;
-	}
-
-	public function setSubject($subject)
-	{
-		$this->subject = (string) $subject;
-
-		return $this;
-	}
-
-	public function getSubject()
-	{
-		return $this->subject;
-	}
-
-	public function setFrom($from, $realName = null)
-	{
-		if ($realName === null)
-		{
-			$this->from = (string) $from;
-		}
-		else
-		{
-			$this->from = $realName . ' <' . $from . '>';
-		}
-
-		return $this;
-	}
-
-	public function getFrom()
-	{
-		return $this->from;
-	}
-
-	public function setReplyTo($replyTo, $realName = null)
-	{
-		if ($realName === null)
-		{
-			$this->replyTo = (string) $replyTo;
-		}
-		else
-		{
-			$this->replyTo = $realName . ' <' . $replyTo . '>';
-		}
-
-		return $this;
-	}
-
-	public function getReplyTo()
-	{
-		return $this->replyTo;
-	}
-
-	public function setXMailer($mailer)
-	{
-		$this->xMailer = (string) $mailer;
-
-		return $this;
-	}
-
-	public function getXMailer()
-	{
-		return $this->xMailer;
-	}
-
-	public function setContentType($type = 'text/plain', $charset = 'utf-8')
-	{
-		$this->contentType = array($type, $charset);
-
-		return $this;
-	}
-
-	public function getContentType()
-	{
-		return $this->contentType;
-	}
+	const eol = "\r\n";
 
 	public function send($something)
 	{
@@ -164,11 +38,11 @@ class mail extends atoum\mailer
 			throw new exceptions\runtime('X-mailer is undefined');
 		}
 
-		$headers = 'From: ' . $this->from . "\r\n" . 'Reply-To: ' . $this->replyTo . "\r\n" . 'X-Mailer: ' . $this->xMailer;
+		$headers = 'From: ' . $this->from . self::eol . 'Reply-To: ' . $this->replyTo . self::eol . 'X-Mailer: ' . $this->xMailer;
 
 		if ($this->contentType !== null)
 		{
-			$headers .= "\r\n" . 'Content-Type: ' . $this->contentType[0] . '; charset="' . $this->contentType[1] . '"';
+			$headers .= self::eol . 'Content-Type: ' . $this->contentType[0] . '; charset="' . $this->contentType[1] . '"';
 		}
 
 		$this->adapter->mail($this->to, $this->subject, (string) $something, $headers);

@@ -17,6 +17,7 @@ class mail extends atoum\test
 			->class($this->getTestedClassName())
 				->isSubClassOf('\mageekguy\atoum\mailer')
 				->hasInterface('\mageekguy\atoum\adapter\aggregator')
+			->string(mailers\mail::eol)->isEqualTo("\r\n")
 		;
 	}
 
