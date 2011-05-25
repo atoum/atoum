@@ -53,12 +53,14 @@ class string extends variable
 	{
 		if (preg_match($pattern, $this->valueIsSet()->value) === 1)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not match %s'), $this, $pattern));
 		}
+
+		return $this;
 	}
 
 	public function isEqualTo($value, $failMessage = null)

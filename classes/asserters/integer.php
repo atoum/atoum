@@ -43,12 +43,14 @@ class integer extends asserters\variable
 
 		if ($this->value > $value)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not greater than  %s'), $this, $this->toString($value)));
 		}
+
+		return $this;
 	}
 
 	protected static function check($value, $method)

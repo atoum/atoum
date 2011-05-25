@@ -14,12 +14,10 @@ class error extends \mageekguy\atoum\asserter
 
 	public function setWith($message = null, $type = null, $label = null)
 	{
-		$this->setLabel($label);
-
 		$this->message = $message;
 		$this->type = $type;
 
-		return $this;
+		return $this->setLabel($label);
 	}
 
 	public function getMessage()

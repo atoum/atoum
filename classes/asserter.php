@@ -105,6 +105,7 @@ abstract class asserter
 	protected function pass()
 	{
 		$this->getScore()->addPass();
+
 		return $this;
 	}
 
@@ -115,6 +116,7 @@ abstract class asserter
 		$class = $test->getClass();
 		$method = $test->getCurrentMethod();
 		$file = $test->getPath();
+
 		$line = null;
 		$function = null;
 

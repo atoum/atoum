@@ -51,24 +51,28 @@ class object extends asserters\variable
 	{
 		if (sizeof($this->valueIsSet()->value) == $size)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
 		}
+
+		return $this;
 	}
 
 	public function isEmpty($failMessage = null)
 	{
 		if (sizeof($this->value) == 0)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d'), $this, sizeof($this->value)));
 		}
+
+		return $this;
 	}
 
 	protected function valueIsSet($message = 'Object is undefined')

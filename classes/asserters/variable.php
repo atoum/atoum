@@ -67,7 +67,7 @@ class variable extends atoum\asserter
 
 		if ($this->valueIsSet()->value == $value)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
@@ -79,6 +79,8 @@ class variable extends atoum\asserter
 				$diff->setReference($value)->setData($this->value)
 			);
 		}
+
+		return $this;
 	}
 
 	public function isNotEqualTo($value, $failMessage = null)
@@ -87,12 +89,14 @@ class variable extends atoum\asserter
 
 		if ($this->valueIsSet()->value != $value)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->toString($value)));
 		}
+
+		return $this;
 	}
 
 	public function isIdenticalTo($value, $failMessage = null)
@@ -101,12 +105,14 @@ class variable extends atoum\asserter
 
 		if ($this->valueIsSet()->value === $value)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->toString($value)));
 		}
+
+		return $this;
 	}
 
 	public function isNotIdenticalTo($value, $failMessage = null)
@@ -115,36 +121,42 @@ class variable extends atoum\asserter
 
 		if ($this->valueIsSet()->value !== $value)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->toString($value)));
 		}
+
+		return $this;
 	}
 
 	public function isNull($failMessage = null)
 	{
 		if ($this->valueIsSet()->value === null)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not null'), $this));
 		}
+
+		return $this;
 	}
 
 	public function isNotNull($failMessage = null)
 	{
 		if ($this->valueIsSet()->value !== null)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is null'), $this));
 		}
+
+		return $this;
 	}
 
 	public function isReferenceTo(& $reference, $failMessage = null)
@@ -158,7 +170,7 @@ class variable extends atoum\asserter
 		{
 			if ($this->value === $reference)
 			{
-				return $this->pass();
+				$this->pass();
 			}
 			else
 			{
@@ -174,7 +186,7 @@ class variable extends atoum\asserter
 
 			if ($isReference === true)
 			{
-				return $this->pass();
+				$this->pass();
 			}
 			else
 			{

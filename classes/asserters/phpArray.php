@@ -30,56 +30,60 @@ class phpArray extends asserters\variable
 	{
 		if (sizeof($this->valueIsSet()->value) == $size)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
 		}
+
+		return $this;
 	}
 
 	public function isEmpty($failMessage = null)
 	{
 		if (sizeof($this->valueIsSet()->value) == 0)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$diff = new diffs\variable();
 
-			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not empty'), $this))
-			);
+			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not empty'), $this)));
 		}
+
+		return $this;
 	}
 
 	public function isNotEmpty($failMessage = null)
 	{
 		if (sizeof($this->valueIsSet()->value) > 0)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$diff = new diffs\variable();
 
-			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is empty'), $this))
-			);
+			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is empty'), $this)));
 		}
+
+		return $this;
 	}
 
 	public function contain($value, $failMessage = null)
 	{
 		if (in_array($value, $this->valueIsSet()->value) === true)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->toString($value)));
 		}
+
+		return $this;
 	}
 
 	protected static function check($value, $method)

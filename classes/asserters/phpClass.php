@@ -74,48 +74,56 @@ class phpClass extends atoum\asserter
 
 		if ($parentClass !== false && $parentClass->getName() == $parent)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not the parent of class %s'), $parent, $this->class->getName()));
 		}
+
+		return $this;
 	}
 
 	public function isSubClassOf($parent, $failMessage = null)
 	{
 		if ($this->classIsSet()->class->isSubClassOf($parent) == true)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a sub-class of %s'), $this->class->getName(), $parent));
 		}
+
+		return $this;
 	}
 
 	public function hasNoParent($failMessage = null)
 	{
 		if (($parentClass = $this->classIsSet()->class->getParentClass()) === false)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('class %s has parent %s'), $this->class->getName(), $parentClass));
 		}
+
+		return $this;
 	}
 
 	public function hasInterface($interface, $failMessage = null)
 	{
 		if (in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s does not implement interface %s'), $this->class->getName(), $interface));
 		}
+
+		return $this;
 	}
 
 	protected function classIsSet()

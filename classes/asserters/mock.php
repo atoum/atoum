@@ -44,24 +44,28 @@ class mock extends atoum\asserter
 	{
 		if (sizeof($this->mockIsSet()->mock->getMockController()->getCalls()) > 0)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not called'), get_class($this->mock)));
 		}
+
+		return $this;
 	}
 
 	public function wasNotCalled($failMessage = null)
 	{
 		if (sizeof($this->mockIsSet()->mock->getMockController()->getCalls()) <= 0)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is called'), get_class($this->mock)));
 		}
+
+		return $this;
 	}
 
 	public function call($method, array $args = null, $failMessage = null)

@@ -22,9 +22,9 @@ class adapter extends atoum\asserter
 		else
 		{
 			$this->pass();
-
-			return $this;
 		}
+
+		return $this;
 	}
 
 	public function getAdapter()

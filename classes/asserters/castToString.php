@@ -19,7 +19,8 @@ class castToString extends asserters\string
 			else
 			{
 				$this->pass();
-				$this->value = (string) $value;
+
+				$this->value = (string) $this->value;
 			}
 		}
 
