@@ -2,9 +2,11 @@
 
 namespace mageekguy\atoum;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\script;
-use \mageekguy\atoum\exceptions;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\script,
+	\mageekguy\atoum\exceptions
+;
 
 abstract class script implements atoum\adapter\aggregator
 {
@@ -20,19 +22,13 @@ abstract class script implements atoum\adapter\aggregator
 	{
 		$this->name = (string) $name;
 
-		if ($locale === null)
-		{
-			$locale = new atoum\locale();
-		}
-
-		$this->setLocale($locale);
-
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this
+			->setLocale($locale ?: new atoum\locale())
+			->setAdapter($adapter ?: new atoum\adapter())
+			->setArgumentsParser(new script\arguments\parser())
+			->setOutputWriter(new atoum\writers\std\out())
+			->setErrorWriter(new atoum\writers\std\err())
+		;
 
 		if (isset($this->adapter->exit) === false)
 		{
@@ -43,12 +39,6 @@ abstract class script implements atoum\adapter\aggregator
 		{
 			throw new exceptions\logic('\'' . $this->getName() . '\' must be used in CLI only');
 		}
-
-		$this
-			->setArgumentsParser(new script\arguments\parser())
-			->setOutputWriter(new atoum\writers\std\out())
-			->setErrorWriter(new atoum\writers\std\err())
-		;
 	}
 
 	public function setOutputWriter(atoum\writer $writer)

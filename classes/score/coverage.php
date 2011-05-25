@@ -194,7 +194,10 @@ class coverage implements \countable
 				}
 			}
 
-			$value = (float) $coveredLines / $totalLines;
+			if ($totalLines > 0)
+			{
+				$value = (float) $coveredLines / $totalLines;
+			}
 		}
 
 		return $value;
@@ -222,7 +225,10 @@ class coverage implements \countable
 				}
 			}
 
-			$value = (float) $coveredLines / $totalLines;
+			if ($totalLines > 0)
+			{
+				$value = (float) $coveredLines / $totalLines;
+			}
 		}
 
 		return $value;

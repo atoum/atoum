@@ -103,6 +103,7 @@ class score
 	public function addPass()
 	{
 		$this->passAssertions++;
+
 		return $this;
 	}
 

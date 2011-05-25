@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\writers\std;
 
-use mageekguy\atoum;
-use mageekguy\atoum\writers;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\writers
+;
 
 class out extends writers\std
 {

@@ -17,19 +17,7 @@ class iterator extends iterator\value
 
 	public function __toString()
 	{
-		$string = '';
-
-		if (sizeof($this) > 0)
-		{
-			foreach ($this as $value)
-			{
-				$string .= $value;
-			}
-
-			$this->rewind();
-		}
-
-		return $string;
+		return join('', iterator_to_array(clone $this));
 	}
 
 	public function valid()

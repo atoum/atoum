@@ -17,19 +17,10 @@ class mail extends atoum\writer implements report\writers\asynchronous
 	{
 		parent::__construct($adapter);
 
-		if ($mailer === null)
-		{
-			$mailer = new atoum\mailers\mail();
-		}
-
-		$this->setMailer($mailer);
-
-		if ($locale === null)
-		{
-			$locale = new atoum\locale();
-		}
-
-		$this->setLocale($locale);
+		$this
+			->setMailer($mailer ?: new atoum\mailers\mail())
+			->setLocale($locale ?: new atoum\locale())
+		;
 	}
 
 	public function setMailer(atoum\mailer $mailer)

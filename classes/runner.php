@@ -35,25 +35,10 @@ class runner implements observable, adapter\aggregator
 
 	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null)
 	{
-		if ($score === null)
-		{
-			$score = new score();
-		}
-
-		if ($adapter === null)
-		{
-			$adapter = new adapter();
-		}
-
-		if ($superglobals === null)
-		{
-			$superglobals = new superglobals();
-		}
-
 		$this
-			->setSuperglobals($superglobals)
-			->setAdapter($adapter)
-			->setScore($score)
+			->setSuperglobals($superglobals ?: new superglobals())
+			->setAdapter($adapter ?: new adapter())
+			->setScore($score ?: new score())
 			->setLocale(new locale())
 		;
 
@@ -90,6 +75,7 @@ class runner implements observable, adapter\aggregator
 	public function setDefaultReportTitle($title)
 	{
 		$this->defaultReportTitle = (string) $title;
+
 		return $this;
 	}
 
@@ -101,6 +87,7 @@ class runner implements observable, adapter\aggregator
 	public function setScore(score $score)
 	{
 		$this->score = $score;
+
 		return $this;
 	}
 

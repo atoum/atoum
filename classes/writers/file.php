@@ -20,12 +20,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		parent::__construct($adapter);
 
-		if($filename === null)
-		{
-			$filename = self::defaultFileName;
-		}
-
-		$this->setFilename($filename);
+		$this->setFilename($filename ?: self::defaultFileName);
 	}
 
 	public function write($something)
@@ -33,6 +28,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		if($this->adapter->is_null($this->handler))
 		{
 			$dir = $this->adapter->dirname($this->filename);
+
 			if($this->adapter->is_writable($dir))
 			{
 				$this->handler = $this->adapter->fopen($this->filename, 'w');
@@ -60,6 +56,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		{
 			$this->filename = $filename;
 		}
+
 		return $this;
 	}
 

@@ -15,12 +15,7 @@ class parser implements \iteratorAggregate
 
 	public function __construct(atoum\superglobals $superglobals = null)
 	{
-		if ($superglobals === null)
-		{
-			$superglobals = new atoum\superglobals();
-		}
-
-		$this->setSuperglobals($superglobals);
+		$this->setSuperglobals($superglobals ?: new atoum\superglobals());
 	}
 
 	public function setSuperglobals(atoum\superglobals $superglobals)

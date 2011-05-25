@@ -8,12 +8,7 @@ abstract class writer implements adapter\aggregator
 
 	public function __construct(adapter $adapter = null)
 	{
-		if ($adapter === null)
-		{
-			$adapter = new adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this->setAdapter($adapter ?: new adapter());
 	}
 
 	public function setAdapter(adapter $adapter)

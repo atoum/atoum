@@ -44,25 +44,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
-		if ($score === null)
-		{
-			$score = new score();
-		}
-
-		if ($locale === null)
-		{
-			$locale = new locale();
-		}
-
-		if ($adapter === null)
-		{
-			$adapter = new adapter();
-		}
-
 		$this
-			->setScore($score)
-			->setLocale($locale)
-			->setAdapter($adapter)
+			->setScore($score ?: new score())
+			->setLocale($locale ?: new locale())
+			->setAdapter($adapter ?: new adapter())
 			->setSuperglobals(new atoum\superglobals())
 		;
 
@@ -233,6 +218,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function setAdapter(atoum\adapter $adapter)
 	{
 		$this->adapter = $adapter;
+
 		return $this;
 	}
 
@@ -244,6 +230,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function setScore(score $score)
 	{
 		$this->score = $score;
+
 		return $this;
 	}
 
@@ -255,6 +242,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function setLocale(locale $locale)
 	{
 		$this->locale = $locale;
+
 		return $this;
 	}
 
@@ -318,6 +306,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function addObserver(atoum\observers\test $observer)
 	{
 		$this->observers[] = $observer;
+
 		return $this;
 	}
 

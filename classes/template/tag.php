@@ -95,6 +95,7 @@ class tag extends atoum\template
 	public function unsetId()
 	{
 		$this->id = null;
+
 		return $this;
 	}
 

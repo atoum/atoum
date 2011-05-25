@@ -23,6 +23,7 @@ class data
 	public function resetData()
 	{
 		$this->data = null;
+
 		return $this;
 	}
 

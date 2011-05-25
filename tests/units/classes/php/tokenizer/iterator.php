@@ -54,7 +54,7 @@ class iterator extends atoum\test
 		$this->assert
 			->integer($iterator->key())->isEqualTo(1)
 			->castToString($iterator)->isEqualTo($token1 . $token2)
-			->integer($iterator->key())->isZero()
+			->integer($iterator->key())->isEqualTo(1)
 		;
 
 		$innerInnerIterator = new tokenizer\iterator();

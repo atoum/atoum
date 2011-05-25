@@ -10,12 +10,7 @@ abstract class field
 
 	public function __construct(atoum\locale $locale = null)
 	{
-		if ($locale === null)
-		{
-			$locale = new atoum\locale();
-		}
-
-		$this->setLocale($locale);
+		$this->setLocale($locale ?: new atoum\locale());
 	}
 
 	public function setLocale(atoum\locale $locale)

@@ -21,19 +21,9 @@ class parser implements atoum\adapter\aggregator
 
 	public function __construct($namespace = null, atoum\adapter $adapter = null)
 	{
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		if ($namespace === null)
-		{
-			$namespace = self::defaultNamespace;
-		}
-
 		$this
-			->setNamespace($namespace)
-			->setAdapter($adapter)
+			->setNamespace($namespace ?: self::defaultNamespace)
+			->setAdapter($adapter ?: new atoum\adapter())
 		;
 	}
 
