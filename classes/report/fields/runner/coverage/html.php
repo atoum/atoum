@@ -415,18 +415,18 @@ class html extends report\fields\runner\coverage\string
 		return $this->rootUrl;
 	}
 
-	public function setDirectoryIteratorInjector(\closure $directoryIteratorInjector)
+	public function setDestinationDirectoryIteratorInjector(\closure $directoryIteratorInjector)
 	{
 		$this->directoryIteratorInjector = $directoryIteratorInjector;
 
 		return $this;
 	}
 
-	public function getDirectoryIterator($directory)
+	public function getDestinationDirectoryIterator($directory)
 	{
 		if ($this->directoryIteratorInjector === null)
 		{
-			$this->setDirectoryIteratorInjector(function($directory) { return new \directoryIterator($directory); });
+			$this->setDestinationDirectoryIteratorInjector(function($directory) { return new \directoryIterator($directory); });
 		}
 
 		return $this->directoryIteratorInjector->__invoke($directory);
@@ -434,12 +434,12 @@ class html extends report\fields\runner\coverage\string
 
 	public function cleanDestinationDirectory()
 	{
-		return $this->cleanDirectory($this->destinationDirectory);
+		return $this->doCleanDestinationDirectory($this->destinationDirectory);
 	}
 
-	protected function cleanDirectory($path)
+	protected function doCleanDestinationDirectory($path)
 	{
-		foreach ($this->getDirectoryIterator($path) as $inode)
+		foreach ($this->getDestinationDirectoryIterator($path) as $inode)
 		{
 			if ($inode->isDot() === false)
 			{
@@ -452,7 +452,7 @@ class html extends report\fields\runner\coverage\string
 				else
 				{
 					$this
-						->cleanDirectory($inodePath)
+						->doCleanDestinationDirectory($inodePath)
 						->adapter->rmdir($inodePath)
 					;
 				}

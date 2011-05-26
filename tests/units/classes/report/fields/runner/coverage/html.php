@@ -124,24 +124,24 @@ class html extends atoum\test
 		;
 	}
 
-	public function testSetDirectoryIteratorInjector()
+	public function testSetDestinationDirectoryIteratorInjector()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$directoryIterator = new \directoryIterator(__DIR__);
 
 		$this->assert
-			->object($field->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
-			->object($field->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
+			->object($field->setDestinationDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
+			->object($field->getDestinationDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
 		;
 	}
 
-	public function testGetDirectoryIterator()
+	public function testGetDestinationDirectoryIterator()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($field->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+			->object($field->getDestinationDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
 		;
 	}
 
@@ -244,7 +244,7 @@ class html extends atoum\test
 
 		$directory = new mock\directoryIterator(uniqid(), $directoryController);
 
-		$field->setDirectoryIteratorInjector(function($path) use (
+		$field->setDestinationDirectoryIteratorInjector(function($path) use (
 				$directory11Path,
 				$directory11,
 				$directory12Path,
