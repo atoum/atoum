@@ -13,14 +13,12 @@ class template extends atoum\test
 		$template = new atoum\template();
 
 		$this->assert
-			->object($template)->isInstanceOf('\iteratorAggregate')
 			->string($template->getData())->isEmpty()
 		;
 
 		$template = new atoum\template($data = uniqid());
 
 		$this->assert
-			->object($template)->isInstanceOf('\iteratorAggregate')
 			->string($template->getData())->isEqualTo($data)
 		;
 	}
@@ -51,51 +49,43 @@ class template extends atoum\test
 		$template = new atoum\template();
 
 		$this->assert
-			->object($template->{uniqid()})
-				->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->isEmpty()
+			->array($template->{uniqid()})->isEmpty()
 		;
 
 		$template->addChild($childTag = new atoum\template\tag(uniqid()));
 
 		$this->assert
-			->object($template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(1)
-			->object($template->{$childTag->getTag()}->current())->isIdenticalTo($childTag)
+			->array($tags = $template->{$childTag->getTag()})->hasSize(1)
+			->object(current($tags))->isIdenticalTo($childTag)
 		;
 
 		$template->addChild($otherChildTag = new atoum\template\tag($childTag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+			->array($tags = $template->{$childTag->getTag()})->hasSize(2)
+			->object(current($tags))->isIdenticalTo($childTag)
+			->object(next($tags))->isIdenticalTo($otherChildTag)
 		;
 
 		$template->addChild($anotherChildTag = new atoum\template\tag(uniqid()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($otherIterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(1)
-			->object($otherIterator->current())->isIdenticalTo($anotherChildTag)
+			->array($tags = $template->{$childTag->getTag()})->hasSize(2)
+			->object(current($tags))->isIdenticalTo($childTag)
+			->object(next($tags))->isIdenticalTo($otherChildTag)
+			->array($otherTags = $template->{$anotherChildTag->getTag()})->hasSize(1)
+			->object(current($otherTags))->isIdenticalTo($anotherChildTag)
 		;
 
 		$childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(3)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($otherIterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(1)
-			->object($otherIterator->current())->isIdenticalTo($anotherChildTag)
+			->array($tags = $template->{$childTag->getTag()})->hasSize(3)
+			->object(current($tags))->isIdenticalTo($childTag)
+			->object(next($tags))->isIdenticalTo($littleChildTag)
+			->object(next($tags))->isIdenticalTo($otherChildTag)
+			->array($otherTags = $template->{$anotherChildTag->getTag()})->hasSize(1)
+			->object(current($otherTags))->isIdenticalTo($anotherChildTag)
 		;
 	}
 
@@ -784,36 +774,6 @@ class template extends atoum\test
 			->variable($template->getChild(0))->isIdenticalTo($childTemplate)
 			->variable($template->getChild(rand(1, PHP_INT_MAX)))->isNull()
 			->variable($template->getChild(- rand(1, PHP_INT_MAX)))->isNull()
-		;
-	}
-
-	public function testGetIterator()
-	{
-		$template = new atoum\template();
-
-		$this->assert
-			->object($template->getIterator())
-				->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(0)
-		;
-
-		$template->addChild($childTemplate = new atoum\template());
-
-		$this->assert
-			->object($template->getIterator())
-				->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(1)
-			->object($template->getIterator()->current())->isIdenticalTo($childTemplate)
-		;
-
-		$template->addChild($otherChildTemplate = new atoum\template());
-
-		$this->assert
-			->object($template->getIterator())
-				->isInstanceOf('\mageekguy\atoum\template\iterator')
-				->hasSize(2)
-			->object($template->getIterator()->current())->isIdenticalTo($childTemplate)
-			->object($template->getIterator()->next()->current())->isIdenticalTo($otherChildTemplate)
 		;
 	}
 }

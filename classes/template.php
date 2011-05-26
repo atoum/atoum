@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class template extends template\data implements \iteratorAggregate
+class template extends template\data
 {
 	protected $children = array();
 
@@ -28,14 +28,14 @@ class template extends template\data implements \iteratorAggregate
 
 	public function __get($tag)
 	{
-		return new template\iterator($this->getByTag($tag));
+		return $this->getByTag($tag);
 	}
 
 	public function __unset($tag)
 	{
 		$this->tagExists($tag, $tags);
 
-		foreach ($this->getByTag($tag) as $child)
+		foreach ($tags as $child)
 		{
 			$child->resetData();
 		}
@@ -50,7 +50,7 @@ class template extends template\data implements \iteratorAggregate
 	{
 		$tags = array();
 
-		foreach ($this as $child)
+		foreach ($this->children as $child)
 		{
 			if ($child->getTag() == $tag)
 			{
@@ -73,7 +73,7 @@ class template extends template\data implements \iteratorAggregate
 		}
 		else
 		{
-			foreach ($root->getChildren() as $child)
+			foreach ($root->children as $child)
 			{
 				$tag = $child->getById($id, false);
 
@@ -97,10 +97,6 @@ class template extends template\data implements \iteratorAggregate
 		return array_values($this->children);
 	}
 
-	public function getIterator() {
-		return new template\iterator(array_values($this->children));
-	}
-
 	public function setWith($mixed)
 	{
 		foreach ($mixed as $tag => $value)
@@ -113,7 +109,7 @@ class template extends template\data implements \iteratorAggregate
 
 	public function build($mixed = array())
 	{
-		foreach ($this->setWith($mixed) as $child)
+		foreach ($this->setWith($mixed)->children as $child)
 		{
 			$this->addData($child->getData());
 		}

@@ -644,9 +644,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->class && $value['function'] === $this->currentMethod)
 			{
+				if (isset($debugBacktrace[$key - 1]) === true)
+				{
+					$key -= 1;
+				}
+
 				return array(
-					$debugBacktrace[$key - 1]['file'],
-					$debugBacktrace[$key - 1]['line']
+					$debugBacktrace[$key]['file'],
+					$debugBacktrace[$key]['line']
 				);
 			}
 		}

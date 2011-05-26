@@ -21,8 +21,9 @@ class html extends report\fields\runner\coverage\string
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
-	protected $directoryIteratorInjector = null;
 	protected $reflectionClassInjector = null;
+	protected $srcDirectoryIteratorInjector = null;
+	protected $destinationDirectoryIteratorInjector = null;
 
 	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\adapter $adapter = null, atoum\locale $locale = null, $prompt = null, $alternatePrompt = null)
 	{
@@ -82,7 +83,7 @@ class html extends report\fields\runner\coverage\string
 		{
 			foreach ($this->srcDirectories as $srcDirectory)
 			{
-				foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($srcDirectory))) as $file)
+				foreach ($this->getSrcDirectoryIterator($srcDirectory) as $file)
 				{
 					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 
@@ -415,21 +416,38 @@ class html extends report\fields\runner\coverage\string
 		return $this->rootUrl;
 	}
 
-	public function setDestinationDirectoryIteratorInjector(\closure $directoryIteratorInjector)
+	public function setDestinationDirectoryIteratorInjector(\closure $destinationDirectoryIteratorInjector)
 	{
-		$this->directoryIteratorInjector = $directoryIteratorInjector;
+		$this->destinationDirectoryIteratorInjector = $destinationDirectoryIteratorInjector;
 
 		return $this;
 	}
 
 	public function getDestinationDirectoryIterator($directory)
 	{
-		if ($this->directoryIteratorInjector === null)
+		if ($this->destinationDirectoryIteratorInjector === null)
 		{
 			$this->setDestinationDirectoryIteratorInjector(function($directory) { return new \directoryIterator($directory); });
 		}
 
-		return $this->directoryIteratorInjector->__invoke($directory);
+		return $this->destinationDirectoryIteratorInjector->__invoke($directory);
+	}
+
+	public function setSrcDirectoryIteratorInjector(\closure $srcDirectoryIteratorInjector)
+	{
+		$this->srcDirectoryIteratorInjector = $srcDirectoryIteratorInjector;
+
+		return $this;
+	}
+
+	public function getSrcDirectoryIterator($directory)
+	{
+		if ($this->srcDirectoryIteratorInjector === null)
+		{
+			$this->setSrcDirectoryIteratorInjector(function($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); });
+		}
+
+		return $this->srcDirectoryIteratorInjector->__invoke($directory);
 	}
 
 	public function cleanDestinationDirectory()

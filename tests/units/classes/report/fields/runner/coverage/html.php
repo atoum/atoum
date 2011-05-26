@@ -141,7 +141,32 @@ class html extends atoum\test
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($field->getDestinationDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+			->object($directoryIterator = $field->getDestinationDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+			->string($directoryIterator->getPath())->isEqualTo(__DIR__)
+		;
+	}
+
+	public function testSetSrcDirectoryIteratorInjector()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$directoryIterator = new \directoryIterator(__DIR__);
+
+		$this->assert
+			->object($field->setSrcDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
+			->object($field->getSrcDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
+		;
+	}
+
+	public function testGetSrcDirectoryIterator()
+	{
+		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+
+		$this->assert
+			->object($recursiveIteratorIterator = $field->getSrcDirectoryIterator(__DIR__))->isInstanceOf('\recursiveIteratorIterator')
+			->object($filterIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('\mageekguy\atoum\src\iterator\filter')
+			->object($directoryIterator = $filterIterator->getInnerIterator())->isInstanceOf('\recursiveDirectoryIterator')
+			->string($directoryIterator->getPath())->isEqualTo(__DIR__)
 		;
 	}
 
