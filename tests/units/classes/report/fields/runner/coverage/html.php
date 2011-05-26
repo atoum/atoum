@@ -124,210 +124,114 @@ class html extends atoum\test
 		;
 	}
 
-	public function testSetDestinationDirectoryIteratorInjector()
-	{
-		$field = new coverage\html(uniqid(), uniqid(), uniqid());
-
-		$directoryIterator = new \directoryIterator(__DIR__);
-
-		$this->assert
-			->object($field->setDestinationDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
-			->object($field->getDestinationDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
-		;
-	}
-
 	public function testGetDestinationDirectoryIterator()
 	{
-		$field = new coverage\html(uniqid(), uniqid(), uniqid());
+		$field = new coverage\html(uniqid(), uniqid(), __DIR__);
 
 		$this->assert
-			->object($directoryIterator = $field->getDestinationDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
-			->string($directoryIterator->getPath())->isEqualTo(__DIR__)
+			->object($directoryIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
 		;
 	}
 
-	public function testSetSrcDirectoryIteratorInjector()
-	{
-		$field = new coverage\html(uniqid(), uniqid(), uniqid());
-
-		$directoryIterator = new \directoryIterator(__DIR__);
-
-		$this->assert
-			->object($field->setSrcDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($field)
-			->object($field->getSrcDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
-		;
-	}
-
-	public function testGetSrcDirectoryIterator()
+	public function testGetSrcDirectoryIterators()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->object($recursiveIteratorIterator = $field->getSrcDirectoryIterator(__DIR__))->isInstanceOf('\recursiveIteratorIterator')
-			->object($filterIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('\mageekguy\atoum\src\iterator\filter')
-			->object($directoryIterator = $filterIterator->getInnerIterator())->isInstanceOf('\recursiveDirectoryIterator')
-			->string($directoryIterator->getPath())->isEqualTo(__DIR__)
+			->array($field->getSrcDirectoryIterators())->isEmpty()
 		;
 	}
 
 	public function testCleanDestinationDirectory()
 	{
-		$field = new coverage\html(uniqid(), uniqid(), $directoryPath = uniqid(), null, $adapter = new test\adapter());
+		$this
+			->mock('\mageekguy\atoum\report\fields\runner\coverage\html')
+			->mock('\splFileInfo')
+		;
+
+		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), uniqid(), $destinationDirectoryPath = uniqid(), null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
 
-		$this
-			->mock('\directoryIterator')
-		;
+		$inode11Controller = new mock\controller();
+		$inode11Controller->__construct = function() {};
+		$inode11Controller->isDir = false;
+		$inode11Controller->getPathname = $inode11Path = uniqid();
 
-		$directory11Controller = new mock\controller();
-		$directory11Controller->__construct = function() {};
-		$directory11Controller->isDir = false;
-		$directory11Controller->isDot = false;
-		$directory11Controller->getPathname = $directory11Path = uniqid();
+		$inode11 = new mock\splFileInfo(uniqid(), $inode11Controller);
 
-		$directory11 = new mock\directoryIterator(uniqid(), $directory11Controller);
+		$inode12Controller = new mock\controller();
+		$inode12Controller->__construct = function() {};
+		$inode12Controller->isDir = false;
+		$inode12Controller->getPathname = $inode12Path = uniqid();
 
-		$directory12Controller = new mock\controller();
-		$directory12Controller->__construct = function() {};
-		$directory12Controller->isDir = false;
-		$directory12Controller->isDot = false;
-		$directory12Controller->getPathname = $directory12Path = uniqid();
+		$inode12 = new mock\splFileInfo(uniqid(), $inode12Controller);
 
-		$directory12 = new mock\directoryIterator(uniqid(), $directory12Controller);
+		$inode1Controller = new mock\controller();
+		$inode1Controller->__construct = function() {};
+		$inode1Controller->isDir = true;
+		$inode1Controller->getPathname = $inode1Path = uniqid();
 
-		$directory1Controller = new mock\controller();
-		$directory1Controller->__construct = function() {};
-		$directory1Controller->isDir = true;
-		$directory1Controller->isDot = false;
-		$directory1Controller->getPathname = $directory1Path = uniqid();
-		$directory1Controller->current == null;
-		$directory1Controller->current[1] = $directory11;
-		$directory1Controller->current[2] = $directory12;
-		$directory1Controller->valid = false;
-		$directory1Controller->valid[1] = true;
-		$directory1Controller->valid[2] = true;
-		$directory1Controller->next = function() {};
-		$directory1Controller->rewind = function() {};
+		$inode1 = new mock\splFileInfo(uniqid(), $inode1Controller);
 
-		$directory1 = new mock\directoryIterator(uniqid(), $directory1Controller);
+		$inode2Controller = new mock\controller();
+		$inode2Controller->__construct = function() {};
+		$inode2Controller->isDir = false;
+		$inode2Controller->getPathname = $inode2Path = uniqid();
 
-		$directory2Controller = new mock\controller();
-		$directory2Controller->__construct = function() {};
-		$directory2Controller->isDir = false;
-		$directory2Controller->isDot = false;
-		$directory2Controller->getPathname = $directory2Path = uniqid();
+		$inode2 = new mock\splFileInfo(uniqid(), $inode2Controller);
 
-		$directory2 = new mock\directoryIterator(uniqid(), $directory2Controller);
+		$inode31Controller = new mock\controller();
+		$inode31Controller->__construct = function() {};
+		$inode31Controller->isDir = false;
+		$inode31Controller->getPathname = $inode31Path = uniqid();
 
-		$directory31Controller = new mock\controller();
-		$directory31Controller->__construct = function() {};
-		$directory31Controller->isDir = false;
-		$directory31Controller->isDot = false;
-		$directory31Controller->getPathname = $directory31Path = uniqid();
+		$inode31 = new mock\splFileInfo(uniqid(), $inode31Controller);
 
-		$directory31 = new mock\directoryIterator(uniqid(), $directory31Controller);
+		$inode32Controller = new mock\controller();
+		$inode32Controller->__construct = function() {};
+		$inode32Controller->isDir = false;
+		$inode32Controller->getPathname = $inode32Path = uniqid();
 
-		$directory32Controller = new mock\controller();
-		$directory32Controller->__construct = function() {};
-		$directory32Controller->isDir = false;
-		$directory32Controller->isDot = false;
-		$directory32Controller->getPathname = $directory32Path = uniqid();
+		$inode32 = new mock\splFileInfo(uniqid(), $inode32Controller);
 
-		$directory32 = new mock\directoryIterator(uniqid(), $directory32Controller);
+		$inode3Controller = new mock\controller();
+		$inode3Controller->__construct = function() {};
+		$inode3Controller->isDir = true;
+		$inode3Controller->getPathname = $inode3Path = uniqid();
 
-		$directory3Controller = new mock\controller();
-		$directory3Controller->__construct = function() {};
-		$directory3Controller->isDir = true;
-		$directory3Controller->isDot = false;
-		$directory3Controller->getPathname = $directory3Path = uniqid();
-		$directory3Controller->current == null;
-		$directory3Controller->current[1] = $directory31;
-		$directory3Controller->current[2] = $directory32;
-		$directory3Controller->valid = false;
-		$directory3Controller->valid[1] = true;
-		$directory3Controller->valid[2] = true;
-		$directory3Controller->next = function() {};
-		$directory3Controller->rewind = function() {};
+		$inode3 = new mock\splFileInfo(uniqid(), $inode3Controller);
 
-		$directory3 = new mock\directoryIterator(uniqid(), $directory3Controller);
+		$inodeController = new mock\controller();
+		$inodeController->__construct = function() {};
+		$inodeController->isDir = true;
+		$inodeController->getPathname = $destinationDirectoryPath;
 
-		$directoryController = new mock\controller();
-		$directoryController->__construct = function() {};
-		$directoryController->getPathname = $directoryPath;
-		$directoryController->current == null;
-		$directoryController->current[1] = $directory1;
-		$directoryController->current[2] = $directory2;
-		$directoryController->current[3] = $directory3;
-		$directoryController->valid = false;
-		$directoryController->valid[1] = true;
-		$directoryController->valid[2] = true;
-		$directoryController->valid[3] = true;
-		$directoryController->next = function() {};
-		$directoryController->rewind = function() {};
+		$inode = new mock\splFileInfo(uniqid(), $inodeController);
 
-		$directory = new mock\directoryIterator(uniqid(), $directoryController);
-
-		$field->setDestinationDirectoryIteratorInjector(function($path) use (
-				$directory11Path,
-				$directory11,
-				$directory12Path,
-				$directory12,
-				$directory1Path,
-				$directory1,
-				$directory2Path,
-				$directory2,
-				$directory31Path,
-				$directory31,
-				$directory32Path,
-				$directory32,
-				$directory3Path,
-				$directory3,
-				$directoryPath,
-				$directory
-			)
-			{
-				switch ($path)
-				{
-					case $directory11Path:
-						return $directory11;
-
-					case $directory12Path:
-						return $directory12;
-
-					case $directory1Path:
-						return $directory1;
-
-					case $directory2Path:
-						return $directory2;
-
-					case $directory31Path:
-						return $directory31;
-
-					case $directory32Path:
-						return $directory32;
-
-					case $directory3Path:
-						return $directory3;
-
-					case $directoryPath:
-						return $directory;
-				}
-			}
+		$field->getMockController()->getDestinationDirectoryIterator = array(
+			$inode11,
+			$inode12,
+			$inode1,
+			$inode2,
+			$inode31,
+			$inode32,
+			$inode3,
+			$inode
 		);
 
 		$this->assert
 			->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
 			->adapter($adapter)
-				->call('unlink', array($directory11Path))
-				->call('unlink', array($directory12Path))
-				->call('rmdir', array($directory1Path))
-				->call('unlink', array($directory2Path))
-				->call('unlink', array($directory31Path))
-				->call('unlink', array($directory32Path))
-				->call('rmdir', array($directory3Path))
-				->notCall('rmdir', array($directoryPath))
+				->call('unlink', array($inode11Path))
+				->call('unlink', array($inode12Path))
+				->call('rmdir', array($inode1Path))
+				->call('unlink', array($inode2Path))
+				->call('unlink', array($inode31Path))
+				->call('unlink', array($inode32Path))
+				->call('rmdir', array($inode3Path))
+				->notCall('rmdir', array($destinationDirectoryPath))
 		;
 	}
 
@@ -337,11 +241,11 @@ class html extends atoum\test
 
 		$this->assert
 			->object($field->addSrcDirectory($srcDirectory = uniqid()))->isIdenticalTo($field)
-			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory))
+			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
 			->object($field->addSrcDirectory($srcDirectory))->isIdenticalTo($field)
-			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory))
+			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
 			->object($field->addSrcDirectory($otherSrcDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory, (string) $otherSrcDirectory))
+			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array(), (string) $otherSrcDirectory => array()))
 		;
 	}
 

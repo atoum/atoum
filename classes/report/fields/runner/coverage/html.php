@@ -83,21 +83,24 @@ class html extends report\fields\runner\coverage\string
 		{
 			foreach ($this->srcDirectories as $srcDirectory)
 			{
-				foreach ($this->getSrcDirectoryIterator($srcDirectory) as $file)
+				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
 				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-
-					$declaredClasses = $this->adapter->get_declared_classes();
-
-					require_once($file->getPathname());
-
-					$xDebugData = $this->adapter->xdebug_get_code_coverage();
-
-					$this->adapter->xdebug_stop_code_coverage();
-
-					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
+					foreach ($srcDirectoryIterator as $file)
 					{
-						$this->coverage->addXdebugDataForClass($class, $xDebugData);
+						$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+
+						$declaredClasses = $this->adapter->get_declared_classes();
+
+						require_once($file->getPathname());
+
+						$xDebugData = $this->adapter->xdebug_get_code_coverage();
+
+						$this->adapter->xdebug_stop_code_coverage();
+
+						foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
+						{
+							$this->coverage->addXdebugDataForClass($class, $xDebugData);
+						}
 					}
 				}
 			}
@@ -339,13 +342,17 @@ class html extends report\fields\runner\coverage\string
 		return $this->alternatePrompt;
 	}
 
-	public function addSrcDirectory($srcDirectory)
+	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
 	{
 		$srcDirectory = (string) $srcDirectory;
 
-		if (in_array($srcDirectory, $this->srcDirectories) === false)
+		if (isset($this->srcDirectories[$srcDirectory]) === false)
 		{
-			$this->srcDirectories[] = $srcDirectory;
+			$this->srcDirectories[$srcDirectory] = $filterClosure === null ? array() : array($filterClosure);
+		}
+		else if ($filterClosure !== null)
+		{
+			$this->srcDirectories[$srcDirectory][] = $filterClosure;
 		}
 
 		return $this;
@@ -416,64 +423,39 @@ class html extends report\fields\runner\coverage\string
 		return $this->rootUrl;
 	}
 
-	public function setDestinationDirectoryIteratorInjector(\closure $destinationDirectoryIteratorInjector)
+	public function getDestinationDirectoryIterator()
 	{
-		$this->destinationDirectoryIteratorInjector = $destinationDirectoryIteratorInjector;
-
-		return $this;
+		return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->destinationDirectory, \filesystemIterator::KEY_AS_PATHNAME | \filesystemIterator::CURRENT_AS_FILEINFO | \filesystemIterator::SKIP_DOTS), \recursiveIteratorIterator::CHILD_FIRST);
 	}
 
-	public function getDestinationDirectoryIterator($directory)
+	public function getSrcDirectoryIterators()
 	{
-		if ($this->destinationDirectoryIteratorInjector === null)
+		$iterators = array();
+
+		foreach ($this->srcDirectories as $srcDirectory => $closures)
 		{
-			$this->setDestinationDirectoryIteratorInjector(function($directory) { return new \directoryIterator($directory); });
+			$iterators[] = $iterator = new recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory)));
+
+			foreach ($closures as $closure)
+			{
+				$iterator->addClosure($closure);
+			}
 		}
 
-		return $this->destinationDirectoryIteratorInjector->__invoke($directory);
-	}
-
-	public function setSrcDirectoryIteratorInjector(\closure $srcDirectoryIteratorInjector)
-	{
-		$this->srcDirectoryIteratorInjector = $srcDirectoryIteratorInjector;
-
-		return $this;
-	}
-
-	public function getSrcDirectoryIterator($directory)
-	{
-		if ($this->srcDirectoryIteratorInjector === null)
-		{
-			$this->setSrcDirectoryIteratorInjector(function($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); });
-		}
-
-		return $this->srcDirectoryIteratorInjector->__invoke($directory);
+		return $iterators;
 	}
 
 	public function cleanDestinationDirectory()
 	{
-		return $this->doCleanDestinationDirectory($this->destinationDirectory);
-	}
-
-	protected function doCleanDestinationDirectory($path)
-	{
-		foreach ($this->getDestinationDirectoryIterator($path) as $inode)
+		foreach ($this->getDestinationDirectoryIterator() as $inode)
 		{
-			if ($inode->isDot() === false)
+			if ($inode->isDir() === false)
 			{
-				$inodePath = $inode->getPathname();
-
-				if ($inode->isDir() === false)
-				{
-					$this->adapter->unlink($inodePath);
-				}
-				else
-				{
-					$this
-						->doCleanDestinationDirectory($inodePath)
-						->adapter->rmdir($inodePath)
-					;
-				}
+				$this->adapter->unlink($inode->getPathname());
+			}
+			else if (($pathname = $inode->getPathname()) !== $this->destinationDirectory)
+			{
+				$this->adapter->rmdir($pathname);
 			}
 		}
 
