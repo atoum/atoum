@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives;
+namespace mageekguy\atoum\iterators\filters\recursives;
 
 class closure extends \recursiveFilterIterator
 {

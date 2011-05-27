@@ -140,6 +140,20 @@ class html extends atoum\test
 		$this->assert
 			->array($field->getSrcDirectoryIterators())->isEmpty()
 		;
+
+		$field->addSrcDirectory(__DIR__);
+
+		$this->assert
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator(__DIR__)))))
+			->array(current($iterators)->getClosures())->isEmpty()
+		;
+
+		$field->addSrcDirectory(__DIR__, $closure = function() {});
+
+		$this->assert
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator(__DIR__)))))
+			->array(current($iterators)->getClosures())->isEqualTo(array($closure))
+		;
 	}
 
 	public function testCleanDestinationDirectory()
@@ -246,6 +260,10 @@ class html extends atoum\test
 			->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
 			->object($field->addSrcDirectory($otherSrcDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
 			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array(), (string) $otherSrcDirectory => array()))
+			->object($field->addSrcDirectory($srcDirectory, $closure = function() {}))->isIdenticalTo($field)
+			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure), (string) $otherSrcDirectory => array()))
+			->object($field->addSrcDirectory($srcDirectory, $otherClosure = function() {}))->isIdenticalTo($field)
+			->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure, $otherClosure), (string) $otherSrcDirectory => array()))
 		;
 	}
 
@@ -255,11 +273,12 @@ class html extends atoum\test
 
 		$this->assert
 			->object($field->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($field)
-			->string($field->getRootUrl())->isIdenticalTo($rootUrl)
+			->string($field->getRootUrl())->isIdenticalTo($rootUrl . '/')
 			->object($field->setRootUrl($rootUrl = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getRootUrl())->isIdenticalTo((string) $rootUrl)
+			->string($field->getRootUrl())->isIdenticalTo((string) $rootUrl . '/')
+			->object($field->setRootUrl(($rootUrl = uniqid()) . '/'))->isIdenticalTo($field)
+			->string($field->getRootUrl())->isIdenticalTo($rootUrl . '/')
 		;
-
 	}
 
 	public function testSetWithRunner()

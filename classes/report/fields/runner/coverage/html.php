@@ -22,8 +22,6 @@ class html extends report\fields\runner\coverage\string
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 	protected $reflectionClassInjector = null;
-	protected $srcDirectoryIteratorInjector = null;
-	protected $destinationDirectoryIteratorInjector = null;
 
 	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\adapter $adapter = null, atoum\locale $locale = null, $prompt = null, $alternatePrompt = null)
 	{
@@ -413,7 +411,7 @@ class html extends report\fields\runner\coverage\string
 
 	public function setRootUrl($rootUrl)
 	{
-		$this->rootUrl = (string) $rootUrl;
+		$this->rootUrl = rtrim((string) $rootUrl, '/') . '/';
 
 		return $this;
 	}
@@ -434,7 +432,7 @@ class html extends report\fields\runner\coverage\string
 
 		foreach ($this->srcDirectories as $srcDirectory => $closures)
 		{
-			$iterators[] = $iterator = new recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory)));
+			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory)));
 
 			foreach ($closures as $closure)
 			{
