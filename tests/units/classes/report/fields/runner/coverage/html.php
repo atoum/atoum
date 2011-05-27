@@ -129,7 +129,9 @@ class html extends atoum\test
 		$field = new coverage\html(uniqid(), uniqid(), __DIR__);
 
 		$this->assert
-			->object($directoryIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
+			->object($recursiveIteratorIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
+			->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('\recursiveDirectoryIterator')
+			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
 
@@ -141,18 +143,42 @@ class html extends atoum\test
 			->array($field->getSrcDirectoryIterators())->isEmpty()
 		;
 
-		$field->addSrcDirectory(__DIR__);
+		$field->addSrcDirectory($directory = __DIR__);
 
 		$this->assert
-			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator(__DIR__)))))
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
 			->array(current($iterators)->getClosures())->isEmpty()
 		;
 
-		$field->addSrcDirectory(__DIR__, $closure = function() {});
+		$field->addSrcDirectory($directory, $closure = function() {});
 
 		$this->assert
-			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator(__DIR__)))))
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
 			->array(current($iterators)->getClosures())->isEqualTo(array($closure))
+		;
+
+		$field->addSrcDirectory($otherDirectory = __DIR__ . '/..', $otherClosure = function() {});
+
+		$this->assert
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(
+						new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
+						new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
+				)
+			)
+			->array(current($iterators)->getClosures())->isEqualTo(array($closure))
+			->array(next($iterators)->getClosures())->isEqualTo(array($otherClosure))
+		;
+
+		$field->addSrcDirectory($otherDirectory, $anOtherClosure = function() {});
+
+		$this->assert
+			->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(
+						new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
+						new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($otherDirectory)))
+				)
+			)
+			->array(current($iterators)->getClosures())->isEqualTo(array($closure))
+			->array(next($iterators)->getClosures())->isEqualTo(array($otherClosure, $anOtherClosure))
 		;
 	}
 

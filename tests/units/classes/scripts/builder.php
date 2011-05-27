@@ -28,15 +28,38 @@ class builder extends atoum\test
 	{
 		$this->assert
 			->testedClass->isSubclassOf('\mageekguy\atoum\script')
+			->string(scripts\builder::defaultUnitTestRunnerScript)->isEqualTo('scripts/runner.php')
+			->string(scripts\builder::defaultPharGeneratorScript)->isEqualTo('scripts/phar/generator.php')
 		;
 	}
 
 	public function test__construct()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->sys_get_temp_dir = $tmpDirectory = uniqid();
+		$builder = new scripts\builder($name = uniqid());
 
-		$builder = new scripts\builder($name = uniqid(), $locale = new atoum\locale(), $adapter);
+		$this->assert
+			->string($builder->getName())->isEqualTo($name)
+			->object($builder->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($builder->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($builder->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
+			->object($builder->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writers\std\out')
+			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
+			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->array($builder->getRunnerConfigurationFiles())->isEmpty()
+			->variable($builder->getVersion())->isNull()
+			->variable($builder->getWorkingDirectory())->isNull()
+			->variable($builder->getDestinationDirectory())->isNull()
+			->variable($builder->getErrorsDirectory())->isNull()
+			->variable($builder->getScoreDirectory())->isNull()
+			->variable($builder->getRevisionFile())->isNull()
+			->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
+			->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
+			->variable($builder->getReportTitle())->isNull()
+			->object($builder->getVcs())->isInstanceOf('\mageekguy\atoum\scripts\builder\vcs\svn')
+			->variable($builder->getTaggerEngine())->isNull()
+		;
+
+		$builder = new scripts\builder($name = uniqid(), $vcs = new vcs\svn(), $locale = new atoum\locale(), $adapter = new atoum\adapter());
 
 		$this->assert
 			->string($builder->getName())->isEqualTo($name)
@@ -47,17 +70,16 @@ class builder extends atoum\test
 			->object($builder->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writers\std\err')
 			->object($builder->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
 			->array($builder->getRunnerConfigurationFiles())->isEmpty()
-			->string($builder->getRunFile())->isEqualTo($tmpDirectory . \DIRECTORY_SEPARATOR . md5(get_class($builder)))
 			->variable($builder->getVersion())->isNull()
 			->variable($builder->getWorkingDirectory())->isNull()
 			->variable($builder->getDestinationDirectory())->isNull()
 			->variable($builder->getErrorsDirectory())->isNull()
 			->variable($builder->getScoreDirectory())->isNull()
 			->variable($builder->getRevisionFile())->isNull()
-			->variable($builder->getUnitTestRunnerScript())->isNull()
-			->variable($builder->getPharGeneratorScript())->isNull()
+			->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
+			->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
 			->variable($builder->getReportTitle())->isNull()
-			->variable($builder->getVcs())->isNull()
+			->object($builder->getVcs())->isIdenticalTo($vcs)
 			->variable($builder->getTaggerEngine())->isNull()
 		;
 	}
@@ -274,40 +296,6 @@ class builder extends atoum\test
 		;
 	}
 
-	public function testSetFileIteratorInjector()
-	{
-		$builder = new scripts\builder(uniqid());
-
-		$directory = uniqid();
-
-		$mockController = new mock\controller();
-		$mockController
-			->injectInNextMockInstance()
-			->__construct = function() {}
-		;
-
-		$this->mock('\recursiveDirectoryIterator');
-
-		$iterator = new mock\recursiveDirectoryIterator($directory);
-
-		$this->assert
-			->exception(function() use ($builder, $directory) {
-					$builder->getFileIterator($directory);
-				}
-			)
-				->isInstanceOf('\unexpectedValueException')
-				->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
-			->exception(function() use ($builder) {
-					$builder->setFileIteratorInjector(function() {});
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('File iterator injector must take one argument')
-			->object($builder->setFileIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($builder)
-			->object($builder->getFileIterator(uniqid()))->isIdenticalTo($iterator)
-		;
-	}
-
 	public function testSetRunFile()
 	{
 		$builder = new scripts\builder(uniqid());
@@ -350,7 +338,7 @@ class builder extends atoum\test
 			->mock('\mageekguy\atoum\scripts\builder\vcs')
 		;
 
-		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, $adapter = new atoum\test\adapter());
+		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter = new atoum\test\adapter());
 
 		$builder->disableUnitTestChecking();
 
@@ -372,29 +360,11 @@ class builder extends atoum\test
 
 		$builder->setWorkingDirectory($workingDirectory = uniqid());
 
-		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Unable to check unit tests, version control system is undefined')
-		;
-
 		$vcsController = new mock\controller();
 		$vcsController->__construct = function() {};
 		$vcsController->exportRepository = function() {};
 
 		$builder->setVcs($vcs = new mock\mageekguy\atoum\scripts\builder\vcs(null, $vcsController));
-
-		$this->assert
-			->exception(function() use ($builder) {
-					$builder->checkUnitTests();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Unable to check unit tests, unit tests runner script is undefined')
-		;
 
 		$builder
 			->setUnitTestRunnerScript($unitTestRunnerScript = uniqid())
@@ -428,7 +398,8 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($vcs)->call('exportRepository', array($workingDirectory))
+			->mock($vcs)->call('setWorkingDirectory', array($workingDirectory))
+			->mock($vcs)->call('exportRepository')
 			->adapter($adapter)
 				->call('sys_get_temp_dir')
 				->call('tempnam', array($tempDirectory, ''))
@@ -595,7 +566,7 @@ class builder extends atoum\test
 			->mock('\mageekguy\atoum\scripts\tagger\engine')
 		;
 
-		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, $adapter = new atoum\test\adapter());
+		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter = new atoum\test\adapter());
 
 		$builder
 			->setTaggerEngine($taggerEngine = new mock\mageekguy\atoum\scripts\tagger\engine())
@@ -609,15 +580,6 @@ class builder extends atoum\test
 		;
 
 		$builder->enablePharCreation();
-
-		$this->assert
-			->exception(function() use ($builder) {
-						$builder->createPhar();
-					}
-				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Unable to create phar, version control system is undefined')
-		;
 
 		$vcsController = new mock\controller();
 		$vcsController->__construct = function() {};
@@ -673,7 +635,8 @@ class builder extends atoum\test
 			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\''))
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdErr, & $pipes, & $resource) { $pipes = array(2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -697,7 +660,8 @@ class builder extends atoum\test
 				->call('date', array('YmdHi'))
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$adapter->resetCalls();
@@ -719,7 +683,8 @@ class builder extends atoum\test
 				->notCall('date')
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$adapter->resetCalls();
@@ -740,7 +705,8 @@ class builder extends atoum\test
 			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$builder->setRevisionFile($revisionFile = uniqid());
@@ -761,7 +727,8 @@ class builder extends atoum\test
 				->call('proc_close', array($resource))
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$adapter->file_get_contents = false;
@@ -780,7 +747,8 @@ class builder extends atoum\test
 				->call('file_put_contents', array($revisionFile, $revision, \LOCK_EX))
 			->mock($vcs)
 				->call('setRevision', array($revision))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
@@ -817,7 +785,8 @@ class builder extends atoum\test
 				->call('setRevision', array(1))
 				->call('setRevision', array(2))
 				->call('setRevision', array(3))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 
 		$vcsController->resetCalls();
@@ -837,7 +806,8 @@ class builder extends atoum\test
 				->call('file_put_contents', array($revisionFile, 4, \LOCK_EX))
 			->mock($vcs)
 				->call('setRevision', array(4))
-				->call('exportRepository', array($workingDirectory))
+				->call('setWorkingDirectory', array($workingDirectory))
+				->call('exportRepository')
 		;
 	}
 
@@ -854,13 +824,12 @@ class builder extends atoum\test
 		$adapter->fclose = function() {};
 		$adapter->unlink = function() {};
 
-		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, $adapter);
+		$builder = new mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter);
 
 		$builderController = $builder->getMockController();
 		$builderController->createPhar = function() {};
 
 		$builder->setRunFile($runFile = uniqid());
-
 
 		$this->define->mock($builder)->label = 'builder';
 
@@ -881,7 +850,7 @@ class builder extends atoum\test
 	{
 		$adapter = new atoum\test\adapter();
 
-		$builder = new scripts\builder(uniqid(), null, $adapter);
+		$builder = new scripts\builder(uniqid(), null, null, $adapter);
 
 		$adapter->file_put_contents = function() {};
 

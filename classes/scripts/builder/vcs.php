@@ -14,15 +14,11 @@ abstract class vcs implements atoum\adapter\aggregator
 	protected $revision = null;
 	protected $username = null;
 	protected $password = null;
+	protected $workingDirectory = null;
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
-		if ($adapter === null)
-		{
-			$adapter = new atoum\adapter();
-		}
-
-		$this->setAdapter($adapter);
+		$this->setAdapter($adapter ?: new atoum\adapter());
 
 		if ($this->adapter->extension_loaded('svn') === false)
 		{
@@ -40,6 +36,28 @@ abstract class vcs implements atoum\adapter\aggregator
 	public function getAdapter()
 	{
 		return $this->adapter;
+	}
+
+	public function setWorkingDirectory($workingDirectory)
+	{
+		$this->workingDirectory = (string) $workingDirectory;
+
+		return $this;
+	}
+
+	public function getWorkingDirectory()
+	{
+		return $this->workingDirectory;
+	}
+
+	public function getWorkingDirectoryIterator()
+	{
+		if ($this->workingDirectory === null)
+		{
+			throw new exceptions\runtime('Unable to clean working directory because it is undefined');
+		}
+
+		return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->workingDirectory, \filesystemIterator::KEY_AS_PATHNAME | \filesystemIterator::CURRENT_AS_FILEINFO | \filesystemIterator::SKIP_DOTS), \recursiveIteratorIterator::CHILD_FIRST);
 	}
 
 	public function setRepositoryUrl($url)
@@ -92,5 +110,22 @@ abstract class vcs implements atoum\adapter\aggregator
 
 	public abstract function getNextRevisions();
 
-	public abstract function exportRepository($directory);
+	public abstract function exportRepository();
+
+	public function cleanWorkingDirectory()
+	{
+		foreach ($this->getWorkingDirectoryIterator() as $inode)
+		{
+			if ($inode->isDir() === false)
+			{
+				$this->adapter->unlink($inode->getPathname());
+			}
+			else if (($pathname = $inode->getPathname()) !== $this->workingDirectory)
+			{
+				$this->adapter->rmdir($pathname);
+			}
+		}
+
+		return $this;
+	}
 }

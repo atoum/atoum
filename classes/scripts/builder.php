@@ -11,6 +11,9 @@ use
 
 class builder extends atoum\script
 {
+	const defaultUnitTestRunnerScript = 'scripts/runner.php';
+	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
+
 	protected $php = null;
 	protected $vcs = null;
 	protected $taggerEngine = null;
@@ -28,16 +31,17 @@ class builder extends atoum\script
 	protected $pharCreationEnabled = true;
 	protected $checkUnitTests = true;
 	protected $reportTitle = null;
-	protected $fileIteratorInjector = null;
 	protected $runnerConfigurationFiles = array();
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($name, builder\vcs $vcs = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
 
 		$this
+			->setVcs($vcs ?: new builder\vcs\svn())
 			->setSuperglobals(new atoum\superglobals())
-			->setRunFile($this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this)))
+			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
+			->setPharGeneratorScript(self::defaultPharGeneratorScript)
 		;
 	}
 
@@ -269,30 +273,6 @@ class builder extends atoum\script
 		return $this->runFile !== null ? $this->runFile : $this->adapter->sys_get_temp_dir() . \DIRECTORY_SEPARATOR . md5(get_class($this));
 	}
 
-	public function getFileIterator($directory)
-	{
-		if ($this->fileIteratorInjector === null)
-		{
-			$this->setFileIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); });
-		}
-
-		return $this->fileIteratorInjector->__invoke($directory);
-	}
-
-	public function setFileIteratorInjector(\closure $fileIteratorInjector)
-	{
-		$closure = new \reflectionMethod($fileIteratorInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic('File iterator injector must take one argument');
-		}
-
-		$this->fileIteratorInjector = $fileIteratorInjector;
-
-		return $this;
-	}
-
 	public function checkUnitTests()
 	{
 		$status = true;
@@ -304,17 +284,10 @@ class builder extends atoum\script
 				throw new exceptions\logic('Unable to check unit tests, working directory is undefined');
 			}
 
-			if ($this->vcs === null)
-			{
-				throw new exceptions\logic('Unable to check unit tests, version control system is undefined');
-			}
-
-			if ($this->unitTestRunnerScript === null)
-			{
-				throw new exceptions\logic('Unable to check unit tests, unit tests runner script is undefined');
-			}
-
-			$this->vcs->exportRepository($this->workingDirectory);
+			$this->vcs
+				->setWorkingDirectory($this->workingDirectory)
+				->exportRepository()
+			;
 
 			$descriptors = array(
 				1 => array('pipe', 'w'),
@@ -415,11 +388,6 @@ class builder extends atoum\script
 
 		if ($this->pharCreationEnabled === true)
 		{
-			if ($this->vcs === null)
-			{
-				throw new exceptions\logic('Unable to create phar, version control system is undefined');
-			}
-
 			if ($this->destinationDirectory === null)
 			{
 				throw new exceptions\logic('Unable to create phar, destination directory is undefined');
@@ -462,7 +430,10 @@ class builder extends atoum\script
 						{
 							if ($this->checkUnitTests === false)
 							{
-								$this->vcs->exportRepository($this->workingDirectory);
+								$this->vcs
+									->setWorkingDirectory($this->workingDirectory)
+									->exportRepository()
+								;
 							}
 
 							if ($this->taggerEngine !== null)
@@ -625,7 +596,7 @@ class builder extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->setRepositoryUrl(current($url));
+				$script->getVcs()->setRepositoryUrl(current($url));
 			},
 			array('-r', '--repository-url')
 		);
@@ -718,30 +689,33 @@ class builder extends atoum\script
 
 		$alreadyRun = false;
 
-		$pid = @$this->adapter->file_get_contents($this->runFile);
+		$runFile = $this->getRunFile();
+
+		$pid = @$this->adapter->file_get_contents($runFile);
 
 		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
 		{
 			if ($this->pharCreationEnabled === true)
 			{
-				$runFile = @$this->adapter->fopen($this->runFile, 'w+');
+				$runFileResource = @$this->adapter->fopen($runFile, 'w+');
 
-				if ($runFile === false)
+				if ($runFileResource === false)
 				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $this->runFile));
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
 				}
 
-				if ($this->adapter->flock($runFile, \LOCK_EX | \LOCK_NB) === false)
+				if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
 				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $this->runFile));
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
 				}
 
-				$this->adapter->fwrite($runFile, $this->adapter->getmypid());
+				$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
 
 				$this->createPhar($this->version);
 
-				$this->adapter->fclose($runFile);
-				@$this->adapter->unlink($this->runFile);
+				$this->adapter->fclose($runFileResource);
+
+				@$this->adapter->unlink($runFile);
 			}
 		}
 

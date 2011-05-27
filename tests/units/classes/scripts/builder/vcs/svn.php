@@ -127,39 +127,19 @@ class svn extends atoum\test
 		;
 	}
 
-	public function testSetDirectoryIteratorInjector()
+	public function testGetWorkingDirectoryIterator()
 	{
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
 		$svn = new vcs\svn($adapter);
 
-		$this->assert
-			->exception(function() use ($svn) {
-					$svn->setDirectoryIteratorInjector(function() {});
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
-				->hasMessage('Directory iterator injector must take one argument')
-		;
-
-		$directoryIterator = new \directoryIterator(__DIR__);
+		$svn->setWorkingDirectory(__DIR__);
 
 		$this->assert
-			->object($svn->setDirectoryIteratorInjector($directoryIteratorInjector = function($directory) use ($directoryIterator) { return $directoryIterator; }))->isIdenticalTo($svn)
-			->object($svn->getDirectoryIterator(uniqid()))->isIdenticalTo($directoryIterator)
-		;
-	}
-
-	public function testGetDirectoryIterator()
-	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->getDirectoryIterator(__DIR__))->isInstanceOf('\directoryIterator')
+			->object($recursiveIteratorIterator = $svn->getWorkingDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
+			->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('\recursiveDirectoryIterator')
+			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
 
@@ -231,6 +211,23 @@ class svn extends atoum\test
 		;
 	}
 
+	public function testSetExportDirectory()
+	{
+		$this->mock('\mageekguy\atoum\scripts\builder\vcs\svn');
+
+		$adapter = new atoum\test\adapter();
+		$adapter->extension_loaded = true;
+
+		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+
+		$this->assert
+			->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
+			->string($svn->getWorkingDirectory())->isEqualTo($workingDirectory)
+			->object($svn->setWorkingDirectory($workingDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
+			->string($svn->getWorkingDirectory())->isIdenticalTo((string) $workingDirectory)
+		;
+	}
+
 	public function testExportRepository()
 	{
 		$this->mock('\mageekguy\atoum\scripts\builder\vcs\svn');
@@ -240,7 +237,7 @@ class svn extends atoum\test
 
 		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
 
-		$svn->getMockController()->deleteDirectoryContents = $svn;
+		$svn->getMockController()->cleanWorkingDirectory = $svn;
 
 		$this->assert
 			->exception(function() use ($svn) {
@@ -256,26 +253,29 @@ class svn extends atoum\test
 				->notCall('svn_checkout')
 		;
 
-		$svn->setRepositoryUrl($repositoryUrl = uniqid());
+		$svn
+			->setRepositoryUrl($repositoryUrl = uniqid())
+			->setWorkingDirectory($workingDirectory = __DIR__)
+		;
 
 		$adapter->resetCalls();
 		$adapter->svn_checkout = false;
 		$adapter->svn_auth_set_parameter = function() {};
 
 		$this->assert
-			->exception(function() use ($svn, & $directory) {
-						$svn->exportRepository($directory = uniqid());
+			->exception(function() use ($svn) {
+						$svn->exportRepository();
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $directory . '\'')
+				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
 			->mock($svn)
-				->call('deleteDirectoryContents', array($directory))
+				->call('cleanWorkingDirectory')
 		;
 
 		$svn
@@ -286,19 +286,19 @@ class svn extends atoum\test
 		$adapter->resetCalls();
 
 		$this->assert
-			->exception(function() use ($svn, & $directory) {
-						$svn->exportRepository($directory = uniqid());
+			->exception(function() use ($svn) {
+						$svn->exportRepository();
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $directory . '\'')
+				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
 			->mock($svn)
-				->call('deleteDirectoryContents', array($directory))
+				->call('cleanWorkingDirectory')
 		;
 
 		$svn
@@ -309,19 +309,19 @@ class svn extends atoum\test
 		$adapter->resetCalls();
 
 		$this->assert
-			->exception(function() use ($svn, & $directory) {
-						$svn->exportRepository($directory = uniqid());
+			->exception(function() use ($svn) {
+						$svn->exportRepository();
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $directory . '\'')
+				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
 			->mock($svn)
-				->call('deleteDirectoryContents', array($directory))
+				->call('cleanWorkingDirectory')
 		;
 
 		$svn->getMockController()->resetCalls();
@@ -330,18 +330,18 @@ class svn extends atoum\test
 		$adapter->resetCalls();
 
 		$this->assert
-			->object($svn->exportRepository($directory = uniqid()))->isIdenticalTo($svn)
+			->object($svn->exportRepository())->isIdenticalTo($svn)
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
 				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $directory, $svn->getRevision()))
+				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
 			->mock($svn)
-				->call('deleteDirectoryContents', array($directory))
+				->call('cleanWorkingDirectory')
 		;
 	}
 
-	public function testDeleteDirectoryContents()
+	public function testCleanWorkingDirectory()
 	{
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
@@ -350,88 +350,72 @@ class svn extends atoum\test
 
 		$this
 			->mock('\mageekguy\atoum\scripts\builder\vcs\svn')
-			->mock('\directoryIterator')
+			->mock('\splFileInfo')
 		;
 
 		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
 
-		$directoryFile1Controller = new mock\controller();
-		$directoryFile1Controller->__construct = function() {};
-		$directoryFile1Controller->getPathname = $directoryFile1Path = uniqid();
-		$directoryFile1Controller->isDir = false;
-		$directoryFile1Controller->isDot = false;
+		$svn->setWorkingDirectory($workingDirectory = __DIR__);
 
-		$directoryFile1 = new mock\directoryIterator($directoryFile1Path, $directoryFile1Controller);
+		$inode11Controller = new mock\controller();
+		$inode11Controller->__construct = function() {};
+		$inode11Controller->getPathname = $inode11Path = uniqid();
+		$inode11Controller->isDir = false;
 
-		$directoryFile2Controller = new mock\controller();
-		$directoryFile2Controller->__construct = function() {};
-		$directoryFile2Controller->getPathname = $directoryFile2Path = uniqid();
-		$directoryFile2Controller->isDir = false;
-		$directoryFile2Controller->isDot = false;
+		$inode11 = new mock\splFileInfo($inode11Path, $inode11Controller);
 
-		$directoryFile2 = new mock\directoryIterator($directoryFile2Path, $directoryFile2Controller);
+		$inode12Controller = new mock\controller();
+		$inode12Controller->__construct = function() {};
+		$inode12Controller->getPathname = $inode12Path = uniqid();
+		$inode12Controller->isDir = false;
 
-		$directoryController = new mock\controller();
-		$directoryController->__construct = function() {};
-		$directoryController->next = function() {};
-		$directoryController->rewind = function() {};
-		$directoryController->isDir = true;
-		$directoryController->isDot = false;
-		$directoryController->getPathname = $directoryPath = uniqid();
-		$directoryController->valid = false;
-		$directoryController->valid[1] = true;
-		$directoryController->current[1] = $directoryFile1;
-		$directoryController->valid[2] = true;
-		$directoryController->current[2] = $directoryFile2;
+		$inode12 = new mock\splFileInfo($inode12Path, $inode12Controller);
 
-		$directory = new mock\directoryIterator($directoryPath, $directoryController);
+		$inode1Controller = new mock\controller();
+		$inode1Controller->__construct = function() {};
+		$inode1Controller->getPathname = $inode1Path = uniqid();
+		$inode1Controller->isDir = true;
 
-		$file1Controller = new mock\controller();
-		$file1Controller->__construct = function() {};
-		$file1Controller->getPathname = $file1Path = uniqid();
-		$file1Controller->isDir = false;
-		$file1Controller->isDot = false;
+		$inode1 = new mock\splFileInfo($inode1Path, $inode1Controller);
 
-		$file1 = new mock\directoryIterator(uniqid(), $file1Controller);
+		$inode2Controller = new mock\controller();
+		$inode2Controller->__construct = function() {};
+		$inode2Controller->getPathname = $inode2Path = uniqid();
+		$inode2Controller->isDir = false;
 
-		$file2Controller = new mock\controller();
-		$file2Controller->__construct = function() {};
-		$file2Controller->getPathname = $file2Path = uniqid();
-		$file2Controller->isDir = false;
-		$file2Controller->isDot = false;
+		$inode2 = new mock\splFileInfo($inode2Path, $inode2Controller);
 
-		$file2 = new mock\directoryIterator(uniqid(), $file2Controller);
+		$inode3Controller = new mock\controller();
+		$inode3Controller->__construct = function() {};
+		$inode3Controller->getPathname = $inode3Path = uniqid();
+		$inode3Controller->isDir = true;
 
-		$rootController = new mock\controller();
-		$rootController->__construct = function() {};
-		$rootController->getPathname = $rootPath = uniqid();
-		$rootController->next = function() {};
-		$rootController->rewind = function() {};
-		$rootController->valid = false;
-		$rootController->valid[1] = true;
-		$rootController->current[1] = $file1;
-		$rootController->valid[2] = true;
-		$rootController->current[2] = $directory;
-		$rootController->valid[3] = true;
-		$rootController->current[3] = $file2;
+		$inode3 = new mock\splFileInfo($inode3Path, $inode3Controller);
 
-		$root = new mock\directoryIterator(uniqid(), $rootController);
+		$inodeController = new mock\controller();
+		$inodeController->__construct = function() {};
+		$inodeController->getPathname = $workingDirectory = uniqid();
+		$inodeController->isDir = true;
 
-		$svnController->getDirectoryIterator[1] = $root;
-		$svnController->getDirectoryIterator[2] = $directory;
+		$inode = new mock\splFileInfo($workingDirectory, $inodeController);
+
+		$svnController->getWorkingDirectoryIterator = array(
+				$inode11,
+				$inode12,
+				$inode1,
+				$inode2,
+				$inode3
+		);
 
 		$this->assert
-			->object($svn->deleteDirectoryContents($rootPath))->isIdenticalTo($svn)
-			->mock($svn)
-				->call('getDirectoryIterator', array($rootPath))
-				->call('getDirectoryIterator', array($directoryPath))
+			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('unlink', array($directoryFile1Path))
-				->call('unlink', array($directoryFile2Path))
-				->call('unlink', array($file1Path))
-				->call('unlink', array($file2Path))
-				->call('rmdir', array($directoryPath))
-				->notCall('rmdir', array($rootPath))
+				->call('unlink', array($inode11Path))
+				->call('unlink', array($inode12Path))
+				->call('rmdir', array($inode1Path))
+				->call('unlink', array($inode2Path))
+				->call('rmdir', array($inode3Path))
+				->notCall('rmdir', array($workingDirectory))
 		;
 	}
 }
