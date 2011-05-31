@@ -38,7 +38,7 @@ class builder extends atoum\script
 		parent::__construct($name, $locale, $adapter);
 
 		$this
-			->setVcs($vcs ?: new builder\vcs\svn())
+			->setVcs($vcs ?: new builder\vcs\svn($this->adapter))
 			->setSuperglobals(new atoum\superglobals())
 			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
 			->setPharGeneratorScript(self::defaultPharGeneratorScript)

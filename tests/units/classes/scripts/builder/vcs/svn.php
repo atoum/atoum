@@ -32,21 +32,14 @@ class svn extends atoum\test
 
 	public function test__construct()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = false;
+		$svn = new vcs\svn();
 
 		$this->assert
-			->exception(function() use ($adapter) {
-						new vcs\svn($adapter);
-					}
-				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('PHP extension svn is not available, please install it')
+			->object($svn->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->variable($svn->getRepositoryUrl())->isNull()
 		;
 
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
+		$svn = new vcs\svn($adapter = new atoum\adapter());
 
 		$this->assert
 			->object($svn->getAdapter())->isIdenticalTo($adapter)

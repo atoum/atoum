@@ -19,11 +19,6 @@ abstract class vcs implements atoum\adapter\aggregator
 	public function __construct(atoum\adapter $adapter = null)
 	{
 		$this->setAdapter($adapter ?: new atoum\adapter());
-
-		if ($this->adapter->extension_loaded('svn') === false)
-		{
-			throw new exceptions\runtime('PHP extension svn is not available, please install it');
-		}
 	}
 
 	public function setAdapter(atoum\adapter $adapter)

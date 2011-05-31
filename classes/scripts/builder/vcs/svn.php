@@ -10,11 +10,21 @@ use
 
 class svn extends builder\vcs implements atoum\adapter\aggregator
 {
+	public function __construct(atoum\adapter $adapter = null)
+	{
+		parent::__construct($adapter);
+	}
+
 	public function getNextRevisions()
 	{
 		if ($this->repositoryUrl === null)
 		{
 			throw new exceptions\runtime('Unable to get logs, repository url is undefined');
+		}
+
+		if ($this->adapter->extension_loaded('svn') === false)
+		{
+			throw new exceptions\runtime('PHP extension svn is not available, please install it');
 		}
 
 		$this->adapter->svn_auth_set_parameter(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true);
@@ -42,6 +52,11 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 		if ($this->workingDirectory === null)
 		{
 			throw new exceptions\runtime('Unable to export repository, working directory is undefined');
+		}
+
+		if ($this->adapter->extension_loaded('svn') === false)
+		{
+			throw new exceptions\runtime('PHP extension svn is not available, please install it');
 		}
 
 		$this

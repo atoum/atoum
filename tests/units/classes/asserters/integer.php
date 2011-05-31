@@ -60,9 +60,6 @@ class integer extends atoum\test
 
 		$this->assert
 			->object($asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
-		;
-
-		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($asserter->getValue())->isEqualTo($value)
