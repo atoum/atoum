@@ -579,11 +579,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 			);
 			fclose($pipes[0]);
 
-			$stdOut = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-
 			$stdErr = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
+
+			$stdOut = stream_get_contents($pipes[1]);
+			fclose($pipes[1]);
 
 			$returnValue = proc_close($php);
 

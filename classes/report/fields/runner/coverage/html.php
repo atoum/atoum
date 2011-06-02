@@ -11,6 +11,7 @@ use
 
 class html extends report\fields\runner\coverage\string
 {
+	const htmlExtensionFile = '.html';
 	const defaultAlternatePrompt = '=> ';
 
 	protected $adapter = null;
@@ -144,7 +145,7 @@ class html extends report\fields\runner\coverage\string
 
 					if (isset($classTemplate->classUrl) === true)
 					{
-						$classTemplate->classUrl = ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR);
+						$classTemplate->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
 					}
 
 					if (isset($classTemplate->classCoverageValue) === true)
@@ -286,7 +287,7 @@ class html extends report\fields\runner\coverage\string
 					}
 				}
 
-				$file = $this->destinationDirectory . '/' . ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR) . '.html';
+				$file = $this->destinationDirectory . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $className) . self::htmlExtensionFile;
 
 				$directory = $this->adapter->dirname($file);
 

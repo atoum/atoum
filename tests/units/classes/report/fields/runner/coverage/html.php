@@ -605,7 +605,7 @@ class html extends atoum\test
 				->call('build')
 			->mock($coverageTemplate)
 				->call('__set', array('className', $className))
-				->call('__set', array('classUrl', ltrim(str_replace('\\', DIRECTORY_SEPARATOR, $className), DIRECTORY_SEPARATOR)))
+				->call('__set', array('classUrl', str_replace('\\', '/', $className) . coverage\html::htmlExtensionFile))
 				->call('build')
 			->mock($coverage)
 				->call('getValueForMethod', array($className, $method1Name))

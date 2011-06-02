@@ -48,19 +48,9 @@ class template extends template\data
 
 	public function getByTag($tag)
 	{
-		$tags = array();
+		$iterator = new template\iterator();
 
-		foreach ($this->children as $child)
-		{
-			if ($child->getTag() == $tag)
-			{
-				$tags[] = $child;
-			}
-
-			$tags = array_merge($tags, $child->getByTag($tag));
-		}
-
-		return $tags;
+		return $iterator->addTag($tag, $this);
 	}
 
 	public function getById($id, $fromRoot = true)
@@ -181,9 +171,7 @@ class template extends template\data
 
 	protected function tagExists($tag, & $tags)
 	{
-		$tags = $this->getByTag($tag);
-
-		if (sizeof($tags) <= 0)
+		if (sizeof($tags = $this->getByTag($tag)) <= 0)
 		{
 			throw new exceptions\runtime('Tag \'' . $tag . '\' does not exist');
 		}

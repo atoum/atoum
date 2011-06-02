@@ -81,26 +81,44 @@ class coverage implements \countable
 			try
 			{
 				$reflectedClass = $this->getReflectionClass($class);
+
+				$reflectedClassName = $reflectedClass->getName();
 				$reflectedClassFile = $reflectedClass->getFileName();
 
-				if (isset($data[$reflectedClassFile]) === true)
-				{
-					$this->classes[$reflectedClass->getName()] = $reflectedClassFile;
+				$this->classes[$reflectedClassName] = $reflectedClassFile;
+				$this->methods[$reflectedClassName] = array();
 
-					foreach ($reflectedClass->getMethods() as $method)
+				foreach ($reflectedClass->getMethods() as $method)
+				{
+					if ($method->isAbstract() === false)
 					{
-						if ($method->isAbstract() === false && $method->getDeclaringClass()->getName() === $reflectedClass->getName())
+						$declaringClass = $method->getDeclaringClass();
+
+						$declaringClassName = $declaringClass->getName();
+						$declaringClassFile = $declaringClass->getFilename();
+
+						if ($declaringClassFile !== false)
 						{
-							for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+							if (isset($this->classes[$declaringClassName]) === false)
 							{
-								if (isset($data[$reflectedClassFile][$line]) === true && (isset($this->methods[$reflectedClass->getName()][$method->getName()][$line]) === false || $this->methods[$reflectedClass->getName()][$method->getName()][$line] < $data[$reflectedClassFile][$line]))
+								$this->classes[$declaringClassName] = $declaringClassFile;
+								$this->methods[$declaringClassName] = array();
+							}
+
+ 							if (isset($data[$declaringClassFile]) === true)
+							{
+								for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 								{
-									$this->methods[$reflectedClass->getName()][$method->getName()][$line] = $data[$reflectedClassFile][$line];
+									if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
+									{
+										$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
+									}
 								}
 							}
 						}
 					}
 				}
+
 			}
 			catch (\exception $exception) {}
 		}
