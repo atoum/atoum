@@ -280,7 +280,7 @@ class runner extends atoum\script
 				set_error_handler(function($error, $message, $file, $line) use ($runner) {
 						if (error_reporting() !== 0)
 						{
-							$runner->writeError($message);
+							$runner->writeError($message . ' ' . $file . ' ' . $line);
 
 							exit($error);
 						}

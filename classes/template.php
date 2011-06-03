@@ -18,12 +18,12 @@ class template extends template\data
 
 	public function __set($tag, $data)
 	{
-		$this->tagExists($tag, $tags);
-
-		foreach ($tags as $child)
+		foreach ($this->getByTag($tag) as $child)
 		{
 			$child->setData($data);
 		}
+
+		return $this;
 	}
 
 	public function __get($tag)
@@ -33,12 +33,12 @@ class template extends template\data
 
 	public function __unset($tag)
 	{
-		$this->tagExists($tag, $tags);
-
-		foreach ($tags as $child)
+		foreach ($this->getByTag($tag) as $child)
 		{
 			$child->resetData();
 		}
+
+		return $this;
 	}
 
 	public function __isset($tag)
@@ -92,6 +92,16 @@ class template extends template\data
 		foreach ($mixed as $tag => $value)
 		{
 			$this->{$tag} = $value;
+		}
+
+		return $this;
+	}
+
+	public function resetChildrenData()
+	{
+		foreach ($this->children as $child)
+		{
+			$child->resetData();
 		}
 
 		return $this;
@@ -168,14 +178,6 @@ class template extends template\data
 	public function setAttribute($name, $value) {}
 
 	public function unsetAttribute($name) {}
-
-	protected function tagExists($tag, & $tags)
-	{
-		if (sizeof($tags = $this->getByTag($tag)) <= 0)
-		{
-			throw new exceptions\runtime('Tag \'' . $tag . '\' does not exist');
-		}
-	}
 }
 
 ?>

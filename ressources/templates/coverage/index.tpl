@@ -12,25 +12,39 @@
 			<h1>Code coverage of <tpl:projectName /></h1>
 			<div id="content">
 				<ul class="projectSummary">
-					<li class="project">
-						<div class="bar">
-							<div class="background"></div>
-							<div class="graph" style="width: <tpl:coverageValue />%"></div>
-							<div class="label"><tpl:projectName /></a> <span><tpl:coverageValue />%</span></div>
-						</div>
+					<li>
+						<tpl:coverageUnavailable>
+							<div class="bar">
+								<div class="label">Global code coverage <span>n/a</span></div>
+							</div>
+						</tpl:coverageUnavailable>
+						<tpl:coverageAvailable>
+							<div class="bar">
+								<div class="background"></div>
+								<div class="graph" style="width: <tpl:coverageValue />%"></div>
+								<div class="label">Global code coverage <span><tpl:coverageValue />%</span></div>
+							</div>
+						</tpl:coverageAvailable>
 					</li>
 					<li class="classes">
-						<ul>
-							<tpl:class id="class">
+						<ol>
+							<tpl:class>
 								<li>
+									<tpl:classCoverageUnavailable>
+										<div class="bar">
+											<div class="label"><a href="<tpl:rootUrl /><tpl:classUrl />"><tpl:className /></a> <span>n/a</span></div>
+										</div>
+									</tpl:classCoverageUnavailable>
+									<tpl:classCoverageAvailable>
 									<div class="bar">
 										<div class="background"></div>
 										<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
 										<div class="label"><a href="<tpl:rootUrl /><tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
 									</div>
+									</tpl:classCoverageAvailable>
 								</li>
 							</tpl:class>
-						</ul>
+						</ol>
 					</li>
 				</ul>
 			</div>

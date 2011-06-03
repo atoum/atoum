@@ -39,6 +39,36 @@ class iterator implements \iterator, \countable
 		return $iterator;
 	}
 
+	public function __set($tag, $data)
+	{
+		foreach ($this->tags as $innerTag)
+		{
+			$innerTag->{$tag} = $data;
+		}
+
+		return $this;
+	}
+
+	public function __unset($tag)
+	{
+		foreach ($this->tags as $innerTag)
+		{
+			$innerTag->{$tag}->resetData();
+		}
+
+		return $this;
+	}
+
+	public function __call($method, $arguments)
+	{
+		foreach ($this->tags as $innerTag)
+		{
+			call_user_func_array(array($innerTag, $method), $arguments);
+		}
+
+		return $this;
+	}
+
 	public function rewind()
 	{
 		reset($this->tags);

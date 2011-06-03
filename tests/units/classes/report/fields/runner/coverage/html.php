@@ -600,6 +600,7 @@ class html extends atoum\test
 				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
+				/*
 				->call('__set', array('coverageValue', round($coverageValue * 100, 2)))
 				->call('getById', array('class', true))
 				->call('build')
@@ -637,6 +638,7 @@ class html extends atoum\test
 				->call('fopen', array($classFile, 'r'))
 				->call('fgets', array($classResource))
 				->call('fclose', array($classResource))
+				*/
 		;
 
 	}

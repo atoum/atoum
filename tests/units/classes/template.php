@@ -127,16 +127,6 @@ class template extends atoum\test
 			->string($childTag->getData())->isEqualTo($data)
 			->string($otherChildTag->getData())->isEqualTo($otherData)
 		;
-
-
-		$this->assert
-			->exception(function() use ($template, & $undefineTag) {
-					$template->{$undefineTag = uniqid()} = uniqid();
-				}
-			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Tag \'' . $undefineTag . '\' does not exist')
-		;
 	}
 
 	public function test__isset()
@@ -175,15 +165,6 @@ class template extends atoum\test
 	public function test__unset()
 	{
 		$template = new atoum\template();
-
-		$this->assert
-			->exception(function() use ($template, & $tag) {
-					unset($template->{$tag = uniqid()});
-					}
-				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Tag \'' . $tag . '\' does not exist')
-		;
 
 		$template->addChild($childTag = new atoum\template\tag(uniqid()));
 

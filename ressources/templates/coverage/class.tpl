@@ -13,32 +13,44 @@
 			<div id="content">
 				<ul class="classSummary">
 					<li class="class">
-						<div class="bar">
-							<div class="background"></div>
-							<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-							<div class="label"><tpl:className /> <span><tpl:classCoverageValue />%</span></div>
-						</div>
+						<tpl:classCoverageUnavailable>
+							<div class="label">Class code coverage <span>n/a</span></div>
+						</tpl:classCoverageUnavailable>
+						<tpl:classCoverageAvailable>
+							<div class="bar">
+								<div class="background"></div>
+								<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
+								<div class="label">Class code coverage <span><tpl:classCoverageValue />%</span></div>
+							</div>
+						</tpl:classCoverageAvailable>
 					</li>
-					<li class="methods">
-						<ul>
-							<tpl:method id="method">
-								<li>
-									<div class="bar">
-										<div class="background"></div>
-										<div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
-										<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
-									</div>
-								</li>
-							</tpl:method>
-						</ul>
-					</li>
+					<tpl:methods>
+						<li class="methods">
+							<ul>
+								<tpl:method id="method">
+									<li>
+										<tpl:methodCoverageUnavailable>
+											<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>
+										</tpl:methodCoverageUnavailable>
+										<tpl:methodCoverageAvailable>
+											<div class="bar">
+												<div class="background"></div>
+												<div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
+												<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
+											</div>
+										</tpl:methodCoverageAvailable>
+									</li>
+								</tpl:method>
+							</ul>
+						</li>
+					</tpl:methods>
 				</ul>
 				<table cellpadding="0" cellspacing="0" class="source">
 					<tr><th class="number">Line</th><th>Code</th></tr>
-					<tpl:sourceFile id="sourceFile">
-						<tpl:line id="line"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:line>
-						<tpl:line id="coveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:line>
-						<tpl:line id="notCoveredLine"><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="notCovered"><pre><tpl:code /></pre></td></tr></tpl:line>
+					<tpl:sourceFile>
+						<tpl:line><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:line>
+						<tpl:coveredLine><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:coveredLine>
+						<tpl:notCoveredLine><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="notCovered"><pre><tpl:code /></pre></td></tr></tpl:notCoveredLine>
 					</tpl:sourceFile>
 				</table>
 			</div>
