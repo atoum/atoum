@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\template;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
 	\mageekguy\atoum\template
 ;
 
@@ -52,6 +53,76 @@ class iterator extends atoum\test
 			->sizeOf($innerIterator)->isEqualTo(1)
 			->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
+		;
+	}
+
+	public function test__set()
+	{
+		$iterator = new template\iterator();
+
+		$template = new atoum\template();
+		$template->addChild($tag = new template\tag(uniqid()));
+		$tag->addChild($childTag = new template\tag(uniqid()));
+
+		$iterator->addTag($tag->getTag(), $template);
+
+		$iterator->{$childTag->getTag()} = $data = uniqid();
+
+		$this->assert
+			->string($childTag->getData())->isEqualTo($data)
+			->object($iterator->__set($childTag->getTag(), $data = uniqid()))->isIdenticalTo($iterator)
+			->string($childTag->getData())->isEqualTo($data)
+		;
+	}
+
+	public function test__unset()
+	{
+		$iterator = new template\iterator();
+
+		$template = new atoum\template();
+		$template->addChild($tag = new template\tag(uniqid()));
+		$tag->addChild($childTag = new template\tag(uniqid()));
+
+		$iterator->addTag($tag->getTag(), $template);
+
+		$iterator->{$childTag->getTag()} = uniqid();
+
+		$this->assert
+			->string($childTag->getData())->isNotEmpty()
+		;
+
+		unset($iterator->{$childTag->getTag()});
+
+		$this->assert
+			->string($childTag->getData())->isEmpty()
+		;
+
+		$iterator->{$childTag->getTag()} = uniqid();
+
+		$this->assert
+			->string($childTag->getData())->isNotEmpty()
+			->object($iterator->__unset($childTag->getTag()))->isIdenticalTo($iterator)
+			->string($childTag->getData())->isEmpty()
+		;
+	}
+
+	public function test__call()
+	{
+		$iterator = new template\iterator();
+
+		$this->mock('\mageekguy\atoum\template\tag');
+
+		$template = new atoum\template();
+		$template->addChild($tag = new mock\mageekguy\atoum\template\tag(uniqid()));
+		$tag->getMockController()->build = function() {};
+
+		$iterator->addTag($tag->getTag(), $template);
+
+		$this->assert
+			->object($iterator->build())->isIdenticalTo($iterator)
+			->mock($tag)->call('build', array(array()))
+			->object($iterator->build($tags = array(uniqid() => uniqid())))->isIdenticalTo($iterator)
+			->mock($tag)->call('build', array($tags))
 		;
 	}
 
