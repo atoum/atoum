@@ -125,25 +125,20 @@ class html extends report\fields\runner\coverage\string
 			}
 			else
 			{
-				$coverageValue = round($coverageValue * 100, 2);
-
-				foreach ($indexTemplate->coverageAvailable as $coverageAvailableTemplate)
-				{
-					$coverageAvailableTemplate->build(array('coverageValue' => $coverageValue));
-				}
+				$indexTemplate->coverageAvailable->build(array('coverageValue' => round($coverageValue * 100, 2)));
 			}
 
-			$classTemplates = $indexTemplate->class;
+			$classCoverageTemplates = $indexTemplate->classCoverage;
 
-			$classCoverageAvailableTemplates = $classTemplates->classCoverageAvailable;
-			$classCoverageUnavailableTemplates = $classTemplates->classCoverageUnavailable;
+			$classCoverageAvailableTemplates = $classCoverageTemplates->classCoverageAvailable;
+			$classCoverageUnavailableTemplates = $classCoverageTemplates->classCoverageUnavailable;
 
 			ksort($classes, \SORT_STRING);
 
 			foreach ($classes as $className => $classFile)
 			{
-				$classTemplates->className = $className;
-				$classTemplates->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
+				$classCoverageTemplates->className = $className;
+				$classCoverageTemplates->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
 
 				$classCoverageValue = $this->coverage->getValueForClass($className);
 
@@ -156,7 +151,7 @@ class html extends report\fields\runner\coverage\string
 					$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
 				}
 
-				$classTemplates->build();
+				$classCoverageTemplates->build();
 
 				$classCoverageAvailableTemplates->resetData();
 				$classCoverageUnavailableTemplates->resetData();
@@ -196,10 +191,7 @@ class html extends report\fields\runner\coverage\string
 				}
 				else
 				{
-					$classCoverageAvailableTemplates->build(array(
-							'classCoverageValue' => round($classCoverageValue * 100, 2),
-						)
-					);
+					$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
 				}
 
 				$reflectedMethods = array();
@@ -217,10 +209,7 @@ class html extends report\fields\runner\coverage\string
 
 						if ($methodCoverageValue === null)
 						{
-							$methodCoverageUnavailableTemplates->build(array(
-									'methodName' => $methodName
-								)
-							);
+							$methodCoverageUnavailableTemplates->build(array('methodName' => $methodName));
 						}
 						else
 						{

@@ -28,7 +28,7 @@
 					</li>
 					<li class="classes">
 						<ol>
-							<tpl:class>
+							<tpl:classCoverage>
 								<li>
 									<tpl:classCoverageUnavailable>
 										<div class="bar">
@@ -43,7 +43,7 @@
 									</div>
 									</tpl:classCoverageAvailable>
 								</li>
-							</tpl:class>
+							</tpl:classCoverage>
 						</ol>
 					</li>
 				</ul>

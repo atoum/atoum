@@ -424,72 +424,55 @@ class html extends atoum\test
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = $score;
 
-		$coverageTemplate = new mock\mageekguy\atoum\template\tag('class', 'codeCoverage');
-		$coverageTemplateController = $coverageTemplate->getMockController();
-		$coverageTemplateController->__set = function() {};
-		$coverageTemplateController->__isset = true;
+		$classCoverageTemplate = new mock\mageekguy\atoum\template\tag('classCoverage');
+		$classCoverageTemplate
+			->addChild($classCoverageAvailableTemplate = new mock\mageekguy\atoum\template\tag('classCoverageAvailable'))
+		;
 
 		$indexTemplate = new mock\mageekguy\atoum\template();
+		$indexTemplate
+			->addChild($coverageAvailableTemplate = new mock\mageekguy\atoum\template\tag('coverageAvailable'))
+			->addChild($classCoverageTemplate)
+		;
+
 		$indexTemplateController = $indexTemplate->getMockController();
 		$indexTemplateController->__set = function() {};
-		$indexTemplateController->__isset = true;
-		$indexTemplateController->getById = $coverageTemplate;
 		$indexTemplateController->build = $buildOfIndexTemplate = uniqid();
 
 		$methodTemplate = new mock\mageekguy\atoum\template();
 		$methodTemplateController = $methodTemplate->getMockController();
 		$methodTemplateController->__set = function() {};
-		$methodTemplateController->__isset = true;
 
-		$sourceFileTemplate = new mock\mageekguy\atoum\template();
-		$sourceFileTemplateController = $sourceFileTemplate->getMockController();
-		$sourceFileTemplateController->__set = function() {};
-		$sourceFileTemplateController->__isset = true;
 
-		$lineTemplate = new mock\mageekguy\atoum\template();
+		$lineTemplate = new mock\mageekguy\atoum\template\tag('line');
 		$lineTemplateController = $lineTemplate->getMockController();
 		$lineTemplateController->__set = function() {};
-		$lineTemplateController->__isset = true;
 
-		$coveredLineTemplate = new mock\mageekguy\atoum\template();
+		$coveredLineTemplate = new mock\mageekguy\atoum\template\tag('coveredLine');
 		$coveredLineTemplateController = $coveredLineTemplate->getMockController();
 		$coveredLineTemplateController->__set = function() {};
-		$coveredLineTemplateController->__isset = true;
 
-		$notCoveredLineTemplate = new mock\mageekguy\atoum\template();
+		$notCoveredLineTemplate = new mock\mageekguy\atoum\template\tag('notCoveredLine');
 		$notCoveredLineTemplateController = $notCoveredLineTemplate->getMockController();
 		$notCoveredLineTemplateController->__set = function() {};
-		$notCoveredLineTemplateController->__isset = true;
 
-		$sourceFileTemplateController->getById = function ($id) use ($lineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
-			switch ($id)
-			{
-				case 'line':
-					return $lineTemplate;
+		$sourceFileTemplate = new mock\mageekguy\atoum\template\tag('sourceFile');
+		$sourceFileTemplateController = $sourceFileTemplate->getMockController();
+		$sourceFileTemplateController->__set = function() {};
 
-				case 'coveredLine':
-					return $coveredLineTemplate;
-
-				case 'notCoveredLine':
-					return $notCoveredLineTemplate;
-			}
-		};
+		$sourceFileTemplate
+			->addChild($lineTemplate)
+			->addChild($coveredLineTemplate)
+			->addChild($notCoveredLineTemplate)
+		;
 
 		$classTemplate = new mock\mageekguy\atoum\template();
 		$classTemplateController = $classTemplate->getMockController();
 		$classTemplateController->__set = function() {};
-		$classTemplateController->__isset = true;
-		$classTemplateController->getById = function ($id) use ($methodTemplate, $sourceFileTemplate, $lineTemplate, $coveredLineTemplate, $notCoveredLineTemplate) {
-			switch ($id)
-			{
-				case 'method':
-					return $methodTemplate;
 
-				case 'sourceFile':
-					return $sourceFileTemplate;
-			}
-		};
-
+		$classTemplate
+			->addChild($sourceFileTemplate)
+		;
 
 		$reflectedClassController = new mock\controller();
 		$reflectedClassController->__construct = function() {};
@@ -604,25 +587,37 @@ class html extends atoum\test
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
 				->call('__set', array('rootUrl', $rootUrl . '/'))
-				/*
-				->call('__set', array('coverageValue', round($coverageValue * 100, 2)))
-				->call('getById', array('class', true))
+				->call('__get', array('coverageAvailable'))
+				->call('__get', array('classCoverage'))
+			->mock($coverageAvailableTemplate)
+				->call('build', array(array('coverageValue' => round($coverageValue * 100, 2))))
+			->mock($classCoverageTemplate)
+				->call('__set', array('className', $className))
 				->call('build')
+			->mock($classCoverageAvailableTemplate)
+				->call('build', array(array('classCoverageValue' => round($classCoverageValue * 100, 2))))
+				->call('resetData')
+			->mock($classTemplate)
+				->call('__set', array('rootUrl', $rootUrl . '/'))
+				->call('__set', array('projectName' , $projectName))
+				->call('__set', array('className', $className))
+				->call('__get', array('methods'))
+				->call('__get', array('sourceFile'))
+				->call('build')
+			/*
 			->mock($coverageTemplate)
 				->call('__set', array('className', $className))
 				->call('__set', array('classUrl', str_replace('\\', '/', $className) . coverage\html::htmlExtensionFile))
 				->call('build')
 			->mock($coverage)
 				->call('getValueForMethod', array($className, $method1Name))
-			->mock($classTemplate)
-				->call('__set', array('className', $className))
-				->call('__set', array('classCoverageValue', round($classCoverageValue * 100, 2)))
 			->mock($methodTemplate)
 				->call('__set', array('methodName', $method1Name))
 				->notCall('__set', array('methodName', $method2Name))
 				->notCall('__set', array('methodName', $method3Name))
 				->call('__set', array('methodName', $method4Name))
 				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
+			*/
 			->mock($lineTemplate)
 				->call('__set', array('code', $line1))
 				->call('__set', array('code', $line2))
@@ -642,7 +637,6 @@ class html extends atoum\test
 				->call('fopen', array($classFile, 'r'))
 				->call('fgets', array($classResource))
 				->call('fclose', array($classResource))
-				*/
 		;
 	}
 }
