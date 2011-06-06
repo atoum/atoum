@@ -27,7 +27,7 @@
 					<tpl:methods>
 						<li class="methods">
 							<ul>
-								<tpl:method id="method">
+								<tpl:method>
 									<li>
 										<tpl:methodCoverageUnavailable>
 											<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>

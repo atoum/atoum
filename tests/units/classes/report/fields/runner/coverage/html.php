@@ -466,11 +466,20 @@ class html extends atoum\test
 			->addChild($notCoveredLineTemplate)
 		;
 
+		$methodCoverageAvailableTemplate = new mock\mageekguy\atoum\template\tag('methodCoverageAvailable');
+
+		$methodTemplate = new mock\mageekguy\atoum\template\tag('method');
+		$methodTemplate->addChild($methodCoverageAvailableTemplate);
+
+		$methodsTemplate = new mock\mageekguy\atoum\template\tag('methods');
+		$methodsTemplate->addChild($methodTemplate);
+
 		$classTemplate = new mock\mageekguy\atoum\template();
 		$classTemplateController = $classTemplate->getMockController();
 		$classTemplateController->__set = function() {};
 
 		$classTemplate
+			->addChild($methodsTemplate)
 			->addChild($sourceFileTemplate)
 		;
 
@@ -581,6 +590,11 @@ class html extends atoum\test
 				->call('count')
 				->call('getClasses')
 				->call('getMethods')
+				->call('getValueForClass', array($className))
+				->call('getValueForMethod', array($className, $method1Name))
+				->notCall('getValueForMethod', array($className, $method2Name))
+				->notCall('getValueForMethod', array($className, $method3Name))
+				->call('getValueForMethod', array($className, $method4Name))
 			->mock($templateParser)
 				->call('parseFile', array($templatesDirectory . '/index.tpl', null))
 				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
@@ -591,12 +605,6 @@ class html extends atoum\test
 				->call('__get', array('classCoverage'))
 			->mock($coverageAvailableTemplate)
 				->call('build', array(array('coverageValue' => round($coverageValue * 100, 2))))
-			->mock($classCoverageTemplate)
-				->call('__set', array('className', $className))
-				->call('build')
-			->mock($classCoverageAvailableTemplate)
-				->call('build', array(array('classCoverageValue' => round($classCoverageValue * 100, 2))))
-				->call('resetData')
 			->mock($classTemplate)
 				->call('__set', array('rootUrl', $rootUrl . '/'))
 				->call('__set', array('projectName' , $projectName))
@@ -604,20 +612,27 @@ class html extends atoum\test
 				->call('__get', array('methods'))
 				->call('__get', array('sourceFile'))
 				->call('build')
-			/*
-			->mock($coverageTemplate)
+			->mock($classCoverageTemplate)
 				->call('__set', array('className', $className))
 				->call('__set', array('classUrl', str_replace('\\', '/', $className) . coverage\html::htmlExtensionFile))
 				->call('build')
-			->mock($coverage)
-				->call('getValueForMethod', array($className, $method1Name))
+			->mock($classCoverageAvailableTemplate)
+				->call('build', array(array('classCoverageValue' => round($classCoverageValue * 100, 2))))
+				->call('resetData')
+			->mock($methodsTemplate)
+				->call('build')
+				->call('resetData')
 			->mock($methodTemplate)
+				->call('build')
+				->call('resetData')
+			->mock($methodCoverageAvailableTemplate)
 				->call('__set', array('methodName', $method1Name))
 				->notCall('__set', array('methodName', $method2Name))
 				->notCall('__set', array('methodName', $method3Name))
 				->call('__set', array('methodName', $method4Name))
 				->call('__set', array('methodCoverageValue', round($methodCoverageValue * 100, 2)))
-			*/
+				->call('build')
+				->call('resetData')
 			->mock($lineTemplate)
 				->call('__set', array('code', $line1))
 				->call('__set', array('code', $line2))
