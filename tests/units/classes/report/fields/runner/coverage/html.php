@@ -548,7 +548,10 @@ class html extends atoum\test
 		$fieldController->cleanDestinationDirectory = function() {};
 		$fieldController->getReflectionClass = $reflectedClass;
 
-		$field->setWithRunner($runner, atoum\runner::runStop);
+		$field
+			->setWithRunner($runner, atoum\runner::runStop)
+			->setRootUrl($rootUrl = uniqid())
+		;
 
 		$templateParserController = $templateParser->getMockController();
 		$templateParserController->parseFile = function($path) use ($templatesDirectory, $indexTemplate, $classTemplate){
@@ -587,7 +590,7 @@ class html extends atoum\test
 
 		$this->assert
 			->object($field->getCoverage())->isIdenticalTo($coverage)
-			->castToString($field)->isIdenticalTo('> ' . sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . '=> Details of code coverage are available at /.' . PHP_EOL)
+			->castToString($field)->isIdenticalTo('> ' . sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . '=> Details of code coverage are available at ' . $rootUrl . '/.' . PHP_EOL)
 			->mock($coverage)->call('count')
 			->mock($field)
 				->call('cleanDestinationDirectory')
@@ -600,6 +603,7 @@ class html extends atoum\test
 				->call('parseFile', array($templatesDirectory . '/class.tpl', null))
 			->mock($indexTemplate)
 				->call('__set', array('projectName', $projectName))
+				->call('__set', array('rootUrl', $rootUrl . '/'))
 				/*
 				->call('__set', array('coverageValue', round($coverageValue * 100, 2)))
 				->call('getById', array('class', true))
@@ -640,7 +644,6 @@ class html extends atoum\test
 				->call('fclose', array($classResource))
 				*/
 		;
-
 	}
 }
 

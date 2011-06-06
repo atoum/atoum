@@ -129,8 +129,7 @@ class html extends report\fields\runner\coverage\string
 
 				foreach ($indexTemplate->coverageAvailable as $coverageAvailableTemplate)
 				{
-					$coverageAvailableTemplate->coverageValue = $coverageValue;
-					$coverageAvailableTemplate->build();
+					$coverageAvailableTemplate->build(array('coverageValue' => $coverageValue));
 				}
 			}
 

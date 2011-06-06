@@ -19,6 +19,8 @@ class autoloader
 		if (isset(self::$directories[$namespace]) === false || in_array($directory, self::$directories[$namespace]) === false)
 		{
 			self::$directories[$namespace][] = $directory;
+
+			krsort(self::$directories, \SORT_STRING);
 		}
 	}
 
@@ -31,17 +33,15 @@ class autoloader
 	{
 		$path = null;
 
-		$class = ltrim($class, '\\');
-
 		foreach (self::$directories as $namespace => $directories)
 		{
-			if ($class !== $namespace && stripos($class, $namespace) === 0)
+			if ($class !== $namespace && strpos($class, $namespace) === 0)
 			{
 				foreach ($directories as $directory)
 				{
 					$path = $directory . str_replace('\\', DIRECTORY_SEPARATOR, str_replace($namespace, '', $class)) . '.php';
 
-					if ($path !== null && file_exists($path) === true)
+					if (is_file($path) === true)
 					{
 						return $path;
 					}
@@ -52,11 +52,9 @@ class autoloader
 		return null;
 	}
 
-	protected static function getClass($class, adapter $adapter = null)
+	protected static function getClass($class)
 	{
-		$path = self::getPath($class);
-
-		if ($path !== null)
+		if (($path = self::getPath($class)) !== null)
 		{
 			require($path);
 		}
