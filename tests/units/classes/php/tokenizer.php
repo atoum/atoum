@@ -75,7 +75,7 @@ class tokenizer extends atoum\test
 			->boolean($iterator->next()->valid())->isFalse()
 		;
 
-		$this->startCase('Tokenizing a single namepspace without contents');
+		$this->startCase('Tokenizing a single namespace without contents');
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isIdenticalTo($tokenizer)
@@ -103,7 +103,7 @@ class tokenizer extends atoum\test
 			->boolean($iterator->next()->valid())->isFalse()
 		;
 
-		$this->startCase('Tokenizing several namepspace without contents');
+		$this->startCase('Tokenizing several namespace without contents');
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isIdenticalTo($tokenizer)
