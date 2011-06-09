@@ -9,7 +9,6 @@ use
 
 class token extends iterator\value
 {
-	protected $parent = null;
 	protected $key = 0;
 	protected $tag = '';
 	protected $string = null;
@@ -54,12 +53,12 @@ class token extends iterator\value
 
 	public function key()
 	{
-		return $this->key;
+		return $this->key === 0 ? 0 : null;
 	}
 
 	public function current()
 	{
-		return $this;
+		return $this->key !== 0 ? null : $this;
 	}
 
 	public function rewind()
@@ -85,7 +84,7 @@ class token extends iterator\value
 	{
 		if ($this->valid() === true)
 		{
-		$this->key = null;
+			$this->key = null;
 		}
 
 		return $this;
@@ -95,7 +94,7 @@ class token extends iterator\value
 	{
 		if ($this->valid() === true)
 		{
-			$this->key--;
+			$this->key = null;
 		}
 
 		return $this;
@@ -103,7 +102,7 @@ class token extends iterator\value
 
 	public function append(iterator\value $value)
 	{
-		throw new exceptions\logic('Unable to append something to an instance of class ' . get_class($this));
+		throw new exceptions\logic(__METHOD__ . '() is unavailable');
 	}
 
 	public function seek($key)
@@ -112,6 +111,10 @@ class token extends iterator\value
 		{
 			$this->key = null;
 		}
+		else
+		{
+			$this->key = 0;
+		}
 
 		return $this;
 	}
@@ -119,18 +122,6 @@ class token extends iterator\value
 	public function getParent()
 	{
 		return $this->parent;
-	}
-
-	public function setParent(iterator\value $parent)
-	{
-		if ($this->parent !== null)
-		{
-			throw new exceptions\runtime('Token has already a parent');
-		}
-
-		$this->parent = $parent;
-
-		return $this;
 	}
 
 	public function getValue()

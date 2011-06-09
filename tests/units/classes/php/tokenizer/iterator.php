@@ -703,7 +703,7 @@ class iterator extends atoum\test
 				}
 			)
 				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Iterator has already a parent')
+				->hasMessage('Unable to append value because it has already a parent')
 		;
 
 		$iterator = new tokenizer\iterator();

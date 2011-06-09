@@ -12,7 +12,7 @@ $stdOutWriter = new atoum\writers\std\out();
 /*
 Please replace in next line /path/to/destination/directory by your destination directory path for html files.
 */
-$coverageField = new atoum\report\fields\runner\coverage\html('Atoum', __DIR__ . '/ressources/templates/coverage', '/path/to/destination/directory');
+$coverageField = new atoum\report\fields\runner\coverage\html('Atoum', __DIR__ . '/../ressources/templates/coverage', '/path/to/destination/directory');
 
 /*
 Please replace in next line http://url/of/web/site by the root url of your code coverage web site.

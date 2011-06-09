@@ -123,6 +123,42 @@ class tag extends atoum\test
 			->variable($template->getId())->isNull()
 		;
 	}
+
+	public function testSetAttribute()
+	{
+		$template = new template\tag(uniqid());
+
+		$this->assert
+			->variable($template->getId())->isNull()
+			->object($template->setAttribute('id', $id = uniqid()))->isIdenticalTo($template)
+			->string($template->getId())->isEqualTo($id)
+			->exception(function() use ($template, & $attribute) {
+						$template->setAttribute($attribute = uniqid(), uniqid());
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Attribute \'' . $attribute . '\' is unknown')
+		;
+	}
+
+	public function testUnsetAttribute()
+	{
+		$template = new template\tag(uniqid());
+
+		$template->setAttribute('id', $id = uniqid());
+
+		$this->assert
+			->string($template->getId())->isEqualTo($id)
+			->object($template->unsetAttribute('id'))->isIdenticalTo($template)
+			->variable($template->getId())->isNull()
+			->exception(function() use ($template, & $attribute) {
+						$template->unsetAttribute($attribute = uniqid());
+					}
+				)
+				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->hasMessage('Attribute \'' . $attribute . '\' is unknown')
+		;
+	}
 }
 
 ?>

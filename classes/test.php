@@ -39,6 +39,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $currentMethod = null;
 	private $testsSubNamespace = null;
 	private $mockGenerator = null;
+	private $workingFile = null;
 
 	public static $runningTest = null;
 
@@ -366,6 +367,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				if ($runner !== null)
 				{
+					$this->workingFile = $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), 'atm');
+
 					$this->callObservers(self::beforeSetUp);
 					$this->setUp();
 					$this->callObservers(self::afterSetUp);
@@ -415,6 +418,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 				if ($runner !== null)
 				{
+					$this->adapter->unlink($this->workingFile);
+
 					$this
 						->callObservers(self::beforeTearDown)
 						->tearDown()
@@ -561,8 +566,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($php !== false)
 		{
-			$tmpFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . md5($this->currentMethod);
-
 			fwrite($pipes[0],
 				'<?php ' .
 				'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
@@ -574,7 +577,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				'$runner->setPhpPath(\'' . $phpPath . '\');' .
 				($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
 				'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);' .
-				'file_put_contents(\'' . $tmpFile . '\', serialize($runner->getScore()));' .
+				'file_put_contents(\'' . $this->workingFile . '\', serialize($runner->getScore()));' .
 				'?>'
 			);
 			fclose($pipes[0]);
@@ -597,9 +600,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->score->addOutput($this->class, $this->currentMethod, $stdOut);
 			}
 
-			if (is_file($tmpFile) === true && is_writable($tmpFile) === true)
+			if (is_readable($this->workingFile) === true)
 			{
-				$tmpFileContent = file_get_contents($tmpFile);
+				$tmpFileContent = file_get_contents($this->workingFile);
 
 				$score = @unserialize($tmpFileContent);
 
@@ -611,8 +614,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, 'Unable to retrieve score for ' . $this->currentMethod . ': ' . $tmpFileContent);
 				}
-
-				unlink($tmpFile);
 			}
 		}
 	}

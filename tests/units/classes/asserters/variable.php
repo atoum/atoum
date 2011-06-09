@@ -263,7 +263,7 @@ class variable extends atoum\test
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
-						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+						$asserter->isIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
 					->isInstanceOf('\logicException')
@@ -297,6 +297,39 @@ class variable extends atoum\test
 		;
 	}
 
+	public function testIsNotIdenticalTo()
+	{
+		$asserter = new asserters\variable(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->isNotIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Value is undefined')
+		;
+
+		$asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX));
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->object($asserter->isNotIdenticalTo(uniqid()))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$this->assert
+			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isNotIdenticalTo($value); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s is identical to %s'), $asserter, $asserter->toString($value)))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
+
 	public function testIsNull()
 	{
 		$asserter = new asserters\variable(new asserter\generator($test = new self($score = new atoum\score())));
@@ -304,7 +337,7 @@ class variable extends atoum\test
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
-						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
+						$asserter->isNull(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
 					->isInstanceOf('\logicException')
@@ -362,6 +395,44 @@ class variable extends atoum\test
 				->hasMessage(sprintf($test->getLocale()->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(4)
+		;
+	}
+
+	public function testIsNotNull()
+	{
+		$asserter = new asserters\variable(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Value is undefined')
+		;
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setWith(uniqid());
+
+		$this->assert
+			->object($asserter->isNotNull())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->setWith(null);
+
+		$this->assert
+			->exception(function() use ($asserter) { $asserter->isNotNull(); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s is null'), $asserter))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 	}
 

@@ -12,12 +12,20 @@ class iterator extends iterator\value
 	protected $key = null;
 	protected $size = 0;
 	protected $values = array();
-	protected $parent = null;
 	protected $skipedValues = array();
 
 	public function __toString()
 	{
-		return join('', iterator_to_array(clone $this));
+		$key = $this->key();
+
+		$string = join('', iterator_to_array($this));
+
+		if ($key !== null)
+		{
+			$this->seek($key);
+		}
+
+		return $string;
 	}
 
 	public function valid()
@@ -182,6 +190,13 @@ class iterator extends iterator\value
 
 	public function append(iterator\value $value)
 	{
+		if ($value->parent !== null)
+		{
+			throw new exceptions\runtime('Unable to append value because it has already a parent');
+		}
+
+		$value->parent = $this;
+
 		$this->values[] = $value;
 
 		if ($this->key === null)
@@ -207,7 +222,6 @@ class iterator extends iterator\value
 			}
 		}
 
-		$value->setParent($this);
 
 		return $this;
 	}
@@ -246,18 +260,6 @@ class iterator extends iterator\value
 	public function getValue()
 	{
 		return (current($this->values) ?: null);
-	}
-
-	public function setParent(iterator\value $parent)
-	{
-		if ($this->parent !== null)
-		{
-			throw new exceptions\runtime('Iterator has already a parent');
-		}
-
-		$this->parent = $parent;
-
-		return $this;
 	}
 
 	public function getParent()

@@ -185,6 +185,96 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;
 	}
+
+	public function testNotCall()
+	{
+		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->notCall(uniqid());
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+			->integer($score->getPassNumber())->isZero()
+		;
+
+		$adapter = new atoum\test\adapter();
+
+		$asserter
+			->setWith($adapter)
+			->getScore()
+				->reset()
+		;
+
+		$function = 'md5';
+
+		$adapter->{$function}(uniqid());
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->notCall($function); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('function %s was called'), $function))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::notCall()',
+						'fail' => sprintf($test->getLocale()->_('function %s was called'), $function)
+					)
+				)
+			)
+		;
+
+		$this->assert
+			->object($asserter->notCall($function, array(uniqid())))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$function = uniqid();
+
+		$this->assert
+			->object($asserter->notCall($function))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$score->reset();
+
+		$function = 'sha1';
+
+		$adapter->{$function}($argument = uniqid());
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, $function, $argument) { $line = __LINE__; $asserter->notCall($function, array($argument)); })
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('function %s was called with this argument'), $function))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::notCall()',
+						'fail' => sprintf($test->getLocale()->_('function %s was called with this argument'), $function)
+					)
+				)
+			)
+		;
+	}
 }
 
 ?>

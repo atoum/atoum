@@ -116,11 +116,14 @@ class tag extends atoum\template
 
 	public function unsetAttribute($name)
 	{
-		switch (true)
+		switch ($name)
 		{
-			case $name == 'id':
+			case 'id':
 				$this->unsetId();
 				break;
+
+			default:
+				throw new exceptions\logic('Attribute \'' . $name . '\' is unknown');
 		}
 
 		return $this;
