@@ -111,7 +111,7 @@ class object extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
 		;
 
 		$this->assert

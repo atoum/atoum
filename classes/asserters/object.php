@@ -77,7 +77,12 @@ class object extends asserters\variable
 
 	protected function valueIsSet($message = 'Object is undefined')
 	{
-		return parent::valueIsSet($message);
+		if (self::isObject(parent::valueIsSet($message)->value) === false)
+		{
+			throw new exceptions\logic($message);
+		}
+
+		return $this;
 	}
 
 	protected static function check($value, $method)
