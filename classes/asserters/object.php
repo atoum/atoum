@@ -9,9 +9,9 @@ use
 
 class object extends asserters\variable
 {
-	public function setWith($value, $label = null, $checkType = true)
+	public function setWith($value, $checkType = true)
 	{
-		parent::setWith($value, $label);
+		parent::setWith($value);
 
 		if ($checkType === true)
 		{

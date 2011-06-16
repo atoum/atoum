@@ -58,13 +58,18 @@ class object extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->setWith($value = $this))->isIdenticalTo($asserter); $line = __LINE__
+			->object($asserter->setWith($value = $this))->isIdenticalTo($asserter);
 		;
 
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->object($asserter->getValue())->isIdenticalTo($value)
+		;
+
+		$this->assert
+			->object($asserter->setWith($value = uniqid(), false))->isIdenticalTo($asserter)
+			->string($asserter->getValue())->isEqualTo($value)
 		;
 	}
 

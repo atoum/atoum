@@ -70,7 +70,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 		}
 
-		$this->assert
+		$this->getAsserterGenerator()
 			->setAlias('array', 'phpArray')
 			->setAlias('class', 'phpClass')
 		;
@@ -600,10 +600,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->score->addOutput($this->class, $this->currentMethod, $stdOut);
 			}
 
-			if (is_readable($this->workingFile) === true)
-			{
-				$tmpFileContent = file_get_contents($this->workingFile);
+			$tmpFileContent = @file_get_contents($this->workingFile);
 
+			if ($tmpFileContent !== false)
+			{
 				$score = @unserialize($tmpFileContent);
 
 				if ($score instanceof score)

@@ -22,19 +22,6 @@ abstract class asserter
 		return $this->generator->__get($asserter);
 	}
 
-	public function __set($property, $value)
-	{
-		switch ($property)
-		{
-			case 'label':
-				$this->setLabel($value);
-				break;
-
-			default:
-				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' does not exist');
-		}
-	}
-
 	public function __call($asserter, $arguments)
 	{
 		return $this->generator->__call($asserter, $arguments);
@@ -90,17 +77,7 @@ abstract class asserter
 		}
 	}
 
-	public function setLabel($label)
-	{
-		if ($label !== null)
-		{
-			$this->generator->setLabel($label, $this);
-		}
-
-		return $this;
-	}
-
-	public abstract function setWith($mixed, $label = null);
+	public abstract function setWith($mixed);
 
 	protected function pass()
 	{

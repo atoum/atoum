@@ -10,7 +10,6 @@ use
 class generator
 {
 	protected $test = null;
-	protected $labels = array();
 	protected $aliases = array();
 	protected $asserters = array();
 
@@ -21,28 +20,19 @@ class generator
 
 	public function __get($asserterName)
 	{
-		if (isset($this->labels[$asserterName]) === true)
-		{
-			$asserter = $this->labels[$asserterName];
-		}
-		else
-		{
-			$class = $this->getAsserterClass($asserterName);
+		$class = $this->getAsserterClass($asserterName);
 
-			if (isset($this->asserters[$class]) === false)
+		if (isset($this->asserters[$class]) === false)
+		{
+			if (class_exists($class, true) === false)
 			{
-				if (class_exists($class, true) === false)
-				{
-					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
-				}
-
-				$this->asserters[$class] = new $class($this);
+				throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 			}
 
-			$asserter = $this->asserters[$class];
+			$this->asserters[$class] = new $class($this);
 		}
 
-		return $asserter;
+		return $this->asserters[$class];
 	}
 
 	public function __set($asserter, $class)
@@ -87,35 +77,6 @@ class generator
 		return $this->test->getLocale();
 	}
 
-	public function getLabels()
-	{
-		return $this->labels;
-	}
-
-	public function setLabel($label, atoum\asserter $asserter)
-	{
-		if (isset($this->labels[$label]) === true)
-		{
-			throw new exceptions\logic\invalidArgument('Label \'' . $label . '\' is already defined');
-		}
-
-		$class = $this->getAsserterClass($label);
-
-		if (class_exists($class, true) === true)
-		{
-			throw new exceptions\logic\invalidArgument('Unable to use \'' . $label . '\' as label because there is an asserter with this name');
-		}
-
-		$this->labels[$label] = clone $asserter;
-
-		return $this;
-	}
-
-	public function getAliases()
-	{
-		return $this->aliases;
-	}
-
 	public function getAsserterClass($asserter)
 	{
 		if (isset($this->aliases[$asserter]) === true)
@@ -143,6 +104,11 @@ class generator
 		$this->aliases[$alias] = $asserterClass;
 
 		return $this;
+	}
+
+	public function getAliases()
+	{
+		return $this->aliases;
 	}
 
 	public function resetAliases()

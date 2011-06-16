@@ -55,35 +55,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetLabel()
-	{
-		$generator = new asserter\generator($this);
-
-		$asserter = new atoum\asserters\adapter($generator);
-
-		$asserter->setWith($adapter = new atoum\test\adapter());
-
-		$this->assert
-			->array($generator->getLabels())->isEmpty()
-			->object($generator->setLabel($label = uniqid(), $asserter))->isIdenticalTo($generator)
-			->array($generator->getLabels())->isEqualTo(array($label => $asserter))
-			->object($generator->{$label})->isNotIdenticalTo($asserter)
-			->object($generator->{$label}->getAdapter())->isIdenticalTo($adapter)
-			->exception(function() use ($generator, $label, $asserter) {
-						$generator->setLabel($label, $asserter);
-					}
-				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Label \'' . $label . '\' is already defined')
-			->exception(function() use ($generator, $asserter) {
-						$generator->setLabel('adapter', $asserter);
-					}
-				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Unable to use \'adapter\' as label because there is an asserter with this name')
-		;
-	}
-
 	public function test__call()
 	{
 		$generator = new asserter\generator($this, $locale = new atoum\locale());

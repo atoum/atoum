@@ -24,13 +24,13 @@ class variable extends atoum\asserter
 		return ($this->isSet === true);
 	}
 
-	public function setWith($value, $label = null)
+	public function setWith($value)
 	{
 		$this->value = $value;
 		$this->isSet = true;
 		$this->isSetByReference = false;
 
-		return $this->setLabel($label);
+		return $this;
 	}
 
 	public function setByReferenceWith(& $value)

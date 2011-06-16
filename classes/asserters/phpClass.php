@@ -52,7 +52,7 @@ class phpClass extends atoum\asserter
 		return ($this->class === null ? null : $this->class->getName());
 	}
 
-	public function setWith($class, $label = null)
+	public function setWith($class)
 	{
 		try
 		{
@@ -65,7 +65,7 @@ class phpClass extends atoum\asserter
 
 		$this->pass();
 
-		return $this->setLabel($label);
+		return $this;
 	}
 
 	public function hasParent($parent, $failMessage = null)

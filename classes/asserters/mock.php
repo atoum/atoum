@@ -19,7 +19,7 @@ class mock extends atoum\asserter
 		return $this;
 	}
 
-	public function setWith($mock, $label = null)
+	public function setWith($mock)
 	{
 		$this->mock = $mock;
 
@@ -32,7 +32,7 @@ class mock extends atoum\asserter
 			$this->pass();
 		}
 
-		return $this->setLabel($label);
+		return $this;
 	}
 
 	public function getMock()
