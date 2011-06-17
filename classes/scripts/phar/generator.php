@@ -177,7 +177,12 @@ class generator extends atoum\script
 
 		parent::run($arguments);
 
-		return $this->generate();
+		if ($this->help === false)
+		{
+			$this->generate();
+		}
+
+		return $this;
 	}
 
 	public function help()
@@ -193,6 +198,8 @@ class generator extends atoum\script
 		);
 
 		$this->writeLabels($options);
+
+		$this->help = true;
 
 		return $this;
 	}
