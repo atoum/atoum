@@ -151,6 +151,8 @@ class generator extends atoum\script
 
 	public function run(array $arguments = array())
 	{
+		$this->help = false;
+
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)

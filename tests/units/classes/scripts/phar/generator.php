@@ -582,34 +582,34 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->run())->isIdenticalTo($generator)
 			->mock($phar)
-			->call('__construct', array(
-					$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null
-				)
-			)
-			->call('setMetadata', array(
-					array(
-						'version' => atoum\version,
-						'author' => atoum\author,
-						'support' => atoum\mail,
-						'repository' => atoum\repository,
-						'description' => $description,
-						'licence' => $licence
+				->call('__construct', array(
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null
 					)
 				)
-			)
-			->call('setStub', array($stub, null))
-			->call('buildFromIterator', array(
-					$fileIterator,
-					$generator->getOriginDirectory()
+				->call('setMetadata', array(
+						array(
+							'version' => atoum\version,
+							'author' => atoum\author,
+							'support' => atoum\mail,
+							'repository' => atoum\repository,
+							'description' => $description,
+							'licence' => $licence
+						)
+					)
 				)
-			)
-			->call('setSignatureAlgorithm', array(
-					\phar::SHA1,
-					null
+				->call('setStub', array($stub, null))
+				->call('buildFromIterator', array(
+						$fileIterator,
+						$generator->getOriginDirectory()
+					)
 				)
-			)
+				->call('setSignatureAlgorithm', array(
+						\phar::SHA1,
+						null
+					)
+				)
 			->mock($fileIterator)
-			->call('__construct', array($generator->getOriginDirectory(), null))
+				->call('__construct', array($generator->getOriginDirectory(), null))
 		;
 
 		$superglobals = new atoum\superglobals();
@@ -643,10 +643,10 @@ class generator extends atoum\test
 		$this->assert
 			->object($generator->run())->isIdenticalTo($generator)
 			->mock($stdout)
-			->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
-			->call('write', array($generator->getLocale()->_('Available options are:') . PHP_EOL))
-			->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL))
-			->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL))
+				->call('write', array(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL))
+				->call('write', array($generator->getLocale()->_('Available options are:') . PHP_EOL))
+				->call('write', array('                    -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL))
+				->call('write', array('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL))
 		;
 
 		$generator->setPharInjector(function($name) use (& $phar) {
@@ -667,34 +667,34 @@ class generator extends atoum\test
 			->object($generator->run(array('-d', $directory = uniqid())))->isIdenticalTo($generator)
 			->string($generator->getDestinationDirectory())->isEqualTo($directory)
 			->mock($phar)
-			->call('__construct', array(
-					$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null
-				)
-			)
-			->call('setMetadata', array(
-				array(
-					'version' => atoum\version,
-					'author' => atoum\author,
-					'support' => atoum\mail,
-					'repository' => atoum\repository,
-					'description' => $description,
-					'licence' => $licence
+				->call('__construct', array(
+						$generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null
 					)
 				)
-			)
-			->call('setStub', array($stub, null))
-			->call('buildFromIterator', array(
-					$fileIterator,
-					$generator->getOriginDirectory()
+				->call('setMetadata', array(
+					array(
+						'version' => atoum\version,
+						'author' => atoum\author,
+						'support' => atoum\mail,
+						'repository' => atoum\repository,
+						'description' => $description,
+						'licence' => $licence
+						)
+					)
 				)
-			)
-			->call('setSignatureAlgorithm', array(
-					\phar::SHA1,
-					null
+				->call('setStub', array($stub, null))
+				->call('buildFromIterator', array(
+						$fileIterator,
+						$generator->getOriginDirectory()
+					)
 				)
-			)
+				->call('setSignatureAlgorithm', array(
+						\phar::SHA1,
+						null
+					)
+				)
 			->mock($fileIterator)
-			->call('__construct', array($generator->getOriginDirectory(), null))
+				->call('__construct', array($generator->getOriginDirectory(), null))
 		;
 	}
 }
