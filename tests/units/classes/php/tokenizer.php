@@ -111,9 +111,6 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isIdenticalTo($tokenizer)
 			->castToString($iterator = $tokenizer->getIterator())->isEqualTo($php)
 			->sizeOf($iterator)->isEqualTo(12)
-		;
-
-		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; class bar {} ?>'))->isIdenticalTo($tokenizer)
 			->castToString($iterator = $tokenizer->getIterator())->isEqualTo($php)
 			->sizeOf($iterator = $tokenizer->getIterator())->isEqualTo(14)
@@ -152,6 +149,34 @@ class tokenizer extends atoum\test
 			->castTostring($namespaceIterator->end()->current())->isEqualTo(' ')
 			->object($namespaceIterator->current()->getParent())->isIdenticalTo($namespaceIterator)
 			->boolean($namespaceIterator->next()->valid())->isFalse()
+			->castTostring($iterator->end()->current())->isEqualTo('?>')
+			->object($iterator->current()->getParent())->isIdenticalTo($iterator)
+			->boolean($iterator->next()->valid())->isFalse()
+		;
+
+		$this->startCase('Tokenizing a single class');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo {} ?>'))->isIdenticalTo($tokenizer)
+			->castToString($iterator = $tokenizer->getIterator())->isEqualTo($php)
+			->sizeOf($iterator)->isEqualTo(9)
+			->castTostring($iterator->current())->isEqualTo('<?php ')
+			->object($iterator->current()->getParent())->isIdenticalTo($iterator)
+			->castTostring($iterator->next()->current())->isEqualTo('class')
+			->object($classIterator = $iterator->getValue())->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterator')
+			->boolean($classIterator->valid())->isTrue()
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->castTostring($classIterator->next()->current())->isEqualTo(' ')
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->castTostring($classIterator->next()->current())->isEqualTo('foo')
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->castTostring($classIterator->next()->current())->isEqualTo(' ')
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->castTostring($classIterator->next()->current())->isEqualTo('{')
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->castTostring($classIterator->next()->current())->isEqualTo('}')
+			->object($classIterator->current()->getParent())->isIdenticalTo($classIterator)
+			->boolean($classIterator->next()->valid())->isFalse()
 			->castTostring($iterator->end()->current())->isEqualTo('?>')
 			->object($iterator->current()->getParent())->isIdenticalTo($iterator)
 			->boolean($iterator->next()->valid())->isFalse()
