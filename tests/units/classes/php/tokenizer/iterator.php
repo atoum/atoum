@@ -30,7 +30,6 @@ class iterator extends atoum\test
 			->boolean($iterator->valid())->isFalse()
 			->variable($iterator->current())->isNull()
 			->variable($iterator->key())->isNull()
-			->array($iterator->getClasses())->isEmpty()
 		;
 	}
 
@@ -742,23 +741,6 @@ class iterator extends atoum\test
 
 		$this->assert
 			->object($iterator->current())->isIdenticalTo($token1)
-		;
-	}
-
-	public function testAppendClass()
-	{
-		$iterator = new tokenizer\iterator();
-
-		$classIterator = new tokenizer\iterator();
-		$classIterator
-			->append($token1 = new tokenizer\token(uniqid()))
-			->append($token2 = new tokenizer\token(uniqid()))
-		;
-
-		$this->assert
-			->object($iterator->appendClass($classIterator))->isIdenticalTo($iterator)
-			->array($iterator->getClasses())->isEqualTo(array($classIterator))
-			->castToString($iterator)->isEqualTo($token1 . $token2)
 		;
 	}
 

@@ -10,7 +10,7 @@ class string extends variable
 
 	public function __toString()
 	{
-		return (is_string($this->value) === false ? parent::getTypeOf($this->value) : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
+		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
 	}
 
 

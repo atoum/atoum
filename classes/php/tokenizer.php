@@ -13,7 +13,7 @@ class tokenizer implements \iteratorAggregate
 
 	public function __construct()
 	{
-		$this->iterator = new tokenizer\iterator();
+		$this->iterator = new tokenizer\iterators\phpScript();
 	}
 
 	public function getIterator()
@@ -49,7 +49,7 @@ class tokenizer implements \iteratorAggregate
 
 					if ($currentNamespace === null)
 					{
-						$currentIterator->append($currentNamespace = new tokenizer\iterator());
+						$currentIterator->appendNamespace($currentNamespace = new tokenizer\iterators\phpNamespace());
 						$currentIterator = $currentNamespace;
 					}
 					break;
@@ -57,7 +57,7 @@ class tokenizer implements \iteratorAggregate
 				case T_ABSTRACT:
 					if ($currentClass === null)
 					{
-						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator->appendClass($currentClass = new tokenizer\iterators\phpClass());
 						$currentIterator = $currentClass;
 					}
 					break;
@@ -65,7 +65,7 @@ class tokenizer implements \iteratorAggregate
 				case T_FINAL:
 					if ($currentClass === null)
 					{
-						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator->appendClass($currentClass = new tokenizer\iterators\phpClass());
 						$currentIterator = $currentClass;
 					}
 					break;
@@ -73,7 +73,7 @@ class tokenizer implements \iteratorAggregate
 				case T_CLASS:
 					if ($currentClass === null)
 					{
-						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator->appendClass($currentClass = new tokenizer\iterators\phpClass());
 						$currentIterator = $currentClass;
 					}
 					break;
@@ -81,7 +81,7 @@ class tokenizer implements \iteratorAggregate
 				case T_VARIABLE:
 					if ($currentClass !== null && $currentProperty === null)
 					{
-						$currentIterator->append($currentProperty = new tokenizer\iterator());
+						$currentIterator->appendProperty($currentProperty = new tokenizer\iterators\phpProperty());
 						$currentIterator = $currentProperty;
 					}
 					break;
@@ -89,7 +89,7 @@ class tokenizer implements \iteratorAggregate
 				case T_FUNCTION:
 					if ($currentClass !== null && $currentMethod === null)
 					{
-						$currentIterator->append($currentMethod = new tokenizer\iterator());
+						$currentIterator->appendMethod($currentMethod = new tokenizer\iterators\phpMethod());
 						$currentIterator = $currentMethod;
 					}
 					break;
@@ -101,12 +101,12 @@ class tokenizer implements \iteratorAggregate
 					{
 						if (isset($tokens[$key + 1]) === true && $tokens[$key + 1][0] === T_WHITESPACE && isset($tokens[$key + 2]) === true && $tokens[$key + 2][0] === T_FUNCTION)
 						{
-							$currentIterator->append($currentMethod = new tokenizer\iterator());
+							$currentIterator->appendMethod($currentMethod = new tokenizer\iterators\phpMethod());
 							$currentIterator = $currentMethod;
 						}
 						else
 						{
-							$currentIterator->append($currentProperty = new tokenizer\iterator());
+							$currentIterator->appendProperty($currentProperty = new tokenizer\iterators\phpProperty());
 							$currentIterator = $currentProperty;
 						}
 					}
