@@ -12,6 +12,7 @@ class iterator extends iterator\value
 	protected $key = null;
 	protected $size = 0;
 	protected $values = array();
+	protected $classes = array();
 	protected $skipedValues = array();
 
 	public function __toString()
@@ -188,6 +189,11 @@ class iterator extends iterator\value
 		return $this;
 	}
 
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+
 	public function append(iterator\value $value)
 	{
 		if ($value->parent !== null)
@@ -224,6 +230,13 @@ class iterator extends iterator\value
 
 
 		return $this;
+	}
+
+	public function appendClass(iterator\value $value)
+	{
+		$this->classes[] = $value;
+
+		return $this->append($value);
 	}
 
 	public function count()

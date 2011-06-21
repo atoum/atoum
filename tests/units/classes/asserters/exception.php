@@ -41,7 +41,7 @@ class exception extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($value)))
+				->hasMessage(sprintf($this->getLocale()->_('%s is not an exception'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -51,7 +51,7 @@ class exception extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($this->getLocale()->_('%s is not an exception'), $asserter->toString($value))
+						'fail' => sprintf($this->getLocale()->_('%s is not an exception'), $asserter->getTypeOf($value))
 					)
 				)
 			)

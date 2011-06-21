@@ -39,7 +39,7 @@ class object extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -49,7 +49,7 @@ class object extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->toString($value))
+						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
 					)
 				)
 			)
@@ -168,6 +168,26 @@ class object extends atoum\test
 		$this->assert
 			->integer($score->getFailNumber())->isEqualTo(0)
 			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testCastedToString()
+	{
+		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->toString();
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Object is undefined')
+		;
+
+		$asserter->setWith($this);
+
+		$this->assert
+			->object($asserter->toString())->isInstanceOf('\mageekguy\atoum\asserters\castToString')
 		;
 	}
 }

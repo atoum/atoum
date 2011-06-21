@@ -33,6 +33,24 @@ class string extends atoum\test
 		;
 	}
 
+	public function test__toString()
+	{
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$asserter->setWith($value = uniqid());
+
+		$this->assert
+			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . $value . '\'')
+		;
+
+		$asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010");
+
+		$this->assert
+			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
+		;
+	}
+
+
 	public function testSetWith()
 	{
 		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
@@ -40,7 +58,7 @@ class string extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a string'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -50,7 +68,7 @@ class string extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a string'), $asserter->toString($value))
+						'fail' => sprintf($test->getLocale()->_('%s is not a string'), $asserter->getTypeOf($value))
 					)
 				)
 			)
@@ -81,23 +99,6 @@ class string extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->string($asserter->getValue())->isEqualTo($value)
 			->string($asserter->getCharlist())->isEqualTo($charlist)
-		;
-	}
-
-	public function testToString()
-	{
-		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$asserter->setWith($value = uniqid());
-
-		$this->assert
-			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . $value . '\'')
-		;
-
-		$asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010");
-
-		$this->assert
-			->string((string) $asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
 		;
 	}
 

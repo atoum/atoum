@@ -39,7 +39,7 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an array'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -49,7 +49,7 @@ class phpArray extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an array'), $asserter->toString($value))
+						'fail' => sprintf($test->getLocale()->_('%s is not an array'), $asserter->getTypeOf($value))
 					)
 				)
 			)
@@ -232,7 +232,7 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->contain($notInArray = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray)))
+				->hasMessage(sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->getTypeOf($notInArray)))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -243,7 +243,7 @@ class phpArray extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::contain()',
-						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->toString($notInArray))
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->getTypeOf($notInArray))
 					)
 				)
 			)

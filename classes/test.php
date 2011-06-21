@@ -110,6 +110,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->runTestMethods = $this->getTestMethods();
 	}
 
+	public function __toString()
+	{
+		return $this->getClass();
+	}
+
 	public function __get($property)
 	{
 		switch ($property)

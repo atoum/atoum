@@ -25,7 +25,7 @@ class mock extends atoum\asserter
 
 		if ($this->mock instanceof \mageekguy\atoum\mock\aggregator === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a mock'), $this->toString($this->mock)));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a mock'), $this->getTypeOf($this->mock)));
 		}
 		else
 		{

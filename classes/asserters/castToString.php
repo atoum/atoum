@@ -14,7 +14,7 @@ class castToString extends asserters\string
 		{
 			if (self::isObject($value) === false)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this->toString($value)));
+				$this->fail(sprintf($this->getLocale()->_('%s is not an object'), $this->getTypeOf($value)));
 			}
 			else
 			{

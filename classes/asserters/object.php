@@ -42,7 +42,7 @@ class object extends asserters\variable
 			}
 		}
 
-		$this->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->toString($value)));
+		$this->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
 
 		return $this;
 	}
@@ -63,7 +63,7 @@ class object extends asserters\variable
 
 	public function isEmpty($failMessage = null)
 	{
-		if (sizeof($this->value) == 0)
+		if (sizeof($this->valueIsSet()->value) == 0)
 		{
 			$this->pass();
 		}
@@ -73,6 +73,11 @@ class object extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function toString()
+	{
+		return $this->generator->castToString($this->valueIsSet()->value);
 	}
 
 	protected function valueIsSet($message = 'Object is undefined')

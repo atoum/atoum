@@ -114,7 +114,7 @@ class boolean extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
@@ -127,7 +127,7 @@ class boolean extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->toString($value))
+						'fail' => sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->getTypeOf($value))
 					)
 				)
 			)

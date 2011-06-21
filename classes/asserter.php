@@ -47,7 +47,7 @@ abstract class asserter
 		return $this->generator;
 	}
 
-	public function toString($mixed)
+	public function getTypeOf($mixed)
 	{
 		switch (true)
 		{

@@ -155,7 +155,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualValue)) . PHP_EOL . $diff->setReference($notEqualValue)->setData($asserter->getValue()))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setReference($notEqualValue)->setData($asserter->getValue()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -166,7 +166,7 @@ class variable extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::isEqualTo()',
-						'fail' => $failMessage = sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString($notEqualValue)) . PHP_EOL . $diff
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff
 					)
 				)
 			)
@@ -242,7 +242,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, $value) { $asserter->isNotEqualTo($value); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is equal to %s'), $asserter, $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is equal to %s'), $asserter, $asserter->getTypeOf($value)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -283,7 +283,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isIdenticalTo($notIdenticalValue = (string) $value); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->toString($notIdenticalValue)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -324,7 +324,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isNotIdenticalTo($value); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is identical to %s'), $asserter, $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is identical to %s'), $asserter, $asserter->getTypeOf($value)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -489,7 +489,7 @@ class variable extends atoum\test
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->toString($notReference)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->getTypeOf($notReference)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -515,7 +515,7 @@ class variable extends atoum\test
 					}
 				)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->toString($notReference)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->getTypeOf($notReference)))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;

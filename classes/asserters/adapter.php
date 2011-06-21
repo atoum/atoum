@@ -17,7 +17,7 @@ class adapter extends atoum\asserter
 
 		if ($this->adapter instanceof \mageekguy\atoum\test\adapter === false)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->toString($this->adapter)));
+			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->getTypeOf($this->adapter)));
 		}
 		else
 		{

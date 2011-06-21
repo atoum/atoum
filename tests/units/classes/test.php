@@ -110,6 +110,11 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function test__toString()
+		{
+			$this->assert->castToString($this)->isEqualTo(__CLASS__);
+		}
+
 		public function test__get()
 		{
 			$test = new emptyTest();

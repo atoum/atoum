@@ -40,7 +40,7 @@ class integer extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an integer'), $asserter->toString($value)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not an integer'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -50,7 +50,7 @@ class integer extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an integer'), $asserter->toString($value))
+						'fail' => sprintf($test->getLocale()->_('%s is not an integer'), $asserter->getTypeOf($value))
 					)
 				)
 			)
@@ -90,7 +90,7 @@ class integer extends atoum\test
 					}
 			)
 				->isInstanceOf('\mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $value)) . PHP_EOL . $diff)
+				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value)) . PHP_EOL . $diff)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -101,7 +101,7 @@ class integer extends atoum\test
 							'file' => __FILE__,
 							'line' => $line,
 							'asserter' => get_class($asserter) . '::isEqualTo()',
-							'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->toString(- $value) . PHP_EOL . $diff)
+							'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value) . PHP_EOL . $diff)
 						)
 					)
 				)

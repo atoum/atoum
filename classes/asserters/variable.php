@@ -16,7 +16,7 @@ class variable extends atoum\asserter
 
 	public function __toString()
 	{
-		return $this->toString($this->value);
+		return $this->getTypeOf($this->value);
 	}
 
 	public function wasSet()
@@ -74,7 +74,7 @@ class variable extends atoum\asserter
 			$diff = new diffs\variable();
 
 			$this->fail(
-				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->toString($value))) .
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->getTypeOf($value))) .
 				PHP_EOL .
 				$diff->setReference($value)->setData($this->value)
 			);
@@ -93,7 +93,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->toString($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -109,7 +109,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->toString($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -125,7 +125,7 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->toString($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is identical to %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -174,7 +174,7 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->getTypeOf($reference)));
 			}
 		}
 		else
@@ -190,7 +190,7 @@ class variable extends atoum\asserter
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->toString($reference)));
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a reference to %s'), $this, $this->getTypeOf($reference)));
 			}
 		}
 

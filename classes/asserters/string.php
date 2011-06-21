@@ -8,6 +8,12 @@ class string extends variable
 {
 	protected $charlist = null;
 
+	public function __toString()
+	{
+		return (is_string($this->value) === false ? parent::getTypeOf($this->value) : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
+	}
+
+
 	public function getCharlist()
 	{
 		return $this->charlist;
@@ -32,11 +38,6 @@ class string extends variable
 		}
 
 		return $this;
-	}
-
-	public function toString($mixed)
-	{
-		return (is_string($mixed) === false ? parent::toString($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($mixed), addcslashes($mixed, $this->charlist)));
 	}
 
 	public function isEmpty($failMessage = null)
