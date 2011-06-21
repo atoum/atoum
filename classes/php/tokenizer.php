@@ -32,9 +32,11 @@ class tokenizer implements \iteratorAggregate
 	{
 		$currentNamespace = null;
 		$currentClass = null;
+		$currentProperty = null;
+		$currentMethod = null;
 		$currentIterator = $this->iterator;
 
-		foreach (token_get_all($string) as $token)
+		foreach ($tokens = token_get_all($string) as $key => $token)
 		{
 			switch ($token[0])
 			{
@@ -52,11 +54,70 @@ class tokenizer implements \iteratorAggregate
 					}
 					break;
 
+				case T_ABSTRACT:
+					if ($currentClass === null)
+					{
+						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator = $currentClass;
+					}
+					break;
+
+				case T_FINAL:
+					if ($currentClass === null)
+					{
+						$currentIterator->append($currentClass = new tokenizer\iterator());
+						$currentIterator = $currentClass;
+					}
+					break;
+
 				case T_CLASS:
 					if ($currentClass === null)
 					{
 						$currentIterator->append($currentClass = new tokenizer\iterator());
 						$currentIterator = $currentClass;
+					}
+					break;
+
+				case T_VARIABLE:
+					if ($currentClass !== null && $currentProperty === null)
+					{
+						$currentIterator->append($currentProperty = new tokenizer\iterator());
+						$currentIterator = $currentProperty;
+					}
+					break;
+
+				case T_FUNCTION:
+					if ($currentClass !== null && $currentMethod === null)
+					{
+						$currentIterator->append($currentMethod = new tokenizer\iterator());
+						$currentIterator = $currentMethod;
+					}
+					break;
+
+				case T_PUBLIC:
+				case T_PRIVATE:
+				case T_PROTECTED:
+					if ($currentClass !== null)
+					{
+						if (isset($tokens[$key + 1]) === true && $tokens[$key + 1][0] === T_WHITESPACE && isset($tokens[$key + 2]) === true && $tokens[$key + 2][0] === T_FUNCTION)
+						{
+							$currentIterator->append($currentMethod = new tokenizer\iterator());
+							$currentIterator = $currentMethod;
+						}
+						else
+						{
+							$currentIterator->append($currentProperty = new tokenizer\iterator());
+							$currentIterator = $currentProperty;
+						}
+					}
+					break;
+
+				case ';':
+				case ',':
+					if ($currentProperty !== null)
+					{
+						$currentIterator = $currentProperty->getParent();
+						$currentProperty = null;
 					}
 					break;
 
@@ -80,7 +141,12 @@ class tokenizer implements \iteratorAggregate
 			switch ($token[0])
 			{
 				case '}':
-					if ($currentClass !== null)
+					if ($currentMethod !== null)
+					{
+						$currentIterator = $currentMethod->getParent();
+						$currentMethod = null;
+					}
+					else if ($currentClass !== null)
 					{
 						$currentIterator = $currentClass->getParent();
 						$currentClass = null;
