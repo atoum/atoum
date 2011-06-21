@@ -6,7 +6,8 @@ use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
 	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\tests\functional\selenium
 ;
 
 abstract class test implements observable, adapter\aggregator, \countable
@@ -304,6 +305,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->currentMethod;
 	}
 
+	public function getHtml($url)
+	{
+		return new selenium\html($url);
+	}
+	
 	public function count()
 	{
 		return sizeof($this->runTestMethods);

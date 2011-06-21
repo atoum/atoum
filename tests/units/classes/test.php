@@ -336,6 +336,14 @@ namespace mageekguy\atoum\tests\units
 				->variable($test->getCurrentMethod())->isNull()
 			;
 		}
+		
+		public function testGetHtml()
+		{
+			$test = new emptyTest();
+			
+			$this->assert
+				->object($test->getHtml('http://www.google.fr'))->isInstanceOf('\mageekguy\atoum\tests\functional\selenium\html');
+		}
 
 		public function testCount()
 		{
