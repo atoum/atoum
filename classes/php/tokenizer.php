@@ -119,8 +119,20 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case ';':
-				case ',':
 					if ($currentProperty !== null)
+					{
+						$currentIterator = $currentProperty->getParent();
+						$currentProperty = null;
+					}
+					break;
+
+				case ',':
+					if ($currentArgument !== null)
+					{
+						$currentIterator = $currentArgument->getParent();
+						$currentArgument = null;
+					}
+					else if ($currentProperty !== null)
 					{
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;

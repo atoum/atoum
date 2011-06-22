@@ -741,6 +741,14 @@ class tokenizer extends atoum\test
 			->object($iterator->current()->getParent())->isIdenticalTo($iterator)
 			->boolean($iterator->next()->valid())->isFalse()
 		;
+
+		$this->startCase('Tokenizing single class with single explicit public method and several arguments');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo, $bar) {} } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($iterator = $tokenizer->getIterator())->isEqualTo($php)
+			->sizeOf($iterator)->isEqualTo(25)
+		;
 	}
 }
 
