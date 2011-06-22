@@ -8,7 +8,7 @@ use
 	\mageekguy\atoum\php\tokenizer\iterators
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once(__DIR__ . '/../../../../runner.php');
 
 class phpClass extends atoum\test
 {
@@ -28,7 +28,6 @@ class phpClass extends atoum\test
 			->array($iterator->getMethods())->isEmpty()
 		;
 	}
-
 
 	public function testAppendMethod()
 	{

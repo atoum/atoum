@@ -10,6 +10,19 @@ use
 
 class phpMethod extends tokenizer\iterator
 {
+	protected $arguments = array();
+
+	public function appendArgument(iterators\phpArgument $phpArgument)
+	{
+		$this->arguments[] = $phpArgument;
+
+		return $this->append($phpArgument);
+	}
+
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
 }
 
 ?>

@@ -262,11 +262,6 @@ class iterator extends iterator\value
 		return (current($this->values) ?: null);
 	}
 
-	public function getParent()
-	{
-		return $this->parent;
-	}
-
 	public function seek($key)
 	{
 		if ($key > sizeof($this) / 2)

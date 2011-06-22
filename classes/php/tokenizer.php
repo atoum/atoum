@@ -34,6 +34,7 @@ class tokenizer implements \iteratorAggregate
 		$currentClass = null;
 		$currentProperty = null;
 		$currentMethod = null;
+		$currentArgument = null;
 		$currentIterator = $this->iterator;
 
 		foreach ($tokens = token_get_all($string) as $key => $token)
@@ -79,7 +80,12 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_VARIABLE:
-					if ($currentClass !== null && $currentProperty === null)
+					if ($currentMethod !== null && $currentArgument === null)
+					{
+						$currentIterator->appendArgument($currentArgument = new tokenizer\iterators\phpArgument());
+						$currentIterator = $currentArgument;
+					}
+					else if ($currentClass !== null && $currentProperty === null)
 					{
 						$currentIterator->appendProperty($currentProperty = new tokenizer\iterators\phpProperty());
 						$currentIterator = $currentProperty;
@@ -118,6 +124,14 @@ class tokenizer implements \iteratorAggregate
 					{
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;
+					}
+					break;
+
+				case ')':
+					if ($currentArgument !== null)
+					{
+						$currentIterator = $currentArgument->getParent();
+						$currentArgument = null;
 					}
 					break;
 

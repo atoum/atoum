@@ -828,6 +828,30 @@ class iterator extends atoum\test
 		;
 	}
 
+	public function testGetRoot()
+	{
+		$childIterator = new tokenizer\iterator();
+
+		$this->assert
+			->variable($childIterator->getRoot())->isNull()
+		;
+
+		$parentIterator = new tokenizer\iterator();
+		$parentIterator->append($childIterator);
+
+		$this->assert
+			->object($childIterator->getRoot())->isIdenticalTo($parentIterator)
+		;
+
+		$grandFatherIterator = new tokenizer\iterator();
+		$grandFatherIterator->append($parentIterator);
+
+		$this->assert
+			->object($childIterator->getRoot())->isIdenticalTo($grandFatherIterator)
+			->object($parentIterator->getRoot())->isIdenticalTo($grandFatherIterator)
+		;
+	}
+
 	public function testSeek()
 	{
 		$iterator = new tokenizer\iterator();

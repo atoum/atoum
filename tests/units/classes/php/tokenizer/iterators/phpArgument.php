@@ -10,7 +10,7 @@ use
 
 require_once(__DIR__ . '/../../../../runner.php');
 
-class phpProperty extends atoum\test
+class phpArgument extends atoum\test
 {
 	public function testClass()
 	{
