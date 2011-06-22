@@ -18,6 +18,11 @@ class phpClass extends tokenizer\iterator
 		return $this->methods;
 	}
 
+	public function getMethod($index)
+	{
+		return (isset($this->methods[$index]) === false ? null : $this->methods[$index]);
+	}
+
 	public function appendMethod(iterators\phpMethod $phpMethod)
 	{
 		$this->methods[] = $phpMethod;
@@ -28,6 +33,11 @@ class phpClass extends tokenizer\iterator
 	public function getProperties()
 	{
 		return $this->properties;
+	}
+
+	public function getProperty($index)
+	{
+		return (isset($this->properties[$index]) === false ? null : $this->properties[$index]);
 	}
 
 	public function appendProperty(iterators\phpProperty $phpProperty)

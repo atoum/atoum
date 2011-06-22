@@ -23,6 +23,11 @@ class phpMethod extends tokenizer\iterator
 	{
 		return $this->arguments;
 	}
+
+	public function getArgument($index)
+	{
+		return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
+	}
 }
 
 ?>

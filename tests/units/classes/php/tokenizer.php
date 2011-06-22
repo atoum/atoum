@@ -748,6 +748,8 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo, $bar) {} } ?>'))->isIdenticalTo($tokenizer)
 			->castToString($iterator = $tokenizer->getIterator())->isEqualTo($php)
 			->sizeOf($iterator)->isEqualTo(25)
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(1))->isEqualTo('$bar')
 		;
 	}
 }
