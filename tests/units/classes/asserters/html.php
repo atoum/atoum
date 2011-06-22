@@ -6,7 +6,6 @@ use
 	\mageekguy\atoum,
 	\mageekguy\atoum\asserter,
 	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\mock,
 	\mageekguy\atoum\tools\diffs,
 	\mageekguy\atoum\tests\functional\selenium
 ;
@@ -60,12 +59,12 @@ class html extends atoum\test
 	public function testHasTitle()
 	{
 		$this->mock('\mageekguy\atoum\tests\functional\selenium\html');
-		$html = new mock\mageekguy\atoum\tests\functional\selenium\html('http://www.atoum.org');
+		$html = new atoum\mock\mageekguy\atoum\tests\functional\selenium\html('http://www.atoum.org');
 		$html->getMockController()->getTitle = 'Atoum website title';
-		
+
 		$asserter = new asserters\html(new asserter\generator($test = new self($score = new atoum\score())));
 		$asserter->setWith($html);
-		
+
 		$title = 'wrong title';
 
 		$diff = new diffs\variable();
