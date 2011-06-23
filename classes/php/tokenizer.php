@@ -200,6 +200,49 @@ class tokenizer implements \iteratorAggregate
 						$currentIterator = $currentDefaultValue;
 					}
 					break;
+
+				case T_ARRAY:
+					if ($currentDefaultValue !== null)
+					{
+						$this->appendCommentAndWhitespace($currentIterator, $tokens);
+
+						$tokens->next();
+
+						if ($tokens->valid() === true)
+						{
+							$token = $tokens->current();
+
+							if ($token[0] === '(')
+							{
+								$currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+								$stack = 1;
+
+								while ($stack > 0 && $tokens->valid() === true)
+								{
+									$tokens->next();
+
+									if ($tokens->valid() === true)
+									{
+										$token = $tokens->current();
+
+										if ($token[0] === '(')
+										{
+											$stack++;
+										}
+										else if ($token[0] === ')')
+										{
+											$stack--;
+										}
+
+										$currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+									}
+								}
+							}
+						}
+					}
+					break;
+
 			}
 		}
 
