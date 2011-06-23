@@ -125,6 +125,11 @@ class tokenizer implements \iteratorAggregate
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;
 					}
+					else if ($currentNamespace !== null)
+					{
+						$currentIterator = $currentNamespace->getParent();
+						$currentNamespace = null;
+					}
 					break;
 
 				case ',':

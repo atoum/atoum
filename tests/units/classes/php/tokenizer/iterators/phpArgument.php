@@ -19,6 +19,15 @@ class phpArgument extends atoum\test
 				->isSubClassOf('\mageekguy\atoum\php\tokenizer\iterator')
 		;
 	}
+
+	public function testGetDefaultValue()
+	{
+		$iterator = new iterators\phpArgument();
+
+		$this->assert
+			->variable($iterator->getDefaultValue())->isNull()
+		;
+	}
 }
 
 ?>

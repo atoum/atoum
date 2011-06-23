@@ -10,6 +10,10 @@ use
 
 class phpArgument extends tokenizer\iterator
 {
+	public function getDefaultValue()
+	{
+		return null;
+	}
 }
 
 ?>
