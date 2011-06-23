@@ -66,11 +66,6 @@ class score
 			throw new exceptions\runtime('Atoum version is already set');
 		}
 
-		if ($this->atoumVersion !== null)
-		{
-			throw new exceptions\runtime('Atoum version is already set');
-		}
-
 		$this->atoumVersion = (string) $version;
 
 		return $this;
