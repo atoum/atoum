@@ -36,9 +36,10 @@ class tokenizer implements \iteratorAggregate
 		$currentProperty = null;
 		$currentMethod = null;
 		$currentArgument = null;
+		$currentDefaultValue = null;
 		$currentIterator = $this->iterator;
 
-		foreach ($tokens = token_get_all($string) as $key => $token)
+		foreach ($tokens = new \arrayIterator(token_get_all($string)) as $key => $token)
 		{
 			switch ($token[0])
 			{
@@ -106,7 +107,7 @@ class tokenizer implements \iteratorAggregate
 				case T_PROTECTED:
 					if ($currentClass !== null)
 					{
-						if (isset($tokens[$key + 1]) === true && $tokens[$key + 1][0] === T_WHITESPACE && isset($tokens[$key + 2]) === true && $tokens[$key + 2][0] === T_FUNCTION)
+						if (self::nextTokenIs(T_FUNCTION, $tokens) === true)
 						{
 							$currentIterator->appendMethod($currentMethod = new iterators\phpMethod());
 							$currentIterator = $currentMethod;
@@ -133,7 +134,12 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case ',':
-					if ($currentArgument !== null)
+					if ($currentDefaultValue !== null)
+					{
+						$currentIterator = $currentDefaultValue->getParent();
+						$currentDefaultValue = null;
+					}
+					else if ($currentArgument !== null)
 					{
 						$currentIterator = $currentArgument->getParent();
 						$currentArgument = null;
@@ -184,10 +190,50 @@ class tokenizer implements \iteratorAggregate
 						$currentClass = null;
 					}
 					break;
+
+				case '=':
+					if ($currentArgument !== null)
+					{
+						$this->appendCommentAndWhitespace($currentIterator, $tokens);
+
+						$currentIterator->appendDefaultValue($currentDefaultValue = new iterators\phpDefaultValue());
+						$currentIterator = $currentDefaultValue;
+					}
+					break;
 			}
 		}
 
 		return $this;
+	}
+
+	protected static function appendCommentAndWhitespace(tokenizer\iterator $iterator, \arrayIterator $tokens)
+	{
+		$key = $tokens->key();
+
+		while (isset($tokens[$key + 1]) === true && ($tokens[$key + 1][0] === T_WHITESPACE || $tokens[$key + 1][0] === T_COMMENT))
+		{
+			$tokens->next();
+
+			$token = $tokens->current();
+
+			$iterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+			$key = $tokens->key();
+		}
+	}
+
+	protected static function nextTokenIs($tokenName, \arrayIterator $tokens)
+	{
+		$key = $tokens->key() + 1;
+
+		while (isset($tokens[$key]) === true && ($tokens[$key] === T_WHITESPACE || $tokens[$key] === T_COMMENT))
+		{
+			$key++;
+		}
+
+		$key++;
+
+		return (isset($tokens[$key]) === true && $tokens[$key][0] === $tokenName);
 	}
 }
 

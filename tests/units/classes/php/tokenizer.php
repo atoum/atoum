@@ -222,7 +222,32 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo = \'foo\') {}')
 			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo = \'foo\'')
 			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('\'foo\'')
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo=\'foo\') {} } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo=\'foo\') {} }')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo=\'foo\') {}')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo=\'foo\'')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('\'foo\'')
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo= /* Comment */ \'foo\') {} } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo= /* Comment */ \'foo\') {} }')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo= /* Comment */ \'foo\') {}')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo= /* Comment */ \'foo\'')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('\'foo\'')
 		;
+
+		/*
+		$this->startCase('Tokenizing single class with single explicit public method and one argument with array as default value');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo = \'foo\') {} } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo = \'foo\') {} }')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo = \'foo\') {}')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo = \'foo\'')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('\'foo\'')
+		;
+		*/
 
 		$this->startCase('Tokenizing single class with single explicit public method and several arguments');
 

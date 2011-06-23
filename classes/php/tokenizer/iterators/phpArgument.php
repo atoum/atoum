@@ -10,9 +10,18 @@ use
 
 class phpArgument extends tokenizer\iterator
 {
+	protected $defaultValue = null;
+
 	public function getDefaultValue()
 	{
-		return null;
+		return $this->defaultValue;
+	}
+
+	public function appendDefaultValue(iterators\phpDefaultValue $phpDefaultValue)
+	{
+		$this->defaultValue = $phpDefaultValue;
+
+		return $this->append($phpDefaultValue);
 	}
 }
 
