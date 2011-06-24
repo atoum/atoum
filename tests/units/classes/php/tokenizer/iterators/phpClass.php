@@ -25,7 +25,25 @@ class phpClass extends atoum\test
 		$iterator = new iterators\phpClass();
 
 		$this->assert
+			->array($iterator->getConstants())->isEmpty()
 			->array($iterator->getMethods())->isEmpty()
+		;
+	}
+
+	public function testAppendConstant()
+	{
+		$iterator = new iterators\phpClass();
+
+		$constantIterator = new iterators\phpConstant();
+		$constantIterator
+			->append($token1 = new tokenizer\token(uniqid()))
+			->append($token2 = new tokenizer\token(uniqid()))
+		;
+
+		$this->assert
+			->object($iterator->appendConstant($constantIterator))->isIdenticalTo($iterator)
+			->array($iterator->getConstants())->isEqualTo(array($constantIterator))
+			->castToString($iterator)->isEqualTo($token1 . $token2)
 		;
 	}
 

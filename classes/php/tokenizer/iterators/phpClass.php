@@ -11,7 +11,25 @@ use
 class phpClass extends tokenizer\iterator
 {
 	protected $methods = array();
+	protected $constants = array();
 	protected $properties = array();
+
+	public function getConstant($index)
+	{
+		return (isset($this->constants[$index]) === false ? null : $this->constants[$index]);
+	}
+
+	public function getConstants()
+	{
+		return $this->constants;
+	}
+
+	public function appendConstant(iterators\phpConstant $phpConstant)
+	{
+		$this->constants[] = $phpConstant;
+
+		return $this->append($phpConstant);
+	}
 
 	public function getMethods()
 	{

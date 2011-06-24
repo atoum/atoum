@@ -31,11 +31,12 @@ class tokenizer implements \iteratorAggregate
 
 	public function tokenize($string)
 	{
-		$currentNamespace = null;
 		$currentClass = null;
 		$currentProperty = null;
 		$currentMethod = null;
 		$currentArgument = null;
+		$currentConstant = null;
+		$currentNamespace = null;
 		$currentDefaultValue = null;
 		$currentIterator = $this->iterator;
 
@@ -94,6 +95,14 @@ class tokenizer implements \iteratorAggregate
 					}
 					break;
 
+				case T_CONST:
+					if ($currentClass !== null)
+					{
+						$currentIterator->appendConstant($currentConstant = new iterators\phpConstant());
+						$currentIterator = $currentConstant;
+					}
+					break;
+
 				case T_FUNCTION:
 					if ($currentClass !== null && $currentMethod === null)
 					{
@@ -121,7 +130,12 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case ';':
-					if ($currentProperty !== null)
+					if ($currentConstant !== null)
+					{
+						$currentIterator = $currentConstant->getParent();
+						$currentConstant = null;
+					}
+					else if ($currentProperty !== null)
 					{
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;

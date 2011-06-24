@@ -95,6 +95,16 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo {}')
 		;
 
+		$this->startCase('Tokenizing a single class with a single constant');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { const bar = \'bar\'; } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { const bar = \'bar\'; }')
+			->castToString($tokenizer->getIterator()->getClass(0)->getConstant(0))->isEqualTo('const bar = \'bar\'')
+		;
+
+
 		$this->startCase('Tokenizing a single abstract class');
 
 		$this->assert
