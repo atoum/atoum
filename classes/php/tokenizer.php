@@ -194,7 +194,7 @@ class tokenizer implements \iteratorAggregate
 				case '=':
 					if ($currentArgument !== null)
 					{
-						$this->appendCommentAndWhitespace($currentIterator, $tokens);
+						self::appendCommentAndWhitespace($currentIterator, $tokens);
 
 						$currentIterator->appendDefaultValue($currentDefaultValue = new iterators\phpDefaultValue());
 						$currentIterator = $currentDefaultValue;
@@ -202,47 +202,8 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_ARRAY:
-					if ($currentDefaultValue !== null)
-					{
-						$this->appendCommentAndWhitespace($currentIterator, $tokens);
-
-						$tokens->next();
-
-						if ($tokens->valid() === true)
-						{
-							$token = $tokens->current();
-
-							if ($token[0] === '(')
-							{
-								$currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-
-								$stack = 1;
-
-								while ($stack > 0 && $tokens->valid() === true)
-								{
-									$tokens->next();
-
-									if ($tokens->valid() === true)
-									{
-										$token = $tokens->current();
-
-										if ($token[0] === '(')
-										{
-											$stack++;
-										}
-										else if ($token[0] === ')')
-										{
-											$stack--;
-										}
-
-										$currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-									}
-								}
-							}
-						}
-					}
+					self::appendArray($currentIterator, $tokens);
 					break;
-
 			}
 		}
 
@@ -277,6 +238,46 @@ class tokenizer implements \iteratorAggregate
 		$key++;
 
 		return (isset($tokens[$key]) === true && $tokens[$key][0] === $tokenName);
+	}
+
+	protected static function appendArray(tokenizer\iterator $iterator, \arrayIterator $tokens)
+	{
+		self::appendCommentAndWhitespace($iterator, $tokens);
+
+		$tokens->next();
+
+		if ($tokens->valid() === true)
+		{
+			$token = $tokens->current();
+
+			if ($token[0] === '(')
+			{
+				$iterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+				$stack = 1;
+
+				while ($stack > 0 && $tokens->valid() === true)
+				{
+					$tokens->next();
+
+					if ($tokens->valid() === true)
+					{
+						$token = $tokens->current();
+
+						if ($token[0] === '(')
+						{
+							$stack++;
+						}
+						else if ($token[0] === ')')
+						{
+							$stack--;
+						}
+
+						$iterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+					}
+				}
+			}
+		}
 	}
 }
 
