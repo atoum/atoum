@@ -93,11 +93,8 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_CONST:
-					if ($currentClass !== null)
-					{
-						$currentIterator->appendConstant($currentConstant = new iterators\phpConstant());
-						$currentIterator = $currentConstant;
-					}
+					$currentIterator->appendConstant($currentConstant = new iterators\phpConstant());
+					$currentIterator = $currentConstant;
 					break;
 
 				case T_FUNCTION:
@@ -137,11 +134,11 @@ class tokenizer implements \iteratorAggregate
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;
 					}
-					else if ($currentNamespace !== null)
-					{
-						$currentIterator = $currentNamespace->getParent();
-						$currentNamespace = null;
-					}
+//					else if ($currentNamespace !== null)
+//					{
+//						$currentIterator = $currentNamespace->getParent();
+//						$currentNamespace = null;
+//					}
 					break;
 
 				case ',':

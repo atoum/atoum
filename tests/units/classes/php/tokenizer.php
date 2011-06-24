@@ -62,21 +62,17 @@ class tokenizer extends atoum\test
 
 		$this->startCase('Tokenizing open and close PHP tags');
 
-		$tokenizer = new php\tokenizer();
-
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?>'))->isIdenticalTo($tokenizer)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 		;
 
-		$this->startCase('Tokenizing constant definition');
-
-		$tokenizer = new php\tokenizer();
+		$this->startCase('Tokenizing constant definition in script');
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\'; ?>'))->isIdenticalTo($tokenizer)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
-//			->castToString($tokenizer->getIterator()->getConstant(0))->isEqualTo('const foo = \'foo\'')
+			->castToString($tokenizer->getIterator()->getConstant(0))->isEqualTo('const foo = \'foo\'')
 		;
 
 		$this->startCase('Tokenizing a single namespace without contents');
@@ -85,7 +81,7 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isIdenticalTo($tokenizer)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo')
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
 		;
 
 		$this->startCase('Tokenizing several namespace without contents');
@@ -93,8 +89,17 @@ class tokenizer extends atoum\test
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isIdenticalTo($tokenizer)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo')
-			->castToString($tokenizer->getIterator()->getNamespace(1))->isEqualTo('namespace bar')
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
+			->castToString($tokenizer->getIterator()->getNamespace(1))->isEqualTo('namespace bar; ')
+		;
+
+		$this->startCase('Tokenizing constant definition in namespace');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; const bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; const bar = \'bar\'; ')
+			->castToString($tokenizer->getIterator()->getNamespace(0)->getConstant(0))->isEqualTo('const bar = \'bar\'')
 		;
 
 		$this->startCase('Tokenizing a single class');
