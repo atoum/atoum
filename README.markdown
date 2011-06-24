@@ -149,6 +149,6 @@ La documentation d'*atoum* est en cours de rédaction et la seule ressource disp
 Cependant, si vous désirez explorer plus en avant et immédiatement les possibilités d'*atoum*, nous vous conseillons :
 
 * D'exécuter dans votre terminal soit la commande `php mageekguy.atoum.phar -h`, soit `php scripts/runner.php -h` ;
-* D'explorer le contenu du répértoire `configurations` des sources d'*atoum*, car il contient des exemples de fichier de configuration ;
-* D'explorer le contenu du répértoire `tests/units/classes` des sources d'*atoum*, car il contient l'ensemble de ses tests unitaires ;
+* D'explorer le contenu du répertoire `configurations` des sources d'*atoum*, car il contient des exemples de fichier de configuration ;
+* D'explorer le contenu du répertoire `tests/units/classes` des sources d'*atoum*, car il contient l'ensemble de ses tests unitaires ;
 * De lire [les supports de conférence](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) à son sujet disponible en ligne.
