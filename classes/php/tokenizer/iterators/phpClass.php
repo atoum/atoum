@@ -14,6 +14,15 @@ class phpClass extends tokenizer\iterator
 	protected $constants = array();
 	protected $properties = array();
 
+	public function reset()
+	{
+		$this->methods = array();
+		$this->constants = array();
+		$this->properties = array();
+
+		return parent::reset();
+	}
+
 	public function getConstant($index)
 	{
 		return (isset($this->constants[$index]) === false ? null : $this->constants[$index]);

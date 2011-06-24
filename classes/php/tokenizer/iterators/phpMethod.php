@@ -8,26 +8,8 @@ use
 	\mageekguy\atoum\php\tokenizer\iterators
 ;
 
-class phpMethod extends tokenizer\iterator
+class phpMethod extends tokenizer\iterators\phpFunction
 {
-	protected $arguments = array();
-
-	public function appendArgument(iterators\phpArgument $phpArgument)
-	{
-		$this->arguments[] = $phpArgument;
-
-		return $this->append($phpArgument);
-	}
-
-	public function getArguments()
-	{
-		return $this->arguments;
-	}
-
-	public function getArgument($index)
-	{
-		return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
-	}
 }
 
 ?>

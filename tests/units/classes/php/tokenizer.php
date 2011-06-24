@@ -69,6 +69,16 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 		;
 
+		$this->startCase('Tokenizing constant definition');
+
+		$tokenizer = new php\tokenizer();
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\'; ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+//			->castToString($tokenizer->getIterator()->getConstant(0))->isEqualTo('const foo = \'foo\'')
+		;
+
 		$this->startCase('Tokenizing a single namespace without contents');
 
 		$this->assert

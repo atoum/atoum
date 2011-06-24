@@ -51,11 +51,8 @@ class tokenizer implements \iteratorAggregate
 						$currentNamespace = null;
 					}
 
-					if ($currentNamespace === null)
-					{
-						$currentIterator->appendNamespace($currentNamespace = new iterators\phpNamespace());
-						$currentIterator = $currentNamespace;
-					}
+					$currentIterator->appendNamespace($currentNamespace = new iterators\phpNamespace());
+					$currentIterator = $currentNamespace;
 					break;
 
 				case T_ABSTRACT:
