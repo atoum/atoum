@@ -9,7 +9,7 @@ Cependant, il a la particularité d'avoir été conçu dès le départ pour :
 * *Simplifier* le développement des tests ;
 * Permettre l'écriture de tests unitaires *fiables, lisibles et explicites* ;
 
-Pour cela, il utilise massivement les possibilités offertent par *PHP 5.3*, pour fournir au développeur *une nouvelle façon* d'écrire des tests unitaires.  
+Pour cela, il utilise massivement les possibilités offertes par *PHP 5.3*, pour fournir au développeur *une nouvelle façon* d'écrire des tests unitaires.  
 Ainsi, il s'installe et s'intégre très facilement dans un projet puisqu'il se présente sous la forme d'une *unique archive PHAR*, qui est le seul et unique point d'entrée du développeur.  
 De plus, grâce à son *interface fluide*, il permet la rédaction des tests unitaires en langage quasiment naturel.  
 Il facilite également la mise en œuvre du bouchonnage au sein des tests, grâce à une utilisation intelligente des *fonctions anonymes et des fermetures*.  
@@ -30,7 +30,18 @@ Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'ex�
 
 Si `Phar` ou un équivalent s'affiche, le module est installé.  
 La génération des rapports au format Xunit nécessite le module `xml`.  
+Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
+
+	# php -m | grep -i xml
+
+Si `Xml` ou un équivalent s'affiche, le module est installé.  
+
 L'extension [Xdebug](http://xdebug.org/) est quand à elle requise si vous désirer surveiller le taux de couverture de votre code par vos tests unitaires.
+Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
+
+	# php -m | grep -i xdebug
+
+Si `Xdebug` ou un équivalent s'affiche, le module est installé.--
 
 ## Un framework de tests unitaires opérationnel en 5 minutes !
 
