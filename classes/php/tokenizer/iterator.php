@@ -284,6 +284,35 @@ class iterator extends iterator\value
 
 		return $this;
 	}
+
+	public function findTag($tag)
+	{
+		foreach ($this as $key => $token)
+		{
+			if ($token->getTag() === $tag)
+			{
+				return $key;
+			}
+		}
+
+		return null;
+	}
+
+	public function goToNextTagWhichIsNot(array $tags)
+	{
+		$this->next();
+
+		$token = $this->current();
+
+		while ($token !== null && in_array($token->getTag(), $tags) === true)
+		{
+			$this->next();
+
+			$token = $this->current();
+		}
+
+		return $this;
+	}
 }
 
 ?>

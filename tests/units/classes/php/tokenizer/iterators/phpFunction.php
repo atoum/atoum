@@ -63,6 +63,33 @@ class phpFunction extends atoum\test
 			->castToString($iterator)->isEqualTo($token1 . $token2)
 		;
 	}
+
+	public function testGetName()
+	{
+		$iterator = new iterators\phpFunction();
+
+		$this->assert
+			->variable($iterator->getName())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_FUNCTION));
+
+		$this->assert
+			->variable($iterator->getName())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_WHITESPACE));
+
+		$this->assert
+			->variable($iterator->getName())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_STRING, $name = uniqid()));
+
+		$this->assert
+			->string($iterator->getName())->isEqualTo($name)
+		;
+	}
 }
 
 ?>

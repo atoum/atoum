@@ -930,6 +930,85 @@ class iterator extends atoum\test
 			->object($iterator->current())->isIdenticalTo($token1)
 		;
 	}
+
+	public function testFindTag()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->variable($iterator->key())->isNull()
+			->variable($iterator->findTag(uniqid()))->isNull()
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token($token = uniqid()));
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->variable($iterator->findTag(uniqid()))->isNull()
+			->variable($iterator->key())->isNull()
+			->integer($iterator->findTag($token))->isZero()
+			->integer($iterator->key())->isZero()
+		;
+	}
+
+	public function testGoToNextTagWhichIsNot()
+	{
+		$iterator = new tokenizer\iterator();
+
+		$this->assert
+			->object($iterator->goToNextTagWhichIsNot(array()))->isIdenticalTo($iterator)
+		;
+
+		$iterator->append(new tokenizer\token(T_FUNCTION));
+
+		$this->assert
+			->integer($iterator->key())->isZero()
+			->object($iterator->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_WHITESPACE));
+
+		$this->assert
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_COMMENT));
+
+		$this->assert
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(2)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_COMMENT)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT)))->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE)))->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+		;
+
+		$iterator->append(new tokenizer\token(T_STRING));
+
+		$this->assert
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_STRING)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(2)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_COMMENT)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(1)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_WHITESPACE, T_COMMENT)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(3)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE)))->isIdenticalTo($iterator)
+			->integer($iterator->key())->isEqualTo(3)
+			->object($iterator->rewind()->goToNextTagWhichIsNot(array(T_COMMENT, T_WHITESPACE, T_STRING)))->isIdenticalTo($iterator)
+			->variable($iterator->key())->isNull()
+		;
+	}
 }
 
 ?>
