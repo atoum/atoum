@@ -28,6 +28,7 @@ class phpScript extends atoum\test
 			->array($iterator->getConstants())->isEmpty()
 			->array($iterator->getClasses())->isEmpty()
 			->array($iterator->getNamespaces())->isEmpty()
+			->array($iterator->getNamespaceImportations())->isEmpty()
 		;
 	}
 
@@ -240,6 +241,68 @@ class phpScript extends atoum\test
 			->variable($iterator->getNamespace(0))->isIdenticalTo($namespaceIterator)
 			->variable($iterator->getNamespace(1))->isIdenticalTo($otherNamespaceIterator)
 			->variable($iterator->getNamespace(rand(2, PHP_INT_MAX)))->isNull()
+		;
+	}
+
+	public function testAppendNamespaceImportation()
+	{
+		$iterator = new iterators\phpScript();
+
+		$namespaceImportationIterator = new iterators\phpNamespace\importation();
+		$namespaceImportationIterator
+			->append($token1 = new tokenizer\token(uniqid()))
+			->append($token2 = new tokenizer\token(uniqid()))
+		;
+
+		$this->assert
+			->object($iterator->appendNamespaceImportation($namespaceImportationIterator))->isIdenticalTo($iterator)
+			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator))
+			->castToString($iterator)->isEqualTo($token1 . $token2)
+		;
+	}
+
+	public function testGetNamespaceImportations()
+	{
+		$iterator = new iterators\phpScript();
+
+		$this->assert
+			->array($iterator->getNamespaceImportations())->isEmpty()
+		;
+
+		$iterator->appendNamespaceImportation($namespaceImportationIterator = new iterators\phpNamespace\importation());
+
+		$this->assert
+			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator))
+		;
+
+		$iterator->appendNamespaceImportation($otherNamespaceImportationIterator = new iterators\phpNamespace\importation());
+
+		$this->assert
+			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator, $otherNamespaceImportationIterator))
+		;
+	}
+
+	public function testGetNamespaceImportation()
+	{
+		$iterator = new iterators\phpScript();
+
+		$this->assert
+			->variable($iterator->getNamespaceImportation(rand(0, PHP_INT_MAX)))->isNull()
+		;
+
+		$iterator->appendNamespaceImportation($namespaceImportationIterator = new iterators\phpNamespace\importation());
+
+		$this->assert
+			->variable($iterator->getNamespaceImportation(0))->isIdenticalTo($namespaceImportationIterator)
+			->variable($iterator->getNamespaceImportation(rand(1, PHP_INT_MAX)))->isNull()
+		;
+
+		$iterator->appendNamespaceImportation($otherNamespaceImportationIterator = new iterators\phpNamespace\importation());
+
+		$this->assert
+			->variable($iterator->getNamespaceImportation(0))->isIdenticalTo($namespaceImportationIterator)
+			->variable($iterator->getNamespaceImportation(1))->isIdenticalTo($otherNamespaceImportationIterator)
+			->variable($iterator->getNamespaceImportation(rand(2, PHP_INT_MAX)))->isNull()
 		;
 	}
 

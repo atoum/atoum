@@ -33,10 +33,12 @@ class tokenizer implements \iteratorAggregate
 	{
 		$currentClass = null;
 		$currentProperty = null;
+		$currentFunction = null;
 		$currentMethod = null;
 		$currentArgument = null;
 		$currentConstant = null;
 		$currentNamespace = null;
+		$currentNamespaceImportation = null;
 		$currentDefaultValue = null;
 		$currentIterator = $this->iterator;
 
@@ -44,6 +46,11 @@ class tokenizer implements \iteratorAggregate
 		{
 			switch ($token[0])
 			{
+				case T_USE:
+					$currentIterator->appendNamespaceImportation($currentNamespaceImportation = new iterators\phpNamespace\importation());
+					$currentIterator = $currentNamespaceImportation;
+					break;
+
 				case T_NAMESPACE:
 					if ($currentNamespace !== null)
 					{
@@ -67,8 +74,8 @@ class tokenizer implements \iteratorAggregate
 					if ($currentClass === null)
 					{
 						$currentIterator->appendClass($currentClass = new iterators\phpClass());
-						$currentIterator = $currentClass;
 					}
+						$currentIterator = $currentClass;
 					break;
 
 				case T_CLASS:
@@ -103,6 +110,11 @@ class tokenizer implements \iteratorAggregate
 						$currentIterator->appendMethod($currentMethod = new iterators\phpMethod());
 						$currentIterator = $currentMethod;
 					}
+					else if ($currentMethod === null)
+					{
+						$currentIterator->appendFunction($currentFunction = new iterators\phpFunction());
+						$currentIterator = $currentFunction;
+					}
 					break;
 
 				case T_PUBLIC:
@@ -124,7 +136,12 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case ';':
-					if ($currentConstant !== null)
+					if ($currentNamespaceImportation !== null)
+					{
+						$currentIterator = $currentNamespaceImportation->getParent();
+						$currentConstant = null;
+					}
+					else if ($currentConstant !== null)
 					{
 						$currentIterator = $currentConstant->getParent();
 						$currentConstant = null;
@@ -134,11 +151,6 @@ class tokenizer implements \iteratorAggregate
 						$currentIterator = $currentProperty->getParent();
 						$currentProperty = null;
 					}
-//					else if ($currentNamespace !== null)
-//					{
-//						$currentIterator = $currentNamespace->getParent();
-//						$currentNamespace = null;
-//					}
 					break;
 
 				case ',':
@@ -196,6 +208,11 @@ class tokenizer implements \iteratorAggregate
 					{
 						$currentIterator = $currentClass->getParent();
 						$currentClass = null;
+					}
+					else if ($currentFunction !== null)
+					{
+						$currentIterator = $currentFunction->getParent();
+						$currentFunction = null;
 					}
 					break;
 

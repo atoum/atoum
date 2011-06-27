@@ -75,6 +75,30 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator()->getConstant(0))->isEqualTo('const foo = \'foo\'')
 		;
 
+		$this->startCase('Tokenizing function definition in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php function foo() {} ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getFunction(0))->isEqualTo('function foo() {}')
+		;
+
+		$this->startCase('Tokenizing anonymous function definition in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php function () {} ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getFunction(0))->isEqualTo('function () {}')
+		;
+
+		$this->startCase('Tokenizing namespace importation in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\\bar; ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getNamespaceImportation(0))->isEqualTo('use foo\\bar')
+		;
+
 		$this->startCase('Tokenizing a single namespace without contents');
 
 		$this->assert
