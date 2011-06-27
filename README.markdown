@@ -163,3 +163,4 @@ Cependant, si vous désirez explorer plus en avant et immédiatement les possibi
 * D'explorer le contenu du répertoire `configurations` des sources d'*atoum*, car il contient des exemples de fichier de configuration ;
 * D'explorer le contenu du répertoire `tests/units/classes` des sources d'*atoum*, car il contient l'ensemble de ses tests unitaires ;
 * De lire [les supports de conférence](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) à son sujet disponible en ligne ;
+* De rejoindre le canal IRC ##atoum sur le réseau freenode.
