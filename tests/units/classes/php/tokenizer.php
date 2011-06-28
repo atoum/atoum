@@ -67,6 +67,16 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 		;
 
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?><?php ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+		;
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?>foo<?php ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+		;
+
 		$this->startCase('Tokenizing constant definition in script');
 
 		$this->assert
@@ -106,6 +116,15 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
+		;
+
+		$this->startCase('Tokenizing a single namespace across script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>foo<?php const bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ?>foo<?php const bar = \'bar\'; ')
 		;
 
 		$this->startCase('Tokenizing several namespace without contents');
@@ -250,6 +269,15 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { private function bar() {} }')
 			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('private function bar() {}')
+		;
+
+		$this->startCase('Tokenizing single class with single abstract implicit publit method');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { abstract function bar(); } ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { abstract function bar(); }')
+			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('abstract function bar()')
 		;
 
 		$this->startCase('Tokenizing single class with single explicit public method and one argument');

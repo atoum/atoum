@@ -89,6 +89,13 @@ class phpFunction extends atoum\test
 		$this->assert
 			->string($iterator->getName())->isEqualTo($name)
 		;
+
+		$iterator->append(new tokenizer\token(T_FUNCTION));
+		$iterator->append(new tokenizer\token(T_STRING, uniqid()));
+
+		$this->assert
+			->string($iterator->getName())->isEqualTo($name)
+		;
 	}
 }
 

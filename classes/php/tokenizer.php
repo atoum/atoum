@@ -35,6 +35,7 @@ class tokenizer implements \iteratorAggregate
 		$currentProperty = null;
 		$currentFunction = null;
 		$currentMethod = null;
+		$currentAbstractMethod = null;
 		$currentArgument = null;
 		$currentConstant = null;
 		$currentNamespace = null;
@@ -67,6 +68,11 @@ class tokenizer implements \iteratorAggregate
 					{
 						$currentIterator->appendClass($currentClass = new iterators\phpClass());
 						$currentIterator = $currentClass;
+					}
+					else
+					{
+						$currentIterator->appendMethod($currentAbstractMethod = new iterators\phpMethod());
+						$currentIterator = $currentAbstractMethod;
 					}
 					break;
 
@@ -105,12 +111,12 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_FUNCTION:
-					if ($currentClass !== null && $currentMethod === null)
+					if ($currentClass !== null && $currentMethod === null && $currentAbstractMethod === null)
 					{
 						$currentIterator->appendMethod($currentMethod = new iterators\phpMethod());
 						$currentIterator = $currentMethod;
 					}
-					else if ($currentMethod === null)
+					else if ($currentMethod === null && $currentAbstractMethod === null)
 					{
 						$currentIterator->appendFunction($currentFunction = new iterators\phpFunction());
 						$currentIterator = $currentFunction;
@@ -140,6 +146,11 @@ class tokenizer implements \iteratorAggregate
 					{
 						$currentIterator = $currentNamespaceImportation->getParent();
 						$currentConstant = null;
+					}
+					else if ($currentAbstractMethod !== null)
+					{
+						$currentIterator = $currentAbstractMethod->getParent();
+						$currentAbstractMethod = null;
 					}
 					else if ($currentConstant !== null)
 					{
@@ -180,16 +191,13 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_CLOSE_TAG:
-					if ($currentClass !== null)
-					{
-						$currentIterator = $currentClass->getParent();
-						$currentClass = null;
-					}
-
 					if ($currentNamespace !== null)
 					{
-						$currentIterator = $currentNamespace->getParent();
-						$currentNamespace = null;
+						if (self::nextTokenIs(T_OPEN_TAG, $tokens) === false)
+						{
+							$currentIterator = $currentNamespace->getParent();
+							$currentNamespace = null;
+						}
 					}
 					break;
 			}
@@ -251,11 +259,11 @@ class tokenizer implements \iteratorAggregate
 		}
 	}
 
-	protected static function nextTokenIs($tokenName, \arrayIterator $tokens)
+	protected static function nextTokenIs($tokenName, \arrayIterator $tokens, array $skipedTags = array(T_WHITESPACE, T_COMMENT, T_INLINE_HTML))
 	{
 		$key = $tokens->key() + 1;
 
-		while (isset($tokens[$key]) === true && ($tokens[$key] === T_WHITESPACE || $tokens[$key] === T_COMMENT))
+		while (isset($tokens[$key]) === true && in_array($tokens[$key], $skipedTags) === true)
 		{
 			$key++;
 		}
