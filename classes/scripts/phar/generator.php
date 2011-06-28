@@ -238,7 +238,11 @@ class generator extends atoum\script
 			throw new exceptions\runtime(sprintf($this->locale->_('Stub file \'%s\' is not readable'), $this->stubFile));
 		}
 
-		$phar = $this->getPhar($this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar);
+		$pharFile = $this->destinationDirectory . DIRECTORY_SEPARATOR . self::phar;
+
+		@$this->adapter->unlink($pharFile);
+
+		$phar = $this->getPhar($pharFile);
 
 		if ($phar instanceof \phar === false)
 		{

@@ -403,6 +403,7 @@ class generator extends atoum\test
 		$adapter->realpath = function($path) { return $path; };
 		$adapter->is_dir = function() { return true; };
 		$adapter->is_file = function() { return true; };
+		$adapter->unlink = function() {};
 
 		$generator = new phar\generator(uniqid(), null, $adapter);
 
@@ -695,6 +696,8 @@ class generator extends atoum\test
 				)
 			->mock($fileIterator)
 				->call('__construct', array($generator->getOriginDirectory(), null))
+			->adapter($adapter)
+				->call('unlink', array($directory . DIRECTORY_SEPARATOR . phar\generator::phar))
 		;
 	}
 }
