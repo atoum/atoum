@@ -1,0 +1,30 @@
+<?php
+
+/*
+Sample atoum configuration file to use with builder.
+*/
+
+use \mageekguy\atoum;
+
+$mailer = new atoum\mailers\mail();
+$mailer
+	->addTo('to@domain')
+	->setFrom('from@domain')
+	->setXMailer('Atoum builder')
+	->setReplyTo('reply@domain')
+	->setContentType('text/plain', 'utf-8')
+;
+
+$mailWriter = new atoum\writers\mail();
+$mailWriter
+	->setMailer($mailer)
+;
+
+$builderReport = new atoum\reports\asynchronous\builder();
+$builderReport
+	->addWriter($mailWriter)
+;
+
+$runner->addReport($builderReport);
+
+?>

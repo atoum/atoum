@@ -64,9 +64,16 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\version\string();
+		$score = new atoum\score();
+		$score
+			->setAtoumPath($atoumPath = uniqid())
+			->setAtoumVersion($atoumVersion = uniqid())
+		;
 
 		$runner = new atoum\runner();
+		$runner->setScore($score);
+
+		$field = new runner\version\string();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
@@ -79,21 +86,28 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->variable($field->getVersion())->isNull()
 			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
 			->string($field->getAuthor())->isEqualTo(atoum\author)
-			->string($field->getPath())->isEqualTo(\mageekguy\atoum\directory)
-			->string($field->getVersion())->isEqualTo(atoum\version)
+			->string($field->getPath())->isEqualTo($atoumPath)
+			->string($field->getVersion())->isEqualTo($atoumVersion)
 		;
 	}
 
 	public function test__toString()
 	{
+		$score = new atoum\score();
+		$score
+			->setAtoumPath($atoumPath = uniqid())
+			->setAtoumVersion($atoumVersion = uniqid())
+		;
+
 		$runner = new atoum\runner();
+		$runner->setScore($score);
 
 		$field = new runner\version\string();
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), \mageekguy\atoum\version, \mageekguy\atoum\author, \mageekguy\atoum\directory) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
 		;
 
 		$field = new runner\version\string($locale = new atoum\locale(), $prompt = uniqid());
@@ -101,7 +115,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), \mageekguy\atoum\version, \mageekguy\atoum\author, \mageekguy\atoum\directory) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
 		;
 	}
 }

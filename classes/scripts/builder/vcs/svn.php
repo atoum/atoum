@@ -31,7 +31,7 @@ class svn extends builder\vcs implements atoum\adapter\aggregator
 
 		$nextRevisions = array();
 
-		foreach ($this->adapter->svn_log($this->repositoryUrl, $this->revision, \SVN_REVISION_HEAD) as $log)
+		foreach ($this->adapter->svn_log($this->repositoryUrl, $this->revision ?: 1, \SVN_REVISION_HEAD) as $log)
 		{
 			if (is_array($log) && isset($log['rev']) === true && $log['rev'] != $this->revision)
 			{

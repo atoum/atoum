@@ -298,7 +298,7 @@ class builder extends atoum\script
 
 			$phpPath = $this->getPhpPath();
 
-			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg($this->reportTitle)) . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
+			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg(sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()))) . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
@@ -400,7 +400,7 @@ class builder extends atoum\script
 
 			if ($this->revisionFile !== null)
 			{
-				$revision = @$this->adapter->file_get_contents($this->revisionFile);
+				$revision = trim(@$this->adapter->file_get_contents($this->revisionFile));
 
 				if (is_numeric($revision) === true)
 				{
@@ -691,7 +691,7 @@ class builder extends atoum\script
 
 		$runFile = $this->getRunFile();
 
-		$pid = @$this->adapter->file_get_contents($runFile);
+		$pid = trim(@$this->adapter->file_get_contents($runFile));
 
 		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
 		{
@@ -737,8 +737,8 @@ class builder extends atoum\script
 				'-v <string>, --v <string>' => $this->locale->_('Version <string> will be used as version name'),
 				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
 				'-sd <file>, --score-directory <directory>' => $this->locale->_('Save score in <directory>'),
-				'-r <url>, --repository-url <url>' => $this->locale->_('Url of subversion repository'),
-				'-w <directory>, --working-directory <directory>' => $this->locale->_('Checkout file from subversion in <directory>'),
+				'-r <url>, --repository-url <url>' => $this->locale->_('Url of repository'),
+				'-w <directory>, --working-directory <directory>' => $this->locale->_('Checkout file from repository in <directory>'),
 				'-d <directory>, --destination-directory <directory>' => $this->locale->_('Save phar in <directory>'),
 				'-ed <directory>, --errors-directory <directory>' => $this->locale->_('Save errors in <directory>')
 			)

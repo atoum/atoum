@@ -167,7 +167,7 @@ class svn extends atoum\test
 			->array($svn->getNextRevisions())->isEmpty()
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_log', array($repositoryUrl, null, SVN_REVISION_HEAD))
+				->call('svn_log', array($repositoryUrl, 1, SVN_REVISION_HEAD))
 		;
 
 		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
