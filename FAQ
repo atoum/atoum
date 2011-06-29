@@ -12,3 +12,9 @@ In this case, the atoum convention is to prefix name with word "php".
 Currently, unit test is the documentation.
 You find them in path/to/atoum/tests/units.
 We work to write a real documentation and if you want to help to .
+
+* Why php mageekguy.atoum.phar does not works ?
+Try a "php -n mageekguy.atoum.phar" in a terminal.
+If it works, the problem is in your PHP configuration.
+Try to remove ioncube extension, which seems not compatible with atoum.
+If you use suhosibn, you can also add "suhosin.executor.include.whitelist="phar"" to your php.ini.

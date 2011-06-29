@@ -165,3 +165,23 @@ Cependant, si vous désirez explorer plus en avant et immédiatement les possibi
 * De lire [les supports de conférence](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) à son sujet disponible en ligne ;
 * De rejoindre le canal IRC *##atoum* sur le réseau *freenode* ;
 * De poser vos questions par courrier électronique à l'adresse *support[AT]atoum(DOT)org* ;
+
+## Dépannage
+
+### L'archive PHAR de *atoum* semble ne pas fonctionner
+
+Dans ce cas, la première chose à faire est de vous assurer que vous disposez de la dernière version de l'archive.  
+Pour cela, il suffit de la [télécharger](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) à nouveau.  
+Si elle ne fonctionne toujours pas, exécuter dans un terminal la commande suivante :
+
+	# php -n mageekguy.atoum.phar -v
+
+Si vous obtenez le numéro de version d'atoum, c'est que le problème provient de votre configuration de PHP.  
+Dans la plupart des cas, il s'agit d'extensions, qui sont soit incompatible avec le format PHAR, soit qui empêche l'exécution des archives PHAR par sécurité.  
+L'extension `ioncube` semble par exemple incompatible avec les archives PHAR.  
+L'extension Suhosin empêche quand à elle l'exécution des PHAR, et il faut donc modifier sa configuration par défaut afin de pouvoir utiliser *atoum*, en ajoutant la ligne suivante dans votre fichier `php.ini` :
+
+	suhosin.executor.include.whitelist="phar"
+
+Si par malchance ces deux manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
+Vous pouvez également demander de l'aide aux développeurs d'*atoum* sur le canal IRC ##atoum sur le réseau *freenode*.
