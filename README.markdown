@@ -178,8 +178,11 @@ Si elle ne fonctionne toujours pas, exécuter dans un terminal la commande suiva
 
 Si vous obtenez le numéro de version d'atoum, c'est que le problème provient de votre configuration de PHP.  
 Dans la plupart des cas, il s'agit d'extensions, qui sont soit incompatible avec le format PHAR, soit qui empêche l'exécution des archives PHAR par sécurité.  
-L'extension `ioncube` semble par exemple incompatible avec les archives PHAR.  
-L'extension Suhosin empêche quand à elle l'exécution des PHAR, et il faut donc modifier sa configuration par défaut afin de pouvoir utiliser *atoum*, en ajoutant la ligne suivante dans votre fichier `php.ini` :
+L'extension `ioncube` semble par exemple incompatible avec les archives PHAR et il faut donc la désactiver si vous l'utilisez, en commantant dans votre `php.ini` la ligne suivante en la préfixant par le caractère `;` :
+
+	zend_extension = /path/to/ioncube_loader*.*
+
+L'extension `suhosin` empêche quand à elle l'exécution des PHAR, et il faut donc modifier sa configuration par défaut afin de pouvoir utiliser *atoum*, en ajoutant la ligne suivante dans votre fichier `php.ini` :
 
 	suhosin.executor.include.whitelist="phar"
 
