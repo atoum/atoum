@@ -20,7 +20,7 @@ Il est de plus à même de générer des rapports d'exécution des tests unitair
 *atoum* permet de plus de générer des rapports de couverture de code, afin de permettre la supervision des tests unitaires.  
 Enfin, même s'il est actuellement développé principalement sous UNIX, il est également fonctionnel sous Windows.
 
-## Prérequis pour utiliser atoum
+## Prérequis pour utiliser *atoum*
 
 *atoum* nécéssite *absolument* une version de PHP supérieure ou égale à 5.3 pour fonctionner.  
 Si vous souhaitez utiliser *atoum* via son archive PHAR, il faut de plus que [PHP](http://www.php.net] dispose du module `phar`, Normalement disponible par défaut.  
