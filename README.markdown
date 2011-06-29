@@ -172,7 +172,7 @@ Cependant, si vous désirez explorer plus en avant et immédiatement les possibi
 
 Dans ce cas, la première chose à faire est de vous assurer que vous disposez de la dernière version de l'archive.  
 Pour cela, il suffit de la [télécharger](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) à nouveau.  
-Si elle ne fonctionne toujours pas, exécuter dans un terminal la commande suivante :
+Si elle ne fonctionne toujours pas, exécutez dans un terminal la commande suivante :
 
 	# php -n mageekguy.atoum.phar -v
 
@@ -186,5 +186,5 @@ L'extension `suhosin` empêche quand à elle l'exécution des PHAR, et il faut d
 
 	suhosin.executor.include.whitelist="phar"
 
-Si par malchance ces deux manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
+Si ces deux manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
 Vous pouvez également demander de l'aide aux développeurs d'*atoum* sur le canal IRC ##atoum sur le réseau *freenode*.
