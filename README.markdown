@@ -1,4 +1,4 @@
-#atoum
+# *atoum*
 
 ## Un framework de tests unitaires pour PHP simple, moderne et intuitif !
 
