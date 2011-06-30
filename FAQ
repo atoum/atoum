@@ -18,3 +18,6 @@ Try a "php -n mageekguy.atoum.phar" in a terminal.
 If it works, the problem is in your PHP configuration.
 Try to remove ioncube extension, which seems not compatible with atoum.
 If you use suhosin, you can also add "suhosin.executor.include.whitelist="phar"" to your php.ini.
+
+* What can i do to avoid error about __COMPILER_HALT_OFFSET__ ?
+Use only require_once to include mageekguy.atoum.phar in your scripts.
