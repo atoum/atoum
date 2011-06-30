@@ -189,7 +189,7 @@ L'extension `suhosin` empêche quand à elle l'exécution des PHAR, et il faut d
 Si ces deux manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
 Vous pouvez également demander de l'aide aux développeurs d'*atoum* sur le canal IRC ##atoum sur le réseau *freenode*.
 
-### Erreur `Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/mageekguy.atoum.phar`
+### Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/mageekguy.atoum.phar
 
 Cette erreur est provoquée par le fait que l'archive PHAR de *atoum* est incluse à au moins un endroit dans votre code à l'aide de `include` ou `require`.
 Pour résoudre ce problème, il suffit donc d'inclure l'archive uniquement via `include_once` ou `require_once`, afin d'empêcher qu'elle ne soit incluse plusieurs fois.
