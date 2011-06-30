@@ -14,6 +14,10 @@ class cli extends atoum\test
 {
 	public function test__construct()
 	{
+		$resultField = new report\fields\runner\result\cli();
+		$resultField->setSuccessColorizer(new atoum\cli\colorizer('0;37', '42'));
+		$resultField->setFailureColorizer(new atoum\cli\colorizer('0;37', '41'));
+
 		$report = new reports\cli();
 
 		$this->assert
@@ -27,7 +31,7 @@ class cli extends atoum\test
 					new report\fields\runner\tests\memory\cli(),
 					new report\fields\runner\tests\coverage\cli(),
 					new report\fields\runner\duration\cli(),
-					new report\fields\runner\result\cli(),
+					$resultField,
 					new report\fields\runner\failures\cli(),
 					new report\fields\runner\outputs\cli(),
 					new report\fields\runner\errors\cli(),

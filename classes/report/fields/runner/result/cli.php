@@ -12,6 +12,8 @@ class cli extends report\fields\runner\result
 	const defaultPrompt = '> ';
 
 	protected $prompt = '';
+	protected $successColorizer = null;
+	protected $failureColorizer = null;
 
 	public function __construct(atoum\locale $locale = null, $prompt = null)
 	{
@@ -37,6 +39,30 @@ class cli extends report\fields\runner\result
 		return $this->prompt;
 	}
 
+	public function setSuccessColorizer(atoum\cli\colorizer $colorizer)
+	{
+		$this->successColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getSuccessColorizer()
+	{
+		return $this->successColorizer;
+	}
+
+	public function setFailureColorizer(atoum\cli\colorizer $colorizer)
+	{
+		$this->failureColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getFailureColorizer()
+	{
+		return $this->failureColorizer;
+	}
+
 	public function __toString()
 	{
 		$string = $this->prompt;
@@ -55,6 +81,11 @@ class cli extends report\fields\runner\result
 					sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
 				)
 			;
+
+			if ($this->successColorizer !== null)
+			{
+				$string = $this->successColorizer->colorize($string);
+			}
 		}
 		else
 		{
@@ -66,6 +97,11 @@ class cli extends report\fields\runner\result
 					sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
 				)
 			;
+
+			if ($this->failureColorizer !== null)
+			{
+				$string = $this->failureColorizer->colorize($string);
+			}
 		}
 
 		return $string . PHP_EOL;

@@ -39,6 +39,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
 			->string($field->getPrompt())->isEqualTo(runner\result\cli::defaultPrompt)
+			->variable($field->getSuccessColorizer())->isNull()
+			->variable($field->getFailureColorizer())->isNull()
 		;
 
 		$field = new runner\result\cli($locale = new atoum\locale(), $prompt = uniqid());
@@ -51,6 +53,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
 			->string($field->getPrompt())->isEqualTo($prompt)
+			->variable($field->getSuccessColorizer())->isNull()
+			->variable($field->getFailureColorizer())->isNull()
 		;
 	}
 
@@ -123,6 +127,26 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		;
 	}
 
+	public function testSetSuccessColorizer()
+	{
+		$field = new runner\result\cli();
+
+		$this->assert
+			->object($field->setSuccessColorizer($colorizer = new atoum\cli\colorizer()))->isIdenticalTo($field)
+			->object($field->getSuccessColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
+	public function testSetFailureColorizer()
+	{
+		$field = new runner\result\cli();
+
+		$this->assert
+			->object($field->setFailureColorizer($colorizer = new atoum\cli\colorizer()))->isIdenticalTo($field)
+			->object($field->getFailureColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
 	public function test__toString()
 	{
 		$mockGenerator = new mock\generator();
@@ -157,6 +181,23 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 				sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
 				sprintf($locale->__('%s error', '%s errors', $errorNumber), $errorNumber),
 				sprintf($locale->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
+		$field = new runner\result\cli($locale = new atoum\locale());
+		$field->setSuccessColorizer($colorizer = new atoum\cli\colorizer(uniqid(), uniqid()));
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($colorizer->colorize($field->getPrompt() . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !'),
+					sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
+					sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+					sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
+					sprintf($locale->__('%s error', '%s errors', $errorNumber), $errorNumber),
+					sprintf($locale->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+				) . PHP_EOL
 			)
 		;
 
