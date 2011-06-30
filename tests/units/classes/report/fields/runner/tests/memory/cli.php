@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\memory
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\memory
 {
 	public function testClass()
 	{
@@ -23,22 +23,22 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(tests\memory\string::defaultPrompt)->isEqualTo('> ')
+			->string(tests\memory\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new tests\memory\string();
+		$field = new tests\memory\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getPrompt())->isEqualTo(tests\memory\string::defaultPrompt)
+			->string($field->getPrompt())->isEqualTo(tests\memory\cli::defaultPrompt)
 			->variable($field->getValue())->isNull()
 			->variable($field->getTestNumber())->isNull()
 		;
 
-		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\memory\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -50,7 +50,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 
 	public function testSetPrompt()
 	{
-		$field = new tests\memory\string();
+		$field = new tests\memory\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -62,7 +62,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 
 	public function testSetWithRunner()
 	{
-		$field = new tests\memory\string($locale = new atoum\locale());
+		$field = new tests\memory\cli($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -109,7 +109,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = 1; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$field = new tests\memory\string();
+		$field = new tests\memory\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
@@ -118,7 +118,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total test memory usage: %4.2f Mb.', $totalMemoryUsage / 1048576), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 
-		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\memory\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
@@ -129,7 +129,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
 
-		$field = new tests\memory\string();
+		$field = new tests\memory\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)
@@ -138,7 +138,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\mem
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $testNumber), $totalMemoryUsage / 1048576) . PHP_EOL)
 		;
 
-		$field = new tests\memory\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\memory\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test memory usage: unknown.') . PHP_EOL)

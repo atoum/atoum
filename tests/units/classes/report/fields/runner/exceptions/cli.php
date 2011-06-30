@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\exceptions
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\exceptions
 {
 	public function testClass()
 	{
@@ -23,25 +23,25 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\exceptions\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\exceptions\string::defaultMethodPrompt)->isEqualTo('=> ')
-			->string(runner\exceptions\string::defaultExceptionPrompt)->isEqualTo('==> ')
+			->string(runner\exceptions\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\exceptions\cli::defaultMethodPrompt)->isEqualTo('=> ')
+			->string(runner\exceptions\cli::defaultExceptionPrompt)->isEqualTo('==> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\exceptions\string::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\exceptions\string::defaultMethodPrompt)
-			->string($field->getExceptionPrompt())->isEqualTo(runner\exceptions\string::defaultExceptionPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(runner\exceptions\cli::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\exceptions\cli::defaultMethodPrompt)
+			->string($field->getExceptionPrompt())->isEqualTo(runner\exceptions\cli::defaultExceptionPrompt)
 		;
 
-		$field = new runner\exceptions\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $exceptionPrompt = uniqid());
+		$field = new runner\exceptions\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $exceptionPrompt = uniqid());
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
@@ -54,7 +54,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -66,7 +66,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 	public function testSetMethodPrompt()
 	{
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$this->assert
 			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -78,7 +78,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 	public function testSetExceptionPrompt()
 	{
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$this->assert
 			->object($field->setExceptionPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -90,7 +90,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -109,7 +109,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 	public function test__toString()
 	{
-		$field = new runner\exceptions\string($locale = new atoum\locale());
+		$field = new runner\exceptions\cli($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -149,7 +149,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 
 		$score->getMockController()->getExceptions = function() use ($fields) { return $fields; };
 
-		$field = new runner\exceptions\string();
+		$field = new runner\exceptions\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -164,7 +164,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\exception
 			)
 		;
 
-		$field = new runner\exceptions\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $exceptionPrompt = uniqid());
+		$field = new runner\exceptions\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $exceptionPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()

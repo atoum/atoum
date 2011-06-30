@@ -9,7 +9,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class html extends report\fields\runner\coverage\string
+class html extends report\fields\runner\coverage\cli
 {
 	const htmlExtensionFile = '.html';
 	const defaultAlternatePrompt = '=> ';

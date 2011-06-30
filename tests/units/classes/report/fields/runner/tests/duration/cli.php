@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\duration
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\duration
 {
 	public function testClass()
 	{
@@ -23,22 +23,22 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 	public function testClassConstant()
 	{
 		$this->assert
-			->string(tests\duration\string::defaultPrompt)->isEqualTo('> ')
+			->string(tests\duration\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getPrompt())->isEqualTo(tests\duration\string::defaultPrompt)
+			->string($field->getPrompt())->isEqualTo(tests\duration\cli::defaultPrompt)
 			->variable($field->getValue())->isNull()
 			->variable($field->getTestNumber())->isNull()
 		;
 
-		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\duration\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -50,7 +50,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 
 	public function testSetPrompt()
 	{
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -62,7 +62,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 
 	public function testSetWithRunner()
 	{
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -109,7 +109,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = 1; };
 		$runnerController->getScore = function () use ($score) { return $score; };
 
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
@@ -118,7 +118,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
-		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\duration\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
@@ -129,7 +129,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(2, PHP_INT_MAX); };
 
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
@@ -138,7 +138,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
-		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\duration\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('Total test duration: unknown.') . PHP_EOL)
@@ -149,7 +149,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 
 		$score->getMockController()->getTotalDuration = function() use (& $totalDuration) { return $totalDuration = rand(2, PHP_INT_MAX); };
 
-		$field = new tests\duration\string();
+		$field = new tests\duration\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getLocale()->_($field->getPrompt() . 'Total test duration: unknown.') . PHP_EOL)
@@ -158,7 +158,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\dur
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->__('Total test duration: %s.', 'Total tests duration: %s.', $testNumber), sprintf($field->getLocale()->__('%4.2f second', '%4.2f seconds', $totalDuration), $totalDuration)) . PHP_EOL)
 		;
 
-		$field = new tests\duration\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new tests\duration\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getLocale()->_($field->getPrompt() . 'Total test duration: unknown.') . PHP_EOL)

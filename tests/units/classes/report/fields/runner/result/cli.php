@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 {
 	public function testClass()
 	{
@@ -23,13 +23,13 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\result\string::defaultPrompt)->isEqualTo('> ')
+			->string(runner\result\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\result\string();
+		$field = new runner\result\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
@@ -38,10 +38,10 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailNumber())->isNull()
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
-			->string($field->getPrompt())->isEqualTo(runner\result\string::defaultPrompt)
+			->string($field->getPrompt())->isEqualTo(runner\result\cli::defaultPrompt)
 		;
 
-		$field = new runner\result\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -56,7 +56,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 	public function testSetPrompt()
 	{
-		$field = new runner\result\string();
+		$field = new runner\result\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -68,7 +68,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\result\string();
+		$field = new runner\result\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -145,7 +145,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
 		$runnerController->getTestMethodNumber = function() use (& $testMethodNumber) { return $testMethodNumber = rand(1, PHP_INT_MAX); };
 
-		$field = new runner\result\string($locale = new atoum\locale());
+		$field = new runner\result\cli($locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
@@ -162,7 +162,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 		$scoreController->getFailNumber = function() use (& $failNumber) { return $failNumber = rand(1, PHP_INT_MAX); };
 
-		$field = new runner\result\string();
+		$field = new runner\result\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
@@ -177,7 +177,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			)
 		;
 
-		$field = new runner\result\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)

@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\runner\version
+class cli extends report\fields\runner\version
 {
 	const defaultPrompt = '> ';
 

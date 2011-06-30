@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 {
 	public function testClass()
 	{
@@ -23,25 +23,25 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\errors\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\errors\string::defaultMethodPrompt)->isEqualTo('=> ')
-			->string(runner\errors\string::defaultErrorPrompt)->isEqualTo('==> ')
+			->string(runner\errors\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\errors\cli::defaultMethodPrompt)->isEqualTo('=> ')
+			->string(runner\errors\cli::defaultErrorPrompt)->isEqualTo('==> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\errors\string::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\errors\string::defaultMethodPrompt)
-			->string($field->getErrorPrompt())->isEqualTo(runner\errors\string::defaultErrorPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(runner\errors\cli::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\errors\cli::defaultMethodPrompt)
+			->string($field->getErrorPrompt())->isEqualTo(runner\errors\cli::defaultErrorPrompt)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
@@ -54,7 +54,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -66,7 +66,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 	public function testSetMethodPrompt()
 	{
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -78,7 +78,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 	public function testSetErrorPrompt()
 	{
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->object($field->setErrorPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -90,7 +90,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -120,7 +120,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function() use ($score) { return $score; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->startCase('There is no error in score with default prompts');
 
@@ -162,7 +162,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -177,7 +177,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -221,7 +221,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -236,7 +236,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -269,7 +269,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -280,7 +280,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -309,7 +309,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -320,7 +320,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -349,7 +349,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -360,7 +360,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -389,7 +389,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -400,7 +400,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -429,7 +429,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -440,7 +440,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -469,7 +469,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
 
-		$field = new runner\errors\string();
+		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -480,7 +480,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			)
 		;
 
-		$field = new runner\errors\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\duration;
+namespace mageekguy\atoum\report\fields\test\memory;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\test\duration
+class cli extends report\fields\test\memory
 {
 	const defaultPrompt = '=> ';
 
@@ -35,7 +35,6 @@ class string extends report\fields\test\duration
 	public function getPrompt()
 	{
 		return $this->prompt;
-
 	}
 
 	public function __toString()
@@ -44,11 +43,11 @@ class string extends report\fields\test\duration
 
 		if ($this->value === null)
 		{
-			$string .= $this->locale->_('Test duration: unknown.');
+			$string .= $this->locale->_('Memory usage: unknown.');
 		}
 		else
 		{
-			$string .= sprintf($this->locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $this->value), $this->value);
+			$string .= sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $this->value / 1048576);
 		}
 
 		$string .= PHP_EOL;

@@ -2,18 +2,19 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\test\event;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\cli;
-use \mageekguy\atoum\mock;
-use \mageekguy\atoum\report\fields\test;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\mock,
+	\mageekguy\atoum\report\fields\test
+;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\test\event
+class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 {
 	public function test__construct()
 	{
-		$event = new test\event\string();
+		$event = new test\event\cli();
 
 		$this->assert
 			->object($event)->isInstanceOf('\mageekguy\atoum\report\fields\test')
@@ -23,7 +24,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function testGetProgressBar()
 	{
-		$event = new test\event\string();
+		$event = new test\event\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
@@ -57,7 +58,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
-		$event = new test\event\string();
+		$event = new test\event\cli();
 
 		$this->assert
 			->object($event->setWithTest($test))->isIdenticalTo($event)
@@ -91,7 +92,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function testSetProgressBarInjector()
 	{
-		$event = new test\event\string();
+		$event = new test\event\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
@@ -105,7 +106,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
-			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new cli\progressBar($test); }))->isIdenticalTo($event)
+			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
 			->object($event->setWithTest($test)->getProgressBar())->isIdenticalTo($progressBar)
 		;
 
@@ -126,7 +127,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 			->generate('\mageekguy\atoum\test')
 		;
 
-		$event = new test\event\string();
+		$event = new test\event\cli();
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -139,7 +140,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };
 
-		$progressBar = new cli\progressBar($test);
+		$progressBar = new atoum\cli\progressBar($test);
 
 		$this->assert
 			->string($event->__toString($progressBar))->isEmpty()

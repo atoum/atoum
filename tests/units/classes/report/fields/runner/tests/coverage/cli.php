@@ -12,7 +12,7 @@ use
 
 require_once(__DIR__ . '/../../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\coverage
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\coverage
 {
 	public function testClass()
 	{
@@ -24,25 +24,25 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(tests\coverage\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(tests\coverage\string::defaultClassPrompt)->isEqualTo('=> ')
-			->string(tests\coverage\string::defaultMethodPrompt)->isEqualTo('==> ')
+			->string(tests\coverage\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(tests\coverage\cli::defaultClassPrompt)->isEqualTo('=> ')
+			->string(tests\coverage\cli::defaultMethodPrompt)->isEqualTo('==> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new tests\coverage\string();
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(tests\coverage\string::defaultTitlePrompt)
-			->string($field->getClassPrompt())->isEqualTo(tests\coverage\string::defaultClassPrompt)
-			->string($field->getMethodPrompt())->isEqualTo(tests\coverage\string::defaultMethodPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(tests\coverage\cli::defaultTitlePrompt)
+			->string($field->getClassPrompt())->isEqualTo(tests\coverage\cli::defaultClassPrompt)
+			->string($field->getMethodPrompt())->isEqualTo(tests\coverage\cli::defaultMethodPrompt)
 			->variable($field->getCoverage())->isNull()
 		;
 
-		$field = new tests\coverage\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new tests\coverage\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -55,7 +55,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 
 	public function testSetTitlePrompt()
 	{
-		$field = new tests\coverage\string();
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -67,7 +67,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 
 	public function testSetMethodPrompt()
 	{
-		$field = new tests\coverage\string();
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->object($field->setClassPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -79,7 +79,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 
 	public function testSetClassPrompt()
 	{
-		$field = new tests\coverage\string();
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -91,7 +91,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 
 	public function testSetWithRunner()
 	{
-		$field = new tests\coverage\string($locale = new atoum\locale());
+		$field = new tests\coverage\cli($locale = new atoum\locale());
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -136,7 +136,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
-		$field = new tests\coverage\string($locale = new atoum\locale());
+		$field = new tests\coverage\cli($locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -190,7 +190,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 
 		$scoreCoverage->addXdebugDataForTest($this, $xdebugData);
 
-		$field = new tests\coverage\string();
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -203,7 +203,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\tests\cov
 			)
 		;
 
-		$field = new tests\coverage\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new tests\coverage\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()

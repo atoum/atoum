@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\runner\tests\coverage
+class cli extends report\fields\runner\tests\coverage
 {
 	const defaultTitlePrompt = '> ';
 	const defaultClassPrompt = '=> ';

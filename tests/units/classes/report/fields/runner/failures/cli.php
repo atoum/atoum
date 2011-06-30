@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 {
 	public function testClass()
 	{
@@ -23,23 +23,23 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\failures\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\failures\string::defaultMethodPrompt)->isEqualTo('=> ')
+			->string(runner\failures\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\failures\cli::defaultMethodPrompt)->isEqualTo('=> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\failures\string::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\failures\string::defaultMethodPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(runner\failures\cli::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\failures\cli::defaultMethodPrompt)
 		;
 
-		$field = new runner\failures\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\failures\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
@@ -51,7 +51,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -63,7 +63,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 	public function testSetMethodPrompt()
 	{
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$this->assert
 			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -75,7 +75,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -94,7 +94,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 	public function test__toString()
 	{
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -136,7 +136,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 
 		$score->getMockController()->getFailAssertions = function() use ($fails) { return $fails; };
 
-		$field = new runner\failures\string();
+		$field = new runner\failures\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -148,7 +148,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 			)
 		;
 
-		$field = new runner\failures\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\failures\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()

@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 {
 	public function testClass()
 	{
@@ -23,23 +23,23 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\outputs\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\outputs\string::defaultMethodPrompt)->isEqualTo('=> ')
+			->string(runner\outputs\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\outputs\cli::defaultMethodPrompt)->isEqualTo('=> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\outputs\string::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\outputs\string::defaultMethodPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(runner\outputs\cli::defaultTitlePrompt)
+			->string($field->getMethodPrompt())->isEqualTo(runner\outputs\cli::defaultMethodPrompt)
 		;
 
-		$field = new runner\outputs\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\outputs\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
@@ -51,7 +51,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -63,7 +63,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function testSetMethodPrompt()
 	{
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$this->assert
 			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -75,7 +75,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -94,7 +94,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function test__toString()
 	{
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -130,7 +130,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 		$score->getMockController()->getOutputs = function() use ($fields) { return $fields; };
 
-		$field = new runner\outputs\string();
+		$field = new runner\outputs\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -143,7 +143,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 			)
 		;
 
-		$field = new runner\outputs\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\outputs\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEmpty()

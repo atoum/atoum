@@ -4,12 +4,11 @@ namespace mageekguy\atoum\report\fields\test\event;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\cli,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\exceptions
 ;
 
-class string extends report\fields\test\event
+class cli extends report\fields\test\event
 {
 	public function __toString()
 	{

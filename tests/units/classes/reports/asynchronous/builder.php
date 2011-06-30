@@ -24,21 +24,21 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$runnerVersionField = new fields\runner\version\string(null, '');
-		$runnerPhpField = new fields\runner\php\string(null, '', '   ');
-		$runnerDurationField = new fields\runner\duration\string(null, '');
-		$runnerResultField = new fields\runner\result\string(null, '');
-		$runnerFailuresField = new fields\runner\failures\string(null, '', '   ');
-		$runnerOutputsField = new fields\runner\outputs\string(null, '', '   ');
-		$runnerErrorsField = new fields\runner\errors\string(null, '', '   ', '      ');
-		$runnerExceptionsField = new fields\runner\exceptions\string(null, '', '   ', '      ');
-		$runnerTestsDurationField = new fields\runner\tests\duration\string(null, '');
-		$runnerTestsMemoryField = new fields\runner\tests\memory\string(null, '');
-		$runnerTestsCoverageField = new fields\runner\tests\coverage\string(null, '', '   ', '      ');
+		$runnerVersionField = new fields\runner\version\cli(null, '');
+		$runnerPhpField = new fields\runner\php\cli(null, '', '   ');
+		$runnerDurationField = new fields\runner\duration\cli(null, '');
+		$runnerResultField = new fields\runner\result\cli(null, '');
+		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');
+		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
+		$runnerErrorsField = new fields\runner\errors\cli(null, '', '   ', '      ');
+		$runnerExceptionsField = new fields\runner\exceptions\cli(null, '', '   ', '      ');
+		$runnerTestsDurationField = new fields\runner\tests\duration\cli(null, '');
+		$runnerTestsMemoryField = new fields\runner\tests\memory\cli(null, '');
+		$runnerTestsCoverageField = new fields\runner\tests\coverage\cli(null, '', '   ', '      ');
 
-		$testRunField = new fields\test\run\string(null, '');
-		$testDurationField = new fields\test\duration\string(null, '   ');
-		$testMemoryField = new fields\test\memory\string(null, '   ');
+		$testRunField = new fields\test\run\cli(null, '');
+		$testDurationField = new fields\test\duration\cli(null, '   ');
+		$testMemoryField = new fields\test\memory\cli(null, '   ');
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(

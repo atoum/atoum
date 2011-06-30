@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\memory;
+namespace mageekguy\atoum\report\fields\runner\coverage;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\test\memory
+class cli extends report\fields\runner\coverage
 {
-	const defaultPrompt = '=> ';
+	const defaultPrompt = '> ';
 
 	protected $prompt = '';
 
@@ -17,12 +17,9 @@ class string extends report\fields\test\memory
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
-		{
-			$prompt = static::defaultPrompt;
-		}
-
-		$this->setPrompt($prompt);
+		$this
+			->setPrompt($prompt ?: self::defaultPrompt)
+		;
 	}
 
 	public function setPrompt($prompt)
@@ -41,13 +38,13 @@ class string extends report\fields\test\memory
 	{
 		$string = $this->prompt;
 
-		if ($this->value === null)
+		if ($this->coverage === null)
 		{
-			$string .= $this->locale->_('Memory usage: unknown.');
+			$string .= $this->locale->_('Code coverage: unknown.');
 		}
 		else
 		{
-			$string .= sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $this->value / 1048576);
+			$string .= sprintf($this->locale->_('Code coverage: %3.2f%%.'), round($this->coverage->getValue() * 100, 2));
 		}
 
 		$string .= PHP_EOL;

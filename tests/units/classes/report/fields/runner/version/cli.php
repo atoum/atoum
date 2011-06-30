@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 {
 	public function testClass()
 	{
@@ -23,23 +23,23 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\version\string::defaultPrompt)->isEqualTo('> ')
+			->string(runner\version\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\version\string();
+		$field = new runner\version\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->string($field->getPrompt())->isEqualTo(runner\version\string::defaultPrompt)
+			->string($field->getPrompt())->isEqualTo(runner\version\cli::defaultPrompt)
 		;
 
-		$field = new runner\version\string($locale = new atoum\locale(), $prompt = uniqid(), $label = uniqid());
+		$field = new runner\version\cli($locale = new atoum\locale(), $prompt = uniqid(), $label = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
@@ -52,7 +52,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 
 	public function testSetPrompt()
 	{
-		$field = new runner\version\string();
+		$field = new runner\version\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -73,7 +73,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$runner = new atoum\runner();
 		$runner->setScore($score);
 
-		$field = new runner\version\string();
+		$field = new runner\version\cli();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
@@ -102,7 +102,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$runner = new atoum\runner();
 		$runner->setScore($score);
 
-		$field = new runner\version\string();
+		$field = new runner\version\cli();
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
@@ -110,7 +110,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
 		;
 
-		$field = new runner\version\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\version\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()

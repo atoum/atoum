@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures;
+namespace mageekguy\atoum\report\fields\runner\outputs;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\runner\failures
+class cli extends report\fields\runner\outputs
 {
 	const defaultTitlePrompt = '> ';
 	const defaultMethodPrompt = '=> ';
@@ -61,18 +61,22 @@ class string extends report\fields\runner\failures
 
 		if ($this->runner !== null)
 		{
-			$fails = $this->runner->getScore()->getFailAssertions();
+			$outputs = $this->runner->getScore()->getOutputs();
 
-			$numberOfFails = sizeof($fails);
+			$sizeOfOutputs = sizeof($outputs);
 
-			if ($numberOfFails > 0)
+			if ($sizeOfOutputs > 0)
 			{
-				$string .= $this->titlePrompt . sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails) . PHP_EOL;
+				$string .= $this->titlePrompt . sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs) . PHP_EOL;
 
-				foreach ($fails as $fail)
+				foreach ($outputs as $output)
 				{
-					$string .= $this->methodPrompt . $fail['class'] . '::' . $fail['method'] . '():' . PHP_EOL;
-					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed : %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
+					$string .= $this->methodPrompt . $output['class'] . '::' . $output['method'] . '():' . PHP_EOL;
+
+					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
+					{
+						$string .= $line . PHP_EOL;
+					}
 				}
 			}
 		}

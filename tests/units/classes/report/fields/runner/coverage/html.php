@@ -17,7 +17,7 @@ class html extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\report\fields\runner\coverage\string')
+			->testedClass->isSubclassOf('\mageekguy\atoum\report\fields\runner\coverage\cli')
 			->string(coverage\html::defaultPrompt)->isEqualTo('> ')
 			->string(coverage\html::defaultAlternatePrompt)->isEqualTo('=> ')
 		;

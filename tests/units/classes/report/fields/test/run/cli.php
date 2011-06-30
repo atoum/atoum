@@ -11,32 +11,32 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\test\run
+class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 {
 	public function testClass()
 	{
 		$this->assert
-			->class('\mageekguy\atoum\report\fields\test\run\string')->isSubClassOf('\mageekguy\atoum\report\fields\test')
+			->class('\mageekguy\atoum\report\fields\test\run\cli')->isSubClassOf('\mageekguy\atoum\report\fields\test')
 		;
 	}
 
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(test\run\string::defaultPrompt)->isEqualTo('> ')
+			->string(test\run\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new test\run\string();
+		$field = new test\run\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($field->getTestClass())->isNull()
 		;
 
-		$field = new test\run\string($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new test\run\cli($locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -46,7 +46,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 	public function testSetPrompt()
 	{
-		$field = new test\run\string();
+		$field = new test\run\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -58,7 +58,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 	public function testSetWithTest()
 	{
-		$field = new test\run\string();
+		$field = new test\run\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\test');
@@ -115,7 +115,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
-		$field = new test\run\string();
+		$field = new test\run\cli();
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)

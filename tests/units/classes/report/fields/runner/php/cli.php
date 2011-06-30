@@ -11,7 +11,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class string extends \mageekguy\atoum\tests\units\report\fields\runner
+class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 {
 	public function testClass()
 	{
@@ -23,22 +23,22 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\php\string::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\php\string::defaultVersionPrompt)->isEqualTo('=> ')
+			->string(runner\php\cli::defaultTitlePrompt)->isEqualTo('> ')
+			->string(runner\php\cli::defaultVersionPrompt)->isEqualTo('=> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\php\string::defaultTitlePrompt)
-			->string($field->getVersionPrompt())->isEqualTo(runner\php\string::defaultVersionPrompt)
+			->string($field->getTitlePrompt())->isEqualTo(runner\php\cli::defaultTitlePrompt)
+			->string($field->getVersionPrompt())->isEqualTo(runner\php\cli::defaultVersionPrompt)
 		;
 
-		$field = new runner\php\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -49,7 +49,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 
 		$this->assert
 			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -61,7 +61,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 
 	public function testSetVersionPrompt()
 	{
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 
 		$this->assert
 			->object($field->setVersionPrompt($prompt = uniqid()))->isIdenticalTo($field)
@@ -73,7 +73,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator
@@ -114,7 +114,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 		$field->setWithRunner($runner);
 
 		$this->assert
@@ -124,7 +124,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 			)
 		;
 
-		$field = new runner\php\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
 		$field->setWithRunner($runner);
 
 		$this->assert
@@ -136,7 +136,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 
 		$scoreController->getPhpVersion = ($phpVersionLine1 = uniqid()) . PHP_EOL . ($phpVersionLine2 = uniqid());
 
-		$field = new runner\php\string();
+		$field = new runner\php\cli();
 		$field->setWithRunner($runner);
 
 		$this->assert
@@ -147,7 +147,7 @@ class string extends \mageekguy\atoum\tests\units\report\fields\runner
 			)
 		;
 
-		$field = new runner\php\string($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
 		$field->setWithRunner($runner);
 
 		$this->assert

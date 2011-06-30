@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\runner\exceptions
+class cli extends report\fields\runner\exceptions
 {
 	const defaultTitlePrompt = '> ';
 	const defaultMethodPrompt = '=> ';

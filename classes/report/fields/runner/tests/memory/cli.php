@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\run;
+namespace mageekguy\atoum\report\fields\runner\tests\memory;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\test\run
+class cli extends report\fields\runner\tests\memory
 {
 	const defaultPrompt = '> ';
 
@@ -25,11 +25,6 @@ class string extends report\fields\test\run
 		$this->setPrompt($prompt);
 	}
 
-	public function getPrompt()
-	{
-		return $this->prompt;
-	}
-
 	public function setPrompt($prompt)
 	{
 		$this->prompt = (string) $prompt;
@@ -37,17 +32,22 @@ class string extends report\fields\test\run
 		return $this;
 	}
 
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
+
 	public function __toString()
 	{
 		$string = $this->prompt;
 
-		if ($this->testClass === null)
+		if ($this->value === null)
 		{
-			$string .= $this->locale->_('There is currently no test running.');
+			$string .= $this->locale->_('Total test memory usage: unknown.');
 		}
 		else
 		{
-			$string .= sprintf('%s:', $this->testClass);
+			$string .= sprintf($this->locale->__('Total test memory usage: %4.2f Mb.', 'Total tests memory usage: %4.2f Mb.', $this->testNumber), $this->value / 1048576);
 		}
 
 		$string .= PHP_EOL;

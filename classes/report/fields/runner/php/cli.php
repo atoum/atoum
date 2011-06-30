@@ -2,10 +2,12 @@
 
 namespace mageekguy\atoum\report\fields\runner\php;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum,
+	\mageekguy\atoum\report
+;
 
-class string extends report\fields\runner\php
+class cli extends report\fields\runner\php
 {
 	const defaultTitlePrompt = '> ';
 	const defaultVersionPrompt = '=> ';

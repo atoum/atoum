@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\coverage;
+namespace mageekguy\atoum\report\fields\test\run;
 
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report
 ;
 
-class string extends report\fields\runner\coverage
+class cli extends report\fields\test\run
 {
 	const defaultPrompt = '> ';
 
@@ -17,9 +17,17 @@ class string extends report\fields\runner\coverage
 	{
 		parent::__construct($locale);
 
-		$this
-			->setPrompt($prompt ?: self::defaultPrompt)
-		;
+		if ($prompt === null)
+		{
+			$prompt = static::defaultPrompt;
+		}
+
+		$this->setPrompt($prompt);
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
 	}
 
 	public function setPrompt($prompt)
@@ -29,22 +37,17 @@ class string extends report\fields\runner\coverage
 		return $this;
 	}
 
-	public function getPrompt()
-	{
-		return $this->prompt;
-	}
-
 	public function __toString()
 	{
 		$string = $this->prompt;
 
-		if ($this->coverage === null)
+		if ($this->testClass === null)
 		{
-			$string .= $this->locale->_('Code coverage: unknown.');
+			$string .= $this->locale->_('There is currently no test running.');
 		}
 		else
 		{
-			$string .= sprintf($this->locale->_('Code coverage: %3.2f%%.'), round($this->coverage->getValue() * 100, 2));
+			$string .= sprintf('%s:', $this->testClass);
 		}
 
 		$string .= PHP_EOL;
