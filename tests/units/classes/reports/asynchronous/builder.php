@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\report\fields,
 	\mageekguy\atoum\reports\asynchronous as reports
@@ -24,8 +25,8 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$runnerVersionField = new fields\runner\version\cli(null, '');
-		$runnerPhpField = new fields\runner\php\cli(new atoum\cli\prompt(''), null, new atoum\cli\prompt('   '));
+		$runnerVersionField = new fields\runner\version\cli(new prompt(''));
+		$runnerPhpField = new fields\runner\php\cli(new prompt(''), null, new prompt('   '));
 		$runnerDurationField = new fields\runner\duration\cli(null, '');
 		$runnerResultField = new fields\runner\result\cli();
 		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');

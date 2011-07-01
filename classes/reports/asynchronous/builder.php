@@ -4,6 +4,7 @@ namespace mageekguy\atoum\reports\asynchronous;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\exceptions,
 	\mageekguy\atoum\report\fields
 ;
@@ -14,8 +15,8 @@ class builder extends atoum\reports\asynchronous
 	{
 		parent::__construct($locale, $adapter);
 
-		$runnerVersionField = new fields\runner\version\cli(null, '');
-		$runnerPhpField = new fields\runner\php\cli(new atoum\cli\prompt(''), null, new atoum\cli\prompt('   '));
+		$runnerVersionField = new fields\runner\version\cli(new prompt(''));
+		$runnerPhpField = new fields\runner\php\cli(new prompt(''), null, new prompt('   '));
 		$runnerDurationField = new fields\runner\duration\cli(null, '');
 		$runnerResultField = new fields\runner\result\cli();
 		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');

@@ -4,6 +4,8 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\version;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\mock,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\report\fields\runner
@@ -36,17 +38,17 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->string($field->getPrompt())->isEqualTo(runner\version\cli::defaultPrompt)
+			->object($field->getPrompt())->isEqualTo(new prompt(runner\version\cli::defaultPrompt))
 		;
 
-		$field = new runner\version\cli($locale = new atoum\locale(), $prompt = uniqid(), $label = uniqid());
+		$field = new runner\version\cli($prompt = new prompt(uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->string($field->getPrompt())->isEqualTo($prompt)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
@@ -55,10 +57,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$field = new runner\version\cli();
 
 		$this->assert
-			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo($prompt)
-			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo((string) $prompt)
+			->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
@@ -110,7 +110,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
 		;
 
-		$field = new runner\version\cli($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\version\cli($prompt = new prompt(uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()

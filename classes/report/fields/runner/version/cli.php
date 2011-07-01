@@ -4,7 +4,9 @@ namespace mageekguy\atoum\report\fields\runner\version;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\version
@@ -13,21 +15,21 @@ class cli extends report\fields\runner\version
 
 	protected $prompt = '';
 
-	public function __construct(atoum\locale $locale =null, $prompt = null)
+	public function __construct(prompt $prompt = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = static::defaultPrompt;
+			$prompt = new prompt(static::defaultPrompt);
 		}
 
 		$this->setPrompt($prompt);
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt)
 	{
-		$this->prompt = (string) $prompt;
+		$this->prompt = $prompt;
 
 		return $this;
 	}
