@@ -13,9 +13,10 @@ class cli extends report\fields\runner\version
 {
 	const defaultPrompt = '> ';
 
-	protected $prompt = '';
+	protected $prompt = null;
+	protected $colorizer = null;
 
-	public function __construct(prompt $prompt = null, atoum\locale $locale = null)
+	public function __construct(prompt $prompt = null, colorizer $colorizer = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
@@ -24,7 +25,15 @@ class cli extends report\fields\runner\version
 			$prompt = new prompt(static::defaultPrompt);
 		}
 
-		$this->setPrompt($prompt);
+		if ($colorizer === null)
+		{
+			$colorizer = new colorizer('1;36');
+		}
+
+		$this
+			->setPrompt($prompt)
+			->setColorizer($colorizer)
+		;
 	}
 
 	public function setPrompt(prompt $prompt)
@@ -39,9 +48,21 @@ class cli extends report\fields\runner\version
 		return $this->prompt;
 	}
 
+	public function setColorizer(colorizer $colorizer)
+	{
+		$this->colorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getColorizer()
+	{
+		return $this->colorizer;
+	}
+
 	public function __toString()
 	{
-		return ($this->author === null || $this->version === null ? '' : $this->prompt . sprintf($this->locale->_('Atoum version %s by %s (%s)'), $this->version, $this->author, $this->path) . PHP_EOL);
+		return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize(sprintf($this->locale->_('Atoum version %s by %s (%s)'), $this->version, $this->author, $this->path)) . PHP_EOL);
 	}
 }
 

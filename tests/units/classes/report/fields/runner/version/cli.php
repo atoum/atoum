@@ -4,16 +4,16 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\version;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\report\fields\runner
+	\mageekguy\atoum\report\fields\runner\version
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
+class cli extends atoum\tests\units\report\fields\runner\version
 {
 	public function testClass()
 	{
@@ -25,23 +25,24 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(runner\version\cli::defaultPrompt)->isEqualTo('> ')
+			->string(version\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\version\cli();
+		$field = new version\cli();
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->object($field->getPrompt())->isEqualTo(new prompt(runner\version\cli::defaultPrompt))
+			->object($field->getPrompt())->isEqualTo(new prompt(version\cli::defaultPrompt))
+			->object($field->getColorizer())->isEqualTo(new colorizer('1;36'))
 		;
 
-		$field = new runner\version\cli($prompt = new prompt(uniqid()), $locale = new atoum\locale());
+		$field = new version\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
@@ -49,16 +50,27 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
 			->object($field->getPrompt())->isIdenticalTo($prompt)
+			->object($field->getCOlorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetPrompt()
 	{
-		$field = new runner\version\cli();
+		$field = new version\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 			->object($field->getPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetColorizer()
+	{
+		$field = new version\cli();
+
+		$this->assert
+			->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -73,7 +85,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$runner = new atoum\runner();
 		$runner->setScore($score);
 
-		$field = new runner\version\cli();
+		$field = new version\cli();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
@@ -102,20 +114,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\version
 		$runner = new atoum\runner();
 		$runner->setScore($score);
 
-		$field = new runner\version\cli();
+		$field = new version\cli();
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
 		;
 
-		$field = new runner\version\cli($prompt = new prompt(uniqid()), $locale = new atoum\locale());
+		$field = new version\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
 		;
 	}
 }
