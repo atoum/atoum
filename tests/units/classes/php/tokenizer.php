@@ -82,6 +82,14 @@ class tokenizer extends atoum\test
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isIdenticalTo($tokenizer)
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
+		;
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo {} namespace bar {} ?>'))->isIdenticalTo($tokenizer)
+			->castToString($tokenizer->getIterator())->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo {}')
+			->castToString($tokenizer->getIterator()->getNamespace(1))->isEqualTo('namespace bar {}')
 		;
 
 		/*

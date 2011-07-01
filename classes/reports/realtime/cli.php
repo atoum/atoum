@@ -14,10 +14,6 @@ class cli extends reports\realtime
 	{
 		parent::__construct();
 
-		$resultField = new fields\runner\result\cli();
-		$resultField->setSuccessColorizer(new atoum\cli\colorizer('0;37', '42'));
-		$resultField->setFailureColorizer(new atoum\cli\colorizer('0;37', '41'));
-
 		$this
 			->addRunnerField(new fields\runner\version\cli(), array(atoum\runner::runStart))
 			->addRunnerField(new fields\runner\php\cli(), array(atoum\runner::runStart))
@@ -25,7 +21,7 @@ class cli extends reports\realtime
 			->addRunnerField(new fields\runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\tests\coverage\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\duration\cli(), array(atoum\runner::runStop))
-			->addRunnerField($resultField, array(atoum\runner::runStop))
+			->addRunnerField(new fields\runner\result\cli(new atoum\cli\colorizer('0;37', '42'), new atoum\cli\colorizer('0;37', '41')), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\failures\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\outputs\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new fields\runner\errors\cli(), array(atoum\runner::runStop))

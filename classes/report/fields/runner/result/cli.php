@@ -15,7 +15,7 @@ class cli extends report\fields\runner\result
 	protected $successColorizer = null;
 	protected $failureColorizer = null;
 
-	public function __construct(atoum\locale $locale = null, $prompt = null)
+	public function __construct(atoum\cli\colorizer $successColorizer = null, atoum\cli\colorizer $failureColorizer = null, atoum\locale $locale = null, $prompt = null)
 	{
 		parent::__construct($locale);
 
@@ -24,7 +24,19 @@ class cli extends report\fields\runner\result
 			$prompt = static::defaultPrompt;
 		}
 
-		$this->setPrompt($prompt);
+		$this
+			->setPrompt($prompt)
+		;
+
+		if ($successColorizer !== null)
+		{
+			$this->setSuccessColorizer($successColorizer);
+		}
+
+		if ($failureColorizer !== null)
+		{
+			$this->setFailureColorizer($failureColorizer);
+		}
 	}
 
 	public function setPrompt($prompt)

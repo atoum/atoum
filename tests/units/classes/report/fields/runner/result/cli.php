@@ -43,7 +43,21 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailureColorizer())->isNull()
 		;
 
-		$field = new runner\result\cli($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli(null, null, null, null);
+
+		$this->assert
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->variable($field->getTestNumber())->isNull()
+			->variable($field->getTestMethodNumber())->isNull()
+			->variable($field->getFailNumber())->isNull()
+			->variable($field->getErrorNumber())->isNull()
+			->variable($field->getExceptionNumber())->isNull()
+			->string($field->getPrompt())->isEqualTo(runner\result\cli::defaultPrompt)
+			->variable($field->getSuccessColorizer())->isNull()
+			->variable($field->getFailureColorizer())->isNull()
+		;
+
+		$field = new runner\result\cli($successColorizer = new atoum\cli\colorizer(), $failureColorizer = new atoum\cli\colorizer(), $locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -53,8 +67,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
 			->string($field->getPrompt())->isEqualTo($prompt)
-			->variable($field->getSuccessColorizer())->isNull()
-			->variable($field->getFailureColorizer())->isNull()
+			->object($field->getSuccessColorizer())->isIdenticalTo($successColorizer)
+			->object($field->getFailureColorizer())->isIdenticalTo($failureColorizer)
 		;
 	}
 
@@ -169,7 +183,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
 		$runnerController->getTestMethodNumber = function() use (& $testMethodNumber) { return $testMethodNumber = rand(1, PHP_INT_MAX); };
 
-		$field = new runner\result\cli($locale = new atoum\locale());
+		$field = new runner\result\cli(null, null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
@@ -184,8 +198,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			)
 		;
 
-		$field = new runner\result\cli($locale = new atoum\locale());
-		$field->setSuccessColorizer($colorizer = new atoum\cli\colorizer(uniqid(), uniqid()));
+		$field = new runner\result\cli($colorizer = new atoum\cli\colorizer(uniqid(), uniqid()), null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
@@ -218,7 +231,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			)
 		;
 
-		$field = new runner\result\cli($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli(null, null, $locale = new atoum\locale(), $prompt = uniqid());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)

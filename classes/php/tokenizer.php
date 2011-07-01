@@ -129,14 +129,17 @@ class tokenizer implements \iteratorAggregate
 						$inNamespace = false;
 					}
 					break;
+			}
 
+			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+			switch ($token[0])
+			{
 				case '}':
 					$this->currentIterator = $this->currentIterator->getParent();
 					$inNamespace = false;
 					break;
 			}
-
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 
 			$this->tokens->next();
 		}

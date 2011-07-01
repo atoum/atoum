@@ -17,7 +17,7 @@ class builder extends atoum\reports\asynchronous
 		$runnerVersionField = new fields\runner\version\cli(null, '');
 		$runnerPhpField = new fields\runner\php\cli(null, '', '   ');
 		$runnerDurationField = new fields\runner\duration\cli(null, '');
-		$runnerResultField = new fields\runner\result\cli(null, '');
+		$runnerResultField = new fields\runner\result\cli(null, null, null, '');
 		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');
 		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
 		$runnerErrorsField = new fields\runner\errors\cli(null, '', '   ', '      ');
