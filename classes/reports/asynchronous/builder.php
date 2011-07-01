@@ -15,9 +15,9 @@ class builder extends atoum\reports\asynchronous
 		parent::__construct($locale, $adapter);
 
 		$runnerVersionField = new fields\runner\version\cli(null, '');
-		$runnerPhpField = new fields\runner\php\cli(null, '', '   ');
+		$runnerPhpField = new fields\runner\php\cli(new atoum\cli\prompt(''), null, new atoum\cli\prompt('   '));
 		$runnerDurationField = new fields\runner\duration\cli(null, '');
-		$runnerResultField = new fields\runner\result\cli(null, null, null, '');
+		$runnerResultField = new fields\runner\result\cli();
 		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');
 		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
 		$runnerErrorsField = new fields\runner\errors\cli(null, '', '   ', '      ');

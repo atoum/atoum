@@ -15,8 +15,10 @@ class cli extends atoum\test
 	public function test__construct()
 	{
 		$resultField = new report\fields\runner\result\cli();
-		$resultField->setSuccessColorizer(new atoum\cli\colorizer('0;37', '42'));
-		$resultField->setFailureColorizer(new atoum\cli\colorizer('0;37', '41'));
+		$resultField
+			->setSuccessColorizer(new atoum\cli\colorizer('0;37', '42'))
+			->setFailureColorizer(new atoum\cli\colorizer('0;37', '41'))
+		;
 
 		$report = new reports\cli();
 

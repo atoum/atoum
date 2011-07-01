@@ -15,33 +15,37 @@ class cli extends report\fields\runner\result
 	protected $successColorizer = null;
 	protected $failureColorizer = null;
 
-	public function __construct(atoum\cli\colorizer $successColorizer = null, atoum\cli\colorizer $failureColorizer = null, atoum\locale $locale = null, $prompt = null)
+	public function __construct(atoum\cli\colorizer $successColorizer = null, atoum\cli\colorizer $failureColorizer = null, atoum\cli\prompt $prompt = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = static::defaultPrompt;
+			$prompt = new atoum\cli\prompt(static::defaultPrompt);
 		}
 
 		$this
 			->setPrompt($prompt)
 		;
 
-		if ($successColorizer !== null)
+		if ($successColorizer === null)
 		{
-			$this->setSuccessColorizer($successColorizer);
+			$successColorizer = new atoum\cli\colorizer();
 		}
 
-		if ($failureColorizer !== null)
+		$this->setSuccessColorizer($successColorizer);
+
+		if ($failureColorizer === null)
 		{
-			$this->setFailureColorizer($failureColorizer);
+			$failureColorizer = new atoum\cli\colorizer();
 		}
+
+		$this->setFailureColorizer($failureColorizer);
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(atoum\cli\prompt $prompt)
 	{
-		$this->prompt = (string) $prompt;
+		$this->prompt = $prompt;
 
 		return $this;
 	}
@@ -83,37 +87,29 @@ class cli extends report\fields\runner\result
 		{
 			$string .= $this->locale->_('No test running.');
 		}
-		else if ($this->failNumber === 0)
+		else if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0)
 		{
-			$string .= sprintf($this->locale->_('Success (%s, %s, %s, %s, %s) !'),
-					sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-					sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
-					sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber),
-					sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
-					sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
+			$string .= $this->successColorizer->colorize(sprintf($this->locale->_('Success (%s, %s, %s, %s, %s) !'),
+						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
+						sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
+						sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber),
+						sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
+						sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
+					)
 				)
 			;
-
-			if ($this->successColorizer !== null)
-			{
-				$string = $this->successColorizer->colorize($string);
-			}
 		}
 		else
 		{
-			$string .= sprintf($this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
-					sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-					sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
-					sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),
-					sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
-					sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
+			$string .= $this->failureColorizer->colorize(sprintf($this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
+						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
+						sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
+						sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),
+						sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
+						sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
+					)
 				)
 			;
-
-			if ($this->failureColorizer !== null)
-			{
-				$string = $this->failureColorizer->colorize($string);
-			}
 		}
 
 		return $string . PHP_EOL;

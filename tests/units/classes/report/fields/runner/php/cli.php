@@ -4,6 +4,8 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\php;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\mock,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\report\fields\runner
@@ -24,7 +26,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 	{
 		$this->assert
 			->string(runner\php\cli::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\php\cli::defaultVersionPrompt)->isEqualTo('=> ')
+			->string(runner\php\cli::defaultDataPrompt)->isEqualTo('=> ')
 		;
 	}
 
@@ -34,16 +36,28 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 
 		$this->assert
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\php\cli::defaultTitlePrompt)
-			->string($field->getVersionPrompt())->isEqualTo(runner\php\cli::defaultVersionPrompt)
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\php\cli::defaultTitlePrompt))
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer('1;36'))
+			->object($field->getDataPrompt())->isEqualTo(new prompt(runner\php\cli::defaultDataPrompt, new colorizer('1;36')))
+			->object($field->getDataColorizer())->isEqualTo(new colorizer())
 		;
 
-		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli(null, null, null, null);
+
+		$this->assert
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\php\cli::defaultTitlePrompt))
+			->object($field->getDataPrompt())->isEqualTo(new prompt(runner\php\cli::defaultDataPrompt, new colorizer('1;36')))
+		;
+
+		$field = new runner\php\cli($titlePrompt = new prompt(), $titleColorizer = new colorizer(), $dataPrompt = new prompt(), $dataColorizer = new colorizer(), $locale = new atoum\locale());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
-			->string($field->getVersionPrompt())->isEqualTo($versionPrompt)
+			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getDataPrompt())->isIdenticalTo($dataPrompt)
+			->object($field->getDataColorizer())->isIdenticalTo($dataColorizer)
 		;
 	}
 
@@ -52,22 +66,38 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 		$field = new runner\php\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo($prompt)
-			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getTitlePrompt())->isIdenticalTo($prompt)
 		;
 	}
 
-	public function testSetVersionPrompt()
+	public function testSetTitleColorizer()
 	{
 		$field = new runner\php\cli();
 
 		$this->assert
-			->object($field->setVersionPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getVersionPrompt())->isEqualTo($prompt)
-			->object($field->setVersionPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getVersionPrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
+	public function testSetDataPrompt()
+	{
+		$field = new runner\php\cli();
+
+		$this->assert
+			->object($field->setDataPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getDataPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetDataColorizer()
+	{
+		$field = new runner\php\cli();
+
+		$this->assert
+			->object($field->setDataColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getDataColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -75,8 +105,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 	{
 		$field = new runner\php\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
@@ -118,19 +147,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
-				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersion . PHP_EOL
+			->castToString($field)->isEqualTo(
+				  $field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP path:')) . ' ' . $field->getDataColorizer()->colorize($phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP version:')) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersion) . PHP_EOL
 			)
 		;
 
-		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
-				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersion . PHP_EOL
+			->castToString($field)->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP path:')) . ' ' . $field->getDataColorizer()->colorize($phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP version:')) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersion) . PHP_EOL
 			)
 		;
 
@@ -140,21 +170,21 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
-				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersionLine1 . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersionLine2 . PHP_EOL
+			->castToString($field)->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP path:')) . ' ' . $field->getDataColorizer()->colorize($phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP version:')) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersionLine1) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersionLine2) . PHP_EOL
 			)
 		;
 
-		$field = new runner\php\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $versionPrompt = uniqid());
+		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->_('PHP path: %s'), $phpPath) . PHP_EOL
-				. $field->getTitlePrompt() . $field->getLocale()->_('PHP version:') . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersionLine1 . PHP_EOL
-				. $field->getVersionPrompt() . $phpVersionLine2 . PHP_EOL
+			->castToString($field)->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP path:')) . ' ' . $field->getDataColorizer()->colorize($phpPath) . PHP_EOL
+				. $field->getTitlePrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->_('PHP version:')) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersionLine1) . PHP_EOL
+				. $field->getDataPrompt() . $field->getDataColorizer()->colorize($phpVersionLine2) . PHP_EOL
 			)
 		;
 	}

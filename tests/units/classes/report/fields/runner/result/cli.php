@@ -38,9 +38,13 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailNumber())->isNull()
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
-			->string($field->getPrompt())->isEqualTo(runner\result\cli::defaultPrompt)
-			->variable($field->getSuccessColorizer())->isNull()
-			->variable($field->getFailureColorizer())->isNull()
+			->object($field->getPrompt())->isEqualTo(new atoum\cli\prompt(runner\result\cli::defaultPrompt))
+			->object($field->getSuccessColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->variable($field->getSuccessColorizer()->getForeground())->isNull()
+			->variable($field->getSuccessColorizer()->getBackground())->isNull()
+			->object($field->getFailureColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->variable($field->getFailureColorizer()->getForeground())->isNull()
+			->variable($field->getFailureColorizer()->getBackground())->isNull()
 		;
 
 		$field = new runner\result\cli(null, null, null, null);
@@ -52,12 +56,16 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailNumber())->isNull()
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
-			->string($field->getPrompt())->isEqualTo(runner\result\cli::defaultPrompt)
-			->variable($field->getSuccessColorizer())->isNull()
-			->variable($field->getFailureColorizer())->isNull()
+			->object($field->getPrompt())->isEqualTo(new atoum\cli\prompt(runner\result\cli::defaultPrompt))
+			->object($field->getSuccessColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->variable($field->getSuccessColorizer()->getForeground())->isNull()
+			->variable($field->getSuccessColorizer()->getBackground())->isNull()
+			->object($field->getFailureColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->variable($field->getFailureColorizer()->getForeground())->isNull()
+			->variable($field->getFailureColorizer()->getBackground())->isNull()
 		;
 
-		$field = new runner\result\cli($successColorizer = new atoum\cli\colorizer(), $failureColorizer = new atoum\cli\colorizer(), $locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli($successColorizer = new atoum\cli\colorizer(), $failureColorizer = new atoum\cli\colorizer(), $prompt = new atoum\cli\prompt(uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -66,7 +74,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			->variable($field->getFailNumber())->isNull()
 			->variable($field->getErrorNumber())->isNull()
 			->variable($field->getExceptionNumber())->isNull()
-			->string($field->getPrompt())->isEqualTo($prompt)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
 			->object($field->getSuccessColorizer())->isIdenticalTo($successColorizer)
 			->object($field->getFailureColorizer())->isIdenticalTo($failureColorizer)
 		;
@@ -77,10 +85,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 		$field = new runner\result\cli();
 
 		$this->assert
-			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo($prompt)
-			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo((string) $prompt)
+			->object($field->setPrompt($prompt = new atoum\cli\prompt()))->isIdenticalTo($field)
+			->object($field->getPrompt())->isEqualTo($prompt)
 		;
 	}
 
@@ -163,27 +169,25 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 
 	public function test__toString()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
 
 		$score = new mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
-		$scoreController->getAssertionNumber = function() use (& $assertionNumber) { return $assertionNumber = rand(1, PHP_INT_MAX); };
-		$scoreController->getErrorNumber = function() use (& $errorNumber) { return $errorNumber = rand(0, PHP_INT_MAX); };
-		$scoreController->getExceptionNumber = function() use (& $exceptionNumber) { return $exceptionNumber = rand(0, PHP_INT_MAX); };
-
+		$scoreController->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX);
+		$scoreController->getFailNumber = $failNumber = 0;
+		$scoreController->getErrorNumber = $errorNumber = 0;
+		$scoreController->getExceptionNumber = $exceptionNumber = 0;
 
 		$runner = new mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
-		$runnerController->getScore = function() use ($score) { return $score; };
-		$scoreController->getFailNumber = function() { return 0; };
-		$runnerController->getTestNumber = function() use (& $testNumber) { return $testNumber = rand(1, PHP_INT_MAX); };
-		$runnerController->getTestMethodNumber = function() use (& $testMethodNumber) { return $testMethodNumber = rand(1, PHP_INT_MAX); };
+		$runnerController->getScore = $score;
+		$runnerController->getTestNumber = $testNumber = rand(1, PHP_INT_MAX);
+		$runnerController->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX);
 
-		$field = new runner\result\cli(null, null, $locale = new atoum\locale());
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
@@ -198,25 +202,26 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			)
 		;
 
-		$field = new runner\result\cli($colorizer = new atoum\cli\colorizer(uniqid(), uniqid()), null, $locale = new atoum\locale());
+		$field = new runner\result\cli($colorizer = new atoum\cli\colorizer(uniqid(), uniqid()), null, null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
 			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $locale->_('No test running.') . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($colorizer->colorize($field->getPrompt() . sprintf($locale->_('Success (%s, %s, %s, %s, %s) !'),
-					sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
-					sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
-					sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
-					sprintf($locale->__('%s error', '%s errors', $errorNumber), $errorNumber),
-					sprintf($locale->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($locale->_('Success (%s, %s, %s, %s, %s) !'),
+						sprintf($locale->__('%s test', '%s tests', $testNumber), $testNumber),
+						sprintf($locale->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+						sprintf($locale->__('%s assertion', '%s assertions', $assertionNumber), $assertionNumber),
+						sprintf($locale->__('%s error', '%s errors', $errorNumber), $errorNumber),
+						sprintf($locale->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber)
+					)
 				) . PHP_EOL
 			)
 		;
 
-		$scoreController->getFailNumber = function() use (& $failNumber) { return $failNumber = rand(1, PHP_INT_MAX); };
+		$scoreController->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX);
 
-		$field = new runner\result\cli();
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
@@ -231,7 +236,102 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\result
 			)
 		;
 
-		$field = new runner\result\cli(null, null, $locale = new atoum\locale(), $prompt = uniqid());
+		$field = new runner\result\cli(null, $colorizer = new atoum\cli\colorizer(uniqid(), uniqid()), null, $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !'),
+					sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+					sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+					sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+					sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+					sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber)
+					)
+				) . PHP_EOL
+			)
+		;
+
+		$scoreController->getErrorNumber = $errorNumber = 0;
+		$scoreController->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX);
+
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
+		$scoreController->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX);
+		$scoreController->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX);
+
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
+		$scoreController->getErrorNumber = $errorNumber = 0;
+		$scoreController->getExceptionNumber = $exceptionNumber = 0;
+		$scoreController->getFailNumber = $failNumber = rand(1, PHP_INT_MAX);
+
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
+		$scoreController->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX);
+		$scoreController->getExceptionNumber = $exceptionNumber = 0;
+		$scoreController->getFailNumber = $failNumber = rand(1, PHP_INT_MAX);
+
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)
+			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('Failure (%s, %s, %s, %s, %s) !') . PHP_EOL,
+				sprintf($field->getLocale()->__('%s test', '%s tests', $testNumber), $testNumber),
+				sprintf($field->getLocale()->__('%s method', '%s methods', $testMethodNumber), $testMethodNumber),
+				sprintf($field->getLocale()->__('%s failure', '%s failures', $failNumber), $failNumber),
+				sprintf($field->getLocale()->__('%s error', '%s errors', $errorNumber), $errorNumber),
+				sprintf($field->getLocale()->__('%s exception', '%s exceptions', $exceptionNumber), $exceptionNumber))
+			)
+		;
+
+		$scoreController->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX);
+		$scoreController->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX);
+		$scoreController->getFailNumber = $failNumber = rand(1, PHP_INT_MAX);
+
+		$field = new runner\result\cli(null, null, null, $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getLocale()->_('No test running.') . PHP_EOL)

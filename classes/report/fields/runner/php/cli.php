@@ -4,40 +4,58 @@ namespace mageekguy\atoum\report\fields\runner\php;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	\mageekguy\atoum\report,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\php
 {
 	const defaultTitlePrompt = '> ';
-	const defaultVersionPrompt = '=> ';
+	const defaultDataPrompt = '=> ';
 
-	protected $titlePrompt = '';
-	protected $versionPrompt = '';
+	protected $titlePrompt = null;
+	protected $titleColorizer = null;
+	protected $dataPrompt = null;
+	protected $dataColorizer = null;
 
-	public function __construct(atoum\locale $locale = null, $titlePrompt = null, $versionPrompt = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $dataPrompt = null, colorizer $dataColorizer = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($titlePrompt === null)
 		{
-			$titlePrompt = static::defaultTitlePrompt;
+			$titlePrompt = new prompt(static::defaultTitlePrompt);
 		}
 
-		if ($versionPrompt === null)
+		if ($titleColorizer === null)
 		{
-			$versionPrompt = static::defaultVersionPrompt;
+			$titleColorizer = new colorizer('1;36');
+		}
+
+		if ($dataPrompt === null)
+		{
+			$dataPrompt = new prompt(static::defaultDataPrompt, new colorizer('1;36'));
+		}
+
+		if ($dataColorizer === null)
+		{
+			$dataColorizer = new colorizer();
 		}
 
 		$this
 			->setTitlePrompt($titlePrompt)
-			->setVersionPrompt($versionPrompt)
+			->setTitleColorizer($titleColorizer)
+			->setDataPrompt($dataPrompt)
+			->setDataColorizer($dataColorizer)
 		;
 	}
 
 	public function setTitlePrompt($prompt)
 	{
-		return $this->setPrompt($this->titlePrompt, $prompt);
+		$this->titlePrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getTitlePrompt()
@@ -45,29 +63,56 @@ class cli extends report\fields\runner\php
 		return $this->titlePrompt;
 	}
 
-	public function setVersionPrompt($prompt)
+	public function setTitleColorizer(colorizer $colorizer)
 	{
-		return $this->setPrompt($this->versionPrompt, $prompt);
+		$this->titleColorizer = $colorizer;
+
+		return $this;
 	}
 
-	public function getVersionPrompt()
+	public function getTitleColorizer()
 	{
-		return $this->versionPrompt;
+		return $this->titleColorizer;
+	}
+
+	public function setDataPrompt($prompt)
+	{
+		$this->dataPrompt = $prompt;
+
+		return $this;
+	}
+
+	public function getDataPrompt()
+	{
+		return $this->dataPrompt;
+	}
+
+	public function setDataColorizer(colorizer $colorizer)
+	{
+		$this->dataColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getDataColorizer()
+	{
+		return $this->dataColorizer;
 	}
 
 	public function __toString()
 	{
-		return $this->titlePrompt . sprintf($this->locale->_('PHP path: %s'), $this->phpPath) . PHP_EOL
-			. $this->titlePrompt . $this->locale->_('PHP version:') . PHP_EOL
-			. $this->versionPrompt . str_replace(PHP_EOL, PHP_EOL . $this->versionPrompt, rtrim($this->phpVersion)) . PHP_EOL
+		$string =
+			$this->titlePrompt . $this->titleColorizer->colorize($this->locale->_('PHP path:')) . ' ' . $this->dataColorizer->colorize($this->phpPath) . PHP_EOL
+			.
+			$this->titlePrompt . $this->titleColorizer->colorize($this->locale->_('PHP version:')) . PHP_EOL
 		;
-	}
 
-	protected function setPrompt(& $property, $prompt)
-	{
-		$property = (string) $prompt;
+		foreach (explode(PHP_EOL, $this->phpVersion) as $line)
+		{
+			$string .= $this->dataPrompt . $this->dataColorizer->colorize(rtrim($line)) . PHP_EOL;
+		}
 
-		return $this;
+		return $string;
 	}
 }
 
