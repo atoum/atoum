@@ -27,14 +27,14 @@ class builder extends atoum\test
 
 		$runnerVersionField = new fields\runner\version\cli(new prompt(''));
 		$runnerPhpField = new fields\runner\php\cli(new prompt(''), null, new prompt('   '));
-		$runnerDurationField = new fields\runner\duration\cli(null, '');
+		$runnerDurationField = new fields\runner\duration\cli(new prompt(''));
 		$runnerResultField = new fields\runner\result\cli();
 		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');
 		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
-		$runnerErrorsField = new fields\runner\errors\cli(null, '', '   ', '      ');
+		$runnerErrorsField = new fields\runner\errors\cli(new prompt(''), null, new prompt('   '), null, new prompt('      '));
 		$runnerExceptionsField = new fields\runner\exceptions\cli(null, '', '   ', '      ');
 		$runnerTestsDurationField = new fields\runner\tests\duration\cli(null, '');
-		$runnerTestsMemoryField = new fields\runner\tests\memory\cli(null, '');
+		$runnerTestsMemoryField = new fields\runner\tests\memory\cli(new prompt(''));
 		$runnerTestsCoverageField = new fields\runner\tests\coverage\cli(null, '', '   ', '      ');
 
 		$testRunField = new fields\test\run\cli(null, '');

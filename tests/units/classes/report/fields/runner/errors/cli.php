@@ -5,13 +5,16 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\errors;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report,
-	\mageekguy\atoum\report\fields\runner
+	\mageekguy\atoum\report\fields\runner,
+	\mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
+class cli extends units\report\fields\runner\errors
 {
 	public function testClass()
 	{
@@ -36,19 +39,38 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\errors\cli::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\errors\cli::defaultMethodPrompt)
-			->string($field->getErrorPrompt())->isEqualTo(runner\errors\cli::defaultErrorPrompt)
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\errors\cli::defaultTitlePrompt))
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\errors\cli::defaultMethodPrompt, new colorizer('0;31')))
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getErrorPrompt())->isEqualTo(new prompt(runner\errors\cli::defaultErrorPrompt, new colorizer('0;31')))
+			->object($field->getErrorColorizer())->isEqualTo(new colorizer())
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli(null, null, null, null, null, null, null);
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\errors\cli::defaultTitlePrompt))
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\errors\cli::defaultMethodPrompt, new colorizer('0;31')))
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getErrorPrompt())->isEqualTo(new prompt(runner\errors\cli::defaultErrorPrompt, new colorizer('0;31')))
+			->object($field->getErrorColorizer())->isEqualTo(new colorizer())
+		;
+
+		$field = new runner\errors\cli ($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(), $locale = new atoum\locale());
+
+		$this->assert
+			->variable($field->getRunner())->isNull()
+			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
+			->object($field->getMethodColorizer())->isIdenticalTo($methodColorizer)
+			->object($field->getErrorPrompt())->isIdenticalTo($errorPrompt)
+			->object($field->getErrorColorizer())->isIdenticalTo($errorColorizer)
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
-			->string($field->getErrorPrompt())->isEqualTo($errorPrompt)
 		;
 	}
 
@@ -57,10 +79,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$field = new runner\errors\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo($prompt)
-			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetTitleColorizer()
+	{
+		$field = new runner\errors\cli();
+
+		$this->assert
+			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -69,10 +99,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$field = new runner\errors\cli();
 
 		$this->assert
-			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo($prompt)
-			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
+			->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getMethodPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetMethodColorizer()
+	{
+		$field = new runner\errors\cli();
+
+		$this->assert
+			->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -81,10 +119,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$field = new runner\errors\cli();
 
 		$this->assert
-			->object($field->setErrorPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getErrorPrompt())->isEqualTo($prompt)
-			->object($field->setErrorPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getErrorPrompt())->isEqualTo((string) $prompt)
+			->object($field->setErrorPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getErrorPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetErrorColorizer()
+	{
+		$field = new runner\errors\cli();
+
+		$this->assert
+			->object($field->setErrorColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getErrorColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -92,8 +138,9 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 	{
 		$field = new runner\errors\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\runner');
+		$this->mock
+			->generate('\mageekguy\atoum\runner')
+		;
 
 		$runner = new mock\mageekguy\atoum\runner();
 
@@ -109,8 +156,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 	public function test__toString()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
@@ -118,13 +164,13 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 		$score = new mock\mageekguy\atoum\score();
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = function() use ($score) { return $score; };
+		$runner->getMockController()->getScore = $score;
 
 		$field = new runner\errors\cli();
 
 		$this->startCase('There is no error in score with default prompts');
 
-		$score->getMockController()->getErrors = function() { return array(); };
+		$score->getMockController()->getErrors = array();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -160,33 +206,33 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 			),
 		);
 
-		$score->getMockController()->getErrors = function() use ($allErrors) { return $allErrors; };
+		$score->getMockController()->getErrors = $allErrors;
 
 		$field = new runner\errors\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine)) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $type, $file, $line, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d:'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine)) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
@@ -225,27 +271,27 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase)) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $type, $file, $line, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on line %d, generated by file %s on line %d in case \'%s\':'), $otherType, $otherFile, $otherLine, $otherErrorFile, $otherErrorLine, $otherCase)) . PHP_EOL .
 				$firstOtherMessage . PHP_EOL .
 				$secondOtherMessage . PHP_EOL
 			)
@@ -273,20 +319,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -313,20 +359,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -353,20 +399,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d:'), $type, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -393,20 +439,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in unknown file on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -433,20 +479,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d:'), $type, $file, $errorFile, $errorLine)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
@@ -473,20 +519,20 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\errors
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $field->getErrorColorizer()->colorize(sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
 
-		$field = new runner\errors\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid(), $errorPrompt = uniqid());
+		$field = new runner\errors\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $errorPrompt = new prompt(uniqid()), $errorColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$field->getErrorPrompt() . sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d error:', 'There are %d errors:', sizeof($allErrors)), sizeof($allErrors))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$field->getErrorPrompt() . $errorColorizer->colorize(sprintf($field->getLocale()->_('Error %s in %s on unknown line, generated by file %s on line %d in case \'%s\':'), $type, $file, $errorFile, $errorLine, $case)) . PHP_EOL .
 				$message . PHP_EOL
 			)
 		;
