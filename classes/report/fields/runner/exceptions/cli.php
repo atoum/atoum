@@ -4,6 +4,8 @@ namespace mageekguy\atoum\report\fields\runner\exceptions;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
@@ -13,39 +15,62 @@ class cli extends report\fields\runner\exceptions
 	const defaultMethodPrompt = '=> ';
 	const defaultExceptionPrompt = '==> ';
 
-	protected $titlePrompt = '';
-	protected $methodPrompt = '';
-	protected $exceptionPrompt = '';
+	protected $titlePrompt = null;
+	protected $titleColorizer = null;
+	protected $methodPrompt = null;
+	protected $methodColorizer = null;
+	protected $exceptionPrompt = null;
+	protected $exceptionColorizer = null;
 
-	public function __construct(atoum\locale $locale = null, $titlePrompt = null, $methodPrompt = null, $exceptionPrompt = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $exceptionPrompt = null, colorizer $exceptionColorizer = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($titlePrompt === null)
 		{
-			$titlePrompt = static::defaultTitlePrompt;
+			$titlePrompt = new prompt(self::defaultTitlePrompt);
+		}
+
+		if ($titleColorizer === null)
+		{
+			$titleColorizer = new colorizer('0;35');
 		}
 
 		if ($methodPrompt === null)
 		{
-			$methodPrompt = static::defaultMethodPrompt;
+			$methodPrompt = new prompt(self::defaultMethodPrompt, new colorizer('0;35'));
+		}
+
+		if ($methodColorizer === null)
+		{
+			$methodColorizer = new colorizer('0;35');
 		}
 
 		if ($exceptionPrompt === null)
 		{
-			$exceptionPrompt = static::defaultExceptionPrompt;
+			$exceptionPrompt = new prompt(self::defaultExceptionPrompt, new colorizer('0;35'));
+		}
+
+		if ($exceptionColorizer === null)
+		{
+			$exceptionColorizer = new colorizer('0;35');
 		}
 
 		$this
 			->setTitlePrompt($titlePrompt)
+			->setTitleColorizer($titleColorizer)
 			->setMethodPrompt($methodPrompt)
+			->setMethodColorizer($methodColorizer)
 			->setExceptionPrompt($exceptionPrompt)
+			->setExceptionColorizer($exceptionColorizer)
 		;
 	}
 
-	public function setTitlePrompt($prompt)
+	public function setTitlePrompt(prompt $prompt)
 	{
-		return $this->setPrompt($this->titlePrompt, $prompt);
+		$this->titlePrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getTitlePrompt()
@@ -53,9 +78,23 @@ class cli extends report\fields\runner\exceptions
 		return $this->titlePrompt;
 	}
 
+	public function setTitleColorizer(colorizer $colorizer)
+	{
+		$this->titleColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
 	public function setMethodPrompt($prompt)
 	{
-		return $this->setPrompt($this->methodPrompt, $prompt);
+		$this->methodPrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getMethodPrompt()
@@ -63,14 +102,40 @@ class cli extends report\fields\runner\exceptions
 		return $this->methodPrompt;
 	}
 
+	public function setMethodColorizer(colorizer $colorizer)
+	{
+		$this->methodColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getMethodColorizer()
+	{
+		return $this->methodColorizer;
+	}
+
 	public function setExceptionPrompt($prompt)
 	{
-		return $this->setPrompt($this->exceptionPrompt, $prompt);
+		$this->exceptionPrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getExceptionPrompt()
 	{
 		return $this->exceptionPrompt;
+	}
+
+	public function setExceptionColorizer(colorizer $colorizer)
+	{
+		$this->exceptionColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getExceptionColorizer()
+	{
+		return $this->exceptionColorizer;
 	}
 
 	public function __toString()
@@ -85,7 +150,7 @@ class cli extends report\fields\runner\exceptions
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= $this->titlePrompt . sprintf($this->locale->__('There is %d exception:', 'There are %d exceptions:', $sizeOfErrors), $sizeOfErrors) . PHP_EOL;
+				$string .= $this->titlePrompt . $this->titleColorizer->colorize(sprintf($this->locale->__('There is %d exception:', 'There are %d exceptions:', $sizeOfErrors), $sizeOfErrors)) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -94,13 +159,13 @@ class cli extends report\fields\runner\exceptions
 				{
 					if ($exception['class'] !== $class || $exception['method'] !== $method)
 					{
-						$string .= $this->methodPrompt . $exception['class'] . '::' . $exception['method'] . '():' . PHP_EOL;
+						$string .= $this->methodPrompt . $this->methodColorizer->colorize($exception['class'] . '::' . $exception['method'] . '():') . PHP_EOL;
 
 						$class = $exception['class'];
 						$method = $exception['method'];
 					}
 
-					$string .= $this->exceptionPrompt . sprintf($this->locale->_('Exception throwed in file %s on line %d:'), $exception['file'], $exception['line']) . PHP_EOL;
+					$string .= $this->exceptionPrompt . $this->exceptionColorizer->colorize(sprintf($this->locale->_('Exception throwed in file %s on line %d:'), $exception['file'], $exception['line'])) . PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
 					{
@@ -111,13 +176,6 @@ class cli extends report\fields\runner\exceptions
 		}
 
 		return $string;
-	}
-
-	protected function setPrompt(& $property, $prompt)
-	{
-		$property = (string) $prompt;
-
-		return $this;
 	}
 }
 

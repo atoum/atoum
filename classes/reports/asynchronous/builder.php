@@ -5,6 +5,7 @@ namespace mageekguy\atoum\reports\asynchronous;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\exceptions,
 	\mageekguy\atoum\report\fields
 ;
@@ -19,10 +20,10 @@ class builder extends atoum\reports\asynchronous
 		$runnerPhpField = new fields\runner\php\cli(new prompt(''), null, new prompt('   '));
 		$runnerDurationField = new fields\runner\duration\cli(new prompt(''));
 		$runnerResultField = new fields\runner\result\cli();
-		$runnerFailuresField = new fields\runner\failures\cli(null, '', '   ');
+		$runnerFailuresField = new fields\runner\failures\cli(new prompt(''), new colorizer(), new prompt('   ', new colorizer()), new colorizer());
 		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
-		$runnerErrorsField = new fields\runner\errors\cli(new prompt(''), null, new prompt('   '), null, new prompt('      '));
-		$runnerExceptionsField = new fields\runner\exceptions\cli(null, '', '   ', '      ');
+		$runnerErrorsField = new fields\runner\errors\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
+		$runnerExceptionsField = new fields\runner\exceptions\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
 		$runnerTestsDurationField = new fields\runner\tests\duration\cli(null, '');
 		$runnerTestsMemoryField = new fields\runner\tests\memory\cli(new prompt(''));
 		$runnerTestsCoverageField = new fields\runner\tests\coverage\cli(null, '', '   ', '      ');

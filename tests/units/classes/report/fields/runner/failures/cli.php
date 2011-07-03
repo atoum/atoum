@@ -5,6 +5,8 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\report\fields\runner
 ;
@@ -35,17 +37,32 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\failures\cli::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\failures\cli::defaultMethodPrompt)
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\failures\cli::defaultTitlePrompt))
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\failures\cli::defaultMethodPrompt, new colorizer('0;31')))
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;31'))
 		;
 
-		$field = new runner\failures\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\failures\cli(null, null, null);
+
+		$this->assert
+			->variable($field->getRunner())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\failures\cli::defaultTitlePrompt))
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;31'))
+			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\failures\cli::defaultMethodPrompt, new colorizer('0;31')))
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;31'))
+		;
+
+		$field = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $locale = new atoum\locale());
 
 		$this->assert
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
+			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
+			->object($field->getMethodColorizer())->isIdenticalTo($methodColorizer)
 		;
 	}
 
@@ -54,10 +71,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 		$field = new runner\failures\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo($prompt)
-			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetTitleColorizer()
+	{
+		$field = new runner\failures\cli();
+
+		$this->assert
+			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -66,10 +91,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 		$field = new runner\failures\cli();
 
 		$this->assert
-			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo($prompt)
-			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
+			->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+			->object($field->getMethodPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetMethodColorizer()
+	{
+		$field = new runner\failures\cli();
+
+		$this->assert
+			->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -96,17 +129,16 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 	{
 		$field = new runner\failures\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
 
 		$score = new mock\mageekguy\atoum\score();
-		$score->getMockController()->getErrors = function() { return array(); };
+		$score->getMockController()->getErrors = array();
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = function() use ($score) { return $score; };
+		$runner->getMockController()->getScore = $score;
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -115,7 +147,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
-		$fails = array(
+		$score->getMockController()->getFailAssertions = $fails = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -134,29 +166,27 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\failures
 			)
 		);
 
-		$score->getMockController()->getFailAssertions = function() use ($fails) { return $fails; };
-
 		$field = new runner\failures\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails))) . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
 				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
 				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 
-		$field = new runner\failures\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails))) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				$field->getMethodPrompt() . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}
