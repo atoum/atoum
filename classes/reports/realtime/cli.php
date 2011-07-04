@@ -31,24 +31,38 @@ class cli extends realtime
 			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\duration\cli(
-						new prompt(self::defaultRunnerDurationPrompt),
-						new colorizer(self::defaultRunnerDurationTitleColor)
+						new prompt('> '),
+						new colorizer('1;36')
 					),
 					array(atoum\runner::runStop)
 				)
-			->addRunnerField(new runner\result\cli(new atoum\cli\colorizer('0;37', '42'), new atoum\cli\colorizer('0;37', '41')), array(atoum\runner::runStop))
-			->addRunnerField(new runner\failures\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\result\cli(
+						new colorizer('0;37', '42'),
+						new colorizer('0;37', '41')
+					),
+					array(atoum\runner::runStop)
+				)
+			->addRunnerField(new runner\failures\cli(
+						new prompt('> '),
+						new colorizer('0;31'),
+						new prompt(
+							'=> ',
+							new colorizer('0;31')
+						)
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(
 				new runner\outputs\cli(
-					new prompt(self::defaultOutputTitlePrompt),
-					new colorizer(self::defaultOutputColor),
-					new prompt(self::defaultOutputMethodPrompt,
-						new colorizer(self::defaultOutputColor)
+						new prompt('> '),
+						new colorizer('0;36'),
+						new prompt(
+							'=> ',
+							new colorizer('0;36')
+						)
 					),
-					new colorizer(self::defaultOutputColor)
-				),
-				array(atoum\runner::runStop)
-			)
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\errors\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\exceptions\cli(), array(atoum\runner::runStop))
 			->addTestField(new test\run\cli(), array(atoum\test::runStart))

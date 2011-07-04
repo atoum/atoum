@@ -4,51 +4,42 @@ namespace mageekguy\atoum\report\fields\runner\failures;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer
+	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\report\fields\runner
 ;
 
-class cli extends report\fields\runner\failures
+class cli extends runner\failures
 {
-	const defaultTitlePrompt = '> ';
-	const defaultMethodPrompt = '=> ';
-
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
 	protected $methodPrompt = null;
 	protected $methodColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
+		if ($titlePrompt !== null)
 		{
-			$titlePrompt = new prompt(self::defaultTitlePrompt);
+			$this->setTitlePrompt($titlePrompt);
 		}
 
-		if ($titleColorizer === null)
+		if ($titleColorizer !== null)
 		{
-			$titleColorizer = new colorizer('0;31');
+			$this->setTitleColorizer($titleColorizer);
 		}
 
-		if ($methodPrompt === null)
+		if ($methodPrompt !== null)
 		{
-			$methodPrompt = new prompt(self::defaultMethodPrompt, new colorizer('0;31'));
+			$this->setMethodPrompt($methodPrompt);
 		}
 
-		if ($methodColorizer === null)
+		if ($methodColorizer !== null)
 		{
-			$methodColorizer = new colorizer('0;31');
+			$this->setMethodColorizer($methodColorizer);
 		}
-
-		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setMethodPrompt($methodPrompt)
-			->setMethodColorizer($methodColorizer)
-		;
 	}
 
 	public function setTitlePrompt(prompt $prompt)
@@ -111,17 +102,27 @@ class cli extends report\fields\runner\failures
 
 			if ($numberOfFails > 0)
 			{
-				$string .= $this->titlePrompt . $this->titleColorizer->colorize(sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails)) . PHP_EOL;
+				$string .= $this->titlePrompt . $this->colorizeTitle(sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails)) . PHP_EOL;
 
 				foreach ($fails as $fail)
 				{
-					$string .= $this->methodPrompt . $this->methodColorizer->colorize($fail['class'] . '::' . $fail['method'] . '():') . PHP_EOL;
+					$string .= $this->methodPrompt . $this->colorizeMethod($fail['class'] . '::' . $fail['method'] . '():') . PHP_EOL;
 					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed : %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
 				}
 			}
 		}
 
 		return $string;
+	}
+
+	private function colorizeTitle($title)
+	{
+		return ($this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title));
+	}
+
+	private function colorizeMethod($method)
+	{
+		return ($this->methodColorizer === null ? $method : $this->methodColorizer->colorize($method));
 	}
 }
 

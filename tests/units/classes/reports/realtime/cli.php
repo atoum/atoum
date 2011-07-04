@@ -14,24 +14,8 @@ require_once(__DIR__ . '/../../../runner.php');
 
 class cli extends atoum\test
 {
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(reports\realtime\cli::defaultRunnerDurationPrompt)->isEqualTo('> ')
-			->string(reports\realtime\cli::defaultRunnerDurationTitleColor)->isEqualTo('1;36')
-			->string(reports\realtime\cli::defaultOutputTitlePrompt)->isEqualTo('> ')
-			->string(reports\realtime\cli::defaultOutputMethodPrompt)->isEqualTo('=> ')
-		;
-	}
-
 	public function test__construct()
 	{
-		$resultField = new fields\runner\result\cli();
-		$resultField
-			->setSuccessColorizer(new atoum\cli\colorizer('0;37', '42'))
-			->setFailureColorizer(new atoum\cli\colorizer('0;37', '41'))
-		;
-
 		$report = new reports\realtime\cli();
 
 		$this->assert
@@ -45,19 +29,28 @@ class cli extends atoum\test
 					new fields\runner\tests\memory\cli(),
 					new fields\runner\tests\coverage\cli(),
 					new fields\runner\duration\cli(
-						new prompt(reports\realtime\cli::defaultRunnerDurationPrompt),
-						new colorizer(reports\realtime\cli::defaultRunnerDurationTitleColor)
+						new prompt('> '),
+						new colorizer('1;36')
 					),
-					$resultField,
-					new fields\runner\failures\cli(),
+					new fields\runner\result\cli(
+						new colorizer('0;37', '42'),
+						new colorizer('0;37', '41')
+					),
+					new fields\runner\failures\cli(
+						new prompt('> '),
+						new colorizer('0;31'),
+						new prompt(
+							'=> ',
+							new colorizer('0;31')
+						)
+					),
 					new fields\runner\outputs\cli(
-						new prompt(reports\realtime\cli::defaultOutputTitlePrompt),
+						new prompt('> '),
 						new colorizer('0;36'),
 						new prompt(
-							reports\realtime\cli::defaultOutputMethodPrompt,
+							'=> ',
 							new colorizer('0;36')
-						),
-						new colorizer('0;36')
+						)
 					),
 					new fields\runner\errors\cli(),
 					new fields\runner\exceptions\cli()

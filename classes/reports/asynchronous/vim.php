@@ -27,7 +27,7 @@ class vim extends reports\asynchronous
 			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\duration\cli(
-						new prompt(self::defaultRunnerDurationPrompt)
+						new prompt('> ')
 					),
 					array(atoum\runner::runStop)
 				)
@@ -35,25 +35,25 @@ class vim extends reports\asynchronous
 			->addRunnerField(new runner\failures\cli(
 						null,
 						new colorizer(),
-						new prompt(runner\failures\cli::defaultMethodPrompt, new colorizer()),
+						new prompt('> ', new colorizer()),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(
 				new runner\outputs\cli(
-					new prompt(self::defaultOutputTitlePrompt),
+					new prompt('> '),
 					null,
-					new prompt(self::defaultOutputMethodPrompt)
+					new prompt('=> ')
 				),
 				array(atoum\runner::runStop)
 			)
 			->addRunnerField(new runner\errors\cli(
 						null,
 						new colorizer(),
-						new prompt(runner\errors\cli::defaultMethodPrompt, new colorizer()),
+						new prompt('> '),
 						new colorizer(),
-						new prompt(runner\errors\cli::defaultErrorPrompt, new colorizer()),
+						new prompt('=> '),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)
@@ -61,9 +61,9 @@ class vim extends reports\asynchronous
 			->addRunnerField(new runner\exceptions\cli(
 						null,
 						new colorizer(),
-						new prompt(runner\exceptions\cli::defaultMethodPrompt, new colorizer()),
+						new prompt('> '),
 						new colorizer(),
-						new prompt(runner\exceptions\cli::defaultExceptionPrompt, new colorizer()),
+						new prompt('=> ', new colorizer()),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)

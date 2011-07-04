@@ -11,10 +11,6 @@ use
 
 class cli extends report\fields\runner\errors
 {
-	const defaultTitlePrompt = '> ';
-	const defaultMethodPrompt = '=> ';
-	const defaultErrorPrompt = '==> ';
-
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
 	protected $methodPrompt = null;
@@ -26,44 +22,35 @@ class cli extends report\fields\runner\errors
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
+		if ($titlePrompt !== null)
 		{
-			$titlePrompt = new prompt(self::defaultTitlePrompt);
+			$this->setTitlePrompt($titlePrompt);
 		}
 
-		if ($titleColorizer === null)
+		if ($titleColorizer !== null)
 		{
-			$titleColorizer = new colorizer('0;31');
+			$this->setTitleColorizer($titleColorizer);
 		}
 
-		if ($methodPrompt === null)
+		if ($methodPrompt !== null)
 		{
-			$methodPrompt = new prompt(self::defaultMethodPrompt, new colorizer('0;31'));
+			$this->setMethodPrompt($methodPrompt);
 		}
 
-		if ($methodColorizer === null)
+		if ($methodColorizer !== null)
 		{
-			$methodColorizer = new colorizer('0;31');
+			$this->setMethodColorizer($methodColorizer);
 		}
 
-		if ($errorPrompt === null)
+		if ($errorPrompt !== null)
 		{
-			$errorPrompt = new prompt(self::defaultErrorPrompt, new colorizer('0;31'));
+			$this->setErrorPrompt($errorPrompt);
 		}
 
-		if ($errorColorizer === null)
+		if ($errorColorizer !== null)
 		{
-			$errorColorizer = new colorizer();
+			$this->setErrorColorizer($errorColorizer);
 		}
-
-		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setMethodPrompt($methodPrompt)
-			->setMethodColorizer($methodColorizer)
-			->setErrorPrompt($errorPrompt)
-			->setErrorColorizer($errorColorizer)
-		;
 	}
 
 	public function setTitlePrompt(prompt $prompt)
@@ -150,7 +137,7 @@ class cli extends report\fields\runner\errors
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= $this->titlePrompt . $this->titleColorizer->colorize(sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors)) . PHP_EOL;
+				$string .= $this->titlePrompt . $this->colorizeTitle(sprintf($this->locale->__('There is %d error:', 'There are %d errors:', $sizeOfErrors), $sizeOfErrors)) . PHP_EOL;
 
 				$class = null;
 				$method = null;
@@ -159,7 +146,7 @@ class cli extends report\fields\runner\errors
 				{
 					if ($error['class'] !== $class || $error['method'] !== $method)
 					{
-						$string .= $this->methodPrompt . $this->methodColorizer->colorize($error['class'] . '::' . $error['method'] . '():') . PHP_EOL;
+						$string .= $this->methodPrompt . $this->colorizeMethod($error['class'] . '::' . $error['method'] . '():') . PHP_EOL;
 
 						$class = $error['class'];
 						$method = $error['method'];
@@ -282,7 +269,7 @@ class cli extends report\fields\runner\errors
 						}
 					}
 
-					$string .= $this->errorColorizer->colorize($errorMessage) . PHP_EOL;
+					$string .= $this->colorizeError($errorMessage) . PHP_EOL;
 
 					foreach (explode(PHP_EOL, $error['message']) as $line)
 					{
@@ -293,6 +280,21 @@ class cli extends report\fields\runner\errors
 		}
 
 		return $string;
+	}
+
+	private function colorizeTitle($title)
+	{
+		return ($this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title));
+	}
+
+	private function colorizeMethod($method)
+	{
+		return ($this->methodColorizer === null ? $method : $this->methodColorizer->colorize($method));
+	}
+
+	private function colorizeError($error)
+	{
+		return ($this->errorColorizer === null ? $error : $this->errorColorizer->colorize($error));
 	}
 }
 

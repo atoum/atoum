@@ -5,9 +5,9 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\exceptions;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report,
 	\mageekguy\atoum\report\fields\runner
 ;
 
@@ -22,26 +22,17 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\exceptions
 		;
 	}
 
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(runner\exceptions\cli::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\exceptions\cli::defaultMethodPrompt)->isEqualTo('=> ')
-			->string(runner\exceptions\cli::defaultExceptionPrompt)->isEqualTo('==> ')
-		;
-	}
-
 	public function test__construct()
 	{
 		$field = new runner\exceptions\cli();
 
 		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultTitlePrompt))
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;35'))
-			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultMethodPrompt, new colorizer('0;35')))
-			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;35'))
-			->object($field->getExceptionPrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultExceptionPrompt, new colorizer('0;35')))
-			->object($field->getExceptionColorizer())->isEqualTo(new colorizer('0;35'))
+			->variable($field->getTitlePrompt())->isNull()
+			->variable($field->getTitleColorizer())->isNull()
+			->variable($field->getMethodPrompt())->isNull()
+			->variable($field->getMethodColorizer())->isNull()
+			->variable($field->getExceptionPrompt())->isNull()
+			->variable($field->getExceptionColorizer())->isNull()
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 		;
@@ -49,17 +40,17 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\exceptions
 		$field = new runner\exceptions\cli(null, null, null, null, null, null, null);
 
 		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultTitlePrompt))
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer('0;35'))
-			->object($field->getMethodPrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultMethodPrompt, new colorizer('0;35')))
-			->object($field->getMethodColorizer())->isEqualTo(new colorizer('0;35'))
-			->object($field->getExceptionPrompt())->isEqualTo(new prompt(runner\exceptions\cli::defaultExceptionPrompt, new colorizer('0;35')))
-			->object($field->getExceptionColorizer())->isEqualTo(new colorizer('0;35'))
+			->variable($field->getTitlePrompt())->isNull()
+			->variable($field->getTitleColorizer())->isNull()
+			->variable($field->getMethodPrompt())->isNull()
+			->variable($field->getMethodColorizer())->isNull()
+			->variable($field->getExceptionPrompt())->isNull()
+			->variable($field->getExceptionColorizer())->isNull()
 			->variable($field->getRunner())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 		;
 
-		$field = new runner\exceptions\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $exceptionPrompt = new prompt(uniqid()), $exceptionColorizer = new colorizer(), $locale = new atoum\locale());
+		$field = new runner\exceptions\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $exceptionPrompt = new prompt(uniqid()), $exceptionColorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
 			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
@@ -195,27 +186,27 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\exceptions
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $field->getTitleColorizer()->colorize(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions))) . PHP_EOL .
-				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($class . '::' . $method . '():') . PHP_EOL .
-				$field->getExceptionPrompt() . $field->getExceptionColorizer()->colorize(sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $file, $line)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions)) . PHP_EOL .
+				$class . '::' . $method . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
 				$value . PHP_EOL .
-				$field->getMethodPrompt() . $field->getMethodColorizer()->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
-				$field->getExceptionPrompt() . $field->getExceptionColorizer()->colorize(sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine)) . PHP_EOL .
+				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine) . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)
 		;
 
-		$field = new runner\exceptions\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $exceptionPrompt = new prompt(uniqid()), $exceptionColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
+		$field = new runner\exceptions\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $exceptionPrompt = new prompt(uniqid()), $exceptionColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions))) . PHP_EOL .
-				$field->getMethodPrompt() . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
-				$field->getExceptionPrompt() . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo($titlePrompt . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions))) . PHP_EOL .
+				$methodPrompt . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$exceptionPrompt . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line)) . PHP_EOL .
 				$value . PHP_EOL .
-				$field->getMethodPrompt() . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
-				$field->getExceptionPrompt() . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine)) . PHP_EOL .
+				$methodPrompt . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$exceptionPrompt . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine)) . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)
