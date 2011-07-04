@@ -4,6 +4,7 @@ namespace mageekguy\atoum\report\fields\runner\duration;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report\fields\runner\duration
@@ -11,36 +12,28 @@ use
 
 class cli extends duration
 {
-	const defaultPrompt = '> ';
-
 	protected $prompt = null;
 	protected $titleColorizer = null;
-	protected $dataColorizer = null;
+	protected $durationColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $dataColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $durationColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
+		if ($prompt !== null)
 		{
-			$prompt = new prompt(self::defaultPrompt);
+			$this->setPrompt($prompt);
 		}
 
-		if ($titleColorizer === null)
+		if ($titleColorizer !== null)
 		{
-			$titleColorizer = new colorizer('1;36');
+			$this->setTitleColorizer($titleColorizer);
 		}
 
-		if ($dataColorizer === null)
+		if ($durationColorizer !== null)
 		{
-			$dataColorizer = new colorizer();
+			$this->setDurationColorizer($durationColorizer);
 		}
-
-		$this
-			->setPrompt($prompt)
-			->setTitleColorizer($titleColorizer)
-			->setDataColorizer($dataColorizer)
-		;
 	}
 
 	public function setPrompt(prompt $prompt)
@@ -67,16 +60,16 @@ class cli extends duration
 		return $this->titleColorizer;
 	}
 
-	public function setDataColorizer(colorizer $colorizer)
+	public function setDurationColorizer(colorizer $colorizer)
 	{
-		$this->dataColorizer = $colorizer;
+		$this->durationColorizer = $colorizer;
 
 		return $this;
 	}
 
-	public function getDataColorizer()
+	public function getDurationColorizer()
 	{
-		return $this->dataColorizer;
+		return $this->durationColorizer;
 	}
 
 	public function __toString()
@@ -85,14 +78,14 @@ class cli extends duration
 
 		if ($this->value === null)
 		{
-			$data = $this->locale->_('unknown');
+			$duration = $this->locale->_('unknown');
 		}
 		else
 		{
-			$data = sprintf($this->locale->__('%4.2f second', '%4.2f seconds', $this->value), $this->value);
+			$duration = sprintf($this->locale->__('%4.2f second', '%4.2f seconds', $this->value), $this->value);
 		}
 
-		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->dataColorizer->colorize($data)) . PHP_EOL;
+		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title), $this->durationColorizer === null ? $duration : $this->durationColorizer->colorize($duration)) . PHP_EOL;
 	}
 }
 

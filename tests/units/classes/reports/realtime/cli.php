@@ -17,6 +17,8 @@ class cli extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
+			->string(reports\realtime\cli::defaultRunnerDurationPrompt)->isEqualTo('> ')
+			->string(reports\realtime\cli::defaultRunnerDurationTitleColor)->isEqualTo('1;36')
 			->string(reports\realtime\cli::defaultOutputTitlePrompt)->isEqualTo('> ')
 			->string(reports\realtime\cli::defaultOutputMethodPrompt)->isEqualTo('=> ')
 		;
@@ -42,10 +44,21 @@ class cli extends atoum\test
 					new fields\runner\tests\duration\cli(),
 					new fields\runner\tests\memory\cli(),
 					new fields\runner\tests\coverage\cli(),
-					new fields\runner\duration\cli(),
+					new fields\runner\duration\cli(
+						new prompt(reports\realtime\cli::defaultRunnerDurationPrompt),
+						new colorizer(reports\realtime\cli::defaultRunnerDurationTitleColor)
+					),
 					$resultField,
 					new fields\runner\failures\cli(),
-					new fields\runner\outputs\cli(new prompt(reports\realtime\cli::defaultOutputTitlePrompt), new colorizer('0;36'), new prompt(reports\realtime\cli::defaultOutputMethodPrompt, new colorizer('0;36')), new colorizer('0;36')),
+					new fields\runner\outputs\cli(
+						new prompt(reports\realtime\cli::defaultOutputTitlePrompt),
+						new colorizer('0;36'),
+						new prompt(
+							reports\realtime\cli::defaultOutputMethodPrompt,
+							new colorizer('0;36')
+						),
+						new colorizer('0;36')
+					),
 					new fields\runner\errors\cli(),
 					new fields\runner\exceptions\cli()
 				)

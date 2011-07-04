@@ -13,6 +13,9 @@ use
 
 class cli extends realtime
 {
+	const defaultRunnerDurationPrompt = '> ';
+	const defaultRunnerDurationTitleColor = '1;36';
+
 	const defaultOutputTitlePrompt = '> ';
 	const defaultOutputMethodPrompt = '=> ';
 	const defaultOutputColor = '0;36';
@@ -27,7 +30,12 @@ class cli extends realtime
 			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
-			->addRunnerField(new runner\duration\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\duration\cli(
+						new prompt(self::defaultRunnerDurationPrompt),
+						new colorizer(self::defaultRunnerDurationTitleColor)
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\result\cli(new atoum\cli\colorizer('0;37', '42'), new atoum\cli\colorizer('0;37', '41')), array(atoum\runner::runStop))
 			->addRunnerField(new runner\failures\cli(), array(atoum\runner::runStop))
 			->addRunnerField(

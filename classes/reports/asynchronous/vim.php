@@ -13,6 +13,7 @@ use
 
 class vim extends reports\asynchronous
 {
+	const defaultRunnerDurationPrompt = '> ';
 	const defaultOutputTitlePrompt = '> ';
 	const defaultOutputMethodPrompt = '=> ';
 
@@ -25,7 +26,11 @@ class vim extends reports\asynchronous
 			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
-			->addRunnerField(new runner\duration\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\duration\cli(
+						new prompt(self::defaultRunnerDurationPrompt)
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\result\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\failures\cli(
 						null,
