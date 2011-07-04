@@ -6,8 +6,8 @@ use
 	\mageekguy\atoum,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\report\fields,
+	\mageekguy\atoum\report\fields\test,
+	\mageekguy\atoum\report\fields\runner,
 	\mageekguy\atoum\reports\asynchronous as reports
 ;
 
@@ -26,21 +26,21 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$runnerVersionField = new fields\runner\version\cli(new prompt(''));
-		$runnerPhpField = new fields\runner\php\cli(new prompt(''), null, new prompt('   '));
-		$runnerDurationField = new fields\runner\duration\cli(new prompt(''));
-		$runnerResultField = new fields\runner\result\cli();
-		$runnerFailuresField = new fields\runner\failures\cli(new prompt(''), new colorizer(), new prompt('   ', new colorizer()), new colorizer());
-		$runnerOutputsField = new fields\runner\outputs\cli(null, '', '   ');
-		$runnerErrorsField = new fields\runner\errors\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
-		$runnerExceptionsField = new fields\runner\exceptions\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
-		$runnerTestsDurationField = new fields\runner\tests\duration\cli(null, '');
-		$runnerTestsMemoryField = new fields\runner\tests\memory\cli(new prompt(''));
-		$runnerTestsCoverageField = new fields\runner\tests\coverage\cli(null, '', '   ', '      ');
+		$runnerVersionField = new runner\version\cli(new prompt(''));
+		$runnerPhpField = new runner\php\cli(new prompt(''), null, new prompt('   '));
+		$runnerDurationField = new runner\duration\cli(new prompt(''));
+		$runnerResultField = new runner\result\cli();
+		$runnerFailuresField = new runner\failures\cli(new prompt(''), new colorizer(), new prompt('   ', new colorizer()), new colorizer());
+		$runnerOutputsField = new runner\outputs\cli(null, null, new prompt('   '));
+		$runnerErrorsField = new runner\errors\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
+		$runnerExceptionsField = new runner\exceptions\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
+		$runnerTestsDurationField = new runner\tests\duration\cli(null, '');
+		$runnerTestsMemoryField = new runner\tests\memory\cli(new prompt(''));
+		$runnerTestsCoverageField = new runner\tests\coverage\cli(null, '', '   ', '      ');
 
-		$testRunField = new fields\test\run\cli(null, '');
-		$testDurationField = new fields\test\duration\cli(null, '   ');
-		$testMemoryField = new fields\test\memory\cli(null, '   ');
+		$testRunField = new test\run\cli(null, '');
+		$testDurationField = new test\duration\cli(null, '   ');
+		$testMemoryField = new test\memory\cli(null, '   ');
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(

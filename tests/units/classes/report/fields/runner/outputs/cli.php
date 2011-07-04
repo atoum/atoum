@@ -5,13 +5,16 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\outputs;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\report\fields\runner
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\report\fields\runner\outputs,
+	\mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
+class cli extends units\report\fields\runner\outputs
 {
 	public function testClass()
 	{
@@ -20,62 +23,109 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 		;
 	}
 
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(runner\outputs\cli::defaultTitlePrompt)->isEqualTo('> ')
-			->string(runner\outputs\cli::defaultMethodPrompt)->isEqualTo('=> ')
-		;
-	}
-
 	public function test__construct()
 	{
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
 		$this->assert
-			->variable($field->getRunner())->isNull()
+			->variable($field->getTitlePrompt())->isNull()
+			->variable($field->getTitleColorizer())->isNull()
+			->variable($field->getMethodPrompt())->isNull()
+			->variable($field->getMethodColorizer())->isNull()
+			->variable($field->getOutputPrompt())->isNull()
+			->variable($field->getOutputColorizer())->isNull()
 			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(runner\outputs\cli::defaultTitlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo(runner\outputs\cli::defaultMethodPrompt)
+			->variable($field->getRunner())->isNull()
 		;
 
-		$field = new runner\outputs\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new outputs\cli(null, null, null, null, null, null, null);
 
 		$this->assert
+			->variable($field->getTitlePrompt())->isNull()
+			->variable($field->getTitleColorizer())->isNull()
+			->variable($field->getMethodPrompt())->isNull()
+			->variable($field->getMethodColorizer())->isNull()
+			->variable($field->getOutputPrompt())->isNull()
+			->variable($field->getOutputColorizer())->isNull()
+			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
 			->variable($field->getRunner())->isNull()
+		;
+
+		$field = new outputs\cli($titlePrompt = new prompt(), $titleColorizer = new colorizer(), $methodPrompt = new prompt(), $methodColorizer = new colorizer(), $outputPrompt = new prompt(), $outputColorizer = new colorizer(), $locale = new locale());
+
+		$this->assert
+			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
+			->object($field->getMethodColorizer())->isIdenticalTo($methodColorizer)
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
-			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
+			->variable($field->getRunner())->isNull()
 		;
 	}
 
 	public function testSetTitlePrompt()
 	{
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo($prompt)
-			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetTitleColorizer()
+	{
+		$field = new outputs\cli();
+
+		$this->assert
+			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetMethodPrompt()
 	{
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
 		$this->assert
-			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo($prompt)
-			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
+			->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getMethodPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetMethodColorizer()
+	{
+		$field = new outputs\cli();
+
+		$this->assert
+			->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
+	public function testSetOutputPrompt()
+	{
+		$field = new outputs\cli();
+
+		$this->assert
+			->object($field->setOutputPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getOutputPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetOutputColorizer()
+	{
+		$field = new outputs\cli();
+
+		$this->assert
+			->object($field->setOutputColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getOutputColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
 		$mockGenerator = new mock\generator();
 		$mockGenerator->generate('\mageekguy\atoum\runner');
@@ -94,19 +144,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 
 	public function test__toString()
 	{
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
 
 		$score = new mock\mageekguy\atoum\score();
-		$score->getMockController()->getOutputs = function() { return array(); };
+		$score->getMockController()->getOutputs = array();
 
 		$runner = new mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = function() use ($score) { return $score; };
+		$runner->getMockController()->getScore = $score;
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -115,7 +164,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
 		;
 
-		$fields = array(
+		$score->getMockController()->getOutputs = $fields = array(
 			array(
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
@@ -128,31 +177,29 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\outputs
 			)
 		);
 
-		$score->getMockController()->getOutputs = function() use ($fields) { return $fields; };
-
-		$field = new runner\outputs\cli();
+		$field = new outputs\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+				$class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)
 		;
 
-		$field = new runner\outputs\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new outputs\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getTitlePrompt() . sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
-				$field->getMethodPrompt() . $class . '::' . $method . '():' . PHP_EOL .
-				$value . PHP_EOL .
-				$field->getMethodPrompt() . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				$firstOtherValue . PHP_EOL .
-				$secondOtherValue . PHP_EOL
+			->castToString($field->setWithRunner($runner))->isEqualTo($titlePrompt . $titleColorizer->colorize(sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields))) . PHP_EOL .
+				$methodPrompt . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
+				$outputPrompt . $outputColorizer->colorize($value) . PHP_EOL .
+				$methodPrompt . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+				$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
+				$outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
 			)
 		;
 	}
