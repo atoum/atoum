@@ -25,8 +25,18 @@ class cli extends realtime
 		parent::__construct();
 
 		$this
-			->addRunnerField(new runner\version\cli(), array(atoum\runner::runStart))
-			->addRunnerField(new runner\php\cli(), array(atoum\runner::runStart))
+			->addRunnerField(new runner\version\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					array(atoum\runner::runStart)
+				)
+			->addRunnerField(new runner\php\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					array(atoum\runner::runStart)
+				)
 			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))

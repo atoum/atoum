@@ -5,50 +5,41 @@ namespace mageekguy\atoum\report\fields\runner\php;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\report,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\php
 {
-	const defaultTitlePrompt = '> ';
-	const defaultDataPrompt = '=> ';
-
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
 	protected $dataPrompt = null;
 	protected $dataColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $dataPrompt = null, colorizer $dataColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $dataPrompt = null, colorizer $dataColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
+		if ($titlePrompt !== null)
 		{
-			$titlePrompt = new prompt(static::defaultTitlePrompt);
+			$this->setTitlePrompt($titlePrompt);
 		}
 
-		if ($titleColorizer === null)
+		if ($titleColorizer !== null)
 		{
-			$titleColorizer = new colorizer('1;36');
+			$this->setTitleColorizer($titleColorizer);
 		}
 
-		if ($dataPrompt === null)
+		if ($dataPrompt !== null)
 		{
-			$dataPrompt = new prompt(static::defaultDataPrompt, new colorizer('1;36'));
+			$this->setDataPrompt($dataPrompt);
 		}
 
-		if ($dataColorizer === null)
+		if ($dataColorizer !== null)
 		{
-			$dataColorizer = new colorizer();
+			$this->setDataColorizer($dataColorizer);
 		}
-
-		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setDataPrompt($dataPrompt)
-			->setDataColorizer($dataColorizer)
-		;
 	}
 
 	public function setTitlePrompt($prompt)
@@ -102,17 +93,27 @@ class cli extends report\fields\runner\php
 	public function __toString()
 	{
 		$string =
-			$this->titlePrompt . $this->titleColorizer->colorize($this->locale->_('PHP path:')) . ' ' . $this->dataColorizer->colorize($this->phpPath) . PHP_EOL
+			$this->titlePrompt . $this->colorizeTitle($this->locale->_('PHP path:')) . ' ' . $this->colorizeData($this->phpPath) . PHP_EOL
 			.
-			$this->titlePrompt . $this->titleColorizer->colorize($this->locale->_('PHP version:')) . PHP_EOL
+			$this->titlePrompt . $this->colorizeTitle($this->locale->_('PHP version:')) . PHP_EOL
 		;
 
 		foreach (explode(PHP_EOL, $this->phpVersion) as $line)
 		{
-			$string .= $this->dataPrompt . $this->dataColorizer->colorize(rtrim($line)) . PHP_EOL;
+			$string .= $this->dataPrompt . $this->colorizeData(rtrim($line)) . PHP_EOL;
 		}
 
 		return $string;
+	}
+
+	public function colorizeTitle($title)
+	{
+		return ($this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title));
+	}
+
+	public function colorizeData($data)
+	{
+		return ($this->dataColorizer === null ? $data : $this->dataColorizer->colorize($data));
 	}
 }
 

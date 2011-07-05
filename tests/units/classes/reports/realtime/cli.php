@@ -20,8 +20,14 @@ class cli extends atoum\test
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					new fields\runner\version\cli(),
-					new fields\runner\php\cli()
+					new fields\runner\version\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					new fields\runner\php\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					)
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
