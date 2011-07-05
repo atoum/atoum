@@ -31,11 +31,15 @@ class vim extends reports\asynchronous
 					),
 					array(atoum\runner::runStop)
 				)
-			->addRunnerField(new runner\result\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\result\cli(
+						new prompt('> ')
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\failures\cli(
-						null,
+						new prompt('> '),
 						new colorizer(),
-						new prompt('> ', new colorizer()),
+						new prompt('=> ', new colorizer()),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)
@@ -49,21 +53,21 @@ class vim extends reports\asynchronous
 				array(atoum\runner::runStop)
 			)
 			->addRunnerField(new runner\errors\cli(
-						null,
-						new colorizer(),
 						new prompt('> '),
 						new colorizer(),
 						new prompt('=> '),
+						new colorizer(),
+						new prompt('==> '),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\exceptions\cli(
-						null,
-						new colorizer(),
 						new prompt('> '),
 						new colorizer(),
-						new prompt('=> ', new colorizer()),
+						new prompt('=> '),
+						new colorizer(),
+						new prompt('==> ', new colorizer()),
 						new colorizer()
 					),
 					array(atoum\runner::runStop)

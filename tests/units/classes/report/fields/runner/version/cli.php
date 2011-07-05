@@ -8,24 +8,18 @@ use
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\mock,
+	\mageekguy\atoum\tests\units,
 	\mageekguy\atoum\report\fields\runner\version
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends atoum\tests\units\report\fields\runner\version
+class cli extends units\report\fields\runner\version
 {
 	public function testClass()
 	{
 		$this->assert
 			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\field')
-		;
-	}
-
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(version\cli::defaultPrompt)->isEqualTo('> ')
 		;
 	}
 

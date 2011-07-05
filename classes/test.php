@@ -309,7 +309,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		return new selenium\html($url);
 	}
-	
+
 	public function count()
 	{
 		return sizeof($this->runTestMethods);

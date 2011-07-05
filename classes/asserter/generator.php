@@ -22,17 +22,14 @@ class generator
 	{
 		$class = $this->getAsserterClass($asserterName);
 
-		if (isset($this->asserters[$class]) === false)
+		if (class_exists($class, true) === false)
 		{
-			if (class_exists($class, true) === false)
-			{
-				throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
-			}
-
-			$this->asserters[$class] = new $class($this);
+			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 		}
 
-		return $this->asserters[$class];
+		$this->asserters[] = $asserter = new $class($this);
+
+		return $asserter;
 	}
 
 	public function __set($asserter, $class)

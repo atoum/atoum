@@ -4,46 +4,46 @@ namespace mageekguy\atoum\report\fields\runner\result;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\report\fields
 ;
 
-class cli extends report\fields\runner\result
+class cli extends fields\runner\result
 {
-	const defaultPrompt = '> ';
-
-	protected $prompt = '';
+	protected $prompt = null;
 	protected $successColorizer = null;
 	protected $failureColorizer = null;
 
-	public function __construct(atoum\cli\colorizer $successColorizer = null, atoum\cli\colorizer $failureColorizer = null, atoum\cli\prompt $prompt = null, atoum\locale $locale = null)
+	public function __construct(prompt $prompt = null, colorizer $successColorizer = null, colorizer $failureColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = new atoum\cli\prompt(static::defaultPrompt);
+			$prompt = new prompt();
+		}
+
+		if ($successColorizer === null)
+		{
+			$successColorizer = new colorizer();
+		}
+
+
+		if ($failureColorizer === null)
+		{
+			$failureColorizer = new colorizer();
 		}
 
 		$this
 			->setPrompt($prompt)
+			->setSuccessColorizer($successColorizer)
+			->setFailureColorizer($failureColorizer)
 		;
-
-		if ($successColorizer === null)
-		{
-			$successColorizer = new atoum\cli\colorizer();
-		}
-
-		$this->setSuccessColorizer($successColorizer);
-
-		if ($failureColorizer === null)
-		{
-			$failureColorizer = new atoum\cli\colorizer();
-		}
-
-		$this->setFailureColorizer($failureColorizer);
 	}
 
-	public function setPrompt(atoum\cli\prompt $prompt)
+	public function setPrompt(prompt $prompt)
 	{
 		$this->prompt = $prompt;
 
@@ -55,7 +55,7 @@ class cli extends report\fields\runner\result
 		return $this->prompt;
 	}
 
-	public function setSuccessColorizer(atoum\cli\colorizer $colorizer)
+	public function setSuccessColorizer(colorizer $colorizer)
 	{
 		$this->successColorizer = $colorizer;
 
@@ -67,7 +67,7 @@ class cli extends report\fields\runner\result
 		return $this->successColorizer;
 	}
 
-	public function setFailureColorizer(atoum\cli\colorizer $colorizer)
+	public function setFailureColorizer(colorizer $colorizer)
 	{
 		$this->failureColorizer = $colorizer;
 
@@ -89,7 +89,9 @@ class cli extends report\fields\runner\result
 		}
 		else if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0)
 		{
-			$string .= $this->successColorizer->colorize(sprintf($this->locale->_('Success (%s, %s, %s, %s, %s) !'),
+			$string .= $this->successColorizer->colorize(
+					sprintf(
+						$this->locale->_('Success (%s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 						sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
 						sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber),
@@ -101,7 +103,9 @@ class cli extends report\fields\runner\result
 		}
 		else
 		{
-			$string .= $this->failureColorizer->colorize(sprintf($this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
+			$string .= $this->failureColorizer->colorize(
+					sprintf(
+						$this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 						sprintf($this->locale->__('%s method', '%s methods', $this->testMethodNumber), $this->testMethodNumber),
 						sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),
