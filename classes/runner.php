@@ -251,7 +251,7 @@ class runner implements observable, adapter\aggregator
 			}
 		}
 
-		$phpVersion = $this->adapter->stream_get_contents($pipes[1]);
+		$phpVersion = trim($this->adapter->stream_get_contents($pipes[1]));
 		$this->adapter->fclose($pipes[1]);
 
 		$this->adapter->proc_close($php);
