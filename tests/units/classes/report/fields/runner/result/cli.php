@@ -226,18 +226,7 @@ class cli extends units\report\fields\runner\result
 		$failureColorizerController = $failureColorizer->getMockController();
 		$failureColorizerController->colorize = $colorizedFailureString = uniqid();
 
-		$this->startCase('Success with no prompt, no success colorizer, no failure colorizer and no locale, one test, one method and one assertion, no fail, no error, no exception');
-
-		$field = new runner\result\cli();
-
-		$this->assert
-			->castToString($field)->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo('Success (1 test, 1 method, 1 assertion, 0 error, 0 exception) !' . PHP_EOL)
-		;
-
-		$this->startCase('Success with prompt, success colorizer, failure colorizer and locale, one test, one method and one assertion, no fail, no error, no exception');
+		$this->startCase('Success with one test, one method and one assertion, no fail, no error, no exception');
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
@@ -281,23 +270,11 @@ class cli extends units\report\fields\runner\result
 			->mock($prompt)->call('__toString')
 		;
 
-		$this->startCase('Success with no prompt, no success colorizer, no failure colorizer and no locale, several tests, several methods and several assertions, no fail, no error, no exception');
+		$this->startCase('Success with several tests, several methods and several assertions,  no fail, no error, no exception');
 
 		$runnerController->getTestNumber = $testNumber = rand(2, PHP_INT_MAX);
 		$runnerController->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX);
-
 		$scoreController->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX);
-
-		$field = new runner\result\cli();
-
-		$this->assert
-			->castToString($field)->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo('Success (' . $testNumber . ' tests, ' . $testMethodNumber . ' methods, ' . $assertionNumber . ' assertions, 0 error, 0 exception) !' . PHP_EOL)
-		;
-
-		$this->startCase('Success with prompt, success colorizer, failure colorizer and locale, several tests, several methods and several assertions,  no fail, no error, no exception');
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
@@ -341,22 +318,11 @@ class cli extends units\report\fields\runner\result
 			->mock($prompt)->call('__toString')
 		;
 
-		$this->startCase('Success with no prompt, no success colorizer, no failure colorizer and no locale, several tests, several methods and several assertions, one fail, one error, one exception');
+		$this->startCase('Failure with several tests, several methods and several assertions, one fail, one error, one exception');
 
 		$scoreController->getFailNumber = 1;
 		$scoreController->getErrorNumber = 1;
 		$scoreController->getExceptionNumber = 1;
-
-		$field = new runner\result\cli();
-
-		$this->assert
-			->castToString($field)->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo('Failure (' . $testNumber . ' tests, ' . $testMethodNumber . ' methods, 1 failure, 1 error, 1 exception) !' . PHP_EOL)
-		;
-
-		$this->startCase('Success with prompt, success colorizer, failure colorizer and locale, several tests, several methods and several assertions, one fail, one error, one exception');
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
@@ -400,22 +366,11 @@ class cli extends units\report\fields\runner\result
 			->mock($prompt)->call('__toString')
 		;
 
-		$this->startCase('Success with no prompt, no success colorizer, no failure colorizer and no locale, several tests, several methods and several assertions, several fails, several errors, several exceptions');
+		$this->startCase('Failure with several tests, several methods and several assertions, several fails, several errors, several exceptions');
 
 		$scoreController->getFailNumber = $failNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX);
-
-		$field = new runner\result\cli();
-
-		$this->assert
-			->castToString($field)->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo('No test running.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo('Failure (' . $testNumber . ' tests, ' . $testMethodNumber . ' methods, ' . $failNumber . ' failures, ' . $errorNumber . ' errors, ' . $exceptionNumber . ' exceptions) !' . PHP_EOL)
-		;
-
-		$this->startCase('Success with prompt, success colorizer, failure colorizer and locale, several tests, several methods and several assertions, several fails, several errors, several exceptions');
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
