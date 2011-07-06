@@ -20,20 +20,26 @@ class cli extends duration
 	{
 		parent::__construct($locale);
 
-		if ($prompt !== null)
+		if ($prompt === null)
 		{
-			$this->setPrompt($prompt);
+			$prompt = new prompt();
 		}
 
-		if ($titleColorizer !== null)
+		if ($titleColorizer === null)
 		{
-			$this->setTitleColorizer($titleColorizer);
+			$titleColorizer = new colorizer();
 		}
 
-		if ($durationColorizer !== null)
+		if ($durationColorizer === null)
 		{
-			$this->setDurationColorizer($durationColorizer);
+			$durationColorizer = new colorizer();
 		}
+
+		$this
+			->setPrompt($prompt)
+			->setTitleColorizer($titleColorizer)
+			->setDurationColorizer($durationColorizer)
+		;
 	}
 
 	public function setPrompt(prompt $prompt)
