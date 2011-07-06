@@ -4,11 +4,11 @@ namespace mageekguy\atoum\tests\functional\selenium\drivers;
 
 use mageekguy\atoum\tests\functional\selenium;
 
-class firefox extends selenium\webDriver
+class chrome extends selenium\webDriver
 {
 	protected function getBrowserName()
 	{
-		return selenium\browser::FIREFOX;
+		return selenium\browser::CHROME;
 	}
 }
 

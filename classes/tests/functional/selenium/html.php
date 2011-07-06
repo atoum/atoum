@@ -20,6 +20,8 @@ class html
 		$this->webDriver = $webDriver;
 		
 		$this->webDriver->get($this->url);
+		
+		return $this;
 	}
 	
 	public function getTitle()
