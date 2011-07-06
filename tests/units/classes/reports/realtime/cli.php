@@ -60,8 +60,22 @@ class cli extends atoum\test
 							new colorizer('0;36')
 						)
 					),
-					new fields\runner\errors\cli(),
-					new fields\runner\exceptions\cli()
+					new fields\runner\errors\cli(
+						new prompt('> '),
+						new colorizer('0;33'),
+						new prompt(
+							'=> ',
+							new colorizer('0;33')
+						)
+					),
+					new fields\runner\exceptions\cli(
+						new prompt('> '),
+						new colorizer('0;35'),
+						new prompt(
+							'=> ',
+							new colorizer('0;35')
+						)
+					)
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(

@@ -13,10 +13,6 @@ use
 
 class vim extends reports\asynchronous
 {
-	const defaultRunnerDurationPrompt = '> ';
-	const defaultOutputTitlePrompt = '> ';
-	const defaultOutputMethodPrompt = '=> ';
-
 	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($locale, $adapter);
@@ -24,7 +20,11 @@ class vim extends reports\asynchronous
 		$this
 			->addRunnerField(new runner\version\cli(null, new colorizer()), array(atoum\runner::runStart))
 			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
-			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\tests\memory\cli(
+						new prompt('> ')
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\duration\cli(
 						new prompt('> ')

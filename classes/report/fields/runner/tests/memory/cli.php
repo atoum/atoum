@@ -11,35 +11,33 @@ use
 
 class cli extends report\fields\runner\tests\memory
 {
-	const defaultPrompt = '> ';
-
 	protected $prompt = null;
-	protected $dataColorizer = null;
+	protected $memoryColorizer = null;
 	protected $titleColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $dataColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $memoryColorizer = null, atoum\locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = new prompt(self::defaultPrompt);
+			$prompt = new prompt();
 		}
 
 		if ($titleColorizer === null)
 		{
-			$titleColorizer = new colorizer('1;36');
+			$titleColorizer = new colorizer();
 		}
 
-		if ($dataColorizer === null)
+		if ($memoryColorizer === null)
 		{
-			$dataColorizer = new colorizer();
+			$memoryColorizer = new colorizer();
 		}
 
 		$this
 			->setPrompt($prompt)
 			->setTitleColorizer($titleColorizer)
-			->setDataColorizer($dataColorizer)
+			->setMemoryColorizer($memoryColorizer)
 		;
 	}
 
@@ -67,16 +65,16 @@ class cli extends report\fields\runner\tests\memory
 		return $this->titleColorizer;
 	}
 
-	public function setDataColorizer(colorizer $colorizer)
+	public function setMemoryColorizer(colorizer $colorizer)
 	{
-		$this->dataColorizer = $colorizer;
+		$this->memoryColorizer = $colorizer;
 
 		return $this;
 	}
 
-	public function getDataColorizer()
+	public function getMemoryColorizer()
 	{
-		return $this->dataColorizer;
+		return $this->memoryColorizer;
 	}
 
 	public function __toString()
@@ -85,14 +83,14 @@ class cli extends report\fields\runner\tests\memory
 
 		if ($this->value === null)
 		{
-			$data = $this->locale->_('unknown');
+			$memory = $this->locale->_('unknown');
 		}
 		else
 		{
-			$data = sprintf($this->locale->_('%4.2f Mb'), $this->value / 1048576);
+			$memory = sprintf($this->locale->_('%4.2f Mb'), $this->value / 1048576);
 		}
 
-		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->dataColorizer->colorize($data)) . PHP_EOL;
+		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory)) . PHP_EOL;
 	}
 }
 

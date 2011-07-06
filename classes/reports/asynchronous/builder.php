@@ -17,16 +17,17 @@ class builder extends atoum\reports\asynchronous
 	{
 		parent::__construct($locale, $adapter);
 
-		$runnerVersionField = new runner\version\cli(new prompt(''));
-		$runnerPhpField = new runner\php\cli(new prompt(''), null, new prompt('   '));
-		$runnerDurationField = new runner\duration\cli(new prompt(''));
+		$runnerVersionField = new runner\version\cli();
+		$runnerPhpField = new runner\php\cli(null, null, new prompt('   '));
+		$runnerDurationField = new runner\duration\cli();
 		$runnerResultField = new runner\result\cli();
-		$runnerFailuresField = new runner\failures\cli(new prompt(''), new colorizer(), new prompt('   ', new colorizer()), new colorizer());
+		$runnerFailuresField = new runner\failures\cli(null, null, new prompt('   '));
 		$runnerOutputsField = new runner\outputs\cli(null, null, new prompt('   '));
-		$runnerErrorsField = new runner\errors\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
-		$runnerExceptionsField = new runner\exceptions\cli(new prompt(''), new colorizer(), new prompt('   '), new colorizer(), new prompt('      '), new colorizer());
+		$runnerErrorsField = new runner\errors\cli(null, null, new prompt('   '), null, new prompt('      '));
+		$runnerExceptionsField = new runner\exceptions\cli(null, null, new prompt('   '), null, new prompt('      '));
+
 		$runnerTestsDurationField = new runner\tests\duration\cli(null, '');
-		$runnerTestsMemoryField = new runner\tests\memory\cli(new prompt(''));
+		$runnerTestsMemoryField = new runner\tests\memory\cli();
 		$runnerTestsCoverageField = new runner\tests\coverage\cli(null, '', '   ', '      ');
 
 		$testRunField = new test\run\cli(null, '');

@@ -166,7 +166,7 @@ class cli extends report\fields\runner\exceptions
 
 					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
 					{
-						$string .= $line . PHP_EOL;
+						$string .= $this->exceptionPrompt . $line . PHP_EOL;
 					}
 				}
 			}
