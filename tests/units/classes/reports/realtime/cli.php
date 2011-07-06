@@ -26,7 +26,8 @@ class cli extends atoum\test
 					),
 					new fields\runner\php\cli(
 						new prompt('> '),
-						new colorizer('1;36')
+						new colorizer('1;36'),
+						new prompt('=> ')
 					)
 				)
 			)

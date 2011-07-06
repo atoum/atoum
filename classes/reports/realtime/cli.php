@@ -13,13 +13,6 @@ use
 
 class cli extends realtime
 {
-	const defaultRunnerDurationPrompt = '> ';
-	const defaultRunnerDurationTitleColor = '1;36';
-
-	const defaultOutputTitlePrompt = '> ';
-	const defaultOutputMethodPrompt = '=> ';
-	const defaultOutputColor = '0;36';
-
 	public function __construct()
 	{
 		parent::__construct();
@@ -33,7 +26,8 @@ class cli extends realtime
 				)
 			->addRunnerField(new runner\php\cli(
 						new prompt('> '),
-						new colorizer('1;36')
+						new colorizer('1;36'),
+						new prompt('=> ')
 					),
 					array(atoum\runner::runStart)
 				)
