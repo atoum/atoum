@@ -11,8 +11,6 @@ use
 
 class cli extends report\fields\runner\version
 {
-	const defaultPrompt = '> ';
-
 	protected $prompt = null;
 	protected $colorizer = null;
 
@@ -22,12 +20,12 @@ class cli extends report\fields\runner\version
 
 		if ($prompt === null)
 		{
-			$prompt = new prompt(static::defaultPrompt);
+			$prompt = new prompt();
 		}
 
 		if ($colorizer === null)
 		{
-			$colorizer = new colorizer('1;36');
+			$colorizer = new colorizer();
 		}
 
 		$this

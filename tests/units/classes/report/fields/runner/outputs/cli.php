@@ -4,12 +4,12 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\outputs;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
 	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\tests\units,
 	\mageekguy\atoum\report\fields\runner\outputs,
-	\mageekguy\atoum\tests\units
+	\mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -28,26 +28,26 @@ class cli extends units\report\fields\runner\outputs
 		$field = new outputs\cli();
 
 		$this->assert
-			->variable($field->getTitlePrompt())->isNull()
-			->variable($field->getTitleColorizer())->isNull()
-			->variable($field->getMethodPrompt())->isNull()
-			->variable($field->getMethodColorizer())->isNull()
-			->variable($field->getOutputPrompt())->isNull()
-			->variable($field->getOutputColorizer())->isNull()
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getMethodPrompt())->isEqualTo(new prompt())
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer())
+			->object($field->getOutputPrompt())->isEqualTo(new prompt())
+			->object($field->getOutputColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getRunner())->isNull()
 		;
 
 		$field = new outputs\cli(null, null, null, null, null, null, null);
 
 		$this->assert
-			->variable($field->getTitlePrompt())->isNull()
-			->variable($field->getTitleColorizer())->isNull()
-			->variable($field->getMethodPrompt())->isNull()
-			->variable($field->getMethodColorizer())->isNull()
-			->variable($field->getOutputPrompt())->isNull()
-			->variable($field->getOutputColorizer())->isNull()
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getMethodPrompt())->isEqualTo(new prompt())
+			->object($field->getMethodColorizer())->isEqualTo(new colorizer())
+			->object($field->getOutputPrompt())->isEqualTo(new prompt())
+			->object($field->getOutputColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getRunner())->isNull()
 		;
 
@@ -127,10 +127,11 @@ class cli extends units\report\fields\runner\outputs
 	{
 		$field = new outputs\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\runner');
+		$this->mock
+			->generate('\mageekguy\atoum\runner')
+		;
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
@@ -151,10 +152,10 @@ class cli extends units\report\fields\runner\outputs
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new mock\score();
 		$score->getMockController()->getOutputs = array();
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 		$runner->getMockController()->getScore = $score;
 
 		$this->assert

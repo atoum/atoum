@@ -4,6 +4,7 @@ namespace mageekguy\atoum\report\fields\runner\exceptions;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
@@ -11,10 +12,6 @@ use
 
 class cli extends report\fields\runner\exceptions
 {
-	const defaultTitlePrompt = '> ';
-	const defaultMethodPrompt = '=> ';
-	const defaultExceptionPrompt = '==> ';
-
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
 	protected $methodPrompt = null;
@@ -22,39 +19,48 @@ class cli extends report\fields\runner\exceptions
 	protected $exceptionPrompt = null;
 	protected $exceptionColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $exceptionPrompt = null, colorizer $exceptionColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $exceptionPrompt = null, colorizer $exceptionColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt !== null)
+		if ($titlePrompt === null)
 		{
-			$this->setTitlePrompt($titlePrompt);
+			$titlePrompt = new prompt();
 		}
 
-		if ($titleColorizer !== null)
+		if ($titleColorizer === null)
 		{
-			$this->setTitleColorizer($titleColorizer);
+			$titleColorizer = new colorizer();
 		}
 
-		if ($methodPrompt !== null)
+		if ($methodPrompt === null)
 		{
-			$this->setMethodPrompt($methodPrompt);
+			$methodPrompt = new prompt();
 		}
 
-		if ($methodColorizer !== null)
+		if ($methodColorizer === null)
 		{
-			$this->setMethodColorizer($methodColorizer);
+			$methodColorizer = new colorizer();
 		}
 
-		if ($exceptionPrompt !== null)
+		if ($exceptionPrompt === null)
 		{
-			$this->setExceptionPrompt($exceptionPrompt);
+			$exceptionPrompt = new prompt();
 		}
 
-		if ($exceptionColorizer !== null)
+		if ($exceptionColorizer === null)
 		{
-			$this->setExceptionColorizer($exceptionColorizer);
+			$exceptionColorizer = new colorizer();
 		}
+
+		$this
+			->setTitlePrompt($titlePrompt)
+			->setTitleColorizer($titleColorizer)
+			->setMethodPrompt($methodPrompt)
+			->setMethodColorizer($methodColorizer)
+			->setExceptionPrompt($exceptionPrompt)
+			->setExceptionColorizer($exceptionColorizer)
+		;
 	}
 
 	public function setTitlePrompt(prompt $prompt)

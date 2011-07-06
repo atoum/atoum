@@ -21,25 +21,32 @@ class cli extends report\fields\runner\php
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt !== null)
+		if ($titlePrompt === null)
 		{
-			$this->setTitlePrompt($titlePrompt);
+			$titlePrompt = new prompt();
 		}
 
-		if ($titleColorizer !== null)
+		if ($titleColorizer === null)
 		{
-			$this->setTitleColorizer($titleColorizer);
+			$titleColorizer = new colorizer();
 		}
 
-		if ($dataPrompt !== null)
+		if ($dataPrompt === null)
 		{
-			$this->setDataPrompt($dataPrompt);
+			$dataPrompt = new prompt();
 		}
 
-		if ($dataColorizer !== null)
+		if ($dataColorizer === null)
 		{
-			$this->setDataColorizer($dataColorizer);
+			$dataColorizer = new colorizer();
 		}
+
+		$this
+			->setTitlePrompt($titlePrompt)
+			->setTitleColorizer($titleColorizer)
+			->setDataPrompt($dataPrompt)
+			->setDataColorizer($dataColorizer)
+		;
 	}
 
 	public function setTitlePrompt($prompt)

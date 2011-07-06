@@ -4,9 +4,10 @@ namespace mageekguy\atoum\report\fields\runner\errors;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\report,
 	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report
+	\mageekguy\atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\errors
@@ -18,39 +19,48 @@ class cli extends report\fields\runner\errors
 	protected $errorPrompt = null;
 	protected $errorColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $errorPrompt = null, colorizer $errorColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $errorPrompt = null, colorizer $errorColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt !== null)
+		if ($titlePrompt === null)
 		{
-			$this->setTitlePrompt($titlePrompt);
+			$titlePrompt = new prompt();
 		}
 
-		if ($titleColorizer !== null)
+		if ($titleColorizer === null)
 		{
-			$this->setTitleColorizer($titleColorizer);
+			$titleColorizer = new colorizer();
 		}
 
-		if ($methodPrompt !== null)
+		if ($methodPrompt === null)
 		{
-			$this->setMethodPrompt($methodPrompt);
+			$methodPrompt = new prompt();
 		}
 
-		if ($methodColorizer !== null)
+		if ($methodColorizer === null)
 		{
-			$this->setMethodColorizer($methodColorizer);
+			$methodColorizer = new colorizer();
 		}
 
-		if ($errorPrompt !== null)
+		if ($errorPrompt === null)
 		{
-			$this->setErrorPrompt($errorPrompt);
+			$errorPrompt = new prompt();
 		}
 
-		if ($errorColorizer !== null)
+		if ($errorColorizer === null)
 		{
-			$this->setErrorColorizer($errorColorizer);
+			$errorColorizer = new colorizer();
 		}
+
+		$this
+			->setTitlePrompt($titlePrompt)
+			->setTitleColorizer($titleColorizer)
+			->setMethodPrompt($methodPrompt)
+			->setMethodColorizer($methodColorizer)
+			->setErrorPrompt($errorPrompt)
+			->setErrorColorizer($errorColorizer)
+		;
 	}
 
 	public function setTitlePrompt(prompt $prompt)
@@ -273,7 +283,7 @@ class cli extends report\fields\runner\errors
 
 					foreach (explode(PHP_EOL, $error['message']) as $line)
 					{
-						$string .= $line . PHP_EOL;
+						$string .= $this->errorPrompt . $line . PHP_EOL;
 					}
 				}
 			}

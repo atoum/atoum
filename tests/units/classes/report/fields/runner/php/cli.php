@@ -4,11 +4,12 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\php;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\mock,
 	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner
+	\mageekguy\atoum\report\fields\runner,
+	\mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -27,24 +28,24 @@ class cli extends units\report\fields\runner
 		$field = new runner\php\cli();
 
 		$this->assert
-			->variable($field->getTitlePrompt())->isNull()
-			->variable($field->getTitleColorizer())->isNull()
-			->variable($field->getDataPrompt())->isNull()
-			->variable($field->getDataColorizer())->isNull()
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getDataPrompt())->isEqualTo(new prompt())
+			->object($field->getDataColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 		;
 
 		$field = new runner\php\cli(null, null, null, null, null);
 
 		$this->assert
-			->variable($field->getTitlePrompt())->isNull()
-			->variable($field->getTitleColorizer())->isNull()
-			->variable($field->getDataPrompt())->isNull()
-			->variable($field->getDataColorizer())->isNull()
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getDataPrompt())->isEqualTo(new prompt())
+			->object($field->getDataColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 		;
 
-		$field = new runner\php\cli($titlePrompt = new prompt(), $titleColorizer = new colorizer(), $dataPrompt = new prompt(), $dataColorizer = new colorizer(), $locale = new atoum\locale());
+		$field = new runner\php\cli($titlePrompt = new prompt(), $titleColorizer = new colorizer(), $dataPrompt = new prompt(), $dataColorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
@@ -104,12 +105,12 @@ class cli extends units\report\fields\runner
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new mock\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getPhpPath = $phpPath = uniqid();
 		$scoreController->getPhpVersion = $phpVersion = uniqid();
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 
@@ -122,18 +123,17 @@ class cli extends units\report\fields\runner
 
 	public function test__toString()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new mock\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getPhpPath = $phpPath = uniqid();
 		$scoreController->getPhpVersion = $phpVersion = uniqid();
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 
@@ -148,7 +148,7 @@ class cli extends units\report\fields\runner
 			)
 		;
 
-		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
+		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 		$field->setWithRunner($runner);
 
 		$this->assert
@@ -171,7 +171,7 @@ class cli extends units\report\fields\runner
 			)
 		;
 
-		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale());
+		$field = new runner\php\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $dataPrompt = new prompt(uniqid()), $dataColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 		$field->setWithRunner($runner);
 
 		$this->assert

@@ -7,9 +7,9 @@ use
 	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\mock,
 	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner\version
+	\mageekguy\atoum\report\fields\runner\version,
+	\mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -28,23 +28,35 @@ class cli extends units\report\fields\runner\version
 		$field = new version\cli();
 
 		$this->assert
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getPrompt())->isEqualTo(new prompt())
+			->object($field->getColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->object($field->getPrompt())->isEqualTo(new prompt(version\cli::defaultPrompt))
-			->object($field->getColorizer())->isEqualTo(new colorizer('1;36'))
 		;
 
-		$field = new version\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(), $locale = new locale());
+		$field = new version\cli(null, null, null);
 
 		$this->assert
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getPrompt())->isEqualTo(new prompt())
+			->object($field->getColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
+		;
+
+
+		$field = new version\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale());
+
+		$this->assert
 			->object($field->getPrompt())->isIdenticalTo($prompt)
-			->object($field->getCOlorizer())->isIdenticalTo($colorizer)
+			->object($field->getColorizer())->isIdenticalTo($colorizer)
+			->object($field->getLocale())->isIdenticalTo($locale)
+			->variable($field->getAuthor())->isNull()
+			->variable($field->getPath())->isNull()
+			->variable($field->getVersion())->isNull()
 		;
 	}
 

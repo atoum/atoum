@@ -21,25 +21,32 @@ class cli extends runner\failures
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt !== null)
+		if ($titlePrompt === null)
 		{
-			$this->setTitlePrompt($titlePrompt);
+			$titlePrompt = new prompt();
 		}
 
-		if ($titleColorizer !== null)
+		if ($titleColorizer === null)
 		{
-			$this->setTitleColorizer($titleColorizer);
+			$titleColorizer = new colorizer();
 		}
 
-		if ($methodPrompt !== null)
+		if ($methodPrompt === null)
 		{
-			$this->setMethodPrompt($methodPrompt);
+			$methodPrompt = new prompt();
 		}
 
-		if ($methodColorizer !== null)
+		if ($methodColorizer === null)
 		{
-			$this->setMethodColorizer($methodColorizer);
+			$methodColorizer = new colorizer();
 		}
+
+		$this
+			->setTitlePrompt($titlePrompt)
+			->setTitleColorizer($titleColorizer)
+			->setMethodPrompt($methodPrompt)
+			->setMethodColorizer($methodColorizer)
+		;
 	}
 
 	public function setTitlePrompt(prompt $prompt)
