@@ -282,7 +282,7 @@ class runner extends atoum\script
 						{
 							$runner->writeError($message . ' ' . $file . ' ' . $line);
 
-							exit($error);
+							exit(2);
 						}
 					}
 				);
@@ -295,10 +295,12 @@ class runner extends atoum\script
 				{
 					$runner->writeError($exception->getMessage());
 
-					exit($exception->getCode());
+					exit(3);
 				}
 
-				exit(0);
+				$score = $runner->getRunner()->getScore();
+
+				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
 			}
 		);
 
