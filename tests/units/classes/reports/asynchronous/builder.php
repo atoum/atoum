@@ -72,9 +72,9 @@ class builder extends atoum\test
 						null,
 						new prompt('      ')
 					),
-					new runner\tests\duration\cli(null, ''),
+					new runner\tests\duration\cli(),
 					new runner\tests\memory\cli(),
-					new runner\tests\coverage\cli(null, '', '   ', '      ')
+					new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      '))
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(

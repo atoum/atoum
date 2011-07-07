@@ -38,9 +38,26 @@ class cli extends realtime
 					),
 					array(atoum\runner::runStart)
 				)
-			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
-			->addRunnerField(new runner\tests\memory\cli(), array(atoum\runner::runStop))
-			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\tests\duration\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					array(atoum\runner::runStop)
+				)
+			->addRunnerField(new runner\tests\memory\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					array(atoum\runner::runStop)
+				)
+			->addRunnerField(new runner\tests\coverage\cli(
+						new prompt('> '),
+						new prompt('=> '),
+						new prompt('==> '),
+						new colorizer('1;36')
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\duration\cli(
 						new prompt('> '),
 						new colorizer('1;36')

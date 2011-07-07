@@ -6,7 +6,9 @@ use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
 	\mageekguy\atoum\score,
-	\mageekguy\atoum\report,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report\fields\runner\tests
 ;
 
@@ -21,34 +23,42 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		;
 	}
 
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(tests\coverage\cli::defaultTitlePrompt)->isEqualTo('> ')
-			->string(tests\coverage\cli::defaultClassPrompt)->isEqualTo('=> ')
-			->string(tests\coverage\cli::defaultMethodPrompt)->isEqualTo('==> ')
-		;
-	}
-
 	public function test__construct()
 	{
 		$field = new tests\coverage\cli();
 
 		$this->assert
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->string($field->getTitlePrompt())->isEqualTo(tests\coverage\cli::defaultTitlePrompt)
-			->string($field->getClassPrompt())->isEqualTo(tests\coverage\cli::defaultClassPrompt)
-			->string($field->getMethodPrompt())->isEqualTo(tests\coverage\cli::defaultMethodPrompt)
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getClassPrompt())->isEqualTo(new prompt())
+			->object($field->getMethodPrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getCoverage())->isNull()
 		;
 
-		$field = new tests\coverage\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new tests\coverage\cli(null, null, null, null, null, null);
 
 		$this->assert
+			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getClassPrompt())->isEqualTo(new prompt())
+			->object($field->getMethodPrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
+			->variable($field->getCoverage())->isNull()
+		;
+
+
+		$field = new tests\coverage\cli($titlePrompt = new prompt(), $classPrompt = new prompt(), $methodPrompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $locale = new locale());
+
+		$this->assert
+			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getClassPrompt())->isIdenticalTo($classPrompt)
+			->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getCoverageColorizer())->isIdenticalTo($coverageColorizer)
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getTitlePrompt())->isEqualTo($titlePrompt)
-			->string($field->getClassPrompt())->isEqualTo($classPrompt)
-			->string($field->getMethodPrompt())->isEqualTo($methodPrompt)
 			->variable($field->getCoverage())->isNull()
 		;
 	}
@@ -58,10 +68,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$field = new tests\coverage\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo($prompt)
-			->object($field->setTitlePrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getTitlePrompt())->isEqualTo((string) $prompt)
+			->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getTitlePrompt())->isEqualTo($prompt)
 		;
 	}
 
@@ -70,10 +78,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$field = new tests\coverage\cli();
 
 		$this->assert
-			->object($field->setClassPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getClassPrompt())->isEqualTo($prompt)
-			->object($field->setClassPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getClassPrompt())->isEqualTo((string) $prompt)
+			->object($field->setClassPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getClassPrompt())->isEqualTo($prompt)
 		;
 	}
 
@@ -82,19 +88,36 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$field = new tests\coverage\cli();
 
 		$this->assert
-			->object($field->setMethodPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo($prompt)
-			->object($field->setMethodPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getMethodPrompt())->isEqualTo((string) $prompt)
+			->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getMethodPrompt())->isEqualTo($prompt)
+		;
+	}
+
+	public function testSetTitleColorizer()
+	{
+		$field = new tests\coverage\cli();
+
+		$this->assert
+			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
+	public function testSetTitleCoverageColorizer()
+	{
+		$field = new tests\coverage\cli();
+
+		$this->assert
+			->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetWithRunner()
 	{
-		$field = new tests\coverage\cli($locale = new atoum\locale());
+		$field = new tests\coverage\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\score')
 			->generate('\mageekguy\atoum\runner')
 		;
@@ -120,8 +143,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 
 	public function test__toString()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\reflectionClass')
 			->generate('\reflectionMethod')
 			->generate('\mageekguy\atoum\score')
@@ -136,7 +158,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$runner = new mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
-		$field = new tests\coverage\cli($locale = new atoum\locale());
+		$field = new tests\coverage\cli();
 
 		$this->assert
 			->castToString($field)->isEmpty()
@@ -203,16 +225,34 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 			)
 		;
 
-		$field = new tests\coverage\cli($locale = new atoum\locale(), $titlePrompt = uniqid(), $classPrompt = uniqid(), $methodPrompt = uniqid());
+		$field = new tests\coverage\cli($titlePrompt = new prompt(uniqid()), $classPrompt = new prompt(uniqid()), $methodPrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $coverageColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
 			->castToString($field)->isEmpty()
 			->castToString($field->setWithRunner($runner))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(
-					$field->getTitlePrompt() . sprintf($field->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
-					$field->getClassPrompt() . sprintf($field->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
-					$field->getMethodPrompt() . sprintf($field->getLocale()->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
+					$titlePrompt .
+					sprintf(
+						$locale->_('%s: %s'),
+						$titleColorizer->colorize($locale->_('Code coverage value')),
+						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValue() * 100.0))
+					) .
+					PHP_EOL .
+					$classPrompt .
+					sprintf(
+						$locale->_('%s: %s'),
+						$titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
+						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
+					) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s: %s'),
+						$titleColorizer->colorize(sprintf($locale->_('%s::%s()'), $className, $methodName)),
+						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
+					) .
+					PHP_EOL
 			)
 		;
 	}

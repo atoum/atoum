@@ -37,9 +37,20 @@ class cli extends atoum\test
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					new fields\runner\tests\duration\cli(),
-					new fields\runner\tests\memory\cli(),
-					new fields\runner\tests\coverage\cli(),
+					new fields\runner\tests\duration\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					new fields\runner\tests\memory\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					new fields\runner\tests\coverage\cli(
+						new prompt('> '),
+						new prompt('=> '),
+						new prompt('==> '),
+						new colorizer('1;36')
+					),
 					new fields\runner\duration\cli(
 						new prompt('> '),
 						new colorizer('1;36')

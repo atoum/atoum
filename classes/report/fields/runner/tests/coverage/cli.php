@@ -4,48 +4,63 @@ namespace mageekguy\atoum\report\fields\runner\tests\coverage;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\runner\tests\coverage
 {
-	const defaultTitlePrompt = '> ';
-	const defaultClassPrompt = '=> ';
-	const defaultMethodPrompt = '==> ';
+	protected $titlePrompt = null;
+	protected $classPrompt = null;
+	protected $methodPrompt = null;
+	protected $titleColorizer = null;
+	protected $coverageColorizer = null;
 
-	protected $titlePrompt = '';
-	protected $classPrompt = '';
-	protected $methodPrompt = '';
-
-	public function __construct(atoum\locale $locale = null, $titlePrompt = null, $classPrompt = null, $methodPrompt = null)
+	public function __construct(prompt $titlePrompt = null, prompt $classPrompt = null, prompt $methodPrompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($titlePrompt === null)
 		{
-			$titlePrompt = static::defaultTitlePrompt;
+			$titlePrompt = new prompt();
 		}
 
 		if ($classPrompt === null)
 		{
-			$classPrompt = static::defaultClassPrompt;
+			$classPrompt = new prompt();
 		}
 
 		if ($methodPrompt === null)
 		{
-			$methodPrompt = static::defaultMethodPrompt;
+			$methodPrompt = new prompt();
+		}
+
+		if ($titleColorizer === null)
+		{
+			$titleColorizer = new colorizer();
+		}
+
+		if ($coverageColorizer === null)
+		{
+			$coverageColorizer = new colorizer();
 		}
 
 		$this
 			->setTitlePrompt($titlePrompt)
 			->setClassPrompt($classPrompt)
 			->setMethodPrompt($methodPrompt)
+			->setTitleColorizer($titleColorizer)
+			->setCoverageColorizer($coverageColorizer)
 		;
 	}
 
-	public function setTitlePrompt($prompt)
+	public function setTitlePrompt(prompt $prompt)
 	{
-		return $this->setPrompt($this->titlePrompt, $prompt);
+		$this->titlePrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getTitlePrompt()
@@ -55,7 +70,9 @@ class cli extends report\fields\runner\tests\coverage
 
 	public function setClassPrompt($prompt)
 	{
-		return $this->setPrompt($this->classPrompt, $prompt);
+		$this->classPrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getClassPrompt()
@@ -65,12 +82,38 @@ class cli extends report\fields\runner\tests\coverage
 
 	public function setMethodPrompt($prompt)
 	{
-		return $this->setPrompt($this->methodPrompt, $prompt);
+		$this->methodPrompt = $prompt;
+
+		return $this;
 	}
 
 	public function getMethodPrompt()
 	{
 		return $this->methodPrompt;
+	}
+
+	public function setTitleColorizer(colorizer $colorizer)
+	{
+		$this->titleColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
+	public function setCoverageColorizer(colorizer $colorizer)
+	{
+		$this->coverageColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getCoverageColorizer()
+	{
+		return $this->coverageColorizer;
 	}
 
 	public function __toString()
@@ -79,7 +122,14 @@ class cli extends report\fields\runner\tests\coverage
 
 		if ($this->coverage !== null && sizeof($this->coverage) > 0)
 		{
-			$string .= $this->titlePrompt . sprintf($this->locale->_('Code coverage value: %3.2f%%'), $this->coverage->getValue() * 100.0) . PHP_EOL;
+			$string .= $this->titlePrompt .
+				sprintf(
+					$this->locale->_('%s: %s'),
+					$this->titleColorizer->colorize($this->locale->_('Code coverage value')),
+					$this->coverageColorizer->colorize(sprintf('%3.2f%%', $this->coverage->getValue() * 100.0))
+				) .
+				PHP_EOL
+			;
 
 			foreach ($this->coverage->getMethods() as $class => $methods)
 			{
@@ -87,7 +137,14 @@ class cli extends report\fields\runner\tests\coverage
 
 				if ($classCoverage < 1.0)
 				{
-					$string .= $this->classPrompt . sprintf($this->locale->_('Class %s: %3.2f%%'), $class, $classCoverage * 100.0) . PHP_EOL;
+					$string .= $this->classPrompt .
+						sprintf(
+							$this->locale->_('%s: %s'),
+							$this->titleColorizer->colorize(sprintf($this->locale->_('Class %s'), $class)),
+							$this->coverageColorizer->colorize(sprintf('%3.2f%%', $classCoverage * 100.0))
+						) .
+						PHP_EOL
+					;
 
 					foreach (array_keys($methods) as $method)
 					{
@@ -95,7 +152,14 @@ class cli extends report\fields\runner\tests\coverage
 
 						if ($methodCoverage < 1.0)
 						{
-							$string .= $this->methodPrompt . sprintf($this->locale->_('%s::%s(): %3.2f%%'), $class, $method, $methodCoverage * 100.0) . PHP_EOL;
+							$string .= $this->methodPrompt .
+								sprintf(
+									$this->locale->_('%s: %s'),
+									$this->titleColorizer->colorize(sprintf($this->locale->_('%s::%s()'), $class, $method)),
+									$this->coverageColorizer->colorize(sprintf('%3.2f%%', $methodCoverage * 100.0))
+								) .
+								PHP_EOL
+							;
 						}
 					}
 				}
@@ -103,13 +167,6 @@ class cli extends report\fields\runner\tests\coverage
 		}
 
 		return $string;
-	}
-
-	protected function setPrompt(& $property, $prompt)
-	{
-		$property = (string) $prompt;
-
-		return $this;
 	}
 }
 

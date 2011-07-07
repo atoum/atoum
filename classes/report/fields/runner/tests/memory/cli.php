@@ -4,9 +4,10 @@ namespace mageekguy\atoum\report\fields\runner\tests\memory;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\report,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer
+	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\runner\tests\memory
@@ -15,7 +16,7 @@ class cli extends report\fields\runner\tests\memory
 	protected $memoryColorizer = null;
 	protected $titleColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $memoryColorizer = null, atoum\locale $locale = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $memoryColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 

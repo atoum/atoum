@@ -17,10 +17,6 @@ class builder extends atoum\reports\asynchronous
 	{
 		parent::__construct($locale, $adapter);
 
-		$runnerTestsDurationField = new runner\tests\duration\cli(null, '');
-		$runnerTestsMemoryField = new runner\tests\memory\cli();
-		$runnerTestsCoverageField = new runner\tests\coverage\cli(null, '', '   ', '      ');
-
 		$testRunField = new test\run\cli(null, '');
 		$testDurationField = new test\duration\cli(null, '   ');
 		$testMemoryField = new test\memory\cli(null, '   ');
@@ -93,9 +89,18 @@ class builder extends atoum\reports\asynchronous
 				),
 				array(atoum\runner::runStop)
 			)
-			->addRunnerField($runnerTestsDurationField, array(atoum\runner::runStop))
-			->addRunnerField($runnerTestsMemoryField, array(atoum\runner::runStop))
-			->addRunnerField($runnerTestsCoverageField, array(atoum\runner::runStop))
+			->addRunnerField(
+				new runner\tests\duration\cli(),
+				array(atoum\runner::runStop)
+			)
+			->addRunnerField(
+				new runner\tests\memory\cli(),
+				array(atoum\runner::runStop)
+			)
+			->addRunnerField(
+				new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      ')),
+				array(atoum\runner::runStop)
+			)
 			->addTestField($testRunField, array(atoum\test::runStart))
 			->addTestField($testDurationField, array(atoum\test::runStop))
 			->addTestField($testMemoryField, array(atoum\test::runStop))

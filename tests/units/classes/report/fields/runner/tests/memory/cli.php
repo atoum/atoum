@@ -4,11 +4,12 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\tests\memory;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
+	\mageekguy\atoum\runner,
 	\mageekguy\atoum\locale,
 	\mageekguy\atoum\tests\units,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
+	\mageekguy\atoum\mock\mageekguy\atoum as mock,
 	\mageekguy\atoum\report\fields\runner\tests\memory
 ;
 
@@ -26,6 +27,17 @@ class cli extends units\report\fields\runner\tests\memory
 	public function test__construct()
 	{
 		$field = new memory\cli();
+
+		$this->assert
+			->object($field->getPrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getMemoryColorizer())->isEqualTo(new colorizer())
+			->object($field->getLocale())->isEqualTo(new locale())
+			->variable($field->getValue())->isNull()
+			->variable($field->getTestNumber())->isNull()
+		;
+
+		$field = new memory\cli(null, null, null, null);
 
 		$this->assert
 			->object($field->getPrompt())->isEqualTo(new prompt())
@@ -67,10 +79,10 @@ class cli extends units\report\fields\runner\tests\memory
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new mock\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); };
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = function () use ($score) { return $score; };
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); };
@@ -81,10 +93,10 @@ class cli extends units\report\fields\runner\tests\memory
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
 			->variable($field->getValue())->isNull()
 			->variable($field->getTestNumber())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
+			->object($field->setWithRunner($runner, runner::runStart))->isIdenticalTo($field)
 			->variable($field->getValue())->isNull()
 			->variable($field->getTestNumber())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->object($field->setWithRunner($runner, runner::runStop))->isIdenticalTo($field)
 			->integer($field->getValue())->isEqualTo($totalMemoryUsage)
 			->integer($field->getTestNumber())->isEqualTo($testNumber)
 		;
@@ -97,10 +109,10 @@ class cli extends units\report\fields\runner\tests\memory
 			->generate('\mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new mock\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); };
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new mock\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getTestNumber = $testNumber = rand(1, PHP_INT_MAX);
 		$runnerController->getScore = $score;
@@ -110,17 +122,17 @@ class cli extends units\report\fields\runner\tests\memory
 		$this->assert
 			->castToString($field)->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $field->getMemoryColorizer()->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
 			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $field->getMemoryColorizer()->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $field->getMemoryColorizer()->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', $testNumber)) . ': ' . $field->getMemoryColorizer()->colorize(sprintf($field->getLocale()->_('%4.2f Mb'), $totalMemoryUsage / 1048576)) . '.' . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStart))->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $field->getMemoryColorizer()->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStop))->isEqualTo($field->getPrompt() . $field->getTitleColorizer()->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', $testNumber)) . ': ' . $field->getMemoryColorizer()->colorize(sprintf($field->getLocale()->_('%4.2f Mb'), $totalMemoryUsage / 1048576)) . '.' . PHP_EOL)
 		;
 
 		$field = new memory\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $memoryColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getPrompt() . $titleColorizer->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner))->isEqualTo($field->getPrompt() . $titleColorizer->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $titleColorizer->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($field->getLocale()->_('unknown')) . '.' . PHP_EOL)
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($field->getPrompt() . $titleColorizer->colorize($field->getLocale()->__('Total test memory usage', 'Total tests memory usage', $testNumber)) . ': ' . $memoryColorizer->colorize(sprintf($field->getLocale()->_('%4.2f Mb'), $totalMemoryUsage / 1048576)) . '.' . PHP_EOL)
+			->castToString($field)->isEqualTo($prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL)
+			->castToString($field->setWithRunner($runner))->isEqualTo($prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStart))->isEqualTo($prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', 0)) . ': ' . $memoryColorizer->colorize($locale->_('unknown')) . '.' . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStop))->isEqualTo($prompt . $titleColorizer->colorize($locale->__('Total test memory usage', 'Total tests memory usage', $testNumber)) . ': ' . $memoryColorizer->colorize(sprintf($locale->_('%4.2f Mb'), $totalMemoryUsage / 1048576)) . '.' . PHP_EOL)
 		;
 	}
 }
