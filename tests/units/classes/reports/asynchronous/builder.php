@@ -45,20 +45,49 @@ class builder extends atoum\test
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					$runnerVersionField,
-					$runnerPhpField
+					new runner\version\cli(),
+					new runner\php\path\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\php\version\cli(
+						null,
+						null,
+						new prompt('   ')
+					)
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					$runnerTestsDurationField,
-					$runnerTestsMemoryField,
-					$runnerTestsCoverageField,
-					$runnerDurationField,
-					$runnerResultField,
-					$runnerFailuresField,
-					$runnerOutputsField,
-					$runnerErrorsField,
-					$runnerExceptionsField
+					new runner\duration\cli(),
+					new runner\result\cli(),
+					new runner\failures\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\outputs\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\errors\cli(
+						null,
+						null,
+						new prompt('   '),
+						null,
+						new prompt('      ')
+					),
+					new runner\exceptions\cli(
+						null,
+						null,
+						new prompt('   '),
+						null,
+						new prompt('      ')
+					),
+					new runner\tests\duration\cli(null, ''),
+					new runner\tests\memory\cli(),
+					new runner\tests\coverage\cli(null, '', '   ', '      ')
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(

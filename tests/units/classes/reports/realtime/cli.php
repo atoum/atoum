@@ -24,7 +24,12 @@ class cli extends atoum\test
 						new prompt('> '),
 						new colorizer('1;36')
 					),
-					new fields\runner\php\cli(
+					new fields\runner\php\path\cli(
+						new prompt('> '),
+						new colorizer('1;36'),
+						new prompt('=> ')
+					),
+					new fields\runner\php\version\cli(
 						new prompt('> '),
 						new colorizer('1;36'),
 						new prompt('=> ')

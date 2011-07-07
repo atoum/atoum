@@ -24,7 +24,14 @@ class cli extends realtime
 					),
 					array(atoum\runner::runStart)
 				)
-			->addRunnerField(new runner\php\cli(
+			->addRunnerField(new runner\php\path\cli(
+						new prompt('> '),
+						new colorizer('1;36'),
+						new prompt('=> ')
+					),
+					array(atoum\runner::runStart)
+				)
+			->addRunnerField(new runner\php\version\cli(
 						new prompt('> '),
 						new colorizer('1;36'),
 						new prompt('=> ')
