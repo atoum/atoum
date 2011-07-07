@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum\runner,
+	\mageekguy\atoum\report
+;
 
 abstract class outputs extends report\fields\runner
 {
@@ -14,7 +16,7 @@ abstract class outputs extends report\fields\runner
 		return $this->runner;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function setWithRunner(runner $runner, $event = null)
 	{
 		if ($this->runner !== $runner)
 		{

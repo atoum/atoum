@@ -1,20 +1,21 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\version;
+namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
 use
-	\mageekguy\atoum,
+	\mageekguy\atoum\score,
+	\mageekguy\atoum\runner,
 	\mageekguy\atoum\locale,
 	\mageekguy\atoum\cli\prompt,
 	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner\version,
+	\mageekguy\atoum\report\fields\runner\atoum,
 	\mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends units\report\fields\runner\version
+class cli extends units\report\fields\runner
 {
 	public function testClass()
 	{
@@ -25,7 +26,7 @@ class cli extends units\report\fields\runner\version
 
 	public function test__construct()
 	{
-		$field = new version\cli();
+		$field = new atoum\cli();
 
 		$this->assert
 			->object($field->getPrompt())->isEqualTo(new prompt())
@@ -36,7 +37,7 @@ class cli extends units\report\fields\runner\version
 			->variable($field->getVersion())->isNull()
 		;
 
-		$field = new version\cli(null, null, null);
+		$field = new atoum\cli(null, null, null);
 
 		$this->assert
 			->object($field->getPrompt())->isEqualTo(new prompt())
@@ -48,7 +49,7 @@ class cli extends units\report\fields\runner\version
 		;
 
 
-		$field = new version\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale());
+		$field = new atoum\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
 			->object($field->getPrompt())->isIdenticalTo($prompt)
@@ -62,7 +63,7 @@ class cli extends units\report\fields\runner\version
 
 	public function testSetPrompt()
 	{
-		$field = new version\cli();
+		$field = new atoum\cli();
 
 		$this->assert
 			->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -72,7 +73,7 @@ class cli extends units\report\fields\runner\version
 
 	public function testSetColorizer()
 	{
-		$field = new version\cli();
+		$field = new atoum\cli();
 
 		$this->assert
 			->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -82,28 +83,28 @@ class cli extends units\report\fields\runner\version
 
 	public function testSetWithRunner()
 	{
-		$score = new atoum\score();
+		$score = new score();
 		$score
 			->setAtoumPath($atoumPath = uniqid())
 			->setAtoumVersion($atoumVersion = uniqid())
 		;
 
-		$runner = new atoum\runner();
+		$runner = new runner();
 		$runner->setScore($score);
 
-		$field = new version\cli();
+		$field = new atoum\cli();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
+			->object($field->setWithRunner($runner, runner::runStop))->isIdenticalTo($field)
 			->variable($field->getAuthor())->isNull()
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
-			->string($field->getAuthor())->isEqualTo(atoum\author)
+			->object($field->setWithRunner($runner, runner::runStart))->isIdenticalTo($field)
+			->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
 			->string($field->getPath())->isEqualTo($atoumPath)
 			->string($field->getVersion())->isEqualTo($atoumVersion)
 		;
@@ -111,29 +112,29 @@ class cli extends units\report\fields\runner\version
 
 	public function test__toString()
 	{
-		$score = new atoum\score();
+		$score = new score();
 		$score
 			->setAtoumPath($atoumPath = uniqid())
 			->setAtoumVersion($atoumVersion = uniqid())
 		;
 
-		$runner = new atoum\runner();
+		$runner = new runner();
 		$runner->setScore($score);
 
-		$field = new version\cli();
+		$field = new atoum\cli();
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStop))->isEmpty()
+			->castToString($field->setWithRunner($runner, runner::runStart))->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
 		;
 
-		$field = new version\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
+		$field = new atoum\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
+			->castToString($field->setWithRunner($runner, runner::runStop))->isEmpty()
+			->castToString($field->setWithRunner($runner, runner::runStart))->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_('Atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
 		;
 	}
 }

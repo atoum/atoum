@@ -3,7 +3,7 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
-	\mageekguy\atoum,
+	\mageekguy\atoum\runner,
 	\mageekguy\atoum\report\fields
 ;
 
@@ -11,9 +11,9 @@ class xunit extends fields\runner
 {
 	protected $score = null;
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function setWithRunner(runner $runner, $event = null)
 	{
-		if ($event === atoum\runner::runStop)
+		if ($event === runner::runStop)
 		{
 			$this->score = $runner->getScore();
 		}

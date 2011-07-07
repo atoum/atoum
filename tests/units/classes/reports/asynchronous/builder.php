@@ -26,39 +26,55 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$runnerVersionField = new runner\version\cli();
-		$runnerPhpField = new runner\php\cli(null, null, new prompt('   '));
-		$runnerDurationField = new runner\duration\cli();
-		$runnerResultField = new runner\result\cli();
-		$runnerFailuresField = new runner\failures\cli(null, null, new prompt('   '));
-		$runnerOutputsField = new runner\outputs\cli(null, null, new prompt('   '));
-		$runnerErrorsField = new runner\errors\cli(null, null, new prompt('   '), null, new prompt('      '));
-		$runnerExceptionsField = new runner\exceptions\cli(null, null, new prompt('   '), null, new prompt('      '));
-
-		$runnerTestsDurationField = new runner\tests\duration\cli(null, '');
-		$runnerTestsMemoryField = new runner\tests\memory\cli();
-		$runnerTestsCoverageField = new runner\tests\coverage\cli(null, '', '   ', '      ');
-
 		$testRunField = new test\run\cli(null, '');
 		$testDurationField = new test\duration\cli(null, '   ');
 		$testMemoryField = new test\memory\cli(null, '   ');
 
 		$this->assert
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
-					$runnerVersionField,
-					$runnerPhpField
+					new runner\atoum\cli(),
+					new runner\php\path\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\php\version\cli(
+						null,
+						null,
+						new prompt('   ')
+					)
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					$runnerTestsDurationField,
-					$runnerTestsMemoryField,
-					$runnerTestsCoverageField,
-					$runnerDurationField,
-					$runnerResultField,
-					$runnerFailuresField,
-					$runnerOutputsField,
-					$runnerErrorsField,
-					$runnerExceptionsField
+					new runner\duration\cli(),
+					new runner\result\cli(),
+					new runner\failures\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\outputs\cli(
+						null,
+						null,
+						new prompt('   ')
+					),
+					new runner\errors\cli(
+						null,
+						null,
+						new prompt('   '),
+						null,
+						new prompt('      ')
+					),
+					new runner\exceptions\cli(
+						null,
+						null,
+						new prompt('   '),
+						null,
+						new prompt('      ')
+					),
+					new runner\tests\duration\cli(null, ''),
+					new runner\tests\memory\cli(),
+					new runner\tests\coverage\cli(null, '', '   ', '      ')
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(

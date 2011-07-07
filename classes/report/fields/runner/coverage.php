@@ -3,7 +3,7 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
-	\mageekguy\atoum,
+	\mageekguy\atoum\runner,
 	\mageekguy\atoum\report
 ;
 
@@ -16,9 +16,9 @@ abstract class coverage extends report\fields\runner
 		return $this->coverage;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function setWithRunner(runner $runner, $event = null)
 	{
-		if ($event === atoum\runner::runStop)
+		if ($event === runner::runStop)
 		{
 			$this->coverage = $runner->getScore()->getCoverage();
 		}

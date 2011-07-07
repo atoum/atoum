@@ -5,11 +5,11 @@ namespace mageekguy\atoum\report\fields\runner;
 require_once(__DIR__ . '/../../../../constants.php');
 
 use
-	\mageekguy\atoum,
+	\mageekguy\atoum\runner,
 	\mageekguy\atoum\report
 ;
 
-abstract class version extends report\fields\runner
+abstract class atoum extends report\fields\runner
 {
 	protected $author = null;
 	protected $path = null;
@@ -30,11 +30,11 @@ abstract class version extends report\fields\runner
 		return $this->path;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function setWithRunner(runner $runner, $event = null)
 	{
-		if ($event === atoum\runner::runStart)
+		if ($event === runner::runStart)
 		{
-			$this->author = atoum\author;
+			$this->author = \mageekguy\atoum\author;
 			$this->path = $runner->getScore()->getAtoumPath();
 			$this->version = $runner->getScore()->getAtoumVersion();
 		}

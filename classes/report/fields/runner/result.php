@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	\mageekguy\atoum\runner,
+	\mageekguy\atoum\report
+;
 
 abstract class result extends report\fields\runner
 {
@@ -44,9 +46,9 @@ abstract class result extends report\fields\runner
 		return $this->exceptionNumber;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function setWithRunner(runner $runner, $event = null)
 	{
-		if ($event === atoum\runner::runStop)
+		if ($event === runner::runStop)
 		{
 			$score = $runner->getScore();
 

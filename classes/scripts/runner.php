@@ -274,13 +274,13 @@ class runner extends atoum\script
 
 	public static function runAtShutdown($name)
 	{
-		$runner = new static($name);
+		$runnerScript = new static($name);
 
-		register_shutdown_function(function() use ($runner) {
-				set_error_handler(function($error, $message, $file, $line) use ($runner) {
+		register_shutdown_function(function() use ($runnerScript) {
+				set_error_handler(function($error, $message, $file, $line) use ($runnerScript) {
 						if (error_reporting() !== 0)
 						{
-							$runner->writeError($message . ' ' . $file . ' ' . $line);
+							$runnerScript->writeError($message . ' ' . $file . ' ' . $line);
 
 							exit(2);
 						}
@@ -289,22 +289,22 @@ class runner extends atoum\script
 
 				try
 				{
-					$runner->run();
+					$runnerScript->run();
 				}
 				catch (\exception $exception)
 				{
-					$runner->writeError($exception->getMessage());
+					$runnerScript->writeError($exception->getMessage());
 
 					exit(3);
 				}
 
-				$score = $runner->getRunner()->getScore();
+				$score = $runnerScript->getRunner()->getScore();
 
 				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
 			}
 		);
 
-		return $runner;
+		return $runnerScript;
 	}
 }
 

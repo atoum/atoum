@@ -14,7 +14,7 @@ use
 
 require_once(__DIR__ . '/../../../../../runner.php');
 
-class cli extends units\report\fields\runner\failures
+class cli extends units\report\fields\runner
 {
 	public function testClass()
 	{

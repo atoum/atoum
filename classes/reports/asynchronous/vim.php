@@ -18,7 +18,7 @@ class vim extends reports\asynchronous
 		parent::__construct($locale, $adapter);
 
 		$this
-			->addRunnerField(new runner\version\cli(null, new colorizer()), array(atoum\runner::runStart))
+			->addRunnerField(new runner\atoum\cli(null, new colorizer()), array(atoum\runner::runStart))
 			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
 			->addRunnerField(new runner\tests\memory\cli(
 						new prompt('> ')

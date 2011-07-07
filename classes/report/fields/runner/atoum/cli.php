@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\version;
+namespace mageekguy\atoum\report\fields\runner\atoum;
 
 use
 	\mageekguy\atoum,
@@ -9,7 +9,7 @@ use
 	\mageekguy\atoum\cli\colorizer
 ;
 
-class cli extends report\fields\runner\version
+class cli extends report\fields\runner\atoum
 {
 	protected $prompt = null;
 	protected $colorizer = null;
