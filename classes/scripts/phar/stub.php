@@ -58,6 +58,18 @@ class stub extends scripts\runner
 
 		$this->argumentsParser->addHandler(
 			function($script, $argument, $values) {
+				if (sizeof($values) !== 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->extractConfigurationsTo($values[0]);
+			},
+			array('-ec', '--extractConfigurationsTo')
+		);
+
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -172,19 +184,40 @@ class stub extends scripts\runner
 
 	public function extractTo($directory)
 	{
-		if (is_dir($directory) === false)
-		{
-			throw new exceptions\logic('Path \'' . $directory . '\' is not a directory');
-		}
-
-		if (is_writable($directory) === false)
-		{
-			throw new exceptions\logic('Directory \'' . $directory . '\' is not writable');
-		}
-
 		$phar = new \phar($this->getName());
 
-		$phar->extractTo($directory);
+		try
+		{
+			$phar->extractTo($directory);
+		}
+		catch (\exception $exception)
+		{
+			throw new exceptions\logic('Unable to extract in \'' . $directory . '\'');
+		}
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function extractConfigurationsTo($directory)
+	{
+		$phar = new \phar($this->getName());
+
+		try
+		{
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['configurations'], \filesystemIterator::CURRENT_AS_SELF)) as $configurations)
+			{
+				if ($configurations->current()->isFile() === true)
+				{
+					$phar->extractTo($directory, 'configurations/' . $configurations->getSubpathname());
+				}
+			}
+		}
+		catch (\exception $exception)
+		{
+			throw new exceptions\logic('Unable to extract configurations in \'' . $directory . '\'');
+		}
 
 		$this->runTests = false;
 

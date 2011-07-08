@@ -19,14 +19,16 @@ class generator extends atoum\script
 	protected $stubFile = null;
 
 	private $pharInjector = null;
-	private $fileIteratorInjector = null;
+	private $srcIteratorInjector = null;
+	private $configurationsIteratorInjector = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
 
 		$this->pharInjector = function ($name) { return new \phar($name); };
-		$this->fileIteratorInjector = function ($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); };
+		$this->srcIteratorInjector = function ($directory) { return new \recursiveDirectoryIterator($directory); };
+		$this->configurationsIteratorInjector = function ($directory) { return new \recursiveDirectoryIterator($directory); };
 	}
 
 	public function setOriginDirectory($directory)
@@ -130,21 +132,40 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function getFileIterator($directory)
+	public function getSrcIterator($directory)
 	{
-		return $this->fileIteratorInjector->__invoke($directory);
+		return $this->srcIteratorInjector->__invoke($directory);
 	}
 
-	public function setFileIteratorInjector(\closure $fileIteratorInjector)
+	public function setSrcIteratorInjector(\closure $srcIteratorInjector)
 	{
-		$closure = new \reflectionMethod($fileIteratorInjector, '__invoke');
+		$closure = new \reflectionMethod($srcIteratorInjector, '__invoke');
 
 		if ($closure->getNumberOfParameters() != 1)
 		{
-			throw new exceptions\runtime('File iterator injector must take one argument');
+			throw new exceptions\runtime('Source iterator injector must take one argument');
 		}
 
-		$this->fileIteratorInjector = $fileIteratorInjector;
+		$this->srcIteratorInjector = $srcIteratorInjector;
+
+		return $this;
+	}
+
+	public function getConfigurationsIterator($directory)
+	{
+		return $this->configurationsIteratorInjector->__invoke($directory);
+	}
+
+	public function setConfigurationsIteratorInjector(\closure $configurationsIteratorInjector)
+	{
+		$closure = new \reflectionMethod($configurationsIteratorInjector, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\runtime('Configurations iterator injector must take one argument');
+		}
+
+		$this->configurationsIteratorInjector = $configurationsIteratorInjector;
 
 		return $this;
 	}
@@ -249,11 +270,11 @@ class generator extends atoum\script
 			throw new exceptions\logic('Phar injector must return a \phar instance');
 		}
 
-		$fileIterator = $this->getFileIterator($this->originDirectory);
+		$srcIterator = $this->getSrcIterator($this->originDirectory);
 
-		if ($fileIterator instanceof \iterator === false)
+		if ($srcIterator instanceof \recursiveDirectoryIterator === false)
 		{
-			throw new exceptions\logic('File iterator injector must return a \iterator instance');
+			throw new exceptions\logic('Source iterator injector must return a \recursiveDirectoryIterator instance');
 		}
 
 		$description = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
@@ -289,7 +310,29 @@ class generator extends atoum\script
 					)
 				);
 
-		$phar->buildFromIterator($fileIterator, $this->originDirectory);
+		$phar->buildFromIterator(new \recursiveIteratorIterator(new atoum\src\iterator\filter($srcIterator)), $this->originDirectory);
+
+		$configurationsIterator = $this->getConfigurationsIterator($phar['configurations']);
+
+		if ($configurationsIterator instanceof \recursiveDirectoryIterator === false)
+		{
+			throw new exceptions\logic('Configurations iterator injector must return a \recursiveDirectoryIterator instance');
+		}
+
+		$configurationsIterator->setFlags(\filesystemIterator::CURRENT_AS_SELF);
+
+		foreach (new \recursiveIteratorIterator($configurationsIterator) as $configurations)
+		{
+			if ($configurations->current()->isFile() === true)
+			{
+				$path = $configurations->getSubpathname();
+
+				if (substr($path, -4) === '.php')
+				{
+					unset($phar['configurations/' . $path]);
+				}
+			}
+		}
 
 		$phar->setSignatureAlgorithm(\phar::SHA1);
 
