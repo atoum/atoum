@@ -114,7 +114,8 @@ class stub extends scripts\runner
 		return parent::help(array(
 				'-i, --infos' => $this->locale->_('Display informations, do not run any script'),
 				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
-				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar in <dir>, do not run any script'),
+				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar to <dir>, do not run any script'),
+				'-ec <dir>, --extractConfigurationsTo <dir>' => $this->locale->_('Extract examples of configuration file from phar to <dir>, do not run any script'),
 				'--testIt' => $this->locale->_('Execute all Atoum unit tests, do not run default script'),
 				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
