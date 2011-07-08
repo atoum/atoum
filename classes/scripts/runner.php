@@ -182,26 +182,16 @@ class runner extends atoum\script
 
 				foreach ($directories as $directory)
 				{
-					$directory = realpath($directory);
-
-					if ($directory === false)
+					try
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is invalid'), $directory));
+						foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $file)
+						{
+							require_once($file->getPathname());
+						}
 					}
-
-					if (is_dir($directory) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Path \'%s\' is not a directory'), $directory));
-					}
-
-					if (is_readable($directory) === false)
+					catch (\exception $exception)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
-					}
-
-					foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $file)
-					{
-						require_once($file->getPathname());
 					}
 				}
 			},
