@@ -51,8 +51,8 @@ class cli extends realtime
 				)
 			->addRunnerField(new runner\tests\coverage\cli(
 						new prompt('> '),
-						new prompt('=> '),
-						new prompt('==> '),
+						new prompt('=> ', new colorizer('1;36')),
+						new prompt('==> ', new colorizer('1;36')),
 						new colorizer('1;36')
 					),
 					array(atoum\runner::runStop)

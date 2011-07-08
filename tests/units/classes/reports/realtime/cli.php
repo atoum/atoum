@@ -46,8 +46,8 @@ class cli extends atoum\test
 					),
 					new fields\runner\tests\coverage\cli(
 						new prompt('> '),
-						new prompt('=> '),
-						new prompt('==> '),
+						new prompt('=> ', new colorizer('1;36')),
+						new prompt('==> ', new colorizer('1;36')),
 						new colorizer('1;36')
 					),
 					new fields\runner\duration\cli(
@@ -62,34 +62,22 @@ class cli extends atoum\test
 					new fields\runner\failures\cli(
 						new prompt('> '),
 						new colorizer('0;31'),
-						new prompt(
-							'=> ',
-							new colorizer('0;31')
-						)
+						new prompt('=> ', new colorizer('0;31'))
 					),
 					new fields\runner\outputs\cli(
 						new prompt('> '),
 						new colorizer('0;36'),
-						new prompt(
-							'=> ',
-							new colorizer('0;36')
-						)
+						new prompt('=> ', new colorizer('0;36'))
 					),
 					new fields\runner\errors\cli(
 						new prompt('> '),
 						new colorizer('0;33'),
-						new prompt(
-							'=> ',
-							new colorizer('0;33')
-						)
+						new prompt('=> ', new colorizer('0;33'))
 					),
 					new fields\runner\exceptions\cli(
 						new prompt('> '),
 						new colorizer('0;35'),
-						new prompt(
-							'=> ',
-							new colorizer('0;35')
-						)
+						new prompt('=> ', new colorizer('0;35'))
 					)
 				)
 			)
