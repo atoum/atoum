@@ -17,7 +17,6 @@ class builder extends atoum\reports\asynchronous
 	{
 		parent::__construct($locale, $adapter);
 
-		$testRunField = new test\run\cli(null, '');
 		$testDurationField = new test\duration\cli(null, '   ');
 		$testMemoryField = new test\memory\cli(null, '   ');
 
@@ -29,9 +28,6 @@ class builder extends atoum\reports\asynchronous
 			)
 			->addRunnerField(
 				new runner\php\path\cli(
-					null,
-					null,
-					new prompt('   ')
 				),
 				array(atoum\runner::runStart)
 			)
@@ -101,7 +97,10 @@ class builder extends atoum\reports\asynchronous
 				new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      ')),
 				array(atoum\runner::runStop)
 			)
-			->addTestField($testRunField, array(atoum\test::runStart))
+			->addTestField(
+				new test\run\cli(),
+				array(atoum\test::runStart)
+			)
 			->addTestField($testDurationField, array(atoum\test::runStop))
 			->addTestField($testMemoryField, array(atoum\test::runStop))
 		;

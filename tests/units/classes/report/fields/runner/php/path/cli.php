@@ -28,41 +28,38 @@ class cli extends units\report\fields\runner
 		$field = new runner\php\path\cli();
 
 		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getPrompt())->isEqualTo(new prompt())
 			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getPathPrompt())->isEqualTo(new prompt())
 			->object($field->getPathColorizer())->isEqualTo(new colorizer())
 			->object($field->getLocale())->isEqualTo(new locale())
 		;
 
-		$field = new runner\php\path\cli(null, null, null, null, null);
+		$field = new runner\php\path\cli(null, null, null, null);
 
 		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt())
+			->object($field->getPrompt())->isEqualTo(new prompt())
 			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getPathPrompt())->isEqualTo(new prompt())
 			->object($field->getPathColorizer())->isEqualTo(new colorizer())
 			->object($field->getLocale())->isEqualTo(new locale())
 		;
 
-		$field = new runner\php\path\cli($titlePrompt = new prompt(), $titleColorizer = new colorizer(), $pathPrompt = new prompt(), $pathColorizer = new colorizer(), $locale = new locale());
+		$field = new runner\php\path\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $pathColorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
 			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-			->object($field->getPathPrompt())->isIdenticalTo($pathPrompt)
 			->object($field->getPathColorizer())->isIdenticalTo($pathColorizer)
 		;
 	}
 
-	public function testSetTitlePrompt()
+	public function testSetPrompt()
 	{
 		$field = new runner\php\path\cli();
 
 		$this->assert
-			->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+			->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
@@ -73,16 +70,6 @@ class cli extends units\report\fields\runner
 		$this->assert
 			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-		;
-	}
-
-	public function testSetPathPrompt()
-	{
-		$field = new runner\php\path\cli();
-
-		$this->assert
-			->object($field->setPathPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-			->object($field->getPathPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
@@ -141,11 +128,11 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEqualTo($field->getLocale()->_('PHP path:') . ' ' . $phpPath . PHP_EOL)
 		;
 
-		$field = new runner\php\path\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathPrompt = new prompt(uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
+		$field = new runner\php\path\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($titlePrompt . $titleColorizer->colorize($locale->_('PHP path:')) . ' ' . $pathColorizer->colorize($phpPath) . PHP_EOL)
+			->castToString($field)->isEqualTo($prompt . $titleColorizer->colorize($locale->_('PHP path:')) . ' ' . $pathColorizer->colorize($phpPath) . PHP_EOL)
 		;
 	}
 }

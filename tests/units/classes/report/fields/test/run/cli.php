@@ -5,7 +5,10 @@ namespace mageekguy\atoum\tests\units\report\fields\test\run;
 use
 	\mageekguy\atoum,
 	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\test\adapter,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report\fields\test
 ;
 
@@ -20,27 +23,21 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 		;
 	}
 
-	public function testClassConstants()
-	{
-		$this->assert
-			->string(test\run\cli::defaultPrompt)->isEqualTo('> ')
-		;
-	}
-
 	public function test__construct()
 	{
 		$field = new test\run\cli();
 
 		$this->assert
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($field->getLocale())->isEqualTo(new locale())
 			->variable($field->getTestClass())->isNull()
 		;
 
-		$field = new test\run\cli($locale = new atoum\locale(), $prompt = uniqid());
+		$field = new test\run\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale());
 
 		$this->assert
+			->object($field->getPrompt())->isIdenticalTo($prompt)
+			->object($field->getColorizer())->isIdenticalTo($colorizer)
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getPrompt())->isEqualTo($prompt)
 		;
 	}
 
@@ -49,10 +46,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$field = new test\run\cli();
 
 		$this->assert
-			->object($field->setPrompt($prompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo($prompt)
-			->object($field->setPrompt($prompt = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getPrompt())->isEqualTo((string) $prompt)
+			->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
+	public function testSetColorizer()
+	{
+		$field = new test\run\cli();
+
+		$this->assert
+			->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
@@ -60,10 +65,11 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 	{
 		$field = new test\run\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
+		$this->mock
+			->generate('\mageekguy\atoum\test')
+		;
 
-		$adapter = new atoum\test\adapter();
+		$adapter = new adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();
@@ -103,11 +109,11 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 	public function test__toString()
 	{
+		$this->mock
+			->generate('\mageekguy\atoum\test')
+		;
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
-
-		$adapter = new atoum\test\adapter();
+		$adapter = new adapter();
 		$adapter->class_exists = true;
 
 		$testController = new mock\controller();
@@ -131,7 +137,26 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 			->castToString($field->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
 			->castToString($field->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
 			->castToString($field->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($field->getPrompt() . $field->getLocale()->_('There is currently no test running.') . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('%s:'), $test->getClass()) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($field->getPrompt() . sprintf($field->getLocale()->_('%s...'), $test->getClass()) . PHP_EOL)
+		;
+
+		$field = new test\run\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
+
+		$this->assert
+			->castToString($field)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::beforeSetUp))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::afterSetUp))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::beforeTestMethod))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::fail))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::error))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::exception))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::success))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . $colorizer->colorize(sprintf($locale->_('%s...'), $test->getClass())) . PHP_EOL)
 		;
 	}
 }

@@ -26,13 +26,12 @@ class cli extends atoum\test
 					),
 					new fields\runner\php\path\cli(
 						new prompt('> '),
-						new colorizer('1;36'),
-						new prompt('=> ')
+						new colorizer('1;36')
 					),
 					new fields\runner\php\version\cli(
 						new prompt('> '),
 						new colorizer('1;36'),
-						new prompt('=> ')
+						new prompt('=> ', new colorizer('1;36'))
 					)
 				)
 			)
@@ -95,7 +94,10 @@ class cli extends atoum\test
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
-					new fields\test\run\cli(),
+					new fields\test\run\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
 					new fields\test\event\cli()
 				)
 			)

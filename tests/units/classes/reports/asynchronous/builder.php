@@ -26,7 +26,6 @@ class builder extends atoum\test
 	{
 		$report = new reports\builder();
 
-		$testRunField = new test\run\cli(null, '');
 		$testDurationField = new test\duration\cli(null, '   ');
 		$testMemoryField = new test\memory\cli(null, '   ');
 
@@ -34,9 +33,6 @@ class builder extends atoum\test
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
 					new runner\atoum\cli(),
 					new runner\php\path\cli(
-						null,
-						null,
-						new prompt('   ')
 					),
 					new runner\php\version\cli(
 						null,
@@ -78,7 +74,7 @@ class builder extends atoum\test
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
-					$testRunField,
+					new test\run\cli()
 				)
 			)
 			->array($report->getTestFields(atoum\test::beforeSetUp))->isEmpty()

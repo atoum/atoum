@@ -26,15 +26,14 @@ class cli extends realtime
 				)
 			->addRunnerField(new runner\php\path\cli(
 						new prompt('> '),
-						new colorizer('1;36'),
-						new prompt('=> ')
+						new colorizer('1;36')
 					),
 					array(atoum\runner::runStart)
 				)
 			->addRunnerField(new runner\php\version\cli(
 						new prompt('> '),
 						new colorizer('1;36'),
-						new prompt('=> ')
+						new prompt('=> ', new colorizer('1;36'))
 					),
 					array(atoum\runner::runStart)
 				)
@@ -112,7 +111,12 @@ class cli extends realtime
 					),
 					array(atoum\runner::runStop)
 				)
-			->addTestField(new test\run\cli(), array(atoum\test::runStart))
+			->addTestField(new test\run\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					array(atoum\test::runStart)
+				)
 			->addTestField(new test\event\cli())
 			->addTestField(new test\duration\cli(), array(atoum\test::runStop))
 			->addTestField(new test\memory\cli(), array(atoum\test::runStop))

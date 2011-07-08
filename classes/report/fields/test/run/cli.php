@@ -4,25 +4,42 @@ namespace mageekguy\atoum\report\fields\test\run;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\test\run
 {
-	const defaultPrompt = '> ';
+	protected $prompt = null;
+	protected $colorizer = null;
 
-	protected $prompt = '';
-
-	public function __construct(atoum\locale $locale = null, $prompt = null)
+	public function __construct(prompt $prompt = null, colorizer $colorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = static::defaultPrompt;
+			$prompt = new prompt();
 		}
 
-		$this->setPrompt($prompt);
+		if ($colorizer === null)
+		{
+			$colorizer = new colorizer();
+		}
+
+		$this
+			->setPrompt($prompt)
+			->setColorizer($colorizer)
+		;
+	}
+
+	public function setPrompt($prompt)
+	{
+		$this->prompt = $prompt;
+
+		return $this;
 	}
 
 	public function getPrompt()
@@ -30,29 +47,32 @@ class cli extends report\fields\test\run
 		return $this->prompt;
 	}
 
-	public function setPrompt($prompt)
+	public function setColorizer(colorizer $colorizer)
 	{
-		$this->prompt = (string) $prompt;
+		$this->colorizer = $colorizer;
 
 		return $this;
 	}
 
+	public function getColorizer()
+	{
+		return $this->colorizer;
+	}
+
 	public function __toString()
 	{
-		$string = $this->prompt;
-
-		if ($this->testClass === null)
-		{
-			$string .= $this->locale->_('There is currently no test running.');
-		}
-		else
-		{
-			$string .= sprintf('%s:', $this->testClass);
-		}
-
-		$string .= PHP_EOL;
-
-		return $string;
+		return $this->prompt .
+			$this->colorizer->colorize(
+				(
+				 	$this->testClass === null
+					?
+				 	$this->locale->_('There is currently no test running.')
+					:
+					sprintf($this->locale->_('%s...'), $this->testClass)
+				)
+			) .
+			PHP_EOL
+		;
 	}
 }
 

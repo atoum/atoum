@@ -12,12 +12,18 @@ require_once(__DIR__ . '/../../../../../runner.php');
 
 class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubClassOf('\mageekguy\atoum\report\fields\test')
+		;
+	}
+
 	public function test__construct()
 	{
 		$event = new test\event\cli();
 
 		$this->assert
-			->object($event)->isInstanceOf('\mageekguy\atoum\report\fields\test')
 			->variable($event->getValue())->isNull()
 		;
 	}
@@ -26,8 +32,9 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	{
 		$event = new test\event\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
+		$this->mock
+			->generate('\mageekguy\atoum\test')
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -47,8 +54,9 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function testSetWithTest()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
+		$this->mock
+			->generate('\mageekguy\atoum\test')
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -94,8 +102,9 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	{
 		$event = new test\event\cli();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\test');
+		$this->mock
+			->generate('\mageekguy\atoum\test')
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -122,8 +131,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function test__toString()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate('\mageekguy\atoum\test')
 		;
 
