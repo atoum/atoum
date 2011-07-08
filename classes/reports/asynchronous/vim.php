@@ -18,14 +18,24 @@ class vim extends reports\asynchronous
 		parent::__construct($locale, $adapter);
 
 		$this
-			->addRunnerField(new runner\atoum\cli(null, new colorizer()), array(atoum\runner::runStart))
-			->addRunnerField(new runner\tests\duration\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\atoum\cli(new prompt('> '), new colorizer()), array(atoum\runner::runStart))
+			->addRunnerField(new runner\tests\duration\cli(
+						new prompt('> ')
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\tests\memory\cli(
 						new prompt('> ')
 					),
 					array(atoum\runner::runStop)
 				)
-			->addRunnerField(new runner\tests\coverage\cli(), array(atoum\runner::runStop))
+			->addRunnerField(new runner\tests\coverage\cli(
+						new prompt('> '),
+						new prompt('=> '),
+						new prompt('==> ')
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(new runner\duration\cli(
 						new prompt('> ')
 					),
@@ -72,7 +82,11 @@ class vim extends reports\asynchronous
 					),
 					array(atoum\runner::runStop)
 				)
-			->addTestField(new test\run\cli(), array(atoum\test::runStart))
+			->addTestField(new test\run\cli(
+						new prompt('> ')
+					),
+					array(atoum\test::runStart)
+				)
 			->addTestField(new test\duration\cli(), array(atoum\test::runStop))
 			->addTestField(new test\memory\cli(), array(atoum\test::runStop))
 		;
