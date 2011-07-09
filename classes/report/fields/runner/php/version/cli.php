@@ -98,7 +98,14 @@ class cli extends report\fields\runner\php\version
 
 	public function __toString()
 	{
-		$string = $this->titlePrompt . $this->colorizeTitle($this->locale->_('PHP version:')) . PHP_EOL;
+		$string =
+			$this->titlePrompt .
+			sprintf(
+				'%s:',
+				$this->colorizeTitle($this->locale->_('PHP version'))
+			) .
+			PHP_EOL
+		;
 
 		foreach (explode(PHP_EOL, $this->version) as $line)
 		{

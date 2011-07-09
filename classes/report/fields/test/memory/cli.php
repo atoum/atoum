@@ -4,30 +4,47 @@ namespace mageekguy\atoum\report\fields\test\memory;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\test\memory
 {
-	const defaultPrompt = '=> ';
+	protected $prompt = null;
+	protected $titleColorizer = null;
+	protected $memoryColorizer = null;
 
-	protected $prompt = '';
-
-	public function __construct(atoum\locale $locale = null, $prompt = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $memoryColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = static::defaultPrompt;
+			$prompt = new prompt();
 		}
 
-		$this->setPrompt($prompt);
+		if ($titleColorizer === null)
+		{
+			$titleColorizer = new colorizer();
+		}
+
+		if ($memoryColorizer === null)
+		{
+			$memoryColorizer = new colorizer();
+		}
+
+		$this
+			->setPrompt($prompt)
+			->setTitleColorizer($titleColorizer)
+			->setMemoryColorizer($memoryColorizer)
+		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt)
 	{
-		$this->prompt = (string) $prompt;
+		$this->prompt = $prompt;
 
 		return $this;
 	}
@@ -37,22 +54,49 @@ class cli extends report\fields\test\memory
 		return $this->prompt;
 	}
 
+	public function setTitleColorizer(colorizer $colorizer)
+	{
+		$this->titleColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
+	public function setMemoryColorizer(colorizer $colorizer)
+	{
+		$this->memoryColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getMemoryColorizer()
+	{
+		return $this->memoryColorizer;
+	}
+
 	public function __toString()
 	{
-		$string = $this->prompt;
-
-		if ($this->value === null)
-		{
-			$string .= $this->locale->_('Memory usage: unknown.');
-		}
-		else
-		{
-			$string .= sprintf($this->locale->_('Memory usage: %4.2f Mb.'), $this->value / 1048576);
-		}
-
-		$string .= PHP_EOL;
-
-		return $string;
+			return $this->prompt .
+			sprintf(
+				$this->locale->_('%1$s: %2$s.'),
+				$this->titleColorizer->colorize($this->locale->_('Memory usage')),
+				$this->memoryColorizer->colorize(
+					$this->value === null
+					?
+					$this->locale->_('unknown')
+					:
+					sprintf(
+						$this->locale->_('%4.2f Mb'),
+						$this->value / 1048576
+					)
+				)
+			) .
+			PHP_EOL
+		;
 	}
 }
 

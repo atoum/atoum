@@ -164,11 +164,11 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf($field->getLocale()->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
 				$class . '::' . $method . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
+				sprintf('In file %s on line %d, %s failed: %s', $file, $line, $asserter, $fail) . PHP_EOL .
 				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+				sprintf('In file %s on line %d, %s failed: %s', $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 
@@ -176,11 +176,29 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($titlePrompt . $titleColorizer->colorize(sprintf($locale->__('There is %d failure:', 'There are %d failures:', sizeof($fails)), sizeof($fails))) . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $file, $line, $asserter, $fail) . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
-				sprintf($locale->_('In file %s on line %d, %s failed : %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+			->castToString($field->setWithRunner($runner))->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+				) .
+				PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($class . '::' . $method . '()')
+				) .
+				PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed: %s'), $file, $line, $asserter, $fail) .
+				PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+				) .
+				PHP_EOL .
+				sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
+				PHP_EOL
 			)
 		;
 	}

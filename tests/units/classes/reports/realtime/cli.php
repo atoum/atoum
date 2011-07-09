@@ -66,8 +66,8 @@ class cli extends atoum\test
 					),
 					new fields\runner\outputs\cli(
 						new prompt('> '),
-						new colorizer('0;36'),
-						new prompt('=> ', new colorizer('0;36'))
+						new colorizer('1;36'),
+						new prompt('=> ', new colorizer('1;36'))
 					),
 					new fields\runner\errors\cli(
 						new prompt('> '),
@@ -131,8 +131,14 @@ class cli extends atoum\test
 			)
 			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
 					new fields\test\event\cli(),
-					new fields\test\duration\cli(),
-					new fields\test\memory\cli()
+					new fields\test\duration\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					),
+					new fields\test\memory\cli(
+						new prompt('> '),
+						new colorizer('1;36')
+					)
 				)
 			)
 		;

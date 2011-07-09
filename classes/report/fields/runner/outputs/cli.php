@@ -147,11 +147,25 @@ class cli extends outputs
 
 			if ($sizeOfOutputs > 0)
 			{
-				$string .= $this->titlePrompt . $this->colorize(sprintf($this->locale->__('There is %d output:', 'There are %d outputs:', $sizeOfOutputs), $sizeOfOutputs), $this->titleColorizer) . PHP_EOL;
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d output', 'There are %d outputs', $sizeOfOutputs), $sizeOfOutputs))
+					) .
+					PHP_EOL
+				;
 
 				foreach ($outputs as $output)
 				{
-					$string .= $this->methodPrompt . $this->colorize($output['class'] . '::' . $output['method'] . '():', $this->methodColorizer) . PHP_EOL;
+					$string .=
+						$this->methodPrompt .
+						sprintf(
+							'%s:',
+							$this->methodColorizer->colorize($output['class'] . '::' . $output['method'] . '()')
+						) .
+						PHP_EOL
+					;
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{

@@ -109,27 +109,32 @@ class cli extends runner\failures
 
 			if ($numberOfFails > 0)
 			{
-				$string .= $this->titlePrompt . $this->colorizeTitle(sprintf($this->locale->__('There is %d failure:', 'There are %d failures:', $numberOfFails), $numberOfFails)) . PHP_EOL;
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d failure', 'There are %d failures', $numberOfFails), $numberOfFails))
+					) .
+					PHP_EOL
+				;
 
 				foreach ($fails as $fail)
 				{
-					$string .= $this->methodPrompt . $this->colorizeMethod($fail['class'] . '::' . $fail['method'] . '():') . PHP_EOL;
-					$string .= sprintf($this->locale->_('In file %s on line %d, %s failed : %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) . PHP_EOL;
+					$string .=
+						$this->methodPrompt .
+						sprintf(
+							'%s:',
+							$this->methodColorizer->colorize(($fail['class'] . '::' . $fail['method'] . '()'))
+						) .
+						PHP_EOL .
+						sprintf($this->locale->_('In file %s on line %d, %s failed: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) .
+						PHP_EOL
+					;
 				}
 			}
 		}
 
 		return $string;
-	}
-
-	private function colorizeTitle($title)
-	{
-		return ($this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title));
-	}
-
-	private function colorizeMethod($method)
-	{
-		return ($this->methodColorizer === null ? $method : $this->methodColorizer->colorize($method));
 	}
 }
 

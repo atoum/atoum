@@ -147,8 +147,16 @@ class cli extends units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($titlePrompt . $titleColorizer->colorize($locale->_('PHP version:')) . PHP_EOL
-				. $versionPrompt . $versionColorizer->colorize($phpVersion) . PHP_EOL
+			->castToString($field)->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize($locale->_('PHP version'))
+				) .
+				PHP_EOL .
+				$versionPrompt .
+				$versionColorizer->colorize($phpVersion) .
+				PHP_EOL
 			)
 		;
 
@@ -158,9 +166,13 @@ class cli extends units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getLocale()->_('PHP version:') . PHP_EOL
-				. $phpVersionLine1 . PHP_EOL
-				. $phpVersionLine2 . PHP_EOL
+			->castToString($field)->isEqualTo(
+				'PHP version:' .
+				PHP_EOL .
+				$phpVersionLine1 .
+				PHP_EOL .
+				$phpVersionLine2 .
+				PHP_EOL
 			)
 		;
 
@@ -168,9 +180,19 @@ class cli extends units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($titlePrompt . $titleColorizer->colorize($field->getLocale()->_('PHP version:')) . PHP_EOL
-				. $versionPrompt . $versionColorizer->colorize($phpVersionLine1) . PHP_EOL
-				. $versionPrompt . $versionColorizer->colorize($phpVersionLine2) . PHP_EOL
+			->castToString($field)->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize($field->getLocale()->_('PHP version'))
+				) .
+				PHP_EOL .
+				$versionPrompt .
+				$versionColorizer->colorize($phpVersionLine1) .
+				PHP_EOL .
+				$versionPrompt .
+				$versionColorizer->colorize($phpVersionLine2) .
+				PHP_EOL
 			)
 		;
 	}

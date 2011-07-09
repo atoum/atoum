@@ -125,14 +125,22 @@ class cli extends units\report\fields\runner
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($field->getLocale()->_('PHP path:') . ' ' . $phpPath . PHP_EOL)
+			->castToString($field)->isEqualTo('PHP path:' . ' ' . $phpPath . PHP_EOL)
 		;
 
 		$field = new runner\php\path\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
 		$field->setWithRunner($runner);
 
 		$this->assert
-			->castToString($field)->isEqualTo($prompt . $titleColorizer->colorize($locale->_('PHP path:')) . ' ' . $pathColorizer->colorize($phpPath) . PHP_EOL)
+			->castToString($field)->isEqualTo(
+				$prompt .
+				sprintf(
+					$locale->_('%1$s: %2$s'),
+					$titleColorizer->colorize($locale->_('PHP path')),
+					$pathColorizer->colorize($phpPath)
+				) .
+				PHP_EOL
+			)
 		;
 	}
 }

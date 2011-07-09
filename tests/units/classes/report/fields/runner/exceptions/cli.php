@@ -188,12 +188,12 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d exceptions:', sizeof($exceptions)) . PHP_EOL .
 				$class . '::' . $method . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $file, $line) . PHP_EOL .
+				sprintf('Exception throwed in file %s on line %d:', $file, $line) . PHP_EOL .
 				$value . PHP_EOL .
 				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf($field->getLocale()->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine) . PHP_EOL .
+				sprintf('Exception throwed in file %s on line %d:', $otherFile, $otherLine) . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)
@@ -203,12 +203,38 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($titlePrompt . $titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception:', 'There are %d exceptions:', sizeof($exceptions)), sizeof($exceptions))) . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
-				$exceptionPrompt . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $file, $line)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize(sprintf($field->getLocale()->__('There is %d exception', 'There are %d exceptions', sizeof($exceptions)), sizeof($exceptions)))
+				) .
+				PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($class . '::' . $method . '()')
+				) .
+				PHP_EOL .
+				$exceptionPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d'), $file, $line))
+				) .
+				PHP_EOL .
 				$exceptionPrompt . $value . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
-				$exceptionPrompt . $exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d:'), $otherFile, $otherLine)) . PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+				) .
+				PHP_EOL .
+				$exceptionPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d'), $otherFile, $otherLine))
+				) .
+				PHP_EOL .
 				$exceptionPrompt . $firstOtherValue . PHP_EOL .
 				$exceptionPrompt . $secondOtherValue . PHP_EOL
 			)

@@ -147,7 +147,14 @@ class cli extends report\fields\runner\exceptions
 
 			if ($sizeOfErrors > 0)
 			{
-				$string .= $this->titlePrompt . $this->colorizeTitle(sprintf($this->locale->__('There is %d exception:', 'There are %d exceptions:', $sizeOfErrors), $sizeOfErrors)) . PHP_EOL;
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->colorizeTitle(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $sizeOfErrors), $sizeOfErrors))
+					) .
+					PHP_EOL
+				;
 
 				$class = null;
 				$method = null;
@@ -156,13 +163,27 @@ class cli extends report\fields\runner\exceptions
 				{
 					if ($exception['class'] !== $class || $exception['method'] !== $method)
 					{
-						$string .= $this->methodPrompt . $this->colorizeMethod($exception['class'] . '::' . $exception['method'] . '():') . PHP_EOL;
+						$string .=
+							$this->methodPrompt .
+							sprintf(
+								$this->locale->_('%s:'),
+								$this->colorizeMethod($exception['class'] . '::' . $exception['method'] . '()')
+							) .
+							PHP_EOL
+						;
 
 						$class = $exception['class'];
 						$method = $exception['method'];
 					}
 
-					$string .= $this->exceptionPrompt . $this->colorizeException(sprintf($this->locale->_('Exception throwed in file %s on line %d:'), $exception['file'], $exception['line'])) . PHP_EOL;
+					$string .=
+						$this->exceptionPrompt .
+						sprintf(
+							$this->locale->_('%s:'),
+							$this->colorizeException(sprintf($this->locale->_('Exception throwed in file %s on line %d'), $exception['file'], $exception['line']))
+						) .
+						PHP_EOL
+					;
 
 					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
 					{

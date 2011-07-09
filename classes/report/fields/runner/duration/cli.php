@@ -80,18 +80,14 @@ class cli extends duration
 
 	public function __toString()
 	{
-		$title = $this->locale->_('Running duration');
-
-		if ($this->value === null)
-		{
-			$duration = $this->locale->_('unknown');
-		}
-		else
-		{
-			$duration = sprintf($this->locale->__('%4.2f second', '%4.2f seconds', $this->value), $this->value);
-		}
-
-		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title), $this->durationColorizer === null ? $duration : $this->durationColorizer->colorize($duration)) . PHP_EOL;
+		return $this->prompt .
+			sprintf(
+				$this->locale->_('%1$s: %2$s.'),
+				$this->titleColorizer->colorize($this->locale->_('Running duration')),
+				$this->durationColorizer->colorize($this->value === null ? $this->locale->_('unknown') : sprintf($this->locale->__('%4.2f second', '%4.2f seconds', $this->value), $this->value))
+			) .
+			PHP_EOL
+		;
 	}
 }
 

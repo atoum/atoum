@@ -4,30 +4,47 @@ namespace mageekguy\atoum\report\fields\test\duration;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\test\duration
 {
-	const defaultPrompt = '=> ';
+	protected $prompt = null;
+	protected $titleColorizer = null;
+	protected $durationColorizer = null;
 
-	protected $prompt = '';
-
-	public function __construct(atoum\locale $locale = null, $prompt = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $durationColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		if ($prompt === null)
 		{
-			$prompt = static::defaultPrompt;
+			$prompt = new prompt();
 		}
 
-		$this->setPrompt($prompt);
+		if ($titleColorizer === null)
+		{
+			$titleColorizer = new colorizer();
+		}
+
+		if ($durationColorizer === null)
+		{
+			$durationColorizer = new colorizer();
+		}
+
+		$this
+			->setPrompt($prompt)
+			->setTitleColorizer($titleColorizer)
+			->setDurationColorizer($durationColorizer)
+		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt)
 	{
-		$this->prompt = (string) $prompt;
+		$this->prompt = $prompt;
 
 		return $this;
 	}
@@ -35,25 +52,51 @@ class cli extends report\fields\test\duration
 	public function getPrompt()
 	{
 		return $this->prompt;
+	}
 
+	public function setTitleColorizer(colorizer $colorizer)
+	{
+		$this->titleColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
+	public function setDurationColorizer(colorizer $colorizer)
+	{
+		$this->durationColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getDurationColorizer()
+	{
+		return $this->durationColorizer;
 	}
 
 	public function __toString()
 	{
-		$string = $this->prompt;
-
-		if ($this->value === null)
-		{
-			$string .= $this->locale->_('Test duration: unknown.');
-		}
-		else
-		{
-			$string .= sprintf($this->locale->__('Test duration: %4.2f second.', 'Test duration: %4.2f seconds.', $this->value), $this->value);
-		}
-
-		$string .= PHP_EOL;
-
-		return $string;
+		return $this->prompt .
+			sprintf(
+				$this->locale->_('%1$s: %2$s.'),
+				$this->titleColorizer->colorize($this->locale->_('Test duration')),
+				$this->durationColorizer->colorize(
+					$this->value === null
+					?
+					$this->locale->_('unknown')
+					:
+					sprintf(
+						$this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
+						$this->value
+					)
+				)
+			) .
+			PHP_EOL
+		;
 	}
 }
 

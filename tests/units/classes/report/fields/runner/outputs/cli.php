@@ -182,7 +182,7 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf($field->getLocale()->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields)) . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
 				$class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
 				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
@@ -195,10 +195,27 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEqualTo($titlePrompt . $titleColorizer->colorize(sprintf($locale->__('There is %d output:', 'There are %d outputs:', sizeof($fields)), sizeof($fields))) . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($class . '::' . $method . '():') . PHP_EOL .
-				$outputPrompt . $outputColorizer->colorize($value) . PHP_EOL .
-				$methodPrompt . $methodColorizer->colorize($otherClass . '::' . $otherMethod . '():') . PHP_EOL .
+			->castToString($field->setWithRunner($runner))->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+				) .
+				PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($class . '::' . $method . '()')
+				) .
+				PHP_EOL .
+				$outputPrompt .
+				$outputColorizer->colorize($value) . PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+				) .
+				PHP_EOL .
 				$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
 				$outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
 			)

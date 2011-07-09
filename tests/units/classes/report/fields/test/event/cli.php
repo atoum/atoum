@@ -4,8 +4,8 @@ namespace mageekguy\atoum\tests\units\report\fields\test\event;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report\fields\test
+	\mageekguy\atoum\report\fields\test,
+	\mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -39,10 +39,10 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new mock\controller();
+		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new mock\test(null, null, $adapter, $testController);
 		$this->assert
 			->variable($event->getTest())->isNull()
 			->exception(function() use ($event) { $event->getProgressBar(); })
@@ -61,10 +61,10 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new mock\controller();
+		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new mock\test(null, null, $adapter, $testController);
 
 		$event = new test\event\cli();
 
@@ -109,10 +109,10 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new mock\controller();
+		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new mock\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
@@ -140,10 +140,10 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new mock\controller();
+		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new mock\test(null, null, $adapter, $testController);
 
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };
