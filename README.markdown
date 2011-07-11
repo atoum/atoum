@@ -189,7 +189,7 @@ L'extension `suhosin` empêche quand à elle l'exécution des PHAR, et il faut d
 Enfin, si l'exécution d'*atoum* provoque à l'écran l'affichage de caractères du style `???%`, c'est que la directive `detect_unicode` de votre fichier `php.ini` est à 1.  
 Pour résoudre le problème, il suffit donc de la passer à 0 en éditant votre fichier `php.ini` ou en exécutant *atoum* à l'aide de la commande suivante :
 
-   # php -d detect_unicode=0 mageekguy.atoum.phar [options]
+	# php -d detect_unicode=0 mageekguy.atoum.phar [options]
 
 Si ces trois manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
 Vous pouvez également demander de l'aide aux développeurs d'*atoum* sur le canal IRC ##atoum sur le réseau *freenode*.
