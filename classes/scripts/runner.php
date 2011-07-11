@@ -108,19 +108,9 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				foreach ($files as $file)
+				foreach ($files as $path)
 				{
-					if (file_exists($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file path \'%s\' is invalid'), $file));
-					}
-
-					if (is_readable($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
-					}
-
-					require_once($file);
+					$script->includeFile($path);
 				}
 			},
 			array('-c', '--configuration-files')
@@ -157,19 +147,9 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				foreach ($files as $file)
+				foreach ($files as $path)
 				{
-					if (is_file($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Test file path \'%s\' is invalid'), $file));
-					}
-
-					if (is_readable($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read test file \'%s\''), $file));
-					}
-
-					require_once($file);
+					$script->runFile($path);
 				}
 			},
 			array('-t', '--test-files')
@@ -184,17 +164,7 @@ class runner extends atoum\script
 
 				foreach ($directories as $directory)
 				{
-					try
-					{
-						foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $file)
-						{
-							require_once($file->getPathname());
-						}
-					}
-					catch (\exception $exception)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read directory \'%s\''), $directory));
-					}
+					$script->runDirectory($directory);
 				}
 			},
 			array('-d', '--directories')
@@ -277,14 +247,35 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function testIt()
+	public function runFile($path)
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator(atoum\directory . '/tests/units/classes'))) as $file)
+		return $this->includeFile($path);
+	}
+
+	public function runDirectory($directory)
+	{
+		try
 		{
-			require_once($file->getPathname());
+			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			{
+				$this->runFile($path);
+			}
+		}
+		catch (exceptions\logic\invalidArgument $exception)
+		{
+			throw $exception;
+		}
+		catch (\exception $exception)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to read directory \'%s\''), $directory));
 		}
 
 		return $this;
+	}
+
+	public function testIt()
+	{
+		return $this->runDirectory(atoum\directory . '/tests/units/classes');
 	}
 
 	public static function getShutdownInstance()
@@ -330,6 +321,18 @@ class runner extends atoum\script
 		);
 
 		return $runnerScript;
+	}
+
+	protected function includeFile($path)
+	{
+		@include_once($path);
+
+		if (in_array(realpath((string) $path), get_included_files(), true) === false)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
+		}
+
+		return $this;
 	}
 }
 

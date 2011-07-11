@@ -218,6 +218,23 @@ class stub extends scripts\runner
 		return $this;
 	}
 
+	protected function includeFile($path)
+	{
+		try
+		{
+			parent::includeFile($path);
+		}
+		catch (\exception $exception)
+		{
+			if (in_array((string) $path, get_included_files(), true) === false)
+			{
+				throw $exception;
+			}
+		}
+
+		return $this;
+	}
+
 	protected static function getScriptFile($scriptName)
 	{
 		return \Phar::running() . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
