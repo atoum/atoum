@@ -16,6 +16,8 @@ class runner extends atoum\script
 	protected $scoreFile = null;
 	protected $reportsEnabled = true;
 
+	protected static $shutdownInstance = null;
+
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $locale, $adapter);
@@ -262,9 +264,19 @@ class runner extends atoum\script
 		return $this;
 	}
 
+	public static function getShutdownInstance()
+	{
+		return self::$shutdownInstance;
+	}
+
 	public static function runAtShutdown($name)
 	{
-		$runnerScript = new static($name);
+		if (self::$shutdownInstance !== null)
+		{
+			throw new exceptions\runtime('Unable to run \'' . $name . '\' at shutdown because \'' . self::$shutdownInstance->getName() . '\' will be run at shutdown');
+		}
+
+		$runnerScript = self::$shutdownInstance = new static($name);
 
 		register_shutdown_function(function() use ($runnerScript) {
 				set_error_handler(function($error, $message, $file, $line) use ($runnerScript) {
