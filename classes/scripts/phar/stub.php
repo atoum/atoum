@@ -63,9 +63,9 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->extractConfigurationsTo($values[0]);
+				$script->extractRessourcesTo($values[0]);
 			},
-			array('-ec', '--extractConfigurationsTo')
+			array('-er', '--extractRessourcesTo')
 		);
 
 		$this->argumentsParser->addHandler(
@@ -115,7 +115,7 @@ class stub extends scripts\runner
 				'-i, --infos' => $this->locale->_('Display informations, do not run any script'),
 				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
 				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar to <dir>, do not run any script'),
-				'-ec <dir>, --extractConfigurationsTo <dir>' => $this->locale->_('Extract examples of configuration file from phar to <dir>, do not run any script'),
+				'-er <dir>, --extractRessourcesTo <dir>' => $this->locale->_('Extract ressources from phar to <dir>, do not run any script'),
 				'--testIt' => $this->locale->_('Execute all Atoum unit tests, do not run default script'),
 				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
@@ -201,23 +201,28 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function extractConfigurationsTo($directory)
+	public function extractRessourcesTo($directory)
 	{
 		$phar = new \phar($this->getName());
 
+		if (isset($phar['ressources']) === false)
+		{
+			throw new exceptions\logic('Ressources directory does not exist in PHAR \'' . $this->getName() . '\'');
+		}
+
 		try
 		{
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['configurations'], \filesystemIterator::CURRENT_AS_SELF)) as $configurations)
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['ressources'], \filesystemIterator::CURRENT_AS_SELF)) as $ressources)
 			{
-				if ($configurations->current()->isFile() === true)
+				if ($ressources->current()->isFile() === true)
 				{
-					$phar->extractTo($directory, 'configurations/' . $configurations->getSubpathname());
+					$phar->extractTo($directory, 'ressources/' . $ressources->getSubpathname());
 				}
 			}
 		}
 		catch (\exception $exception)
 		{
-			throw new exceptions\logic('Unable to extract configurations in \'' . $directory . '\'');
+			throw new exceptions\logic('Unable to extract ressources in \'' . $directory . '\'');
 		}
 
 		$this->runTests = false;
