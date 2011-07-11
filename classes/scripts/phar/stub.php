@@ -69,18 +69,6 @@ class stub extends scripts\runner
 		);
 
 		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->testIt();
-			},
-			array('--testIt')
-		);
-
-		$this->argumentsParser->addHandler(
 	      function($script, $argument, $values, $position) {
 				if ($position !== 1 || sizeof($values) !== 1)
 				{
@@ -226,16 +214,6 @@ class stub extends scripts\runner
 		}
 
 		$this->runTests = false;
-
-		return $this;
-	}
-
-	public function testIt()
-	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator(\phar::running() . '/tests/units/classes'))) as $file)
-		{
-			require_once($file->getPathname());
-		}
 
 		return $this;
 	}

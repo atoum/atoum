@@ -200,6 +200,18 @@ class runner extends atoum\script
 			array('-d', '--directories')
 		);
 
+		$this->argumentsParser->addHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->testIt();
+			},
+			array('--testIt')
+		);
+
 		parent::run($arguments);
 
 		if ($this->runTests === true)
@@ -252,7 +264,8 @@ class runner extends atoum\script
 					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 					'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
 					'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>'),
-					'-drt <string>, --default-report-title <string>' => $this->locale->_('Define default report title')
+					'-drt <string>, --default-report-title <string>' => $this->locale->_('Define default report title'),
+					'--testIt' => $this->locale->_('Execute all Atoum unit tests')
 				)
 				,
 				$options
@@ -260,6 +273,16 @@ class runner extends atoum\script
 		);
 
 		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function testIt()
+	{
+		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator(atoum\directory . '/tests/units/classes'))) as $file)
+		{
+			require_once($file->getPathname());
+		}
 
 		return $this;
 	}
