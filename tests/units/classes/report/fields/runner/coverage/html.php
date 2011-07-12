@@ -6,7 +6,10 @@ use
 	\mageekguy\atoum,
 	\mageekguy\atoum\test,
 	\mageekguy\atoum\mock,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\template,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report\fields\runner\coverage
 ;
 
@@ -18,39 +21,55 @@ class html extends atoum\test
 	{
 		$this->assert
 			->testedClass->isSubclassOf('\mageekguy\atoum\report\fields\runner\coverage\cli')
-			->string(coverage\html::defaultPrompt)->isEqualTo('> ')
-			->string(coverage\html::defaultAlternatePrompt)->isEqualTo('=> ')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
+		$field = new coverage\html($projectName = uniqid(), $destinationDirectory = uniqid());
 
 		$this->assert
 			->string($field->getProjectName())->isEqualTo($projectName)
-			->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
 			->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
-			->object($field->getTemplateParser())->isInstanceOf('\mageekguy\atoum\template\parser')
-			->object($field->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->string($field->getTemplatesDirectory())->isEqualTo(atoum\directory . '/ressources/templates/coverage')
+			->object($field->getPrompt())->isEqualTo(new prompt())
+			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+			->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
+			->object($field->getUrlPrompt())->isEqualTo(new prompt())
+			->object($field->getUrlColorizer())->isEqualTo(new colorizer())
 			->object($field->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-			->string($field->getPrompt())->isEqualTo(coverage\html::defaultPrompt)
-			->string($field->getAlternatePrompt())->isEqualTo(coverage\html::defaultAlternatePrompt)
+			->object($field->getLocale())->isEqualTo(new locale())
+			->object($field->getTemplateParser())->isInstanceOf('\mageekguy\atoum\template\parser')
 			->variable($field->getCoverage())->isNull()
 			->array($field->getSrcDirectories())->isEmpty()
 		;
 
-		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser = new template\parser(), $adapter = new atoum\adapter(), $locale = new atoum\locale(), $prompt = uniqid(), $alternatePrompt = uniqid());
+		$field = new coverage\html(
+			$projectName = uniqid(),
+			$destinationDirectory = uniqid(),
+			$templatesDirectory = uniqid(),
+			$prompt = new prompt(),
+			$titleColorizer = new colorizer(),
+			$coverageColorizer = new colorizer(),
+			$urlPrompt = new prompt(),
+			$urlColorizer = new colorizer(),
+			$templateParser = new template\parser(),
+			$adapter = new atoum\adapter(),
+			$locale = new atoum\locale()
+		);
 
 		$this->assert
 			->string($field->getProjectName())->isEqualTo($projectName)
-			->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
 			->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
-			->object($field->getTemplateParser())->isEqualTo($templateParser)
+			->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
+			->object($field->getPrompt())->isIdenticalTo($prompt)
+			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+			->object($field->getCoverageColorizer())->isIdenticalTo($coverageColorizer)
+			->object($field->getUrlPrompt())->isIdenticalTo($urlPrompt)
+			->object($field->getUrlColorizer())->isIdenticalTo($urlColorizer)
 			->object($field->getAdapter())->isIdenticalTo($adapter)
 			->object($field->getLocale())->isIdenticalTo($locale)
-			->string($field->getPrompt())->isEqualTo($prompt)
-			->string($field->getAlternatePrompt())->isEqualTo($alternatePrompt)
+			->object($field->getTemplateParser())->isIdenticalTo($templateParser)
 			->variable($field->getCoverage())->isNull()
 			->array($field->getSrcDirectories())->isEmpty()
 		;
@@ -66,15 +85,23 @@ class html extends atoum\test
 		;
 	}
 
-	public function testSetAlternatePrompt()
+	public function testSetUrlPrompt()
 	{
-		$field = new coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid());
+		$field = new coverage\html($projectName = uniqid(), $destinationDirectory = uniqid());
 
 		$this->assert
-			->object($field->setAlternatePrompt($alternatePrompt = uniqid()))->isIdenticalTo($field)
-			->string($field->getAlternatePrompt())->isIdenticalTo($alternatePrompt)
-			->object($field->setAlternatePrompt($alternatePrompt = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-			->string($field->getAlternatePrompt())->isIdenticalTo((string) $alternatePrompt)
+			->object($field->setUrlPrompt($urlPrompt = new prompt()))->isIdenticalTo($field)
+			->object($field->getUrlPrompt())->isIdenticalTo($urlPrompt)
+		;
+	}
+
+	public function testSetUrlColorizer()
+	{
+		$field = new coverage\html($projectName = uniqid(), $destinationDirectory = uniqid());
+
+		$this->assert
+			->object($field->setUrlColorizer($urlColorizer = new colorizer()))->isIdenticalTo($field)
+			->object($field->getUrlColorizer())->isIdenticalTo($urlColorizer)
 		;
 	}
 
@@ -126,7 +153,7 @@ class html extends atoum\test
 
 	public function testGetDestinationDirectoryIterator()
 	{
-		$field = new coverage\html(uniqid(), uniqid(), __DIR__);
+		$field = new coverage\html(uniqid(), __DIR__);
 
 		$this->assert
 			->object($recursiveIteratorIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
@@ -189,7 +216,7 @@ class html extends atoum\test
 			->mock('\splFileInfo')
 		;
 
-		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), uniqid(), $destinationDirectoryPath = uniqid(), null, $adapter = new test\adapter());
+		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), $destinationDirectoryPath = uniqid(), uniqid(), null, null, null, null, null, null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
@@ -371,7 +398,7 @@ class html extends atoum\test
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
 		$this->assert
-			->castToString($field)->isEqualTo('> Code coverage: unknown.' . PHP_EOL)
+			->castToString($field)->isEqualTo('Code coverage: unknown.' . PHP_EOL)
 		;
 
 		$this
@@ -535,7 +562,12 @@ class html extends atoum\test
 
 		$templateParser = new mock\mageekguy\atoum\template\parser();
 
-		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $templatesDirectory = uniqid(), $destinationDirectory = uniqid(), $templateParser, $adapter = new test\adapter());
+		$field = new mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid(), $templatesDirectory = uniqid());
+		$field
+			->setTemplateParser($templateParser)
+			->setAdapter($adapter = new test\adapter())
+		;
+
 		$fieldController = $field->getMockController();
 		$fieldController->cleanDestinationDirectory = function() {};
 		$fieldController->getReflectionClass = $reflectedClass;
@@ -582,7 +614,7 @@ class html extends atoum\test
 
 		$this->assert
 			->object($field->getCoverage())->isIdenticalTo($coverage)
-			->castToString($field)->isIdenticalTo('> ' . sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . '=> Details of code coverage are available at ' . $rootUrl . '/.' . PHP_EOL)
+			->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '/.' . PHP_EOL)
 			->mock($coverage)->call('count')
 			->mock($field)
 				->call('cleanDestinationDirectory')

@@ -23,43 +23,13 @@ class cli extends report\fields\runner\errors
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
-		{
-			$titlePrompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($methodPrompt === null)
-		{
-			$methodPrompt = new prompt();
-		}
-
-		if ($methodColorizer === null)
-		{
-			$methodColorizer = new colorizer();
-		}
-
-		if ($errorPrompt === null)
-		{
-			$errorPrompt = new prompt();
-		}
-
-		if ($errorColorizer === null)
-		{
-			$errorColorizer = new colorizer();
-		}
-
 		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setMethodPrompt($methodPrompt)
-			->setMethodColorizer($methodColorizer)
-			->setErrorPrompt($errorPrompt)
-			->setErrorColorizer($errorColorizer)
+			->setTitlePrompt($titlePrompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setMethodPrompt($methodPrompt ?: new prompt())
+			->setMethodColorizer($methodColorizer ?: new colorizer())
+			->setErrorPrompt($errorPrompt ?: new prompt())
+			->setErrorColorizer($errorColorizer ?: new colorizer())
 		;
 	}
 

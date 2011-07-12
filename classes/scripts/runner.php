@@ -16,7 +16,7 @@ class runner extends atoum\script
 	protected $scoreFile = null;
 	protected $reportsEnabled = true;
 
-	protected static $shutdownInstance = null;
+	protected static $autorunner = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -247,6 +247,18 @@ class runner extends atoum\script
 		return $this;
 	}
 
+	public function includeFile($path)
+	{
+		include_once($path);
+
+		if (in_array(realpath((string) $path), get_included_files(), true) === false)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
+		}
+
+		return $this;
+	}
+
 	public function runFile($path)
 	{
 		return $this->includeFile($path);
@@ -278,19 +290,19 @@ class runner extends atoum\script
 		return $this->runDirectory(atoum\directory . '/tests/units/classes');
 	}
 
-	public static function getShutdownInstance()
+	public static function getAutorunner()
 	{
-		return self::$shutdownInstance;
+		return self::$autorunner;
 	}
 
-	public static function runAtShutdown($name)
+	public static function autorun($name)
 	{
-		if (self::$shutdownInstance !== null)
+		if (self::$autorunner !== null)
 		{
-			throw new exceptions\runtime('Unable to run \'' . $name . '\' at shutdown because \'' . self::$shutdownInstance->getName() . '\' will be run at shutdown');
+			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
-		$runnerScript = self::$shutdownInstance = new static($name);
+		$runnerScript = self::$autorunner = new static($name);
 
 		register_shutdown_function(function() use ($runnerScript) {
 				set_error_handler(function($error, $message, $file, $line) use ($runnerScript) {
@@ -321,18 +333,6 @@ class runner extends atoum\script
 		);
 
 		return $runnerScript;
-	}
-
-	protected function includeFile($path)
-	{
-		@include_once($path);
-
-		if (in_array(realpath((string) $path), get_included_files(), true) === false)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
-		}
-
-		return $this;
 	}
 }
 

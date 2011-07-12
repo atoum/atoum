@@ -17,78 +17,90 @@ class vim extends reports\asynchronous
 	{
 		parent::__construct($locale, $adapter);
 
+		$firstLevelPrompt = new prompt('> ');
+		$secondLevelPrompt = new prompt('=> ');
+		$thirdLevelPrompt = new prompt('==> ');
+
 		$this
-			->addRunnerField(new runner\atoum\cli(new prompt('> '), new colorizer()), array(atoum\runner::runStart))
+			->addRunnerField(new runner\atoum\cli($firstLevelPrompt, null), array(atoum\runner::runStart))
 			->addRunnerField(new runner\tests\duration\cli(
-						new prompt('> ')
+						$firstLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\tests\memory\cli(
-						new prompt('> ')
+						$firstLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\tests\coverage\cli(
-						new prompt('> '),
-						new prompt('=> '),
-						new prompt('==> ')
+						$firstLevelPrompt,
+						$secondLevelPrompt,
+						$thirdLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\duration\cli(
-						new prompt('> ')
+						$firstLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\result\cli(
-						new prompt('> ')
+						$firstLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\failures\cli(
-						new prompt('> '),
-						new colorizer(),
-						new prompt('=> ', new colorizer()),
-						new colorizer()
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(
 				new runner\outputs\cli(
-					new prompt('> '),
+					$firstLevelPrompt,
 					null,
-					new prompt('=> ')
+					$secondLevelPrompt
 				),
 				array(atoum\runner::runStop)
 			)
 			->addRunnerField(new runner\errors\cli(
-						new prompt('> '),
-						new colorizer(),
-						new prompt('=> '),
-						new colorizer(),
-						new prompt('==> '),
-						new colorizer()
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt,
+						null
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\exceptions\cli(
-						new prompt('> '),
-						new colorizer(),
-						new prompt('=> '),
-						new colorizer(),
-						new prompt('==> ', new colorizer()),
-						new colorizer()
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt,
+						null
 					),
 					array(atoum\runner::runStop)
 				)
 			->addTestField(new test\run\cli(
-						new prompt('> ')
+						$firstLevelPrompt
 					),
 					array(atoum\test::runStart)
 				)
-			->addTestField(new test\duration\cli(), array(atoum\test::runStop))
-			->addTestField(new test\memory\cli(), array(atoum\test::runStop))
+			->addTestField(new test\duration\cli(
+						$firstLevelPrompt
+					),
+					array(atoum\test::runStop)
+				)
+			->addTestField(new test\memory\cli(
+						$firstLevelPrompt
+					),
+					array(atoum\test::runStop)
+				)
 		;
 	}
 

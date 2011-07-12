@@ -10,7 +10,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 	require_once(__DIR__ . '/../classes/autoloader.php');
 
-	scripts\runner::runAtShutdown(__FILE__);
+	scripts\runner::autorun(__FILE__);
 }
 
 ?>

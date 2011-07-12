@@ -23,43 +23,13 @@ class cli extends report\fields\runner\exceptions
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
-		{
-			$titlePrompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($methodPrompt === null)
-		{
-			$methodPrompt = new prompt();
-		}
-
-		if ($methodColorizer === null)
-		{
-			$methodColorizer = new colorizer();
-		}
-
-		if ($exceptionPrompt === null)
-		{
-			$exceptionPrompt = new prompt();
-		}
-
-		if ($exceptionColorizer === null)
-		{
-			$exceptionColorizer = new colorizer();
-		}
-
 		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setMethodPrompt($methodPrompt)
-			->setMethodColorizer($methodColorizer)
-			->setExceptionPrompt($exceptionPrompt)
-			->setExceptionColorizer($exceptionColorizer)
+			->setTitlePrompt($titlePrompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setMethodPrompt($methodPrompt ?: new prompt())
+			->setMethodColorizer($methodColorizer ?: new colorizer())
+			->setExceptionPrompt($exceptionPrompt ?: new prompt())
+			->setExceptionColorizer($exceptionColorizer ?: new colorizer())
 		;
 	}
 

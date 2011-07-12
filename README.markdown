@@ -59,12 +59,12 @@ Le code source d'*atoum* est également disponible via [son dépôt sur github](
 
 	namespace vendor\project\tests\units;
 
-	require 'path/to/mageekguy.atoum.phar';
+	require_once 'path/to/mageekguy.atoum.phar';
 
-	include 'path/to/project/classes/helloWorld.php';
+	include_once 'path/to/project/classes/helloWorld.php';
 
-	use \mageekguy\atoum;
-	use \vendor\project;
+	use mageekguy\atoum;
+	use vendor\project;
 
 	class helloWorld extends atoum\test
 	{
@@ -136,8 +136,10 @@ Vous devez cette fois obtenir le résultat suivant, ou équivalent :
 
 	require_once 'path/to/mageekguy.atoum.phar';
 
-	use \mageekguy\atoum;
-	use \vendor\project;
+	include_once 'path/to/project/classes/helloWorld.php';
+
+	use mageekguy\atoum;
+	use vendor\project;
 
 	class helloWorld extends atoum\test
 	{

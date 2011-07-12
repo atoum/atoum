@@ -10,7 +10,7 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 	require_once('phar://' . __FILE__ . '/classes/autoloader.php');
 
-	phar\stub::runAtShutdown(__FILE__);
+	phar\stub::autorun(__FILE__);
 }
 
 __HALT_COMPILER();

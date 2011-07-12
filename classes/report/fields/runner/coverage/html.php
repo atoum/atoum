@@ -2,39 +2,45 @@
 
 namespace mageekguy\atoum\report\fields\runner\coverage;
 
+require_once(__DIR__ . '/../../../../../constants.php');
+
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
 	\mageekguy\atoum\report,
 	\mageekguy\atoum\template,
-	\mageekguy\atoum\exceptions
+	\mageekguy\atoum\exceptions,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer
 ;
 
 class html extends report\fields\runner\coverage\cli
 {
 	const htmlExtensionFile = '.html';
-	const defaultAlternatePrompt = '=> ';
 
+	protected $urlPrompt = null;
+	protected $urlColorizer = null;
 	protected $adapter = null;
 	protected $rootUrl = '';
 	protected $projectName = '';
-	protected $alternatePrompt = '';
 	protected $srcDirectories = array();
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 	protected $reflectionClassInjector = null;
 
-	public function __construct($projectName, $templatesDirectory, $destinationDirectory, template\parser $parser = null, atoum\adapter $adapter = null, atoum\locale $locale = null, $prompt = null, $alternatePrompt = null)
+	public function __construct($projectName, $destinationDirectory, $templatesDirectory = null, prompt $prompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, prompt $urlPrompt = null, colorizer $urlColorizer = null, template\parser $parser = null, atoum\adapter $adapter = null, locale $locale = null)
 	{
-		parent::__construct($locale, $prompt);
+		parent::__construct($prompt, $titleColorizer, $coverageColorizer, $locale);
 
 		$this
+			->setUrlPrompt($urlPrompt ?: new prompt())
+			->setUrlColorizer($urlColorizer ?: new colorizer())
 			->setProjectName($projectName)
-			->setTemplatesDirectory($templatesDirectory)
+			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . '/ressources/templates/coverage')
 			->setDestinationDirectory($destinationDirectory)
 			->setTemplateParser($parser ?: new template\parser())
 			->setAdapter($adapter ?: new atoum\adapter())
-			->setAlternatePrompt($alternatePrompt ?: self::defaultAlternatePrompt)
 			->setRootUrl('/')
 		;
 	}
@@ -308,7 +314,7 @@ class html extends report\fields\runner\coverage\cli
 				$sourceFileTemplates->resetData();
 			}
 
-			$string .= $this->alternatePrompt . sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl) . PHP_EOL;
+			$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
 		}
 
 		return $string;
@@ -326,16 +332,28 @@ class html extends report\fields\runner\coverage\cli
 		return $this->adapter;
 	}
 
-	public function setAlternatePrompt($prompt)
+	public function setUrlPrompt(prompt $prompt)
 	{
-		$this->alternatePrompt = (string) $prompt;
+		$this->urlPrompt = $prompt;
 
 		return $this;
 	}
 
-	public function getAlternatePrompt()
+	public function getUrlPrompt()
 	{
-		return $this->alternatePrompt;
+		return $this->urlPrompt;
+	}
+
+	public function setUrlColorizer(colorizer $colorizer)
+	{
+		$this->urlColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getUrlColorizer()
+	{
+		return $this->urlColorizer;
 	}
 
 	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)

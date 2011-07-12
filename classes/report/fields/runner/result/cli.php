@@ -20,26 +20,10 @@ class cli extends fields\runner\result
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
-		{
-			$prompt = new prompt();
-		}
-
-		if ($successColorizer === null)
-		{
-			$successColorizer = new colorizer();
-		}
-
-
-		if ($failureColorizer === null)
-		{
-			$failureColorizer = new colorizer();
-		}
-
 		$this
-			->setPrompt($prompt)
-			->setSuccessColorizer($successColorizer)
-			->setFailureColorizer($failureColorizer)
+			->setPrompt($prompt ?: new prompt())
+			->setSuccessColorizer($successColorizer ?: new colorizer())
+			->setFailureColorizer($failureColorizer ?: new colorizer())
 		;
 	}
 

@@ -17,10 +17,10 @@ class cli extends realtime
 	{
 		parent::__construct();
 
-		$topLevelPrompt = new prompt('> ');
-		$topLevelColorizer = new colorizer('1;36');
+		$firstLevelPrompt = new prompt('> ');
+		$firstLevelColorizer = new colorizer('1;36');
 
-		$secondLevelPrompt = new prompt('=> ', $topLevelColorizer);
+		$secondLevelPrompt = new prompt('=> ', $firstLevelColorizer);
 
 		$failureColorizer = new colorizer('0;31');
 		$failurePrompt = clone $secondLevelPrompt;
@@ -36,59 +36,59 @@ class cli extends realtime
 
 		$this
 			->addRunnerField(new runner\atoum\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStart)
 				)
 			->addRunnerField(new runner\php\path\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStart)
 				)
 			->addRunnerField(new runner\php\version\cli(
-						$topLevelPrompt,
-						$topLevelColorizer,
+						$firstLevelPrompt,
+						$firstLevelColorizer,
 						$secondLevelPrompt
 					),
 					array(atoum\runner::runStart)
 				)
 			->addRunnerField(new runner\tests\duration\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\tests\memory\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\tests\coverage\cli(
-						$topLevelPrompt,
+						$firstLevelPrompt,
 						$secondLevelPrompt,
-						new prompt('==> ', $topLevelColorizer),
-						$topLevelColorizer
+						new prompt('==> ', $firstLevelColorizer),
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\duration\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\result\cli(
-						$topLevelPrompt,
+						$firstLevelPrompt,
 						new colorizer('0;37', '42'),
 						new colorizer('0;37', '41')
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\failures\cli(
-						$topLevelPrompt,
+						$firstLevelPrompt,
 						$failureColorizer,
 						$failurePrompt
 					),
@@ -96,42 +96,42 @@ class cli extends realtime
 				)
 			->addRunnerField(
 				new runner\outputs\cli(
-						$topLevelPrompt,
-						$topLevelColorizer,
+						$firstLevelPrompt,
+						$firstLevelColorizer,
 						$secondLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\errors\cli(
-						$topLevelPrompt,
+						$firstLevelPrompt,
 						$errorColorizer,
 						$errorPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\exceptions\cli(
-						$topLevelPrompt,
+						$firstLevelPrompt,
 						$exceptionColorizer,
 						$exceptionPrompt
 					),
 					array(atoum\runner::runStop)
 				)
 			->addTestField(new test\run\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\test::runStart)
 				)
 			->addTestField(new test\event\cli())
 			->addTestField(new test\duration\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\test::runStop)
 				)
 			->addTestField(new test\memory\cli(
-						$topLevelPrompt,
-						$topLevelColorizer
+						$firstLevelPrompt,
+						$firstLevelColorizer
 					),
 					array(atoum\test::runStop)
 				)

@@ -22,37 +22,12 @@ class cli extends report\fields\runner\tests\coverage
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
-		{
-			$titlePrompt = new prompt();
-		}
-
-		if ($classPrompt === null)
-		{
-			$classPrompt = new prompt();
-		}
-
-		if ($methodPrompt === null)
-		{
-			$methodPrompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($coverageColorizer === null)
-		{
-			$coverageColorizer = new colorizer();
-		}
-
 		$this
-			->setTitlePrompt($titlePrompt)
-			->setClassPrompt($classPrompt)
-			->setMethodPrompt($methodPrompt)
-			->setTitleColorizer($titleColorizer)
-			->setCoverageColorizer($coverageColorizer)
+			->setTitlePrompt($titlePrompt ?: new prompt())
+			->setClassPrompt($classPrompt ?: new prompt())
+			->setMethodPrompt($methodPrompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setCoverageColorizer($coverageColorizer ?: new colorizer())
 		;
 	}
 

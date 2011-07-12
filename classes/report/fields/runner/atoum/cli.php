@@ -18,19 +18,9 @@ class cli extends report\fields\runner\atoum
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
-		{
-			$prompt = new prompt();
-		}
-
-		if ($colorizer === null)
-		{
-			$colorizer = new colorizer();
-		}
-
 		$this
-			->setPrompt($prompt)
-			->setColorizer($colorizer)
+			->setPrompt($prompt ?: new prompt())
+			->setColorizer($colorizer ?: new colorizer())
 		;
 	}
 

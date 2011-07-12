@@ -17,6 +17,6 @@ Generate a CLI report.
 $vimReport = new atoum\reports\asynchronous\vim();
 $vimReport->addWriter($stdOutWriter);
 
-$runner->addReport($vimReport);
+atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
 
 ?>

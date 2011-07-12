@@ -20,25 +20,10 @@ class cli extends report\fields\runner\php\path
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
-		{
-			$prompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($pathColorizer === null)
-		{
-			$pathColorizer = new colorizer();
-		}
-
 		$this
-			->setPrompt($prompt)
-			->setTitleColorizer($titleColorizer)
-			->setPathColorizer($pathColorizer)
+			->setPrompt($prompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setPathColorizer($pathColorizer ?: new colorizer())
 		;
 	}
 

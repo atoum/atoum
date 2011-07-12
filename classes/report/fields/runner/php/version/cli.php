@@ -20,31 +20,11 @@ class cli extends report\fields\runner\php\version
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
-		{
-			$titlePrompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($versionPrompt === null)
-		{
-			$versionPrompt = new prompt();
-		}
-
-		if ($versionColorizer === null)
-		{
-			$versionColorizer = new colorizer();
-		}
-
 		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setVersionPrompt($versionPrompt)
-			->setVersionColorizer($versionColorizer)
+			->setTitlePrompt($titlePrompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setVersionPrompt($versionPrompt ?: new prompt())
+			->setVersionColorizer($versionColorizer ?: new colorizer())
 		;
 	}
 

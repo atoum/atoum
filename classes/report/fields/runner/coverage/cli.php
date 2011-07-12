@@ -4,27 +4,32 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 
 use
 	\mageekguy\atoum,
+	\mageekguy\atoum\locale,
+	\mageekguy\atoum\cli\prompt,
+	\mageekguy\atoum\cli\colorizer,
 	\mageekguy\atoum\report
 ;
 
 class cli extends report\fields\runner\coverage
 {
-	const defaultPrompt = '> ';
+	protected $prompt = null;
+	protected $titleColorizer = null;
+	protected $coverageColorizer = null;
 
-	protected $prompt = '';
-
-	public function __construct(atoum\locale $locale = null, $prompt = null)
+	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, locale $locale = null)
 	{
 		parent::__construct($locale);
 
 		$this
-			->setPrompt($prompt ?: self::defaultPrompt)
+			->setPrompt($prompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setCoverageColorizer($coverageColorizer ?: new colorizer())
 		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt)
 	{
-		$this->prompt = (string) $prompt;
+		$this->prompt = $prompt;
 
 		return $this;
 	}
@@ -34,22 +39,46 @@ class cli extends report\fields\runner\coverage
 		return $this->prompt;
 	}
 
+	public function setTitleColorizer(colorizer $colorizer)
+	{
+		$this->titleColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
+	public function setCoverageColorizer(colorizer $colorizer)
+	{
+		$this->coverageColorizer = $colorizer;
+
+		return $this;
+	}
+
+	public function getCoverageColorizer()
+	{
+		return $this->coverageColorizer;
+	}
+
 	public function __toString()
 	{
-		$string = $this->prompt;
-
-		if ($this->coverage === null)
-		{
-			$string .= $this->locale->_('Code coverage: unknown.');
-		}
-		else
-		{
-			$string .= sprintf($this->locale->_('Code coverage: %3.2f%%.'), round($this->coverage->getValue() * 100, 2));
-		}
-
-		$string .= PHP_EOL;
-
-		return $string;
+		return $this->prompt .
+			sprintf(
+				'%s: %s.',
+				$this->titleColorizer->colorize($this->locale->_('Code coverage')),
+				$this->coverageColorizer->colorize(
+					$this->coverage === null
+					?
+					$this->locale->_('unknown')
+					:
+					sprintf($this->locale->_('%3.2f%%'), round($this->coverage->getValue() * 100, 2))
+				)
+			) .
+			PHP_EOL
+		;
 	}
 }
 

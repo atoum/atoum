@@ -23,43 +23,13 @@ class cli extends outputs
 	{
 		parent::__construct($locale);
 
-		if ($titlePrompt === null)
-		{
-			$titlePrompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($methodPrompt === null)
-		{
-			$methodPrompt = new prompt();
-		}
-
-		if ($methodColorizer === null)
-		{
-			$methodColorizer = new colorizer();
-		}
-
-		if ($outputPrompt === null)
-		{
-			$outputPrompt = new prompt();
-		}
-
-		if ($outputColorizer === null)
-		{
-			$outputColorizer = new colorizer();
-		}
-
 		$this
-			->setTitlePrompt($titlePrompt)
-			->setTitleColorizer($titleColorizer)
-			->setMethodPrompt($methodPrompt)
-			->setMethodColorizer($methodColorizer)
-			->setOutputPrompt($outputPrompt)
-			->setOutputColorizer($outputColorizer)
+			->setTitlePrompt($titlePrompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setMethodPrompt($methodPrompt ?: new prompt())
+			->setMethodColorizer($methodColorizer ?: new colorizer())
+			->setOutputPrompt($outputPrompt ?: new prompt())
+			->setOutputColorizer($outputColorizer ?: new colorizer())
 		;
 	}
 

@@ -20,25 +20,10 @@ class cli extends report\fields\runner\tests\memory
 	{
 		parent::__construct($locale);
 
-		if ($prompt === null)
-		{
-			$prompt = new prompt();
-		}
-
-		if ($titleColorizer === null)
-		{
-			$titleColorizer = new colorizer();
-		}
-
-		if ($memoryColorizer === null)
-		{
-			$memoryColorizer = new colorizer();
-		}
-
 		$this
-			->setPrompt($prompt)
-			->setTitleColorizer($titleColorizer)
-			->setMemoryColorizer($memoryColorizer)
+			->setPrompt($prompt ?: new prompt())
+			->setTitleColorizer($titleColorizer ?: new colorizer())
+			->setMemoryColorizer($memoryColorizer ?: new colorizer())
 		;
 	}
 
