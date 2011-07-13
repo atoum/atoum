@@ -218,7 +218,7 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	protected function includeFile($path)
+	public function includeFile($path)
 	{
 		try
 		{
