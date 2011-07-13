@@ -106,10 +106,19 @@ class cli extends runner\failures
 							'%s:',
 							$this->methodColorizer->colorize(($fail['class'] . '::' . $fail['method'] . '()'))
 						) .
-						PHP_EOL .
-						sprintf($this->locale->_('In file %s on line %d, %s failed: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']) .
 						PHP_EOL
 					;
+
+					if ($fail['case'] === null)
+					{
+						$string .= sprintf($this->locale->_('In file %s on line %d, %s failed: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']);
+					}
+					else
+					{
+						$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $fail['file'], $fail['case'], $fail['line'], $fail['asserter'], $fail['fail']);
+					}
+
+					$string .= PHP_EOL;
 				}
 			}
 		}

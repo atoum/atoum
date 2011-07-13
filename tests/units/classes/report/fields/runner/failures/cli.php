@@ -143,6 +143,7 @@ class cli extends units\report\fields\runner
 
 		$score->getMockController()->getFailAssertions = $fails = array(
 			array(
+				'case' => null,
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
 				'file' => $file = uniqid(),
@@ -151,6 +152,7 @@ class cli extends units\report\fields\runner
 				'fail' => $fail = uniqid()
 			),
 			array(
+				'case' => null,
 				'class' => $otherClass = uniqid(),
 				'method' => $otherMethod = uniqid(),
 				'file' => $otherFile = uniqid(),
@@ -199,6 +201,40 @@ class cli extends units\report\fields\runner
 				PHP_EOL .
 				sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
 				PHP_EOL
+			)
+		;
+
+		$score->getMockController()->getFailAssertions = $fails = array(
+			array(
+				'case' => $case =  uniqid(),
+				'class' => $class = uniqid(),
+				'method' => $method = uniqid(),
+				'file' => $file = uniqid(),
+				'line' => $line = uniqid(),
+				'asserter' => $asserter = uniqid(),
+				'fail' => $fail = uniqid()
+			),
+			array(
+				'case' => null,
+				'case' => $otherCase =  uniqid(),
+				'class' => $otherClass = uniqid(),
+				'method' => $otherMethod = uniqid(),
+				'file' => $otherFile = uniqid(),
+				'line' => $otherLine = uniqid(),
+				'asserter' => $otherAsserter = uniqid(),
+				'fail' => $otherFail = uniqid()
+			)
+		);
+
+		$field = new runner\failures\cli();
+
+		$this->assert
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+				$class . '::' . $method . '():' . PHP_EOL .
+				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $case, $line, $asserter, $fail) . PHP_EOL .
+				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $otherFile, $otherCase, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}
