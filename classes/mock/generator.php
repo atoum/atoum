@@ -141,7 +141,6 @@ class generator implements atoum\adapter\aggregator
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
 	{
-		file_put_contents('/home/fhardy/tmp/' . $class . '.php', $this->getMockedClassCode($class, $mockNamespace, $mockClass));
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
 		return $this;
