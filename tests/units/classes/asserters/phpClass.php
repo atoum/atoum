@@ -264,7 +264,7 @@ class phpClass extends atoum\test
 				->getScore()->reset()
 		;
 
-		$mockController->getInterfaceNames = function() { return array(); };
+		$mockController->getInterfaceNames = array();
 
 		$this->assert
 			->exception(function() use ($asserter, $interface) {
@@ -277,10 +277,60 @@ class phpClass extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$mockController->getInterfaceNames = function() use ($interface) { return array(uniqid(), $interface, uniqid()); };
+		$mockController->getInterfaceNames = array(uniqid(), $interface, uniqid());
 
 		$this->assert
 			->object($asserter->hasInterface($interface))->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testIsAbstract()
+	{
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isAbstract();
+					}
+				)
+					->isInstanceOf('\logicException')
+					->hasMessage('Class is undefined')
+		;
+
+		$class = uniqid();
+
+		$mockGenerator = new atoum\mock\generator();
+		$mockGenerator->generate('\reflectionClass');
+
+		$mockController = new atoum\mock\controller();
+		$mockController->__construct = function() {};
+		$mockController->getName = function() use ($class) { return $class; };
+
+		$asserter
+			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setWith($class)
+				->getScore()->reset()
+		;
+
+		$mockController->isAbstract = false;
+
+		$this->assert
+			->exception(function() use ($asserter) {
+					$asserter->isAbstract();
+				}
+			)
+				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('Class %s is not abstract'), $class))
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isZero()
+		;
+
+		$mockController->isAbstract = true;
+
+		$this->assert
+			->object($asserter->isAbstract())->isIdenticalTo($asserter)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;

@@ -126,6 +126,20 @@ class phpClass extends atoum\asserter
 		return $this;
 	}
 
+	public function isAbstract($failMessage = null)
+	{
+		if ($this->classIsSet()->class->isAbstract() === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s is not abstract'), $this->class->getName()));
+		}
+
+		return $this;
+	}
+
 	protected function classIsSet()
 	{
 		if ($this->class === null)
