@@ -120,7 +120,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
 
 		$this->assert
 			->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
@@ -144,7 +144,7 @@ class controller extends atoum\test
 		;
 
 		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
 
 		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); });
 

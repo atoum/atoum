@@ -73,11 +73,25 @@ class generator implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	public function shunt($method)
+	public function shunt($class, $method)
 	{
-		$this->shuntedMethods[] = $method;
+		$class = strtolower(ltrim($class, '\\'));
+		$method = strtolower($method);
+
+		if ($this->isShunted($class, $method) === false)
+		{
+			$this->shuntedMethods[$class][] = $method;
+		}
 
 		return $this;
+	}
+
+	public function isShunted($class, $method)
+	{
+		$class = strtolower(ltrim($class, '\\'));
+		$method = strtolower($method);
+
+		return (isset($this->shuntedMethods[$class]) === true && in_array($method, $this->shuntedMethods[$class]) === true);
 	}
 
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
@@ -127,6 +141,7 @@ class generator implements atoum\adapter\aggregator
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
 	{
+		file_put_contents('/home/fhardy/tmp/' . $class . '.php', $this->getMockedClassCode($class, $mockNamespace, $mockClass));
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
 		return $this;
@@ -175,6 +190,8 @@ class generator implements atoum\adapter\aggregator
 		$mockedMethods = '';
 
 		$hasConstructor = false;
+
+		$className = $class->getName();
 
 		foreach ($class->getMethods() as $method)
 		{
@@ -249,7 +266,7 @@ class generator implements atoum\adapter\aggregator
 
 				$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
 
-				$isShunted = (in_array($methodName, $this->shuntedMethods) === true);
+				$isShunted = $this->isShunted($className, $methodName);
 
 				if ($isConstructor === true)
 				{

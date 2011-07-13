@@ -50,7 +50,7 @@ class phpClass extends atoum\test
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
 
 		$this->assert
 			->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
@@ -74,7 +74,7 @@ class phpClass extends atoum\test
 		;
 
 		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
 
 		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); });
 
@@ -198,7 +198,7 @@ class phpClass extends atoum\test
 		;
 
 		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('__construct')->generate('\reflectionClass');
+		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
 
 		$reflectionClass = new atoum\mock\reflectionClass($className = uniqid());
 

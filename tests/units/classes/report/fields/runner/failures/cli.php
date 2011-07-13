@@ -232,9 +232,9 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEmpty()
 			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
 				$class . '::' . $method . '():' . PHP_EOL .
-				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $case, $line, $asserter, $fail) . PHP_EOL .
+				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $line, $case, $asserter, $fail) . PHP_EOL .
 				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $otherFile, $otherCase, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+				sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) . PHP_EOL
 			)
 		;
 	}

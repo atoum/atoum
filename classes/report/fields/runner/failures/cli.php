@@ -115,7 +115,7 @@ class cli extends runner\failures
 					}
 					else
 					{
-						$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $fail['file'], $fail['case'], $fail['line'], $fail['asserter'], $fail['fail']);
+						$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $fail['file'], $fail['line'], $fail['case'], $fail['asserter'], $fail['fail']);
 					}
 
 					$string .= PHP_EOL;
