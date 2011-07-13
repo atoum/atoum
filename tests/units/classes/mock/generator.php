@@ -204,6 +204,7 @@ class generator extends atoum\test
 		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
+		$reflectionMethodController->isAbstract = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
 		$reflectionMethodController->injectInNextMockInstance();
 
@@ -297,6 +298,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getParameters = function() { return array(); };
 		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isAbstract = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
 		$reflectionMethodController->injectInNextMockInstance();
@@ -580,6 +582,7 @@ class generator extends atoum\test
 		$reflectionMethodController->getParameters = function() { return array(); };
 		$reflectionMethodController->isPublic = function() { return true; };
 		$reflectionMethodController->isFinal = function() { return false; };
+		$reflectionMethodController->isAbstract = function() { return false; };
 		$reflectionMethodController->isStatic = function() { return false; };
 		$reflectionMethodController->returnsReference = function() { return false; };
 		$reflectionMethodController->injectInNextMockInstance();

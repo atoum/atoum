@@ -280,7 +280,7 @@ class generator implements atoum\adapter\aggregator
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
 				}
 
-				if ($isShunted === true)
+				if ($isShunted === true || $method->isAbstract() === true)
 				{
 					$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
