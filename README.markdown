@@ -36,7 +36,7 @@ Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'ex�
 
 Si `Xml` ou un équivalent s'affiche, le module est installé.  
 
-L'extension [Xdebug](http://xdebug.org/) est quand à elle requise si vous désirer surveiller le taux de couverture de votre code par vos tests unitaires.
+L'extension [Xdebug](http://xdebug.org/) est quand à elle requise si vous désirez surveiller le taux de couverture de votre code par vos tests unitaires.
 Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
 
 	# php -m | grep -i xdebug
@@ -53,7 +53,7 @@ Le code source d'*atoum* est également disponible via [son dépôt sur github](
 
 ### Étape 2 : Écrivez votre test
 
-À l'aide de votre éditeur favori, créé le fichier `path/to/project/tests/units/helloWorld.php` et ajoutez-y le code suivant :
+À l'aide de votre éditeur favori, créez le fichier `path/to/project/tests/units/helloWorld.php` et ajoutez-y le code suivant :
 
 	<?php
 
@@ -93,7 +93,7 @@ Vous devez obtenir le résultat suivant, ou équivalent :
 
 ### Étape 4 : Écrivez la classe correspondant à votre test
 
-À nouveau à l'aide de votre éditeur favori, créé le fichier `path/to/project/classes/helloWorld.php` et ajoutez-y le code suivant :
+À nouveau à l'aide de votre éditeur favori, créez le fichier `path/to/project/classes/helloWorld.php` et ajoutez-y le code suivant :
 
 	<?php
 
