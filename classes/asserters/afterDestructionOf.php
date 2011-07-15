@@ -7,7 +7,7 @@ use
 	\mageekguy\atoum\exceptions
 ;
 
-class afterDestructOf extends atoum\asserter
+class afterDestructionOf extends atoum\asserter
 {
 	public function setWith($value)
 	{

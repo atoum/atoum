@@ -4,7 +4,6 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use
 	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
 	\mageekguy\atoum\asserter,
 	\mageekguy\atoum\asserters
 ;
@@ -18,7 +17,7 @@ class classWithDestructor
 
 class classWithoutDestructor {}
 
-class afterDestructOf extends atoum\test
+class afterDestructionOf extends atoum\test
 {
 	public function testClass()
 	{
@@ -29,7 +28,7 @@ class afterDestructOf extends atoum\test
 
 	public function test__construct()
 	{
-		$asserter = new asserters\afterDestructOf($generator = new asserter\generator($this));
+		$asserter = new asserters\afterDestructionOf($generator = new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
@@ -40,7 +39,7 @@ class afterDestructOf extends atoum\test
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\afterDestructOf(new asserter\generator($test = new self($score = new atoum\score())));
+		$asserter = new asserters\afterDestructionOf(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$value = uniqid();
 
@@ -69,7 +68,7 @@ class afterDestructOf extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->setWith($objectWithDestructor = new mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
+			->object($asserter->setWith($objectWithDestructor = new atoum\mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
 			->mock($objectWithDestructor)
 				->call('__destruct')
 			->integer($score->getPassNumber())->isEqualTo(1)
