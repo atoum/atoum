@@ -171,7 +171,7 @@ class object extends atoum\test
 		;
 	}
 
-	public function testCastedToString()
+	public function testToString()
 	{
 		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
 

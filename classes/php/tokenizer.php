@@ -40,6 +40,10 @@ class tokenizer implements \iteratorAggregate
 		{
 			switch ($token[0])
 			{
+				case T_CONST:
+					$token = $this->appendConstant();
+					break;
+
 				case T_USE:
 					$token = $this->appendNamespaceImportation();
 					break;
@@ -86,24 +90,27 @@ class tokenizer implements \iteratorAggregate
 
 	private function appendNamespace()
 	{
-		$parent = $this->currentIterator->getParent();
-
-		if ($parent !== null)
-		{
-			$this->currentIterator = $parent;
-		}
-
-		$this->currentIterator->appendNamespace($this->currentNamespace = new iterators\phpNamespace());
-		$this->currentIterator = $this->currentNamespace;
-
 		$inNamespace = true;
 
-		while ($inNamespace === true && $this->tokens->valid() === true)
+		while ($inNamespace === true)
 		{
 			$token = $this->tokens->current();
 
 			switch ($token[0])
 			{
+				case T_NAMESPACE:
+					$parent = $this->currentIterator->getParent();
+
+					if ($parent !== null)
+					{
+						$this->currentIterator = $parent;
+					}
+
+					$this->currentIterator->appendNamespace($this->currentNamespace = new iterators\phpNamespace());
+					$this->currentIterator = $this->currentNamespace;
+					break;
+
+
 				case T_CONST:
 					$this->appendConstant();
 					break;
@@ -122,6 +129,11 @@ class tokenizer implements \iteratorAggregate
 					$this->appendInterface();
 					break;
 
+				case ';':
+					$this->currentIterator = $this->currentIterator->getParent();
+					$inNamespace = false;
+					break;
+
 				case T_CLOSE_TAG:
 					if ($this->nextTokenIs(T_OPEN_TAG) === false)
 					{
@@ -129,19 +141,52 @@ class tokenizer implements \iteratorAggregate
 						$inNamespace = false;
 					}
 					break;
-			}
 
-			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
-
-			switch ($token[0])
-			{
 				case '}':
-					$this->currentIterator = $this->currentIterator->getParent();
 					$inNamespace = false;
 					break;
 			}
 
+			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+			if ($token[0] === '}')
+			{
+				$this->currentIterator = $this->currentIterator->getParent();
+			}
+
 			$this->tokens->next();
+
+			$inNamespace = $inNamespace && $this->tokens->valid();
+		}
+
+		return $this->tokens->valid() === false ? null : $this->tokens->current();
+	}
+
+	private function appendConstant()
+	{
+		$this->currentIterator->appendConstant($this->currentNamespace = new iterators\phpConstant());
+		$this->currentIterator = $this->currentNamespace;
+
+		$inConstant = true;
+
+		while ($inConstant === true)
+		{
+			$token = $this->tokens->current();
+
+			switch ($token[0])
+			{
+				case ';':
+				case T_CLOSE_TAG:
+					$this->currentIterator = $this->currentIterator->getParent();
+					$inConstant = false;
+					break;
+
+				default:
+					$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+					$this->tokens->next();
+			}
+
+			$inConstant = $inConstant && $this->tokens->valid();
 		}
 
 		return $this->tokens->valid() === false ? null : $this->tokens->current();
@@ -162,7 +207,6 @@ class tokenizer implements \iteratorAggregate
 			$key = $this->tokens->key();
 		}
 	}
-
 
 	private function appendArray()
 	{
