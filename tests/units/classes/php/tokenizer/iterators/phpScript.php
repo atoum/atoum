@@ -28,7 +28,7 @@ class phpScript extends atoum\test
 			->array($iterator->getConstants())->isEmpty()
 			->array($iterator->getClasses())->isEmpty()
 			->array($iterator->getNamespaces())->isEmpty()
-			->array($iterator->getNamespaceImportations())->isEmpty()
+			->array($iterator->getImportations())->isEmpty()
 		;
 	}
 
@@ -244,65 +244,65 @@ class phpScript extends atoum\test
 		;
 	}
 
-	public function testAppendNamespaceImportation()
+	public function testAppendImportation()
 	{
 		$iterator = new iterators\phpScript();
 
-		$namespaceImportationIterator = new iterators\phpNamespace\importation();
-		$namespaceImportationIterator
+		$importationIterator = new iterators\phpImportation();
+		$importationIterator
 			->append($token1 = new tokenizer\token(uniqid()))
 			->append($token2 = new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
-			->object($iterator->appendNamespaceImportation($namespaceImportationIterator))->isIdenticalTo($iterator)
-			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator))
+			->object($iterator->appendImportation($importationIterator))->isIdenticalTo($iterator)
+			->array($iterator->getImportations())->isEqualTo(array($importationIterator))
 			->castToString($iterator)->isEqualTo($token1 . $token2)
 		;
 	}
 
-	public function testGetNamespaceImportations()
+	public function testGetImportations()
 	{
 		$iterator = new iterators\phpScript();
 
 		$this->assert
-			->array($iterator->getNamespaceImportations())->isEmpty()
+			->array($iterator->getImportations())->isEmpty()
 		;
 
-		$iterator->appendNamespaceImportation($namespaceImportationIterator = new iterators\phpNamespace\importation());
+		$iterator->appendImportation($importationIterator = new iterators\phpImportation());
 
 		$this->assert
-			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator))
+			->array($iterator->getImportations())->isEqualTo(array($importationIterator))
 		;
 
-		$iterator->appendNamespaceImportation($otherNamespaceImportationIterator = new iterators\phpNamespace\importation());
+		$iterator->appendImportation($otherImportationIterator = new iterators\phpImportation());
 
 		$this->assert
-			->array($iterator->getNamespaceImportations())->isEqualTo(array($namespaceImportationIterator, $otherNamespaceImportationIterator))
+			->array($iterator->getImportations())->isEqualTo(array($importationIterator, $otherImportationIterator))
 		;
 	}
 
-	public function testGetNamespaceImportation()
+	public function testGetImportation()
 	{
 		$iterator = new iterators\phpScript();
 
 		$this->assert
-			->variable($iterator->getNamespaceImportation(rand(0, PHP_INT_MAX)))->isNull()
+			->variable($iterator->getImportation(rand(0, PHP_INT_MAX)))->isNull()
 		;
 
-		$iterator->appendNamespaceImportation($namespaceImportationIterator = new iterators\phpNamespace\importation());
+		$iterator->appendImportation($importationIterator = new iterators\phpImportation());
 
 		$this->assert
-			->variable($iterator->getNamespaceImportation(0))->isIdenticalTo($namespaceImportationIterator)
-			->variable($iterator->getNamespaceImportation(rand(1, PHP_INT_MAX)))->isNull()
+			->variable($iterator->getImportation(0))->isIdenticalTo($importationIterator)
+			->variable($iterator->getImportation(rand(1, PHP_INT_MAX)))->isNull()
 		;
 
-		$iterator->appendNamespaceImportation($otherNamespaceImportationIterator = new iterators\phpNamespace\importation());
+		$iterator->appendImportation($otherImportationIterator = new iterators\phpImportation());
 
 		$this->assert
-			->variable($iterator->getNamespaceImportation(0))->isIdenticalTo($namespaceImportationIterator)
-			->variable($iterator->getNamespaceImportation(1))->isIdenticalTo($otherNamespaceImportationIterator)
-			->variable($iterator->getNamespaceImportation(rand(2, PHP_INT_MAX)))->isNull()
+			->variable($iterator->getImportation(0))->isIdenticalTo($importationIterator)
+			->variable($iterator->getImportation(1))->isIdenticalTo($otherImportationIterator)
+			->variable($iterator->getImportation(rand(2, PHP_INT_MAX)))->isNull()
 		;
 	}
 

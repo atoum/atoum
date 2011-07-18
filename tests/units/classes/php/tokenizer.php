@@ -240,6 +240,40 @@ class tokenizer extends atoum\test
 				->toString()->isEqualTo('const bar = \'bar\'')
 		;
 
+		$this->startCase('Tokenizing namespace importation in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar; ?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString()->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString()->isEqualTo('use foo\bar')
+		;
+
+		$this->startCase('Tokenizing several namespace importations in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar; use bar\foo; ?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString()->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString()->isEqualTo('use foo\bar')
+			->object($tokenizer->getIterator()->getImportation(1))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString()->isEqualTo('use bar\foo')
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar, bar\foo; ?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString()->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString()->isEqualTo('use foo\bar, bar\foo')
+		;
+
 		/*
 		$this->startCase('Tokenizing function definition in script');
 

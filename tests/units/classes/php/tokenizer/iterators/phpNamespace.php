@@ -22,18 +22,18 @@ class phpNamespace extends atoum\test
 
 	public function testAppendClass()
 	{
-		$iterator = new iterators\phpScript();
+		$phpNamespace = new iterators\phpNamespace();
 
-		$classIterator = new iterators\phpClass();
-		$classIterator
+		$phpClass = new iterators\phpClass();
+		$phpClass
 			->append($token1 = new tokenizer\token(uniqid()))
 			->append($token2 = new tokenizer\token(uniqid()))
 		;
 
 		$this->assert
-			->object($iterator->appendClass($classIterator))->isIdenticalTo($iterator)
-			->array($iterator->getClasses())->isEqualTo(array($classIterator))
-			->castToString($iterator)->isEqualTo($token1 . $token2)
+			->object($phpNamespace->appendClass($phpClass))->isIdenticalTo($phpNamespace)
+			->array($phpNamespace->getClasses())->isEqualTo(array($phpClass))
+			->castToString($phpNamespace)->isEqualTo($token1 . $token2)
 		;
 	}
 }

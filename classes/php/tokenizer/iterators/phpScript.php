@@ -11,7 +11,7 @@ use
 class phpScript extends tokenizer\iterators\phpNamespace
 {
 	protected $namespaces = array();
-	protected $namespaceImportations = array();
+	protected $importations = array();
 
 	public function reset()
 	{
@@ -37,21 +37,21 @@ class phpScript extends tokenizer\iterators\phpNamespace
 		return (isset($this->namespaces[$index]) === false ? null : $this->namespaces[$index]);
 	}
 
-	public function appendNamespaceImportation(iterators\phpNamespace\importation $phpNamespaceImportation)
+	public function appendImportation(iterators\phpImportation $phpImportation)
 	{
-		$this->namespaceImportations[] = $phpNamespaceImportation;
+		$this->importations[] = $phpImportation;
 
-		return $this->append($phpNamespaceImportation);
+		return $this->append($phpImportation);
 	}
 
-	public function getNamespaceImportations()
+	public function getImportations()
 	{
-		return $this->namespaceImportations;
+		return $this->importations;
 	}
 
-	public function getNamespaceImportation($index)
+	public function getImportation($index)
 	{
-		return (isset($this->namespaceImportations[$index]) === false ? null : $this->namespaceImportations[$index]);
+		return (isset($this->importations[$index]) === false ? null : $this->importations[$index]);
 	}
 }
 

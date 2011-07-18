@@ -45,7 +45,7 @@ class tokenizer implements \iteratorAggregate
 					break;
 
 				case T_USE:
-					$token = $this->appendNamespaceImportation();
+					$token = $this->appendImportation();
 					break;
 
 				case T_NAMESPACE:
@@ -59,30 +59,31 @@ class tokenizer implements \iteratorAggregate
 		return $this;
 	}
 
-	private function appendNamespaceImportation()
+	private function appendImportation()
 	{
-		$this->currentIterator->appendNamespaceImportation($this->currentNamespaceImportation = new iterators\phpNamespace\importation());
-		$this->currentIterator = $this->currentNamespaceImportation;
+		$this->currentIterator->appendImportation($this->currentImportation = new iterators\phpImportation());
+		$this->currentIterator = $this->currentImportation;
 
-		$inNamespaceImportation = true;
+		$inImportation = true;
 
-		while ($inNamespaceImportation === true && $this->tokens->valid() === true)
+		while ($inImportation === true)
 		{
 			$token = $this->tokens->current();
 
 			switch ($token[0])
 			{
 				case ';':
-				case ',':
-					$this->currentIterator = $this->currentNamespaceImportation->getParent();
-					$this->currentNamespaceImportation = null;
-					$inNamespaceImportation = false;
+				case T_CLOSE_TAG:
+					$this->currentIterator = $this->currentIterator->getParent();
+					$inImportation = false;
 					break;
 
 				default:
 					$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
 					$this->tokens->next();
 			}
+
+			$inImportation = $inImportation && $this->tokens->valid();
 		}
 
 		return $this->tokens->valid() === false ? null : $this->tokens->current();
