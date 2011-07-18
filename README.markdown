@@ -1,23 +1,23 @@
 # *atoum*
 
-## A simple, modern and intuitive unitary test framework for PHP !
+## A simple, modern and intuitive unit testing framework for PHP !
 
-Just like SimpleTest or PHPUnit, *atoum* is a unitary test framework specific to the [PHP](http://www.php.net) language.  
+Just like SimpleTest or PHPUnit, *atoum* is a unit test framework specific to the [PHP](http://www.php.net) language.  
 However, it has been designed from the start with the following ideas in mind :
 
 * Can be implemented *rapidly* ;
 * *Simplify* test development ;
-* Allow for writing *reliable, readable, and clear* unitary tests ;
+* Allow for writing *reliable, readable, and clear* unit tests ;
 
-To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unitary tests.  
+To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unit tests.  
 Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.  
-Also, thanks to its *fluid interface*, it allows for writing unitary tests in a fashion close to natural language.  
+Also, thanks to its *fluid interface*, it allows for writing unit tests in a fashion close to natural language.  
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
-*atoum* natively, and by default, performs the execution of each unitary test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
+*atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
 Of course, it can be used seamlessly for continuous integration, and given its design, it can be made to cope with specific needs extremely easily.  
 *atoum* also accomplishes all of this without affecting performance, since it has been developped to boast a reduced memory footprint while allowing for hastened test execution.  
-It can also generate unitary test execution reports in the Xunit format, which makes it compatible with continuous integration tools such as [Jenkins](http://jenkins-ci.org/).  
-*atoum* also generates code coverage reports, in order to make it possible to supervise unitary tests.  
+It can also generate unit test execution reports in the Xunit format, which makes it compatible with continuous integration tools such as [Jenkins](http://jenkins-ci.org/).  
+*atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
 Finally, even though it is developped mainly on UNIX, it can also work on Windows.  
 
 ## Prerequisites to use *atoum*
@@ -35,19 +35,19 @@ On UNIX, in order to check whether you have this module or not, you just need to
 	# php -m | grep -i xml
 
 If `Xml` or equivalent gets displayed, then the module is properly installed.--
-Should you wish to monitor the coverage rate of your code by the unitary tests, the [Xdebug](http://xdebug.org/) will be required.  
+Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i xdebug
 
 If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
-## A unitary test framework that can be made operational in 5 minutes !
+## A unit testing framework that can be made operational in 5 minutes !
 
 ### Step 1 : Install *atoum*
 
 You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) and store it where you wish, for example under `/path/to/project/tests/mageekguy.atoum.phar`.  
-This PHAR archive contains the latest development version to pass the totality of *atoum*'s unitary tests.  
+This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.  
 *atoum*'s source code is also available via [the github repository](https://github.com/mageekguy/atoum).
 
 ### Step 2 : Write your tests
@@ -162,7 +162,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 
 * Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
 * Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
-* Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unitary tests ;
+* Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests ;
 * Read the [conference supports](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
 * Join the IRC channel *##atoum* on the *freenode* network ; * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
 
