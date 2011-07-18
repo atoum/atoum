@@ -124,14 +124,12 @@ class cli extends realtime
 				)
 			->addTestField(new test\event\cli())
 			->addTestField(new test\duration\cli(
-						$firstLevelPrompt,
-						$firstLevelColorizer
+						$secondLevelPrompt
 					),
 					array(atoum\test::runStop)
 				)
 			->addTestField(new test\memory\cli(
-						$firstLevelPrompt,
-						$firstLevelColorizer
+						$secondLevelPrompt
 					),
 					array(atoum\test::runStop)
 				)

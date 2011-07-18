@@ -9,6 +9,18 @@ use
 
 class object extends asserters\variable
 {
+	public function __get($property)
+	{
+		switch ($property)
+		{
+			case 'toString':
+				return $this->toString();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function setWith($value, $checkType = true)
 	{
 		parent::setWith($value);

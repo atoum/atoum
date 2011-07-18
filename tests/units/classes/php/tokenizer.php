@@ -66,21 +66,24 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?><?php ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php ?>foo<?php ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 		;
 
 		$this->startCase('Tokenizing namespace');
@@ -89,30 +92,36 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo')
+				->toString
+					->isEqualTo('namespace foo')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo ; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo ')
+				->toString
+					->isEqualTo('namespace foo ')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo')
+				->toString
+					->isEqualTo('namespace foo')
 		;
 
 		$this->assert
@@ -120,69 +129,84 @@ class tokenizer extends atoum\test
 			->castToString($tokenizer->getIterator())->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo ')
+				->toString
+					->isEqualTo('namespace foo ')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo')
+				->toString
+					->isEqualTo('namespace foo')
 			->object($tokenizer->getIterator()->getNamespace(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace bar')
+				->toString
+					->isEqualTo('namespace bar')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo?><?php namespace bar?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo')
+				->toString
+					->isEqualTo('namespace foo')
 			->object($tokenizer->getIterator()->getNamespace(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace bar')
+				->toString
+					->isEqualTo('namespace bar')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo ?><?php namespace bar ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo ')
+				->toString
+					->isEqualTo('namespace foo ')
 			->object($tokenizer->getIterator()->getNamespace(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace bar ')
+				->toString
+					->isEqualTo('namespace bar ')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo {} ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo {}')
+				->toString
+					->isEqualTo('namespace foo {}')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo {} namespace bar {} ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getNamespace(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace foo {}')
+				->toString
+					->isEqualTo('namespace foo {}')
 			->object($tokenizer->getIterator()->getNamespace(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpNamespace')
-				->toString()->isEqualTo('namespace bar {}')
+				->toString
+					->isEqualTo('namespace bar {}')
 		;
 
 		$this->startCase('Tokenizing constant definition in script');
@@ -191,53 +215,64 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\'; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getConstant(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const foo = \'foo\'')
+				->toString
+					->isEqualTo('const foo = \'foo\'')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\'?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getConstant(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const foo = \'foo\'')
+				->toString
+					->isEqualTo('const foo = \'foo\'')
 		;
 
 		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\' ?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\''))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getConstant(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const foo = \'foo\' ')
+				->toString
+					->isEqualTo('const foo = \'foo\'')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\', bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getConstant(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const foo = \'foo\', bar = \'bar\'')
+				->toString
+					->isEqualTo('const foo = \'foo\', bar = \'bar\'')
 		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php const foo = \'foo\'?><?php const bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getConstant(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const foo = \'foo\'')
+				->toString
+					->isEqualTo('const foo = \'foo\'')
 			->object($tokenizer->getIterator()->getConstant(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpConstant')
-				->toString()->isEqualTo('const bar = \'bar\'')
+				->toString
+					->isEqualTo('const bar = \'bar\'')
 		;
 
 		$this->startCase('Tokenizing namespace importation in script');
@@ -246,268 +281,91 @@ class tokenizer extends atoum\test
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getImportation(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
-				->toString()->isEqualTo('use foo\bar')
+				->toString
+					->isEqualTo('use foo\bar')
 		;
 
-		$this->startCase('Tokenizing several namespace importations in script');
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString
+					->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString->
+					isEqualTo('use foo\bar')
+		;
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString
+					->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString
+					->isEqualTo('use foo\bar')
+		;
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar; use bar\foo; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getImportation(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
-				->toString()->isEqualTo('use foo\bar')
+				->toString
+					->isEqualTo('use foo\bar')
 			->object($tokenizer->getIterator()->getImportation(1))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
-				->toString()->isEqualTo('use bar\foo')
+				->toString
+					->isEqualTo('use bar\foo')
+		;
+
+		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar, bar\foo; ?>'))->isIdenticalTo($tokenizer)
 			->object($tokenizer->getIterator())
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
-				->toString()->isEqualTo($php)
+				->toString
+					->isEqualTo($php)
 			->object($tokenizer->getIterator()->getImportation(0))
 				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
-				->toString()->isEqualTo('use foo\bar, bar\foo')
+				->toString
+					->isEqualTo('use foo\bar, bar\foo')
 		;
 
-		/*
+		$this->startCase('Tokenizing namespace importation with aliasing in script');
+
+		$this->assert
+			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\bar as bar; ?>'))->isIdenticalTo($tokenizer)
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString
+					->isEqualTo($php)
+			->object($tokenizer->getIterator()->getImportation(0))
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpImportation')
+				->toString
+					->isEqualTo('use foo\bar as bar')
+		;
+
 		$this->startCase('Tokenizing function definition in script');
 
 		$this->assert
 			->object($tokenizer->resetIterator()->tokenize($php = '<?php function foo() {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getFunction(0))->isEqualTo('function foo() {}')
+			->object($tokenizer->getIterator())
+				->isInstanceOf('\mageekguy\atoum\php\tokenizer\iterators\phpScript')
+				->toString
+					->isEqualTo($php)
+			->castToString($tokenizer->getIterator()->getFunction(0))
+				->isEqualTo('function foo() {}')
 		;
-
-		$this->startCase('Tokenizing anonymous function definition in script');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php function () {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getFunction(0))->isEqualTo('function () {}')
-		;
-
-		$this->startCase('Tokenizing namespace importation in script');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php use foo\\bar; ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespaceImportation(0))->isEqualTo('use foo\\bar')
-		;
-
-		$this->startCase('Tokenizing a single namespace without contents');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
-		;
-
-		$this->startCase('Tokenizing a single namespace across script');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; ?>foo<?php const bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ?>foo<?php const bar = \'bar\'; ')
-		;
-
-		$this->startCase('Tokenizing several namespace without contents');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; namespace bar; ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; ')
-			->castToString($tokenizer->getIterator()->getNamespace(1))->isEqualTo('namespace bar; ')
-		;
-
-		$this->startCase('Tokenizing constant definition in namespace');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php namespace foo; const bar = \'bar\'; ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getNamespace(0))->isEqualTo('namespace foo; const bar = \'bar\'; ')
-			->castToString($tokenizer->getIterator()->getNamespace(0)->getConstant(0))->isEqualTo('const bar = \'bar\'')
-		;
-
-		$this->startCase('Tokenizing a single class');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo {}')
-		;
-
-		$this->startCase('Tokenizing a single class with a single constant');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { const bar = \'bar\'; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { const bar = \'bar\'; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getConstant(0))->isEqualTo('const bar = \'bar\'')
-		;
-
-
-		$this->startCase('Tokenizing a single abstract class');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php abstract class foo {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('abstract class foo {}')
-		;
-
-		$this->startCase('Tokenizing a single final class');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php final class foo {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('final class foo {}')
-		;
-
-		$this->startCase('Tokenizing several classes');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo {} class bar {} ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo {}')
-			->castToString($tokenizer->getIterator()->getClass(1))->isEqualTo('class bar {}')
-		;
-
-		$this->startCase('Tokenizing single class with a single public property');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public $bar; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public $bar; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(0))->isEqualTo('public $bar')
-		;
-
-		$this->startCase('Tokenizing single class with a single protected property');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { protected $bar; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { protected $bar; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(0))->isEqualTo('protected $bar')
-		;
-
-		$this->startCase('Tokenizing single class with a single private property');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { private $bar; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { private $bar; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(0))->isEqualTo('private $bar')
-		;
-
-		$this->startCase('Tokenizing single class with several public properties');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public $bar, $foo; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public $bar, $foo; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(0))->isEqualTo('public $bar')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(1))->isEqualTo('$foo')
-		;
-
-		$this->startCase('Tokenizing single class with several distinct public properties');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public $bar; public $foo; } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public $bar; public $foo; }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(0))->isEqualTo('public $bar')
-			->castToString($tokenizer->getIterator()->getClass(0)->getProperty(1))->isEqualTo('public $foo')
-		;
-
-		$this->startCase('Tokenizing single class with single implicit public method');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { function bar() {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { function bar() {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('function bar() {}')
-		;
-
-		$this->startCase('Tokenizing single class with single explicit public method');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar() {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar() {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar() {}')
-		;
-
-		$this->startCase('Tokenizing single class with single protected method');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { protected function bar() {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { protected function bar() {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('protected function bar() {}')
-		;
-
-		$this->startCase('Tokenizing single class with single private method');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { private function bar() {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { private function bar() {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('private function bar() {}')
-		;
-
-		$this->startCase('Tokenizing single class with single abstract implicit publit method');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { abstract function bar(); } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { abstract function bar(); }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('abstract function bar()')
-		;
-
-		$this->startCase('Tokenizing single class with single explicit public method and one argument');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo) {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo) {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo) {}')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo')
-		;
-
-		$this->startCase('Tokenizing single class with single explicit public method and one argument with array as default value');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo = array()) {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo = array()) {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo = array()) {}')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo = array()')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('array()')
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo = array(array())) {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo = array(array())) {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo = array(array())) {}')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo = array(array())')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0)->getDefaultValue())->isEqualTo('array(array())')
-		;
-
-		$this->startCase('Tokenizing single class with single explicit public method and several arguments');
-
-		$this->assert
-			->object($tokenizer->resetIterator()->tokenize($php = '<?php class foo { public function bar($foo, $bar) {} } ?>'))->isIdenticalTo($tokenizer)
-			->castToString($tokenizer->getIterator())->isEqualTo($php)
-			->castToString($tokenizer->getIterator()->getClass(0))->isEqualTo('class foo { public function bar($foo, $bar) {} }')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0))->isEqualTo('public function bar($foo, $bar) {}')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(0))->isEqualTo('$foo')
-			->castToString($tokenizer->getIterator()->getClass(0)->getMethod(0)->getArgument(1))->isEqualTo('$bar')
-		;
-		*/
 	}
 }
 

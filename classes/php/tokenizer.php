@@ -51,6 +51,10 @@ class tokenizer implements \iteratorAggregate
 				case T_NAMESPACE:
 					$token = $this->appendNamespace();
 					break;
+
+				case T_FUNCTION:
+					$token = $this->appendFunction();
+					break;
 			}
 
 			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
@@ -158,6 +162,39 @@ class tokenizer implements \iteratorAggregate
 			$this->tokens->next();
 
 			$inNamespace = $inNamespace && $this->tokens->valid();
+		}
+
+		return $this->tokens->valid() === false ? null : $this->tokens->current();
+	}
+
+	private function appendFunction()
+	{
+		$inFunction = true;
+
+		$this->currentIterator->appendFunction($this->currentFunction = new iterators\phpFunction());
+		$this->currentIterator = $this->currentFunction;
+
+		while ($inFunction === true)
+		{
+			$token = $this->tokens->current();
+
+			switch ($token[0])
+			{
+				case '}':
+					$inFunction = false;
+					break;
+			}
+
+			$this->currentIterator->append(new tokenizer\token($token[0], isset($token[1]) === false ? null : $token[1], isset($token[2]) === false ? null : $token[2]));
+
+			if ($token[0] === '}')
+			{
+				$this->currentIterator = $this->currentIterator->getParent();
+			}
+
+			$this->tokens->next();
+
+			$inFunction = $inFunction && $this->tokens->valid();
 		}
 
 		return $this->tokens->valid() === false ? null : $this->tokens->current();

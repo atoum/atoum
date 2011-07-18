@@ -132,12 +132,10 @@ class cli extends atoum\test
 			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
 					new fields\test\event\cli(),
 					new fields\test\duration\cli(
-						new prompt('> '),
-						new colorizer('1;36')
+						new prompt('=> ', new colorizer('1;36'))
 					),
 					new fields\test\memory\cli(
-						new prompt('> '),
-						new colorizer('1;36')
+						new prompt('=> ', new colorizer('1;36'))
 					)
 				)
 			)

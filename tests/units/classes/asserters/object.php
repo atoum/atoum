@@ -32,6 +32,32 @@ class object extends atoum\test
 		;
 	}
 
+	public function test__get()
+	{
+		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->toString;
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->hasMessage('Object is undefined')
+			->exception(function() use ($asserter, & $property) {
+						$asserter->{$property = uniqid()};
+					}
+				)
+					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
+		;
+
+		$asserter->setWith($this);
+
+		$this->assert
+			->object($asserter->toString)->isInstanceOf('\mageekguy\atoum\asserters\castToString')
+		;
+	}
+
 	public function testSetWith()
 	{
 		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
