@@ -22,7 +22,8 @@ Finally, even though it is developped mainly on UNIX, it can also work on Window
 
 ## Prerequisites to use *atoum*
 
-*atoum* *absolutely* requires PHP to be of version 5.3 or superior to work Should you want to use *atou* using its PHAR archive, you also need [PHP](http://www.php.net] to be able to access the `phar` module, which is normally available by default.  
+*atoum* absolutely requires *PHP 5.3* or superior to work.  
+Should you want to use *atou* using its PHAR archive, you also need [PHP](http://www.php.net] to be able to access the `phar` module, which is normally available by default.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i phar
