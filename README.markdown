@@ -1,8 +1,8 @@
 # *atoum*
 
-## A simple, modern and intuitive unit test framework for PHP !
+## A simple, modern and intuitive unit testing framework for PHP !
 
-Just like SimpleTest or PHPUnit, *atoum* is a unit test framework specific to the [PHP](http://www.php.net) language.  
+Just like SimpleTest or PHPUnit, *atoum* is a unit testing framework specific to the [PHP](http://www.php.net) language.  
 However, it has been designed from the start with the following ideas in mind :
 
 * Can be implemented *rapidly* ;
@@ -42,7 +42,7 @@ On UNIX, in order to check whether you have this module or not, you just need to
 
 If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
-## A unit test framework that can be made operational in 5 minutes !
+## A unit testing framework that can be made operational in 5 minutes !
 
 ### Step 1 : Install *atoum*
 
