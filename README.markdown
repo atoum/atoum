@@ -1,70 +1,68 @@
 # *atoum*
 
-## Un framework de tests unitaires pour PHP simple, moderne et intuitif !
+## A simple, modern and intuitive unitary test framework for PHP !
 
-Tout comme SimpleTest ou PHPUnit, *atoum* est un framework de tests unitaires spécifique au langage [PHP](http://www.php.net).  
-Cependant, il a la particularité d'avoir été conçu dès le départ pour :
+Just like SimpleTest or PHPUnit, *atoum* is a unitary test framework specific to the [PHP](http://www.php.net) language.  
+However, it has been designed from the start with the following ideas in mind :
 
-* Être *Rapide* à mettre en œuvre ;
-* *Simplifier* le développement des tests ;
-* Permettre l'écriture de tests unitaires *fiables, lisibles et explicites* ;
+* Can be implemented *rapidly* ;
+* *Simplify* test development ;
+* Allow for writing *reliable, readable, and clear* unitary tests ;
 
-Pour cela, il utilise massivement les possibilités offertes par *PHP 5.3*, pour fournir au développeur *une nouvelle façon* d'écrire des tests unitaires.  
-Ainsi, il s'installe et s'intégre très facilement dans un projet puisqu'il se présente sous la forme d'une *unique archive PHAR*, qui est le seul et unique point d'entrée du développeur.  
-De plus, grâce à son *interface fluide*, il permet la rédaction des tests unitaires en langage quasiment naturel.  
-Il facilite également la mise en œuvre du bouchonnage au sein des tests, grâce à une utilisation intelligente des *fonctions anonymes et des fermetures*.  
-*atoum* propose nativement et par défaut d'exécuter chaque test unitaire au sein d'un processus [PHP](http://www.php.net) séparé afin d'en garantir *l'isolation*.  
-Et évidemment, son utilisation dans le cadre d'un processus d'intégration continue ne pose aucun problème, et de part sa conception, il est très facile de l'adapter à des besoins spécifiques.  
-*atoum* réalise de plus tout cela sans sacrifier les performances, puisqu'il a été développé pour avoir une empreinte mémoire réduite tout en autorisant une exécution rapide des tests.  
-Il est de plus à même de générer des rapports d'exécution des tests unitaires au format Xunit, ce qui lui permet d'être compatible avec des outils d'intégration continue tel que [Jenkins](http://jenkins-ci.org/).  
-*atoum* permet de plus de générer des rapports de couverture de code, afin de permettre la supervision des tests unitaires.  
-Enfin, même s'il est actuellement développé principalement sous UNIX, il est également fonctionnel sous Windows.
+To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unitary tests.  
+Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.  
+Also, thanks to its *fluid interface*, it allows for writing unitary tests in a fashion close to natural language.  
+It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
+*atoum* natively, and by default, performs the execution of each unitary test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
+Of course, it can be used seamlessly for continuous integration, and given its design, it can be made to cope with specific needs extremely easily.  
+*atoum* also accomplishes all of this without affecting performance, since it has been developped to boast a reduced memory footprint while allowing for hastened test execution.  
+It can also generate unitary test execution reports in the Xunit format, which makes it compatible with continuous integration tools such as [Jenkins](http://jenkins-ci.org/).  
+*atoum* also generates code coverage reports, in order to make it possible to supervise unitary tests.  
+Finally, even though it is developped mainly on UNIX, it can also work on Windows.  
 
-## Prérequis pour utiliser *atoum*
+## Prerequisites to use *atoum*
 
-*atoum* nécéssite *absolument* une version de PHP supérieure ou égale à 5.3 pour fonctionner.  
-Si vous souhaitez utiliser *atoum* via son archive PHAR, il faut de plus que [PHP](http://www.php.net] dispose du module `phar`, Normalement disponible par défaut.  
-Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
+*atoum* *absolutely* requires PHP to be of version 5.3 or superior to work Should you want to use *atou* using its PHAR archive, you also need [PHP](http://www.php.net] to be able to access the `phar` module, which is normally available by default.  
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i phar
 
-Si `Phar` ou un équivalent s'affiche, le module est installé.  
-La génération des rapports au format Xunit nécessite le module `xml`.  
-Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
+If `Phar` or equivalent gets displayed, then the module is properly installed.  
+Generating reports in the Xunit format requires the `xml` module.  
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i xml
 
-Si `Xml` ou un équivalent s'affiche, le module est installé.  
-
-L'extension [Xdebug](http://xdebug.org/) est quand à elle requise si vous désirez surveiller le taux de couverture de votre code par vos tests unitaires.
-Afin de vérifier que vous disposez de ce module sous UNIX, il vous suffit d'exécuter la commande suivante dans votre terminal :
+If `Xml` or equivalent gets displayed, then the module is properly installed.--
+Should you wish to monitor the coverage rate of your code by the unitary tests, the [Xdebug](http://xdebug.org/) will be required.  
+On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i xdebug
 
-Si `Xdebug` ou un équivalent s'affiche, le module est installé.--
+If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
-## Un framework de tests unitaires opérationnel en 5 minutes !
+## A unitary test framework that can be made operational in 5 minutes !
 
-### Étape 1 : Installez *atoum*
+### Step 1 : Install *atoum*
 
-Il suffit pour cela que vous téléchargiez [son archive PHAR](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) et la stockiez à l'emplacement de votre choix, par exemple dans `/path/to/project/tests/mageekguy.atoum.phar`.  
-Cette archive PHAR contient la dernière version de développement ayant passé avec succès l'intégralité des tests unitaires d'*atoum*.  
-Le code source d'*atoum* est également disponible via [son dépôt sur github](https://github.com/mageekguy/atoum).
+You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) and store it where you wish, for example under `/path/to/project/tests/mageekguy.atoum.phar`.  
+This PHAR archive contains the latest development version to pass the totality of *atoum*'s unitary tests.  
+*atoum*'s source code is also available via [the github repository](https://github.com/mageekguy/atoum).
 
-### Étape 2 : Écrivez votre test
+### Step 2 : Write your tests
 
-À l'aide de votre éditeur favori, créez le fichier `path/to/project/tests/units/helloWorld.php` et ajoutez-y le code suivant :
+Using your preferred text editor, create the file `path/to/project/tests/units/helloWorld.php` and add the following code :
 
 	<?php
 
 	namespace vendor\project\tests\units;
 
-	require_once 'path/to/mageekguy.atoum.phar';
+	require 'path/to/mageekguy.atoum.phar';
 
-	include_once 'path/to/project/classes/helloWorld.php';
+	include 'path/to/project/classes/helloWorld.php';
 
-	use mageekguy\atoum;
-	use vendor\project;
+	use \mageekguy\atoum;
+	use \vendor\project;
 
 	class helloWorld extends atoum\test
 	{
@@ -80,20 +78,20 @@ Le code source d'*atoum* est également disponible via [son dépôt sur github](
 
 	?>
 
-### Étape 3 : Exécutez votre test en ligne de commande
+### Step 3 : Run your test with the commandline
 
-Lancer votre terminal et exécutez l'instruction suivante :
+Launch your terminal and run the following command :
 
 	# php path/to/test/file[enter]
 
-Vous devez obtenir le résultat suivant, ou équivalent :
+You should get the following result, or something equivalent :
 
 	> Atoum version XXX by Frédéric Hardy.
 	Error: Unattended exception: Tested class 'vendor\project\helloWorld' does not exist for test class 'vendor\project\tests\units\helloWorld'
 
-### Étape 4 : Écrivez la classe correspondant à votre test
+### Step 4 : Write the class corresponding to you test
 
-À nouveau à l'aide de votre éditeur favori, créez le fichier `path/to/project/classes/helloWorld.php` et ajoutez-y le code suivant :
+Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code :
 
 	<?php
 
@@ -109,13 +107,13 @@ Vous devez obtenir le résultat suivant, ou équivalent :
 
 	?>
 
-### Étape 5 : Exécutez à nouveau votre test
+### Step 5 : Run your test once more
 
-Toujours  votre terminal, exécutez une nouvelle fois l'instruction suivante :
+In the same terminal, run the following command once again :
 
 	# php path/to/test/file[enter]
 
-Vous devez cette fois obtenir le résultat suivant, ou équivalent :
+You should get the following result, or something equivalent :
 
 	> Atoum version 288 by Frédéric Hardy.
 	> Run vendor\project\tests\units\helloWorld...
@@ -128,7 +126,7 @@ Vous devez cette fois obtenir le résultat suivant, ou équivalent :
 	> Running duration: 0.08 second.
 	> Success (1 test, 1 method, 2 assertions, 0 error, 0 exception) !
 
-### Étape 6 : Complétez vos tests et recommencez le cycle à partir de l'étape 3
+### Step 6 : Complete your tests and restart the cycle from Step 3
 
 	<?php
 
@@ -156,47 +154,46 @@ Vous devez cette fois obtenir le résultat suivant, ou équivalent :
 
 	?>
 
-## Pour aller plus loin
+## To go further
 
-La documentation d'*atoum* est en cours de rédaction et la seule ressource disponible actuellement est le présent document.  
-Cependant, si vous désirez explorer plus en avant et immédiatement les possibilités d'*atoum*, nous vous conseillons :
+*atoum*'s documentation is still being written, and the only available resource right now is the current document.  
+However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
 
-* D'exécuter dans votre terminal soit la commande `php mageekguy.atoum.phar -h`, soit `php scripts/runner.php -h` ;
-* D'explorer le contenu du répertoire `configurations` des sources d'*atoum*, car il contient des exemples de fichier de configuration ;
-* D'explorer le contenu du répertoire `tests/units/classes` des sources d'*atoum*, car il contient l'ensemble de ses tests unitaires ;
-* De lire [les supports de conférence](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) à son sujet disponible en ligne ;
-* De rejoindre le canal IRC *##atoum* sur le réseau *freenode* ;
-* De poser vos questions par courrier électronique à l'adresse *support[AT]atoum(DOT)org* ;
+* Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
+* Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
+* Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unitary tests ;
+* Read the [conference supports](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
+* Join the IRC channel *##atoum* on the *freenode* network ; * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
 
-## Dépannage
+## Troubleshooting
 
-### L'archive PHAR de *atoum* semble ne pas fonctionner
+### *atoum*'s PHAR archive seems to not be working
 
-Dans ce cas, la première chose à faire est de vous assurer que vous disposez de la dernière version de l'archive.  
-Pour cela, il suffit de la [télécharger](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) à nouveau.  
-Si elle ne fonctionne toujours pas, exécutez dans un terminal la commande suivante :
+In this case, the first thing you will want to do is confirm whether you have the latest version of the archive.  
+You just need to [download](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) it again.  
+If it still doesn't work, run the following command in a terminal window :
 
 	# php -n mageekguy.atoum.phar -v
 
-Si vous obtenez le numéro de version d'atoum, c'est que le problème provient de votre configuration de PHP.  
-Dans la plupart des cas, il s'agit d'extensions, qui sont soit incompatible avec le format PHAR, soit qui empêche l'exécution des archives PHAR par sécurité.  
-L'extension `ioncube` semble par exemple incompatible avec les archives PHAR et il faut donc la désactiver si vous l'utilisez, en commantant dans votre `php.ini` la ligne suivante en la préfixant par le caractère `;` :
+If you get *atoum*'s version number, then the problem is coming from your PHP configuration.  
+In most cases, the cause would be within extensions, that might be incompatible with the PHAR format, or that would prevent executing PHAR archives as a security measure.  
+The `ioncube` extension for instance seems incompatible with PHAR archives, and you must therefore deactivate it if you are using it, by commenting the following line out of your `php.ini`, by prefixing it with the `;` character :
 
 	zend_extension = /path/to/ioncube_loader*.*
 
-L'extension `suhosin` empêche quand à elle l'exécution des PHAR, et il faut donc modifier sa configuration par défaut afin de pouvoir utiliser *atoum*, en ajoutant la ligne suivante dans votre fichier `php.ini` :
+The `suhosin` extension prevents executing PHAR archives, therefore its default configuration must be modified in order to be able to use *atoum*, by adding the following line in your `php.ini` file :
 
 	suhosin.executor.include.whitelist="phar"
 
-Enfin, si l'exécution d'*atoum* provoque à l'écran l'affichage de caractères du style `???%`, c'est que la directive `detect_unicode` de votre fichier `php.ini` est à 1.  
-Pour résoudre le problème, il suffit donc de la passer à 0 en éditant votre fichier `php.ini` ou en exécutant *atoum* à l'aide de la commande suivante :
+Finally, if running *atoum* causes the screen to display characters looking like `???%`, this would be because the `detect_unicode` directive inside your `php.ini` file is set to 1.  
+To fix the problem, you just need to set it to 0 by editing your `php.ini` file or by running *atoum* with the following command :
 
 	# php -d detect_unicode=0 mageekguy.atoum.phar [options]
 
-Si ces trois manipulations ne permettent pas à *atoum* de fonctionner, nous vous invitons à envoyer un courrier électronique à l'adresse  *support[AT]atoum(DOT)org*, décrivant précisément votre configuration ainsi que votre problème.  
-Vous pouvez également demander de l'aide aux développeurs d'*atoum* sur le canal IRC ##atoum sur le réseau *freenode*.
+If these three operations do not allow *atoum* to work, we suggest you send an e-mail to the address *support[AT]atoum(DOT)org*, describing in detail your configuration and your problem.  
+You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *freenode* network.
 
 ### Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/mageekguy.atoum.phar
 
-Cette erreur est provoquée par le fait que l'archive PHAR de *atoum* est incluse à au moins un endroit dans votre code à l'aide de `include` ou `require`.
-Pour résoudre ce problème, il suffit donc d'inclure l'archive uniquement via `include_once` ou `require_once`, afin d'empêcher qu'elle ne soit incluse plusieurs fois.
+This error comes from the fact the *atoum* PHAR archive is included in at least one place within your code, using `include` or `require`.  
+To fix this problem, you just need to include the archive by using only `include_once` or `require_once`, in order to ensure it is not included several times.
