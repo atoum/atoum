@@ -272,7 +272,7 @@ class cli extends report\fields\runner\errors
 
 					foreach (explode(PHP_EOL, $error['message']) as $line)
 					{
-						$string .= $this->errorPrompt . $line . PHP_EOL;
+						$string .= $line . PHP_EOL;
 					}
 				}
 			}

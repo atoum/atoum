@@ -509,6 +509,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		ini_set('display_errors', 'stderr');
 		ini_set('log_errors', 'Off');
+		ini_set('log_errors_max_len', '0');
 
 		try
 		{

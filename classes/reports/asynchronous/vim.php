@@ -46,7 +46,6 @@ class vim extends reports\asynchronous
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\result\cli(
-						$firstLevelPrompt
 					),
 					array(atoum\runner::runStop)
 				)
@@ -92,12 +91,12 @@ class vim extends reports\asynchronous
 					array(atoum\test::runStart)
 				)
 			->addTestField(new test\duration\cli(
-						$firstLevelPrompt
+						$secondLevelPrompt
 					),
 					array(atoum\test::runStop)
 				)
 			->addTestField(new test\memory\cli(
-						$firstLevelPrompt
+						$secondLevelPrompt
 					),
 					array(atoum\test::runStop)
 				)

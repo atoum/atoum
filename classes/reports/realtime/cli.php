@@ -81,7 +81,7 @@ class cli extends realtime
 					array(atoum\runner::runStop)
 				)
 			->addRunnerField(new runner\result\cli(
-						$firstLevelPrompt,
+						null,
 						new colorizer('0;37', '42'),
 						new colorizer('0;37', '41')
 					),

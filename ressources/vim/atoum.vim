@@ -5,29 +5,79 @@
 if !exists('b:current_syntax')
 	syn case match
 
-	syntax match atoumValue ':\s\+\zs\d\+\(\.\d\+\)[^.]*'
-	highlight default AtoumValue guifg=Yellow ctermfg=Yellow
+	syntax match atoumFirstLevelTitle '^> .*\.\.\.$' contains=atoumFirstLevelPrompt
+	syntax match atoumFirstLevelTitle '^> Atoum .*$' contains=atoumFirstLevelPrompt
+	syntax match atoumFirstLevelTitle '^> .\+\(: \)\@=:' contains=atoumFirstLevelPrompt
+	highlight default atoumFirstLevelTitle guifg=Cyan ctermfg=Cyan
 
-	syntax match atoumPrompt '^=*> '
-	highlight default AtoumPrompt guifg=Cyan ctermfg=Cyan
+	syntax match atoumSecondLevelTitle '^=> .\+$' contains=atoumSecondLevelPrompt
+	highlight default atoumSecondLevelTitle guifg=White ctermfg=White
 
-	syntax match atoumClass '^> Run .\+'
-	highlight default AtoumClass guifg=Cyan ctermfg=Cyan
+	syntax match atoumFirstLevelPrompt '^> ' contained
+	highlight default atoumFirstLevelPrompt guifg=White ctermfg=White
 
-	syntax match atoumFailure '^> Failure ([^)]\+) !'
-	highlight default AtoumFailure term=bold cterm=bold guifg=White guibg=DarkRed ctermfg=White ctermbg=DarkRed
+	syntax match atoumSecondLevelPrompt '^=> ' contained
+	highlight default atoumSecondLevelPrompt guifg=Cyan ctermfg=Cyan
 
-	syntax match atoumSuccess '^> Success ([^)]\+) !'
-	highlight default AtoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
+	syntax match atoumValue '\s\+\zs\d\+\(\.\d\+\)[^.]*.'
+	highlight default atoumValue guifg=White ctermfg=White
 
-	syntax match atoumError '^==> Error \d\+ .*$'
-	highlight default AtoumError term=bold cterm=bold guifg=DarkRed ctermfg=DarkRed
+	syntax region atoumFailureDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ failures\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumFailureTitle,atoumFailurePrompt,atoumFailureFile,atoumFailureDescription,diffRemoved,diffAdded,diffSubname,diffLine
 
-	syntax match atoumException '^==> Exception .*$'
-	highlight default AtoumException term=bold cterm=bold guifg=Magenta ctermfg=Magenta
+	syntax match atoumFailureFile '.\+\(::\)\@!:$' contained
+	highlight default atoumFailureFile guifg=Red ctermfg=Red
+
+	syntax match atoumFailureTitle 'There \(is\|are\) \d\+ failures\?:$' contained
+	highlight default atoumFailureTitle guifg=Red ctermfg=Red
+
+	syntax match atoumFailureDescription '^.*$' contained
+	highlight default atoumFailureDescription guifg=White ctermfg=White
+
+	syntax match atoumFailurePrompt '^=> ' contained
+	highlight default atoumFailurePrompt guifg=Red ctermfg=Red
+
+	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorFilePrompt,atoumErrorFile,atoumErrorDescriptionPrompt,atoumErrorDescription
+
+	syntax match atoumErrorFile '.\+\(::\)\@!:$' contained
+	highlight default atoumErrorFile guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorTitle 'There \(is\|are\) \d\+ errors\?:$' contained
+	highlight default atoumErrorTitle guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorDescription '^.*$' contained
+	highlight default atoumErrorDescription guifg=White ctermfg=White
+
+	syntax match atoumErrorFilePrompt '^=> ' contained
+	highlight default atoumErrorFilePrompt guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorDescriptionPrompt '^==> ' contained
+	highlight default atoumErrorDescriptionPrompt guifg=Yellow ctermfg=Yellow
+
+	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionFilePrompt,atoumExceptionFile,atoumExceptionDescriptionPrompt,atoumExceptionDescription
+
+	syntax match atoumExceptionFile '.\+\(::\)\@!:$' contained
+	highlight default atoumExceptionFile guifg=Magenta ctermfg=Magenta
+
+	syntax match atoumExceptionTitle 'There \(is\|are\) \d\+ exceptions\?:$' contained
+	highlight default atoumExceptionTitle guifg=Magenta ctermfg=Magenta
+
+	syntax match atoumExceptionDescription '^.*$' contained
+	highlight default atoumExceptionDescription guifg=White ctermfg=White
+
+	syntax match atoumExceptionFilePrompt '^=> ' contained
+	highlight default atoumExceptionFilePrompt guifg=Magenta ctermfg=Magenta
+
+	syntax match atoumExceptionDescriptionPrompt '^==> ' contained
+	highlight default atoumExceptionDescriptionPrompt guifg=Magenta ctermfg=Magenta
+
+	syntax match atoumSuccess '^Success ([^)]\+) !'
+	highlight default atoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
+
+	syntax match atoumFailure '^Failure ([^)]\+) !'
+	highlight default atoumFailure term=bold cterm=bold guifg=White guibg=Red ctermfg=White ctermbg=Red
 
 	syntax match atoumModeline '^/\*.\+$'
-	highlight default AtoumModeline guifg=bg ctermfg=bg
+	highlight default atoumModeline guifg=bg ctermfg=bg
 
 	syntax match diffRemoved	"^-.*"
 	syntax match diffAdded	"^+.*"

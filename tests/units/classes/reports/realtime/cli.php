@@ -55,7 +55,7 @@ class cli extends atoum\test
 						new colorizer('1;36')
 					),
 					new fields\runner\result\cli(
-						new prompt('> '),
+						null,
 						new colorizer('0;37', '42'),
 						new colorizer('0;37', '41')
 					),
