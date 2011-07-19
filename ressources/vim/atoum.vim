@@ -74,7 +74,7 @@ if !exists('b:current_syntax')
 	highlight default atoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
 
 	syntax match atoumFailure '^Failure ([^)]\+) !'
-	highlight default atoumFailure term=bold cterm=bold guifg=White guibg=Red ctermfg=White ctermbg=Red
+	highlight default atoumFailure term=bold cterm=bold guifg=White guibg=DarkRed ctermfg=White ctermbg=DarkRed
 
 	syntax match atoumModeline '^/\*.\+$'
 	highlight default atoumModeline guifg=bg ctermfg=bg
