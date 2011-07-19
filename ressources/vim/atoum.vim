@@ -6,8 +6,8 @@ if !exists('b:current_syntax')
 	syn case match
 
 	syntax match atoumFirstLevelTitle '^> .*\.\.\.$' contains=atoumFirstLevelPrompt
-	syntax match atoumFirstLevelTitle '^> Atoum .*$' contains=atoumFirstLevelPrompt
-	syntax match atoumFirstLevelTitle '^> .\+\(: \)\@=:' contains=atoumFirstLevelPrompt
+	syntax match atoumFirstLevelTitle '^> .\+\(:\)\@=:' contains=atoumFirstLevelPrompt
+	syntax match atoumFirstLevelTitle '^> atoum .*$' contains=atoumFirstLevelPrompt
 	highlight default atoumFirstLevelTitle guifg=Cyan ctermfg=Cyan
 
 	syntax match atoumSecondLevelTitle '^=> .\+$' contains=atoumSecondLevelPrompt
@@ -20,6 +20,7 @@ if !exists('b:current_syntax')
 	highlight default atoumSecondLevelPrompt guifg=Cyan ctermfg=Cyan
 
 	syntax match atoumValue '\s\+\zs\d\+\(\.\d\+\)[^.]*.'
+	syntax match atoumValue ' .\+$'
 	highlight default atoumValue guifg=White ctermfg=White
 
 	syntax region atoumFailureDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ failures\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumFailureTitle,atoumFailurePrompt,atoumFailureFile,atoumFailureDescription,diffRemoved,diffAdded,diffSubname,diffLine

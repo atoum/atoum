@@ -23,6 +23,18 @@ class vim extends reports\asynchronous
 
 		$this
 			->addRunnerField(new runner\atoum\cli($firstLevelPrompt, null), array(atoum\runner::runStart))
+			->addRunnerField(new runner\php\path\cli(
+						$firstLevelPrompt
+					),
+					array(atoum\runner::runStart)
+				)
+			->addRunnerField(new runner\php\version\cli(
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt
+					),
+					array(atoum\runner::runStart)
+				)
 			->addRunnerField(new runner\tests\duration\cli(
 						$firstLevelPrompt
 					),
