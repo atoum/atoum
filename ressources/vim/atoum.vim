@@ -36,36 +36,36 @@ if !exists('b:current_syntax')
 	syntax match atoumFailurePrompt '^=> ' contained
 	highlight default atoumFailurePrompt guifg=Red ctermfg=Red
 
-	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorFilePrompt,atoumErrorFile,atoumErrorDescriptionPrompt,atoumErrorDescription
+	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorMethodPrompt,atoumErrorMethod,atoumErrorDescriptionPrompt,atoumErrorDescription
 
-	syntax match atoumErrorFile '.\+\(::\)\@!:$' contained
-	highlight default atoumErrorFile guifg=Yellow ctermfg=Yellow
+	syntax match atoumErrorDescription '.*$' contained
+	highlight default atoumErrorDescription guifg=White ctermfg=White
+
+	syntax match atoumErrorMethod '.\+::.\+():$' contained
+	highlight default atoumErrorMethod guifg=Yellow ctermfg=Yellow
 
 	syntax match atoumErrorTitle 'There \(is\|are\) \d\+ errors\?:$' contained
 	highlight default atoumErrorTitle guifg=Yellow ctermfg=Yellow
 
-	syntax match atoumErrorDescription '^.*$' contained
-	highlight default atoumErrorDescription guifg=White ctermfg=White
-
-	syntax match atoumErrorFilePrompt '^=> ' contained
-	highlight default atoumErrorFilePrompt guifg=Yellow ctermfg=Yellow
+	syntax match atoumErrorMethodPrompt '^=> ' contained
+	highlight default atoumErrorMethodPrompt guifg=Yellow ctermfg=Yellow
 
 	syntax match atoumErrorDescriptionPrompt '^==> ' contained
 	highlight default atoumErrorDescriptionPrompt guifg=Yellow ctermfg=Yellow
 
-	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionFilePrompt,atoumExceptionFile,atoumExceptionDescriptionPrompt,atoumExceptionDescription
+	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionMethodPrompt,atoumExceptionMethod,atoumExceptionDescriptionPrompt,atoumExceptionDescription
 
-	syntax match atoumExceptionFile '.\+\(::\)\@!:$' contained
-	highlight default atoumExceptionFile guifg=Magenta ctermfg=Magenta
+	syntax match atoumExceptionDescription '.*$' contained
+	highlight default atoumExceptionDescription guifg=White ctermfg=White
+
+	syntax match atoumExceptionMethod '.\+::.\+():$' contained
+	syntax match atoumExceptionMethod 'Exception throwed in .\+ on line \d\+:' contained
+	highlight default atoumExceptionMethod guifg=Magenta ctermfg=Magenta
 
 	syntax match atoumExceptionTitle 'There \(is\|are\) \d\+ exceptions\?:$' contained
 	highlight default atoumExceptionTitle guifg=Magenta ctermfg=Magenta
-
-	syntax match atoumExceptionDescription '^.*$' contained
-	highlight default atoumExceptionDescription guifg=White ctermfg=White
-
-	syntax match atoumExceptionFilePrompt '^=> ' contained
-	highlight default atoumExceptionFilePrompt guifg=Magenta ctermfg=Magenta
+	syntax match atoumExceptionMethodPrompt '^=> ' contained
+	highlight default atoumExceptionMethodPrompt guifg=Magenta ctermfg=Magenta
 
 	syntax match atoumExceptionDescriptionPrompt '^==> ' contained
 	highlight default atoumExceptionDescriptionPrompt guifg=Magenta ctermfg=Magenta
