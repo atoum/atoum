@@ -114,11 +114,6 @@ class vim extends reports\asynchronous
 				)
 		;
 	}
-
-	public function __toString()
-	{
-		return parent::__toString() . '/* vim: set ft=atoum: */';
-	}
 }
 
 ?>

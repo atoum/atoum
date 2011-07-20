@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-82
+86
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -11,11 +11,9 @@ autoload/atoum.vim	[[[1
 if !exists('g:atoum#php')
 	let g:atoum#php = 'php'
 endif
-
 if !exists('g:atoum#_')
 	let g:atoum#_ = ''
 endif
-
 "run {{{1
 function atoum#run(file, bang)
 	let _ = a:bang != '' ? g:atoum#_ : g:atoum#php . ' -f ' . a:file . ' -- -c ' . g:atoum#configuration
@@ -25,6 +23,8 @@ function atoum#run(file, bang)
 		let bufnr = bufnr('%')
 		let winnr = bufwinnr('^' . _ . '$')
 		silent! execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
+		silent! syntax on
+		silent! set filetype=atoum
 		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
 		silent! :%d
 		let message = 'Execute ' . _ . '...'
@@ -39,10 +39,14 @@ function atoum#run(file, bang)
 		silent! execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''')<CR>'
 		silent! execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
-		silent! syntax on
 	endif
 endfunction
-
+"defineConfiguration {{{1
+function atoum#defineConfiguration(directory, configuration, extension)
+	augroup atoum
+	silent! execute 'au BufEnter *' . a:extension . ' if (expand(''%:p'') =~ ''^' . a:directory . ''') | let g:atoum#configuration = ''' . a:configuration . ''' | endif'
+	augroup end
+endfunction
 "makeVimball {{{1
 function atoum#makeVimball()
 	split atoumVimball
@@ -86,7 +90,7 @@ function atoum#makeVimball()
 endfunction
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 ftplugin/php/atoum.php	[[[1
-32
+28
 <?php
 
 /*
@@ -104,16 +108,12 @@ Write all on stdout.
 */
 $stdOutWriter = new atoum\writers\std\out();
 
-$coverageField = new atoum\report\fields\runner\coverage\html('Referentiels', '/var/www/coverage/referentiels', null, new prompt('> '), null, null, new prompt('=> '));
-$coverageField->setRootUrl('http://localhost/coverage/referentiels');
-
 /*
 Generate a CLI report.
 */
 $vimReport = new atoum\reports\asynchronous\vim();
 $vimReport
   ->addWriter($stdOutWriter)
-	->addRunnerField($coverageField, array(atoum\runner::runStop))
 ;
 
 atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
