@@ -151,7 +151,7 @@ finish
 
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 syntax/atoum.vim	[[[1
-163
+149
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -205,10 +205,13 @@ if !exists('b:current_syntax')
 	syntax match atoumFailurePrompt '^=> ' contained
 	highlight default atoumFailurePrompt guifg=Red ctermfg=Red
 
-	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorMethodPrompt,atoumErrorMethod,atoumErrorDescriptionPrompt,atoumErrorDescription
+	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorMethodPrompt,atoumErrorMethod,atoumErrorDescriptionPrompt,atoumErrorDescription,atoumErrorValue
 
-	syntax match atoumErrorDescription '.*$' contained
-	highlight default atoumErrorDescription guifg=White ctermfg=White
+	syntax match atoumErrorValue '^.*$' contained
+	highlight default atoumErrorValue guifg=White ctermfg=White
+
+	syntax match atoumErrorDescription 'Error .\+:$' contained
+	highlight default atoumErrorDescription guifg=Yellow ctermfg=Yellow
 
 	syntax match atoumErrorMethod '.\+::.\+():$' contained
 	highlight default atoumErrorMethod guifg=Yellow ctermfg=Yellow
@@ -238,23 +241,6 @@ if !exists('b:current_syntax')
 
 	syntax match atoumExceptionDescriptionPrompt '^==> ' contained
 	highlight default atoumExceptionDescriptionPrompt guifg=Magenta ctermfg=Magenta
-
-	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorMethodPrompt,atoumErrorMethod,atoumErrorDescriptionPrompt,atoumErrorDescription
-
-	syntax match atoumErrorDescription '.*$' contained
-	highlight default atoumErrorDescription guifg=White ctermfg=White
-
-	syntax match atoumErrorMethod '.\+::.\+():$' contained
-	highlight default atoumErrorMethod guifg=Yellow ctermfg=Yellow
-
-	syntax match atoumErrorTitle 'There \(is\|are\) \d\+ errors\?:$' contained
-	highlight default atoumErrorTitle guifg=Yellow ctermfg=Yellow
-
-	syntax match atoumErrorMethodPrompt '^=> ' contained
-	highlight default atoumErrorMethodPrompt guifg=Yellow ctermfg=Yellow
-
-	syntax match atoumErrorDescriptionPrompt '^==> ' contained
-	highlight default atoumErrorDescriptionPrompt guifg=Yellow ctermfg=Yellow
 
 	syntax region atoumCoverageDetails matchgroup=atoumFirstLevelPrompt start='^> Code coverage value:.\+$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumCoverageTitle,atoumCoverageClassPrompt,atoumCoverageMethodPrompt,atoumCoverageValue,atoumCoverageClass,atoumCoverageMethod
 
