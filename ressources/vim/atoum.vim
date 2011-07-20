@@ -71,6 +71,43 @@ if !exists('b:current_syntax')
 	syntax match atoumExceptionDescriptionPrompt '^==> ' contained
 	highlight default atoumExceptionDescriptionPrompt guifg=Magenta ctermfg=Magenta
 
+	syntax region atoumErrorDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ errors\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumErrorTitle,atoumErrorMethodPrompt,atoumErrorMethod,atoumErrorDescriptionPrompt,atoumErrorDescription
+
+	syntax match atoumErrorDescription '.*$' contained
+	highlight default atoumErrorDescription guifg=White ctermfg=White
+
+	syntax match atoumErrorMethod '.\+::.\+():$' contained
+	highlight default atoumErrorMethod guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorTitle 'There \(is\|are\) \d\+ errors\?:$' contained
+	highlight default atoumErrorTitle guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorMethodPrompt '^=> ' contained
+	highlight default atoumErrorMethodPrompt guifg=Yellow ctermfg=Yellow
+
+	syntax match atoumErrorDescriptionPrompt '^==> ' contained
+	highlight default atoumErrorDescriptionPrompt guifg=Yellow ctermfg=Yellow
+
+	syntax region atoumCoverageDetails matchgroup=atoumFirstLevelPrompt start='^> Code coverage value:.\+$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumCoverageTitle,atoumCoverageClassPrompt,atoumCoverageMethodPrompt,atoumCoverageValue,atoumCoverageClass,atoumCoverageMethod
+
+	syntax match atoumCoverageValue '.*$' contained
+	highlight default atoumCoverageValue guifg=White ctermfg=White
+
+	syntax match atoumCoverageTitle '.\+:' contained
+	highlight default atoumCoverageTitle guifg=Green ctermfg=Green
+
+	syntax match atoumCoverageClass 'Class .\+:' contained
+	highlight default atoumCoverageClass guifg=White ctermfg=White
+
+	syntax match atoumCoverageMethod '.\+::.\+():' contained
+	highlight default atoumCoverageMethod guifg=White ctermfg=White
+
+	syntax match atoumCoverageClassPrompt '^=> ' contained
+	highlight default atoumCoverageClassPrompt guifg=Green ctermfg=Green
+
+	syntax match atoumCoverageMethodPrompt '^==> ' contained
+	highlight default atoumCoverageMethodPrompt guifg=Green ctermfg=Green
+
 	syntax match atoumSuccess '^Success ([^)]\+) !'
 	highlight default atoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
 
