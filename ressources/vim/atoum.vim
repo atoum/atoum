@@ -23,10 +23,24 @@ if !exists('b:current_syntax')
 	syntax match atoumValue ' .\+$'
 	highlight default atoumValue guifg=White ctermfg=White
 
-	syntax region atoumFailureDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ failures\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumFailureTitle,atoumFailurePrompt,atoumFailureFile,atoumFailureDescription,diffRemoved,diffAdded,diffSubname,diffLine
+	syntax region atoumTestDetails matchgroup=atoumFirstLevelPrompt start='^> .\+\.\.\.$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumTestTitle,atoumTestPrompt,AtoumTestTitle,AtoumTestResult
 
-	syntax match atoumFailureFile '.\+\(::\)\@!:$' contained
-	highlight default atoumFailureFile guifg=Red ctermfg=Red
+	syntax match atoumTestResult '.\+$' contained
+	highlight default atoumTestResult guifg=White ctermfg=White
+
+	syntax match atoumTestTitle '.\+\.\.\.$' contained
+	highlight default atoumTestTitle guifg=LightBlue ctermfg=LightBlue
+
+	syntax match atoumTestPrompt '^=> ' contained
+	highlight default atoumTestPrompt guifg=LightBlue ctermfg=LightBlue
+
+	syntax match atoumTestTitle '.\+:' contained
+	highlight default atoumTestTitle guifg=LightBlue ctermfg=LightBlue
+
+	syntax region atoumFailureDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ failures\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumFailureTitle,atoumFailurePrompt,atoumFailureMethod,atoumFailureDescription,diffRemoved,diffAdded,diffSubname,diffLine
+
+	syntax match atoumFailureMethod '.\+\(::\)\@!:$' contained
+	highlight default atoumFailureMethod guifg=Red ctermfg=Red
 
 	syntax match atoumFailureTitle 'There \(is\|are\) \d\+ failures\?:$' contained
 	highlight default atoumFailureTitle guifg=Red ctermfg=Red
@@ -97,16 +111,30 @@ if !exists('b:current_syntax')
 	highlight default atoumCoverageTitle guifg=Green ctermfg=Green
 
 	syntax match atoumCoverageClass 'Class .\+:' contained
-	highlight default atoumCoverageClass guifg=White ctermfg=White
+	highlight default atoumCoverageClass guifg=Green ctermfg=Green
 
 	syntax match atoumCoverageMethod '.\+::.\+():' contained
-	highlight default atoumCoverageMethod guifg=White ctermfg=White
+	highlight default atoumCoverageMethod guifg=Green ctermfg=Green
 
 	syntax match atoumCoverageClassPrompt '^=> ' contained
 	highlight default atoumCoverageClassPrompt guifg=Green ctermfg=Green
 
 	syntax match atoumCoverageMethodPrompt '^==> ' contained
 	highlight default atoumCoverageMethodPrompt guifg=Green ctermfg=Green
+
+	syntax region atoumOutputDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ outputs\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumOutputTitle,atoumOutputPrompt,atoumOutputMethod,atoumOutputDescription,diffRemoved,diffAdded,diffSubname,diffLine
+
+	syntax match atoumOutputMethod '.\+\(::\)\@!:$' contained
+	highlight default atoumOutputMethod guifg=Gray ctermfg=Gray
+
+	syntax match atoumOutputTitle 'There \(is\|are\) \d\+ outputs\?:$' contained
+	highlight default atoumOutputTitle guifg=Gray ctermfg=Gray
+
+	syntax match atoumOutputDescription '^.*$' contained
+	highlight default atoumOutputDescription guifg=White ctermfg=White
+
+	syntax match atoumOutputPrompt '^=> ' contained
+	highlight default atoumOutputPrompt guifg=Gray ctermfg=Gray
 
 	syntax match atoumSuccess '^Success ([^)]\+) !'
 	highlight default atoumSuccess term=bold cterm=bold guifg=White guibg=DarkGreen ctermfg=White ctermbg=DarkGreen
