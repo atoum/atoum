@@ -151,7 +151,7 @@ finish
 
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 syntax/atoum.vim	[[[1
-149
+146
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -281,9 +281,6 @@ if !exists('b:current_syntax')
 
 	syntax match atoumFailure '^Failure ([^)]\+) !'
 	highlight default atoumFailure term=bold cterm=bold guifg=White guibg=DarkRed ctermfg=White ctermbg=DarkRed
-
-	syntax match atoumModeline '^/\*.\+$'
-	highlight default atoumModeline guifg=bg ctermfg=bg
 
 	syntax match diffRemoved	"^-.*"
 	syntax match diffAdded	"^+.*"

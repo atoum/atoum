@@ -622,10 +622,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					$this->score->merge($score);
 				}
-				else
-				{
-					$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, 'Unable to retrieve score for ' . $this->currentMethod . ': ' . $tmpFileContent);
-				}
 			}
 		}
 	}
