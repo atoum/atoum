@@ -6,7 +6,7 @@ autoload/atoum.vim	[[[1
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
-" Licence:					GPL version 2.0 license
+" Licence:					BSD
 "=============================================================================
 if !exists('g:atoum#php')
 	let g:atoum#php = 'php'
@@ -221,7 +221,7 @@ ftplugin/php/atoum.vim	[[[1
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
-" Licence:					GPL version 2.0 license
+" Licence:					BSD
 "=============================================================================
 if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 	let b:atoum_loaded = 1
