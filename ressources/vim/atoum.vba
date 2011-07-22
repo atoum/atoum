@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-86
+127
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -20,32 +20,73 @@ function atoum#run(file, bang)
 
 	if (_ != '')
 		let g:atoum#_ = _
+		let g:atoum#cursorline = &cursorline
 		let bufnr = bufnr('%')
 		let winnr = bufwinnr('^' . _ . '$')
-		silent! execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
-		silent! syntax on
-		silent! set filetype=atoum
+
+		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
+
+		syntax on
+
+		set filetype=atoum
 		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
-		silent! :%d
+
+		%d
+
 		let message = 'Execute ' . _ . '...'
+
 		call append(0, message)
+
 		echo message
-		silent! 2d | resize 1 | redraw
-		silent! execute 'silent! %!'. _
-		silent! execute 'resize ' . line('$')
-		silent! execute 'syntax on'
-		silent! execute 'autocmd BufUnload <buffer> execute bufwinnr(' . bufnr . ') . ''wincmd w'''
-		silent! execute 'autocmd BufEnter <buffer> execute ''resize '' .  line(''$'')'
-		silent! execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''')<CR>'
-		silent! execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
+		2d | resize 1 | redraw
+
+		execute 'silent! %!'. _
+		execute 'resize ' . line('$')
+		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''')<CR>'
+		execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
+
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
+		nnoremap <silent> <buffer> <LocalLeader><CR> :call atoum#goToFailure(getline('.'))<CR>
+		nnoremap <silent> <buffer> <LocalLeader>n :call atoum#goToNextFailure()<CR>
+
+		set nocursorline
+
+		augroup atoum
+		au!
+		execute 'autocmd BufUnload <buffer> execute bufwinnr(' . bufnr . ') . ''wincmd w'''
+		execute 'autocmd BufEnter <buffer> execute ''resize '' .  line(''$'')'
+		autocmd BufEnter <buffer> let g:atoum#cursorline = &cursorline | set nocursorline
+		autocmd BufLeave <buffer> if (g:atoum#cursorline) | set cursorline | endif
+		augroup end
+
+		let success = search('^Success ', 'w')
+
+		if (success > 0)
+			execute success
+		else
+			let failure = search('^Failure ', 'w')
+
+			if (failure > 0)
+				execute failure
+			endif
+		endif
 	endif
 endfunction
 "defineConfiguration {{{1
 function atoum#defineConfiguration(directory, configuration, extension)
-	augroup atoum
+	augroup atoumConfiguration
 	silent! execute 'au BufEnter *' . a:extension . ' if (expand(''%:p'') =~ ''^' . a:directory . ''') | let g:atoum#configuration = ''' . a:configuration . ''' | endif'
 	augroup end
+endfunction
+"goToFailure {{{1
+function atoum#goToFailure(line)
+	let pattern = 'In file \(\f\+\) on line \(\d\+\).*$'
+
+	if (matchstr(a:line, pattern) != '')
+		execute bufwinnr('^' . substitute(a:line, pattern, '\1', '') . '$') . 'wincmd w'
+		execute substitute(a:line, pattern, '\2', '')
+		wincmd _
+	endif
 endfunction
 "makeVimball {{{1
 function atoum#makeVimball()
@@ -89,6 +130,62 @@ function atoum#makeVimball()
 	endtry
 endfunction
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
+doc/atoum.txt	[[[1
+54
+*atoum.txt*	Plugin for using atoum, the simple, modern and intuitive unit
+testing framework for PHP 5.3+
+
+                                                 *atoum* *atoum-plugin*
+	Contents:
+
+		Introduction.............|atoum-introduction|
+		Variables...................|atoum-variables|
+		Commands.....................|atoum-commands|
+		Mappings.....................|atoum-mappings|
+
+Author:  Frederic Hardy <frederic.hardy@mageekbox.net>   *atoum-author*
+Licence: BSD
+
+This plugin is only available if 'compatible' is not set.
+
+INTRODUCTION                                    *atoum-introduction*
+
+Install in ~/.vim, or in ~\vimfiles if you're on Windows and feeling lucky.
+
+If you're in a hurry to get started, here are some things to try:
+
+Open a PHP file which contain atoum unit test, run |:Atoum|. A buffer
+will be open by VIM to display report about unit test execution.
+
+VARIABLES                                        *atoum-variables*
+
+g:atoum#disable         If its value is 1, disable the plug-in.
+
+g:atoum#configuration   Path to atoum configuration file which will be used
+                        by atoum to execute unit tests.
+
+g:atoum#php             Path to php binary which will be used to execute
+                        unit tests.
+
+COMMANDS                                        *atoum-commands*
+
+These commands are only available if current buffer contains a PHP file.
+
+                                                *atoum-:Atoum*
+:Atoum                  Run unit tests in current buffer.
+
+MAPPINGS                                        *atoum-mappings*
+
+These maps are available in buffer opened by atoum plug-ins.
+
+                                                *atoum-<CR>*
+<CR>                    Re-execute unit tests.
+
+                                                *fugitive-<localleader><CR>*
+<localleader><CR>       If cursor is on a failure, go to the unit test file
+                        at line of failure.
+
+ vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
 ftplugin/php/atoum.php	[[[1
 28
 <?php

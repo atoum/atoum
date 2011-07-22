@@ -26,6 +26,19 @@ class caller extends atoum\test
 
 		$this->assert
 			->string($caller->invoke())->isEqualTo($return)
+		;
+
+		$caller->throw = $exception = new \exception();
+
+		$this->assert
+			->exception(function() use ($caller) {
+					$caller->invoke();
+				}
+			)
+				->isIdenticalTo($exception)
+		;
+
+		$this->assert
 			->exception(function() use ($caller) {
 					$caller->{uniqid()} = uniqid();
 				}

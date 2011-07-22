@@ -10,6 +10,8 @@ use
 
 require_once(__DIR__ . '/../../runner.php');
 
+class dummy {}
+
 class mock extends atoum\test
 {
 	public function testClass()
@@ -31,12 +33,43 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testReset()
+	{
+		$this->mock
+			->generate('\mageekguy\atoum\score')
+			->generate('\mageekguy\atoum\mock\controller')
+		;
+
+		$mockController = new \mageekguy\atoum\mock\mageekguy\atoum\mock\controller();
+
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->variable($asserter->getMock())->isNull()
+			->object($asserter->reset())->isIdenticalTo($asserter)
+			->variable($asserter->getMock())->isNull()
+		;
+
+		$asserter->setWith($mock = new \mageekguy\atoum\mock\mageekguy\atoum\score());
+		$mock->setMockController($mockController);
+
+		$this->assert
+			->object($asserter->getMock())->isIdenticalTo($mock)
+			->object($asserter->reset())->isIdenticalTo($asserter)
+			->object($asserter->getMock())->isIdenticalTo($mock)
+			->mock($mockController)
+				->call('resetCalls')
+		;
+
+	}
+
 	public function testSetWith()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate(__CLASS__);
+		$this->mock
+			->generate(__CLASS__)
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -68,8 +101,9 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate(__CLASS__);
+		$this->mock
+			->generate(__CLASS__)
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -147,8 +181,9 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate(__CLASS__);
+		$this->mock
+			->generate(__CLASS__)
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -202,8 +237,9 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate(__CLASS__);
+		$this->mock
+			->generate(__CLASS__)
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
@@ -308,8 +344,9 @@ class mock extends atoum\test
 
 	public function testNotCall($argForTest = null)
 	{
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate(__CLASS__);
+		$this->mock
+			->generate(__CLASS__)
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;

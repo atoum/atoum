@@ -14,7 +14,10 @@ class mock extends atoum\asserter
 
 	public function reset()
 	{
-		$this->mock->getMockController()->resetCalls();
+		if ($this->mock !== null)
+		{
+			$this->mock->getMockController()->resetCalls();
+		}
 
 		return $this;
 	}

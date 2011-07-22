@@ -24,6 +24,15 @@ class caller implements \arrayAccess
 				$this->setClosure($mixed);
 				break;
 
+			case 'throw':
+				if ($mixed instanceof \closure === false)
+				{
+					$mixed = function() use ($mixed) { throw $mixed; };
+				}
+
+				$this->setClosure($mixed);
+				break;
+
 			default:
 				throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
 		}

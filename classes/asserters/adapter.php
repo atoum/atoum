@@ -27,6 +27,16 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
+	public function reset()
+	{
+		if ($this->adapter !== null)
+		{
+			$this->adapter->resetCalls();
+		}
+
+		return $this;
+	}
+
 	public function getAdapter()
 	{
 		return $this->adapter;

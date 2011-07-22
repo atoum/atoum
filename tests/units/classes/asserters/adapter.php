@@ -70,6 +70,31 @@ class adapter extends atoum\test
 		;
 	}
 
+	public function testReset()
+	{
+		$this->mock
+			->generate('\mageekguy\atoum\test\adapter')
+		;
+
+		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->variable($asserter->getAdapter())->isNull()
+			->object($asserter->reset())->isIdenticalTo($asserter)
+			->variable($asserter->getAdapter())->isNull()
+		;
+
+		$asserter->setWith($adapter = new atoum\mock\mageekguy\atoum\test\adapter());
+
+		$this->assert
+			->object($asserter->getAdapter())->isIdenticalTo($adapter)
+			->object($asserter->reset())->isIdenticalTo($asserter)
+			->object($asserter->getAdapter())->isIdenticalTo($adapter)
+			->mock($adapter)
+				->call('resetCalls')
+		;
+	}
+
 	public function testCall()
 	{
 		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
