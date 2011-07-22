@@ -9,9 +9,12 @@ use
 
 class generator implements atoum\adapter\aggregator
 {
+	const defaultNamespace = __NAMESPACE__;
+
 	protected $adapter = null;
 	protected $shuntedMethods = array();
 
+	private $defaultNamespace = null;
 	private $reflectionClassInjector = null;
 
 	public function __construct(atoum\adapter $adapter = null)
@@ -29,6 +32,18 @@ class generator implements atoum\adapter\aggregator
 	public function getAdapter()
 	{
 		return $this->adapter;
+	}
+
+	public function setDefaultNamespace($namespace)
+	{
+		$this->defaultNamespace = '\\' . trim($namespace, '\\');
+
+		return $this;
+	}
+
+	public function getDefaulNamespace()
+	{
+		return ($this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace);
 	}
 
 	public function getReflectionClass($class)
@@ -102,7 +117,7 @@ class generator implements atoum\adapter\aggregator
 
 		if ($mockNamespace === null)
 		{
-			$mockNamespace = self::getNamespace($class);
+			$mockNamespace = $this->getNamespace($class);
 		}
 
 		if ($mockClass === null)
@@ -471,13 +486,13 @@ class generator implements atoum\adapter\aggregator
 		return $type;
 	}
 
-	protected static function getNamespace($class)
+	protected function getNamespace($class)
 	{
 		$class = ltrim($class, '\\');
 
 		$lastAntiSlash = strrpos($class, '\\');
 
-		return '\\' . __NAMESPACE__ . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return '\\' . $this->getDefaulNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected static function getClassName($class)

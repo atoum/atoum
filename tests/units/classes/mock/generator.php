@@ -35,6 +35,22 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testSetDefaultNamespace()
+	{
+		$generator = new mock\generator();
+
+		$this->assert
+			->object($generator->setDefaultNamespace($namespace = uniqid()))->isIdenticalTo($generator)
+			->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+			->object($generator->setDefaultNamespace('\\' . $namespace))->isIdenticalTo($generator)
+			->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+			->object($generator->setDefaultNamespace('\\' . $namespace . '\\'))->isIdenticalTo($generator)
+			->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+			->object($generator->setDefaultNamespace($namespace . '\\'))->isIdenticalTo($generator)
+			->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+		;
+	}
+
 	public function testSetAdapter()
 	{
 		$generator = new mock\generator();
