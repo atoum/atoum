@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\runner\tests;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\report
+;
 
 abstract class memory extends report\fields\runner
 {

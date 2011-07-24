@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\php\tokenizer;
 
 use
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\php\tokenizer\iterator
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\php\tokenizer\iterator
 ;
 
 class token extends iterator\value

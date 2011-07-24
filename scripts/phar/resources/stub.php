@@ -4,7 +4,9 @@ namespace mageekguy\atoum\scripts\runner;
 
 \phar::mapPhar('mageekguy.atoum.phar');
 
-use \mageekguy\atoum\scripts\phar;
+use
+	mageekguy\atoum\scripts\phar
+;
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

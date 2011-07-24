@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\exceptions\logic;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 class badMethodCall extends \badMethodCallException implements atoum\exception {}
 

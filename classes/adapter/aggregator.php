@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\adapter;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 interface aggregator
 {

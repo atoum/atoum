@@ -3,12 +3,12 @@
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\report\fields\runner,
-	\mageekguy\atoum\reports\asynchronous as reports
+	mageekguy\atoum,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\test,
+	mageekguy\atoum\report\fields\runner,
+	mageekguy\atoum\reports\asynchronous as reports
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -18,7 +18,7 @@ class builder extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->class('\mageekguy\atoum\reports\asynchronous\builder')->isSubClassOf('\mageekguy\atoum\reports\asynchronous')
+			->testedClass->isSubClassOf('mageekguy\atoum\reports\asynchronous')
 		;
 	}
 

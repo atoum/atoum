@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\mock\php\method;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 class argument
 {

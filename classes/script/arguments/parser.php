@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\script\arguments;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class parser implements \iteratorAggregate

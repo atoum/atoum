@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\annotations;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\annotations;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\annotations
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -44,42 +46,42 @@ class extractor extends atoum\test
 		$extractor = new annotations\extractor();
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('');
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('#');
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('//');
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('/**/');
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
 		$extractor = new annotations\extractor('/** */');
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
@@ -98,7 +100,7 @@ class extractor extends atoum\test
 		);
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEmpty()
 		;
 
@@ -120,7 +122,7 @@ class extractor extends atoum\test
 		);
 
 		$this->assert
-			->object($extractor)->isInstanceOf('\iteratorAggregate')
+			->object($extractor)->isInstanceOf('iteratorAggregate')
 			->array($extractor->getAnnotations())->isEqualTo(array(
 					$annotation => $value
 				)
@@ -189,7 +191,7 @@ class extractor extends atoum\test
 
 		$this->assert
 			->object($extractor->getIterator())
-				->isInstanceOf('\arrayIterator')
+				->isInstanceOf('arrayIterator')
 				->isEmpty()
 		;
 
@@ -209,7 +211,7 @@ class extractor extends atoum\test
 
 		$this->assert
 			->object($extractor->getIterator())
-				->isInstanceOf('\arrayIterator')
+				->isInstanceOf('arrayIterator')
 				->hasSize(1)
 		;
 	}

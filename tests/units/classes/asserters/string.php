@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -16,7 +16,7 @@ class string extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\variable')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 
@@ -57,7 +57,7 @@ class string extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a string'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -112,7 +112,7 @@ class string extends atoum\test
 						$asserter->isEqualTo(uniqid());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
 		;
 
@@ -127,7 +127,7 @@ class string extends atoum\test
 						$asserter->isEqualTo($secondString = uniqid());
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($test->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
 		;
 	}
@@ -142,7 +142,7 @@ class string extends atoum\test
 						$asserter->isEmpty();
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
 		;
 
@@ -159,7 +159,7 @@ class string extends atoum\test
 						$asserter->isEmpty();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($test->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference('')->setData($string))
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -188,7 +188,7 @@ class string extends atoum\test
 						$asserter->isNotEmpty();
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
 		;
 
@@ -205,7 +205,7 @@ class string extends atoum\test
 						$asserter->isNotEmpty();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($test->getLocale()->_('string is empty'))
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)

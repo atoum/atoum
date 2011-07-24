@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\scripts\tagger;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\adapter,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\adapter,
+	mageekguy\atoum\exceptions
 ;
 
 class engine implements adapter\aggregator

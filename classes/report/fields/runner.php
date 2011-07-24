@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\report\fields;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	mageekguy\atoum,
+	mageekguy\atoum\report
 ;
 
 abstract class runner extends report\field

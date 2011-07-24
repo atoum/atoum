@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock
+	mageekguy\atoum
 ;
 
 require_once(__DIR__ . '/../runner.php');
@@ -15,21 +14,23 @@ class report extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->isSubclassOf('\mageekguy\atoum\observers\runner')
-				->isSubclassOf('\mageekguy\atoum\observers\test')
-				->isSubclassOf('\mageekguy\atoum\adapter\aggregator')
+				->isSubclassOf('mageekguy\atoum\observers\runner')
+				->isSubclassOf('mageekguy\atoum\observers\test')
+				->isSubclassOf('mageekguy\atoum\adapter\aggregator')
 		;
 	}
 
 	public function test__construct()
 	{
-		$this->mock->generate('\mageekguy\atoum\report');
+		$this->mock
+			->generate('mageekguy\atoum\report')
+		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->variable($report->getTitle())->isNull()
-			->object($report->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
+			->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 			->array($report->getRunnerFields())->isEqualTo(array(
 					atoum\runner::runStart => array(),
 					atoum\runner::runStop => array()
@@ -53,7 +54,7 @@ class report extends atoum\test
 			->array($report->getWriters())->isEmpty()
 		;
 
-		$report = new mock\mageekguy\atoum\report($locale = new atoum\locale());
+		$report = new \mock\mageekguy\atoum\report($locale = new atoum\locale());
 
 		$this->assert
 			->variable($report->getTitle())->isNull()
@@ -96,10 +97,11 @@ class report extends atoum\test
 
 	public function testSetLocale()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\report');
+		$this->mock
+			->generate('mageekguy\atoum\report')
+		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->object($report->setLocale($locale = new atoum\locale()))->isIdenticalTo($report)
@@ -109,13 +111,12 @@ class report extends atoum\test
 
 	public function testAddRunnerField()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\report')
-			->generate('\mageekguy\atoum\report\fields\runner')
+		$this->mock
+			->generate('mageekguy\atoum\report')
+			->generate('mageekguy\atoum\report\fields\runner')
 		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getRunnerFields())->isEqualTo(array(
@@ -123,21 +124,21 @@ class report extends atoum\test
 					'runnerStop' => array()
 				)
 			)
-			->object($report->addRunnerField($field = new mock\mageekguy\atoum\report\fields\runner()))->isIdenticalTo($report)
+			->object($report->addRunnerField($field = new \mock\mageekguy\atoum\report\fields\runner()))->isIdenticalTo($report)
 			->array($report->getRunnerFields())->isIdenticalTo(array(
 					'runnerStart' => array($field),
 					'runnerStop' => array($field)
 				)
 			)
 			->object($field->getLocale())->isIdenticalTo($report->getLocale())
-			->object($report->addRunnerField($otherField = new mock\mageekguy\atoum\report\fields\runner()))->isIdenticalTo($report)
+			->object($report->addRunnerField($otherField = new \mock\mageekguy\atoum\report\fields\runner()))->isIdenticalTo($report)
 			->array($report->getRunnerFields())->isIdenticalTo(array(
 					'runnerStart' => array($field, $otherField),
 					'runnerStop' => array($field, $otherField)
 				)
 			)
 			->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
-			->object($report->addRunnerField($runnerStopField = new mock\mageekguy\atoum\report\fields\runner(), array('runnerStop')))->isIdenticalTo($report)
+			->object($report->addRunnerField($runnerStopField = new \mock\mageekguy\atoum\report\fields\runner(), array('runnerStop')))->isIdenticalTo($report)
 			->array($report->getRunnerFields())->isIdenticalTo(array(
 					'runnerStart' => array($field, $otherField),
 					'runnerStop' => array($field, $otherField, $runnerStopField)
@@ -148,23 +149,22 @@ class report extends atoum\test
 
 		$this->assert
 			->exception(function() use ($report, & $event) {
-					$report->addRunnerField(new mock\mageekguy\atoum\report\fields\runner(), array($event = uniqid()));
+					$report->addRunnerField(new \mock\mageekguy\atoum\report\fields\runner(), array($event = uniqid()));
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Event \'' . $event . '\' does not exist')
 		;
 	}
 
 	public function testAddTestField()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\report')
-			->generate('\mageekguy\atoum\report\fields\test')
+		$this->mock
+			->generate('mageekguy\atoum\report')
+			->generate('mageekguy\atoum\report\fields\test')
 		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(
@@ -182,7 +182,7 @@ class report extends atoum\test
 					atoum\test::runStop => array()
 				)
 			)
-			->object($report->addTestField($field = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
+			->object($report->addTestField($field = new \mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
 					atoum\test::runStart => array($field),
 					atoum\test::beforeSetUp => array($field),
@@ -199,7 +199,7 @@ class report extends atoum\test
 				)
 			)
 			->object($field->getLocale())->isIdenticalTo($report->getLocale())
-			->object($report->addTestField($otherField = new mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
+			->object($report->addTestField($otherField = new \mock\mageekguy\atoum\report\fields\test()))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
 					atoum\test::runStart => array($field, $otherField),
 					atoum\test::beforeSetUp => array($field, $otherField),
@@ -216,7 +216,7 @@ class report extends atoum\test
 				)
 			)
 			->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
-			->object($report->addTestField($beforeTestSetUpField = new mock\mageekguy\atoum\report\fields\test(), array(atoum\test::beforeSetUp)))->isIdenticalTo($report)
+			->object($report->addTestField($beforeTestSetUpField = new \mock\mageekguy\atoum\report\fields\test(), array(atoum\test::beforeSetUp)))->isIdenticalTo($report)
 			->array($report->getTestFields())->isIdenticalTo(array(
 					atoum\test::runStart => array($field, $otherField),
 					atoum\test::beforeSetUp => array($field, $otherField, $beforeTestSetUpField),
@@ -238,18 +238,17 @@ class report extends atoum\test
 
 	public function testRunnerStart()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\report')
-			->generate('\mageekguy\atoum\report\fields\runner')
+		$this->mock
+			->generate('mageekguy\atoum\report')
+			->generate('mageekguy\atoum\report\fields\runner')
 		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
-		$field = new mock\mageekguy\atoum\report\fields\runner();
+		$field = new \mock\mageekguy\atoum\report\fields\runner();
 		$field->getMockController()->setWithRunner = function() use ($field) { return $field; };
 
-		$otherField = new mock\mageekguy\atoum\report\fields\runner();
+		$otherField = new \mock\mageekguy\atoum\report\fields\runner();
 		$otherField->getMockController()->setWithRunner = function() use ($otherField) { return $otherField; };
 
 		$report
@@ -264,18 +263,17 @@ class report extends atoum\test
 
 	public function testRunnerStop()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\report')
-			->generate('\mageekguy\atoum\report\fields\runner')
+		$this->mock
+			->generate('mageekguy\atoum\report')
+			->generate('mageekguy\atoum\report\fields\runner')
 		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
-		$field = new mock\mageekguy\atoum\report\fields\runner();
+		$field = new \mock\mageekguy\atoum\report\fields\runner();
 		$field->getMockController()->setWithRunner = function() use ($field) { return $field; };
 
-		$otherField = new mock\mageekguy\atoum\report\fields\runner();
+		$otherField = new \mock\mageekguy\atoum\report\fields\runner();
 		$otherField->getMockController()->setWithRunner = function() use ($otherField) { return $otherField; };
 
 
@@ -291,10 +289,11 @@ class report extends atoum\test
 
 	public function testGetRunnerFields()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\report');
+		$this->mock
+			->generate('mageekguy\atoum\report')
+		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getRunnerFields())->isEqualTo(array(
@@ -312,10 +311,11 @@ class report extends atoum\test
 
 	public function testGetTestFields()
 	{
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\report');
+		$this->mock
+			->generate('mageekguy\atoum\report')
+		;
 
-		$report = new mock\mageekguy\atoum\report();
+		$report = new \mock\mageekguy\atoum\report();
 
 		$this->assert
 			->array($report->getTestFields())->isEqualTo(array(

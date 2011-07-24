@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\tests\units\reports;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -13,12 +12,12 @@ class realtime extends atoum\test
 {
 	public function testRunnerStart()
 	{
-		$this
-			->mock('\mageekguy\atoum\reports\realtime')
-			->mock('\mageekguy\atoum\locale')
+		$this->mock
+			->generate('mageekguy\atoum\reports\realtime')
+			->generate('mageekguy\atoum\locale')
 		;
 
-		$report = new mock\reports\realtime($locale = new mock\locale(), $adapter = new atoum\test\adapter());
+		$report = new \mock\mageekguy\atoum\reports\realtime($locale = new \mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
 
 		$this->assert
 			->object($report->runnerStart(new atoum\runner()))->isIdenticalTo($report)

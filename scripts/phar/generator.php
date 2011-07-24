@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\phar;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\scripts
+	mageekguy\atoum,
+	mageekguy\atoum\scripts
 ;
 
 require_once(__DIR__ . '/../../classes/autoloader.php');

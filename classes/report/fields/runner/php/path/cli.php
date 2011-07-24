@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\report\fields\runner\php\path;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer
+	mageekguy\atoum,
+	mageekguy\atoum\report,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\php\path

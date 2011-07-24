@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\tools\diffs,
-	\mageekguy\atoum\tests\functional\selenium
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\tests\functional\selenium
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -17,7 +17,7 @@ class html extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -39,7 +39,7 @@ class html extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an instance of selenium\html'), $asserter->getTypeOf($value)))
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -58,8 +58,9 @@ class html extends atoum\test
 
 	public function testHasTitle()
 	{
-		$this->mock('\mageekguy\atoum\tests\functional\selenium\html');
-		$html = new atoum\mock\mageekguy\atoum\tests\functional\selenium\html('http://www.atoum.org');
+		$this->mock('mageekguy\atoum\tests\functional\selenium\html');
+
+		$html = new \mock\mageekguy\atoum\tests\functional\selenium\html('http://www.atoum.org');
 		$html->getMockController()->getTitle = 'Atoum website title';
 
 		$asserter = new asserters\html(new asserter\generator($test = new self($score = new atoum\score())));
@@ -75,7 +76,7 @@ class html extends atoum\test
 						$line = __LINE__; $asserter->hasTitle($title);
 					}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter->getTypeOf($html->getTitle()), $asserter->getTypeOf($title)) . PHP_EOL . $diff)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)

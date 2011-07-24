@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\exceptions
 ;
 
 class float extends \mageekguy\atoum\asserters\integer

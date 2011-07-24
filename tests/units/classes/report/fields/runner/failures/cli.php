@@ -3,13 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\tests\units,
+	mageekguy\atoum\report\fields\runner
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -19,7 +18,7 @@ class cli extends units\report\fields\runner
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner')
 		;
 	}
 
@@ -104,10 +103,10 @@ class cli extends units\report\fields\runner
 		$field = new runner\failures\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\runner');
+			->generate('mageekguy\atoum\runner');
 		;
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 
 		$this->assert
 			->object($field->setWithRunner($runner))->isIdenticalTo($field)
@@ -124,14 +123,14 @@ class cli extends units\report\fields\runner
 		$field = new runner\failures\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getErrors = array();
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = $score;
 
 		$this->assert

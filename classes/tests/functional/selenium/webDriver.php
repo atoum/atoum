@@ -11,15 +11,15 @@ use
 abstract class webDriver
 {
 	private $requestUrl;
-	
+
 	protected $_curl;
-	
+
 	protected $desiredCapabilities;
-	
+
 	public function __construct($host = 'localhost', $port = '4444', capabilities $desiredCapabilities = null, atoum\adapter $adapter = null)
 	{
 		$this->setAdapter($adapter ?: new atoum\adapter());
-		
+
 		if ($desiredCapabilities == null)
 		{
 			$desiredCapabilities = new selenium\capabilities();
@@ -29,10 +29,10 @@ abstract class webDriver
 		{
 			throw new logic\invalidArgument('Desired browser name does not math this webdriver implementation');
 		}
-		
+
 		$this->requestUrl = 'http://' . $host . ':' . $port . '/wd/hub';
 		$this->desiredCapabilities = $desiredCapabilities;
-		
+
 		$request = $this->requestUrl . "/session";
 		$session = $this->curlInit($request);
 		$this->preparePost($session, (string)($this->desiredCapabilities));
@@ -41,9 +41,9 @@ abstract class webDriver
 		$header = $this->adapter->curl_getinfo($session);
 		$this->requestUrl = $header['url'];
 	}
-	
+
 	protected abstract function getBrowserName();
-	
+
 	public function setAdapter(atoum\adapter $adapter)
 	{
 		$this->adapter = $adapter;
@@ -55,7 +55,7 @@ abstract class webDriver
 	{
 		return $this->adapter;
 	}
-	
+
 	public function close()
 	{
 		$request = $this->requestUrl;
@@ -73,68 +73,68 @@ abstract class webDriver
 		$this->preparePost($session, json_encode($args));
 		$response = $this->adapter->curl_exec($session);
 	}
-	
+
 	public function findElement(by $by)
 	{
-		
+
 	}
-	
+
 	public function findElements(by $by)
 	{
-		
+
 	}
-	
+
 	public function getCurrentUrl()
 	{
-		
+
 	}
-	
+
 	public function getPageSource()
 	{
-		
+
 	}
-	
+
 	public function getTitle()
 	{
 		$response = $this->executeRestRequestGet($this->requestUrl . "/title");
 		return $this->extractValueFromJsonResponse($response);
 	}
-	
+
 	public function getWindowHandle()
 	{
-		
+
 	}
-	
+
 	public function getWindowHandles()
 	{
-		
+
 	}
-	
+
 	public function manage()
 	{
-		
+
 	}
-	
+
 	public function navigate()
 	{
-		
+
 	}
 
 	public function quit()
 	{
-		
+
 	}
 
 	public function switchTo()
 	{
-		
+
 	}
-	
+
 	public function getDesiredCapabilities()
 	{
 		return $this->desiredCapabilities;
 	}
-	
+
 	protected function &curlInit($url)
 	{
 		if ($this->_curl === null)
@@ -222,7 +222,7 @@ abstract class webDriver
 			case selenium\responseStatus::Success:
 				return;
 			break;
-			
+
 			case selenium\responseStatus::NoSuchElement:
 				throw new Exception('No such element:' . $json_response);
 			break;

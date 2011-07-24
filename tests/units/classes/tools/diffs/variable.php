@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\tools\diffs;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\tools
+	mageekguy\atoum,
+	mageekguy\atoum\tools
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -55,7 +55,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Reference is undefined')
 		;
 
@@ -69,7 +69,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Data is undefined')
 		;
 

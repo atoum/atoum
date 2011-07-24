@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\mock;
 
 use
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\test,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\mock,
+	mageekguy\atoum\test,
+	mageekguy\atoum\exceptions
 ;
 
 class controller extends test\adapter

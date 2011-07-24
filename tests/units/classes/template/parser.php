@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\template;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\test,
-	\mageekguy\atoum\template
+	mageekguy\atoum,
+	mageekguy\atoum\test,
+	mageekguy\atoum\template
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class parser extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->hasInterface('\mageekguy\atoum\adapter\aggregator')
+			->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator')
 		;
 	}
 
@@ -25,21 +25,21 @@ class parser extends atoum\test
 
 		$this->assert
 			->string($parser->getNamespace())->isEqualTo(template\parser::defaultNamespace)
-			->object($parser->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($parser->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 
 		$parser = new template\parser($namespace = uniqid());
 
 		$this->assert
 			->string($namespace)->isEqualTo($parser->getNamespace())
-			->object($parser->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($parser->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 
 		$parser = new template\parser($namespace = rand(1, PHP_INT_MAX));
 
 		$this->assert
 			->string($parser->getNamespace())->isEqualTo((string) $namespace)
-			->object($parser->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($parser->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 
 		$parser = new template\parser($namespace = uniqid(), $adapter = new atoum\test\adapter());
@@ -98,8 +98,8 @@ class parser extends atoum\test
 					$parser->checkString('<' . template\parser::defaultNamespace . ':' . $tag . ' id="" />');
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Id must not be empty')
 				->hasErrorLine(1)
 				->hasErrorOffset(1)
@@ -116,8 +116,8 @@ class parser extends atoum\test
 					$parser->checkString($tagWithId . $tagWithId);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
 				->hasErrorLine(1)
 				->hasErrorOffset(41)
@@ -130,8 +130,8 @@ class parser extends atoum\test
 					$parser->checkString($tagWithInvalidAttribute);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Attribute \'foo\' is unknown')
 				->hasErrorLine(1)
 				->hasErrorOffset(1)
@@ -144,8 +144,8 @@ class parser extends atoum\test
 					$parser->checkString($firstTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -160,8 +160,8 @@ class parser extends atoum\test
 					$parser->checkString($eols . $firstTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -174,8 +174,8 @@ class parser extends atoum\test
 					$parser->checkString($eols . $spaces . $firstTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
@@ -189,8 +189,8 @@ class parser extends atoum\test
 					$parser->checkString($firstTag . $secondTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -198,8 +198,8 @@ class parser extends atoum\test
 					$parser->checkString($eols . $firstTag . $secondTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -207,8 +207,8 @@ class parser extends atoum\test
 					$parser->checkString($eols . $spaces . $firstTag . $secondTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
@@ -228,7 +228,7 @@ class parser extends atoum\test
 					$parser->checkFile($path = uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to get contents from file \'' . $path . '\'')
 		;
 
@@ -275,8 +275,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Id must not be empty')
 				->hasErrorLine(1)
 				->hasErrorOffset(1)
@@ -315,8 +315,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
 				->hasErrorLine(1)
 				->hasErrorOffset(41)
@@ -329,8 +329,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Attribute \'foo\' is unknown')
 				->hasErrorLine(1)
 				->hasErrorOffset(1)
@@ -343,8 +343,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -357,8 +357,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -371,8 +371,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $tag . '\' must be closed')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
@@ -388,8 +388,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -402,8 +402,8 @@ class parser extends atoum\test
 					$parser->checkFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + 1)
@@ -416,8 +416,8 @@ class parser extends atoum\test
 					$parser->checkFile($eols . $spaces . $firstTag . $secondTag);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
-				->isInstanceOf('\mageekguy\atoum\template\parser\exception')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
 				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
 				->hasErrorLine(strlen($eols) + 1)
 				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
@@ -429,28 +429,28 @@ class parser extends atoum\test
 		$parser = new template\parser();
 
 		$this->assert
-			->object($root = $parser->parseString(''))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString(''))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->isEmpty()
 		;
 
 		$this->assert
-			->object($root = $parser->parseString($string = uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString($string = uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
 		$this->assert
-			->object($root = $parser->parseString($string = uniqid() . "\n" . uniqid() . "\n"))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString($string = uniqid() . "\n" . uniqid() . "\n"))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
 		$this->assert
-			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />'))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />'))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -459,9 +459,9 @@ class parser extends atoum\test
 		;
 
 		$this->assert
-			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>'))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>'))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -470,9 +470,9 @@ class parser extends atoum\test
 		;
 
 		$this->assert
-			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />'))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />'))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->string($root->getChild(0)->getId())->isEqualTo($id)
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -481,9 +481,9 @@ class parser extends atoum\test
 		;
 
 		$this->assert
-			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>'))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>'))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->string($root->getChild(0)->getId())->isEqualTo($id)
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -492,9 +492,9 @@ class parser extends atoum\test
 		;
 
 		$this->assert
-			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>'))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString('<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>'))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -503,39 +503,39 @@ class parser extends atoum\test
 		;
 
 		$this->assert
-			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->variable($root->getChild(1)->getId())->isNull()
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(1)
 			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
 		$this->assert
-			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseString(($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid())))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(1)->getId())->isEqualTo($id)
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(1)
 			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
 		$this->assert
 			->object($root = $parser->parseString(($string = str_repeat("\n", 6)) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>'))
 			->array($root->getChildren())->hasSize(2)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->variable($root->getChild(1)->getId())->isNull()
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(7)
@@ -554,41 +554,41 @@ class parser extends atoum\test
 					$parser->parseFile($path = uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to get contents from file \'' . $path . '\'')
 		;
 
 		$adapter->file_get_contents = '';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->isEmpty()
 		;
 
 		$adapter->file_get_contents = $string = uniqid();
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
 		$adapter->file_get_contents = $string = uniqid() . "\n" . uniqid() . "\n";
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
 		;
 
 		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' />';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -599,9 +599,9 @@ class parser extends atoum\test
 		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -612,9 +612,9 @@ class parser extends atoum\test
 		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '" />';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->string($root->getChild(0)->getId())->isEqualTo($id)
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -625,9 +625,9 @@ class parser extends atoum\test
 		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '"/>';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->string($root->getChild(0)->getId())->isEqualTo($id)
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -638,9 +638,9 @@ class parser extends atoum\test
 		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>';
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(1)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(0)->getTag())->isEqualTo($tag)
 			->variable($root->getChild(0)->getId())->isNull()
 			->string($root->getChild(0)->getData())->isEmpty()
@@ -651,32 +651,32 @@ class parser extends atoum\test
 		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '>' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->variable($root->getChild(1)->getId())->isNull()
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(1)
 			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
 		$adapter->file_get_contents = ($string1 = uniqid()) . '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="' . ($id = uniqid()) . '">' . ($data = uniqid()) . '</' . template\parser::defaultNamespace . ':' . $tag . '>' . ($string2 = uniqid());
 
 		$this->assert
-			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('\mageekguy\atoum\template')
+			->object($root = $parser->parseFile(uniqid()))->isInstanceOf('mageekguy\atoum\template')
 			->array($root->getChildren())->hasSize(3)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string1)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->string($root->getChild(1)->getId())->isEqualTo($id)
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(1)
 			->integer($root->getChild(1)->getOffset())->isEqualTo(strlen($string1) + 1)
-			->object($root->getChild(2))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(2))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(2)->getData())->isEqualTo($string2)
 		;
 
@@ -685,9 +685,9 @@ class parser extends atoum\test
 		$this->assert
 			->object($root = $parser->parseFile(uniqid()))
 			->array($root->getChildren())->hasSize(2)
-			->object($root->getChild(0))->isInstanceOf('\mageekguy\atoum\template\data')
+			->object($root->getChild(0))->isInstanceOf('mageekguy\atoum\template\data')
 			->string($root->getChild(0)->getData())->isEqualTo($string)
-			->object($root->getChild(1))->isInstanceOf('\mageekguy\atoum\template\tag')
+			->object($root->getChild(1))->isInstanceOf('mageekguy\atoum\template\tag')
 			->variable($root->getChild(1)->getId())->isNull()
 			->string($root->getChild(1)->getData())->isEmpty()
 			->integer($root->getChild(1)->getLine())->isEqualTo(7)

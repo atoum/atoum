@@ -3,13 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\runner,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner,
+	mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -19,7 +18,7 @@ class cli extends units\report\fields\runner
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\field')
+			->class($this->getTestedClassName())->isSubClassOf('mageekguy\atoum\report\field')
 		;
 	}
 
@@ -103,11 +102,11 @@ class cli extends units\report\fields\runner
 		$field = new runner\result\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 
 		$scoreController->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX);
@@ -118,7 +117,7 @@ class cli extends units\report\fields\runner
 
 		$scoreController->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX);
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 		$runnerController->getTestNumber = $testNumber = rand(1, PHP_INT_MAX);
@@ -153,27 +152,27 @@ class cli extends units\report\fields\runner
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
-			->generate('\mageekguy\atoum\locale')
-			->generate('\mageekguy\atoum\cli\prompt')
-			->generate('\mageekguy\atoum\cli\colorizer')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\locale')
+			->generate('mageekguy\atoum\cli\prompt')
+			->generate('mageekguy\atoum\cli\colorizer')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getAssertionNumber = 1;
 		$scoreController->getFailNumber = 0;
 		$scoreController->getErrorNumber = 0;
 		$scoreController->getExceptionNumber = 0;
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 		$runnerController->getTestNumber = 1;
 		$runnerController->getTestMethodNumber = 1;
 
-		$locale = new mock\locale();
+		$locale = new \mock\mageekguy\atoum\locale();
 		$localeController = $locale->getMockController();
 		$localeController->_ = function ($string) use (& $noTestRunningString, & $successString, & $failureString) {
 			switch ($string)
@@ -214,15 +213,15 @@ class cli extends units\report\fields\runner
 			}
 		};
 
-		$prompt = new mock\cli\prompt();
+		$prompt = new \mock\mageekguy\atoum\cli\prompt();
 		$promptController = $prompt->getMockController();
 		$promptController->__toString = $promptString = uniqid();
 
-		$successColorizer = new mock\cli\colorizer();
+		$successColorizer = new \mock\mageekguy\atoum\cli\colorizer();
 		$successColorizerController = $successColorizer->getMockController();
 		$successColorizerController->colorize = $colorizedSuccessString = uniqid();
 
-		$failureColorizer = new mock\cli\colorizer();
+		$failureColorizer = new \mock\mageekguy\atoum\cli\colorizer();
 		$failureColorizerController = $failureColorizer->getMockController();
 		$failureColorizerController->colorize = $colorizedFailureString = uniqid();
 

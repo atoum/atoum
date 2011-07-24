@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class object extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\variable')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 
@@ -41,20 +41,20 @@ class object extends atoum\test
 						$asserter->toString;
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 			->exception(function() use ($asserter, & $property) {
 						$asserter->{$property = uniqid()};
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
 		;
 
 		$asserter->setWith($this);
 
 		$this->assert
-			->object($asserter->toString)->isInstanceOf('\mageekguy\atoum\asserters\castToString')
+			->object($asserter->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 
@@ -64,7 +64,7 @@ class object extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -108,7 +108,7 @@ class object extends atoum\test
 						$asserter->hasSize(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 		;
 
@@ -118,7 +118,7 @@ class object extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasSize(0); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s has not size %d'), $asserter, 0))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -155,7 +155,7 @@ class object extends atoum\test
 						$asserter->hasSize(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 		;
 
@@ -165,7 +165,7 @@ class object extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isEmpty(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -206,14 +206,14 @@ class object extends atoum\test
 						$asserter->toString();
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 		;
 
 		$asserter->setWith($this);
 
 		$this->assert
-			->object($asserter->toString())->isInstanceOf('\mageekguy\atoum\asserters\castToString')
+			->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 }

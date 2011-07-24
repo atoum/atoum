@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 require_once(__DIR__ . '/../runner.php');
 
@@ -34,7 +36,7 @@ class superglobals extends atoum\test
 						$superglobals->{$name = uniqid()} = uniqid();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('PHP superglobal \'$' . $name . '\' does not exist')
 		;
 

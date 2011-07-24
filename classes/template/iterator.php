@@ -3,7 +3,7 @@
 namespace mageekguy\atoum\template;
 
 use
-	\mageekguy\atoum
+	mageekguy\atoum
 ;
 
 class iterator implements \iterator, \countable

@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\cli;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli
+	mageekguy\atoum,
+	mageekguy\atoum\cli
 ;
 
 require_once(__DIR__ . '/../../runner.php');

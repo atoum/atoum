@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\report\writers;
 
-use \mageekguy\atoum\reports;
+use
+	mageekguy\atoum\reports
+;
 
 interface asynchronous
 {

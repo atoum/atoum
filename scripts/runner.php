@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\scripts\runner;
 
-use \mageekguy\atoum\scripts;
+use
+	mageekguy\atoum\scripts
+;
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

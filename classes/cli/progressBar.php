@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\cli;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 class progressBar
 {

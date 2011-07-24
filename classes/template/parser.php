@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\template;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\template\parser
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\template\parser
 ;
 
 class parser implements atoum\adapter\aggregator

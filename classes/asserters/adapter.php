@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class adapter extends atoum\asserter

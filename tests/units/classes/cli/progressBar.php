@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\cli;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli,
-	\mageekguy\atoum\mock
+	mageekguy\atoum,
+	mageekguy\atoum\cli,
+	mageekguy\atoum\mock
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -14,20 +14,19 @@ class progressBar extends atoum\test
 {
 	public function test__construct()
 	{
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\test')
+		$this->mock
+			->generate('mageekguy\atoum\test')
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$mockController = new mock\controller();
-		$mockController->getTestedClassName = uniqid();
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
 
-		$test = new atoum\mock\mageekguy\atoum\test(null, null, $adapter, $mockController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
-		$mockController->count = function() { return 0; };
+		$testController->count = function() { return 0; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -36,7 +35,7 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$mockController->count = function() { return 1; };
+		$testController->count = function() { return 1; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -46,7 +45,7 @@ class progressBar extends atoum\test
 		;
 
 		$count = rand(2, 9);
-		$mockController->count = function() use ($count) { return $count; };
+		$testController->count = function() use ($count) { return $count; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -56,7 +55,7 @@ class progressBar extends atoum\test
 		;
 
 		$count = rand(10, 60);
-		$mockController->count = function() use ($count) { return $count; };
+		$testController->count = function() use ($count) { return $count; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -65,7 +64,7 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$mockController->count = function() { return 61; };
+		$testController->count = function() { return 61; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -75,7 +74,7 @@ class progressBar extends atoum\test
 		;
 
 		$count = rand(100, PHP_INT_MAX);
-		$mockController->count = function() use ($count) { return $count; };
+		$testController->count = function() use ($count) { return $count; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -87,20 +86,19 @@ class progressBar extends atoum\test
 
 	public function testRefresh()
 	{
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\test')
+		$this->mock
+			->generate('mageekguy\atoum\test')
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$mockController = new mock\controller();
-		$mockController->getTestedClassName = uniqid();
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\mageekguy\atoum\test(null, null, $adapter, $mockController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
-		$mockController->count = function() { return 0; };
+		$testController->count = function() { return 0; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -110,7 +108,7 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$mockController->count = function() { return 1; };
+		$testController->count = function() { return 1; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -135,7 +133,7 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$mockController->count = function() { return 60; };
+		$testController->count = function() { return 60; };
 
 		$progressBar = new cli\progressBar($test);
 
@@ -172,7 +170,7 @@ class progressBar extends atoum\test
 				->castToString($progressBar)->isEmpty()
 		;
 
-		$mockController->count = function() { return 61; };
+		$testController->count = function() { return 61; };
 
 		$progressBar = new cli\progressBar($test);
 

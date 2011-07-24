@@ -3,8 +3,8 @@
 namespace mageekguy\atoum;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 require_once(__DIR__ . '/autoloader.php');

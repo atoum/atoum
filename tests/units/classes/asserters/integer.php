@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -16,7 +16,7 @@ class integer extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\variable')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 
@@ -39,7 +39,7 @@ class integer extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an integer'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -89,7 +89,7 @@ class integer extends atoum\test
 						$line = __LINE__; $asserter->isEqualTo(- $value);
 					}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value)) . PHP_EOL . $diff)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)

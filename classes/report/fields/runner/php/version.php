@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\report\fields\runner\php;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	mageekguy\atoum,
+	mageekguy\atoum\report
 ;
 
 abstract class version extends report\fields\runner

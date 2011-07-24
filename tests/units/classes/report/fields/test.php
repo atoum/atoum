@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\tests\units\report\fields;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 abstract class test extends atoum\test
 {

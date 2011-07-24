@@ -3,9 +3,9 @@
 namespace mageekguy\atoum;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\script,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\script,
+	mageekguy\atoum\exceptions
 ;
 
 abstract class script implements atoum\adapter\aggregator

@@ -5,8 +5,8 @@ namespace mageekguy\atoum\report\fields\runner;
 require_once(__DIR__ . '/../../../../constants.php');
 
 use
-	\mageekguy\atoum\runner,
-	\mageekguy\atoum\report
+	mageekguy\atoum\runner,
+	mageekguy\atoum\report
 ;
 
 abstract class atoum extends report\fields\runner

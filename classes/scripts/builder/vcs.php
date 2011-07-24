@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\scripts\builder;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 abstract class vcs implements atoum\adapter\aggregator

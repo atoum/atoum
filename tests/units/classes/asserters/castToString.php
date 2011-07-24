@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class castToString extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\string')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\string')
 		;
 	}
 
@@ -38,7 +38,7 @@ class castToString extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(

@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\tests\units;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 require_once(__DIR__ . '/../runner.php');
 
@@ -49,14 +51,14 @@ class template extends atoum\test
 		$template = new atoum\template();
 
 		$this->assert
-			->object($iterator = $template->{uniqid()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 		;
 
 		$template->addChild($childTag = new atoum\template\tag(uniqid()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(1)
 			->object($iterator->current())->isIdenticalTo($childTag)
 		;
@@ -64,7 +66,7 @@ class template extends atoum\test
 		$template->addChild($otherChildTag = new atoum\template\tag($childTag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(2)
 			->object($iterator->current())->isIdenticalTo($childTag)
 			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
@@ -73,11 +75,11 @@ class template extends atoum\test
 		$template->addChild($anotherChildTag = new atoum\template\tag(uniqid()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(2)
 			->object($iterator->current())->isIdenticalTo($childTag)
 			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(1)
 			->object($iterator->current())->isIdenticalTo($anotherChildTag)
 		;
@@ -85,12 +87,12 @@ class template extends atoum\test
 		$childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(3)
 			->object($iterator->current())->isIdenticalTo($childTag)
 			->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
 			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(1)
 			->object($iterator->current())->isIdenticalTo($anotherChildTag)
 		;
@@ -610,7 +612,7 @@ class template extends atoum\test
 						$template->addChild($templateWithSameId);
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Id \'' . $id . '\' is already defined')
 		;
 	}
@@ -655,16 +657,16 @@ class template extends atoum\test
 		$template = new atoum\template();
 
 		$this->assert
-			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 		;
 
 		$template->addChild($tag = new atoum\template\tag(uniqid()));
 
 		$this->assert
-			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
-			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(1)
 			->object($iterator->current())->isIdenticalTo($tag)
 		;
@@ -672,9 +674,9 @@ class template extends atoum\test
 		$template->addChild($otherTag = new atoum\template\tag($tag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
-			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(2)
 			->object($iterator->current())->isIdenticalTo($tag)
 			->object($iterator->next()->current())->isIdenticalTo($otherTag)
@@ -683,9 +685,9 @@ class template extends atoum\test
 		$tag->addChild($childTag = new atoum\template\tag($tag->getTag()));
 
 		$this->assert
-			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
-			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isEqualTo(3)
 			->object($iterator->current())->isIdenticalTo($tag)
 			->object($iterator->next()->current())->isIdenticalTo($childTag)

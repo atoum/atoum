@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\reports\asynchronous;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\report\fields
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\report\fields
 ;
 
 class xunit extends atoum\reports\asynchronous

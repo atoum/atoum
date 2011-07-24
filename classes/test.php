@@ -3,11 +3,11 @@
 namespace mageekguy\atoum;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\tests\functional\selenium
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tests\functional\selenium
 ;
 
 abstract class test implements observable, adapter\aggregator, \countable

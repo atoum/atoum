@@ -3,13 +3,13 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\coverage;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\score,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\runner\tests
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\score,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\tests
 ;
 
 require_once(__DIR__ . '/../../../../../../runner.php');
@@ -19,7 +19,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner')
 		;
 	}
 
@@ -118,16 +118,16 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$field = new tests\coverage\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
 		$scoreCoverage = new score\coverage();
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; };
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
 		$this->assert
@@ -144,18 +144,18 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\reflectionClass')
-			->generate('\reflectionMethod')
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('reflectionClass')
+			->generate('reflectionMethod')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
 		$scoreCoverage = new score\coverage();
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; };
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
 		$field = new tests\coverage\cli();
@@ -172,7 +172,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$classController->getName = function() use (& $className) { return $className; };
 		$classController->getFileName = function() use (& $classFile) { return $classFile; };
 
-		$class = new mock\reflectionClass(uniqid(), $classController);
+		$class = new \mock\reflectionClass(uniqid(), $classController);
 
 		$methodController = new mock\controller();
 		$methodController->__construct = function() {};
@@ -183,7 +183,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 		$methodController->getStartLine = 6;
 		$methodController->getEndLine = 8;
 
-		$classController->getMethods = array(new mock\reflectionMethod(uniqid(), uniqid(), $methodController));
+		$classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController));
 
 		$scoreCoverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
 

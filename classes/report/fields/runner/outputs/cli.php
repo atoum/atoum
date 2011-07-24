@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\report\fields\runner\outputs;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\runner\outputs
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\outputs
 ;
 
 class cli extends outputs

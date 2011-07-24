@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class error extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -67,7 +67,7 @@ class error extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 				->hasMessage($test->getLocale()->_('error does not exist'))
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -114,7 +114,7 @@ class error extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('error with message \'%s\' does not exist'), $message))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(

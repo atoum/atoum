@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\exceptions
 ;
 
 class testedClass extends phpClass

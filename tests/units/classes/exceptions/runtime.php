@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\exceptions;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\exceptions;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -15,8 +17,8 @@ class runtime extends atoum\test
 
 		$this->assert
 			->object($runtimeExcepion)
-				->isInstanceOf('\runtimeException')
-				->isInstanceOf('\mageekguy\atoum\exception')
+				->isInstanceOf('runtimeException')
+				->isInstanceOf('mageekguy\atoum\exception')
 		;
 	}
 }

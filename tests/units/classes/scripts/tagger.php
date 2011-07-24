@@ -3,9 +3,8 @@
 namespace mageekguy\atoum\tests\units\scripts;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\scripts
+	mageekguy\atoum,
+	mageekguy\atoum\scripts
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +14,7 @@ class tagger extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\script')
+			->testedClass->isSubclassOf('mageekguy\atoum\script')
 		;
 	}
 
@@ -24,7 +23,7 @@ class tagger extends atoum\test
 		$tagger = new scripts\tagger(uniqid());
 
 		$this->assert
-			->object($tagger->getEngine())->isInstanceOf('\mageekguy\atoum\scripts\tagger\engine')
+			->object($tagger->getEngine())->isInstanceOf('mageekguy\atoum\scripts\tagger\engine')
 			->object($tagger->getEngine()->getAdapter())->isIdenticalTo($tagger->getAdapter())
 		;
 	}
@@ -41,15 +40,15 @@ class tagger extends atoum\test
 
 	public function testRun()
 	{
-		$this
-			->mock('\mageekguy\atoum\scripts\tagger')
-			->mock('\mageekguy\atoum\scripts\tagger\engine')
+		$this->mock
+			->generate('mageekguy\atoum\scripts\tagger')
+			->generate('mageekguy\atoum\scripts\tagger\engine')
 		;
 
-		$tagger = new mock\mageekguy\atoum\scripts\tagger(uniqid());
+		$tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid());
 
 		$tagger
-			->setEngine($engine = new mock\mageekguy\atoum\scripts\tagger\engine())
+			->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine())
 			->getMockController()->writeMessage = $tagger
 		;
 

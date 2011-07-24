@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\php\tokenizer;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\php\tokenizer
+	mageekguy\atoum,
+	mageekguy\atoum\php\tokenizer
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -15,8 +15,8 @@ class iterator extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->hasInterface('\Iterator')
-				->hasInterface('\Countable')
+				->hasInterface('Iterator')
+				->hasInterface('Countable')
 		;
 	}
 
@@ -702,7 +702,7 @@ class iterator extends atoum\test
 					$iterator->append($innerIterator);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to append value because it has already a parent')
 		;
 

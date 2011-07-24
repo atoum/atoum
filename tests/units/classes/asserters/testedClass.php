@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class testedClass extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\phpClass')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\phpClass')
 		;
 	}
 
@@ -28,7 +28,7 @@ class testedClass extends atoum\test
 					$asserter->setWith(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\badMethodCall')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\badMethodCall')
 				->hasMessage('Unable to call method ' . get_class($asserter) . '::setWith()')
 		;
 	}

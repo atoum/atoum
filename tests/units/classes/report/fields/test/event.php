@@ -2,10 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\test;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
-abstract class event extends \mageekguy\atoum\tests\units\report\fields\test
-{
-}
+abstract class event extends \mageekguy\atoum\tests\units\report\fields\test {}
 
 ?>

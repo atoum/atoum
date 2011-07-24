@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\scripts\phar;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\scripts,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\scripts,
+	mageekguy\atoum\exceptions
 ;
 
 class stub extends scripts\runner

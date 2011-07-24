@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -16,7 +16,7 @@ class boolean extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\variable')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 
@@ -42,7 +42,7 @@ class boolean extends atoum\test
 					$asserter->isTrue();
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Value is undefined')
 		;
 
@@ -65,7 +65,7 @@ class boolean extends atoum\test
 						$asserter->isTrue();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setReference(true)->setData(false))
 		;
 	}
@@ -79,7 +79,7 @@ class boolean extends atoum\test
 					$asserter->isFalse();
 				}
 			)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Value is undefined')
 		;
 
@@ -102,7 +102,7 @@ class boolean extends atoum\test
 						$asserter->isFalse();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setReference(false)->setData(true))
 		;
 	}
@@ -113,7 +113,7 @@ class boolean extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a boolean'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;

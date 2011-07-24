@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum;
 
-use \mageekguy\atoum\exceptions;
+use
+	mageekguy\atoum\exceptions
+;
 
 class adapter implements adapter\definition
 {

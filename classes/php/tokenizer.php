@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\php;
 
 use
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\php\tokenizer,
-	\mageekguy\atoum\php\tokenizer\iterators
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\php\tokenizer,
+	mageekguy\atoum\php\tokenizer\iterators
 ;
 
 class tokenizer implements \iteratorAggregate

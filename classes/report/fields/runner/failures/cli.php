@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\report\fields\runner\failures;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\runner
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner
 ;
 
 class cli extends runner\failures

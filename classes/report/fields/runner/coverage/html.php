@@ -5,13 +5,13 @@ namespace mageekguy\atoum\report\fields\runner\coverage;
 require_once(__DIR__ . '/../../../../../constants.php');
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\template,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\report,
+	mageekguy\atoum\template,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer
 ;
 
 class html extends report\fields\runner\coverage\cli

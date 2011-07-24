@@ -2,10 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\report\fields\test;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
-abstract class duration extends \mageekguy\atoum\tests\units\report\fields\test
-{
-}
+abstract class duration extends \mageekguy\atoum\tests\units\report\fields\test {}
 
 ?>

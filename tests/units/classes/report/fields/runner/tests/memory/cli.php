@@ -3,14 +3,13 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\tests\memory;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\runner,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock,
-	\mageekguy\atoum\report\fields\runner\tests\memory
+	mageekguy\atoum,
+	mageekguy\atoum\runner,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\tests\units,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\tests\memory
 ;
 
 require_once(__DIR__ . '/../../../../../../runner.php');
@@ -20,7 +19,7 @@ class cli extends units\report\fields\runner\tests\memory
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\fields\runner')
+			->class($this->getTestedClassName())->isSubClassOf('mageekguy\atoum\report\fields\runner')
 		;
 	}
 
@@ -75,14 +74,14 @@ class cli extends units\report\fields\runner\tests\memory
 		$field = new memory\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); };
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = function () use ($score) { return $score; };
 		$runnerController->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); };
@@ -105,14 +104,14 @@ class cli extends units\report\fields\runner\tests\memory
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); };
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getTestNumber = $testNumber = rand(1, PHP_INT_MAX);
 		$runnerController->getScore = $score;

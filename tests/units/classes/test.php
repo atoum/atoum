@@ -13,8 +13,10 @@ namespace mageekguy\atoum\mock\mageekguy\atoum
 
 namespace mageekguy\atoum\tests\units
 {
-	use \mageekguy\atoum;
-	use \mageekguy\atoum\mock;
+	use
+		mageekguy\atoum,
+		mageekguy\atoum\mock
+	;
 
 	require_once(__DIR__ . '/../runner.php');
 
@@ -35,7 +37,7 @@ namespace mageekguy\atoum\tests\units
 		public function testClass()
 		{
 			$this->assert
-				->testedClass->hasInterface('\mageekguy\atoum\adapter\aggregator')
+				->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator')
 			;
 		}
 
@@ -64,10 +66,10 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
-				->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-				->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+				->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($test->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -82,7 +84,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isIdenticalTo($score)
 				->object($test->getLocale())->isIdenticalTo($locale)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -90,10 +92,10 @@ namespace mageekguy\atoum\tests\units
 			$test = new self();
 
 			$this->assert
-				->object($test->getScore())->isInstanceOf('\mageekguy\atoum\score')
-				->object($test->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-				->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+				->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($test->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -104,7 +106,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getScore())->isIdenticalTo($score)
 				->object($test->getLocale())->isIdenticalTo($locale)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -120,9 +122,9 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->assert)->isInstanceOf('\mageekguy\atoum\asserter\generator')
-				->object($test->define)->isInstanceOf('\mageekguy\atoum\asserter\generator')
-				->object($test->mock)->isInstanceOf('\mageekguy\atoum\mock\generator')
+				->object($test->assert)->isInstanceOf('mageekguy\atoum\asserter\generator')
+				->object($test->define)->isInstanceOf('mageekguy\atoum\asserter\generator')
+				->object($test->mock)->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
 
 			$test->setMockGenerator($mockGenerator = new mock\generator());
@@ -142,7 +144,7 @@ namespace mageekguy\atoum\tests\units
 						$test->{$property = uniqid()};
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($test) . '\'')
 			;
 		}
@@ -162,7 +164,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getMockGenerator())->isInstanceOf('\mageekguy\atoum\mock\generator')
+				->object($test->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
 
 			$test->setMockGenerator($mockGenerator = new mock\generator());
@@ -187,7 +189,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getAsserterGenerator())->isInstanceOf('\mageekguy\atoum\asserter\generator')
+				->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\asserter\generator')
 			;
 
 			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale()));
@@ -246,8 +248,8 @@ namespace mageekguy\atoum\tests\units
 							$test->setTestsSubNamespace('');
 						}
 					)
-					->isInstanceOf('\invalidArgumentException')
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('invalidArgumentException')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Tests sub-namespace must not be empty')
 			;
 		}
@@ -257,7 +259,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 			;
 		}
 
@@ -342,7 +344,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getHtml('http://www.google.fr'))->isInstanceOf('\mageekguy\atoum\tests\functional\selenium\html');
+				->object($test->getHtml('http://www.google.fr'))->isInstanceOf('mageekguy\atoum\tests\functional\selenium\html');
 		}
 
 		public function testCount()
@@ -423,7 +425,7 @@ namespace mageekguy\atoum\tests\units
 						$test->getPhpPath();
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 			;
 
 			$test->setPhpPath($phpPath = uniqid());
@@ -459,8 +461,9 @@ namespace mageekguy\atoum\tests\units
 
 		public function testGetTestedClassName()
 		{
-			$mockGenerator = new mock\generator();
-			$mockGenerator->generate('\mageekguy\atoum\test', '\mageekguy\atoum\mock\mageekguy\atoum\tests\units');
+			$this->mock
+				->generate('mageekguy\atoum\test', 'mageekguy\atoum\mock\mageekguy\atoum\tests\units')
+			;
 
 			$test = new mock\mageekguy\atoum\tests\units\test();
 

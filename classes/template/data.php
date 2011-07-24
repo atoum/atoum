@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\template;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 class data
 {

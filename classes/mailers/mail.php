@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\mailers;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class mail extends atoum\mailer

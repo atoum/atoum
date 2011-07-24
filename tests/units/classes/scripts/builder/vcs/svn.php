@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\scripts\builder\vcs
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\scripts\builder\vcs
 ;
 
 require_once(__DIR__ . '/../../../../runner.php');
@@ -26,7 +26,7 @@ class svn extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\adapter\aggregator')
+			->testedClass->isSubclassOf('mageekguy\atoum\adapter\aggregator')
 		;
 	}
 
@@ -35,7 +35,7 @@ class svn extends atoum\test
 		$svn = new vcs\svn();
 
 		$this->assert
-			->object($svn->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($svn->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 			->variable($svn->getRepositoryUrl())->isNull()
 		;
 
@@ -130,8 +130,8 @@ class svn extends atoum\test
 		$svn->setWorkingDirectory(__DIR__);
 
 		$this->assert
-			->object($recursiveIteratorIterator = $svn->getWorkingDirectoryIterator())->isInstanceOf('\recursiveIteratorIterator')
-			->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('\recursiveDirectoryIterator')
+			->object($recursiveIteratorIterator = $svn->getWorkingDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
+			->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
 			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
@@ -150,7 +150,7 @@ class svn extends atoum\test
 						$svn->getNextRevisions();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to get logs, repository url is undefined')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
@@ -206,12 +206,14 @@ class svn extends atoum\test
 
 	public function testSetExportDirectory()
 	{
-		$this->mock('\mageekguy\atoum\scripts\builder\vcs\svn');
+		$this->mock
+			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
-		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
 
 		$this->assert
 			->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
@@ -223,12 +225,14 @@ class svn extends atoum\test
 
 	public function testExportRepository()
 	{
-		$this->mock('\mageekguy\atoum\scripts\builder\vcs\svn');
+		$this->mock
+			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
+		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
-		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
 
 		$svn->getMockController()->cleanWorkingDirectory = $svn;
 
@@ -237,7 +241,7 @@ class svn extends atoum\test
 						$svn->exportRepository(uniqid());
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to export repository, repository url is undefined')
 			->adapter($adapter)
 				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
@@ -260,7 +264,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
@@ -283,7 +287,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
@@ -306,7 +310,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
@@ -341,12 +345,12 @@ class svn extends atoum\test
 		$adapter->unlink = function() {};
 		$adapter->rmdir = function() {};
 
-		$this
-			->mock('\mageekguy\atoum\scripts\builder\vcs\svn')
-			->mock('\splFileInfo')
+		$this->mock
+			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
+			->generate('splFileInfo')
 		;
 
-		$svn = new mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
+		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
 
 		$svn->setWorkingDirectory($workingDirectory = __DIR__);
 
@@ -355,42 +359,42 @@ class svn extends atoum\test
 		$inode11Controller->getPathname = $inode11Path = uniqid();
 		$inode11Controller->isDir = false;
 
-		$inode11 = new mock\splFileInfo($inode11Path, $inode11Controller);
+		$inode11 = new \mock\splFileInfo($inode11Path, $inode11Controller);
 
 		$inode12Controller = new mock\controller();
 		$inode12Controller->__construct = function() {};
 		$inode12Controller->getPathname = $inode12Path = uniqid();
 		$inode12Controller->isDir = false;
 
-		$inode12 = new mock\splFileInfo($inode12Path, $inode12Controller);
+		$inode12 = new \mock\splFileInfo($inode12Path, $inode12Controller);
 
 		$inode1Controller = new mock\controller();
 		$inode1Controller->__construct = function() {};
 		$inode1Controller->getPathname = $inode1Path = uniqid();
 		$inode1Controller->isDir = true;
 
-		$inode1 = new mock\splFileInfo($inode1Path, $inode1Controller);
+		$inode1 = new \mock\splFileInfo($inode1Path, $inode1Controller);
 
 		$inode2Controller = new mock\controller();
 		$inode2Controller->__construct = function() {};
 		$inode2Controller->getPathname = $inode2Path = uniqid();
 		$inode2Controller->isDir = false;
 
-		$inode2 = new mock\splFileInfo($inode2Path, $inode2Controller);
+		$inode2 = new \mock\splFileInfo($inode2Path, $inode2Controller);
 
 		$inode3Controller = new mock\controller();
 		$inode3Controller->__construct = function() {};
 		$inode3Controller->getPathname = $inode3Path = uniqid();
 		$inode3Controller->isDir = true;
 
-		$inode3 = new mock\splFileInfo($inode3Path, $inode3Controller);
+		$inode3 = new \mock\splFileInfo($inode3Path, $inode3Controller);
 
 		$inodeController = new mock\controller();
 		$inodeController->__construct = function() {};
 		$inodeController->getPathname = $workingDirectory = uniqid();
 		$inodeController->isDir = true;
 
-		$inode = new mock\splFileInfo($workingDirectory, $inodeController);
+		$inode = new \mock\splFileInfo($workingDirectory, $inodeController);
 
 		$svnController->getWorkingDirectoryIterator = array(
 				$inode11,

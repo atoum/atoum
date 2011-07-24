@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\asserters;
 
-use \mageekguy\atoum\exceptions;
+use
+	mageekguy\atoum\exceptions
+;
 
 class string extends variable
 {

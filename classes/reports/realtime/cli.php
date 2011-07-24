@@ -3,12 +3,12 @@
 namespace mageekguy\atoum\reports\realtime;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\reports\realtime,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\report\fields\runner
+	mageekguy\atoum,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\reports\realtime,
+	mageekguy\atoum\report\fields\test,
+	mageekguy\atoum\report\fields\runner
 ;
 
 class cli extends realtime

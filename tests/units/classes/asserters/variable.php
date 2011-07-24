@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -16,7 +16,7 @@ class variable extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -42,7 +42,7 @@ class variable extends atoum\test
 						$asserter->{$property = uniqid()};
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
 			->variable($asserter->getValue())->isNull()
 		;
@@ -136,7 +136,7 @@ class variable extends atoum\test
 						$asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -154,7 +154,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setReference($notEqualValue)->setData($asserter->getValue()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -187,7 +187,7 @@ class variable extends atoum\test
 					$otherLine = __LINE__; $asserter->isEqualTo($otherNotEqualValue = uniqid(), $otherFailMessage = uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($otherNotEqualValue)->setData($asserter->getValue()))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -225,7 +225,7 @@ class variable extends atoum\test
 						$asserter->isNotEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -241,7 +241,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, $value) { $asserter->isNotEqualTo($value); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is equal to %s'), $asserter, $asserter->getTypeOf($value)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -249,7 +249,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, $value, & $failMessage) { $asserter->isNotEqualTo($value, $failMessage = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($failMessage)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -266,7 +266,7 @@ class variable extends atoum\test
 						$asserter->isIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -282,7 +282,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isIdenticalTo($notIdenticalValue = (string) $value); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -290,7 +290,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, $notIdenticalValue, & $failMessage) { $asserter->isIdenticalTo($notIdenticalValue, $failMessage = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($failMessage)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -307,7 +307,7 @@ class variable extends atoum\test
 						$asserter->isNotIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -323,7 +323,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isNotIdenticalTo($value); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is identical to %s'), $asserter, $asserter->getTypeOf($value)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -340,7 +340,7 @@ class variable extends atoum\test
 						$asserter->isNull(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -361,7 +361,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -371,7 +371,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -381,7 +381,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(3)
@@ -391,7 +391,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNull(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(4)
@@ -408,7 +408,7 @@ class variable extends atoum\test
 						$asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Value is undefined')
 		;
 
@@ -429,7 +429,7 @@ class variable extends atoum\test
 
 		$this->assert
 			->exception(function() use ($asserter) { $asserter->isNotNull(); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is null'), $asserter))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -448,7 +448,7 @@ class variable extends atoum\test
 						$asserter->isReferenceTo($value);
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Value is undefined')
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
@@ -463,7 +463,7 @@ class variable extends atoum\test
 						$asserter->isReferenceTo($value);
 					}
 				)
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Value is not set by reference')
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
@@ -488,7 +488,7 @@ class variable extends atoum\test
 						$asserter->isReferenceTo($notReference);
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->getTypeOf($notReference)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -514,7 +514,7 @@ class variable extends atoum\test
 						$asserter->isReferenceTo($notReference);
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->getTypeOf($notReference)))
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)

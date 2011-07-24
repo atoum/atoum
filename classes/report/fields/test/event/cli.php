@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\report\fields\test\event;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\report,
+	mageekguy\atoum\exceptions
 ;
 
 class cli extends report\fields\test\event

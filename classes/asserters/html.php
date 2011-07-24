@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\tools\diffs,
-	\mageekguy\atoum\tests\functional\selenium
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\tests\functional\selenium
 ;
 
 class html extends atoum\asserter
@@ -18,12 +18,12 @@ class html extends atoum\asserter
 	{
 		return $this->getTypeOf($this->value);
 	}
-	
+
 	public function toString()
 	{
 		return $this->generator->castToString($this->valueIsSet()->value);
 	}
-	
+
 	public function setWith($value)
 	{
 		$this->value = $value;
@@ -40,12 +40,12 @@ class html extends atoum\asserter
 
 		return $this;
 	}
-	
+
 	public function wasSet()
 	{
 		return ($this->isSet === true);
 	}
-	
+
 	public function reset()
 	{
 		$this->value = null;
@@ -59,7 +59,7 @@ class html extends atoum\asserter
 	{
 		return $this->value;
 	}
-	
+
 	protected function valueIsSet($message = 'Value is undefined')
 	{
 		if ($this->isSet === false)
@@ -89,7 +89,7 @@ class html extends atoum\asserter
 
 		return $this;
 	}
-	
+
 	protected static function check($value, $method)
 	{
 		if (self::isHtml($value) === false)

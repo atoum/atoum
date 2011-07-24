@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\report\fields\test;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\report;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\report
+;
 
 abstract class run extends report\fields\test
 {

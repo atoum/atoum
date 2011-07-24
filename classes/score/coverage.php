@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\score;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\score,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\score,
+	mageekguy\atoum\exceptions
 ;
 
 class coverage implements \countable

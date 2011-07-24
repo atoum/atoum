@@ -3,12 +3,12 @@
 namespace mageekguy\atoum\reports\asynchronous;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\report\fields\runner
+	mageekguy\atoum,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\report\fields\test,
+	mageekguy\atoum\report\fields\runner
 ;
 
 class builder extends atoum\reports\asynchronous

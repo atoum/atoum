@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\diffs
 ;
 
 class phpArray extends asserters\variable

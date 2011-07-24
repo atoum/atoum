@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\tools\diffs
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\diffs
 ;
 
 class variable extends atoum\asserter

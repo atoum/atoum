@@ -2,9 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\script\arguments;
 
-use mageekguy\atoum;
-use mageekguy\atoum\mock;
-use mageekguy\atoum\script;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\script
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -15,8 +16,8 @@ class parser extends atoum\test
 		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($parser)->isInstanceOf('\iteratorAggregate')
-			->object($parser->getSuperGlobals())->isInstanceOf('\mageekguy\atoum\superglobals')
+			->object($parser)->isInstanceOf('iteratorAggregate')
+			->object($parser->getSuperGlobals())->isInstanceOf('mageekguy\atoum\superglobals')
 			->array($parser->getValues())->isEmpty()
 			->array($parser->getHandlers())->isEmpty()
 		;
@@ -32,11 +33,12 @@ class parser extends atoum\test
 	{
 		$parser = new script\arguments\parser();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->generate('\mageekguy\atoum\script');
+		$this->mock
+			->generate('mageekguy\atoum\script')
+		;
 
 		$this->assert
-			->object($parser->setScript($script = new mock\mageekguy\atoum\script(uniqid())))->isIdenticalTo($parser)
+			->object($parser->setScript($script = new \mock\mageekguy\atoum\script(uniqid())))->isIdenticalTo($parser)
 			->object($parser->getScript())->isIdenticalTo($script)
 		;
 	}
@@ -105,21 +107,21 @@ class parser extends atoum\test
 		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
+			->object($parser->getIterator())->isInstanceOf('arrayIterator')
 			->isEmpty()
 		;
 
 		$parser->parse(array());
 
 		$this->assert
-			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
+			->object($parser->getIterator())->isInstanceOf('arrayIterator')
 			->isEmpty()
 		;
 
 		$parser->parse(array('-a', 'a1', 'a2', '-b'));
 
 		$this->assert
-			->object($parser->getIterator())->isInstanceOf('\arrayIterator')
+			->object($parser->getIterator())->isInstanceOf('arrayIterator')
 			->isEqualTo(new \arrayIterator($parser->getValues()))
 		;
 	}
@@ -212,7 +214,7 @@ class parser extends atoum\test
 					$parser->parse(array('b'));
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 				->hasMessage('First argument is invalid')
 			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array()))
@@ -299,25 +301,25 @@ class parser extends atoum\test
 						$parser->addHandler(function() {}, $argument = array('-b'));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Handler must take three arguments')
 			->exception(function() use ($parser, & $argument) {
 						$parser->addHandler(function($script) {}, array('-b'));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Handler must take three arguments')
 			->exception(function() use ($parser, & $argument) {
 						$parser->addHandler(function($script, $argument) {}, array('-b'));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Handler must take three arguments')
 			->exception(function() use ($parser, & $argument) {
 						$parser->addHandler(function($script, $argument, $values) {}, array($argument = 'b'));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Argument \'' . $argument . '\' is invalid')
 		;
 	}

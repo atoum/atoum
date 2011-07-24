@@ -3,13 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\php\path;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\tests\units,
+	mageekguy\atoum\report\fields\runner
 ;
 
 require_once(__DIR__ . '/../../../../../../runner.php');
@@ -19,7 +18,7 @@ class cli extends units\report\fields\runner
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner\php\path')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner\php\path')
 		;
 	}
 
@@ -88,15 +87,15 @@ class cli extends units\report\fields\runner
 		$field = new runner\php\path\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getPhpPath = $phpPath = uniqid();
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 
@@ -109,15 +108,15 @@ class cli extends units\report\fields\runner
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getPhpPath = $phpPath = uniqid();
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 

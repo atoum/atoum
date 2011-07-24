@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -22,7 +22,7 @@ class afterDestructionOf extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -45,7 +45,7 @@ class afterDestructionOf extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, $value) { $line = __LINE__; $asserter->setWith($value); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -68,7 +68,7 @@ class afterDestructionOf extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->setWith($objectWithDestructor = new atoum\mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
+			->object($asserter->setWith($objectWithDestructor = new \mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
 			->mock($objectWithDestructor)
 				->call('__destruct')
 			->integer($score->getPassNumber())->isEqualTo(1)
@@ -78,7 +78,7 @@ class afterDestructionOf extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $otherLine, $asserter, $objectWithoutDestructor) { $otherLine = __LINE__; $asserter->setWith($objectWithoutDestructor); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Destructor of class %s is undefined'), get_class($objectWithoutDestructor)))
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(

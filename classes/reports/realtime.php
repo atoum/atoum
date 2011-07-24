@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\reports;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	mageekguy\atoum,
+	mageekguy\atoum\report
 ;
 
 abstract class realtime extends atoum\report

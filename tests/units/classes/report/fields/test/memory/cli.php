@@ -3,13 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\test\memory;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\test,
+	mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -19,7 +18,7 @@ class cli extends units\report\fields\test\memory
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubClassOf('\mageekguy\atoum\report\fields\test')
+			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test')
 		;
 	}
 
@@ -91,11 +90,11 @@ class cli extends units\report\fields\test\memory
 		$field = new test\memory\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\test')
-			->generate('\mageekguy\atoum\score')
+			->generate('mageekguy\atoum\test')
+			->generate('mageekguy\atoum\score')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = $totalMemoryUsage = rand(0, PHP_INT_MAX);
 
 		$adapter = new atoum\test\adapter();
@@ -104,7 +103,7 @@ class cli extends units\report\fields\test\memory
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$test->getMockController()->getScore = $score;
 
 		$this->assert
@@ -121,11 +120,11 @@ class cli extends units\report\fields\test\memory
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\test')
-			->generate('\mageekguy\atoum\score')
+			->generate('mageekguy\atoum\test')
+			->generate('mageekguy\atoum\score')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalMemoryUsage = $totalMemoryUsage = rand(0, PHP_INT_MAX);
 
 		$adapter = new atoum\test\adapter();
@@ -134,7 +133,7 @@ class cli extends units\report\fields\test\memory
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$test->getMockController()->getScore = $score;
 
 		$field = new test\memory\cli();

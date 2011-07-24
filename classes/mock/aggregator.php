@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\mock;
 
-use \mageekguy\atoum\mock;
+use
+	mageekguy\atoum\mock
+;
 
 interface aggregator
 {

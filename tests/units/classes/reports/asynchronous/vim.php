@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\reports\asynchronous
+	mageekguy\atoum,
+	mageekguy\atoum\reports\asynchronous
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -14,7 +14,7 @@ class vim extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\reports\asynchronous')
+			->testedClass->isSubclassOf('mageekguy\atoum\reports\asynchronous')
 		;
 	}
 

@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\report\fields\runner\tests;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report
+	mageekguy\atoum,
+	mageekguy\atoum\report
 ;
 
 abstract class duration extends report\fields\runner

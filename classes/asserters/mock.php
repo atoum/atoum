@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserters,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\exceptions
 ;
 
 class mock extends atoum\asserter

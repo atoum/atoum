@@ -3,14 +3,14 @@
 namespace mageekguy\atoum\tests\units\report\fields\test\duration;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\test\adapter,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\test\adapter,
+	mageekguy\atoum\report\fields\test,
+	mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -20,7 +20,7 @@ class cli extends units\report\fields\test\duration
 	public function testClass()
 	{
 		$this->assert
-			->class('\mageekguy\atoum\report\fields\test\duration\cli')->isSubClassOf('\mageekguy\atoum\report\fields\test')
+			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test')
 		;
 	}
 
@@ -82,21 +82,21 @@ class cli extends units\report\fields\test\duration
 		$field = new test\duration\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\test')
-			->generate('\mageekguy\atoum\score')
+			->generate('mageekguy\atoum\test')
+			->generate('mageekguy\atoum\score')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 		$score->getMockController()->getTotalDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); };
 
 		$adapter = new adapter();
 		$adapter->class_exists = true;
 
-		$testController = new atoum\mock\controller();
+		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 		$testController->getScore = $score;
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->variable($field->getValue())->isNull()
@@ -125,17 +125,17 @@ class cli extends units\report\fields\test\duration
 		$adapter->class_exists = true;
 
 		$this->mock
-			->generate('\mageekguy\atoum\test')
-			->generate('\mageekguy\atoum\score')
+			->generate('mageekguy\atoum\test')
+			->generate('mageekguy\atoum\score')
 		;
 
-		$score = new mock\score();
+		$score = new \mock\mageekguy\atoum\score();
 
-		$testController = new atoum\mock\controller();
+		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 		$testController->getScore = $score;
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$field = new test\duration\cli();
 

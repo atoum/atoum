@@ -3,10 +3,10 @@
 namespace mageekguy\atoum\scripts;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\scripts\phar,
-	\mageekguy\atoum\scripts\builder
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\scripts\phar,
+	mageekguy\atoum\scripts\builder
 ;
 
 class builder extends atoum\script

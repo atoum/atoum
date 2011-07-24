@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class phpClass extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserter')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -49,17 +49,19 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
+		$this->mock
+			->shunt('reflectionClass', '__construct')
+			->generate('reflectionClass')
+		;
 
 		$this->assert
-			->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
+			->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
 			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
 			->exception(function() use ($asserter) {
 					$asserter->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 	}
@@ -69,14 +71,16 @@ class phpClass extends atoum\test
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$this->assert
-			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 			->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
 		;
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
+		$this->mock
+			->shunt('reflectionClass', '__construct')
+			->generate('reflectionClass')
+		;
 
-		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new atoum\mock\reflectionClass($class)); });
+		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); });
 
 		$this->assert
 			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
@@ -90,7 +94,7 @@ class phpClass extends atoum\test
 						$asserter->getReflectionClass(uniqid());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
@@ -99,12 +103,14 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$this->mock
+			->generate('reflectionClass')
+		;
+
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() { throw new \reflectionException();};
 
-		$asserter->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); });
+		$asserter->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); });
 
 		$class = uniqid();
 
@@ -113,7 +119,7 @@ class phpClass extends atoum\test
 					$asserter->setWith($class);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a class'), $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
@@ -138,22 +144,23 @@ class phpClass extends atoum\test
 						$asserter->hasParent(uniqid());
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 		;
 
 		$class = uniqid();
 		$parent = uniqid();
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$this->mock
+			->generate('reflectionClass')
+		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 			->getScore()->reset()
 		;
@@ -162,14 +169,14 @@ class phpClass extends atoum\test
 		$parentMockController->__construct = function() {};
 		$parentMockController->getName = function() { return uniqid(); };
 
-		$mockController->getParentClass = function() use ($parent, $parentMockController) { return new atoum\mock\reflectionClass($parent, $parentMockController); };
+		$mockController->getParentClass = function() use ($parent, $parentMockController) { return new \mock\reflectionClass($parent, $parentMockController); };
 
 		$this->assert
 			->exception(function() use ($asserter, $parent) {
 					$asserter->hasParent($parent);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not the parent of class %s'), $parent, $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
@@ -193,14 +200,16 @@ class phpClass extends atoum\test
 						$asserter->hasNoParent();
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 		;
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
+		$this->mock
+			->shunt('reflectionClass', '__construct')
+			->generate('reflectionClass')
+		;
 
-		$reflectionClass = new atoum\mock\reflectionClass($className = uniqid());
+		$reflectionClass = new \mock\reflectionClass($className = uniqid());
 
 		$asserter
 			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
@@ -218,7 +227,7 @@ class phpClass extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
 
-		$parentClass = new atoum\mock\reflectionClass($parentClassName = uniqid());
+		$parentClass = new \mock\reflectionClass($parentClassName = uniqid());
 		$parentClass->getMockController()->__toString = function() use ($parentClassName) { return $parentClassName; };
 
 		$reflectionClass->getMockController()->getParentClass = function() use ($parentClass) { return $parentClass; };
@@ -228,7 +237,7 @@ class phpClass extends atoum\test
 					$asserter->hasNoParent();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('class %s has parent %s'), $className, $parentClass))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
@@ -244,22 +253,23 @@ class phpClass extends atoum\test
 						$asserter->hasInterface(uniqid());
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 		;
 
 		$class = uniqid();
 		$interface = uniqid();
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$this->mock
+			->generate('reflectionClass')
+		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 				->getScore()->reset()
 		;
@@ -271,7 +281,7 @@ class phpClass extends atoum\test
 					$asserter->hasInterface($interface);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Class %s does not implement interface %s'), $class, $interface))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
@@ -295,21 +305,22 @@ class phpClass extends atoum\test
 						$asserter->isAbstract();
 					}
 				)
-					->isInstanceOf('\logicException')
+					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
 		;
 
 		$class = uniqid();
 
-		$mockGenerator = new atoum\mock\generator();
-		$mockGenerator->generate('\reflectionClass');
+		$this->mock
+			->generate('reflectionClass')
+		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
 
 		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new atoum\mock\reflectionClass($class, $mockController); })
+			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
 			->setWith($class)
 				->getScore()->reset()
 		;
@@ -321,7 +332,7 @@ class phpClass extends atoum\test
 					$asserter->isAbstract();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Class %s is not abstract'), $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()

@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\test;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class adapter extends atoum\adapter

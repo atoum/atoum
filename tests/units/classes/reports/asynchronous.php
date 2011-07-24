@@ -3,8 +3,7 @@
 namespace mageekguy\atoum\tests\units\reports;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -13,16 +12,16 @@ class asynchronous extends atoum\test
 {
 	public function testRunnerStop()
 	{
-		$this
-			->mock('\mageekguy\atoum\reports\asynchronous')
-			->mock('\mageekguy\atoum\report\writers\asynchronous')
-			->mock('\mageekguy\atoum\locale')
+		$this->mock
+			->generate('mageekguy\atoum\reports\asynchronous')
+			->generate('mageekguy\atoum\report\writers\asynchronous')
+			->generate('mageekguy\atoum\locale')
 		;
 
-		$writer = new mock\report\writers\asynchronous();
+		$writer = new \mock\mageekguy\atoum\report\writers\asynchronous();
 		$writer->getMockController()->writeAsynchronousReport = function() {};
 
-		$report = new mock\reports\asynchronous($locale = new mock\locale(), $adapter = new atoum\test\adapter());
+		$report = new \mock\mageekguy\atoum\reports\asynchronous($locale = new \mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
 		$report->addWriter($writer);
 
 		$runner = new atoum\runner();

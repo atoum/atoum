@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\php\tokenizer;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\php\tokenizer
+	mageekguy\atoum,
+	mageekguy\atoum\php\tokenizer
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -14,7 +14,7 @@ class token extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\php\tokenizer\iterator\value')
+			->testedClass->isSubclassOf('mageekguy\atoum\php\tokenizer\iterator\value')
 		;
 	}
 
@@ -145,7 +145,7 @@ class token extends atoum\test
 						$token->setParent(new tokenizer\iterator());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Parent is already set')
 			;
 		;
@@ -160,7 +160,7 @@ class token extends atoum\test
 						$token->append(new tokenizer\token(uniqid(), uniqid(), rand(1, PHP_INT_MAX)));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage($this->getTestedClassName() . '::append() is unavailable')
 		;
 	}

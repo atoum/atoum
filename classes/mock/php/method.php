@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\mock\php;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class method

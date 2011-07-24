@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class adapter extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\asserter')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\asserter')
 		;
 	}
 
@@ -37,7 +37,7 @@ class adapter extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not a test adapter'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -73,7 +73,7 @@ class adapter extends atoum\test
 	public function testReset()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\test\adapter')
+			->generate('mageekguy\atoum\test\adapter')
 		;
 
 		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
@@ -84,7 +84,7 @@ class adapter extends atoum\test
 			->variable($asserter->getAdapter())->isNull()
 		;
 
-		$asserter->setWith($adapter = new atoum\mock\mageekguy\atoum\test\adapter());
+		$asserter->setWith($adapter = new \mock\mageekguy\atoum\test\adapter());
 
 		$this->assert
 			->object($asserter->getAdapter())->isIdenticalTo($adapter)
@@ -105,7 +105,7 @@ class adapter extends atoum\test
 						$asserter->call(uniqid());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->integer($score->getPassNumber())->isZero()
 		;
@@ -124,7 +124,7 @@ class adapter extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->call($function); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('function %s was not called'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -158,7 +158,7 @@ class adapter extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->call($function, array(uniqid())); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('function %s was not called with this argument'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -175,7 +175,7 @@ class adapter extends atoum\test
 				)
 			)
 			->exception(function() use (& $otherLine, $asserter, $function) { $otherLine = __LINE__; $asserter->call($function, array(uniqid(), uniqid())); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('function %s was not called with these arguments'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -221,7 +221,7 @@ class adapter extends atoum\test
 						$asserter->notCall(uniqid());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->integer($score->getPassNumber())->isZero()
 		;
@@ -242,7 +242,7 @@ class adapter extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter, $function) { $line = __LINE__; $asserter->notCall($function); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('function %s was called'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -282,7 +282,7 @@ class adapter extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, $function, $argument) { $line = __LINE__; $asserter->notCall($function, array($argument)); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('function %s was called with this argument'), $function))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)

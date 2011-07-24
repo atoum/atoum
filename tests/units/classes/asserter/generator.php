@@ -21,6 +21,24 @@ class generator extends atoum\test
 		;
 	}
 
+	public function test__call()
+	{
+		$generator = new asserter\generator($this, $locale = new atoum\locale());
+
+		$this->assert
+			->exception(function() use ($generator, & $asserter) {
+					$generator->{$asserter = uniqid()}();
+				}
+			)
+			->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+			->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
+		;
+
+		$this->assert
+			->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
+		;
+	}
+
 	public function testSetTest()
 	{
 		$generator = new asserter\generator($this);
@@ -52,24 +70,6 @@ class generator extends atoum\test
 			->array($generator->getAliases())->isNotEmpty()
 			->object($generator->resetAliases())->isIdenticalTo($generator)
 			->array($generator->getAliases())->isEmpty()
-		;
-	}
-
-	public function test__call()
-	{
-		$generator = new asserter\generator($this, $locale = new atoum\locale());
-
-		$this->assert
-			->exception(function() use ($generator, & $asserter) {
-					$generator->{$asserter = uniqid()}();
-				}
-			)
-			->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
-			->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
-		;
-
-		$this->assert
-			->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
 		;
 	}
 }

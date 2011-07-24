@@ -3,13 +3,13 @@
 namespace mageekguy\atoum\mock;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class generator implements atoum\adapter\aggregator
 {
-	const defaultNamespace = __NAMESPACE__;
+	const defaultNamespace = 'mock';
 
 	protected $adapter = null;
 	protected $shuntedMethods = array();

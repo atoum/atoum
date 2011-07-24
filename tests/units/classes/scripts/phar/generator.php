@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\scripts\phar;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\scripts\phar
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\scripts\phar
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -32,7 +32,7 @@ class generator extends atoum\test
 					$generator = new phar\generator($name, null, $adapter);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 
@@ -43,14 +43,14 @@ class generator extends atoum\test
 		$generator = new phar\generator($name, null, $adapter);
 
 		$this->assert
-			->object($generator->getLocale())->isInstanceOf('\mageekguy\atoum\locale')
-			->object($generator->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
-			->object($generator->getOutputWriter())->isInstanceOf('\mageekguy\atoum\writer')
-			->object($generator->getErrorWriter())->isInstanceOf('\mageekguy\atoum\writer')
+			->object($generator->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+			->object($generator->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			->object($generator->getOutputWriter())->isInstanceOf('mageekguy\atoum\writer')
+			->object($generator->getErrorWriter())->isInstanceOf('mageekguy\atoum\writer')
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->object($generator->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
+			->object($generator->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
 		;
 
 		$name = uniqid();
@@ -64,7 +64,7 @@ class generator extends atoum\test
 			->string($generator->getName())->isEqualTo($name)
 			->variable($generator->getOriginDirectory())->isNull()
 			->variable($generator->getDestinationDirectory())->isNull()
-			->object($generator->getArgumentsParser())->isInstanceOf('\mageekguy\atoum\script\arguments\parser')
+			->object($generator->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
 		;
 	}
 
@@ -82,7 +82,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory('');
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Empty origin directory is invalid')
 		;
 
@@ -95,7 +95,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($directory);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Path \'' . $directory . '\' of origin directory is invalid')
 		;
 
@@ -120,7 +120,7 @@ class generator extends atoum\test
 					$generator->setOriginDirectory($generator->getDestinationDirectory());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must be different from destination directory')
 		;
 
@@ -148,7 +148,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory('');
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Empty destination directory is invalid')
 		;
 
@@ -161,7 +161,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($directory);
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Path \'' . $directory . '\' of destination directory is invalid')
 		;
 
@@ -193,7 +193,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory($generator->getOriginDirectory());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory must be different from origin directory')
 		;
 
@@ -206,7 +206,7 @@ class generator extends atoum\test
 					$generator->setDestinationDirectory(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must not include destination directory')
 		;
 	}
@@ -225,7 +225,7 @@ class generator extends atoum\test
 					$generator->setStubFile('');
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file is invalid')
 		;
 
@@ -236,7 +236,7 @@ class generator extends atoum\test
 					$generator->setStubFile(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file is not a valid file')
 		;
 
@@ -263,7 +263,7 @@ class generator extends atoum\test
 					$generator->setPharInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Phar injector must take one argument')
 		;
 
@@ -273,15 +273,17 @@ class generator extends atoum\test
 			->__construct = function() {}
 		;
 
-		$this->mock->generate('\Phar');
+		$this->mock
+			->generate('phar')
+		;
 
 		$pharName = uniqid();
 
-		$phar = new mock\phar($pharName);
+		$phar = new \mock\phar($pharName);
 
 		$this->assert
 			->exception(function() use ($generator, $pharName) { $generator->getPhar($pharName); })
-				->isInstanceOf('\unexpectedValueException')
+				->isInstanceOf('unexpectedValueException')
 			->object($generator->setPharInjector(function($name) use ($phar) { return $phar; }))->isIdenticalTo($generator)
 			->object($generator->getPhar(uniqid()))->isIdenticalTo($phar)
 		;
@@ -302,7 +304,7 @@ class generator extends atoum\test
 					$generator->setSrcIteratorInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Source iterator injector must take one argument')
 		;
 
@@ -314,13 +316,15 @@ class generator extends atoum\test
 			->__construct = function() {}
 		;
 
-		$this->mock->generate('\recursiveDirectoryIterator');
+		$this->mock
+			->generate('recursiveDirectoryIterator')
+		;
 
-		$iterator = new mock\recursiveDirectoryIterator($directory);
+		$iterator = new \mock\recursiveDirectoryIterator($directory);
 
 		$this->assert
 			->exception(function() use ($generator, $directory) { $generator->getSrcIterator($directory); })
-				->isInstanceOf('\unexpectedValueException')
+				->isInstanceOf('unexpectedValueException')
 				->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
 			->object($generator->setSrcIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($generator)
 			->object($generator->getSrcIterator(uniqid()))->isIdenticalTo($iterator)
@@ -356,10 +360,10 @@ class generator extends atoum\test
 		$generator = new phar\generator(uniqid());
 
 		$this->mock
-			->generate('\mageekguy\atoum\writers\std\out')
+			->generate('mageekguy\atoum\writers\std\out')
 		;
 
-		$stdout = new mock\mageekguy\atoum\writers\std\out();
+		$stdout = new \mock\mageekguy\atoum\writers\std\out();
 		$stdout->getMockController()->write = function() {};
 
 		$generator->setOutputWriter($stdout);
@@ -376,10 +380,10 @@ class generator extends atoum\test
 		$generator = new phar\generator(uniqid());
 
 		$this->mock
-			->generate('\mageekguy\atoum\writers\std\err')
+			->generate('mageekguy\atoum\writers\std\err')
 		;
 
-		$stderr = new mock\mageekguy\atoum\writers\std\err();
+		$stderr = new \mock\mageekguy\atoum\writers\std\err();
 		$stderr->getMockController()->write = function() {};
 
 		$generator->setErrorWriter($stderr);
@@ -408,7 +412,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory must be defined')
 		;
 
@@ -419,7 +423,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory must be defined')
 		;
 
@@ -430,7 +434,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file must be defined')
 		;
 
@@ -443,7 +447,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
 		;
 
@@ -456,7 +460,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
 		;
 
@@ -467,7 +471,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
 		;
 
@@ -480,11 +484,11 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Phar injector must return a \phar instance')
 		;
 
-		$this->mock->generate('\phar');
+		$this->mock->generate('phar');
 
 		$generator->setPharInjector(function($name) use (& $phar) {
 				$pharController = new mock\controller();
@@ -496,7 +500,7 @@ class generator extends atoum\test
 				$pharController->offsetGet = function() {};
 				$pharController->injectInNextMockInstance();
 
-				return ($phar = new mock\phar($name));
+				return ($phar = new \mock\phar($name));
 			}
 		);
 
@@ -507,18 +511,18 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Source iterator injector must return a \recursiveDirectoryIterator instance')
 		;
 
-		$this->mock->generate('\recursiveDirectoryIterator');
+		$this->mock->generate('recursiveDirectoryIterator');
 
 		$generator->setSrcIteratorInjector(function($directory) use (& $srcIterator) {
 				$srcIteratorController = new mock\controller();
 				$srcIteratorController->injectInNextMockInstance();
 				$srcIteratorController->__construct = function() {};
 				$srcIteratorController->injectInNextMockInstance();
-				return ($srcIterator = new mock\recursiveDirectoryIterator($directory));
+				return ($srcIterator = new \mock\recursiveDirectoryIterator($directory));
 			}
 		);
 
@@ -527,7 +531,7 @@ class generator extends atoum\test
 				$configurationsIteratorController->injectInNextMockInstance();
 				$configurationsIteratorController->__construct = function() {};
 				$configurationsIteratorController->injectInNextMockInstance();
-				return ($configurationsIterator = new mock\recursiveDirectoryIterator($directory));
+				return ($configurationsIterator = new \mock\recursiveDirectoryIterator($directory));
 			}
 		);
 
@@ -538,7 +542,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 
@@ -560,7 +564,7 @@ class generator extends atoum\test
 					$generator->run();
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
 		;
 
@@ -624,17 +628,17 @@ class generator extends atoum\test
 		$generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals));
 
 		$this->mock
-			->generate('\mageekguy\atoum\writers\std\out')
-			->generate('\mageekguy\atoum\writers\std\err')
+			->generate('mageekguy\atoum\writers\std\out')
+			->generate('mageekguy\atoum\writers\std\err')
 		;
 
-		$stdout = new mock\mageekguy\atoum\writers\std\out();
+		$stdout = new \mock\mageekguy\atoum\writers\std\out();
 		$stdout
 			->getMockController()
 			->write = function() {}
 		;
 
-		$stderr = new mock\mageekguy\atoum\writers\std\err();
+		$stderr = new \mock\mageekguy\atoum\writers\std\err();
 		$stderr
 			->getMockController()
 			->write = function() {}
@@ -665,7 +669,7 @@ class generator extends atoum\test
 				$pharController->offsetGet = function() {};
 				$pharController->injectInNextMockInstance();
 
-				return ($phar = new mock\phar($name));
+				return ($phar = new \mock\phar($name));
 			}
 		);
 

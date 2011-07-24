@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\cli;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\cli
+	mageekguy\atoum,
+	mageekguy\atoum\cli
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -17,7 +17,7 @@ class prompt extends atoum\test
 
 		$this->assert
 			->string($prompt->getValue())->isEmpty()
-			->object($prompt->getColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->object($prompt->getColorizer())->isInstanceOf('mageekguy\atoum\cli\colorizer')
 			->variable($prompt->getColorizer()->getForeground())->isNull()
 			->variable($prompt->getColorizer()->getBackground())->isNull()
 		;
@@ -26,7 +26,7 @@ class prompt extends atoum\test
 
 		$this->assert
 			->string($prompt->getValue())->isEqualTo($value)
-			->object($prompt->getColorizer())->isInstanceOf('\mageekguy\atoum\cli\colorizer')
+			->object($prompt->getColorizer())->isInstanceOf('mageekguy\atoum\cli\colorizer')
 			->variable($prompt->getColorizer()->getForeground())->isNull()
 			->variable($prompt->getColorizer()->getBackground())->isNull()
 		;

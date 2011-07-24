@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\writers;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report,
-	\mageekguy\atoum\reports
+	mageekguy\atoum,
+	mageekguy\atoum\report,
+	mageekguy\atoum\reports
 ;
 
 class mail extends atoum\writer implements report\writers\asynchronous

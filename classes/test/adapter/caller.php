@@ -3,7 +3,7 @@
 namespace mageekguy\atoum\test\adapter;
 
 use
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions
 ;
 
 class caller implements \arrayAccess

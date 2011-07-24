@@ -5,8 +5,8 @@ namespace mageekguy\atoum\scripts;
 require_once(__DIR__ . '/../../constants.php');
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 class runner extends atoum\script

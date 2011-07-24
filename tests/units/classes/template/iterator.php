@@ -3,9 +3,8 @@
 namespace mageekguy\atoum\tests\units\template;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\template
+	mageekguy\atoum,
+	mageekguy\atoum\template
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -16,8 +15,8 @@ class iterator extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->hasInterface('\Countable')
-				->hasInterface('\Iterator')
+				->hasInterface('Countable')
+				->hasInterface('Iterator')
 		;
 	}
 
@@ -26,7 +25,7 @@ class iterator extends atoum\test
 		$iterator = new template\iterator();
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
 		;
 
@@ -38,20 +37,20 @@ class iterator extends atoum\test
 		$tag->addChild($childTag = new template\tag($tag->getTag()));
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
-			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
 		;
 
 		$childTag->addChild($littleChildTag = new template\tag(uniqid()));
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
-			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
-			->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('\mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
 		;
 	}
@@ -110,10 +109,12 @@ class iterator extends atoum\test
 	{
 		$iterator = new template\iterator();
 
-		$this->mock('\mageekguy\atoum\template\tag');
+		$this->mock
+			->generate('mageekguy\atoum\template\tag')
+		;
 
 		$template = new atoum\template();
-		$template->addChild($tag = new mock\mageekguy\atoum\template\tag(uniqid()));
+		$template->addChild($tag = new \mock\mageekguy\atoum\template\tag(uniqid()));
 		$tag->getMockController()->build = function() {};
 
 		$iterator->addTag($tag->getTag(), $template);

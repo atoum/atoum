@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\tests\units\asserters\template\parser;
 
-use \mageekguy\atoum\asserters;
+use
+	mageekguy\atoum\asserters
+;
 
 class exception extends asserters\exception
 {

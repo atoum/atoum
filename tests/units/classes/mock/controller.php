@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\mock;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock
+	mageekguy\atoum,
+	mageekguy\atoum\mock
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -62,22 +62,22 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 		;
 
 		$mockController->{$method = uniqid()} = $function = function() {};
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 			->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
 		;
 
 		$mockController->{$otherMethod = uniqid()} = $return = uniqid();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 			->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
-			->object($mockController->{$otherMethod}->getClosure())->isInstanceOf('\closure')
+			->object($mockController->{$otherMethod}->getClosure())->isInstanceOf('closure')
 			->string($mockController->{$otherMethod}->invoke())->isEqualTo($return)
 		;
 	}
@@ -87,7 +87,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 		;
 
 		$mockController->{$method = uniqid()} = function() {};
@@ -99,7 +99,7 @@ class controller extends atoum\test
 		unset($mockController->{$method});
 
 		$this->assert
-			->object($mockController->{$method})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 		;
 
 		$mockController->{$otherMethod = uniqid()} = uniqid();
@@ -111,7 +111,7 @@ class controller extends atoum\test
 		unset($mockController->{$otherMethod});
 
 		$this->assert
-			->object($mockController->{$method})->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 		;
 	}
 
@@ -119,17 +119,19 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
+		$this->mock
+			->shunt('reflectionClass', '__construct')
+			->generate('reflectionClass')
+		;
 
 		$this->assert
-			->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
+			->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
 			->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
 			->exception(function() use ($mockController) {
 					$mockController->setReflectionClassInjector(function() {});
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Reflection class injector must take one argument')
 		;
 	}
@@ -139,14 +141,16 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('\reflectionClass')
+			->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 			->string($mockController->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
 		;
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('\reflectionClass', '__construct')->generate('\reflectionClass');
+		$this->mock
+			->shunt('reflectionClass', '__construct')
+			->generate('reflectionClass')
+		;
 
-		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new mock\reflectionClass($class)); });
+		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); });
 
 		$this->assert
 			->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
@@ -160,7 +164,7 @@ class controller extends atoum\test
 						$mockController->getReflectionClass(uniqid());
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
@@ -169,16 +173,15 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\reflectionMethod')
-			->generate('\reflectionClass')
+		$this->mock
+			->generate('reflectionMethod')
+			->generate('reflectionClass')
 		;
 
 		$mockAggregatorController = new mock\controller();
 		$mockAggregatorController->__construct = function() {};
 		$mockAggregatorController->getName = function() { return 'mageekguy\atoum\mock\aggregator'; };
-		$mockAggregator = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $mockAggregatorController);
+		$mockAggregator = new \mock\reflectionClass(uniqid(), $mockAggregatorController);
 
 		$methods = array(
 			\reflectionMethod::IS_PUBLIC => array(),
@@ -192,7 +195,7 @@ class controller extends atoum\test
 		$setMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
 		$setMockController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('setMockController');
+		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('setMockController');
 
 		$getMockController = new mock\controller();
 		$getMockController->__construct = function() {};
@@ -200,7 +203,7 @@ class controller extends atoum\test
 		$getMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
 		$getMockController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('getMockController');
+		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('getMockController');
 
 		$resetMockController = new mock\controller();
 		$resetMockController->__construct = function() {};
@@ -208,7 +211,7 @@ class controller extends atoum\test
 		$resetMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
 		$resetMockController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('resetMockController');
+		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('resetMockController');
 
 		$protectedMethodController = new mock\controller();
 		$protectedMethodController->__construct = function() {};
@@ -216,7 +219,7 @@ class controller extends atoum\test
 		$protectedMethodController->getPrototype = function() { throw new \exception(); };
 		$protectedMethodController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PROTECTED][] = new \mageekguy\atoum\mock\reflectionMethod('protectedMethod');
+		$methods[\reflectionMethod::IS_PROTECTED][] = new \mock\reflectionMethod('protectedMethod');
 
 		$privateMethodController = new mock\controller();
 		$privateMethodController->__construct = function() {};
@@ -224,7 +227,7 @@ class controller extends atoum\test
 		$privateMethodController->getPrototype = function() { throw new \exception(); };
 		$privateMethodController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PRIVATE][] = new \mageekguy\atoum\mock\reflectionMethod('privateMethod');
+		$methods[\reflectionMethod::IS_PRIVATE][] = new \mock\reflectionMethod('privateMethod');
 
 		$aMethodController = new mock\controller();
 		$aMethodController->__construct = function() {};
@@ -232,7 +235,7 @@ class controller extends atoum\test
 		$aMethodController->getPrototype = function() { throw new \exception(); };
 		$aMethodController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('a');
+		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('a');
 
 		$bMethodController = new mock\controller();
 		$bMethodController->__construct = function() {};
@@ -240,20 +243,20 @@ class controller extends atoum\test
 		$bMethodController->getPrototype = function() { throw new \exception(); };
 		$bMethodController->injectInNextMockInstance();
 
-		$methods[\reflectionMethod::IS_PUBLIC][] = new \mageekguy\atoum\mock\reflectionMethod('b');
+		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('b');
 
 		$reflectionClassInjectorController = new mock\controller();
 		$reflectionClassInjectorController->__construct = function() {};
 		$reflectionClassInjectorController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
 
-		$reflectionClassInjector = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $reflectionClassInjectorController);
+		$reflectionClassInjector = new \mock\reflectionClass(uniqid(), $reflectionClassInjectorController);
 
 		$mockController->setReflectionClassInjector(function ($class) use ($reflectionClassInjector) { return $reflectionClassInjector; });
 
 		$aMockController = new mock\controller();
 		$aMockController->__construct = function() {};
 
-		$aMock = new \mageekguy\atoum\mock\reflectionClass(uniqid(), $aMockController);
+		$aMock = new \mock\reflectionClass(uniqid(), $aMockController);
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
@@ -268,8 +271,6 @@ class controller extends atoum\test
 			)
 			->array($mockController->getCalls())->isEmpty()
 		;
-
-		$mockController = new mock\controller();
 	}
 
 	public function testInvoke()
@@ -283,7 +284,7 @@ class controller extends atoum\test
 					$mockController->invoke($method, array());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Method ' . $method . '() is not under control')
 		;
 
@@ -439,15 +440,14 @@ class controller extends atoum\test
 			->array($mockController->getCalls())->isEmpty()
 		;
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
+		$this->mock
 			->generate(__CLASS__)
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$mock = new mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter);
+		$mock = new \mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter);
 		$mockController->control($mock);
 
 		$mockController->{__FUNCTION__} = function() {};

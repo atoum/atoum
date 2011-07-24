@@ -3,14 +3,13 @@
 namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report,
-	mageekguy\atoum\asserter\exception,
-	\mageekguy\atoum\reports\asynchronous as reports
+	mageekguy\atoum,
+	mageekguy\atoum\report,
+	ageekguy\atoum\asserter\exception,
+	mageekguy\atoum\reports\asynchronous as reports
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once(__DIR__ . '/../../../runner.php');
 
 class xunit extends atoum\test
 {
@@ -36,7 +35,7 @@ class xunit extends atoum\test
 			->array($rep->getTestFields(atoum\test::beforeTearDown))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::afterTearDown))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::runStop))->isEqualTo(array())
-			->object($rep->getAdapter())->isInstanceOf('\mageekguy\atoum\adapter')
+			->object($rep->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 
 		$adapter = new atoum\test\adapter();
@@ -73,7 +72,7 @@ class xunit extends atoum\test
 							$rep = new reports\xunit($adapter);
 						}
 					)
-			->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+			->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 			->hasMessage('libxml PHP extension is mandatory for xunit report')
 			;
 	}

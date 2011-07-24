@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	\mageekguy\atoum\reporter,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\reporter,
+	mageekguy\atoum\exceptions
 ;
 
 class error extends \mageekguy\atoum\asserter

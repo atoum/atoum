@@ -3,9 +3,8 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock,
-	\mageekguy\atoum\report\fields\runner
+	mageekguy\atoum,
+	mageekguy\atoum\report\fields\runner
 ;
 
 require_once(__DIR__ . '/../../../../runner.php');
@@ -17,7 +16,7 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 		$xunit = new runner\xunit();
 
 		$this->assert
-			->object($xunit)->isInstanceOf('\mageekguy\atoum\report\fields\runner');
+			->object($xunit)->isInstanceOf('mageekguy\atoum\report\fields\runner');
 		;
 	}
 
@@ -25,15 +24,14 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 	{
 		$xunit = new runner\xunit();
 
-		$mockGenerator = new mock\generator();
-		$mockGenerator
-			->generate('\mageekguy\atoum\score')
-			->generate('\mageekguy\atoum\runner')
+		$this->mock
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$score = new mock\mageekguy\atoum\score();
+		$score = new \mock\mageekguy\atoum\score();
 
-		$runner = new mock\mageekguy\atoum\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getScore = function () use ($score) { return $score; };
 
 		$this->assert

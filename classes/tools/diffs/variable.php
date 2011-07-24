@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tools\diffs;
 
 use
-	\mageekguy\atoum\tools,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\tools,
+	mageekguy\atoum\exceptions
 ;
 
 class variable extends tools\diff

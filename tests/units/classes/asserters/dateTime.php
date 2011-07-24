@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\asserters;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter,
-	\mageekguy\atoum\asserters
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters
 ;
 
 require_once(__DIR__ . '/../../runner.php');
@@ -15,7 +15,7 @@ class dateTime extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('\mageekguy\atoum\asserters\object')
+			->testedClass->isSubclassOf('mageekguy\atoum\asserters\object')
 		;
 	}
 
@@ -38,7 +38,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not an instance of \\dateTime'), $asserter->getTypeOf($value)))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -82,7 +82,7 @@ class dateTime extends atoum\test
 						$asserter->hasSize(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
 		;
 
@@ -92,7 +92,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, & $requiredTimezone, $asserter) { $line = __LINE__; $asserter->hasTimezone($requiredTimezone = new \DateTimezone('Europe/London')); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Timezone is %s instead of %s'), $timezone->getName(), $requiredTimezone->getName()))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -129,7 +129,7 @@ class dateTime extends atoum\test
 						$asserter->isInYear(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
 		;
 
@@ -139,7 +139,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInYear(2011); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Year is %s instead of %s'), 2011, 1976))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -161,7 +161,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInYear(76); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Year is %s instead of %s'), 76, 1976))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -195,7 +195,7 @@ class dateTime extends atoum\test
 						$asserter->isInMonth(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
 		;
 
@@ -205,7 +205,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInMonth(1); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Month is %s instead of %s'), 1, 10))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -255,7 +255,7 @@ class dateTime extends atoum\test
 						$asserter->isInDay(rand(0, PHP_INT_MAX));
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
 		;
 
@@ -265,7 +265,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInDay(1); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Day is %s instead of %s'), 1, 6))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -305,7 +305,7 @@ class dateTime extends atoum\test
 						$asserter->hasDate(1976, 10, 6);
 					}
 				)
-					->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
 		;
 
@@ -315,7 +315,7 @@ class dateTime extends atoum\test
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDate(1980, 8, 14); })
-				->isInstanceOf('\mageekguy\atoum\asserter\exception')
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('Date is %s instead of %s'), '1980-08-14', '1976-10-06'))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(

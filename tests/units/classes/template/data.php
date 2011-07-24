@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units\template;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\template
+	mageekguy\atoum,
+	mageekguy\atoum\template
 ;
 
 require_once(__DIR__ . '/../../runner.php');

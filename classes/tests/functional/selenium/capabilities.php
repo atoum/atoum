@@ -5,24 +5,24 @@ namespace mageekguy\atoum\tests\functional\selenium;
 class capabilities
 {
 	protected $browserName;
-	
+
 	protected $platform;
-	
+
 	protected $version;
-	
+
 	protected $javascriptEnabled;
-	
+
 	protected $takingScreenshot;
-	
+
 	protected $handlingAlerts;
-	
+
 	protected $nativeEvents;
-	
+
 	public function __toString()
 	{
 		$string = '{desiredCapabilities:{';
 		$startingLength = strlen($string);
-		
+
 		if (isset($this->browserName))
 		{
 			$string .= 'browserName: \'' . $this->browserName . '\'';
@@ -57,77 +57,77 @@ class capabilities
 			$string .= (strlen($string) > $startingLength) ? ', ' : '';
 			$string .= 'nativeEvents: ' . ($this->nativeEvents ? 'true' : 'false');
 		}
-		
+
 		$string .= '}}';
-		
-		return $string; 
+
+		return $string;
 	}
-	
+
 	public function getBrowserName()
 	{
 		return $this->browserName;
 	}
-	
+
 	public function setBrowserName($browserName)
 	{
 		$this->browserName = $browserName;
 	}
-	
+
 	public function getPlatform()
 	{
 		return $this->platform;
 	}
-	
+
 	public function setPlatform($platform)
 	{
 		$this->platform = $platform;
 	}
-	
+
 	public function getVersion()
 	{
 		return $this->version;
 	}
-	
+
 	public function setVersion($version)
 	{
 		$this->version = $version;
 	}
-	
+
 	public function isJavascriptEnabled()
 	{
 		return $this->javascriptEnabled;
 	}
-	
+
 	public function setJavascriptEnabled($javascriptEnabled)
 	{
 		$this->javascriptEnabled = (bool)$javascriptEnabled;
 	}
-	
+
 	public function isTakingScreenshot()
 	{
 		return $this->takingScreenshot;
 	}
-	
+
 	public function setTakingScreenshot($isTakingScreenshot)
 	{
 		$this->takingScreenshot = (bool)$isTakingScreenshot;
 	}
-	
+
 	public function isHandlingAlerts()
 	{
 		return $this->handlingAlerts;
 	}
-	
+
 	public function setHandlingAlerts($isHandlingAlerts)
 	{
 		$this->handlingAlerts = (bool)$isHandlingAlerts;
 	}
-	
+
 	public function hasNativeEvents()
 	{
 		return $this->nativeEvents;
 	}
-	
+
 	public function setNativeEvents($hasNativeEvents)
 	{
 		$this->nativeEvents = (bool)$hasNativeEvents;

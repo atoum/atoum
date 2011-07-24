@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\test\event;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\report\fields\test,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum,
+	mageekguy\atoum\mock,
+	mageekguy\atoum\report\fields\test
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -15,7 +15,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubClassOf('\mageekguy\atoum\report\fields\test')
+			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test')
 		;
 	}
 
@@ -33,38 +33,38 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$event = new test\event\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\test')
+			->generate('mageekguy\atoum\test')
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new atoum\mock\controller();
+		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 		$this->assert
 			->variable($event->getTest())->isNull()
 			->exception(function() use ($event) { $event->getProgressBar(); })
-				->isInstanceOf('\logicException')
+				->isInstanceOf('logicException')
 				->hasMessage('Unable to get progress bar because test is undefined')
-			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('\mageekguy\atoum\cli\progressBar')
+			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('mageekguy\atoum\cli\progressBar')
 		;
 	}
 
 	public function testSetWithTest()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\test')
+			->generate('mageekguy\atoum\test')
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new atoum\mock\controller();
+		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$event = new test\event\cli();
 
@@ -103,16 +103,16 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$event = new test\event\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\test')
+			->generate('mageekguy\atoum\test')
 		;
 
 		$adapter = new atoum\test\adapter();
 		$adapter->class_exists = true;
 
-		$testController = new atoum\mock\controller();
+		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$this->assert
 			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
@@ -124,7 +124,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 						$event->setProgressBarInjector(function() {});
 					}
 				)
-				->isInstanceOf('\invalidArgumentException')
+				->isInstanceOf('invalidArgumentException')
 				->hasMessage('Progress bar injector must take one argument')
 		;
 	}
@@ -132,7 +132,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\test')
+			->generate('mageekguy\atoum\test')
 		;
 
 		$event = new test\event\cli();
@@ -143,7 +143,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new mock\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
 
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };

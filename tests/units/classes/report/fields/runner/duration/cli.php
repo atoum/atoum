@@ -3,13 +3,12 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\duration;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields\runner\duration,
-	\mageekguy\atoum\tests\units
+	mageekguy\atoum,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\duration,
+	mageekguy\atoum\tests\units
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -19,7 +18,7 @@ class cli extends units\report\fields\runner
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\fields\runner')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner')
 		;
 	}
 
@@ -91,10 +90,10 @@ class cli extends units\report\fields\runner
 		$field = new duration\cli();
 
 		$this->mock
-			->generate('\mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\runner')
 		;
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getRunningDuration = $runningDuration = rand(0, PHP_INT_MAX);
 
 		$this->assert
@@ -111,25 +110,25 @@ class cli extends units\report\fields\runner
 	public function test__toString()
 	{
 		$this->mock
-			->generate('\mageekguy\atoum\runner')
-			->generate('\mageekguy\atoum\locale')
-			->generate('\mageekguy\atoum\cli\prompt')
-			->generate('\mageekguy\atoum\cli\colorizer')
+			->generate('mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\locale')
+			->generate('mageekguy\atoum\cli\prompt')
+			->generate('mageekguy\atoum\cli\colorizer')
 		;
 
-		$runner = new mock\runner();
+		$runner = new \mock\mageekguy\atoum\runner();
 		$runner->getMockController()->getRunningDuration = 1;
 
-		$prompt = new mock\cli\prompt();
+		$prompt = new \mock\mageekguy\atoum\cli\prompt();
 		$prompt->getMockController()->__toString = $promptString = uniqid();
 
-		$titleColorizer = new mock\cli\colorizer();
+		$titleColorizer = new \mock\mageekguy\atoum\cli\colorizer();
 		$titleColorizer->getMockController()->colorize = $colorizedTitle = uniqid();
 
-		$durationColorizer = new mock\cli\colorizer();
+		$durationColorizer = new \mock\mageekguy\atoum\cli\colorizer();
 		$durationColorizer->getMockController()->colorize = $colorizedDuration = uniqid();
 
-		$locale = new mock\locale();
+		$locale = new \mock\mageekguy\atoum\locale();
 		$locale->getMockController()->_ = function($string) {
 			return $string;
 		};

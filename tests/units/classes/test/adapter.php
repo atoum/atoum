@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\tests\units\test;
 
-use mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 require_once(__DIR__ . '/../../runner.php');
 
@@ -33,7 +35,7 @@ class adapter extends atoum\test
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('\mageekguy\atoum\test\adapter\caller')
+			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\caller')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 		;
 	}
@@ -52,7 +54,7 @@ class adapter extends atoum\test
 
 		$this->assert
 			->boolean(isset($adapter->md5))->isTrue()
-			->object($adapter->md5->getClosure())->isInstanceOf('\closure')
+			->object($adapter->md5->getClosure())->isInstanceOf('closure')
 		;
 	}
 
@@ -137,7 +139,7 @@ class adapter extends atoum\test
 						$adapter->require(uniqid());
 					}
 				)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Function \'require()\' is not callable by an adapter')
 		;
 

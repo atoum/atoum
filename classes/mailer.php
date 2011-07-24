@@ -3,8 +3,8 @@
 namespace mageekguy\atoum;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 abstract class mailer implements atoum\adapter\aggregator

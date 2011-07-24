@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\writers\std;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\writers\std;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\writers\std
+;
 
 require_once(__DIR__ . '/../../../runner.php');
 
@@ -12,11 +14,11 @@ class err extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->class('\mageekguy\atoum\writers\std\err')
-				->isSubClassOf('\mageekguy\atoum\writers\std')
-				->hasInterface('\mageekguy\atoum\adapter\aggregator')
-				->hasInterface('\mageekguy\atoum\report\writers\realtime')
-				->hasInterface('\mageekguy\atoum\report\writers\asynchronous')
+			->testedClass
+				->isSubClassOf('mageekguy\atoum\writers\std')
+				->hasInterface('mageekguy\atoum\adapter\aggregator')
+				->hasInterface('mageekguy\atoum\report\writers\realtime')
+				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
 		;
 	}
 

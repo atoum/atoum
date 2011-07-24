@@ -2,7 +2,9 @@
 
 namespace mageekguy\atoum\src\iterator;
 
-use \mageekguy\atoum;
+use
+	mageekguy\atoum
+;
 
 class filter extends \recursiveFilterIterator
 {

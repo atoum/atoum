@@ -3,8 +3,8 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\asserter
+	mageekguy\atoum,
+	mageekguy\atoum\asserter
 ;
 
 require_once(__DIR__ . '/../runner.php');
@@ -27,7 +27,7 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEmpty()
 			->array($score->getDurations())->isEmpty()
 			->array($score->getMemoryUsages())->isEmpty()
-			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
+			->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
 		;
 
 		$score = new atoum\score($coverage = new atoum\score\coverage());
@@ -632,7 +632,7 @@ class score extends atoum\test
 					$score->setAtoumPath(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Atoum path is already set')
 			->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->string($score->getAtoumPath())->isEqualTo((string) $path)
@@ -650,7 +650,7 @@ class score extends atoum\test
 					$score->setAtoumVersion(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Atoum version is already set')
 			->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->string($score->getAtoumVersion())->isEqualTo((string) $version)
@@ -668,7 +668,7 @@ class score extends atoum\test
 					$score->setPhpPath(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('PHP path is already set')
 			->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->string($score->getPhpPath())->isEqualTo((string) $path)
@@ -686,7 +686,7 @@ class score extends atoum\test
 					$score->setPhpVersion(uniqid());
 				}
 			)
-				->isInstanceOf('\mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('PHP version is already set')
 		;
 	}
@@ -929,7 +929,7 @@ class score extends atoum\test
 
 		$this->assert
 			->exception($exception)
-				->isInstanceOf('\mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Error key \'' . $key . '\' does not exist')
 		;
 
@@ -1010,7 +1010,7 @@ class score extends atoum\test
 		$score = new atoum\score();
 
 		$this->assert
-			->object($score->getCoverage())->isInstanceOf('\mageekguy\atoum\score\coverage')
+			->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
 		;
 	}
 

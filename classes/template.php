@@ -3,8 +3,8 @@
 namespace mageekguy\atoum;
 
 use
-	\mageekguy\atoum\template,
-	\mageekguy\atoum\exceptions
+	mageekguy\atoum\template,
+	mageekguy\atoum\exceptions
 ;
 
 class template extends template\data

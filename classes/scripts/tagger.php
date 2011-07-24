@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\scripts;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\exceptions,
-	\mageekguy\atoum\scripts\tagger
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\scripts\tagger
 ;
 
 class tagger extends atoum\script

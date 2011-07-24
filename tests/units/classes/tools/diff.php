@@ -2,8 +2,10 @@
 
 namespace mageekguy\atoum\tests\units\tools;
 
-use \mageekguy\atoum;
-use \mageekguy\atoum\tools;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\tools
+;
 
 require_once(__DIR__ . '/../../runner.php');
 

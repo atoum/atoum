@@ -3,14 +3,13 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
 use
-	\mageekguy\atoum\score,
-	\mageekguy\atoum\runner,
-	\mageekguy\atoum\locale,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\tests\units,
-	\mageekguy\atoum\report\fields\runner\atoum,
-	\mageekguy\atoum\mock\mageekguy\atoum as mock
+	mageekguy\atoum\score,
+	mageekguy\atoum\runner,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\tests\units,
+	mageekguy\atoum\report\fields\runner\atoum
 ;
 
 require_once(__DIR__ . '/../../../../../runner.php');
@@ -20,7 +19,7 @@ class cli extends units\report\fields\runner
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('\mageekguy\atoum\report\field')
+			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\field')
 		;
 	}
 

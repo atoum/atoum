@@ -3,11 +3,11 @@
 namespace mageekguy\atoum\tests\units\reports\realtime;
 
 use
-	\mageekguy\atoum,
-	\mageekguy\atoum\reports,
-	\mageekguy\atoum\cli\prompt,
-	\mageekguy\atoum\cli\colorizer,
-	\mageekguy\atoum\report\fields
+	mageekguy\atoum,
+	mageekguy\atoum\reports,
+	mageekguy\atoum\cli\prompt,
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
