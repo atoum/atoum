@@ -41,6 +41,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsSubNamespace = null;
 	private $mockGenerator = null;
 	private $workingFile = null;
+	private $phpProcess = null;
 
 	public static $runningTest = null;
 
@@ -109,6 +110,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		$this->runTestMethods = $this->getTestMethods();
+	}
+
+	public function __destruct()
+	{
 	}
 
 	public function __toString()
@@ -437,6 +442,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 						->callObservers(self::afterTearDown)
 					;
 				}
+
+				$this->closePhpProcess();
 			}
 			catch (\exception $exception)
 			{
@@ -567,14 +574,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$phpPath = $this->getPhpPath();
 
-		$descriptors = array
-			(
-				0 => array('pipe', 'r'),
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w')
-			);
-
-		$php = proc_open($phpPath, $descriptors, $pipes);
+		list($php, $pipes) = $this->getPhpProcess($phpPath);
 
 		if ($php !== false)
 		{
@@ -703,6 +703,48 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return $annotations;
+	}
+
+	private function getPhpProcess($phpPath)
+	{
+		if ($this->phpProcess === null)
+		{
+			$this->phpProcess = $this->createPhpProcess($phpPath);
+		}
+
+		$phpProcess = $this->phpProcess;
+
+		$this->phpProcess = $this->createPhpProcess($phpPath);
+
+		return $phpProcess;
+	}
+
+	private function createPhpProcess($phpPath)
+	{
+		$phpProcess = proc_open(
+			$phpPath,
+			array(
+				0 => array('pipe', 'r'),
+				1 => array('pipe', 'w'),
+				2 => array('pipe', 'w')
+			),
+			$pipes
+		);
+
+		return array($phpProcess, $pipes);
+	}
+
+	private function closePhpProcess()
+	{
+		if ($this->phpProcess !== null)
+		{
+			fclose($this->phpProcess[1][0]);
+			fclose($this->phpProcess[1][1]);
+			fclose($this->phpProcess[1][2]);
+			proc_close($this->phpProcess[0]);
+		}
+
+		return $this;
 	}
 }
 
