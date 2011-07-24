@@ -124,13 +124,13 @@ namespace mageekguy\atoum\tests\units
 			$this->assert
 				->object($test->assert)->isInstanceOf('mageekguy\atoum\asserter\generator')
 				->object($test->define)->isInstanceOf('mageekguy\atoum\asserter\generator')
-				->object($test->mock)->isInstanceOf('mageekguy\atoum\mock\generator')
+				->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
 
 			$test->setMockGenerator($mockGenerator = new mock\generator());
 
 			$this->assert
-				->object($test->mock)->isIdenticalTo($mockGenerator)
+				->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
 			;
 
 			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest()));
@@ -461,7 +461,7 @@ namespace mageekguy\atoum\tests\units
 
 		public function testGetTestedClassName()
 		{
-			$this->mock
+			$this->mockGenerator
 				->generate('mageekguy\atoum\test', 'mageekguy\atoum\mock\mageekguy\atoum\tests\units')
 			;
 

@@ -131,7 +131,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			case 'assert':
 				return $this->getAsserterGenerator()->resetAsserters();
 
-			case 'mock':
+			case 'mockGenerator':
 				return $this->getMockGenerator();
 
 			default:

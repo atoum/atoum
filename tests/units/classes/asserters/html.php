@@ -58,7 +58,9 @@ class html extends atoum\test
 
 	public function testHasTitle()
 	{
-		$this->mock('mageekguy\atoum\tests\functional\selenium\html');
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\functional\selenium\html')
+		;
 
 		$html = new \mock\mageekguy\atoum\tests\functional\selenium\html('http://www.atoum.org');
 		$html->getMockController()->getTitle = 'Atoum website title';

@@ -33,7 +33,7 @@ class parser extends atoum\test
 	{
 		$parser = new script\arguments\parser();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\script')
 		;
 

@@ -109,7 +109,7 @@ class iterator extends atoum\test
 	{
 		$iterator = new template\iterator();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\template\tag')
 		;
 

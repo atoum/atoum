@@ -211,7 +211,7 @@ class html extends atoum\test
 
 	public function testCleanDestinationDirectory()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report\fields\runner\coverage\html')
 			->generate('splFileInfo')
 		;
@@ -353,7 +353,7 @@ class html extends atoum\test
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
@@ -403,16 +403,16 @@ class html extends atoum\test
 			->castToString($field)->isEqualTo('Code coverage: unknown.' . PHP_EOL)
 		;
 
-		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\score\coverage')
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\template')
-			->mock('mageekguy\atoum\template\tag')
-			->mock('mageekguy\atoum\template\parser')
-			->mock('reflectionClass')
-			->mock('reflectionMethod')
-			->mock($this->getTestedClassName())
+		$this->mockGenerator
+			->generate('mageekguy\atoum\score')
+			->generate('mageekguy\atoum\score\coverage')
+			->generate('mageekguy\atoum\runner')
+			->generate('mageekguy\atoum\template')
+			->generate('mageekguy\atoum\template\tag')
+			->generate('mageekguy\atoum\template\parser')
+			->generate('reflectionClass')
+			->generate('reflectionMethod')
+			->generate($this->getTestedClassName())
 		;
 
 		$coverage = new \mock\mageekguy\atoum\score\coverage();

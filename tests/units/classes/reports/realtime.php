@@ -12,7 +12,7 @@ class realtime extends atoum\test
 {
 	public function testRunnerStart()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\reports\realtime')
 			->generate('mageekguy\atoum\locale')
 		;

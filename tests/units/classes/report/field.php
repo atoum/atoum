@@ -13,7 +13,7 @@ class field extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report\field')
 		;
 

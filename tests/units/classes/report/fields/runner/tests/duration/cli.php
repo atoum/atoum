@@ -61,7 +61,7 @@ class cli extends units\report\fields\runner\tests\duration
 	{
 		$field = new tests\duration\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;
@@ -91,7 +91,7 @@ class cli extends units\report\fields\runner\tests\duration
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;

@@ -35,7 +35,7 @@ class mock extends atoum\test
 
 	public function testReset()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\mock\controller')
 		;
@@ -67,7 +67,7 @@ class mock extends atoum\test
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 
@@ -101,7 +101,7 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 
@@ -181,7 +181,7 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 
@@ -237,7 +237,7 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 
@@ -344,7 +344,7 @@ class mock extends atoum\test
 
 	public function testNotCall($argForTest = null)
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 

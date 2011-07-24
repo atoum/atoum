@@ -102,7 +102,7 @@ class cli extends units\report\fields\runner
 	{
 		$field = new runner\failures\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\runner');
 		;
 
@@ -122,7 +122,7 @@ class cli extends units\report\fields\runner
 	{
 		$field = new runner\failures\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;

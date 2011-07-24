@@ -73,7 +73,7 @@ class cli extends units\report\fields\runner\tests\memory
 	{
 		$field = new memory\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;
@@ -103,7 +103,7 @@ class cli extends units\report\fields\runner\tests\memory
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;

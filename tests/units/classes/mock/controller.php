@@ -119,7 +119,7 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$this->mock
+		$this->mockGenerator
 			->shunt('reflectionClass', '__construct')
 			->generate('reflectionClass')
 		;
@@ -145,7 +145,7 @@ class controller extends atoum\test
 			->string($mockController->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->shunt('reflectionClass', '__construct')
 			->generate('reflectionClass')
 		;
@@ -173,7 +173,7 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -440,7 +440,7 @@ class controller extends atoum\test
 			->array($mockController->getCalls())->isEmpty()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate(__CLASS__)
 		;
 

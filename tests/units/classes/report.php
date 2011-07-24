@@ -22,7 +22,7 @@ class report extends atoum\test
 
 	public function test__construct()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 
@@ -97,7 +97,7 @@ class report extends atoum\test
 
 	public function testSetLocale()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 
@@ -111,7 +111,7 @@ class report extends atoum\test
 
 	public function testAddRunnerField()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 			->generate('mageekguy\atoum\report\fields\runner')
 		;
@@ -159,7 +159,7 @@ class report extends atoum\test
 
 	public function testAddTestField()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 			->generate('mageekguy\atoum\report\fields\test')
 		;
@@ -238,7 +238,7 @@ class report extends atoum\test
 
 	public function testRunnerStart()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 			->generate('mageekguy\atoum\report\fields\runner')
 		;
@@ -263,7 +263,7 @@ class report extends atoum\test
 
 	public function testRunnerStop()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 			->generate('mageekguy\atoum\report\fields\runner')
 		;
@@ -289,7 +289,7 @@ class report extends atoum\test
 
 	public function testGetRunnerFields()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 
@@ -311,7 +311,7 @@ class report extends atoum\test
 
 	public function testGetTestFields()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 

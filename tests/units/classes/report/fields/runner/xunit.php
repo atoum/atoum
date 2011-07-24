@@ -24,7 +24,7 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 	{
 		$xunit = new runner\xunit();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;

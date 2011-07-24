@@ -14,7 +14,7 @@ class progressBar extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 
@@ -86,7 +86,7 @@ class progressBar extends atoum\test
 
 	public function testRefresh()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 

@@ -63,7 +63,7 @@ class mail extends atoum\test
 
 	public function testWrite()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\mailer')
 		;
 
@@ -81,7 +81,7 @@ class mail extends atoum\test
 
 	public function testWriteAsynchronousReport()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate($this->getTestedClassName())
 			->generate('mageekguy\atoum\locale')
 			->generate('mageekguy\atoum\reports\asynchronous')

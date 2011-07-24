@@ -13,7 +13,7 @@ class writer extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\writer')
 		;
 
@@ -32,7 +32,7 @@ class writer extends atoum\test
 
 	public function testSetAdapter()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\writer')
 		;
 

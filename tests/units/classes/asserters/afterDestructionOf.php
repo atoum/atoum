@@ -63,7 +63,7 @@ class afterDestructionOf extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\tests\units\asserters\classWithDestructor');
 		;
 

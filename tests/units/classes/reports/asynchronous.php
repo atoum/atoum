@@ -12,7 +12,7 @@ class asynchronous extends atoum\test
 {
 	public function testRunnerStop()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\reports\asynchronous')
 			->generate('mageekguy\atoum\report\writers\asynchronous')
 			->generate('mageekguy\atoum\locale')

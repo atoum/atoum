@@ -81,7 +81,7 @@ class cli extends units\report\fields\test\duration
 	{
 		$field = new test\duration\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 			->generate('mageekguy\atoum\score')
 		;
@@ -124,7 +124,7 @@ class cli extends units\report\fields\test\duration
 		$adapter = new adapter();
 		$adapter->class_exists = true;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 			->generate('mageekguy\atoum\score')
 		;

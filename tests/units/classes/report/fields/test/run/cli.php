@@ -65,7 +65,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 	{
 		$field = new test\run\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 
@@ -109,7 +109,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 

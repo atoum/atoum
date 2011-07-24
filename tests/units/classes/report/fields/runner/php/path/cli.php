@@ -86,7 +86,7 @@ class cli extends units\report\fields\runner
 	{
 		$field = new runner\php\path\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;
@@ -107,7 +107,7 @@ class cli extends units\report\fields\runner
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;

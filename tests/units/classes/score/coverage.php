@@ -26,7 +26,7 @@ class coverage extends atoum\test
 	{
 		$coverage = new score\coverage();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
@@ -78,7 +78,7 @@ class coverage extends atoum\test
 			->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -172,7 +172,7 @@ class coverage extends atoum\test
 			->array($coverage->getMethods())->isEmpty()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -231,7 +231,7 @@ class coverage extends atoum\test
 
 	public function testMerge()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -407,7 +407,7 @@ class coverage extends atoum\test
 			->sizeOf($coverage)->isZero()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -470,7 +470,7 @@ class coverage extends atoum\test
 			->array($coverage->getClasses())->isEmpty()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -528,7 +528,7 @@ class coverage extends atoum\test
 			->variable($coverage->getValue())->isNull()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -675,7 +675,7 @@ class coverage extends atoum\test
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;
@@ -826,7 +826,7 @@ class coverage extends atoum\test
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 		;

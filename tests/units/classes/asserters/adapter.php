@@ -72,7 +72,7 @@ class adapter extends atoum\test
 
 	public function testReset()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test\adapter')
 		;
 

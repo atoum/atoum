@@ -32,7 +32,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	{
 		$event = new test\event\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 
@@ -54,7 +54,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function testSetWithTest()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 
@@ -102,7 +102,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 	{
 		$event = new test\event\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 
@@ -131,7 +131,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\test')
 		;
 

@@ -143,7 +143,7 @@ class runner extends atoum\test
 	{
 		$runner = new atoum\runner();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\observers\runner')
 		;
 
@@ -158,7 +158,7 @@ class runner extends atoum\test
 	{
 		$runner = new atoum\runner();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\observers\runner')
 		;
 
@@ -190,7 +190,7 @@ class runner extends atoum\test
 			->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\observers\runner')
 		;
 
@@ -206,7 +206,7 @@ class runner extends atoum\test
 	{
 		$runner = new atoum\runner();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\observers\test')
 		;
 
@@ -221,7 +221,7 @@ class runner extends atoum\test
 	{
 		$runner = new atoum\runner();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\observers\test')
 		;
 
@@ -376,7 +376,7 @@ class runner extends atoum\test
 			->array($runner->getTestObservers())->isEmpty()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 
@@ -421,7 +421,7 @@ class runner extends atoum\test
 			->array($runner->getTestObservers())->isEmpty()
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\report')
 		;
 
@@ -472,7 +472,7 @@ class runner extends atoum\test
 
 	public function testSetPathAndVersionInScore()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 		;
 

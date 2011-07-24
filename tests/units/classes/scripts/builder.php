@@ -169,7 +169,7 @@ class builder extends atoum\test
 	{
 		$builder = new scripts\builder(uniqid());
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\scripts\builder\vcs')
 		;
 
@@ -334,7 +334,7 @@ class builder extends atoum\test
 
 	public function testCheckUnitTests()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate($this->getTestedClassName())
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\scripts\builder\vcs')
@@ -562,7 +562,7 @@ class builder extends atoum\test
 
 	public function testCreatePhar()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\scripts\builder')
 			->generate('mageekguy\atoum\scripts\builder\vcs')
 			->generate('mageekguy\atoum\scripts\tagger\engine')
@@ -815,7 +815,7 @@ class builder extends atoum\test
 
 	public function testRun()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\scripts\builder')
 		;
 
@@ -876,7 +876,7 @@ class builder extends atoum\test
 			->adapter($adapter)->notCall('file_put_contents')
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\scripts\builder\vcs')
 		;
 

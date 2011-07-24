@@ -117,7 +117,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 	{
 		$field = new tests\coverage\cli();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\score')
 			->generate('mageekguy\atoum\runner')
 		;
@@ -143,7 +143,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\covera
 
 	public function test__toString()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 			->generate('reflectionMethod')
 			->generate('mageekguy\atoum\score')

@@ -203,7 +203,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeForRealClass()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -297,7 +297,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeWithOverloadMethod()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -397,7 +397,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeWithAbstractMethod()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -490,7 +490,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeWithShuntedMethod()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -583,7 +583,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeForInterface()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -671,7 +671,7 @@ class generator extends atoum\test
 
 	public function testGetMockedClassCodeForRealClassWithoutConstructor()
 	{
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionMethod')
 			->generate('reflectionClass')
 		;
@@ -828,7 +828,7 @@ class generator extends atoum\test
 
 		$adapter->class_exists = function($arg) use ($class) { return $arg === '\\' . $class; };
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 

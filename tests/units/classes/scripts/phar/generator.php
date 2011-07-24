@@ -273,7 +273,7 @@ class generator extends atoum\test
 			->__construct = function() {}
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('phar')
 		;
 
@@ -316,7 +316,7 @@ class generator extends atoum\test
 			->__construct = function() {}
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->generate('recursiveDirectoryIterator')
 		;
 
@@ -359,7 +359,7 @@ class generator extends atoum\test
 	{
 		$generator = new phar\generator(uniqid());
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\writers\std\out')
 		;
 
@@ -379,7 +379,7 @@ class generator extends atoum\test
 	{
 		$generator = new phar\generator(uniqid());
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\writers\std\err')
 		;
 
@@ -488,7 +488,9 @@ class generator extends atoum\test
 				->hasMessage('Phar injector must return a \phar instance')
 		;
 
-		$this->mock->generate('phar');
+		$this->mockGenerator
+			->generate('phar')
+		;
 
 		$generator->setPharInjector(function($name) use (& $phar) {
 				$pharController = new mock\controller();
@@ -515,7 +517,9 @@ class generator extends atoum\test
 				->hasMessage('Source iterator injector must return a \recursiveDirectoryIterator instance')
 		;
 
-		$this->mock->generate('recursiveDirectoryIterator');
+		$this->mockGenerator
+			->generate('recursiveDirectoryIterator')
+		;
 
 		$generator->setSrcIteratorInjector(function($directory) use (& $srcIterator) {
 				$srcIteratorController = new mock\controller();
@@ -627,7 +631,7 @@ class generator extends atoum\test
 
 		$generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals));
 
-		$this->mock
+		$this->mockGenerator
 			->generate('mageekguy\atoum\writers\std\out')
 			->generate('mageekguy\atoum\writers\std\err')
 		;

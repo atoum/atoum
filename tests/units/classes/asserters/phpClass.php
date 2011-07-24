@@ -49,7 +49,7 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
-		$this->mock
+		$this->mockGenerator
 			->shunt('reflectionClass', '__construct')
 			->generate('reflectionClass')
 		;
@@ -75,7 +75,7 @@ class phpClass extends atoum\test
 			->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->shunt('reflectionClass', '__construct')
 			->generate('reflectionClass')
 		;
@@ -103,7 +103,7 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
@@ -151,7 +151,7 @@ class phpClass extends atoum\test
 		$class = uniqid();
 		$parent = uniqid();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
@@ -204,7 +204,7 @@ class phpClass extends atoum\test
 					->hasMessage('Class is undefined')
 		;
 
-		$this->mock
+		$this->mockGenerator
 			->shunt('reflectionClass', '__construct')
 			->generate('reflectionClass')
 		;
@@ -260,7 +260,7 @@ class phpClass extends atoum\test
 		$class = uniqid();
 		$interface = uniqid();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
@@ -311,7 +311,7 @@ class phpClass extends atoum\test
 
 		$class = uniqid();
 
-		$this->mock
+		$this->mockGenerator
 			->generate('reflectionClass')
 		;
 
