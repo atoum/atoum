@@ -114,6 +114,13 @@ class generator
 
 		return $this;
 	}
+
+	public function when(\closure $closure)
+	{
+		$closure();
+
+		return $this;
+	}
 }
 
 ?>

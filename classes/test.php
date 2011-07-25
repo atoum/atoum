@@ -154,7 +154,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$this->startCase($case);
 				}
 
-				return $this;
+				return $this->getAsserterGenerator()->resetAsserters();
 
 			default:
 				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');

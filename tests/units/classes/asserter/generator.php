@@ -39,6 +39,19 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testWhen()
+	{
+		$generator = new asserter\generator($this);
+
+		$value = null;
+
+		$this->assert
+			->variable($value)->isNull()
+			->object($generator->when(function() use (& $value) { $value = uniqid(); }))->isIdenticalTo($generator)
+			->variable($value)->isNotNull()
+		;
+	}
+
 	public function testSetTest()
 	{
 		$generator = new asserter\generator($this);

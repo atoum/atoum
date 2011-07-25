@@ -170,9 +170,9 @@ namespace mageekguy\atoum\tests\units
 			;
 
 			$this->assert
-				->object($test->assert())->isInstanceOf($test)
+				->object($test->assert())->isIdenticalTo($test->getAsserterGenerator())
 				->variable($test->getScore()->getCase())->isNull()
-				->object($test->assert($case = uniqid()))->isInstanceOf($test)
+				->object($test->assert($case = uniqid()))->isInstanceOf($test->getAsserterGenerator())
 				->string($test->getScore()->getCase())->isEqualTo($case)
 			;
 		}
