@@ -120,7 +120,7 @@ class phpClass extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not a class'), $class))
+				->hasMessage(sprintf($test->getLocale()->_('Class \'%s\' does not exist'), $class))
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isZero()
 		;

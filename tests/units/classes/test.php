@@ -149,6 +149,34 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function test__call()
+		{
+			$test = new emptyTest();
+
+			$unknownMethod = uniqid();
+
+			$this->assert
+				->exception(function () use ($test, $unknownMethod) {
+							$test->{$unknownMethod}();
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Method ' . get_class($test) . '::' . $unknownMethod . '() is undefined')
+			;
+
+			$this->assert
+				->object($test->mock(__CLASS__))->isInstanceOf($test)
+				->class('\mock\\' . __CLASS__ )->hasInterface('mageekguy\atoum\mock\aggregator')
+			;
+
+			$this->assert
+				->object($test->assert())->isInstanceOf($test)
+				->variable($test->getScore()->getCase())->isNull()
+				->object($test->assert($case = uniqid()))->isInstanceOf($test)
+				->string($test->getScore()->getCase())->isEqualTo($case)
+			;
+		}
+
 		public function testSetSuperglobals()
 		{
 			$test = new emptyTest();

@@ -44,8 +44,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $childProcess = null;
 	private $testsToRun = 0;
 
-	public static $runningTest = null;
-
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
 		$this
@@ -145,7 +143,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 		switch ($method)
 		{
 			case 'mock':
-				$this->mock->generate(isset($arguments[0]) === false ? null : $arguments[0], isset($arguments[1]) === false ? null : $arguments[1], isset($arguments[2]) === false ? null : $arguments[2]);
+				$this->getMockGenerator()->generate(isset($arguments[0]) === false ? null : $arguments[0], isset($arguments[1]) === false ? null : $arguments[1], isset($arguments[2]) === false ? null : $arguments[2]);
+				return $this;
+
+			case 'assert':
+				$case = isset($arguments[0]) === false ? null : $arguments[0];
+
+				if ($case !== null)
+				{
+					$this->startCase($case);
+				}
+
 				return $this;
 
 			default:

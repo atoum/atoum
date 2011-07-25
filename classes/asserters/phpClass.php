@@ -60,7 +60,7 @@ class phpClass extends atoum\asserter
 		}
 		catch (\exception $exception)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a class'), $class));
+			$this->fail(sprintf($this->getLocale()->_('Class \'%s\' does not exist'), $class));
 		}
 
 		$this->pass();
