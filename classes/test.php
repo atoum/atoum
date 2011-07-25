@@ -41,7 +41,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsSubNamespace = null;
 	private $mockGenerator = null;
 	private $workingFile = null;
-	private $phpProcess = null;
+	private $childProcess = null;
 	private $testsToRun = 0;
 
 	public static $runningTest = null;
@@ -393,6 +393,24 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$this->callObservers(self::afterSetUp);
 				}
 
+				if ($runner !== null)
+				{
+					$childCode =
+						'<?php ' .
+						'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
+						'require(\'' . $runner->getPath() . '\');' .
+						'require(\'' . $this->path . '\');' .
+						'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
+						'$runner = new ' . $runner->getClass() . '();' .
+						'$runner->setLocale($locale);' .
+						'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+						($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
+						'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .
+						'file_put_contents(\'' . $this->workingFile . '\', serialize($runner->getScore()));' .
+						'?>'
+					;
+				}
+
 				foreach ($this->runTestMethods as $testMethodName)
 				{
 					$failNumber = $this->score->getFailNumber();
@@ -409,7 +427,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					}
 					else
 					{
-						$this->runInChildProcess($runner, $testMethodName);
+						$this->runInChildProcess($runner, sprintf($childCode, $testMethodName));
 					}
 
 					switch (true)
@@ -571,35 +589,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	protected function runInChildProcess(atoum\runner $runner, $testMethod)
+	protected function runInChildProcess(atoum\runner $runner, $phpCode)
 	{
 		$phpPath = $this->getPhpPath();
 
-		list($php, $pipes) = $this->getPhpProcess($phpPath);
+		list($php, $pipes) = $this->getChildProcess();
 
 		if ($php !== false)
 		{
-			fwrite($pipes[0],
-				'<?php ' .
-				'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
-				'require(\'' . $runner->getPath() . '\');' .
-				'require(\'' . $this->path . '\');' .
-				'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
-				'$runner = new ' . $runner->getClass() . '();' .
-				'$runner->setLocale($locale);' .
-				'$runner->setPhpPath(\'' . $phpPath . '\');' .
-				($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
-				'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'' . $testMethod . '\')), false);' .
-				'file_put_contents(\'' . $this->workingFile . '\', serialize($runner->getScore()));' .
-				'?>'
-			);
+			fwrite($pipes[0], $phpCode);
 			fclose($pipes[0]);
 
-			$this->testsToRun--;
-
-			if ($this->testsToRun > 0)
+			if (--$this->testsToRun > 0)
 			{
-				$this->createPhpProcess($phpPath);
+				$this->createChildProcess();
 			}
 
 			$stdErr = stream_get_contents($pipes[2]);
@@ -713,20 +716,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $annotations;
 	}
 
-	private function getPhpProcess($phpPath)
+	private function getChildProcess()
 	{
-		if ($this->phpProcess === null)
+		if ($this->childProcess === null)
 		{
-			$this->createPhpProcess($phpPath);
+			$this->createChildProcess();
 		}
 
-		return $this->phpProcess;
+		return $this->childProcess;
 	}
 
-	private function createPhpProcess($phpPath)
+	private function createChildProcess()
 	{
-		$phpProcess = proc_open(
-			$phpPath,
+		$childProcess = proc_open(
+			$this->getPhpPath(),
 			array(
 				0 => array('pipe', 'r'),
 				1 => array('pipe', 'w'),
@@ -735,7 +738,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$pipes
 		);
 
-		$this->phpProcess = array($phpProcess, $pipes);
+		$this->childProcess = array($childProcess, $pipes);
 
 		return $this;
 	}
