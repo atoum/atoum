@@ -49,9 +49,9 @@ class exception extends asserters\object
 		}
 		catch (\logicException $exception)
 		{
-			if (self::classExists($value) === false || ($value !== '\exception' && is_subclass_of($value, '\exception') === false))
+			if (self::classExists($value) === false || (strtolower(ltrim($value, '\\')) !== 'exception' && is_subclass_of($value, 'exception') === false))
 			{
-				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be an \exception instance or an exception class name');
+				throw new exceptions\logic\invalidArgument('Argument of ' . __METHOD__ . '() must be a \exception instance or an exception class name');
 			}
 		}
 
@@ -107,6 +107,11 @@ class exception extends asserters\object
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('message \'%s\' is not identical to \'%s\''), $this->value->getMessage(), $message));
 		}
+	}
+
+	protected function valueIsSet($message = 'Exception is undefined')
+	{
+		return parent::valueIsSet($message);
 	}
 
 	protected static function check($value, $method)

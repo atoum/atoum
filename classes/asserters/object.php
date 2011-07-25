@@ -54,7 +54,7 @@ class object extends asserters\variable
 			}
 		}
 
-		$this->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
+		$this->valueIsSet()->value instanceof $value ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is not an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
 
 		return $this;
 	}
