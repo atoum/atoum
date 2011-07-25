@@ -42,6 +42,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $mockGenerator = null;
 	private $workingFile = null;
 	private $phpProcess = null;
+	private $testsToRun = 0;
 
 	public static $runningTest = null;
 
@@ -377,7 +378,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$this->runTestMethods = $runTestMethods;
 		}
 
-		if (sizeof($this->runTestMethods) > 0)
+		$this->testsToRun = sizeof($this->runTestMethods);
+
+		if ($this->testsToRun > 0)
 		{
 			try
 			{
@@ -442,8 +445,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 						->callObservers(self::afterTearDown)
 					;
 				}
-
-				$this->closePhpProcess();
 			}
 			catch (\exception $exception)
 			{
@@ -594,6 +595,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 			);
 			fclose($pipes[0]);
 
+			$this->testsToRun--;
+
+			if ($this->testsToRun > 0)
+			{
+				$this->createPhpProcess($phpPath);
+			}
+
 			$stdErr = stream_get_contents($pipes[2]);
 			fclose($pipes[2]);
 
@@ -709,14 +717,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->phpProcess === null)
 		{
-			$this->phpProcess = $this->createPhpProcess($phpPath);
+			$this->createPhpProcess($phpPath);
 		}
 
-		$phpProcess = $this->phpProcess;
-
-		$this->phpProcess = $this->createPhpProcess($phpPath);
-
-		return $phpProcess;
+		return $this->phpProcess;
 	}
 
 	private function createPhpProcess($phpPath)
@@ -731,18 +735,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$pipes
 		);
 
-		return array($phpProcess, $pipes);
-	}
-
-	private function closePhpProcess()
-	{
-		if ($this->phpProcess !== null)
-		{
-			fclose($this->phpProcess[1][0]);
-			fclose($this->phpProcess[1][1]);
-			fclose($this->phpProcess[1][2]);
-			proc_close($this->phpProcess[0]);
-		}
+		$this->phpProcess = array($phpProcess, $pipes);
 
 		return $this;
 	}
