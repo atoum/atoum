@@ -12,6 +12,8 @@ class adapter extends atoum\adapter
 	protected $calls = array();
 	protected $callers = array();
 
+	private static $callNumber = 0;
+
 	public function __set($functionName, $mixed)
 	{
 		$this->{$functionName}->return = $mixed;
@@ -71,7 +73,7 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
-		$this->calls[$functionName][] = $arguments;
+		$this->calls[$functionName][++self::$callNumber] = $arguments;
 
 		return $this;
 	}

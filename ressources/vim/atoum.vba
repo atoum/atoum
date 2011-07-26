@@ -2,11 +2,11 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-127
+130
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
-" Licence:					BSD
+" Licence:					GPL version 2.0 license
 "=============================================================================
 if !exists('g:atoum#php')
 	let g:atoum#php = 'php'
@@ -26,9 +26,7 @@ function atoum#run(file, bang)
 
 		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
 
-		syntax on
-
-		set filetype=atoum
+		setlocal filetype=atoum
 		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
 
 		%d
@@ -80,13 +78,17 @@ function atoum#defineConfiguration(directory, configuration, extension)
 endfunction
 "goToFailure {{{1
 function atoum#goToFailure(line)
-	let pattern = 'In file \(\f\+\) on line \(\d\+\).*$'
+	let pattern = '^In file \(\f\+\) on line \(\d\+\).*$'
 
 	if (matchstr(a:line, pattern) != '')
 		execute bufwinnr('^' . substitute(a:line, pattern, '\1', '') . '$') . 'wincmd w'
 		execute substitute(a:line, pattern, '\2', '')
 		wincmd _
 	endif
+endfunction
+"goToNextFailure {{{1
+function atoum#goToNextFailure()
+	call search('^In file \(\f\+\) on line \(\d\+\).*$', 'cw')
 endfunction
 "makeVimball {{{1
 function atoum#makeVimball()
@@ -120,6 +122,7 @@ function atoum#makeVimball()
 		execute '%MkVimball! atoum'
 
 		setlocal nomodified
+
 		bwipeout
 
 		echomsg 'Vimball is in ''' . getcwd() . ''''
@@ -221,7 +224,7 @@ ftplugin/php/atoum.vim	[[[1
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
-" Licence:					BSD
+" Licence:					GPL version 2.0 license
 "=============================================================================
 if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 	let b:atoum_loaded = 1

@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\reporter,
 	mageekguy\atoum\exceptions
 ;
 
