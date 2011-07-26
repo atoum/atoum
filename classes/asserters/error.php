@@ -58,11 +58,11 @@ class error extends \mageekguy\atoum\asserter
 					break;
 
 				case $this->type !== null && $this->message === null:
-					$failReason = sprintf($this->getLocale()->_('error of type %s does not exist'), reporter::getErrorLabel($this->type));
+					$failReason = sprintf($this->getLocale()->_('error of type %s does not exist'), $this->type);
 					break;
 
 				default:
-					$failReason = sprintf($this->getLocale()->_('error of type %s with message \'%s\' does not exist'), reporter::getErrorLabel($this->type), $this->message);
+					$failReason = sprintf($this->getLocale()->_('error of type %s with message \'%s\' does not exist'), $this->type, $this->message);
 			}
 
 			$this->fail($failReason);
