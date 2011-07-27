@@ -4,7 +4,6 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
@@ -13,6 +12,7 @@ class mock extends atoum\asserter
 	protected $mock = null;
 	protected $calledMethodName = null;
 	protected $calledMethodArguments = null;
+	protected $beforeCall = null;
 
 	public function getTestedMethodName()
 	{
@@ -53,6 +53,18 @@ class mock extends atoum\asserter
 	public function getMock()
 	{
 		return $this->mock;
+	}
+
+	public function beforeCallTo($methodName)
+	{
+		$this->mockIsSet()->beforeCall = new mock\call($this, $this->mock, $methodName);
+
+		return $this;
+	}
+
+	public function getBeforeCall()
+	{
+		return $this->beforeCall;
 	}
 
 	public function wasCalled($failMessage = null)

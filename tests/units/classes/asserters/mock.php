@@ -229,6 +229,31 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testBeforeCallTo()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->beforeCallTo(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->object($asserter->beforeCallTo('foo'))->isIdenticalTo($asserter)
+			->object($asserter->getBeforeCall())->isEqualTo(new asserters\mock\call($asserter, $mock, 'foo'))
+		;
+	}
+
 	public function testCall()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
