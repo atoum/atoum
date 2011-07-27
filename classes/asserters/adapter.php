@@ -10,6 +10,18 @@ use
 class adapter extends atoum\asserter
 {
 	protected $adapter = null;
+	protected $calledFunctionName = null;
+	protected $calledFunctionArguments = null;
+
+	public function getTestedFunctionName()
+	{
+		return $this->calledFunctionName;
+	}
+
+	public function getTestedFunctionArguments()
+	{
+		return $this->calledFunctionArguments;
+	}
 
 	public function setWith($adapter)
 	{
@@ -42,17 +54,41 @@ class adapter extends atoum\asserter
 		return $this->adapter;
 	}
 
-	public function call($function, array $args = null, $failMessage = null)
+	public function call($method)
 	{
-		$calls = $this->adapterIsSet()->adapter->getCalls($function);
+		$this->adapterIsSet()->calledFunctionName = $method;
 
-		if (sizeof($calls) <= 0)
+		$this->calledFunctionArguments = null;
+
+		return $this;
+	}
+
+	public function withArguments()
+	{
+		$this->calledFunctionNameIsSet()->calledFunctionArguments = func_get_args();
+
+		return $this;
+	}
+
+	public function once($failMessage = null)
+	{
+		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->calledFunctionName, $this->calledFunctionArguments));
+
+		if ($callNumber !== 1)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s was not called'), $function));
-		}
-		else if ($args !== null && in_array($args, $calls) === false)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('function %s was not called with this argument', 'function %s was not called with these arguments', sizeof($args)), $function));
+			$this->fail(
+				$failMessage !== null
+				?  $failMessage
+				:  sprintf(
+						$this->getLocale()->__(
+							'function %s() is called %d time instead of 1',
+							'function %s() is called %d times instead of 1',
+							$callNumber
+						),
+						$this->calledFunctionName,
+						$callNumber
+					)
+			);
 		}
 		else
 		{
@@ -62,21 +98,64 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
-	public function notCall($function, array $args = null, $failMessage = null)
+	public function atLeastOnce($failMessage = null)
 	{
-		$calls = $this->adapterIsSet()->adapter->getCalls($function);
+		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->calledFunctionName, $this->calledFunctionArguments));
 
-		if (sizeof($calls) <= 0)
+		if ($callNumber < 1)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s() is called 0 time'), $this->calledFunctionName));
+		}
+		else
 		{
 			$this->pass();
 		}
-		else if ($args === null)
+
+		return $this;
+	}
+
+	public function exactly($number, $failMessage = null)
+	{
+		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->calledFunctionName, $this->calledFunctionArguments));
+
+		if ($number != $callNumber)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s was called'), $function));
+			$this->fail($failMessage !== null ? $failMessage : sprintf(
+					$this->getLocale()->__(
+						'function %s() is called %d time instead of %d',
+						'function %s() is called %d times instead of %d',
+						$callNumber
+					),
+					$this->calledFunctionName,
+					$callNumber,
+					$number
+				)
+			);
 		}
-		else if (in_array($args, $calls) === true)
+		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->__('function %s was called with this argument', 'function %s was called with these arguments', sizeof($args)), $function));
+			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function never($failMessage = null)
+	{
+		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->calledFunctionName, $this->calledFunctionArguments));
+
+		if ($callNumber != 0)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf(
+					$this->getLocale()->__(
+						'function %s() is called %d time instead of 0',
+						'function %s() is called %d times instead of 0',
+						$callNumber
+					),
+					$this->calledFunctionName,
+					$callNumber
+				)
+			);
 		}
 		else
 		{
@@ -91,6 +170,16 @@ class adapter extends atoum\asserter
 		if ($this->adapter === null)
 		{
 			throw new exceptions\logic('Adapter is undefined');
+		}
+
+		return $this;
+	}
+
+	protected function calledFunctionNameIsSet()
+	{
+		if ($this->adapterIsSet()->calledFunctionName === null)
+		{
+			throw new exceptions\logic('Called function is undefined');
 		}
 
 		return $this;

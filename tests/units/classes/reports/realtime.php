@@ -28,8 +28,8 @@ class realtime extends atoum\test
 
 		$this->assert
 			->object($report->runnerStart(new atoum\runner()))->isIdenticalTo($report)
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
 			->string($report->getTitle())->isEqualTo($title)
 		;
 
@@ -41,8 +41,8 @@ class realtime extends atoum\test
 
 		$this->assert
 			->object($report->runnerStart(new atoum\runner()))->isIdenticalTo($report)
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
 			->string($report->getTitle())->isEqualTo('Y-m-d')
 		;
 
@@ -52,8 +52,8 @@ class realtime extends atoum\test
 
 		$this->assert
 			->object($report->runnerStart(new atoum\runner()))->isIdenticalTo($report)
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
 			->string($report->getTitle())->isEqualTo('H:i:s')
 		;
 
@@ -63,8 +63,8 @@ class realtime extends atoum\test
 
 		$this->assert
 			->object($report->runnerStart(new atoum\runner()))->isIdenticalTo($report)
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
 			->string($report->getTitle())->isEqualTo('Y-m-d H:i:s')
 		;
 	}

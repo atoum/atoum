@@ -57,10 +57,10 @@ class file extends atoum\test
 
 	public function test__destruct()
 	{
-		$id = uniqid();
+		$handle = uniqid();
 
 		$adapter = new atoum\test\adapter();
-		$adapter->fopen = function() use ($id) { return $id; };
+		$adapter->fopen = function() use ($handle) { return $handle; };
 		$adapter->fwrite = function() {};
 		$adapter->fclose = function() {};
 		$adapter->is_writable = function() { return true; };
@@ -75,52 +75,56 @@ class file extends atoum\test
 		unset($file);
 
 		$this->assert
-			->adapter($adapter)->call('is_null', array($id))
-			->adapter($adapter)->call('fclose', array($id))
-			;
+			->adapter($adapter)
+				->call('is_null')->withArguments($handle)->once()
+				->call('fclose')->withArguments($handle)->once()
+		;
 
 	}
 
 	public function testWrite()
 	{
-		$id = uniqid();
+		$handle = uniqid();
 
 		$adapter = new atoum\test\adapter();
-		$adapter->fopen = function() use ($id) { return $id; };
+		$adapter->fopen = function() use ($handle) { return $handle; };
 		$adapter->fclose = function() {};
 		$adapter->fwrite = function() {};
 		$adapter->is_writable = function() { return true; };
-		$adapter->is_null = function() { return true; };
 
-		$file = new writers\file(null,$adapter);
-		$obj = $file->write($string = uniqid());
+		$file = new writers\file(null, $adapter);
+
+		$adapter->resetCalls();
 
 		$this->assert
-			->object($obj)->isIdenticalTo($file)
-			->adapter($adapter)->call('is_null', array(null))
-			->adapter($adapter)->call('dirname', array('atoum.log'))
-			->adapter($adapter)->call('is_writable', array('.'))
-			->adapter($adapter)->call('fopen', array('atoum.log', 'w'))
-			->adapter($adapter)->call('fwrite', array($id, $string))
+			->object($file->write($string = uniqid()))->isIdenticalTo($file)
+			->adapter($adapter)
+				->call('is_null')->once()
+				->call('dirname')->withArguments('atoum.log')->once()
+				->call('is_writable')->withArguments('.')->once()
+				->call('fopen')->withArguments('atoum.log', 'w')->once()
+				->call('fwrite')->withArguments($handle, $string)->once()
 			->object($file->write($string = (uniqid() . "\n")))->isIdenticalTo($file)
-			->adapter($adapter)->call('fwrite', array($id, $string))
+			->adapter($adapter)
+				->call('fwrite')->withArguments($handle, $string)->once()
 		;
 
 		$adapter->is_null = function() { return false; };
 
 		$this->assert
 			->object($file->write($string = uniqid()))->isIdenticalTo($file)
-			->adapter($adapter)->call('is_null', array($id))
-			->adapter($adapter)->call('fwrite', array($id, $string))
+			->adapter($adapter)
+				->call('is_null')->withArguments($handle)->once()
+				->call('fwrite')->withArguments($handle, $string)->once()
 		;
 	}
 
 	public function testSetFilename()
 	{
-		$id = uniqid();
+		$handle = uniqid();
 
 		$adapter = new atoum\test\adapter();
-		$adapter->fopen = function() use ($id) { return $id; };
+		$adapter->fopen = function() use ($handle) { return $handle; };
 		$adapter->fclose = function() {};
 		$adapter->fwrite = function() {};
 		$adapter->is_writable = function() { return true; };

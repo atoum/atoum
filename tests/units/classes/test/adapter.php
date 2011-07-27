@@ -10,6 +10,13 @@ require_once(__DIR__ . '/../../runner.php');
 
 class adapter extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->hasInterface('mageekguy\atoum\mock\observer')
+		;
+	}
+
 	public function test__construct()
 	{
 		$adapter = new atoum\test\adapter();
@@ -153,6 +160,35 @@ class adapter extends atoum\test
 		$this->assert->integer($adapter->md5())->isEqualTo(0);
 	}
 
+	public function testGetCallsNumber()
+	{
+		$this->assert
+			->integer(atoum\test\adapter::getCallsNumber())->isZero()
+		;
+
+		$adapter = new atoum\test\adapter();
+
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->integer(atoum\test\adapter::getCallsNumber())->isEqualTo(1)
+		;
+
+		$adapter->md5(uniqid());
+
+		$this->assert
+			->integer(atoum\test\adapter::getCallsNumber())->isEqualTo(2)
+		;
+
+		$otherAdapter = new atoum\test\adapter();
+
+		$otherAdapter->sha1(uniqid());
+
+		$this->assert
+			->integer(atoum\test\adapter::getCallsNumber())->isEqualTo(3)
+		;
+	}
+
 	public function testGetCalls()
 	{
 		$adapter = new atoum\test\adapter();
@@ -164,16 +200,16 @@ class adapter extends atoum\test
 		$adapter->md5($firstHash);
 
 		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash)))
 		;
 
 		$secondHash = uniqid();
 		$adapter->md5($secondHash);
 
 		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash)))
 		;
 
 		$adapter->md5 = function() {};
@@ -182,8 +218,8 @@ class adapter extends atoum\test
 		$adapter->md5($thirdHash);
 
 		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(array($firstHash), array($secondHash), array($thirdHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
+			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash))))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
 		;
 
 		$haystack = uniqid();
@@ -195,17 +231,17 @@ class adapter extends atoum\test
 		$this->assert
 			->array($adapter->getCalls())->isEqualTo(array(
 						'md5' => array(
-							array($firstHash),
-							array($secondHash),
-							array($thirdHash)
+							1 => array($firstHash),
+							2 => array($secondHash),
+							3 => array($thirdHash)
 						),
 						'strpos' => array(
-							array($haystack, $needle, $offset)
+							4 => array($haystack, $needle, $offset)
 						)
 				)
 			)
-			->array($adapter->getCalls('md5'))->isEqualTo(array(array($firstHash), array($secondHash), array($thirdHash)))
-			->array($adapter->getCalls('strpos'))->isEqualTo(array(array($haystack, $needle, $offset)))
+			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
+			->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
 		;
 	}
 
@@ -273,7 +309,7 @@ class adapter extends atoum\test
 		$this->assert
 			->array($adapter->getCalls())->isEmpty()
 			->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
-			->array($adapter->getCalls($method))->isEqualTo(array($args))
+			->array($adapter->getCalls($method))->isEqualTo(array(1 => $args))
 		;
 	}
 }

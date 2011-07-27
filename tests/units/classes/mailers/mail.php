@@ -187,14 +187,14 @@ class mail extends atoum\test
 
 		$this->assert
 			->object($mail->send($message = uniqid()))->isIdenticalTo($mail)
-			->adapter($adapter)->call('mail', array($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer));
+			->adapter($adapter)->call('mail')->withArguments($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer)->once();
 		;
 
 		$mail->setContentType($type = uniqid(), $charset = uniqid());
 
 		$this->assert
 			->object($mail->send($message = uniqid()))->isIdenticalTo($mail)
-			->adapter($adapter)->call('mail', array($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer . "\r\n" . 'Content-Type: ' . $type . '; charset="' . $charset . '"'));
+			->adapter($adapter)->call('mail')->withArguments($mail->getTo(), $mail->getSubject(), $message, 'From: ' . $from . "\r\n" . 'Reply-To: ' . $replyTo . "\r\n" .  'X-Mailer: ' . $mailer . "\r\n" . 'Content-Type: ' . $type . '; charset="' . $charset . '"')->once();
 		;
 	}
 }

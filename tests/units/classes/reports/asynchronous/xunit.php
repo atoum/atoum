@@ -62,7 +62,7 @@ class xunit extends atoum\test
 			->array($rep->getTestFields(atoum\test::afterTearDown))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::runStop))->isEqualTo(array())
 			->object($rep->getAdapter())->isIdenticalTo($adapter)
-			->adapter($adapter)->call('extension_loaded', array('libxml'))
+			->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
 		;
 
 		$adapter->extension_loaded = function($extension) { return false; };

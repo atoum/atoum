@@ -75,7 +75,7 @@ class mail extends atoum\test
 
 		$this->assert
 			->object($writer->write($something = uniqid()))->isIdenticalTo($writer)
-			->mock($mailer)->call('send', array($something))
+			->mock($mailer)->call('send')->withArguments($something)->once()
 		;
 	}
 
@@ -96,12 +96,12 @@ class mail extends atoum\test
 
 		$this->assert
 			->object($writer->writeAsynchronousReport($report = new \mock\mageekguy\atoum\reports\asynchronous()))->isIdenticalTo($writer)
-			->mock($writer)->call('write', array((string) $report))
+			->mock($writer)->call('write')->withArguments((string) $report)->once()
 			->string($mailer->getSubject())->isEqualTo('Unit tests report, the Y-m-d at H:i:s')
 			->mock($locale)
-				->call('_', array('Unit tests report, the %1$s at %2$s'))
-				->call('_', array('Y-m-d'))
-				->call('_', array('H:i:s'))
+				->call('_')->withArguments('Unit tests report, the %1$s at %2$s')->once()
+				->call('_')->withArguments('Y-m-d')->once()
+				->call('_')->withArguments('H:i:s')->once()
 		;
 
 		$mailer = new atoum\mailers\mail();
@@ -111,16 +111,16 @@ class mail extends atoum\test
 
 		$this->assert
 			->object($writer->writeAsynchronousReport($report->setTitle($title = uniqid())))->isIdenticalTo($writer)
-			->mock($writer)->call('write', array((string) $report))
+			->mock($writer)->call('write')->withArguments((string) $report)->once()
 			->string($mailer->getSubject())->isEqualTo($title)
-			->mock($locale)->notCall('_')
+			->mock($locale)->call('_')->never()
 		;
 
 		$mailer->setSubject($mailerSubject = uniqid());
 
 		$this->assert
 			->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
-			->mock($writer)->call('write', array((string) $report))
+			->mock($writer)->call('write')->withArguments((string) $report)->once()
 			->string($mailer->getSubject())->isEqualTo($mailerSubject)
 		;
 	}

@@ -36,11 +36,11 @@ class xunit extends \mageekguy\atoum\tests\units\report\fields\runner
 
 		$this->assert
 			->object($xunit->setWithRunner($runner))->isIdenticalTo($xunit)
-			->mock($runner)->notCall('getScore')
+			->mock($runner)->call('getScore')->never()
 			->object($xunit->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($xunit)
-			->mock($runner)->notCall('getScore')
+			->mock($runner)->call('getScore')->never()
 			->object($xunit->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($xunit)
-			->mock($runner)->call('getScore')
+			->mock($runner)->call('getScore')->once()
 		;
 	}
 }

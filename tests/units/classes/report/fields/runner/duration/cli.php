@@ -138,49 +138,49 @@ class cli extends units\report\fields\runner
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('__', array('%4.2f second', '%4.2f seconds', 1))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('__')->withArguments('%4.2f second', '%4.2f seconds', 1)->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('1.00 second'))
+				->call('colorize')->withArguments('1.00 second')->once()
 		;
 
 		$runner->getMockController()->getRunningDuration = $runningDuration = rand(2, PHP_INT_MAX);
@@ -190,49 +190,49 @@ class cli extends units\report\fields\runner
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('_', array('unknown'))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('_')->withArguments('unknown')->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array('unknown'))
+				->call('colorize')->withArguments('unknown')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.' . PHP_EOL)
 			->mock($locale)
-				->call('_', array('Running duration'))
-				->call('__', array('%4.2f second', '%4.2f seconds', $runningDuration))
-				->call('_', array('%1$s: %2$s.'))
+				->call('_')->withArguments('Running duration')->once()
+				->call('__')->withArguments('%4.2f second', '%4.2f seconds', $runningDuration)->once()
+				->call('_')->withArguments('%1$s: %2$s.')->once()
 			->mock($titleColorizer)
-				->call('colorize', array('Running duration'))
+				->call('colorize')->withArguments('Running duration')->once()
 			->mock($durationColorizer)
-				->call('colorize', array(sprintf('%4.2f', $runningDuration) . ' seconds'))
+				->call('colorize')->withArguments(sprintf('%4.2f', $runningDuration) . ' seconds')->once()
 		;
 	}
 }

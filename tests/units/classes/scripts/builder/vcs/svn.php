@@ -153,8 +153,8 @@ class svn extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to get logs, repository url is undefined')
 			->adapter($adapter)
-				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->notCall('svn_log')
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
+				->call('svn_log')->never()
 		;
 
 		$svn->setRepositoryUrl($repositoryUrl = uniqid());
@@ -166,8 +166,8 @@ class svn extends atoum\test
 		$this->assert
 			->array($svn->getNextRevisions())->isEmpty()
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_log', array($repositoryUrl, 1, SVN_REVISION_HEAD))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_log')->withArguments($repositoryUrl, 1, SVN_REVISION_HEAD)->once()
 		;
 
 		$svn->setRevision($revision = rand(1, PHP_INT_MAX));
@@ -177,8 +177,8 @@ class svn extends atoum\test
 		$this->assert
 			->array($svn->getNextRevisions())->isEmpty()
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
 		;
 
 		$adapter->resetCalls();
@@ -187,7 +187,7 @@ class svn extends atoum\test
 
 		$this->assert
 			->array($svn->getNextRevisions())->isEmpty()
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+			->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
 		;
 
 		$adapter->resetCalls();
@@ -200,7 +200,7 @@ class svn extends atoum\test
 
 		$this->assert
 			->array($svn->getNextRevisions())->isEqualTo(array($revision1, $revision2, $revision3))
-			->adapter($adapter)->call('svn_log', array($repositoryUrl, $revision, SVN_REVISION_HEAD))
+			->adapter($adapter)->call('svn_log')->withArguments($repositoryUrl, $revision, SVN_REVISION_HEAD)->once()
 		;
 	}
 
@@ -244,10 +244,10 @@ class svn extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to export repository, repository url is undefined')
 			->adapter($adapter)
-				->notCall('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
-				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->notCall('svn_checkout')
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+				->call('svn_checkout')->never()
 		;
 
 		$svn
@@ -267,12 +267,12 @@ class svn extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
-				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->never()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
 			->mock($svn)
-				->call('cleanWorkingDirectory')
+				->call('cleanWorkingDirectory')->once()
 		;
 
 		$svn
@@ -290,12 +290,12 @@ class svn extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
-				->notCall('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->never()
+				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
 			->mock($svn)
-				->call('cleanWorkingDirectory')
+				->call('cleanWorkingDirectory')->once()
 		;
 
 		$svn
@@ -313,12 +313,12 @@ class svn extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
-				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
+				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
 			->mock($svn)
-				->call('cleanWorkingDirectory')
+				->call('cleanWorkingDirectory')->once()
 		;
 
 		$svn->getMockController()->resetCalls();
@@ -329,12 +329,12 @@ class svn extends atoum\test
 		$this->assert
 			->object($svn->exportRepository())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('svn_auth_set_parameter', array(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true))
-				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername()))
-				->call('svn_auth_set_parameter', array(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword()))
-				->call('svn_checkout', array($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision()))
+				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_USERNAME, $svn->getUsername())->once()
+				->call('svn_auth_set_parameter')->withArguments(SVN_AUTH_PARAM_DEFAULT_PASSWORD, $svn->getPassword())->once()
+				->call('svn_checkout')->withArguments($svn->getRepositoryUrl(), $workingDirectory, $svn->getRevision())->once()
 			->mock($svn)
-				->call('cleanWorkingDirectory')
+				->call('cleanWorkingDirectory')->once()
 		;
 	}
 
@@ -407,12 +407,12 @@ class svn extends atoum\test
 		$this->assert
 			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('unlink', array($inode11Path))
-				->call('unlink', array($inode12Path))
-				->call('rmdir', array($inode1Path))
-				->call('unlink', array($inode2Path))
-				->call('rmdir', array($inode3Path))
-				->notCall('rmdir', array($workingDirectory))
+				->call('unlink')->withArguments($inode11Path)->once()
+				->call('unlink')->withArguments($inode12Path)->once()
+				->call('rmdir')->withArguments($inode1Path)->once()
+				->call('unlink')->withArguments($inode2Path)->once()
+				->call('rmdir')->withArguments($inode3Path)->once()
+				->call('rmdir')->withArguments($workingDirectory)->never()
 		;
 	}
 }

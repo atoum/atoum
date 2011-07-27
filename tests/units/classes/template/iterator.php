@@ -121,9 +121,9 @@ class iterator extends atoum\test
 
 		$this->assert
 			->object($iterator->build())->isIdenticalTo($iterator)
-			->mock($tag)->call('build', array(array()))
+			->mock($tag)->call('build')->withArguments(array())->once()
 			->object($iterator->build($tags = array(uniqid() => uniqid())))->isIdenticalTo($iterator)
-			->mock($tag)->call('build', array($tags))
+			->mock($tag)->call('build')->withArguments($tags)->once()
 		;
 	}
 

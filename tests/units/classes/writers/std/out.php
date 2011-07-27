@@ -45,9 +45,9 @@ class out extends atoum\test
 
 		$this->assert
 			->object($stdout->write($string = uniqid()))->isIdenticalTo($stdout)
-			->adapter($adapter)->call('fwrite', array(null, $string))
+			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 			->object($stdout->write($string = (uniqid() . "\n")))->isIdenticalTo($stdout)
-			->adapter($adapter)->call('fwrite', array(null, $string))
+			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 		;
 	}
 }

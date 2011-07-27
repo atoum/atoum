@@ -84,7 +84,7 @@ class phpClass extends atoum\test
 
 		$this->assert
 			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-			->mock($reflectionClass)->call('__construct', array($class))
+			->mock($reflectionClass)->call('__construct')->withArguments($class)->once()
 		;
 
 		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); });

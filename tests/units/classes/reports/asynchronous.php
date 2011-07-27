@@ -29,7 +29,7 @@ class asynchronous extends atoum\test
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
 			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->notCall('_')
+			->mock($locale)->call('_')->never()
 			->variable($report->getTitle())->isNull()
 		;
 
@@ -40,8 +40,8 @@ class asynchronous extends atoum\test
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->call('_', array('SUCCESS'))
+			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
+			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
 			->string($report->getTitle())->isEqualTo($title)
 		;
 
@@ -54,10 +54,10 @@ class asynchronous extends atoum\test
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
-			->mock($locale)->call('_', array('SUCCESS'))
+			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
+			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
 			->string($report->getTitle())->isEqualTo('SUCCESS')
 		;
 
@@ -70,10 +70,10 @@ class asynchronous extends atoum\test
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
-			->mock($locale)->call('_', array('SUCCESS'))
+			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
+			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
 			->string($report->getTitle())->isEqualTo('Y-m-d H:i:s SUCCESS')
 		;
 
@@ -87,10 +87,10 @@ class asynchronous extends atoum\test
 
 		$this->assert
 			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->call('_', array('Y-m-d'))
-			->mock($locale)->call('_', array('H:i:s'))
-			->mock($locale)->call('_', array('FAIL'))
+			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
+			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
+			->mock($locale)->call('_')->withArguments('H:i:s')->once()
+			->mock($locale)->call('_')->withArguments('FAIL')->once()
 			->string($report->getTitle())->isEqualTo('Y-m-d H:i:s FAIL')
 		;
 	}

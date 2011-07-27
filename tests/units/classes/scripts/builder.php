@@ -400,32 +400,38 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
-			->mock($vcs)->call('setWorkingDirectory', array($workingDirectory))
-			->mock($vcs)->call('exportRepository')
+			->mock($vcs)
+				->call('setWorkingDirectory')
+					->withArguments($workingDirectory)
+					->once()
+			->mock($vcs)
+				->call('exportRepository')->once()
 			->adapter($adapter)
-				->call('sys_get_temp_dir')
-				->call('tempnam', array($tempDirectory, ''))
-				->call('proc_open', array($command, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes))
-				->call('proc_get_status', array($resource))
-				->call('stream_get_contents', array($stdOut))
-				->call('fclose', array($stdOut))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('file_get_contents', array($scoreFile))
-				->call('unserialize', array($scoreFileContents))
-				->call('unlink', array($scoreFile))
+				->call('sys_get_temp_dir')->once()
+				->call('tempnam')->withArguments($tempDirectory, '')->once()
+				->call('proc_open')->withArguments($command, array(1 => array('pipe', 'w'), 2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_get_status')->withArguments($resource)->once()
+				->call('stream_get_contents')->withArguments($stdOut)->once()
+				->call('fclose')->withArguments($stdOut)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('file_get_contents')->withArguments($scoreFile)->once()
+				->call('unserialize')->withArguments($scoreFileContents)->once()
+				->call('unlink')->withArguments($scoreFile)->once()
 			->mock($score)
-				->call('getFailNumber')
-				->call('getExceptionNumber')
-				->call('getErrorNumber')
+				->call('getFailNumber')->once()
+				->call('getExceptionNumber')->once()
+				->call('getErrorNumber')->once()
 		;
 
 		$adapter->proc_open = false;
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to execute \'' . $command . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')->withArguments('Unable to execute \'' . $command . '\'')
+				->once()
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdOut, & $stdErr, & $pipes, & $resource) { $pipes = array(1 => $stdOut = uniqid(), 2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -434,28 +440,40 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to find \'' . $php . '\' or it is not executable'))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Unable to find \'' . $php . '\' or it is not executable')
+					->once()
 		;
 
 		$adapter->proc_get_status = array('exitcode' => 127, 'running' => false);
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to find \'' . $php . '\' or it is not executable'))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Unable to find \'' . $php . '\' or it is not executable')
+					->once()
 		;
 
 		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(1, 125), 'running' => false);
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+					->once()
 		;
 
 		$adapter->proc_get_status = array('exitcode' => $exitCode = rand(128, PHP_INT_MAX), 'running' => false);
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Command \'' . $command . '\' failed with exit code \'' . $exitCode . '\'')
+					->once()
 		;
 
 		$adapter->proc_get_status = array('exit_code' => 0, 'running' => true);
@@ -465,14 +483,19 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->checkUnitTests())->isTrue()
 			->mock($builder)
-				->notCall('writeErrorInErrorsDirectory', array($stdOutContents))
+				->call('writeErrorInErrorsDirectory')
+					->withArguments($stdOutContents)
+					->never()
 		;
 
 		$adapter->stream_get_contents = function($stream) use (& $stdErr, & $stdErrContents) { return $stream != $stdErr ? '' : $stdErrContents = uniqid(); };
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments($stdErrContents)
+					->once()
 		;
 
 		$adapter->stream_get_contents = '';
@@ -482,7 +505,10 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to read score from file \'' . $scoreFile . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Unable to read score from file \'' . $scoreFile . '\'')
+					->once()
 		;
 
 		$adapter->file_get_contents = $scoreFileContents;
@@ -490,14 +516,20 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to unserialize score from file \'' . $scoreFile . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Unable to unserialize score from file \'' . $scoreFile . '\'')
+					->once()
 		;
 
 		$adapter->unserialize = uniqid();
 
 		$this->assert
 			->boolean($builder->checkUnitTests())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Contents of file \'' . $scoreFile . '\' is not a score'))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Contents of file \'' . $scoreFile . '\' is not a score')
+					->once()
 		;
 
 		$adapter->unserialize = $score;
@@ -634,11 +666,14 @@ class builder extends atoum\test
 
 		$this->assert
 			->boolean($builder->createPhar())->isFalse()
-			->mock($builder)->call('writeErrorInErrorsDirectory', array('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\''))
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\'')
+					->once()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$adapter->proc_open = function($bin, $descriptors, & $stream) use (& $stdErr, & $pipes, & $resource) { $pipes = array(2 => $stdErr = uniqid()); $stream = $pipes; return ($resource = uniqid()); };
@@ -652,18 +687,20 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
 			->mock($taggerEngine)
-				->call('setVersion', array('nightly-' . $revision . '-' . $date))
-				->call('tagVersion')
+				->call('setVersion')
+					->withArguments('nightly-' . $revision . '-' . $date)
+					->once()
+				->call('tagVersion')->atLeastOnce()
 			->adapter($adapter)
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('date', array('YmdHi'))
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('date')->withArguments('YmdHi')->atLeastOnce()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$adapter->resetCalls();
@@ -675,18 +712,18 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar($tag = uniqid()))->isTrue()
 			->mock($taggerEngine)
-				->call('setVersion', array($tag))
-				->call('tagVersion')
+				->call('setVersion')->withArguments($tag)->once()
+				->call('tagVersion')->once()
 			->adapter($adapter)
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->notCall('date')
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('date')->never()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$adapter->resetCalls();
@@ -700,15 +737,18 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isFalse()
 			->adapter($adapter)
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-			->mock($builder)->call('writeErrorInErrorsDirectory', array($stdErrContents))
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+			->mock($builder)
+				->call('writeErrorInErrorsDirectory')
+					->withArguments($stdErrContents)
+					->once()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$builder->setRevisionFile($revisionFile = uniqid());
@@ -722,15 +762,15 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
-				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
+				->call('file_get_contents')->withArguments($revisionFile)->once()
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$adapter->file_get_contents = false;
@@ -741,16 +781,16 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
-				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('file_put_contents', array($revisionFile, $revision, \LOCK_EX))
+				->call('file_get_contents')->withArguments($revisionFile)->once()
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('file_put_contents')->withArguments($revisionFile, $revision, \LOCK_EX)->once()
 			->mock($vcs)
-				->call('setRevision', array($revision))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments($revision)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 
 		$vcsController->resetCalls()->getNextRevisions = function() use (& $revision) { static $i = 0; return ++$i > 1 ? array() : array($revision = rand(1, PHP_INT_MAX)); };
@@ -777,18 +817,18 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
-				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('file_put_contents', array($revisionFile, 3, \LOCK_EX))
+				->call('file_get_contents')->withArguments($revisionFile)->once()
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->exactly(3)
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('file_put_contents')->withArguments($revisionFile, 3, \LOCK_EX)->once()
 			->mock($vcs)
-				->call('setRevision', array(1))
-				->call('setRevision', array(2))
-				->call('setRevision', array(3))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments(1)->once()
+				->call('setRevision')->withArguments(2)->once()
+				->call('setRevision')->withArguments(3)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->atLeastOnce()
+				->call('exportRepository')->atLeastOnce()
 		;
 
 		$vcsController->resetCalls();
@@ -800,16 +840,16 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
-				->call('file_get_contents', array($revisionFile))
-				->call('proc_open', array($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes))
-				->call('stream_get_contents', array($stdErr))
-				->call('fclose', array($stdErr))
-				->call('proc_close', array($resource))
-				->call('file_put_contents', array($revisionFile, 4, \LOCK_EX))
+				->call('file_get_contents')->withArguments($revisionFile)->once()
+				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('stream_get_contents')->withArguments($stdErr)->once()
+				->call('fclose')->withArguments($stdErr)->once()
+				->call('proc_close')->withArguments($resource)->once()
+				->call('file_put_contents')->withArguments($revisionFile, 4, \LOCK_EX)->once()
 			->mock($vcs)
-				->call('setRevision', array(4))
-				->call('setWorkingDirectory', array($workingDirectory))
-				->call('exportRepository')
+				->call('setRevision')->withArguments(4)->once()
+				->call('setWorkingDirectory')->withArguments($workingDirectory)->once()
+				->call('exportRepository')->once()
 		;
 	}
 
@@ -837,15 +877,14 @@ class builder extends atoum\test
 
 		$this->assert
 			->object($builder->run())->isIdenticalTo($builder)
-			->mock($builder)
-				->call('createPhar')
+			->mock($builder)->call('createPhar')->once()
 			->adapter($adapter)
-				->call('file_get_contents', array($runFile))
-				->call('fopen', array($runFile, 'w+'))
-				->call('flock', array($runFileResource, \LOCK_EX | \LOCK_NB))
-				->call('fwrite', array($runFileResource, $pid))
-				->call('fclose', array($runFileResource))
-				->call('unlink', array($runFile))
+				->call('file_get_contents')->withArguments($runFile)->once()
+				->call('fopen')->withArguments($runFile, 'w+')->once()
+				->call('flock')->withArguments($runFileResource, \LOCK_EX | \LOCK_NB)->once()
+				->call('fwrite')->withArguments($runFileResource, $pid)->once()
+				->call('fclose')->withArguments($runFileResource)->once()
+				->call('unlink')->withArguments($runFile)->once()
 		;
 	}
 
@@ -860,7 +899,7 @@ class builder extends atoum\test
 		$this->assert
 			->variable($builder->getErrorsDirectory())->isNull()
 			->object($builder->writeErrorInErrorsDirectory(uniqid()))->isIdenticalTo($builder)
-			->adapter($adapter)->notCall('file_put_contents')
+			->adapter($adapter)->call('file_put_contents')->never()
 		;
 
 		$builder->setErrorsDirectory($errorDirectory = uniqid());
@@ -873,7 +912,7 @@ class builder extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Revision is undefined')
-			->adapter($adapter)->notCall('file_put_contents')
+			->adapter($adapter)->call('file_put_contents')->never()
 		;
 
 		$this->mockGenerator
@@ -890,7 +929,7 @@ class builder extends atoum\test
 		$this->assert
 			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
 			->object($builder->writeErrorInErrorsDirectory($message = uniqid()))->isIdenticalTo($builder)
-			->adapter($adapter)->call('file_put_contents', array($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND))
+			->adapter($adapter)->call('file_put_contents')->withArguments($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND)->once()
 		;
 
 		$adapter
@@ -906,7 +945,7 @@ class builder extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to save error in file \'' . $errorDirectory . \DIRECTORY_SEPARATOR . $revision . '\'')
-			->adapter($adapter)->call('file_put_contents', array($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND))
+			->adapter($adapter)->call('file_put_contents')->withArguments($errorDirectory . \DIRECTORY_SEPARATOR . $revision, $message, \LOCK_EX | \FILE_APPEND)->once()
 		;
 	}
 }

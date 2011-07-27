@@ -70,7 +70,7 @@ class afterDestructionOf extends atoum\test
 		$this->assert
 			->object($asserter->setWith($objectWithDestructor = new \mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
 			->mock($objectWithDestructor)
-				->call('__destruct')
+				->call('__destruct')->once()
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
 

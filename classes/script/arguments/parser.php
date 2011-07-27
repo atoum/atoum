@@ -85,8 +85,6 @@ class parser implements \iteratorAggregate
 
 			$arguments->next();
 
-			$key = 0;
-
 			while ($arguments->valid() === true)
 			{
 				$value = $arguments->current();

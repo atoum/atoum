@@ -7,12 +7,12 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class adapter extends atoum\adapter
+class adapter extends atoum\adapter implements atoum\mock\observer
 {
 	protected $calls = array();
 	protected $callers = array();
 
-	private static $callNumber = 0;
+	private static $callsNumber = 0;
 
 	public function __set($functionName, $mixed)
 	{
@@ -52,9 +52,27 @@ class adapter extends atoum\adapter
 		return $this->callers;
 	}
 
-	public function getCalls($functionName = null)
+	public function getCalls($functionName = null, array $arguments = null)
 	{
-		return ($functionName === null ?  $this->calls : (isset($this->calls[$functionName]) === false ? null : $this->calls[$functionName]));
+		$calls = null;
+
+		if ($functionName === null)
+		{
+			$calls = $this->calls;
+		}
+		else if (isset($this->calls[$functionName]) === true)
+		{
+			if ($arguments === null)
+			{
+				$calls = $this->calls[$functionName];
+			}
+			else
+			{
+				$calls = array_filter($this->calls[$functionName], function($callArguments) use ($arguments) { return $arguments == $callArguments; });
+			}
+		}
+
+		return $calls;
 	}
 
 	public function resetCalls()
@@ -73,7 +91,7 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
-		$this->calls[$functionName][++self::$callNumber] = $arguments;
+		$this->calls[$functionName][++self::$callsNumber] = $arguments;
 
 		return $this;
 	}
@@ -88,6 +106,11 @@ class adapter extends atoum\adapter
 		$this->addCall($functionName, $arguments);
 
 		return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, sizeof($this->calls[$functionName])));
+	}
+
+	public static function getCallsNumber()
+	{
+		return self::$callsNumber;
 	}
 
 	protected static function isLanguageConstruct($functionName)

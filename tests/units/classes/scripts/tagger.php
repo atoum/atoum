@@ -45,6 +45,7 @@ class tagger extends atoum\test
 			->generate('mageekguy\atoum\scripts\tagger\engine')
 		;
 
+
 		$tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid());
 
 		$tagger
@@ -57,7 +58,7 @@ class tagger extends atoum\test
 		$this->assert
 			->object($tagger->run())->isIdenticalTo($tagger)
 			->mock($engine)
-				->call('tagVersion')
+				->call('tagVersion')->once()
 		;
 
 		$engine->getMockController()->resetCalls();
@@ -65,9 +66,9 @@ class tagger extends atoum\test
 		$this->assert
 			->object($tagger->run(array('-h')))->isIdenticalTo($tagger)
 			->mock($tagger)
-				->call('help')
+				->call('help')->atLeastOnce()
 			->mock($engine)
-				->notCall('tagVersion')
+				->call('tagVersion')->never()
 		;
 	}
 }

@@ -92,7 +92,7 @@ class generator extends atoum\test
 
 		$this->assert
 			->object($mockGenerator->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-			->mock($reflectionClass)->call('__construct', array($class))
+			->mock($reflectionClass)->call('__construct')->withArguments($class)->once()
 		;
 
 		$mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); });

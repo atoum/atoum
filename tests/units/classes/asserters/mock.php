@@ -10,7 +10,10 @@ use
 
 require_once(__DIR__ . '/../../runner.php');
 
-class dummy {}
+class dummy
+{
+	public function foo($bar) {}
+}
 
 class mock extends atoum\test
 {
@@ -30,6 +33,8 @@ class mock extends atoum\test
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
 			->variable($asserter->getMock())->isNull()
+			->variable($asserter->getTestedMethodName())->isNull()
+			->variable($asserter->getTestedMethodArguments())->isNull()
 		;
 	}
 
@@ -120,7 +125,7 @@ class mock extends atoum\test
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->wasCalled(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s is not called'), get_class($mock)))
-			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -142,7 +147,7 @@ class mock extends atoum\test
 			->exception(function() use (& $line, $asserter, & $failMessage) { $line = __LINE__; $asserter->wasCalled($failMessage = uniqid()); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage($failMessage)
-			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -197,7 +202,7 @@ class mock extends atoum\test
 		$this->assert
 			->object($asserter->wasNotCalled())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isZero()
 		;
 
 		$mock->getMockController()->{__FUNCTION__} = function() {};
@@ -224,7 +229,7 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testCall($argForTest = null)
+	public function testCall()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
@@ -238,28 +243,105 @@ class mock extends atoum\test
 		;
 
 		$this->mockGenerator
-			->generate(__CLASS__)
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
 		;
 
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
-		$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);
-		$mock->getMockController()->{__FUNCTION__} = function() {};
+		$this->assert
+			->object($asserter->call($method = uniqid()))->isIdenticalTo($asserter)
+			->string($asserter->getTestedMethodName())->isEqualTo($method)
+		;
 
-		$asserter->setWith($mock);
+		$asserter->withArguments();
+
+		$this->assert
+			->variable($asserter->getTestedMethodArguments())->isNotNull()
+			->object($asserter->call($method = uniqid()))->isIdenticalTo($asserter)
+			->string($asserter->getTestedMethodName())->isEqualTo($method)
+			->variable($asserter->getTestedMethodArguments())->isNull()
+		;
+	}
+
+	public function testWithArguments()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+		;
+
+		$asserter->call(uniqid());
+
+		$this->assert
+			->object($asserter->withArguments())->isIdenticalTo($asserter)
+			->array($asserter->getTestedMethodArguments())->isEmpty()
+			->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
+			->array($asserter->getTestedMethodArguments())->isEqualTo(array($arg1))
+			->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
+			->array($asserter->getTestedMethodArguments())->isEqualTo(array($arg1, $arg2))
+		;
+	}
+
+	public function testOnce()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->once();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->once();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+		;
+
+		$asserter->call('foo');
 
 		$score->reset();
-
-		$method = __FUNCTION__;
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method); })
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), $method))
-			->integer($score->getPassNumber())->isEqualTo(0)
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -268,47 +350,28 @@ class mock extends atoum\test
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), $method)
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
 					)
 				)
 			)
 		;
 
-		$mock->{__FUNCTION__}();
+		$mock->foo(uniqid());
 
 		$this->assert
-			->object($asserter->call($method))->isIdenticalTo($asserter)
+			->object($asserter->once())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
-		$score->reset();
+		$mock->foo(uniqid());
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->exception(function() use (& $line, $asserter, $method) { $line = __LINE__; $asserter->call($method, array(uniqid())); })
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called with this argument'), get_class($mock), $method))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called with this argument'), get_class($mock), $method)
-					)
-				)
-			)
-			->exception(function() use (& $otherLine, $asserter, $method) { $otherLine = __LINE__; $asserter->call($method, array(uniqid(), uniqid())); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called with these arguments'), get_class($mock),$method))
-			->integer($score->getPassNumber())->isEqualTo(0)
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 2 times instead of 1'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
@@ -317,8 +380,8 @@ class mock extends atoum\test
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called with this argument'), get_class($mock), $method)
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
 					),
 					array(
 						'case' => null,
@@ -326,157 +389,615 @@ class mock extends atoum\test
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::call()',
-						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called with these arguments'), get_class($mock), $method)
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 2 times instead of 1'), get_class($mock), 'foo')
 					)
 				)
 			)
 		;
 
-		$mock->{__FUNCTION__}($arg = uniqid());
+		$mock->getMockController()->resetCalls();
+
+		$score->reset();
+
+		$asserter->withArguments($arg = uniqid());
+
+		$mock->foo($arg);
 
 		$this->assert
-			->object($asserter->call($method, array($arg)))->isIdenticalTo($asserter)
+			->object($asserter->once())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$asserter->withArguments(uniqid());
+
+		$this->assert
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					)
+				)
+			)
 		;
 	}
 
-	public function testNotCall($argForTest = null)
+	public function testAtLeastOnce()
 	{
-		$this->mockGenerator
-			->generate(__CLASS__)
-		;
-
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
-
-		$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter);
-
-		$method = __FUNCTION__;
-
-		$mock->getMockController()->{$method} = function() {};
-
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
-		$asserter->setWith($mock);
-
-		$score->reset();
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->atLeastOnce();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
 		;
 
-		$score->reset();
-
-		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
 		;
 
-		$score->reset();
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter) {
+						$asserter->atLeastOnce();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
 		;
 
-		$mock->{$method}();
+		$asserter->call('foo');
 
 		$score->reset();
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-			->exception(function() use ($asserter, $method) {
-					$asserter->notCall($method);
-				}
-			)
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->atLeastOnce(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called'), get_class($mock), $method))
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo'))
 			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::atLeastOnce()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
-		$score->reset();
+		$mock->foo(uniqid());
 
 		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-		;
-
-		$score->reset();
-
-		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-		;
-
-		$mock->{$method}($arg = uniqid());
-
-		$score->reset();
-
-		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->exception(function() use ($asserter, $method) {
-					$asserter->notCall($method);
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called'), get_class($mock), $method))
-			->integer($score->getPassNumber())->isZero()
+			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
+		$mock->getMockController()->resetCalls();
+
 		$score->reset();
+
+		$asserter->withArguments($arg = uniqid());
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array()))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-		;
-
-		$score->reset();
-
-		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->object($asserter->notCall($method, array(uniqid())))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-		;
-
-		$score->reset();
-
-		$this->assert
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isZero()
-			->exception(function() use ($asserter, $method, $arg) {
-					$asserter->notCall($method, array($arg));
-				}
-			)
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->atLeastOnce(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called with this argument'), get_class($mock), $method))
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo'))
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::atLeastOnce()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$asserter->withArguments(uniqid());
+
+		$this->assert
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->atLeastOnce(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::atLeastOnce()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::atLeastOnce()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+	}
+
+	public function testExactly()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->exactly(2);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->exactly(2);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+		;
+
+		$asserter->call('foo');
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->object($asserter->exactly(2))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(2)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 3 times instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(3)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anotherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 3 times instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$score->reset();
+
+		$asserter->withArguments($arg = uniqid());
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(3)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anotherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->object($asserter->exactly(2))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(3)
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->exception(function() use (& $anAnotherLine, $asserter) { $anAnotherLine = __LINE__; $asserter->exactly(2); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 3 times instead of 2'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(4)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anotherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 2'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anAnotherLine,
+						'asserter' => get_class($asserter) . '::exactly()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 3 times instead of 2'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+	}
+
+	public function testNever()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->never();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->never();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+		;
+
+		$asserter->call('foo');
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->never())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 0'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::never()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 0'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$score->reset();
+
+		$asserter->withArguments($arg = uniqid());
+
+		$this->assert
+			->object($asserter->never())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 0'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::never()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 0'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo($arg);
+
+		$this->assert
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->never(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 2 times instead of 0'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::never()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 1 time instead of 0'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::never()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 2 times instead of 0'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$asserter->withArguments(uniqid());
+
+		$this->assert
+			->object($asserter->never())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(2)
 		;
 	}
 }

@@ -231,42 +231,44 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
 			->mock($locale)
-				->call('__', array('%s test', '%s tests', 1))
-				->call('__', array('%s method', '%s methods', 1))
-				->call('__', array('%s assertion', '%s assertions', 1))
-				->call('__', array('%s error', '%s errors', 0))
-				->call('__', array('%s exception', '%s exceptions', 0))
-				->call('_', array('Success (%s, %s, %s, %s, %s) !'))
+				->call('__')->withArguments('%s test', '%s tests', 1)->once()
+				->call('__')->withArguments('%s method', '%s methods', 1)->once()
+				->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
+				->call('__')->withArguments('%s error', '%s errors', 0)->once()
+				->call('__')->withArguments('%s exception', '%s exceptions', 0)->once()
+				->call('_')->withArguments('Success (%s, %s, %s, %s, %s) !')->once()
 			->mock($successColorizer)
-				->notCall('colorize', array($noTestRunningString))
-				->call('colorize', array($successString))
-			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+				->call('colorize')->withArguments($noTestRunningString)->never()
+				->call('colorize')->withArguments($successString)->once()
+			->mock($failureColorizer)
+				->wasNotCalled()
+			->mock($prompt)
+				->call('__toString')->once()
 		;
 
 		$this->startCase('Success with several tests, several methods and several assertions,  no fail, no error, no exception');
@@ -279,42 +281,42 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
 			->mock($locale)
-				->call('__', array('%s test', '%s tests', $testNumber))
-				->call('__', array('%s method', '%s methods', $testMethodNumber))
-				->call('__', array('%s assertion', '%s assertions', $assertionNumber))
-				->call('__', array('%s error', '%s errors', 0))
-				->call('__', array('%s exception', '%s exceptions', 0))
-				->call('_', array('Success (%s, %s, %s, %s, %s) !'))
+				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
+				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
+				->call('__')->withArguments('%s error', '%s errors', 0)->once()
+				->call('__')->withArguments('%s exception', '%s exceptions', 0)->once()
+				->call('_')->withArguments('Success (%s, %s, %s, %s, %s) !')->once()
 			->mock($successColorizer)
-				->notCall('colorize', array($noTestRunningString))
-				->call('colorize', array($successString))
+				->call('colorize')->withArguments($noTestRunningString)->never()
+				->call('colorize')->withArguments($successString)->once()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->startCase('Failure with several tests, several methods and several assertions, one fail, one error, one exception');
@@ -327,42 +329,42 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
 			->mock($locale)
-				->call('__', array('%s test', '%s tests', $testNumber))
-				->call('__', array('%s method', '%s methods', $testMethodNumber))
-				->call('__', array('%s failure', '%s failures', 1))
-				->call('__', array('%s error', '%s errors', 1))
-				->call('__', array('%s exception', '%s exceptions', 1))
-				->call('_', array('Failure (%s, %s, %s, %s, %s) !'))
+				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
+				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s failure', '%s failures', 1)->once()
+				->call('__')->withArguments('%s error', '%s errors', 1)->once()
+				->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
+				->call('_')->withArguments('Failure (%s, %s, %s, %s, %s) !')->once()
 			->mock($failureColorizer)
-				->notCall('colorize', array($noTestRunningString))
-				->call('colorize', array($failureString))
+				->call('colorize')->withArguments($noTestRunningString)->never()
+				->call('colorize')->withArguments($failureString)->once()
 			->mock($successColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->startCase('Failure with several tests, several methods and several assertions, several fails, several errors, several exceptions');
@@ -375,42 +377,42 @@ class cli extends units\report\fields\runner
 
 		$this->assert
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
-			->mock($locale)->call('_', array('No test running.'))
-			->mock($successColorizer)->notCall('colorize', array($noTestRunningString))
+			->mock($locale)->call('_')->withArguments('No test running.')->once()
+			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 			->mock($failureColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->assert
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
 			->mock($locale)
-				->call('__', array('%s test', '%s tests', $testNumber))
-				->call('__', array('%s method', '%s methods', $testMethodNumber))
-				->call('__', array('%s failure', '%s failures', $failNumber))
-				->call('__', array('%s error', '%s errors', $errorNumber))
-				->call('__', array('%s exception', '%s exceptions', $exceptionNumber))
-				->call('_', array('Failure (%s, %s, %s, %s, %s) !'))
+				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
+				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s failure', '%s failures', $failNumber)->once()
+				->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
+				->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
+				->call('_')->withArguments('Failure (%s, %s, %s, %s, %s) !')->once()
 			->mock($failureColorizer)
-				->notCall('colorize', array($noTestRunningString))
-				->call('colorize', array($failureString))
+				->call('colorize')->withArguments($noTestRunningString)->never()
+				->call('colorize')->withArguments($failureString)->once()
 			->mock($successColorizer)->wasNotCalled()
-			->mock($prompt)->call('__toString')
+			->mock($prompt)->call('__toString')->once()
 		;
 	}
 }

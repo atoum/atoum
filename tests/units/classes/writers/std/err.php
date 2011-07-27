@@ -45,9 +45,9 @@ class err extends atoum\test
 
 		$this->assert
 			->object($stderr->write($string = uniqid()))->isIdenticalTo($stderr)
-			->adapter($adapter)->call('fwrite', array(null, $string))
+			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 			->object($stderr->write($string = uniqid() . "\n"))->isIdenticalTo($stderr)
-			->adapter($adapter)->call('fwrite', array(null, $string))
+			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 		;
 	}
 }
