@@ -10,13 +10,6 @@ require_once(__DIR__ . '/../../runner.php');
 
 class adapter extends atoum\test
 {
-	public function testClass()
-	{
-		$this->assert
-			->testedClass->hasInterface('mageekguy\atoum\mock\observer')
-		;
-	}
-
 	public function test__construct()
 	{
 		$adapter = new atoum\test\adapter();

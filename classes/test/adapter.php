@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class adapter extends atoum\adapter implements atoum\mock\observer
+class adapter extends atoum\adapter
 {
 	protected $calls = array();
 	protected $callers = array();
