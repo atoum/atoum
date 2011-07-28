@@ -14,6 +14,7 @@ class controller extends test\adapter
 
 	protected static $injectInNextInstance = null;
 
+	private $disableMethodChecking = false;
 	private $reflectionClassInjector = null;
 
 	public function __set($method, $mixed)
@@ -42,6 +43,13 @@ class controller extends test\adapter
 		$this->checkMethod($method);
 
 		return parent::__unset($method);
+	}
+
+	public function disableMethodChecking()
+	{
+		$this->disableMethodChecking = true;
+
+		return $this;
 	}
 
 	public function getMockClass()
@@ -180,7 +188,7 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockClass !== null)
+		if ($this->mockClass !== null && $this->disableMethodChecking === false)
 		{
 			if (array_key_exists($method, $this->callers) === false)
 			{

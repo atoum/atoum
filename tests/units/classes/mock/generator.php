@@ -190,9 +190,18 @@ class generator extends atoum\test
 				"\t\t" . '{' . PHP_EOL .
 				"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
 				"\t\t" . '}' . PHP_EOL .
+				"\t\t" . '$this->getMockController()->disableMethodChecking();' . PHP_EOL .
 				"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
 				"\t\t" . '{' . PHP_EOL .
 				"\t\t\t" . '$this->mockController->invoke(\'__construct\', array());' . PHP_EOL .
+				"\t\t" . '}' . PHP_EOL .
+				"\t" . '}' . PHP_EOL .
+				"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
+				"\t" . '{' . PHP_EOL .
+				"\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
+				"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
+				"\t\t" . '{' . PHP_EOL .
+				"\t\t\t" . 'return $this->mockController->invoke($methodName, $arguments);' . PHP_EOL .
 				"\t\t" . '}' . PHP_EOL .
 				"\t" . '}' . PHP_EOL .
 				'}' . PHP_EOL .
