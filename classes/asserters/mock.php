@@ -66,6 +66,13 @@ class mock extends atoum\asserter
 		return $beforeMethodCall;
 	}
 
+	public function beforeAnyMethodCalls()
+	{
+		$this->beforeMethodCalls = array();
+
+		return $this;
+	}
+
 	public function getBeforeMethodCalls()
 	{
 		return $this->beforeMethodCalls;
@@ -76,6 +83,13 @@ class mock extends atoum\asserter
 		$this->mockIsSet()->beforeFunctionCalls[] = $beforeFunctionCall = new mock\call\adapter($this, $adapter, $functionName);
 
 		return $beforeFunctionCall;
+	}
+
+	public function beforeAnyFunctionCalls()
+	{
+		$this->beforeFunctionCalls = array();
+
+		return $this;
 	}
 
 	public function getBeforeFunctionCalls()
@@ -95,6 +109,13 @@ class mock extends atoum\asserter
 		return $this->afterMethodCalls;
 	}
 
+	public function afterAnyMethodCalls()
+	{
+		$this->afterMethodCalls = array();
+
+		return $this;
+	}
+
 	public function afterFunctionCall($functionName, test\adapter $adapter)
 	{
 		$this->mockIsSet()->afterFunctionCalls[] = $afterFunctionCall = new mock\call\adapter($this, $adapter, $functionName);
@@ -107,6 +128,12 @@ class mock extends atoum\asserter
 		return $this->afterFunctionCalls;
 	}
 
+	public function afterAnyFunctionCalls()
+	{
+		$this->afterFunctionCalls = array();
+
+		return $this;
+	}
 
 	public function wasCalled($failMessage = null)
 	{

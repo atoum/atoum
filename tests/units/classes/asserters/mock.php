@@ -260,17 +260,14 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testBeforeFunctionCall()
+	public function testBeforeAnyMethodCalls()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->beforeFunctionCall(uniqid(), new test\adapter());
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Mock is undefined')
+			->array($asserter->getBeforeMethodCalls())->isEmpty()
+			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeMethodCalls())->isEmpty()
 		;
 
 		$this->mockGenerator
@@ -279,13 +276,23 @@ class mock extends atoum\test
 
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
-		$adapter = new test\adapter();
+		$asserter->beforeMethodCall($method = uniqid());
 
 		$this->assert
-			->object($asserter->beforeFunctionCall('foo', $adapter))->isEqualTo($beforeFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'foo'))
-			->array($asserter->getBeforeFunctionCalls())->isEqualTo(array($beforeFunctionCall))
-			->object($asserter->beforeFunctionCall('bar', $adapter))->isEqualTo($otherBeforeFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'bar'))
-			->array($asserter->getBeforeFunctionCalls())->isEqualTo(array($beforeFunctionCall, $otherBeforeFunctionCall))
+			->array($asserter->getBeforeMethodCalls())->isNotEmpty()
+			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeMethodCalls())->isEmpty()
+		;
+
+		$asserter
+			->beforeMethodCall($method1 = uniqid())
+			->beforeMethodCall($method2 = uniqid())
+		;
+
+		$this->assert
+			->array($asserter->getBeforeMethodCalls())->isNotEmpty()
+			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeMethodCalls())->isEmpty()
 		;
 	}
 
@@ -316,7 +323,43 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testAfterFunctionCall()
+	public function testAfterAnyMethodCalls()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->array($asserter->getAfterMethodCalls())->isEmpty()
+			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterMethodCalls())->isEmpty()
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$asserter->afterMethodCall($method = uniqid());
+
+		$this->assert
+			->array($asserter->getAfterMethodCalls())->isNotEmpty()
+			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterMethodCalls())->isEmpty()
+		;
+
+		$asserter
+			->afterMethodCall($method1 = uniqid())
+			->afterMethodCall($method2 = uniqid())
+		;
+
+		$this->assert
+			->array($asserter->getAfterMethodCalls())->isNotEmpty()
+			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterMethodCalls())->isEmpty()
+		;
+	}
+
+	public function testBeforeFunctionCall()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
@@ -338,10 +381,115 @@ class mock extends atoum\test
 		$adapter = new test\adapter();
 
 		$this->assert
+			->object($asserter->beforeFunctionCall('foo', $adapter))->isEqualTo($beforeFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'foo'))
+			->array($asserter->getBeforeFunctionCalls())->isEqualTo(array($beforeFunctionCall))
+			->object($asserter->beforeFunctionCall('bar', $adapter))->isEqualTo($otherBeforeFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'bar'))
+			->array($asserter->getBeforeFunctionCalls())->isEqualTo(array($beforeFunctionCall, $otherBeforeFunctionCall))
+		;
+	}
+
+	public function testBeforeAnyFunctionCalls()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->array($asserter->getBeforeFunctionCalls())->isEmpty()
+			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeFunctionCalls())->isEmpty()
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$adapter = new test\adapter();
+
+		$asserter->beforeFunctionCall($function = uniqid(), $adapter);
+
+		$this->assert
+			->array($asserter->getBeforeFunctionCalls())->isNotEmpty()
+			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeFunctionCalls())->isEmpty()
+		;
+
+		$asserter
+			->beforeFunctionCall($function1 = uniqid(), $adapter)
+			->beforeFunctionCall($function2 = uniqid(), $adapter)
+		;
+
+		$this->assert
+			->array($asserter->getBeforeFunctionCalls())->isNotEmpty()
+			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getBeforeFunctionCalls())->isEmpty()
+		;
+	}
+
+	public function testAfterFunctionCall()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->afterFunctionCall(uniqid(), new test\adapter());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$adapter = new test\adapter();
+
+		$this->assert
 			->object($asserter->afterFunctionCall('foo', $adapter))->isEqualTo($afterFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'foo'))
 			->array($asserter->getAfterFunctionCalls())->isEqualTo(array($afterFunctionCall))
 			->object($asserter->afterFunctionCall('bar', $adapter))->isEqualTo($otherAfterFunctionCall = new asserters\mock\call\adapter($asserter, $adapter, 'bar'))
 			->array($asserter->getAfterFunctionCalls())->isEqualTo(array($afterFunctionCall, $otherAfterFunctionCall))
+		;
+	}
+
+	public function testAfterAnyFunctionCalls()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->array($asserter->getAfterFunctionCalls())->isEmpty()
+			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterFunctionCalls())->isEmpty()
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$adapter = new test\adapter();
+
+		$asserter->afterFunctionCall($function = uniqid(), $adapter);
+
+		$this->assert
+			->array($asserter->getAfterFunctionCalls())->isNotEmpty()
+			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterFunctionCalls())->isEmpty()
+		;
+
+		$asserter
+			->afterFunctionCall($function1 = uniqid(), $adapter)
+			->afterFunctionCall($function2 = uniqid(), $adapter)
+		;
+
+		$this->assert
+			->array($asserter->getAfterFunctionCalls())->isNotEmpty()
+			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->array($asserter->getAfterFunctionCalls())->isEmpty()
 		;
 	}
 
