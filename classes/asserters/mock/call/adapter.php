@@ -1,25 +1,25 @@
 <?php
 
-namespace mageekguy\atoum\asserters\mock;
+namespace mageekguy\atoum\asserters\mock\call;
 
 use
-	mageekguy\atoum\mock,
+	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class call
+class adapter
 {
 	protected $mockAsserter = null;
-	protected $mockAggregator = null;
-	protected $methodName = '';
+	protected $adapter = null;
+	protected $functionName = '';
 	protected $arguments = null;
 
-	public function __construct(asserters\mock $mockAsserter, mock\aggregator $mockAggregator, $methodName)
+	public function __construct(asserters\mock $mockAsserter, test\adapter $adapter, $functionName)
 	{
 		$this->mockAsserter = $mockAsserter;
-		$this->mockAggregator = $mockAggregator;
-		$this->methodName = (string) $methodName;
+		$this->adapter = $adapter;
+		$this->functionName = (string) $functionName;
 	}
 
 	public function __call($method, $arguments)
@@ -37,14 +37,14 @@ class call
 		return $this->mockAsserter;
 	}
 
-	public function getMockAggregator()
+	public function getAdapter()
 	{
-		return $this->mockAggregator;
+		return $this->adapter;
 	}
 
-	public function getMethodName()
+	public function getFunctionName()
 	{
-		return $this->methodName;
+		return $this->functionName;
 	}
 
 	public function withArguments()
@@ -59,23 +59,16 @@ class call
 		return $this->arguments;
 	}
 
-	public function on(mock\aggregator $mockAggregator)
-	{
-		$this->mockAggregator = $mockAggregator;
-
-		return $this;
-	}
-
 	public function getFirstCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
 
 		return $calls === null ? null : key($calls);
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
 
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}

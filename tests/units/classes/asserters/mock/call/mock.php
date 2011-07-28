@@ -1,13 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\mock;
+namespace mageekguy\atoum\tests\units\asserters\mock\call;
 
 require_once(__DIR__ . '/../../../runner.php');
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\asserters\mock\call
 ;
 
 class dummy
@@ -15,17 +16,17 @@ class dummy
 	public function foo() {}
 }
 
-class call extends atoum\test
+class mock extends atoum\test
 {
 	public function test__construct()
 	{
 		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				$methodName = uniqid()
 		);
 
@@ -36,9 +37,9 @@ class call extends atoum\test
 			->variable($call->getArguments())->isNull()
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				$methodName = uniqid()
 		);
 
@@ -54,12 +55,12 @@ class call extends atoum\test
 	{
 		$this->mockGenerator
 			->generate('mageekguy\atoum\asserters\mock')
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				uniqid()
 		);
 
@@ -86,12 +87,12 @@ class call extends atoum\test
 	public function testWithArguments()
 	{
 		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				uniqid()
 		);
 
@@ -106,16 +107,16 @@ class call extends atoum\test
 	public function testOn()
 	{
 		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				uniqid()
 		);
 
-		$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy();
+		$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy();
 
 		$this->assert
 			->object($call->on($mockAggregator))->isIdenticalTo($call)
@@ -126,12 +127,12 @@ class call extends atoum\test
 	public function testGetFirstCall()
 	{
 		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				'foo'
 		);
 
@@ -139,7 +140,7 @@ class call extends atoum\test
 			->variable($call->getFirstCall())->isNull()
 		;
 
-		$otherMock = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy();
+		$otherMock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy();
 		$otherMock->foo();
 
 		$this->assert
@@ -162,12 +163,12 @@ class call extends atoum\test
 	public function testGetLastCall()
 	{
 		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\mock\dummy')
+			->generate('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 		;
 
-		$call = new asserters\mock\call(
+		$call = new call\mock(
 				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy(),
+				$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 				'foo'
 		);
 
@@ -175,7 +176,7 @@ class call extends atoum\test
 			->variable($call->getLastCall())->isNull()
 		;
 
-		$otherMock = new \mock\mageekguy\atoum\tests\units\asserters\mock\dummy();
+		$otherMock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy();
 		$otherMock->foo();
 
 		$this->assert

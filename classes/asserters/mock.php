@@ -4,6 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
@@ -12,6 +13,8 @@ class mock extends atoum\asserter
 	protected $mock = null;
 	protected $calledMethodName = null;
 	protected $calledMethodArguments = null;
+	protected $beforeFunctionCalls = array();
+	protected $afterFunctionCalls = array();
 	protected $beforeMethodCalls = array();
 	protected $afterMethodCalls = array();
 
@@ -58,7 +61,7 @@ class mock extends atoum\asserter
 
 	public function beforeMethodCall($methodName)
 	{
-		$this->mockIsSet()->beforeMethodCalls[] = $beforeMethodCall = new mock\call($this, $this->mock, $methodName);
+		$this->mockIsSet()->beforeMethodCalls[] = $beforeMethodCall = new mock\call\mock($this, $this->mock, $methodName);
 
 		return $beforeMethodCall;
 	}
@@ -68,9 +71,21 @@ class mock extends atoum\asserter
 		return $this->beforeMethodCalls;
 	}
 
+	public function beforeFunctionCall($functionName, test\adapter $adapter)
+	{
+		$this->mockIsSet()->beforeFunctionCalls[] = $beforeFunctionCall = new mock\call\adapter($this, $adapter, $functionName);
+
+		return $beforeFunctionCall;
+	}
+
+	public function getBeforeFunctionCalls()
+	{
+		return $this->beforeFunctionCalls;
+	}
+
 	public function afterMethodCall($methodName)
 	{
-		$this->mockIsSet()->afterMethodCalls[] = $afterMethodCall = new mock\call($this, $this->mock, $methodName);
+		$this->mockIsSet()->afterMethodCalls[] = $afterMethodCall = new mock\call\mock($this, $this->mock, $methodName);
 
 		return $afterMethodCall;
 	}
@@ -79,6 +94,19 @@ class mock extends atoum\asserter
 	{
 		return $this->afterMethodCalls;
 	}
+
+	public function afterFunctionCall($functionName, test\adapter $adapter)
+	{
+		$this->mockIsSet()->afterFunctionCalls[] = $afterFunctionCall = new mock\call\adapter($this, $adapter, $functionName);
+
+		return $afterFunctionCall;
+	}
+
+	public function getAfterFunctionCalls()
+	{
+		return $this->afterFunctionCalls;
+	}
+
 
 	public function wasCalled($failMessage = null)
 	{
