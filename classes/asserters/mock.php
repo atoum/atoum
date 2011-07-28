@@ -13,6 +13,7 @@ class mock extends atoum\asserter
 	protected $calledMethodName = null;
 	protected $calledMethodArguments = null;
 	protected $beforeCall = null;
+	protected $afterCall = null;
 
 	public function getTestedMethodName()
 	{
@@ -59,12 +60,14 @@ class mock extends atoum\asserter
 	{
 		$this->mockIsSet()->beforeCall = new mock\call($this, $this->mock, $methodName);
 
-		return $this;
+		return $this->beforeCall;
 	}
 
-	public function getBeforeCall()
+	public function afterCallTo($methodName)
 	{
-		return $this->beforeCall;
+		$this->mockIsSet()->afterCall = new mock\call($this, $this->mock, $methodName);
+
+		return $this->afterCall;
 	}
 
 	public function wasCalled($failMessage = null)
@@ -113,9 +116,9 @@ class mock extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$callNumber = sizeof($this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
-		if ($callNumber !== 1)
+		if (($callsNumber = sizeof($calls)) !== 1)
 		{
 			$this->fail(
 				$failMessage !== null
@@ -124,11 +127,11 @@ class mock extends atoum\asserter
 						$this->getLocale()->__(
 							'method %s::%s() is called %d time instead of 1',
 							'method %s::%s() is called %d times instead of 1',
-							$callNumber
+							$callsNumber
 						),
 						get_class($this->mock),
 						$this->calledMethodName,
-						$callNumber
+						$callsNumber
 					)
 			);
 		}
@@ -142,9 +145,9 @@ class mock extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$callNumber = sizeof($this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
-		if ($callNumber < 1)
+		if (($callsNumber = sizeof($calls)) < 1)
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s::%s() is called 0 time'), get_class($this->mock), $this->calledMethodName));
 		}
@@ -158,19 +161,19 @@ class mock extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$callNumber = sizeof($this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
-		if ($number != $callNumber)
+		if (($callsNumber = sizeof($calls)) != $number)
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf(
 					$this->getLocale()->__(
 						'method %s::%s() is called %d time instead of %d',
 						'method %s::%s() is called %d times instead of %d',
-						$callNumber
+						$callsNumber
 					),
 					get_class($this->mock),
 					$this->calledMethodName,
-					$callNumber,
+					$callsNumber,
 					$number
 				)
 			);
@@ -185,28 +188,7 @@ class mock extends atoum\asserter
 
 	public function never($failMessage = null)
 	{
-		$callNumber = sizeof($this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
-
-		if ($callNumber != 0)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf(
-					$this->getLocale()->__(
-						'method %s::%s() is called %d time instead of 0',
-						'method %s::%s() is called %d times instead of 0',
-						$callNumber
-					),
-					get_class($this->mock),
-					$this->calledMethodName,
-					$callNumber
-				)
-			);
-		}
-		else
-		{
-			$this->pass();
-		}
-
-		return $this;
+		return $this->exactly(0);
 	}
 
 	protected function mockIsSet()
@@ -224,6 +206,44 @@ class mock extends atoum\asserter
 		if ($this->mockIsSet()->calledMethodName === null)
 		{
 			throw new exceptions\logic('Called method is undefined');
+		}
+
+		return $this;
+	}
+
+	protected function assertOnBeforeAndAfterCallTo($calls)
+	{
+		if (sizeof($calls) > 0)
+		{
+			if ($this->beforeCall !== null)
+			{
+				$beforeCall = $this->beforeCall->getFirstCall();
+
+				if ($beforeCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($this->beforeCall->getMockAggregator()), $this->beforeCall->getMethodName()));
+				}
+
+				if (key($calls) > $beforeCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called before method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($this->beforeCall->getMockAggregator()), $this->beforeCall->getMethodName()));
+				}
+			}
+
+			if ($this->afterCall !== null)
+			{
+				$afterCall = $this->afterCall->getLastCall();
+
+				if ($afterCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($this->afterCall->getMockAggregator()), $this->afterCall->getMethodName()));
+				}
+
+				if (key($calls) < $afterCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called after method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($this->afterCall->getMockAggregator()), $this->afterCall->getMethodName()));
+				}
+			}
 		}
 
 		return $this;

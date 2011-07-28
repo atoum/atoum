@@ -65,6 +65,20 @@ class call
 
 		return $this;
 	}
+
+	public function getFirstCall()
+	{
+		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+
+		return $calls === null ? null : key($calls);
+	}
+
+	public function getLastCall()
+	{
+		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+
+		return $calls === null ? null : key(array_reverse($calls, true));
+	}
 }
 
 ?>

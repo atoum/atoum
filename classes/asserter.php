@@ -86,7 +86,7 @@ abstract class asserter
 		return $this;
 	}
 
-	protected function fail($reason)
+	protected function fail($reason, $function = null)
 	{
 		$test = $this->generator->getTest();
 
@@ -97,16 +97,18 @@ abstract class asserter
 		$line = null;
 		$function = null;
 
-		foreach (debug_backtrace() as $backtrace)
+		$currentClass = get_class($this);
+
+		foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
 		{
-			if ($line === null && isset($backtrace['file']) === true && $backtrace['file'] === $file && isset($backtrace['line']) === true)
+			if ($line === null && isset($backtrace['line']) === true)
 			{
 				$line = $backtrace['line'];
 			}
 
 			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true)
 			{
-				if (get_class($backtrace['object']) === get_class($this) && $backtrace['function'] != __FUNCTION__)
+				if (get_class($backtrace['object']) === $currentClass)
 				{
 					$function = $backtrace['function'];
 				}

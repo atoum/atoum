@@ -12,7 +12,8 @@ require_once(__DIR__ . '/../../runner.php');
 
 class dummy
 {
-	public function foo($bar) {}
+	public function foo($arg) {}
+	public function bar($arg) {}
 }
 
 class mock extends atoum\test
@@ -249,8 +250,7 @@ class mock extends atoum\test
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
 		$this->assert
-			->object($asserter->beforeCallTo('foo'))->isIdenticalTo($asserter)
-			->object($asserter->getBeforeCall())->isEqualTo(new asserters\mock\call($asserter, $mock, 'foo'))
+			->object($asserter->beforeCallTo('foo'))->isEqualTo(new asserters\mock\call($asserter, $mock, 'foo'))
 		;
 	}
 
@@ -438,8 +438,6 @@ class mock extends atoum\test
 		$asserter->withArguments(uniqid());
 
 		$this->assert
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo'))
@@ -457,6 +455,230 @@ class mock extends atoum\test
 					)
 				)
 			)
+		;
+
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$score->reset();
+
+		$asserter->beforeCallTo('bar')->call('foo');
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$mock->bar(uniqid());
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called before method %s::%s()'), get_class($mock), 'foo', get_class($mock), 'bar'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(3)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anotherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called before method %s::%s()'), get_class($mock), 'foo', get_class($mock), 'bar')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$mock->foo(uniqid());
+		$mock->bar(uniqid());
+
+		$this->assert
+			->object($asserter->once())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(3)
+		;
+
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$score->reset();
+
+		$asserter->afterCallTo('bar')->call('foo');
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					)
+				)
+			)
+		;
+
+		$mock->foo(uniqid());
+
+		$this->assert
+			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(2)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$mock->foo(uniqid());
+		$mock->bar(uniqid());
+
+		$this->assert
+			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is not called after method %s::%s()'), get_class($mock), 'foo', get_class($mock), 'bar'))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(3)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is called 0 time instead of 1'), get_class($mock), 'foo')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $otherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called'), get_class($mock), 'bar')
+					),
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $anotherLine,
+						'asserter' => get_class($asserter) . '::once()',
+						'fail' => sprintf($test->getLocale()->_('method %s::%s() is not called after method %s::%s()'), get_class($mock), 'foo', get_class($mock), 'bar')
+					)
+				)
+			)
+		;
+
+		$mock->getMockController()->resetCalls();
+
+		$mock->bar(uniqid());
+		$mock->foo(uniqid());
+
+		$this->assert
+			->object($asserter->once())->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(3)
 		;
 	}
 
@@ -569,8 +791,6 @@ class mock extends atoum\test
 		$asserter->withArguments(uniqid());
 
 		$this->assert
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
 			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->atLeastOnce(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('method %s::%s() is called 0 time'), get_class($mock), 'foo'))
