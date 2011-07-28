@@ -36,6 +36,8 @@ class mock extends atoum\test
 			->variable($asserter->getMock())->isNull()
 			->variable($asserter->getTestedMethodName())->isNull()
 			->variable($asserter->getTestedMethodArguments())->isNull()
+			->array($asserter->getBeforeMethodCalls())->isEmpty()
+			->array($asserter->getAfterMethodCalls())->isEmpty()
 		;
 	}
 
@@ -230,13 +232,13 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testBeforeCallTo()
+	public function testBeforeMethodCall()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use ($asserter) {
-						$asserter->beforeCallTo(uniqid());
+						$asserter->beforeMethodCall(uniqid());
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -250,7 +252,37 @@ class mock extends atoum\test
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
 		$this->assert
-			->object($asserter->beforeCallTo('foo'))->isEqualTo(new asserters\mock\call($asserter, $mock, 'foo'))
+			->object($asserter->beforeMethodCall('foo'))->isEqualTo($beforeMethodCall = new asserters\mock\call($asserter, $mock, 'foo'))
+			->array($asserter->getBeforeMethodCalls())->isEqualTo(array($beforeMethodCall))
+			->object($asserter->beforeMethodCall('bar'))->isEqualTo($otherBeforeMethodCall = new asserters\mock\call($asserter, $mock, 'bar'))
+			->array($asserter->getBeforeMethodCalls())->isEqualTo(array($beforeMethodCall, $otherBeforeMethodCall))
+		;
+	}
+
+	public function testAfterMethodCall()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->afterMethodCall(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->object($asserter->afterMethodCall('foo'))->isEqualTo($afterMethodCall = new asserters\mock\call($asserter, $mock, 'foo'))
+			->array($asserter->getAfterMethodCalls())->isEqualTo(array($afterMethodCall))
+			->object($asserter->afterMethodCall('bar'))->isEqualTo($otherAfterMethodCall = new asserters\mock\call($asserter, $mock, 'bar'))
+			->array($asserter->getAfterMethodCalls())->isEqualTo(array($afterMethodCall, $otherAfterMethodCall))
 		;
 	}
 
@@ -462,7 +494,7 @@ class mock extends atoum\test
 
 		$score->reset();
 
-		$asserter->beforeCallTo('bar')->call('foo');
+		$asserter->beforeMethodCall('bar')->call('foo');
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
@@ -565,7 +597,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(3)
 		;
 
@@ -574,7 +606,7 @@ class mock extends atoum\test
 
 		$score->reset();
 
-		$asserter->afterCallTo('bar')->call('foo');
+		$asserter->afterMethodCall('bar')->call('foo');
 
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
@@ -677,7 +709,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(3)
 		;
 	}

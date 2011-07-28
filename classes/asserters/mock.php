@@ -12,8 +12,8 @@ class mock extends atoum\asserter
 	protected $mock = null;
 	protected $calledMethodName = null;
 	protected $calledMethodArguments = null;
-	protected $beforeCall = null;
-	protected $afterCall = null;
+	protected $beforeMethodCalls = array();
+	protected $afterMethodCalls = array();
 
 	public function getTestedMethodName()
 	{
@@ -56,18 +56,28 @@ class mock extends atoum\asserter
 		return $this->mock;
 	}
 
-	public function beforeCallTo($methodName)
+	public function beforeMethodCall($methodName)
 	{
-		$this->mockIsSet()->beforeCall = new mock\call($this, $this->mock, $methodName);
+		$this->mockIsSet()->beforeMethodCalls[] = $beforeMethodCall = new mock\call($this, $this->mock, $methodName);
 
-		return $this->beforeCall;
+		return $beforeMethodCall;
 	}
 
-	public function afterCallTo($methodName)
+	public function getBeforeMethodCalls()
 	{
-		$this->mockIsSet()->afterCall = new mock\call($this, $this->mock, $methodName);
+		return $this->beforeMethodCalls;
+	}
 
-		return $this->afterCall;
+	public function afterMethodCall($methodName)
+	{
+		$this->mockIsSet()->afterMethodCalls[] = $afterMethodCall = new mock\call($this, $this->mock, $methodName);
+
+		return $afterMethodCall;
+	}
+
+	public function getAfterMethodCalls()
+	{
+		return $this->afterMethodCalls;
 	}
 
 	public function wasCalled($failMessage = null)
@@ -116,7 +126,7 @@ class mock extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterMethodCall($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
 		if (($callsNumber = sizeof($calls)) !== 1)
 		{
@@ -145,7 +155,7 @@ class mock extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterMethodCall($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
 		if (($callsNumber = sizeof($calls)) < 1)
 		{
@@ -161,7 +171,7 @@ class mock extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCallTo($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
+		$this->assertOnBeforeAndAfterMethodCall($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
 		if (($callsNumber = sizeof($calls)) != $number)
 		{
@@ -211,38 +221,42 @@ class mock extends atoum\asserter
 		return $this;
 	}
 
-	protected function assertOnBeforeAndAfterCallTo($calls)
+	protected function assertOnBeforeAndAfterMethodCall($calls)
 	{
 		if (sizeof($calls) > 0)
 		{
-			if ($this->beforeCall !== null)
+			foreach ($this->beforeMethodCalls as $beforeMethodCall)
 			{
-				$beforeCall = $this->beforeCall->getFirstCall();
+				$firstCall = $beforeMethodCall->getFirstCall();
 
-				if ($beforeCall === null)
+				if ($firstCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($this->beforeCall->getMockAggregator()), $this->beforeCall->getMethodName()));
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($beforeMethodCall->getMockAggregator()), $beforeMethodCall->getMethodName()));
 				}
 
-				if (key($calls) > $beforeCall)
+				if (key($calls) > $firstCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called before method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($this->beforeCall->getMockAggregator()), $this->beforeCall->getMethodName()));
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called before method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($beforeMethodCall->getMockAggregator()), $beforeMethodCall->getMethodName()));
 				}
+
+				$this->pass();
 			}
 
-			if ($this->afterCall !== null)
+			foreach ($this->afterMethodCalls as $afterMethodCall)
 			{
-				$afterCall = $this->afterCall->getLastCall();
+				$lastCall = $afterMethodCall->getLastCall();
 
-				if ($afterCall === null)
+				if ($lastCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($this->afterCall->getMockAggregator()), $this->afterCall->getMethodName()));
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called'), get_class($afterMethodCall->getMockAggregator()), $afterMethodCall->getMethodName()));
 				}
 
-				if (key($calls) < $afterCall)
+				if (key($calls) < $lastCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called after method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($this->afterCall->getMockAggregator()), $this->afterCall->getMethodName()));
+					$this->fail(sprintf($this->getLocale()->_('method %s::%s() is not called after method %s::%s()'), get_class($this->mock), $this->calledMethodName, get_class($afterMethodCall->getMockAggregator()), $afterMethodCall->getMethodName()));
 				}
+
+				$this->pass();
 			}
 		}
 
