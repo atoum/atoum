@@ -12,16 +12,10 @@ class adapter extends atoum\asserter
 	protected $adapter = null;
 	protected $calledFunctionName = null;
 	protected $calledFunctionArguments = null;
-
-	public function getTestedFunctionName()
-	{
-		return $this->calledFunctionName;
-	}
-
-	public function getTestedFunctionArguments()
-	{
-		return $this->calledFunctionArguments;
-	}
+	protected $beforeMethodCalls = array();
+	protected $afterMethodCalls = array();
+	protected $beforeFunctionCalls = array();
+	protected $afterFunctionCalls = array();
 
 	public function setWith($adapter)
 	{
@@ -49,9 +43,95 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
+	public function getTestedFunctionName()
+	{
+		return $this->calledFunctionName;
+	}
+
+	public function getTestedFunctionArguments()
+	{
+		return $this->calledFunctionArguments;
+	}
+
 	public function getAdapter()
 	{
 		return $this->adapter;
+	}
+
+	public function beforeMethodCall($methodName, atoum\mock\aggregator $mock)
+	{
+		$this->adapterIsSet()->beforeMethodCalls[] = $beforeMethodCall = new adapter\call\mock($this, $mock, $methodName);
+
+		return $beforeMethodCall;
+	}
+
+	public function getBeforeMethodCalls()
+	{
+		return $this->beforeMethodCalls;
+	}
+
+	public function withAnyMethodCallsBefore()
+	{
+		$this->beforeMethodCalls = array();
+
+		return $this;
+	}
+
+	public function afterMethodCall($methodName, atoum\mock\aggregator $mock)
+	{
+		$this->adapterIsSet()->afterMethodCalls[] = $afterMethodCall = new adapter\call\mock($this, $mock, $methodName);
+
+		return $afterMethodCall;
+	}
+
+	public function getAfterMethodCalls()
+	{
+		return $this->afterMethodCalls;
+	}
+
+	public function withAnyMethodCallsAfter()
+	{
+		$this->afterMethodCalls = array();
+
+		return $this;
+	}
+
+	public function beforeFunctionCall($methodName)
+	{
+		$this->adapterIsSet()->beforeFunctionCalls[] = $beforeFunctionCall = new adapter\call\adapter($this, $this->adapter, $methodName);
+
+		return $beforeFunctionCall;
+	}
+
+	public function getBeforeFunctionCalls()
+	{
+		return $this->beforeFunctionCalls;
+	}
+
+	public function withAnyFunctionCallsBefore()
+	{
+		$this->beforeFunctionCalls = array();
+
+		return $this;
+	}
+
+	public function afterFunctionCall($methodName)
+	{
+		$this->adapterIsSet()->afterFunctionCalls[] = $afterFunctionCall = new adapter\call\adapter($this, $this->adapter, $methodName);
+
+		return $afterFunctionCall;
+	}
+
+	public function getAfterFunctionCalls()
+	{
+		return $this->afterFunctionCalls;
+	}
+
+	public function withAnyFunctionCallsAfter()
+	{
+		$this->afterFunctionCalls = array();
+
+		return $this;
 	}
 
 	public function call($method)

@@ -40,7 +40,7 @@ class mock extends atoum\test
 		$call = new call\mock(
 				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
 				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
-				$methodName = uniqid()
+				$methodName = rand(1, PHP_INT_MAX)
 		);
 
 		$this->assert

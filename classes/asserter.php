@@ -22,9 +22,9 @@ abstract class asserter
 		return $this->generator->__get($asserter);
 	}
 
-	public function __call($asserter, $arguments)
+	public function __call($method, $arguments)
 	{
-		return $this->generator->__call($asserter, $arguments);
+		return call_user_func_array(array($this->generator, $method), $arguments);
 	}
 
 	public function reset()
