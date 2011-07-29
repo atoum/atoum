@@ -260,13 +260,13 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testBeforeAnyMethodCalls()
+	public function testWithAnyMethodCallsBefore()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->array($asserter->getBeforeMethodCalls())->isEmpty()
-			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeMethodCalls())->isEmpty()
 		;
 
@@ -280,7 +280,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getBeforeMethodCalls())->isNotEmpty()
-			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeMethodCalls())->isEmpty()
 		;
 
@@ -291,7 +291,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getBeforeMethodCalls())->isNotEmpty()
-			->object($asserter->beforeAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeMethodCalls())->isEmpty()
 		;
 	}
@@ -388,13 +388,13 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testBeforeAnyFunctionCalls()
+	public function testWithAnyFunctionCallsBefore()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->array($asserter->getBeforeFunctionCalls())->isEmpty()
-			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeFunctionCalls())->isEmpty()
 		;
 
@@ -410,7 +410,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getBeforeFunctionCalls())->isNotEmpty()
-			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeFunctionCalls())->isEmpty()
 		;
 
@@ -421,7 +421,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getBeforeFunctionCalls())->isNotEmpty()
-			->object($asserter->beforeAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsBefore())->isIdenticalTo($asserter)
 			->array($asserter->getBeforeFunctionCalls())->isEmpty()
 		;
 	}
@@ -455,13 +455,13 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testAfterAnyFunctionCalls()
+	public function testWithAnyFunctionCallsAfter()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->array($asserter->getAfterFunctionCalls())->isEmpty()
-			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterFunctionCalls())->isEmpty()
 		;
 
@@ -477,7 +477,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getAfterFunctionCalls())->isNotEmpty()
-			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterFunctionCalls())->isEmpty()
 		;
 
@@ -488,7 +488,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getAfterFunctionCalls())->isNotEmpty()
-			->object($asserter->afterAnyFunctionCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyFunctionCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterFunctionCalls())->isEmpty()
 		;
 	}

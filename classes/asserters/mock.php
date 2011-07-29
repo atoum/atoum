@@ -66,7 +66,7 @@ class mock extends atoum\asserter
 		return $beforeMethodCall;
 	}
 
-	public function beforeAnyMethodCalls()
+	public function withAnyMethodCallsBefore()
 	{
 		$this->beforeMethodCalls = array();
 
@@ -85,7 +85,7 @@ class mock extends atoum\asserter
 		return $beforeFunctionCall;
 	}
 
-	public function beforeAnyFunctionCalls()
+	public function withAnyFunctionCallsBefore()
 	{
 		$this->beforeFunctionCalls = array();
 
@@ -128,7 +128,7 @@ class mock extends atoum\asserter
 		return $this->afterFunctionCalls;
 	}
 
-	public function afterAnyFunctionCalls()
+	public function withAnyFunctionCallsAfter()
 	{
 		$this->afterFunctionCalls = array();
 
