@@ -185,10 +185,13 @@ class generator implements atoum\adapter\aggregator
 			"\t" . '}' . PHP_EOL .
 			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .
-			"\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
 			"\t\t" . 'if (isset($this->getMockController()->{$methodName}) === true)' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
 			"\t\t\t" . 'return $this->mockController->invoke($methodName, $arguments);' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t\t" . 'else' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .
 			'}' . PHP_EOL .
