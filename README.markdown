@@ -58,7 +58,7 @@ Using your preferred text editor, create the file `path/to/project/tests/units/h
 
 	namespace vendor\project\tests\units;
 
-	require 'path/to/mageekguy.atoum.phar';
+	require_once 'path/to/mageekguy.atoum.phar';
 
 	include 'path/to/project/classes/helloWorld.php';
 
