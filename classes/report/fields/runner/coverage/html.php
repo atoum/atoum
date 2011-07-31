@@ -317,8 +317,8 @@ class html extends report\fields\runner\coverage\cli
 
                 $string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
             }
-        } catch (\Exception $e) {
-            trigger_error($e->getMessage(), E_USER_ERROR);
+        } catch (\Exception $exception) {
+            trigger_error($exception->getMessage(), E_USER_ERROR);
         }
 
 		return $string;
