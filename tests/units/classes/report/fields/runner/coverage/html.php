@@ -150,7 +150,7 @@ class html extends atoum\test
 			->string($field->getProjectName())->isIdenticalTo((string) $projectName)
 		;
 	}
-
+/*
 	public function testGetDestinationDirectoryIterator()
 	{
 		$field = new coverage\html(uniqid(), __DIR__);
@@ -161,7 +161,7 @@ class html extends atoum\test
 			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
-
+*/
 	public function testGetSrcDirectoryIterators()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
@@ -687,6 +687,9 @@ class html extends atoum\test
 				->call('fgets')->withArguments($classResource)->atLeastOnce()
 				->call('fclose')->withArguments($classResource)->once()
 		;
+
+        $adapter->mkdir = function() {throw new \Exception('Should be converted to an error');};
+        $this->assert->error(null, E_USER_ERROR)->exists();
 	}
 }
 
