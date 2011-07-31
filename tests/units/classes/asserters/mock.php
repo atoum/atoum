@@ -274,9 +274,9 @@ class mock extends atoum\test
 			->generate('mageekguy\atoum\tests\units\asserters\dummy')
 		;
 
-		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+		$asserter->setWith(new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
-		$asserter->beforeMethodCall($method = uniqid());
+		$asserter->beforeMethodCall(uniqid());
 
 		$this->assert
 			->array($asserter->getBeforeMethodCalls())->isNotEmpty()
@@ -285,8 +285,8 @@ class mock extends atoum\test
 		;
 
 		$asserter
-			->beforeMethodCall($method1 = uniqid())
-			->beforeMethodCall($method2 = uniqid())
+			->beforeMethodCall(uniqid())
+			->beforeMethodCall(uniqid())
 		;
 
 		$this->assert
@@ -323,13 +323,13 @@ class mock extends atoum\test
 		;
 	}
 
-	public function testAfterAnyMethodCalls()
+	public function testWithAnyMethodCallsAfter()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->array($asserter->getAfterMethodCalls())->isEmpty()
-			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterMethodCalls())->isEmpty()
 		;
 
@@ -343,7 +343,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getAfterMethodCalls())->isNotEmpty()
-			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterMethodCalls())->isEmpty()
 		;
 
@@ -354,7 +354,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->array($asserter->getAfterMethodCalls())->isNotEmpty()
-			->object($asserter->afterAnyMethodCalls())->isIdenticalTo($asserter)
+			->object($asserter->withAnyMethodCallsAfter())->isIdenticalTo($asserter)
 			->array($asserter->getAfterMethodCalls())->isEmpty()
 		;
 	}
