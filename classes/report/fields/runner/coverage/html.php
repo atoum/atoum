@@ -82,7 +82,7 @@ class html extends report\fields\runner\coverage\cli
 
 	public function __toString()
 	{
-        try {
+        //try {
             $string = parent::__toString();
 
             if ($this->adapter->extension_loaded('xdebug') === true)
@@ -317,9 +317,9 @@ class html extends report\fields\runner\coverage\cli
 
                 $string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
             }
-        } catch (\Exception $e) {
-            trigger_error($e->getMessage(), E_USER_ERROR);
-        }
+//        } catch (\Exception $e) {
+//            trigger_error($e->getMessage(), E_USER_ERROR);
+//        }
 
 		return $string;
 	}
