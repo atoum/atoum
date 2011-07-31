@@ -128,7 +128,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->mockGenerator
-			->shunt('reflectionClass', '__construct')
+			->shunt('__construct')
 			->generate('reflectionClass')
 		;
 
@@ -154,7 +154,7 @@ class controller extends atoum\test
 		;
 
 		$this->mockGenerator
-			->shunt('reflectionClass', '__construct')
+			->shunt('__construct')
 			->generate('reflectionClass')
 		;
 

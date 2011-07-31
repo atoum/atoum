@@ -64,7 +64,7 @@ class generator extends atoum\test
 	public function testSetReflectionClassInjector()
 	{
 		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('ReflectionClass', '__construct')->generate('reflectionClass');
+		$mockGenerator->shunt('__construct')->generate('reflectionClass');
 
 		$this->assert
 			->object($mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($mockGenerator)
@@ -81,7 +81,7 @@ class generator extends atoum\test
 	public function testGetReflectionClass()
 	{
 		$mockGenerator = new mock\generator();
-		$mockGenerator->shunt('ReflectionClass', '__construct')->generate('reflectionClass');
+		$mockGenerator->shunt('__construct')->generate('reflectionClass');
 
 		$this->assert
 			->object($mockGenerator->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
@@ -121,22 +121,11 @@ class generator extends atoum\test
 		$generator = new mock\generator();
 
 		$this->assert
-			->object($generator->shunt($class = uniqid(), $method = uniqid()))->isIdenticalTo($generator)
-			->boolean($generator->isShunted($class, $method))->isTrue()
-			->boolean($generator->isShunted('\\' . $class, $method))->isTrue()
-			->boolean($generator->isShunted(strtoupper($class), $method))->isTrue()
-			->boolean($generator->isShunted(strtoupper($class), strtoupper($method)))->isTrue()
-			->boolean($generator->isShunted($class, strtoupper($method)))->isTrue()
-			->boolean($generator->isShunted(uniqid(), strtoupper($method)))->isFalse()
-			->boolean($generator->isShunted($class, uniqid()))->isFalse()
-			->object($generator->shunt('\\' . $class = uniqid(), $method = uniqid()))->isIdenticalTo($generator)
-			->boolean($generator->isShunted($class, $method))->isTrue()
-			->boolean($generator->isShunted('\\' . $class, $method))->isTrue()
-			->boolean($generator->isShunted(strtoupper($class), $method))->isTrue()
-			->boolean($generator->isShunted(strtoupper($class), strtoupper($method)))->isTrue()
-			->boolean($generator->isShunted($class, strtoupper($method)))->isTrue()
-			->boolean($generator->isShunted(uniqid(), strtoupper($method)))->isFalse()
-			->boolean($generator->isShunted($class, uniqid()))->isFalse()
+			->object($generator->shunt($method = uniqid()))->isIdenticalTo($generator)
+			->boolean($generator->isShunted($method))->isTrue()
+			->boolean($generator->isShunted(strtoupper($method)))->isTrue()
+			->boolean($generator->isShunted(strtolower($method)))->isTrue()
+			->boolean($generator->isShunted(uniqid()))->isFalse()
 		;
 	}
 
@@ -556,7 +545,7 @@ class generator extends atoum\test
 		$generator = new mock\generator($adapter);
 		$generator
 			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
-			->shunt($realClass = uniqid(), '__construct')
+			->shunt('__construct')
 		;
 
 		$this->assert
@@ -905,6 +894,16 @@ class generator extends atoum\test
 				->hasParent(__CLASS__)
 				->hasInterface('mageekguy\atoum\mock\aggregator')
 		;
+
+		$generator = new mock\generator();
+		$generator->shunt('__construct');
+
+		$this->assert
+			->boolean($generator->isShunted('__construct'))->isTrue()
+			->object($generator->generate('reflectionMethod'))->isIdenticalTo($generator)
+			->boolean($generator->isShunted('__construct'))->isFalse()
+		;
+
 	}
 }
 

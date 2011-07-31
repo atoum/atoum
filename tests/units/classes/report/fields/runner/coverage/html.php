@@ -700,8 +700,10 @@ class html extends atoum\test
 				->call('fclose')->withArguments($classResource)->once()
 		;
 
-        $adapter->mkdir = function() {throw new \Exception('Should be converted to an error');};
-        $this->assert->error(null, E_USER_ERROR)->exists();
+		$indexTemplateController->build->throw = new \exception($errorMessage = uniqid());
+		$this->assert
+			->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . '/: ' . $errorMessage . '.' . PHP_EOL)
+		;
 	}
 }
 

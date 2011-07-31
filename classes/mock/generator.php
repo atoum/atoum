@@ -88,25 +88,19 @@ class generator implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	public function shunt($class, $method)
+	public function shunt($method)
 	{
-		$class = strtolower(ltrim($class, '\\'));
-		$method = strtolower($method);
-
-		if ($this->isShunted($class, $method) === false)
+		if ($this->isShunted($method) === false)
 		{
-			$this->shuntedMethods[$class][] = $method;
+			$this->shuntedMethods[] = strtolower($method);
 		}
 
 		return $this;
 	}
 
-	public function isShunted($class, $method)
+	public function isShunted($method)
 	{
-		$class = strtolower(ltrim($class, '\\'));
-		$method = strtolower($method);
-
-		return (isset($this->shuntedMethods[$class]) === true && in_array($method, $this->shuntedMethods[$class]) === true);
+		return (in_array(strtolower($method), $this->shuntedMethods) === true);
 	}
 
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
@@ -157,6 +151,9 @@ class generator implements atoum\adapter\aggregator
 	public function generate($class, $mockNamespace = null, $mockClass = null)
 	{
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
+
+		$this->shuntedMethods = array();
+		$this->methods = array();
 
 		return $this;
 	}
@@ -292,8 +289,6 @@ class generator implements atoum\adapter\aggregator
 
 				$parameters = (sizeof($parameters) <= 0 ? '' : join(', ', $parameters));
 
-				$isShunted = $this->isShunted($className, $methodName);
-
 				if ($isConstructor === true)
 				{
 					$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
@@ -306,7 +301,7 @@ class generator implements atoum\adapter\aggregator
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
 				}
 
-				if ($isShunted === true || $method->isAbstract() === true)
+				if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
 				{
 					$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
