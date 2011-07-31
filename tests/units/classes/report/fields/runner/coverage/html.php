@@ -300,6 +300,18 @@ class html extends atoum\test
 				->call('rmdir')->withArguments($inode3Path)->once()
 				->call('rmdir')->withArguments($destinationDirectoryPath)->never()
 		;
+
+        //If destination directory does not exists, won't try to clean the directory
+        $adapter->is_dir = false;
+        $this->assert
+                ->when(function()use($field){$field->cleanDestinationDirectory();})
+                ->adapter($adapter)
+                    ->call('is_dir')
+                    ->once()
+                ->object($field)
+                    ->call('getDestinationDirectoryIterator')
+                    ->never();
+
 	}
 
 	public function testAddSrcDirectory()
