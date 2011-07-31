@@ -113,208 +113,215 @@ class html extends report\fields\runner\coverage\cli
 
 		if (sizeof($this->coverage) > 0)
 		{
-			$this->cleanDestinationDirectory();
-
-			$this->adapter->copy($this->templatesDirectory . '/screen.css', $this->destinationDirectory . '/screen.css');
-
-			$classes = $this->coverage->getClasses();
-
-			$indexTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
-			$indexTemplate->projectName = $this->projectName;
-			$indexTemplate->rootUrl = $this->rootUrl;
-
-			$coverageValue = $this->coverage->getValue();
-
-			if ($coverageValue === null)
+			try
 			{
-				$indexTemplate->coverageUnavailable->build();
-			}
-			else
-			{
-				$indexTemplate->coverageAvailable->build(array('coverageValue' => round($coverageValue * 100, 2)));
-			}
+				$this->cleanDestinationDirectory();
 
-			$classCoverageTemplates = $indexTemplate->classCoverage;
+				$this->adapter->copy($this->templatesDirectory . '/screen.css', $this->destinationDirectory . '/screen.css');
 
-			$classCoverageAvailableTemplates = $classCoverageTemplates->classCoverageAvailable;
-			$classCoverageUnavailableTemplates = $classCoverageTemplates->classCoverageUnavailable;
+				$classes = $this->coverage->getClasses();
 
-			ksort($classes, \SORT_STRING);
+				$indexTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
+				$indexTemplate->projectName = $this->projectName;
+				$indexTemplate->rootUrl = $this->rootUrl;
 
-			foreach ($classes as $className => $classFile)
-			{
-				$classCoverageTemplates->className = $className;
-				$classCoverageTemplates->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
+				$coverageValue = $this->coverage->getValue();
 
-				$classCoverageValue = $this->coverage->getValueForClass($className);
-
-				if ($classCoverageValue === null)
+				if ($coverageValue === null)
 				{
-					$classCoverageUnavailableTemplates->build();
+					$indexTemplate->coverageUnavailable->build();
 				}
 				else
 				{
-					$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
+					$indexTemplate->coverageAvailable->build(array('coverageValue' => round($coverageValue * 100, 2)));
 				}
 
-				$classCoverageTemplates->build();
+				$classCoverageTemplates = $indexTemplate->classCoverage;
 
-				$classCoverageAvailableTemplates->resetData();
-				$classCoverageUnavailableTemplates->resetData();
-			}
+				$classCoverageAvailableTemplates = $classCoverageTemplates->classCoverageAvailable;
+				$classCoverageUnavailableTemplates = $classCoverageTemplates->classCoverageUnavailable;
 
-			$this->adapter->file_put_contents($this->destinationDirectory . '/index.html', (string) $indexTemplate->build());
+				ksort($classes, \SORT_STRING);
 
-			$classTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/class.tpl');
-
-			$classTemplate->rootUrl = $this->rootUrl;
-			$classTemplate->projectName = $this->projectName;
-
-			$classCoverageAvailableTemplates = $classTemplate->classCoverageAvailable;
-			$classCoverageUnavailableTemplates = $classTemplate->classCoverageUnavailable;
-
-			$methodsTemplates = $classTemplate->methods;
-			$methodTemplates = $methodsTemplates->method;
-
-			$methodCoverageAvailableTemplates = $methodTemplates->methodCoverageAvailable;
-			$methodCoverageUnavailableTemplates = $methodTemplates->methodCoverageUnavailable;
-
-			$sourceFileTemplates = $classTemplate->sourceFile;
-
-			$lineTemplates = $sourceFileTemplates->line;
-			$coveredLineTemplates = $sourceFileTemplates->coveredLine;
-			$notCoveredLineTemplates = $sourceFileTemplates->notCoveredLine;
-
-			foreach ($this->coverage->getMethods() as $className => $methods)
-			{
-				$classTemplate->className = $className;
-
-				$classCoverageValue = $this->coverage->getValueForClass($className);
-
-				if ($classCoverageValue === null)
+				foreach ($classes as $className => $classFile)
 				{
-					$classCoverageUnavailableTemplates->build();
-				}
-				else
-				{
-					$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
-				}
+					$classCoverageTemplates->className = $className;
+					$classCoverageTemplates->classUrl = str_replace('\\', '/', $className) . self::htmlExtensionFile;
 
-				$reflectedMethods = array();
+					$classCoverageValue = $this->coverage->getValueForClass($className);
 
-				foreach (array_filter($this->getReflectionClass($className)->getMethods(), function($reflectedMethod) use ($className) { return $reflectedMethod->isAbstract() === false && $reflectedMethod->getDeclaringClass()->getName() === $className; }) as $reflectedMethod)
-				{
-					$reflectedMethods[$reflectedMethod->getName()] = $reflectedMethod;
-				}
-
-				if (sizeof($reflectedMethods) > 0)
-				{
-					foreach (array_intersect(array_keys($reflectedMethods), array_keys($methods)) as $methodName)
+					if ($classCoverageValue === null)
 					{
-						$methodCoverageValue = $this->coverage->getValueForMethod($className, $methodName);
-
-						if ($methodCoverageValue === null)
-						{
-							$methodCoverageUnavailableTemplates->build(array('methodName' => $methodName));
-						}
-						else
-						{
-							$methodCoverageAvailableTemplates->build(array(
-									'methodName' => $methodName,
-									'methodCoverageValue' => round($methodCoverageValue * 100, 2)
-								)
-							);
-						}
-
-						$methodTemplates->build();
-
-						$methodCoverageAvailableTemplates->resetData();
-						$methodCoverageUnavailableTemplates->resetData();
+						$classCoverageUnavailableTemplates->build();
+					}
+					else
+					{
+						$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
 					}
 
-					$methodsTemplates->build();
+					$classCoverageTemplates->build();
 
-					$methodTemplates->resetData();
+					$classCoverageAvailableTemplates->resetData();
+					$classCoverageUnavailableTemplates->resetData();
 				}
 
-				$srcFile = $this->adapter->fopen($classes[$className], 'r');
+				$this->adapter->file_put_contents($this->destinationDirectory . '/index.html', (string) $indexTemplate->build());
 
-				if ($srcFile !== false)
+				$classTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/class.tpl');
+
+				$classTemplate->rootUrl = $this->rootUrl;
+				$classTemplate->projectName = $this->projectName;
+
+				$classCoverageAvailableTemplates = $classTemplate->classCoverageAvailable;
+				$classCoverageUnavailableTemplates = $classTemplate->classCoverageUnavailable;
+
+				$methodsTemplates = $classTemplate->methods;
+				$methodTemplates = $methodsTemplates->method;
+
+				$methodCoverageAvailableTemplates = $methodTemplates->methodCoverageAvailable;
+				$methodCoverageUnavailableTemplates = $methodTemplates->methodCoverageUnavailable;
+
+				$sourceFileTemplates = $classTemplate->sourceFile;
+
+				$lineTemplates = $sourceFileTemplates->line;
+				$coveredLineTemplates = $sourceFileTemplates->coveredLine;
+				$notCoveredLineTemplates = $sourceFileTemplates->notCoveredLine;
+
+				foreach ($this->coverage->getMethods() as $className => $methods)
 				{
-					$methodLines = array();
+					$classTemplate->className = $className;
 
-					foreach ($reflectedMethods as $reflectedMethodName => $reflectedMethod)
+					$classCoverageValue = $this->coverage->getValueForClass($className);
+
+					if ($classCoverageValue === null)
 					{
-						$methodLines[$reflectedMethod->getStartLine()] = $reflectedMethodName;
+						$classCoverageUnavailableTemplates->build();
+					}
+					else
+					{
+						$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
 					}
 
-					$currentMethod = null;
+					$reflectedMethods = array();
 
-					for ($currentMethod = null, $lineNumber = 1, $line = $this->adapter->fgets($srcFile); $line !== false; $lineNumber++, $line = $this->adapter->fgets($srcFile))
+					foreach (array_filter($this->getReflectionClass($className)->getMethods(), function($reflectedMethod) use ($className) { return $reflectedMethod->isAbstract() === false && $reflectedMethod->getDeclaringClass()->getName() === $className; }) as $reflectedMethod)
 					{
-						if (isset($methodLines[$lineNumber]) === true)
+						$reflectedMethods[$reflectedMethod->getName()] = $reflectedMethod;
+					}
+
+					if (sizeof($reflectedMethods) > 0)
+					{
+						foreach (array_intersect(array_keys($reflectedMethods), array_keys($methods)) as $methodName)
 						{
-							$currentMethod = $methodLines[$lineNumber];
-						}
+							$methodCoverageValue = $this->coverage->getValueForMethod($className, $methodName);
 
-						switch (true)
-						{
-							case isset($methods[$currentMethod]) === false || (isset($methods[$currentMethod][$lineNumber]) === false || $methods[$currentMethod][$lineNumber] == -2):
-								$lineTemplateName = 'lineTemplates';
-								break;
-
-							case isset($methods[$currentMethod]) === true && isset($methods[$currentMethod][$lineNumber]) === true && $methods[$currentMethod][$lineNumber] == -1:
-								$lineTemplateName = 'notCoveredLineTemplates';
-								break;
-
-							default:
-								$lineTemplateName = 'coveredLineTemplates';
-						}
-
-						${$lineTemplateName}->lineNumber = $lineNumber;
-						${$lineTemplateName}->code = htmlentities($line, ENT_QUOTES, 'UTF-8');
-
-						if (isset($methodLines[$lineNumber]) === true)
-						{
-							foreach (${$lineTemplateName}->anchor as $anchorTemplate)
+							if ($methodCoverageValue === null)
 							{
-								$anchorTemplate->resetData();
-								$anchorTemplate->method = $currentMethod;
-								$anchorTemplate->build();
+								$methodCoverageUnavailableTemplates->build(array('methodName' => $methodName));
 							}
+							else
+							{
+								$methodCoverageAvailableTemplates->build(array(
+										'methodName' => $methodName,
+										'methodCoverageValue' => round($methodCoverageValue * 100, 2)
+									)
+								);
+							}
+
+							$methodTemplates->build();
+
+							$methodCoverageAvailableTemplates->resetData();
+							$methodCoverageUnavailableTemplates->resetData();
 						}
 
-						${$lineTemplateName}
-							->addToParent()
-							->resetData()
-						;
+						$methodsTemplates->build();
+
+						$methodTemplates->resetData();
 					}
 
-					$this->adapter->fclose($srcFile);
+					$srcFile = $this->adapter->fopen($classes[$className], 'r');
+
+					if ($srcFile !== false)
+					{
+						$methodLines = array();
+
+						foreach ($reflectedMethods as $reflectedMethodName => $reflectedMethod)
+						{
+							$methodLines[$reflectedMethod->getStartLine()] = $reflectedMethodName;
+						}
+
+						$currentMethod = null;
+
+						for ($currentMethod = null, $lineNumber = 1, $line = $this->adapter->fgets($srcFile); $line !== false; $lineNumber++, $line = $this->adapter->fgets($srcFile))
+						{
+							if (isset($methodLines[$lineNumber]) === true)
+							{
+								$currentMethod = $methodLines[$lineNumber];
+							}
+
+							switch (true)
+							{
+								case isset($methods[$currentMethod]) === false || (isset($methods[$currentMethod][$lineNumber]) === false || $methods[$currentMethod][$lineNumber] == -2):
+									$lineTemplateName = 'lineTemplates';
+									break;
+
+								case isset($methods[$currentMethod]) === true && isset($methods[$currentMethod][$lineNumber]) === true && $methods[$currentMethod][$lineNumber] == -1:
+									$lineTemplateName = 'notCoveredLineTemplates';
+									break;
+
+								default:
+									$lineTemplateName = 'coveredLineTemplates';
+							}
+
+							${$lineTemplateName}->lineNumber = $lineNumber;
+							${$lineTemplateName}->code = htmlentities($line, ENT_QUOTES, 'UTF-8');
+
+							if (isset($methodLines[$lineNumber]) === true)
+							{
+								foreach (${$lineTemplateName}->anchor as $anchorTemplate)
+								{
+									$anchorTemplate->resetData();
+									$anchorTemplate->method = $currentMethod;
+									$anchorTemplate->build();
+								}
+							}
+
+							${$lineTemplateName}
+								->addToParent()
+								->resetData()
+							;
+						}
+
+						$this->adapter->fclose($srcFile);
+					}
+
+					$file = $this->destinationDirectory . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $className) . self::htmlExtensionFile;
+
+					$directory = $this->adapter->dirname($file);
+
+					if ($this->adapter->is_dir($directory) === false)
+					{
+						$this->adapter->mkdir($directory, 0777, true);
+					}
+
+					$this->adapter->file_put_contents($file, (string) $classTemplate->build());
+
+					$classTemplate->resetData();
+
+					$classCoverageAvailableTemplates->resetData();
+					$classCoverageUnavailableTemplates->resetData();
+
+					$methodsTemplates->resetData();
+
+					$sourceFileTemplates->resetData();
 				}
 
-				$file = $this->destinationDirectory . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $className) . self::htmlExtensionFile;
-
-				$directory = $this->adapter->dirname($file);
-
-				if ($this->adapter->is_dir($directory) === false)
-				{
-					$this->adapter->mkdir($directory, 0777, true);
-				}
-
-				$this->adapter->file_put_contents($file, (string) $classTemplate->build());
-
-				$classTemplate->resetData();
-
-				$classCoverageAvailableTemplates->resetData();
-				$classCoverageUnavailableTemplates->resetData();
-
-				$methodsTemplates->resetData();
-
-				$sourceFileTemplates->resetData();
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
 			}
-
-			$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Details of code coverage are available at %s.'), $this->rootUrl)) . PHP_EOL;
+			catch (\exception $exception)
+			{
+				$string .= $this->urlPrompt . $this->urlColorizer->colorize(sprintf($this->locale->_('Unable to generate code coverage at %s: %s.'), $this->rootUrl, $exception->getMessage())) . PHP_EOL;
+			}
 		}
 
 		return $string;

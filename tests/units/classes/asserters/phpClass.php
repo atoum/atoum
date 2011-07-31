@@ -50,7 +50,7 @@ class phpClass extends atoum\test
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
 		$this->mockGenerator
-			->shunt('reflectionClass', '__construct')
+			->shunt('__construct')
 			->generate('reflectionClass')
 		;
 
@@ -76,7 +76,7 @@ class phpClass extends atoum\test
 		;
 
 		$this->mockGenerator
-			->shunt('reflectionClass', '__construct')
+			->shunt('__construct')
 			->generate('reflectionClass')
 		;
 
@@ -205,7 +205,7 @@ class phpClass extends atoum\test
 		;
 
 		$this->mockGenerator
-			->shunt('reflectionClass', '__construct')
+			->shunt('__construct')
 			->generate('reflectionClass')
 		;
 
