@@ -300,6 +300,12 @@ class html extends atoum\test
 				->call('rmdir')->withArguments($inode3Path)->once()
 				->call('rmdir')->withArguments($destinationDirectoryPath)->never()
 		;
+
+		$field->getMockController()->getDestinationDirectoryIterator->throw = new \exception();
+
+		$this->assert
+			->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
+		;
 	}
 
 	public function testAddSrcDirectory()

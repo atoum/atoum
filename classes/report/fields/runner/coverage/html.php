@@ -468,17 +468,21 @@ class html extends report\fields\runner\coverage\cli
 
 	public function cleanDestinationDirectory()
 	{
-		foreach ($this->getDestinationDirectoryIterator() as $inode)
+		try
 		{
-			if ($inode->isDir() === false)
+			foreach ($this->getDestinationDirectoryIterator() as $inode)
 			{
-				$this->adapter->unlink($inode->getPathname());
-			}
-			else if (($pathname = $inode->getPathname()) !== $this->destinationDirectory)
-			{
-				$this->adapter->rmdir($pathname);
+				if ($inode->isDir() === false)
+				{
+					$this->adapter->unlink($inode->getPathname());
+				}
+				else if (($pathname = $inode->getPathname()) !== $this->destinationDirectory)
+				{
+					$this->adapter->rmdir($pathname);
+				}
 			}
 		}
+		catch (\exception $exception) {}
 
 		return $this;
 	}

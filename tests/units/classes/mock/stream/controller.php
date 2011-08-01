@@ -12,6 +12,13 @@ require_once(__DIR__ . '/../../../runner.php');
 
 class controller extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('mageekguy\atoum\test\adapter')
+		;
+	}
+
 	public function test__construct()
 	{
 		$streamController = new stream\controller();
