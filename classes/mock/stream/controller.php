@@ -13,44 +13,103 @@ class controller
 
 	public function __set($method, $return)
 	{
-		$this->checkMethod($method)->methods[$method] = ($return instanceof \closure ? $return : function() use ($return) { return $return; });
+		$method = self::mapMethod($method);
+
+		$this->methods[$method] = ($return instanceof \closure ? $return : function() use ($return) { return $return; });
 
 		return $this;
 	}
 
 	public function invoke($method, array $arguments = array())
 	{
-		return (isset($this->checkMethod($method)->methods[$method]) === false ? null : call_user_func_array($this->methods[$method], $arguments));
+		$method = self::mapMethod($method);
+
+		return (isset($this->methods[$method]) === false ? null : call_user_func_array($this->methods[$method], $arguments));
 	}
 
-	protected function checkMethod($method)
+	protected static function mapMethod($method)
 	{
 		switch ($method)
 		{
-			case '__construct':
-			case 'dir_closedir':
-			case 'dir_opendir':
-			case 'dir_readdir':
-			case 'dir_rewinddir':
 			case 'mkdir':
-			case 'rename':
 			case 'rmdir':
-			case 'stream_cast':
-			case 'stream_close':
-			case 'stream_eof':
-			case 'stream_flush':
-			case 'stream_lock':
-			case 'stream_metadata':
-			case 'stream_open':
-			case 'stream_read':
-			case 'stream_seek':
-			case 'stream_set_option':
-			case 'stream_stat':
-			case 'stream_tell':
-			case 'stream_write':
+			case 'rename':
 			case 'unlink':
+			case '__construct':
+			case 'stream_set_option':
+				return $method;
+
+			case 'closedir':
+			case 'dir_closedir':
+				return 'dir_closedir';
+
+			case 'opendir':
+			case 'dir_opendir':
+				return 'dir_opendir';
+
+			case 'readdir':
+			case 'dir_readdir':
+				return 'dir_readdir';
+
+			case 'rewinddir':
+			case 'dir_rewinddir':
+				return 'dir_rewindir';
+
+			case 'select':
+			case 'stream_cast':
+				return 'stream_cast';
+
+			case 'fclose':
+			case 'stream_close':
+				return 'stream_close';
+
+			case 'feof':
+			case 'stream_eof':
+				return 'stream_eof';
+
+			case 'fflush':
+			case 'stream_flush':
+				return 'stream_flush';
+
+			case 'flock':
+			case 'stream_lock':
+				return 'stream_lock';
+
+			case 'touch':
+			case 'chmod':
+			case 'chown':
+			case 'chgrp':
+			case 'stream_metadata':
+				return 'stream_metadata';
+
+			case 'fopen':
+			case 'stream_open':
+				return 'stream_open';
+
+			case 'fread':
+			case 'fgets':
+			case 'stream_read':
+				return 'stream_read';
+
+			case 'fseek':
+			case 'stream_seek':
+				return 'stream_seek';
+
+			case 'fstat':
+			case 'stream_stat':
+				return 'stream_stat';
+
+			case 'ftell':
+			case 'stream_tell':
+				return 'stream_tell';
+
+			case 'fwrite':
+			case 'stream_write':
+				return 'stream_write';
+
+			case 'stat':
 			case 'url_stat':
-				return $this;
+				return 'url_stat';
 
 			default:
 				throw new exceptions\logic\invalidArgument('Method streamWrapper::' . $method . '() does not exist');
