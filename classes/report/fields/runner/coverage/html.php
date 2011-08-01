@@ -82,34 +82,34 @@ class html extends report\fields\runner\coverage\cli
 
 	public function __toString()
 	{
-		$string = parent::__toString();
+        $string = parent::__toString();
 
-		if ($this->adapter->extension_loaded('xdebug') === true)
-		{
-			foreach ($this->srcDirectories as $srcDirectory)
-			{
-				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
-				{
-					foreach ($srcDirectoryIterator as $file)
-					{
-						$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+        if ($this->adapter->extension_loaded('xdebug') === true)
+        {
+            foreach ($this->srcDirectories as $srcDirectory)
+            {
+                foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
+                {
+                    foreach ($srcDirectoryIterator as $file)
+                    {
+                        $this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 
-						$declaredClasses = $this->adapter->get_declared_classes();
+                        $declaredClasses = $this->adapter->get_declared_classes();
 
-						require_once($file->getPathname());
+                        require_once($file->getPathname());
 
-						$xDebugData = $this->adapter->xdebug_get_code_coverage();
+                        $xDebugData = $this->adapter->xdebug_get_code_coverage();
 
-						$this->adapter->xdebug_stop_code_coverage();
+                        $this->adapter->xdebug_stop_code_coverage();
 
-						foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
-						{
-							$this->coverage->addXdebugDataForClass($class, $xDebugData);
-						}
-					}
-				}
-			}
-		}
+                        foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
+                        {
+                            $this->coverage->addXdebugDataForClass($class, $xDebugData);
+                        }
+                    }
+                }
+            }
+        }
 
 		if (sizeof($this->coverage) > 0)
 		{
@@ -468,17 +468,20 @@ class html extends report\fields\runner\coverage\cli
 
 	public function cleanDestinationDirectory()
 	{
-		foreach ($this->getDestinationDirectoryIterator() as $inode)
-		{
-			if ($inode->isDir() === false)
-			{
-				$this->adapter->unlink($inode->getPathname());
-			}
-			else if (($pathname = $inode->getPathname()) !== $this->destinationDirectory)
-			{
-				$this->adapter->rmdir($pathname);
-			}
-		}
+        if ($this->adapter->is_dir($this->destinationDirectory))
+        {
+            foreach ($this->getDestinationDirectoryIterator() as $inode)
+            {
+                if ($inode->isDir() === false)
+                {
+                    $this->adapter->unlink($inode->getPathname());
+                }
+                else if (($pathname = $inode->getPathname()) !== $this->destinationDirectory)
+                {
+                    $this->adapter->rmdir($pathname);
+                }
+            }
+        }
 
 		return $this;
 	}

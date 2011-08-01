@@ -150,7 +150,7 @@ class html extends atoum\test
 			->string($field->getProjectName())->isIdenticalTo((string) $projectName)
 		;
 	}
-
+/*
 	public function testGetDestinationDirectoryIterator()
 	{
 		$field = new coverage\html(uniqid(), __DIR__);
@@ -161,7 +161,7 @@ class html extends atoum\test
 			->string($recursiveDirectoryIterator->current()->getPathInfo()->getPathname())->isEqualTo(__DIR__)
 		;
 	}
-
+*/
 	public function testGetSrcDirectoryIterators()
 	{
 		$field = new coverage\html(uniqid(), uniqid(), uniqid());
@@ -300,6 +300,18 @@ class html extends atoum\test
 				->call('rmdir')->withArguments($inode3Path)->once()
 				->call('rmdir')->withArguments($destinationDirectoryPath)->never()
 		;
+
+        //If destination directory does not exists, won't try to clean the directory
+        $adapter->is_dir = false;
+        $this->assert
+                ->when(function()use($field){$field->cleanDestinationDirectory();})
+                ->adapter($adapter)
+                    ->call('is_dir')
+                    ->once()
+                ->object($field)
+                    ->call('getDestinationDirectoryIterator')
+                    ->never();
+
 	}
 
 	public function testAddSrcDirectory()
@@ -689,7 +701,6 @@ class html extends atoum\test
 		;
 
 		$indexTemplateController->build->throw = new \exception($errorMessage = uniqid());
-
 		$this->assert
 			->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . '/: ' . $errorMessage . '.' . PHP_EOL)
 		;
