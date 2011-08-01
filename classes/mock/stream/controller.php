@@ -3,28 +3,32 @@
 namespace mageekguy\atoum\mock\stream;
 
 use
-	mageekguy\atoum\mock,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
-class controller
+class controller extends test\adapter
 {
-	protected $methods = array();
+	public function __get($method)
+	{
+		return parent::__get(self::mapMethod($method));
+	}
 
 	public function __set($method, $return)
 	{
-		$method = self::mapMethod($method);
-
-		$this->methods[$method] = ($return instanceof \closure ? $return : function() use ($return) { return $return; });
+		return parent::__set(self::mapMethod($method), $return);
 
 		return $this;
 	}
 
+	public function __isset($method)
+	{
+		return parent::__isset(self::mapMethod($method));
+	}
+
 	public function invoke($method, array $arguments = array())
 	{
-		$method = self::mapMethod($method);
-
-		return (isset($this->methods[$method]) === false ? null : call_user_func_array($this->methods[$method], $arguments));
+		return (isset($this->{$method = self::mapMethod($method)}) === false ? null : parent::invoke($method, $arguments));
 	}
 
 	protected static function mapMethod($method)
@@ -53,7 +57,7 @@ class controller
 
 			case 'rewinddir':
 			case 'dir_rewinddir':
-				return 'dir_rewindir';
+				return 'dir_rewinddir';
 
 			case 'select':
 			case 'stream_cast':
