@@ -619,18 +619,29 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			$returnValue = proc_close($php);
 
-			if ($stdErr != '')
-			{
-				$this->extractError($stdErr, $returnValue);
-			}
-			else if ($returnValue > 0)
-			{
-				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, 'Unknown error');
-			}
-
 			if ($stdOut !== '')
 			{
 				$this->score->addOutput($this->class, $this->currentMethod, $stdOut);
+			}
+
+			if ($stdErr != '')
+			{
+				if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0)
+				{
+					$this->score->addError($this->path, null, $this->class, $this->currentMethod, null, $stdErr);
+				}
+				else
+				{
+					foreach ($errors as $error)
+					{
+						$this->score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
+					}
+				}
+			}
+
+			if ($returnValue > 0)
+			{
+				$this->score->addError($this->path, null, $this->class, $this->currentMethod, null, 'Unknown error, perhaps PHP segfault !');
 			}
 
 			$tmpFileContent = @file_get_contents($this->workingFile);
@@ -689,21 +700,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return null;
-	}
-
-	protected function extractError($string, $returnValue)
-	{
-		$error = trim($string);
-
-		if ($error !== '')
-		{
-			if (preg_match('/ in (.+) on line (\d+)/', $error, $match) === 1)
-			{
-				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, preg_replace('/ in (.+) on line (\d+)/', '', $error), $match[1], $match[2]);
-			}
-		}
-
-		return $this;
 	}
 
 	protected static function getAnnotations($comments)

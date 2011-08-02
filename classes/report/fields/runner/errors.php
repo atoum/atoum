@@ -58,7 +58,7 @@ abstract class errors extends report\fields\runner
 				return 'E_USER_DEPRECATED';
 
 			default:
-				return $error;
+				return strtoupper($error);
 		}
 	}
 }
