@@ -108,9 +108,9 @@ class helloWorld
 		return 'Hello World !';
 	}
 }
-```
 
 ?>
+```
 
 ### Step 5 : Run your test once more
 
