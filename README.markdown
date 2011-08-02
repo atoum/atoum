@@ -54,30 +54,32 @@ This PHAR archive contains the latest development version to pass the totality o
 
 Using your preferred text editor, create the file `path/to/project/tests/units/helloWorld.php` and add the following code :
 
-	<?php
+``` php
+<?php
 
-	namespace vendor\project\tests\units;
+namespace vendor\project\tests\units;
 
-	require_once 'path/to/mageekguy.atoum.phar';
+require_once 'path/to/mageekguy.atoum.phar';
 
-	include 'path/to/project/classes/helloWorld.php';
+include 'path/to/project/classes/helloWorld.php';
 
-	use \mageekguy\atoum;
-	use \vendor\project;
+use \mageekguy\atoum;
+use \vendor\project;
 
-	class helloWorld extends atoum\test
+class helloWorld extends atoum\test
+{
+	public function testSay()
 	{
-		public function testSay()
-		{
-			$helloWorld = new project\helloWorld();
+		$helloWorld = new project\helloWorld();
 
-			$this->assert
-				->string($helloWorld->say())->isEqualTo('Hello World !')
-			;
-		}
+		$this->assert
+			->string($helloWorld->say())->isEqualTo('Hello World !')
+		;
 	}
+}
 
-	?>
+?>
+```
 
 ### Step 3 : Run your test with the commandline
 
@@ -94,19 +96,21 @@ You should get the following result, or something equivalent :
 
 Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code :
 
-	<?php
+``` php
+<?php
 
-	namespace vendor\project;
+namespace vendor\project;
 
-	class helloWorld
+class helloWorld
+{
+	public function say()
 	{
-		public function say()
-		{
-			return 'Hello World !';
-		}
+		return 'Hello World !';
 	}
+}
+```
 
-	?>
+?>
 
 ### Step 5 : Run your test once more
 
@@ -129,31 +133,33 @@ You should get the following result, or something equivalent :
 
 ### Step 6 : Complete your tests and restart the cycle from Step 3
 
-	<?php
+``` php
+<?php
 
-	namespace vendor\project\tests\units;
+namespace vendor\project\tests\units;
 
-	require_once 'path/to/mageekguy.atoum.phar';
+require_once 'path/to/mageekguy.atoum.phar';
 
-	include_once 'path/to/project/classes/helloWorld.php';
+include_once 'path/to/project/classes/helloWorld.php';
 
-	use mageekguy\atoum;
-	use vendor\project;
+use mageekguy\atoum;
+use vendor\project;
 
-	class helloWorld extends atoum\test
+class helloWorld extends atoum\test
+{
+	public function test__construct()
 	{
-		public function test__construct()
-		{
-			$helloWorld = new project\helloWorld();
+		$helloWorld = new project\helloWorld();
 
-			$this->assert
-				->string($helloWorld->say())->isEqualTo('Hello !')
-				->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . ' !')
-			;
-		}
+		$this->assert
+			->string($helloWorld->say())->isEqualTo('Hello !')
+			->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . ' !')
+		;
 	}
+}
 
-	?>
+?>
+```
 
 ## To go further
 
