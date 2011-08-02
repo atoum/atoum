@@ -567,6 +567,51 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testWithAnyArguments()
+	{
+		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+		;
+
+		$this->mockGenerator
+			->generate('mageekguy\atoum\tests\units\asserters\dummy')
+		;
+
+		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+		;
+
+		$asserter->call(uniqid());
+
+		$this->assert
+			->variable($asserter->getTestedMethodArguments())->isNull()
+			->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
+			->variable($asserter->getTestedMethodArguments())->isNull()
+		;
+
+		$asserter->withArguments(uniqid());
+
+		$this->assert
+			->array($asserter->getTestedMethodArguments())->isNotEmpty()
+			->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
+			->variable($asserter->getTestedMethodArguments())->isNull()
+		;
+	}
+
 	public function testOnce()
 	{
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));

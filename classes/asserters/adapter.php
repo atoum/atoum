@@ -150,6 +150,13 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
+	public function withAnyArguments()
+	{
+		$this->calledFunctionNameIsSet()->calledFunctionArguments = null;
+
+		return $this;
+	}
+
 	public function once($failMessage = null)
 	{
 		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->calledFunctionName, $this->calledFunctionArguments));

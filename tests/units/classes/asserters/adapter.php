@@ -162,6 +162,47 @@ class adapter extends atoum\test
 		;
 	}
 
+	public function testWithAnyArguments()
+	{
+		$asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+		;
+
+		$asserter->setWith($adapter = new test\adapter());
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->withArguments(uniqid());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called function is undefined')
+		;
+
+		$asserter->call(uniqid());
+
+		$this->assert
+			->variable($asserter->getTestedFunctionArguments())->isNull()
+			->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
+			->variable($asserter->getTestedFunctionArguments())->isNull()
+		;
+
+		$asserter->withArguments(uniqid());
+
+		$this->assert
+			->array($asserter->getTestedFunctionArguments())->isNotEmpty()
+			->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
+			->variable($asserter->getTestedFunctionArguments())->isNull()
+		;
+	}
+
 	public function testBeforeMethodCall()
 	{
 		$this->mockGenerator

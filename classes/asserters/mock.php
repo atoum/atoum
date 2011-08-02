@@ -179,6 +179,13 @@ class mock extends atoum\asserter
 		return $this;
 	}
 
+	public function withAnyArguments()
+	{
+		$this->calledMethodNameIsSet()->calledMethodArguments = null;
+
+		return $this;
+	}
+
 	public function once($failMessage = null)
 	{
 		$this->assertOnBeforeAndAfterMethodCall($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
