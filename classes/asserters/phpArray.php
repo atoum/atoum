@@ -72,7 +72,7 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-	public function contain($value, $failMessage = null)
+	public function contains($value, $failMessage = null)
 	{
 		if (in_array($value, $this->valueIsSet()->value) === true)
 		{
@@ -81,6 +81,20 @@ class phpArray extends asserters\variable
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
+		}
+
+		return $this;
+	}
+
+	public function notContains($value, $failMessage = null)
+	{
+		if (in_array($value, $this->valueIsSet()->value) === false)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;

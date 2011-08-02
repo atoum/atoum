@@ -211,14 +211,14 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testContain()
+	public function testContains()
 	{
 		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->boolean($asserter->wasSet())->isFalse()
 			->exception(function() use ($asserter) {
-					$asserter->contain(uniqid());
+					$asserter->contains(uniqid());
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -230,7 +230,7 @@ class phpArray extends atoum\test
 		$score->reset();
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->contain($notInArray = uniqid()); })
+			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->contains($notInArray = uniqid()); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->getTypeOf($notInArray)))
 			->integer($score->getPassNumber())->isEqualTo(0)
@@ -242,7 +242,7 @@ class phpArray extends atoum\test
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
 						'line' => $line,
-						'asserter' => get_class($asserter) . '::contain()',
+						'asserter' => get_class($asserter) . '::contains()',
 						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain %s'), $asserter, $asserter->getTypeOf($notInArray))
 					)
 				)
@@ -250,9 +250,53 @@ class phpArray extends atoum\test
 		;
 
 		$this->assert
-			->object($asserter->contain($value))->isIdenticalTo($asserter)
+			->object($asserter->contains($value))->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testNotContains()
+	{
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->notContains(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Value is undefined')
+		;
+
+		$asserter->setWith(array(uniqid(), uniqid(), $inArray = uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+
+		$this->assert
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->object($asserter->notContains(uniqid()))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->exception(function() use (& $line, $asserter, $inArray) { $line = __LINE__; $asserter->notContains($inArray); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf($inArray)))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::notContains()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf($inArray))
+					)
+				)
+			)
 		;
 	}
 }

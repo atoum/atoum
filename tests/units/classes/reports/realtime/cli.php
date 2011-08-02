@@ -72,12 +72,16 @@ class cli extends atoum\test
 					new fields\runner\errors\cli(
 						new prompt('> '),
 						new colorizer('0;33'),
-						new prompt('=> ', new colorizer('0;33'))
+						new prompt('=> ', new colorizer('0;33')),
+						null,
+						new prompt('==> ', new colorizer('0;33'))
 					),
 					new fields\runner\exceptions\cli(
 						new prompt('> '),
 						new colorizer('0;35'),
-						new prompt('=> ', new colorizer('0;35'))
+						new prompt('=> ', new colorizer('0;35')),
+						null,
+						new prompt('==> ', new colorizer('0;35'))
 					)
 				)
 			)

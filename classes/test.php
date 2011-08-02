@@ -628,7 +628,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0)
 				{
-					$this->score->addError($this->path, null, $this->class, $this->currentMethod, null, $stdErr);
+					$this->score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $stdErr);
 				}
 				else
 				{
@@ -637,11 +637,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 						$this->score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
 					}
 				}
-			}
-
-			if ($returnValue > 0)
-			{
-				$this->score->addError($this->path, null, $this->class, $this->currentMethod, null, 'Unknown error, perhaps PHP segfault !');
 			}
 
 			$tmpFileContent = @file_get_contents($this->workingFile);

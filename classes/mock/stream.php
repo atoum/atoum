@@ -35,16 +35,13 @@ class stream
 		return $this->streamController->invoke($method, $arguments);
 	}
 
-	public static function register()
+	public static function get($stream)
 	{
-		if (stream_wrapper_register(self::name, __CLASS__) === false)
+		if (in_array(self::name, stream_get_wrappers()) === false && stream_wrapper_register(self::name, __CLASS__) === false)
 		{
 			throw new exceptions\runtime('Unable to register ' . self::name . ' stream');
 		}
-	}
 
-	public static function get($stream)
-	{
 		if (isset(self::$streams[$stream]) === false)
 		{
 			self::$streams[$stream] = new stream\controller();

@@ -22,16 +22,22 @@ class cli extends realtime
 
 		$secondLevelPrompt = new prompt('=> ', $firstLevelColorizer);
 
+		$thirdLevelPrompt = new prompt('==> ', $firstLevelColorizer);
+
 		$failureColorizer = new colorizer('0;31');
 		$failurePrompt = clone $secondLevelPrompt;
 		$failurePrompt->setColorizer($failureColorizer);
 
 		$errorColorizer = new colorizer('0;33');
-		$errorPrompt = clone $secondLevelPrompt;
+		$errorMethodPrompt = clone $secondLevelPrompt;
+		$errorMethodPrompt->setColorizer($errorColorizer);
+		$errorPrompt = clone $thirdLevelPrompt;
 		$errorPrompt->setColorizer($errorColorizer);
 
 		$exceptionColorizer = new colorizer('0;35');
-		$exceptionPrompt = clone $secondLevelPrompt;
+		$exceptionMethodPrompt = clone $secondLevelPrompt;
+		$exceptionMethodPrompt->setColorizer($exceptionColorizer);
+		$exceptionPrompt = clone $thirdLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
 
 		$this
@@ -105,6 +111,8 @@ class cli extends realtime
 			->addRunnerField(new runner\errors\cli(
 						$firstLevelPrompt,
 						$errorColorizer,
+						$errorMethodPrompt,
+						null,
 						$errorPrompt
 					),
 					array(atoum\runner::runStop)
@@ -112,6 +120,8 @@ class cli extends realtime
 			->addRunnerField(new runner\exceptions\cli(
 						$firstLevelPrompt,
 						$exceptionColorizer,
+						$exceptionMethodPrompt,
+						null,
 						$exceptionPrompt
 					),
 					array(atoum\runner::runStop)

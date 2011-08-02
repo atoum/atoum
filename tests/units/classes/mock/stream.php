@@ -17,19 +17,12 @@ class stream extends atoum\test
 		;
 	}
 
-	public function testRegister()
-	{
-		atoum\mock\stream::register();
-
-		$this->assert
-			->array(stream_get_wrappers())->contain(atoum\mock\stream::name)
-		;
-	}
-
 	public function testGet()
 	{
 		$this->assert
+			->array(stream_get_wrappers())->notContains(atoum\mock\stream::name)
 			->object(atoum\mock\stream::get(uniqid()))->isEqualTo(new atoum\mock\stream\controller())
+			->array(stream_get_wrappers())->contains(atoum\mock\stream::name)
 		;
 	}
 }
