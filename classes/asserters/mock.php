@@ -5,7 +5,9 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\arguments
 ;
 
 class mock extends atoum\asserter
@@ -17,6 +19,26 @@ class mock extends atoum\asserter
 	protected $afterFunctionCalls = array();
 	protected $beforeMethodCalls = array();
 	protected $afterMethodCalls = array();
+	protected $argumentsDecorator = null;
+
+	public function __construct(asserter\generator $generator)
+	{
+		parent::__construct($generator);
+
+		$this->setArgumentsDecorator(new arguments\decorator());
+	}
+
+	public function setArgumentsDecorator(arguments\decorator $decorator)
+	{
+		$this->argumentsDecorator = $decorator;
+
+		return $this;
+	}
+
+	public function getArgumentsDecorator()
+	{
+		return $this->argumentsDecorator;
+	}
 
 	public function getTestedMethodName()
 	{
@@ -190,26 +212,28 @@ class mock extends atoum\asserter
 	{
 		$this->assertOnBeforeAndAfterMethodCall($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->calledMethodName, $this->calledMethodArguments));
 
-		if (($callsNumber = sizeof($calls)) !== 1)
+		if (($callsNumber = sizeof($calls)) === 1)
 		{
+			$this->pass();
+		}
+		else
+		{
+
 			$this->fail(
 				$failMessage !== null
-				?  $failMessage
-				:  sprintf(
+				? $failMessage
+				: sprintf(
 						$this->getLocale()->__(
-							'method %s::%s() is called %d time instead of 1',
-							'method %s::%s() is called %d times instead of 1',
+							'method %s::%s(%s) is called %d time instead of 1',
+							'method %s::%s(%s) is called %d times instead of 1',
 							$callsNumber
 						),
 						get_class($this->mock),
 						$this->calledMethodName,
+						$this->getMethodArgumentsAsString(),
 						$callsNumber
 					)
 			);
-		}
-		else
-		{
-			$this->pass();
 		}
 
 		return $this;
@@ -221,7 +245,7 @@ class mock extends atoum\asserter
 
 		if (($callsNumber = sizeof($calls)) < 1)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s::%s() is called 0 time'), get_class($this->mock), $this->calledMethodName));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s::%s(%s) is called 0 time'), get_class($this->mock), $this->calledMethodName, $this->getMethodArgumentsAsString()));
 		}
 		else
 		{
@@ -239,12 +263,13 @@ class mock extends atoum\asserter
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf(
 					$this->getLocale()->__(
-						'method %s::%s() is called %d time instead of %d',
-						'method %s::%s() is called %d times instead of %d',
+						'method %s::%s(%s) is called %d time instead of %d',
+						'method %s::%s(%s) is called %d times instead of %d',
 						$callsNumber
 					),
 					get_class($this->mock),
 					$this->calledMethodName,
+					$this->getMethodArgumentsAsString(),
 					$callsNumber,
 					$number
 				)
@@ -323,6 +348,63 @@ class mock extends atoum\asserter
 		}
 
 		return $this;
+	}
+
+	protected function getMethodArgumentsAsString()
+	{
+		$arguments = '';
+
+		if ($this->calledMethodArguments !== null && sizeof($this->calledMethodArguments) > 0)
+		{
+			$arguments = array();
+
+			foreach ($this->calledMethodArguments as $argument)
+			{
+				switch ($type = gettype($argument))
+				{
+					case 'boolean':
+						$arguments[] = 'boolean(' . ($argument ? 'TRUE' : 'FALSE')  . ')';
+						break;
+
+					case 'integer':
+						$arguments[] = 'integer(' . $argument . ')';
+						break;
+
+					case 'double':
+						$arguments[] = 'float(' . $argument . ')';
+						break;
+
+					case 'string':
+						$arguments[] = 'string(' . strlen($argument) . ') "' . $argument . '"';
+						break;
+
+					case 'array':
+						$arguments[] = 'array(' . ($size = sizeof($argument)) . ') {' . ($size <= 0 ? '' : '...') . '}';
+						break;
+
+					case 'object':
+						$arguments[] = get_class($argument);
+						break;
+
+					case 'resource':
+						ob_start();
+						var_dump($argument);
+						$arguments[] = ob_get_clean();
+						break;
+
+					case 'NULL':
+						$arguments[] = $type;
+						break;
+
+					default:
+						$arguments[] = $type;
+				}
+			}
+
+			$arguments = join(', ', $arguments);
+		}
+
+		return $arguments;
 	}
 }
 

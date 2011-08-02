@@ -229,6 +229,7 @@ class runner extends atoum\script
 				array(
 					'-h, --help' => $this->locale->_('Display this help'),
 					'-v, --version' => $this->locale->_('Display version'),
+					'-p <path/to/php/binary>, --php <path/to/php/binary>' => $this->locale->_('Path to PHP binary which must be used to run tests'),
 					'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
 					'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
