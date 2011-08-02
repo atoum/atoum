@@ -4,7 +4,6 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock,
 	mageekguy\atoum\exceptions
 ;
 
@@ -16,7 +15,7 @@ class stream extends atoum\asserter
 	public function setWith($stream)
 	{
 		$this->streamName = $stream;
-		$this->streamController = mock\stream::get($stream);
+		$this->streamController = atoum\mock\stream::get($stream);
 
 		return $this;
 	}
@@ -31,7 +30,7 @@ class stream extends atoum\asserter
 		return $this->streamController;
 	}
 
-	public function isUsedBy($functionName)
+	public function isRead()
 	{
 		$this->streamIsSet();
 	}

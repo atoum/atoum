@@ -9,6 +9,8 @@ use
 
 class controller extends test\adapter
 {
+	protected $from = null;
+
 	public function __get($method)
 	{
 		return parent::__get(self::mapMethod($method));

@@ -22,6 +22,7 @@ class score
 	private $phpVersion = null;
 	private $atoumPath = null;
 	private $atoumVersion = null;
+	private $incomptedTests = array();
 
 	private static $failId = 0;
 

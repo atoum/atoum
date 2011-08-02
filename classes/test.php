@@ -463,8 +463,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 				if ($runner !== null)
 				{
-					$this->adapter->unlink($this->workingFile);
-
 					$this
 						->callObservers(self::beforeTearDown)
 						->tearDown()
@@ -625,6 +623,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->extractError($stdErr, $returnValue);
 			}
+			else if ($returnValue > 0)
+			{
+				$this->score->addError($this->path, null, $this->class, $this->currentMethod, $returnValue, 'Unknown error');
+			}
 
 			if ($stdOut !== '')
 			{
@@ -642,6 +644,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$this->score->merge($score);
 				}
 			}
+
+			@$this->adapter->unlink($this->workingFile);
 		}
 	}
 

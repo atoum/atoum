@@ -3,28 +3,33 @@
 namespace mageekguy\atoum\tests\units\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock
+	mageekguy\atoum
 ;
 
 require_once(__DIR__ . '/../../runner.php');
 
 class stream extends atoum\test
 {
-	public function testCreate()
+	public function testClassConstants()
 	{
-		$streamController = mock\stream::create($name = 'atoum');
+		$this->assert
+			->string(atoum\mock\stream::name)->isEqualTo('atoum')
+		;
+	}
+
+	public function testRegister()
+	{
+		atoum\mock\stream::register();
 
 		$this->assert
-			->object($streamController)->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-			->array(stream_get_wrappers())->contain($name)
+			->array(stream_get_wrappers())->contain(atoum\mock\stream::name)
 		;
 	}
 
 	public function testGet()
 	{
 		$this->assert
-			->object(mock\stream::get(uniqid()))->isEqualTo(new mock\stream\controller())
+			->object(atoum\mock\stream::get(uniqid()))->isEqualTo(new atoum\mock\stream\controller())
 		;
 	}
 }

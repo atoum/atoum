@@ -4,7 +4,6 @@ namespace mageekguy\atoum\tests\units\asserters;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters
 ;
@@ -37,25 +36,25 @@ class stream extends atoum\test
 		$this->assert
 			->object($asserter->setWith($stream = uniqid()))->isIdenticalTo($asserter)
 			->string($asserter->getStreamName())->isEqualTo($stream)
-			->object($asserter->getStreamController())->isEqualTo(mock\stream::get($stream))
+			->object($asserter->getStreamController())->isEqualTo(atoum\mock\stream::get($stream))
 		;
 
-		mock\stream::get($stream = uniqid());
+		atoum\mock\stream::get($stream = uniqid());
 
 		$this->assert
 			->object($asserter->setWith($stream))->isIdenticalTo($asserter)
 			->string($asserter->getStreamName())->isEqualTo($stream)
-			->object($asserter->getStreamController())->isIdenticalTo(mock\stream::get($stream))
+			->object($asserter->getStreamController())->isIdenticalTo(atoum\mock\stream::get($stream))
 		;
 	}
 
-	public function testIsUsedBy()
+	public function testIsRead()
 	{
 		$asserter = new asserters\stream($generator = new asserter\generator($this));
 
 		$this->assert
 			->exception(function() use ($asserter) {
-						$asserter->isUsedBy(uniqid());
+						$asserter->isRead();
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
