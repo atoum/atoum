@@ -27,26 +27,13 @@ class mock extends atoum\test
 		$call = new call\mock(
 				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
 				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
-				$methodName = uniqid()
+				$function = uniqid()
 		);
 
 		$this->assert
 			->object($call->getMockAsserter())->isIdenticalTo($mockAsserter)
-			->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-			->string($call->getMethodName())->isEqualTo($methodName)
-			->variable($call->getArguments())->isNull()
-		;
-
-		$call = new call\mock(
-				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
-				$methodName = rand(1, PHP_INT_MAX)
-		);
-
-		$this->assert
-			->object($call->getMockAsserter())->isIdenticalTo($mockAsserter)
-			->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-			->string($call->getMethodName())->isEqualTo((string) $methodName)
+			->object($call->getObject())->isIdenticalTo($mockAggregator)
+			->string($call->getFunction())->isEqualTo($function)
 			->variable($call->getArguments())->isNull()
 		;
 	}
@@ -120,7 +107,7 @@ class mock extends atoum\test
 
 		$this->assert
 			->object($call->on($mockAggregator))->isIdenticalTo($call)
-			->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
+			->object($call->getObject())->isIdenticalTo($mockAggregator)
 		;
 	}
 

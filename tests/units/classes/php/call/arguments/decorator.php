@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\tools\arguments;
+namespace mageekguy\atoum\tests\units\php\call\arguments;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\tools
+	mageekguy\atoum\php\call\arguments
 ;
 
 require_once(__DIR__ . '/../../../runner.php');
@@ -13,7 +13,7 @@ class decorator extends atoum\test
 {
 	public function testDecorate()
 	{
-		$decorator = new tools\arguments\decorator();
+		$decorator = new arguments\decorator();
 
 		$this->assert
 			->string($decorator->decorate())->isEmpty()

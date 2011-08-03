@@ -19,26 +19,13 @@ class adapter extends atoum\test
 		$call = new call\adapter(
 				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
 				$adapter = new test\adapter(),
-				$functionName = uniqid()
+				$function = uniqid()
 		);
 
 		$this->assert
 			->object($call->getMockAsserter())->isIdenticalTo($mockAsserter)
 			->object($call->getAdapter())->isIdenticalTo($adapter)
-			->string($call->getFunctionName())->isEqualTo($functionName)
-			->variable($call->getArguments())->isNull()
-		;
-
-		$call = new call\adapter(
-				$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$adapter = new test\adapter,
-				$functionName = rand(1, PHP_INT_MAX)
-		);
-
-		$this->assert
-			->object($call->getMockAsserter())->isIdenticalTo($mockAsserter)
-			->object($call->getAdapter())->isIdenticalTo($adapter)
-			->string($call->getFunctionName())->isEqualTo((string) $functionName)
+			->string($call->getFunction())->isEqualTo($function)
 			->variable($call->getArguments())->isNull()
 		;
 	}

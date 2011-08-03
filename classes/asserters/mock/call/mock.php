@@ -4,32 +4,30 @@ namespace mageekguy\atoum\asserters\mock\call;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\php,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class mock
+class mock extends php\call
 {
 	protected $mockAsserter = null;
-	protected $mockAggregator = null;
-	protected $methodName = '';
-	protected $arguments = null;
 
-	public function __construct(asserters\mock $mockAsserter, atoum\mock\aggregator $mockAggregator, $methodName)
+	public function __construct(asserters\mock $mockAsserter, atoum\mock\aggregator $mockAggregator, $function)
 	{
 		$this->mockAsserter = $mockAsserter;
-		$this->mockAggregator = $mockAggregator;
-		$this->methodName = (string) $methodName;
+
+		parent::__construct($function, null, $mockAggregator);
 	}
 
-	public function __call($method, $arguments)
+	public function __call($function, $arguments)
 	{
-		if (method_exists($this->mockAsserter, $method) === false)
+		if (method_exists($this->mockAsserter, $function) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->mockAsserter) . '::' . $method . '() does not exist');
+			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->mockAsserter) . '::' . $function . '() does not exist');
 		}
 
-		return call_user_func_array(array($this->mockAsserter, $method), $arguments);
+		return call_user_func_array(array($this->mockAsserter, $function), $arguments);
 	}
 
 	public function getMockAsserter()
@@ -37,45 +35,26 @@ class mock
 		return $this->mockAsserter;
 	}
 
-	public function getMockAggregator()
-	{
-		return $this->mockAggregator;
-	}
-
-	public function getMethodName()
-	{
-		return $this->methodName;
-	}
-
 	public function withArguments()
 	{
-		$this->arguments = func_get_args();
-
-		return $this;
-	}
-
-	public function getArguments()
-	{
-		return $this->arguments;
+		return parent::setArguments(func_get_args());
 	}
 
 	public function on(atoum\mock\aggregator $mockAggregator)
 	{
-		$this->mockAggregator = $mockAggregator;
-
-		return $this;
+		return $this->setObject($mockAggregator);
 	}
 
 	public function getFirstCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->getObject()->getMockController()->getCalls($this->function, $this->arguments);
 
 		return $calls === null ? null : key($calls);
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->getObject()->getMockController()->getCalls($this->function, $this->arguments);
 
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}

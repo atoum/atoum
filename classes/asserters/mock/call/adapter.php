@@ -3,23 +3,23 @@
 namespace mageekguy\atoum\asserters\mock\call;
 
 use
+	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class adapter
+class adapter extends php\call
 {
 	protected $mockAsserter = null;
 	protected $adapter = null;
-	protected $functionName = '';
-	protected $arguments = null;
 
-	public function __construct(asserters\mock $mockAsserter, test\adapter $adapter, $functionName)
+	public function __construct(asserters\mock $mockAsserter, test\adapter $adapter, $function)
 	{
 		$this->mockAsserter = $mockAsserter;
 		$this->adapter = $adapter;
-		$this->functionName = (string) $functionName;
+
+		parent::__construct($function);
 	}
 
 	public function __call($method, $arguments)
@@ -42,33 +42,21 @@ class adapter
 		return $this->adapter;
 	}
 
-	public function getFunctionName()
-	{
-		return $this->functionName;
-	}
-
 	public function withArguments()
 	{
-		$this->arguments = func_get_args();
-
-		return $this;
-	}
-
-	public function getArguments()
-	{
-		return $this->arguments;
+		return parent::setArguments(func_get_args());
 	}
 
 	public function getFirstCall()
 	{
-		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->function, $this->arguments);
 
 		return $calls === null ? null : key($calls);
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->function, $this->arguments);
 
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}

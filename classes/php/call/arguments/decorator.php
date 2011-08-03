@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tools\arguments;
+namespace mageekguy\atoum\php\call\arguments;
 
 class decorator
 {
