@@ -13,16 +13,27 @@ require_once(__DIR__ . '/../../../runner.php');
 
 class xunit extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->isSubclassOf('mageekguy\atoum\reports\asynchronous')
+		;
+	}
+	
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(atoum\reports\asynchronous\xunit::defaultTitle)->isEqualTo('atoum testsuite')
+		;
+	}
+	
 	public function test__construct()
 	{
 		$rep = new reports\xunit();
 
 		$this->assert
 			->array($rep->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
-			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					new atoum\report\fields\runner\xunit()
-				)
-			)
+			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::runStart))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::beforeSetUp))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::afterSetUp))->isEqualTo(array())
@@ -45,10 +56,7 @@ class xunit extends atoum\test
 
 		$this->assert
 			->array($rep->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
-			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
-					new atoum\report\fields\runner\xunit()
-				)
-			)
+			->array($rep->getRunnerFields(atoum\runner::runStop))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::runStart))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::beforeSetUp))->isEqualTo(array())
 			->array($rep->getTestFields(atoum\test::afterSetUp))->isEqualTo(array())
@@ -77,6 +85,36 @@ class xunit extends atoum\test
 			;
 	}
 
+	public function testRunnerStop()
+	{
+		$rep = new reports\xunit();
+		
+		$this->assert
+			->variable($rep->getTitle())->isNull()
+			->castToString($rep)->isEmpty()
+			->string($rep->runnerStop(new atoum\runner())->getTitle())->isEqualTo(atoum\reports\asynchronous\xunit::defaultTitle)
+			->castToString($rep)->isNotEmpty();
+		
+		$rep = new reports\xunit();
+		
+		$this->assert
+			->string($rep->setTitle($title = uniqid())->runnerStop(new atoum\runner())->getTitle())
+			->isEqualTo($title);
+		
+		$rep = new reports\xunit();
+		$this->mock('\mageekguy\atoum\writers\file');
+		$writer = new \mock\mageekguy\atoum\writers\file();
+
+		$rep->addWriter($writer)->runnerStop(new \mageekguy\atoum\runner());
+		
+		$this->assert
+			->mock($writer)
+				->call('writeAsynchronousReport')
+				->withArguments($rep)
+				->once();
+		
+	}
+	
 	public function testSetAdapter()
 	{
 		$rep = new reports\xunit();
