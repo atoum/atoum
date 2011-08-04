@@ -19,8 +19,6 @@ class controller extends test\adapter
 	public function __set($method, $return)
 	{
 		return parent::__set(self::mapMethod($method), $return);
-
-		return $this;
 	}
 
 	public function __isset($method)
