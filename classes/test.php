@@ -480,7 +480,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 										switch (true)
 										{
 											case isset($child[1][2]) && $writedPipe === $child[1][2]:
-												$stdErr[$testMethod] = stream_get_contents($child[1][2]);
+												$stdErr[$testMethod] .= stream_get_contents($child[1][2]);
 
 												if (feof($child[1][2]) === true)
 												{
@@ -490,7 +490,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 												break;
 
 											case isset($child[1][1]) && $writedPipe === $child[1][1]:
-												$stdOut[$testMethod] = stream_get_contents($child[1][1]);
+												$stdOut[$testMethod] .= stream_get_contents($child[1][1]);
 
 												if (feof($child[1][1]) === true)
 												{
