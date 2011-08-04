@@ -169,27 +169,27 @@ class adapter extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
 
-		if ($callNumber !== 1)
+		if (($callsNumber = sizeof($calls)) === 1)
 		{
-			$this->fail(
-				$failMessage !== null
-				?  $failMessage
-				:  sprintf(
-						$this->getLocale()->__(
-							'function %s is called %d time instead of 1',
-							'function %s is called %d times instead of 1',
-							$callNumber
-						),
-						$this->call,
-						$callNumber
-					)
-			);
+			$this->pass();
 		}
 		else
 		{
-			$this->pass();
+			$this->fail(
+				$failMessage !== null
+				? $failMessage
+				: sprintf(
+						$this->getLocale()->__(
+							'function %s is called %d time instead of 1',
+							'function %s is called %d times instead of 1',
+							$callsNumber
+						),
+						$this->call,
+						$callsNumber
+					)
+			);
 		}
 
 		return $this;
@@ -197,9 +197,9 @@ class adapter extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
 
-		if ($callNumber >= 1)
+		if (($callsNumber = sizeof($calls)) >= 1)
 		{
 			$this->pass();
 		}
@@ -213,9 +213,9 @@ class adapter extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$callNumber = sizeof($this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
 
-		if ($number == $callNumber)
+		if (($callsNumber = sizeof($calls)) === $number)
 		{
 			$this->pass();
 		}
@@ -225,10 +225,10 @@ class adapter extends atoum\asserter
 					$this->getLocale()->__(
 						'function %s is called %d time instead of %d',
 						'function %s is called %d times instead of %d',
-						$callNumber
+						$callsNumber
 					),
 					$this->call,
-					$callNumber,
+					$callsNumber,
 					$number
 				)
 			);
@@ -257,6 +257,82 @@ class adapter extends atoum\asserter
 		if ($this->adapterIsSet()->call === null)
 		{
 			throw new exceptions\logic('Called function is undefined');
+		}
+
+		return $this;
+	}
+
+	protected function assertOnBeforeAndAfterCalls($calls)
+	{
+		if (sizeof($calls) > 0)
+		{
+			foreach ($this->beforeMethodCalls as $beforeMethodCall)
+			{
+				$firstCall = $beforeMethodCall->getFirstCall();
+
+				if ($firstCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $beforeMethodCall));
+				}
+
+				if (key($calls) > $firstCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called before method %s'), $this->call, $beforeMethodCall));
+				}
+
+				$this->pass();
+			}
+
+			foreach ($this->beforeFunctionCalls as $beforeFunctionCall)
+			{
+				$firstCall = $beforeFunctionCall->getFirstCall();
+
+				if ($firstCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $beforeFunctionCall));
+				}
+
+				if (key($calls) > $firstCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called before function %s'), $$this->call, $beforeFunctionCall));
+				}
+
+				$this->pass();
+			}
+
+			foreach ($this->afterMethodCalls as $afterMethodCall)
+			{
+				$lastCall = $afterMethodCall->getLastCall();
+
+				if ($lastCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $afterMethodCall));
+				}
+
+				if (key($calls) < $lastCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called after method %s'), $this->call, $afterMethodCall));
+				}
+
+				$this->pass();
+			}
+
+			foreach ($this->afterFunctionCalls as $afterFunctionCall)
+			{
+				$lastCall = $afterFunctionCall->getLastCall();
+
+				if ($lastCall === null)
+				{
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $afterFunctionCall));
+				}
+
+				if (key($calls) < $lastCall)
+				{
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called after function %s'), $this->call, $afterFunctionCall));
+				}
+
+				$this->pass();
+			}
 		}
 
 		return $this;
