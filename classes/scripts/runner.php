@@ -129,6 +129,18 @@ class runner extends atoum\script
 		);
 
 		$this->argumentsParser->addHandler(
+			function($script, $argument, $maxChildrenNumber) use ($runner) {
+				if (sizeof($maxChildrenNumber) > 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$runner->setMaxChildrenNumber(current($maxChildrenNumber));
+			},
+			array('-mcn', '--max-children-number')
+		);
+
+		$this->argumentsParser->addHandler(
 			function($script, $argument, $empty) use ($runner) {
 				if (sizeof($empty) > 0)
 				{
@@ -231,6 +243,7 @@ class runner extends atoum\script
 					'-v, --version' => $this->locale->_('Display version'),
 					'-p <path/to/php/binary>, --php <path/to/php/binary>' => $this->locale->_('Path to PHP binary which must be used to run tests'),
 					'-ncc, --no-code-coverage' => $this->locale->_('Disable code coverage'),
+					'-mcn, --max-children-number <integer>' => $this->locale->_('Maximum number of sub-processus which will be run simultaneously'),
 					'-sf <file>, --score-file <file>' => $this->locale->_('Save score in <file>'),
 					'-c <files>, --configuration-files <files>' => $this->locale->_('Use configuration <files>'),
 					'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),

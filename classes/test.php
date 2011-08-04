@@ -40,8 +40,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsSubNamespace = null;
 	private $mockGenerator = null;
 	private $workingFile = null;
-	private $childProcess = null;
+	private $child = null;
 	private $testsToRun = 0;
+	private $numberOfChildren = 0;
+	private $maxChildrenNumber = 1;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
@@ -158,6 +160,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 			default:
 				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');
 		}
+	}
+
+	public function setMaxChildrenNumber($number)
+	{
+		if ($number < 1)
+		{
+			throw new exceptions\logic\invalidArgument('Maximum number of children must be greater or equal to 1');
+		}
+
+		$this->maxChildrenNumber = $number;
+
+		return $this;
 	}
 
 	public function setSuperglobals(atoum\superglobals $superglobals)
@@ -384,20 +398,24 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($this->testsToRun > 0)
 		{
-			try
+			if ($runner === null)
 			{
-				if ($runner !== null)
+				foreach ($this->runTestMethods as $testMethodName)
+				{
+					$this->runTestMethod($testMethodName);
+				}
+			}
+			else
+			{
+				try
 				{
 					$this->workingFile = $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), 'atm');
 
 					$this->callObservers(self::beforeSetUp);
 					$this->setUp();
 					$this->callObservers(self::afterSetUp);
-				}
 
-				if ($runner !== null)
-				{
-					$childCode =
+					$phpCode =
 						'<?php ' .
 						'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
 						'require(\'' . $runner->getPath() . '\');' .
@@ -408,72 +426,179 @@ abstract class test implements observable, adapter\aggregator, \countable
 						'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 						($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
 						'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .
-						'file_put_contents(\'' . $this->workingFile . '\', serialize($runner->getScore()));' .
+						'file_put_contents(\'%s\', serialize($runner->getScore()));' .
 						'?>'
 					;
+
+					$failNumber = 0;
+					$errorNumber = 0;
+					$exceptionNumber = 0;
+					$children = array();
+					$stdOut = array();
+					$stdErr = array();
+					$pipes = array();
+					$null = null;
+
+					while ($this->testsToRun > 0 || sizeof($children) > 0)
+					{
+						while (($child = $this->getChild()) !== null)
+						{
+							$this->currentMethod = array_shift($this->runTestMethods);
+
+							$this->callObservers(self::beforeTestMethod);
+
+							fwrite($child[1][0], sprintf($phpCode, $this->currentMethod, $child[2]));
+							fclose($child[1][0]);
+							unset($child[1][0]);
+
+
+							$pipes[] = $child[1][1];
+							$pipes[] = $child[1][2];
+
+							$children[$this->currentMethod] = $child;
+							$stdOut[$this->currentMethod] = '';
+							$stdErr[$this->currentMethod] = '';
+
+							$this->testsToRun--;
+
+							if ($this->testsToRun > 0)
+							{
+								$this->createChild();
+							}
+						}
+
+						$numberOfChildren = $this->numberOfChildren;
+
+						while ($this->numberOfChildren === $numberOfChildren)
+						{
+							if (stream_select($pipes, $null, $null, null) > 0)
+							{
+								foreach ($pipes as $writedPipe)
+								{
+									foreach ($children as $testMethod => $child)
+									{
+										switch (true)
+										{
+											case isset($child[1][2]) && $writedPipe === $child[1][2]:
+												$stdErr[$testMethod] = stream_get_contents($child[1][2]);
+
+												if (feof($child[1][2]) === true)
+												{
+													fclose($child[1][2]);
+													unset($children[$testMethod][1][2]);
+												}
+												break;
+
+											case isset($child[1][1]) && $writedPipe === $child[1][1]:
+												$stdOut[$testMethod] = stream_get_contents($child[1][1]);
+
+												if (feof($child[1][1]) === true)
+												{
+													fclose($child[1][1]);
+													unset($children[$testMethod][1][1]);
+												}
+												break;
+										}
+									}
+								}
+
+								foreach (array_filter($children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; }) as $testMethod => $terminatedChild)
+								{
+									$this->currentMethod = $testMethod;
+
+									$this->callObservers(self::afterTestMethod);
+
+									$returnValue = proc_close($terminatedChild[0]);
+
+									if ($stdOut[$testMethod] !== '')
+									{
+										$this->score->addOutput($this->class, $testMethod, $stdOut[$testMethod]);
+									}
+
+									if ($stdErr[$testMethod] != '')
+									{
+										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr[$testMethod]), $errors, PREG_SET_ORDER) === 0)
+										{
+											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $stdErr[$testMethod]);
+										}
+										else
+										{
+											foreach ($errors as $error)
+											{
+												$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+											}
+										}
+									}
+
+									$tmpFileContent = @file_get_contents($terminatedChild[2]);
+
+									if ($tmpFileContent !== false)
+									{
+										$score = @unserialize($tmpFileContent);
+
+										if ($score instanceof score)
+										{
+											$this->score->merge($score);
+										}
+									}
+
+									@unlink($terminatedChild[3]);
+
+									switch (true)
+									{
+										case $failNumber < $this->score->getFailNumber():
+											$this->callObservers(self::fail);
+											break;
+
+										case $errorNumber < $this->score->getErrorNumber():
+											$this->callObservers(self::error);
+											break;
+
+										case $exceptionNumber < $this->score->getExceptionNumber():
+											$this->callObservers(self::exception);
+											break;
+
+										default:
+											$this->callObservers(self::success);
+									}
+
+									unset($stdOut[$testMethod]);
+									unset($stdErr[$testMethod]);
+
+									$this->numberOfChildren--;
+								}
+
+								$children = array_filter($children, function($child) { return isset($child[1][1]) === true && isset($child[1][2]) === true; });
+
+								$pipes = array();
+
+								foreach ($children as $child)
+								{
+									if (isset($child[1][1]) === true)
+									{
+										$pipes[] = $child[1][1];
+									}
+
+									if (isset($child[1][2]) === true)
+									{
+										$pipes[] = $child[1][2];
+									}
+								}
+							}
+						}
+					}
 				}
-
-				foreach ($this->runTestMethods as $testMethodName)
-				{
-					$failNumber = $this->score->getFailNumber();
-					$errorNumber = $this->score->getErrorNumber();
-					$exceptionNumber = $this->score->getExceptionNumber();
-
-					$this->currentMethod = $testMethodName;
-
-					$this->callObservers(self::beforeTestMethod);
-
-					if ($runner === null)
-					{
-						$this->runTestMethod($testMethodName);
-					}
-					else
-					{
-						$this->runInChildProcess($runner, sprintf($childCode, $testMethodName));
-					}
-
-					switch (true)
-					{
-						case $failNumber < $this->score->getFailNumber():
-							$this->callObservers(self::fail);
-							break;
-
-						case $errorNumber < $this->score->getErrorNumber():
-							$this->callObservers(self::error);
-							break;
-
-						case $exceptionNumber < $this->score->getExceptionNumber():
-							$this->callObservers(self::exception);
-							break;
-
-						default:
-							$this->callObservers(self::success);
-					}
-
-					$this->callObservers(self::afterTestMethod);
-
-					$this->currentMethod = null;
-				}
-
-				if ($runner !== null)
+				catch (\exception $exception)
 				{
 					$this
+						->callObservers(self::exception)
+						->callObservers(self::runStop)
 						->callObservers(self::beforeTearDown)
 						->tearDown()
 						->callObservers(self::afterTearDown)
+						->addExceptionToScore($exception)
 					;
 				}
-			}
-			catch (\exception $exception)
-			{
-				$this
-					->callObservers(self::exception)
-					->callObservers(self::runStop)
-					->callObservers(self::beforeTearDown)
-					->tearDown()
-					->callObservers(self::afterTearDown)
-					->addExceptionToScore($exception)
-				;
 			}
 		}
 
@@ -553,18 +678,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->score
 					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
 					->addDuration($this->class, $this->currentMethod, microtime(true) - $time)
-					->addOutput($this->class, $this->currentMethod, ob_get_contents())
+					->addOutput($this->class, $this->currentMethod, ob_get_clean())
 				;
-
-				ob_end_clean();
 
 				$this->afterTestMethod($testMethod);
 			}
 			catch (\exception $exception)
 			{
-				$this->score->addOutput($this->class, $this->currentMethod, ob_get_contents());
+				$this->score->addOutput($this->class, $this->currentMethod, ob_get_clean());
 				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
-				ob_end_clean();
 
 				throw $exception;
 			}
@@ -587,66 +709,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		ini_restore('log_errors');
 
 		return $this;
-	}
-
-	protected function runInChildProcess(atoum\runner $runner, $phpCode)
-	{
-		$phpPath = $this->getPhpPath();
-
-		list($php, $pipes) = $this->getChildProcess();
-
-		if ($php !== false)
-		{
-			fwrite($pipes[0], $phpCode);
-			fclose($pipes[0]);
-
-			if (--$this->testsToRun > 0)
-			{
-				$this->createChildProcess();
-			}
-
-			$stdErr = stream_get_contents($pipes[2]);
-			fclose($pipes[2]);
-
-			$stdOut = stream_get_contents($pipes[1]);
-			fclose($pipes[1]);
-
-			$returnValue = proc_close($php);
-
-			if ($stdOut !== '')
-			{
-				$this->score->addOutput($this->class, $this->currentMethod, $stdOut);
-			}
-
-			if ($stdErr != '')
-			{
-				if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0)
-				{
-					$this->score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $stdErr);
-				}
-				else
-				{
-					foreach ($errors as $error)
-					{
-						$this->score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
-					}
-				}
-			}
-
-			$tmpFileContent = @file_get_contents($this->workingFile);
-
-			if ($tmpFileContent !== false)
-			{
-				$score = @unserialize($tmpFileContent);
-
-				if ($score instanceof score)
-				{
-					$this->score->merge($score);
-				}
-			}
-
-			@$this->adapter->unlink($this->workingFile);
-		}
 	}
 
 	protected function afterTestMethod($testMethod)
@@ -713,19 +775,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $annotations;
 	}
 
-	private function getChildProcess()
+	private function createChild()
 	{
-		if ($this->childProcess === null)
-		{
-			$this->createChildProcess();
-		}
-
-		return $this->childProcess;
-	}
-
-	private function createChildProcess()
-	{
-		$childProcess = proc_open(
+		$php = proc_open(
 			$this->getPhpPath(),
 			array(
 				0 => array('pipe', 'r'),
@@ -735,9 +787,28 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$pipes
 		);
 
-		$this->childProcess = array($childProcess, $pipes);
+		$this->child = array($php, $pipes, $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), 'atm'));
 
 		return $this;
+	}
+
+	private function getChild()
+	{
+		$child = null;
+
+		if ($this->testsToRun > 0 && $this->numberOfChildren < $this->maxChildrenNumber)
+		{
+			if ($this->child === null)
+			{
+				$this->createChild();
+			}
+
+			$child = $this->child;
+
+			$this->numberOfChildren++;
+		}
+
+		return $child;
 	}
 }
 

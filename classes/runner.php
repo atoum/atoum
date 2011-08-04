@@ -29,6 +29,7 @@ class runner implements observable, adapter\aggregator
 	protected $codeCoverage = true;
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
+	protected $maxChildrenNumber = 1;
 
 	private $start = null;
 	private $stop = null;
@@ -46,6 +47,18 @@ class runner implements observable, adapter\aggregator
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setMaxChildrenNumber($number)
+	{
+		if ($number < 1)
+		{
+			throw new exceptions\logic\invalidArgument('Maximum number of children must be greater or equal to 1');
+		}
+
+		$this->maxChildrenNumber = $number;
+
+		return $this;
 	}
 
 	public function setLocale(locale $locale)
@@ -318,6 +331,7 @@ class runner implements observable, adapter\aggregator
 					$test
 						->setLocale($this->locale)
 						->setPhpPath($phpPath)
+						->setMaxChildrenNumber($this->maxChildrenNumber)
 					;
 
 					foreach ($this->testObservers as $observer)
