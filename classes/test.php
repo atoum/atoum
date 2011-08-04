@@ -467,9 +467,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 							}
 						}
 
-						$numberOfChildren = $this->numberOfChildren;
+						$terminatedChildren = array();
 
-						while ($this->numberOfChildren === $numberOfChildren)
+						while (sizeof($terminatedChildren) <= 0 && sizeof($children) > 0)
 						{
 							if (stream_select($pipes, $null, $null, null) > 0)
 							{
@@ -502,7 +502,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 									}
 								}
 
-								foreach (array_filter($children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; }) as $testMethod => $terminatedChild)
+								$terminatedChildren = array_filter($children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; });
+
+								foreach ($terminatedChildren as $testMethod => $terminatedChild)
 								{
 									$this->currentMethod = $testMethod;
 
