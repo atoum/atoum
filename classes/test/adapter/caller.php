@@ -70,7 +70,7 @@ class caller implements \arrayAccess
 		return (isset($this->closuresByCall[$call]) === false ? null : $this->closuresByCall[$call]);
 	}
 
-	public function closureIsSet($call = 0)
+	public function closureIsSetForCall($call = 0)
 	{
 		static::checkCall($call);
 
@@ -79,7 +79,7 @@ class caller implements \arrayAccess
 
 	public function unsetClosure($call = 0)
 	{
-		if ($this->closureIsSet($call) === false)
+		if ($this->closureIsSetForCall($call) === false)
 		{
 			throw new exceptions\logic\invalidArgument('There is no closure defined for call ' . $call);
 		}
@@ -111,17 +111,17 @@ class caller implements \arrayAccess
 
 	public function offsetExists($call)
 	{
-		return $this->closureIsSet($call);
+		return $this->closureIsSetForCall($call);
 	}
 
 	public function invoke(array $arguments = array(), $call = 0)
 	{
-		if ($this->closureIsSet($call) === false)
+		if ($this->closureIsSetForCall($call) === false)
 		{
 			$call = 0;
 		}
 
-		if ($this->closureIsSet($call) === false)
+		if ($this->closureIsSetForCall($call) === false)
 		{
 			throw new exceptions\logic\invalidArgument('There is no closure defined for call ' . $call);
 		}

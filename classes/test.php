@@ -39,7 +39,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $currentMethod = null;
 	private $testsSubNamespace = null;
 	private $mockGenerator = null;
-	private $workingFile = null;
 	private $child = null;
 	private $testsToRun = 0;
 	private $numberOfChildren = 0;
@@ -409,12 +408,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				try
 				{
-					$this->workingFile = $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), 'atm');
-
-					$this->callObservers(self::beforeSetUp);
-					$this->setUp();
-					$this->callObservers(self::afterSetUp);
-
+					$failNumber = 0;
+					$errorNumber = 0;
+					$exceptionNumber = 0;
+					$children = array();
+					$stdOut = array();
+					$stdErr = array();
+					$pipes = array();
+					$null = null;
 					$phpCode =
 						'<?php ' .
 						'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
@@ -430,14 +431,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 						'?>'
 					;
 
-					$failNumber = 0;
-					$errorNumber = 0;
-					$exceptionNumber = 0;
-					$children = array();
-					$stdOut = array();
-					$stdErr = array();
-					$pipes = array();
-					$null = null;
+					$this->callObservers(self::beforeSetUp);
+					$this->setUp();
+					$this->callObservers(self::afterSetUp);
 
 					while ($this->testsToRun > 0 || sizeof($children) > 0)
 					{
@@ -451,17 +447,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 							fclose($child[1][0]);
 							unset($child[1][0]);
 
-
-							$pipes[] = $child[1][1];
-							$pipes[] = $child[1][2];
-
 							$children[$this->currentMethod] = $child;
 							$stdOut[$this->currentMethod] = '';
 							$stdErr[$this->currentMethod] = '';
 
-							$this->testsToRun--;
-
-							if ($this->testsToRun > 0)
+							if (--$this->testsToRun > 0)
 							{
 								$this->createChild();
 							}
@@ -471,6 +461,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						while (sizeof($terminatedChildren) <= 0 && sizeof($children) > 0)
 						{
+							$pipes = array();
+
+							foreach ($children as $child)
+							{
+								if (isset($child[1][1]) === true)
+								{
+									$pipes[] = $child[1][1];
+								}
+
+								if (isset($child[1][2]) === true)
+								{
+									$pipes[] = $child[1][2];
+								}
+							}
+
 							if (stream_select($pipes, $null, $null, null) > 0)
 							{
 								foreach ($pipes as $writedPipe)
@@ -571,21 +576,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 								}
 
 								$children = array_filter($children, function($child) { return isset($child[1][1]) === true && isset($child[1][2]) === true; });
-
-								$pipes = array();
-
-								foreach ($children as $child)
-								{
-									if (isset($child[1][1]) === true)
-									{
-										$pipes[] = $child[1][1];
-									}
-
-									if (isset($child[1][2]) === true)
-									{
-										$pipes[] = $child[1][2];
-									}
-								}
 							}
 						}
 					}

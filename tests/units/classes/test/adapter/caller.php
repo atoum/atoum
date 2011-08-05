@@ -108,20 +108,20 @@ class caller extends atoum\test
 
 		$this->assert
 			->exception(function() use ($caller) {
-					$caller->closureIsSet(- rand(1, PHP_INT_MAX), function() {});
+					$caller->closureIsSetForCall(- rand(1, PHP_INT_MAX), function() {});
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Call number must be greater than or equal to zero')
-			->boolean($caller->closureIsSet(rand(0, PHP_INT_MAX)))->isFalse()
+			->boolean($caller->closureIsSetForCall(rand(0, PHP_INT_MAX)))->isFalse()
 		;
 
 		$caller->setClosure(function() {}, 0);
 
 		$this->assert
-			->boolean($caller->closureIsSet())->isTrue()
-			->boolean($caller->closureIsSet(0))->isTrue()
-			->boolean($caller->closureIsSet(rand(1, PHP_INT_MAX)))->isFalse()
+			->boolean($caller->closureIsSetForCall())->isTrue()
+			->boolean($caller->closureIsSetForCall(0))->isTrue()
+			->boolean($caller->closureIsSetForCall(rand(1, PHP_INT_MAX)))->isFalse()
 		;
 	}
 
@@ -147,9 +147,9 @@ class caller extends atoum\test
 		$caller->setClosure(function() {});
 
 		$this->assert
-			->boolean($caller->closureIsSet())->isTrue()
+			->boolean($caller->closureIsSetForCall())->isTrue()
 			->object($caller->unsetClosure())->isIdenticalTo($caller)
-			->boolean($caller->closureIsSet())->isFalse()
+			->boolean($caller->closureIsSetForCall())->isFalse()
 		;
 	}
 
@@ -238,9 +238,9 @@ class caller extends atoum\test
 		$caller->setClosure(function() {});
 
 		$this->assert
-			->boolean($caller->closureIsSet(0))->isTrue()
+			->boolean($caller->closureIsSetForCall(0))->isTrue()
 			->object($caller->offsetUnset(0))->isIdenticalTo($caller)
-			->boolean($caller->closureIsSet(0))->isFalse()
+			->boolean($caller->closureIsSetForCall(0))->isFalse()
 		;
 	}
 
