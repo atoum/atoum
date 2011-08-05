@@ -65,7 +65,7 @@ class caller implements \arrayAccess
 
 	public function getClosure($call = 0)
 	{
-		static::checkCall($call);
+		$call = static::checkCall($call);
 
 		return (isset($this->closuresByCall[$call]) === false ? null : $this->closuresByCall[$call]);
 	}
@@ -101,7 +101,7 @@ class caller implements \arrayAccess
 
 	public function offsetGet($call)
 	{
-		return $this->getClosure($call);
+		return $this->atCall($call);
 	}
 
 	public function offsetUnset($call)
@@ -131,17 +131,21 @@ class caller implements \arrayAccess
 
 	public function atCall($call)
 	{
-		$this->currentCall = (int) $call;
+		$this->currentCall = self::checkCall($call);
 
 		return $this;
 	}
 
 	protected static function checkCall($call)
 	{
+		$call = (int) $call;
+
 		if ($call < 0)
 		{
 			throw new exceptions\logic\invalidArgument('Call number must be greater than or equal to zero');
 		}
+
+		return $call;
 	}
 }
 

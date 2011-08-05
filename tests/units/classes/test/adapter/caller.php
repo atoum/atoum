@@ -189,8 +189,10 @@ class caller extends atoum\test
 		$caller->setClosure($value = function() {}, 0);
 
 		$this->assert
-			->object($caller->offsetGet(0))->isIdenticalTo($value)
-			->variable($caller->offsetGet(1))->isNull()
+			->object($caller->offsetGet(0))->isIdenticalTo($caller)
+			->variable($caller->getCurrentCall())->isEqualTo(0)
+			->object($caller->offsetGet($call = rand(1, PHP_INT_MAX)))->isIdenticalTo($caller)
+			->variable($caller->getCurrentCall())->isEqualTo($call)
 		;
 	}
 
@@ -259,6 +261,7 @@ class caller extends atoum\test
 
 		$caller->setClosure(function($string) { return md5($string); });
 		$caller->setClosure(function() use (& $md5) { return $md5 = uniqid(); }, 1);
+		$caller->setClosure(function() use (& $md5) { return $md5 = uniqid(); }, $call = rand(2, PHP_INT_MAX));
 
 		$this->assert
 			->string($caller->invoke(array($string = uniqid())))->isEqualTo(md5($string))
@@ -266,6 +269,7 @@ class caller extends atoum\test
 			->string($caller->invoke(array($string = uniqid()), 1))->isEqualTo($md5)
 			->string($caller->invoke(array($string = uniqid())))->isEqualTo(md5($string))
 			->string($caller->invoke(array($string = uniqid()), 0))->isEqualTo(md5($string))
+			->string($caller->invoke(array($string = uniqid()), $call))->isEqualTo($md5)
 		;
 	}
 
@@ -280,15 +284,6 @@ class caller extends atoum\test
 			->variable($caller->getCurrentCall())->isNull()
 			->object($caller->atCall($call = rand(1, PHP_INT_MAX)))->isIdenticalTo($caller)
 			->integer($caller->getCurrentCall())->isEqualTo($call)
-		;
-
-		$returnAtCall = uniqid();
-		$caller->setClosure(function () use ($returnAtCall) { return $returnAtCall; });
-
-		$this->assert
-			->variable($caller->getCurrentCall())->isNull()
-			->string($caller->invoke())->isEqualTo($defaultReturn)
-			->string($caller->invoke(array(), $call))->isEqualTo($returnAtCall)
 		;
 	}
 }
