@@ -399,9 +399,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if ($runner === null)
 			{
-				foreach ($this->runTestMethods as $testMethodName)
+				foreach ($this->runTestMethods as $testMethod)
 				{
-					$this->runTestMethod($testMethodName);
+					$this->runTestMethod($testMethod);
 				}
 			}
 			else
@@ -663,11 +663,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		ini_set('log_errors', 'Off');
 		ini_set('log_errors_max_len', '0');
 
+		$this->currentMethod = $testMethod;
+
 		try
 		{
 			try
 			{
-				$this->beforeTestMethod($testMethod);
+				$this->beforeTestMethod($this->currentMethod);
 
 				ob_start();
 
@@ -703,6 +705,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			$this->addExceptionToScore($exception);
 		}
+
+		$this->currentMethod = null;
 
 		restore_error_handler();
 
