@@ -166,11 +166,13 @@ class cli extends units\report\fields\runner
 
 		$score->getMockController()->getOutputs = $fields = array(
 			array(
+				'case' => null,
 				'class' => $class = uniqid(),
 				'method' => $method = uniqid(),
 				'value' => $value = uniqid()
 			),
 			array(
+				'case' => null,
 				'class' => $otherClass = uniqid(),
 				'method' => $otherMethod = uniqid(),
 				'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
@@ -182,9 +184,9 @@ class cli extends units\report\fields\runner
 		$this->assert
 			->castToString($field)->isEmpty()
 			->castToString($field->setWithRunner($runner))->isEqualTo(sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
-				$class . '::' . $method . '():' . PHP_EOL .
+				'In ' . $class . '::' . $method . '():' . PHP_EOL .
 				$value . PHP_EOL .
-				$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+				'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
 				$firstOtherValue . PHP_EOL .
 				$secondOtherValue . PHP_EOL
 			)
@@ -204,7 +206,7 @@ class cli extends units\report\fields\runner
 				$methodPrompt .
 				sprintf(
 					$locale->_('%s:'),
-					$methodColorizer->colorize($class . '::' . $method . '()')
+					$methodColorizer->colorize('In ' . $class . '::' . $method . '()')
 				) .
 				PHP_EOL .
 				$outputPrompt .
@@ -212,7 +214,52 @@ class cli extends units\report\fields\runner
 				$methodPrompt .
 				sprintf(
 					$locale->_('%s:'),
-					$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+					$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
+				) .
+				PHP_EOL .
+				$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
+				$outputPrompt . $outputColorizer->colorize($secondOtherValue) . PHP_EOL
+			)
+		;
+
+		$score->getMockController()->getOutputs = $fields = array(
+			array(
+				'case' => $case = uniqid(),
+				'class' => $class = uniqid(),
+				'method' => $method = uniqid(),
+				'value' => $value = uniqid()
+			),
+			array(
+				'case' => $otherCase = uniqid(),
+				'class' => $otherClass = uniqid(),
+				'method' => $otherMethod = uniqid(),
+				'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
+			),
+		);
+
+		$field = new outputs\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
+
+		$this->assert
+			->castToString($field)->isEmpty()
+			->castToString($field->setWithRunner($runner))->isEqualTo(
+				$titlePrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$titleColorizer->colorize(sprintf($locale->__('There is %d output', 'There are %d outputs', sizeof($fields)), sizeof($fields)))
+				) .
+				PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize('In ' . $class . '::' . $method . '() in case \'' . $case . '\'')
+				) .
+				PHP_EOL .
+				$outputPrompt .
+				$outputColorizer->colorize($value) . PHP_EOL .
+				$methodPrompt .
+				sprintf(
+					$locale->_('%s:'),
+					$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '() in case \'' . $otherCase . '\'')
 				) .
 				PHP_EOL .
 				$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
