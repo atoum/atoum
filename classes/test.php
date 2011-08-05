@@ -406,31 +406,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 			else
 			{
+				$failNumber = 0;
+				$errorNumber = 0;
+				$exceptionNumber = 0;
+				$children = array();
+				$stdOut = array();
+				$stdErr = array();
+				$pipes = array();
+				$null = null;
+				$phpCode =
+					'<?php ' .
+					'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
+					'require(\'' . $runner->getPath() . '\');' .
+					'require(\'' . $this->path . '\');' .
+					'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
+					'$runner = new ' . $runner->getClass() . '();' .
+					'$runner->setLocale($locale);' .
+					'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+					($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
+					'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .
+					'file_put_contents(\'%s\', serialize($runner->getScore()));' .
+					'?>'
+				;
+
 				try
 				{
-					$failNumber = 0;
-					$errorNumber = 0;
-					$exceptionNumber = 0;
-					$children = array();
-					$stdOut = array();
-					$stdErr = array();
-					$pipes = array();
-					$null = null;
-					$phpCode =
-						'<?php ' .
-						'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
-						'require(\'' . $runner->getPath() . '\');' .
-						'require(\'' . $this->path . '\');' .
-						'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
-						'$runner = new ' . $runner->getClass() . '();' .
-						'$runner->setLocale($locale);' .
-						'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
-						($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
-						'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .
-						'file_put_contents(\'%s\', serialize($runner->getScore()));' .
-						'?>'
-					;
-
 					$this->callObservers(self::beforeSetUp);
 					$this->setUp();
 					$this->callObservers(self::afterSetUp);
@@ -457,6 +457,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 							}
 						}
 
+						$this->currentMethod = null;
+
 						$terminatedChildren = array();
 
 						while (sizeof($terminatedChildren) <= 0 && sizeof($children) > 0)
@@ -476,7 +478,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 								}
 							}
 
-							if (stream_select($pipes, $null, $null, null) > 0)
+							if (stream_select($pipes, $null, $null, null) !== false)
 							{
 								foreach ($pipes as $writedPipe)
 								{
@@ -511,11 +513,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 								foreach ($terminatedChildren as $testMethod => $terminatedChild)
 								{
+									proc_close($terminatedChild[0]);
+
 									$this->currentMethod = $testMethod;
 
 									$this->callObservers(self::afterTestMethod);
-
-									$returnValue = proc_close($terminatedChild[0]);
 
 									if ($stdOut[$testMethod] !== '')
 									{
@@ -572,24 +574,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 									unset($stdOut[$testMethod]);
 									unset($stdErr[$testMethod]);
 
-									$this->numberOfChildren--;
+									$this->currentMethod = null;
 								}
 
-								$children = array_filter($children, function($child) { return isset($child[1][1]) === true && isset($child[1][2]) === true; });
+								$children = array_filter($children, function($child) { return isset($child[1][1]) === true || isset($child[1][2]) === true; });
+
+								$this->numberOfChildren = sizeof($children);
 							}
 						}
 					}
+
+					$this
+						->callObservers(self::beforeTearDown)
+						->tearDown()
+						->callObservers(self::afterTearDown)
+					;
 				}
 				catch (\exception $exception)
 				{
 					$this
-						->callObservers(self::exception)
-						->callObservers(self::runStop)
 						->callObservers(self::beforeTearDown)
 						->tearDown()
 						->callObservers(self::afterTearDown)
-						->addExceptionToScore($exception)
 					;
+
+					throw $exception;
 				}
 			}
 		}
