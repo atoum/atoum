@@ -111,6 +111,7 @@ class colorizer extends atoum\test
 		$colorizer = new cli\colorizer(null, null, $adapter);
 
 		$adapter->defined = function($constant) { return $constant == 'STDOUT'; };
+		$adapter->function_exists = function($function) { return $function == 'posix_isatty'; };
 		$adapter->posix_isatty = true;
 
 		$this->assert
@@ -144,6 +145,13 @@ class colorizer extends atoum\test
 		;
 
 		$adapter->defined = function($constant) { return $constant == 'STDOUT'; };
+		$adapter->function_exists = false;
+
+		$this->assert
+			->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)
+		;
+
+		$adapter->function_exists = function($function) { return $function == 'posix_isatty'; };
 		$adapter->posix_isatty = false;
 
 		$this->assert

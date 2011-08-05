@@ -65,7 +65,7 @@ class colorizer
 
 	public function colorize($string)
 	{
-		if ($this->adapter->defined('STDOUT') === true && $this->adapter->posix_isatty(STDOUT) === true && ($this->foreground !== null || $this->background !== null))
+		if ($this->adapter->defined('STDOUT') === true && $this->adapter->function_exists('posix_isatty') === true && $this->adapter->posix_isatty(STDOUT) === true && ($this->foreground !== null || $this->background !== null))
 		{
 			if ($this->background !== null)
 			{
