@@ -233,7 +233,7 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -241,7 +241,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -249,7 +249,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -265,10 +265,8 @@ class cli extends units\report\fields\runner
 			->mock($successColorizer)
 				->call('colorize')->withArguments($noTestRunningString)->never()
 				->call('colorize')->withArguments($successString)->once()
-			->mock($failureColorizer)
-				->wasNotCalled()
-			->mock($prompt)
-				->call('__toString')->once()
+			->mock($failureColorizer)->call('colorize')->never()
+			->mock($prompt)->call('__toString')->once()
 		;
 
 		$this->startCase('Success with several tests, several methods and several assertions,  no fail, no error, no exception');
@@ -283,7 +281,7 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -291,7 +289,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -299,7 +297,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -315,7 +313,7 @@ class cli extends units\report\fields\runner
 			->mock($successColorizer)
 				->call('colorize')->withArguments($noTestRunningString)->never()
 				->call('colorize')->withArguments($successString)->once()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -331,7 +329,7 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -339,7 +337,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -347,7 +345,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -363,7 +361,7 @@ class cli extends units\report\fields\runner
 			->mock($failureColorizer)
 				->call('colorize')->withArguments($noTestRunningString)->never()
 				->call('colorize')->withArguments($failureString)->once()
-			->mock($successColorizer)->wasNotCalled()
+			->mock($successColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -379,7 +377,7 @@ class cli extends units\report\fields\runner
 			->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -387,7 +385,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -395,7 +393,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
 			->mock($locale)->call('_')->withArguments('No test running.')->once()
 			->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
-			->mock($failureColorizer)->wasNotCalled()
+			->mock($failureColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 
@@ -411,7 +409,7 @@ class cli extends units\report\fields\runner
 			->mock($failureColorizer)
 				->call('colorize')->withArguments($noTestRunningString)->never()
 				->call('colorize')->withArguments($failureString)->once()
-			->mock($successColorizer)->wasNotCalled()
+			->mock($successColorizer)->call('colorize')->never()
 			->mock($prompt)->call('__toString')->once()
 		;
 	}
