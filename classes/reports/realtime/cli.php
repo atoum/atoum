@@ -18,23 +18,23 @@ class cli extends realtime
 		parent::__construct();
 
 		$firstLevelPrompt = new prompt('> ');
-		$firstLevelColorizer = new colorizer('1;36;38;5;117');
+		$firstLevelColorizer = new colorizer('1;36;38;1;117');
 
 		$secondLevelPrompt = new prompt('=> ', $firstLevelColorizer);
 
 		$thirdLevelPrompt = new prompt('==> ', $firstLevelColorizer);
 
-		$failureColorizer = new colorizer('0;31;38;5;160');
+		$failureColorizer = new colorizer('0;31;38;1;160');
 		$failurePrompt = clone $secondLevelPrompt;
 		$failurePrompt->setColorizer($failureColorizer);
 
-		$errorColorizer = new colorizer('0;33;38;5;220');
+		$errorColorizer = new colorizer('0;33;38;1;220');
 		$errorMethodPrompt = clone $secondLevelPrompt;
 		$errorMethodPrompt->setColorizer($errorColorizer);
 		$errorPrompt = clone $thirdLevelPrompt;
 		$errorPrompt->setColorizer($errorColorizer);
 
-		$exceptionColorizer = new colorizer('0;35;38;5;135');
+		$exceptionColorizer = new colorizer('0;35;38;1;135');
 		$exceptionMethodPrompt = clone $secondLevelPrompt;
 		$exceptionMethodPrompt->setColorizer($exceptionColorizer);
 		$exceptionPrompt = clone $thirdLevelPrompt;
@@ -88,8 +88,8 @@ class cli extends realtime
 				)
 			->addRunnerField(new runner\result\cli(
 						null,
-						new colorizer('1;37', '42;48;5;106'),
-						new colorizer('1;37', '41;48;5;124')
+						new colorizer('1;37', '42;48;1;136'),
+						new colorizer('1;37', '41;48;1;124')
 					),
 					array(atoum\runner::runStop)
 				)
