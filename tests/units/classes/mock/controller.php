@@ -25,7 +25,7 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallers())->isEmpty()
+			->array($mockController->getCallables())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 	}
@@ -70,20 +70,20 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 		;
 
 		$mockController->{$method = uniqid()} = $function = function() {};
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 			->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
 		;
 
 		$mockController->{$otherMethod = uniqid()} = $return = uniqid();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 			->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
 			->object($mockController->{$otherMethod}->getClosure())->isInstanceOf('closure')
 			->string($mockController->{$otherMethod}->invoke())->isEqualTo($return)
@@ -95,7 +95,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 		;
 
 		$mockController->{$method = uniqid()} = function() {};
@@ -107,7 +107,7 @@ class controller extends atoum\test
 		unset($mockController->{$method});
 
 		$this->assert
-			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 		;
 
 		$mockController->{$otherMethod = uniqid()} = uniqid();
@@ -119,7 +119,7 @@ class controller extends atoum\test
 		unset($mockController->{$otherMethod});
 
 		$this->assert
-			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 		;
 	}
 
@@ -268,11 +268,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallers())->isEmpty()
+			->array($mockController->getCallables())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->control($aMock))->isIdenticalTo($mockController)
 			->string($mockController->getMockClass())->isEqualTo(get_class($aMock))
-			->array($mockController->getCallers())->isEqualTo(array(
+			->array($mockController->getCallables())->isEqualTo(array(
 					'a' => null,
 					'b' => null
 				)
@@ -440,11 +440,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallers())->isEmpty()
+			->array($mockController->getCallables())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallers())->isEmpty()
+			->array($mockController->getCallables())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 
@@ -463,11 +463,11 @@ class controller extends atoum\test
 
 		$this->assert
 			->variable($mockController->getMockClass())->isNotNull()
-			->array($mockController->getCallers())->isNotEmpty()
+			->array($mockController->getCallables())->isNotEmpty()
 			->array($mockController->getCalls())->isNotEmpty()
 			->object($mockController->reset())->isIdenticalTo($mockController)
 			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallers())->isEmpty()
+			->array($mockController->getCallables())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
 		;
 	}

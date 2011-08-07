@@ -10,7 +10,7 @@ use
 class adapter extends atoum\adapter
 {
 	protected $calls = array();
-	protected $callers = array();
+	protected $callables = array();
 
 	private static $callsNumber = 0;
 
@@ -23,22 +23,22 @@ class adapter extends atoum\adapter
 	{
 		if (isset($this->{$functionName}) === false)
 		{
-			$this->callers[$functionName] = new adapter\caller();
+			$this->callables[$functionName] = new adapter\callable();
 		}
 
-		return $this->callers[$functionName];
+		return $this->callables[$functionName];
 	}
 
 	public function __isset($functionName)
 	{
-		return (isset($this->callers[$functionName]) === true);
+		return (isset($this->callables[$functionName]) === true);
 	}
 
 	public function __unset($functionName)
 	{
 		if (isset($this->{$functionName}) === true)
 		{
-			unset($this->callers[$functionName]);
+			unset($this->callables[$functionName]);
 
 			if (isset($this->calls[$functionName]) === true)
 			{
@@ -47,9 +47,9 @@ class adapter extends atoum\adapter
 		}
 	}
 
-	public function getCallers()
+	public function getCallables()
 	{
-		return $this->callers;
+		return $this->callables;
 	}
 
 	public function getCalls($functionName = null, array $arguments = null)
@@ -84,7 +84,7 @@ class adapter extends atoum\adapter
 
 	public function reset()
 	{
-		$this->callers = array();
+		$this->callables = array();
 
 		return $this->resetCalls();
 	}

@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class caller implements \arrayAccess
+class callable implements \arrayAccess
 {
 	protected $currentCall = null;
 	protected $closuresByCall = array();

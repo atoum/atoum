@@ -15,7 +15,7 @@ class adapter extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
@@ -35,7 +35,7 @@ class adapter extends atoum\test
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\caller')
+			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\callable')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 		;
 	}
@@ -84,14 +84,14 @@ class adapter extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 
 		unset($adapter->md5);
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 
@@ -99,21 +99,21 @@ class adapter extends atoum\test
 		$adapter->md5(uniqid());
 
 		$this->assert
-			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCallables())->isNotEmpty()
 			->array($adapter->getCalls())->isNotEmpty()
 		;
 
 		unset($adapter->{uniqid()});
 
 		$this->assert
-			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCallables())->isNotEmpty()
 			->array($adapter->getCalls())->isNotEmpty()
 		;
 
 		unset($adapter->md5);
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
@@ -256,30 +256,30 @@ class adapter extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 
 		$adapter->md5(uniqid());
 
 		$this->assert
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isNotEmpty()
 			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 
 		$adapter->md5 = uniqid();
 
 		$this->assert
-			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCallables())->isNotEmpty()
 			->array($adapter->getCalls())->isEmpty()
 			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 
@@ -287,10 +287,10 @@ class adapter extends atoum\test
 		$adapter->md5(uniqid());
 
 		$this->assert
-			->array($adapter->getCallers())->isNotEmpty()
+			->array($adapter->getCallables())->isNotEmpty()
 			->array($adapter->getCalls())->isNotEmpty()
 			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallers())->isEmpty()
+			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
