@@ -177,6 +177,27 @@ class adapter extends atoum\asserter
 		}
 		else
 		{
+			$callsAsString = '';
+
+			$calls = $this->adapter->getCalls($this->call->getFunction());
+
+			if ($calls !== null)
+			{
+				$callsAsString = array();
+
+				$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
+
+				$index = 0;
+
+				foreach ($calls as $arguments)
+				{
+					$call = new php\call($this->call->getFunction());
+					$callsAsString[] = sprintf($format, ++$index, $call->setArguments($arguments));
+				}
+
+				$callsAsString = PHP_EOL . join(PHP_EOL, $callsAsString);
+			}
+
 			$this->fail(
 				$failMessage !== null
 				? $failMessage
@@ -188,7 +209,7 @@ class adapter extends atoum\asserter
 						),
 						$this->call,
 						$callsNumber
-					)
+					) .  $callsAsString
 			);
 		}
 

@@ -508,7 +508,9 @@ class adapter extends atoum\test
 			)
 		;
 
-		$adapter->md5(uniqid());
+		$call = new php\call('md5');
+
+		$adapter->md5($firstArgument = uniqid());
 
 		$this->assert
 			->object($asserter->once())->isIdenticalTo($asserter)
@@ -516,12 +518,12 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
-		$adapter->md5(uniqid());
+		$adapter->md5($secondArgument = uniqid());
 
 		$this->assert
 			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('function %s is called 2 times instead of 1'), $asserter->getCall()))
+				->hasMessage(sprintf($test->getLocale()->_('function %s is called 2 times instead of 1') . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)), $asserter->getCall()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -541,7 +543,7 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $otherLine,
 						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('function %s is called 2 times instead of 1'), $asserter->getCall())
+						'fail' => sprintf($test->getLocale()->_('function %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument))
 					)
 				)
 			)
@@ -568,7 +570,7 @@ class adapter extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()))
+				->hasMessage(sprintf($test->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -579,7 +581,7 @@ class adapter extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall())
+						'fail' => sprintf($test->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
 					)
 				)
 			)
