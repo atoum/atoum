@@ -22,73 +22,73 @@ class cli extends atoum\test
 			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
 					new fields\runner\atoum\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\runner\php\path\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\runner\php\version\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117'),
-						new prompt('=> ', new colorizer('1;36;38;1;117'))
+						new colorizer('1;36'),
+						new prompt('=> ', new colorizer('1;36'))
 					)
 				)
 			)
 			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
 					new fields\runner\tests\duration\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\runner\tests\memory\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\runner\tests\coverage\cli(
 						new prompt('> '),
-						new prompt('=> ', new colorizer('1;36;38;1;117')),
-						new prompt('==> ', new colorizer('1;36;38;1;117')),
-						new colorizer('1;36;38;1;117')
+						new prompt('=> ', new colorizer('1;36')),
+						new prompt('==> ', new colorizer('1;36')),
+						new colorizer('1;36')
 					),
 					new fields\runner\duration\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\runner\result\cli(
 						null,
-						new colorizer('1;37', '42;48;1;136'),
-						new colorizer('1;37', '41;48;1;124')
+						new colorizer('0;37', '42'),
+						new colorizer('0;37', '41')
 					),
 					new fields\runner\failures\cli(
 						new prompt('> '),
-						new colorizer('0;31;38;1;160'),
-						new prompt('=> ', new colorizer('0;31;38;1;160'))
+						new colorizer('0;31'),
+						new prompt('=> ', new colorizer('0;31'))
 					),
 					new fields\runner\outputs\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117'),
-						new prompt('=> ', new colorizer('1;36;38;1;117'))
+						new colorizer('1;36'),
+						new prompt('=> ', new colorizer('1;36'))
 					),
 					new fields\runner\errors\cli(
 						new prompt('> '),
-						new colorizer('0;33;38;1;220'),
-						new prompt('=> ', new colorizer('0;33;38;1;220')),
+						new colorizer('0;33'),
+						new prompt('=> ', new colorizer('0;33')),
 						null,
-						new prompt('==> ', new colorizer('0;33;38;1;220'))
+						new prompt('==> ', new colorizer('0;33'))
 					),
 					new fields\runner\exceptions\cli(
 						new prompt('> '),
-						new colorizer('0;35;38;1;135'),
-						new prompt('=> ', new colorizer('0;35;38;1;135')),
+						new colorizer('0;35'),
+						new prompt('=> ', new colorizer('0;35')),
 						null,
-						new prompt('==> ', new colorizer('0;35;38;1;135'))
+						new prompt('==> ', new colorizer('0;35'))
 					)
 				)
 			)
 			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
 					new fields\test\run\cli(
 						new prompt('> '),
-						new colorizer('1;36;38;1;117')
+						new colorizer('1;36')
 					),
 					new fields\test\event\cli()
 				)
@@ -136,10 +136,10 @@ class cli extends atoum\test
 			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
 					new fields\test\event\cli(),
 					new fields\test\duration\cli(
-						new prompt('=> ', new colorizer('1;36;38;1;117'))
+						new prompt('=> ', new colorizer('1;36'))
 					),
 					new fields\test\memory\cli(
-						new prompt('=> ', new colorizer('1;36;38;1;117'))
+						new prompt('=> ', new colorizer('1;36'))
 					)
 				)
 			)
