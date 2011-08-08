@@ -16,9 +16,26 @@ class controller extends test\adapter
 		return parent::__get(self::mapMethod($method));
 	}
 
-	public function __set($method, $return)
+	public function __set($method, $value)
 	{
-		return parent::__set(self::mapMethod($method), $return);
+		switch ($method)
+		{
+			case 'file_get_contents':
+				$this->fopen = true;
+				$this->fread[1] = $value;
+				$this->fread[2] = '';
+				$this->fclose = true;
+				return $this;
+
+			case 'file_put_contents':
+				$this->fopen = true;
+				$this->fwrite = $value === true;
+				$this->fclose = true;
+				return $this;
+
+			default:
+				return parent::__set(self::mapMethod($method), $value);
+		}
 	}
 
 	public function __isset($method)

@@ -374,6 +374,31 @@ class controller extends atoum\test
 			->string($streamController->invoke('stat'))->isEqualTo($stat)
 		;
 
+		$streamController->resetCalls()->file_get_contents = $contents = uniqid();
+
+		$this->assert
+			->boolean($streamController->invoke('fopen'))->isTrue()
+			->string($streamController->invoke('fread'))->isEqualTo($contents)
+			->string($streamController->invoke('fread'))->isEmpty()
+			->boolean($streamController->invoke('fclose'))->isTrue()
+		;
+
+		$streamController->resetCalls()->file_put_contents = true;
+
+		$this->assert
+			->boolean($streamController->invoke('fopen'))->isTrue()
+			->boolean($streamController->invoke('fwrite'))->isTrue()
+			->boolean($streamController->invoke('fclose'))->isTrue()
+		;
+
+		$streamController->resetCalls()->file_put_contents = false;
+
+		$this->assert
+			->boolean($streamController->invoke('fopen'))->isTrue()
+			->boolean($streamController->invoke('fwrite'))->isFalse()
+			->boolean($streamController->invoke('fclose'))->isTrue()
+		;
+
 		$method = uniqid();
 
 		$this->assert
