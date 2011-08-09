@@ -296,6 +296,57 @@ class phpClass extends atoum\test
 		;
 	}
 
+	public function testHasMethod()
+	{
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->hasMethod(uniqid());
+					}
+				)
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+		;
+
+		$class = uniqid();
+		$method = uniqid();
+
+		$this->mockGenerator
+			->generate('reflectionClass')
+		;
+
+		$mockController = new atoum\mock\controller();
+		$mockController->__construct = function() {};
+		$mockController->getName = function() use ($class) { return $class; };
+		$mockController->hasMethod = false;
+
+		$asserter
+			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
+			->setWith($class)
+				->getScore()->reset()
+		;
+
+		$this->assert
+			->exception(function() use ($asserter, $method) {
+					$asserter->hasMethod($method);
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('Class %s does not have a %s method'), $class, $method))
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isZero()
+		;
+
+		$mockController->hasMethod = true;
+
+		$this->assert
+			->object($asserter->hasMethod($method))->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
 	public function testIsAbstract()
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
