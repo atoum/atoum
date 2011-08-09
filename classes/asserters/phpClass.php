@@ -142,13 +142,13 @@ class phpClass extends atoum\asserter
 
 	public function hasMethod($method, $failMessage = null)
 	{
-		if ($this->classIsSet()->class->hasMethod($method))
+		if ($this->classIsSet()->class->hasMethod($method) === true)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s does not have a %s method'), $this->class->getName(), $method));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Method %s::%s() does not exist'), $this->class->getName(), $method));
 		}
 
 		return $this;

@@ -12,6 +12,14 @@ require_once(__DIR__ . '/../../runner.php');
 
 class phpClass extends atoum\test
 {
+	public function beforeTestMethod($testMethod)
+	{
+		$this->mockGenerator
+			->shunt('__construct')
+			->generate('reflectionClass')
+		;
+	}
+
 	public function testClass()
 	{
 		$this->assert
@@ -49,11 +57,6 @@ class phpClass extends atoum\test
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($this));
 
-		$this->mockGenerator
-			->shunt('__construct')
-			->generate('reflectionClass')
-		;
-
 		$this->assert
 			->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
 			->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
@@ -73,11 +76,6 @@ class phpClass extends atoum\test
 		$this->assert
 			->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 			->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
-		;
-
-		$this->mockGenerator
-			->shunt('__construct')
-			->generate('reflectionClass')
 		;
 
 		$asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); });
@@ -102,10 +100,6 @@ class phpClass extends atoum\test
 	public function testSetWith()
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() { throw new \reflectionException();};
@@ -150,10 +144,6 @@ class phpClass extends atoum\test
 
 		$class = uniqid();
 		$parent = uniqid();
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
@@ -202,11 +192,6 @@ class phpClass extends atoum\test
 				)
 					->isInstanceOf('logicException')
 					->hasMessage('Class is undefined')
-		;
-
-		$this->mockGenerator
-			->shunt('__construct')
-			->generate('reflectionClass')
 		;
 
 		$reflectionClass = new \mock\reflectionClass($className = uniqid());
@@ -260,10 +245,6 @@ class phpClass extends atoum\test
 		$class = uniqid();
 		$interface = uniqid();
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
-
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
 		$mockController->getName = function() use ($class) { return $class; };
@@ -296,57 +277,6 @@ class phpClass extends atoum\test
 		;
 	}
 
-	public function testHasMethod()
-	{
-		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->hasMethod(uniqid());
-					}
-				)
-					->isInstanceOf('logicException')
-					->hasMessage('Class is undefined')
-		;
-
-		$class = uniqid();
-		$method = uniqid();
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
-
-		$mockController = new atoum\mock\controller();
-		$mockController->__construct = function() {};
-		$mockController->getName = function() use ($class) { return $class; };
-		$mockController->hasMethod = false;
-
-		$asserter
-			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
-			->setWith($class)
-				->getScore()->reset()
-		;
-
-		$this->assert
-			->exception(function() use ($asserter, $method) {
-					$asserter->hasMethod($method);
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('Class %s does not have a %s method'), $class, $method))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$mockController->hasMethod = true;
-
-		$this->assert
-			->object($asserter->hasMethod($method))->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->integer($score->getPassNumber())->isEqualTo(1)
-		;
-	}
-
 	public function testIsAbstract()
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
@@ -361,10 +291,6 @@ class phpClass extends atoum\test
 		;
 
 		$class = uniqid();
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
 
 		$mockController = new atoum\mock\controller();
 		$mockController->__construct = function() {};
@@ -393,6 +319,53 @@ class phpClass extends atoum\test
 
 		$this->assert
 			->object($asserter->isAbstract())->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testHasMethod()
+	{
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->hasMethod(uniqid());
+					}
+					)
+			->isInstanceOf('logicException')
+			->hasMessage('Class is undefined')
+		;
+
+		$class = uniqid();
+		$method = uniqid();
+
+		$reflectionClass = new \mock\reflectionClass($class = uniqid());
+		$reflectionClassController = $reflectionClass->getMockController();
+		$reflectionClassController->getName = $class;
+		$reflectionClassController->hasMethod = false;
+
+		$asserter
+			->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
+			->setWith($class)
+			->getScore()->reset()
+		;
+
+		$this->assert
+			->exception(function() use ($asserter, $method) {
+					$asserter->hasMethod($method);
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('Method %s::%s() does not exist'), $class, $method))
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isZero()
+		;
+
+		$reflectionClassController->hasMethod = true;
+
+		$this->assert
+			->object($asserter->hasMethod(uniqid()))->isIdenticalTo($asserter)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
 		;
