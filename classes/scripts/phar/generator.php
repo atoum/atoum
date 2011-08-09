@@ -312,7 +312,7 @@ class generator extends atoum\script
 
 		$phar->buildFromIterator(new \recursiveIteratorIterator(new atoum\src\iterator\filter($srcIterator)), $this->originDirectory);
 
-		$configurationsIterator = $this->getConfigurationsIterator($phar['ressources/configurations']);
+		$configurationsIterator = $this->getConfigurationsIterator($phar['resources/configurations']);
 
 		if ($configurationsIterator instanceof \recursiveDirectoryIterator === false)
 		{
@@ -329,7 +329,7 @@ class generator extends atoum\script
 
 				if (substr($path, -4) === '.php')
 				{
-					unset($phar['ressources/configurations/' . $path]);
+					unset($phar['resources/configurations/' . $path]);
 				}
 			}
 		}

@@ -37,7 +37,7 @@ class html extends report\fields\runner\coverage\cli
 			->setUrlPrompt($urlPrompt ?: new prompt())
 			->setUrlColorizer($urlColorizer ?: new colorizer())
 			->setProjectName($projectName)
-			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . '/ressources/templates/coverage')
+			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . '/resources/templates/coverage')
 			->setDestinationDirectory($destinationDirectory)
 			->setTemplateParser($parser ?: new template\parser())
 			->setAdapter($adapter ?: new atoum\adapter())

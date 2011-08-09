@@ -63,9 +63,9 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$script->extractRessourcesTo($values[0]);
+				$script->extractResourcesTo($values[0]);
 			},
-			array('-er', '--extractRessourcesTo')
+			array('-er', '--extractResourcesTo')
 		);
 
 		$this->argumentsParser->addHandler(
@@ -103,7 +103,7 @@ class stub extends scripts\runner
 				'-i, --infos' => $this->locale->_('Display informations, do not run any script'),
 				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
 				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar to <dir>, do not run any script'),
-				'-er <dir>, --extractRessourcesTo <dir>' => $this->locale->_('Extract ressources from phar to <dir>, do not run any script'),
+				'-er <dir>, --extractResourcesTo <dir>' => $this->locale->_('Extract resources from phar to <dir>, do not run any script'),
 				'--testIt' => $this->locale->_('Execute all Atoum unit tests, do not run default script'),
 				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
@@ -189,28 +189,28 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function extractRessourcesTo($directory)
+	public function extractResourcesTo($directory)
 	{
 		$phar = new \phar($this->getName());
 
-		if (isset($phar['ressources']) === false)
+		if (isset($phar['resources']) === false)
 		{
-			throw new exceptions\logic('Ressources directory does not exist in PHAR \'' . $this->getName() . '\'');
+			throw new exceptions\logic('Resources directory does not exist in PHAR \'' . $this->getName() . '\'');
 		}
 
 		try
 		{
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['ressources'], \filesystemIterator::CURRENT_AS_SELF)) as $ressources)
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['resources'], \filesystemIterator::CURRENT_AS_SELF)) as $resources)
 			{
-				if ($ressources->current()->isFile() === true)
+				if ($resources->current()->isFile() === true)
 				{
-					$phar->extractTo($directory, 'ressources/' . $ressources->getSubpathname());
+					$phar->extractTo($directory, 'resources/' . $resources->getSubpathname());
 				}
 			}
 		}
 		catch (\exception $exception)
 		{
-			throw new exceptions\logic('Unable to extract ressources in \'' . $directory . '\'');
+			throw new exceptions\logic('Unable to extract resources in \'' . $directory . '\'');
 		}
 
 		$this->runTests = false;
