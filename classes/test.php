@@ -43,6 +43,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsToRun = 0;
 	private $numberOfChildren = 0;
 	private $maxChildrenNumber = 1;
+	private $codeCoverage = false;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
@@ -111,10 +112,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->runTestMethods = $this->getTestMethods();
 	}
 
-	public function __destruct()
-	{
-	}
-
 	public function __toString()
 	{
 		return $this->getClass();
@@ -159,6 +156,25 @@ abstract class test implements observable, adapter\aggregator, \countable
 			default:
 				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');
 		}
+	}
+
+	public function codeCoverageIsEnabled()
+	{
+		return $this->codeCoverage;
+	}
+
+	public function enableCodeCoverage()
+	{
+		$this->codeCoverage = $this->adapter->extension_loaded('xdebug');
+
+		return $this;
+	}
+
+	public function disableCodeCoverage()
+	{
+		$this->codeCoverage = false;
+
+		return $this;
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -673,14 +689,28 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 				ob_start();
 
+				if ($this->codeCoverageIsEnabled() === true)
+				{
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+				}
+
 				$time = microtime(true);
 				$memory = memory_get_usage(true);
 
 				$this->{$testMethod}();
 
+				$memoryUsage = memory_get_usage(true) - $memory;
+				$duration = microtime(true) - $time;
+
+				if ($this->codeCoverageIsEnabled() === true)
+				{
+					$this->score->getCoverage()->addXdebugDataForTest($this, $this->adapter->xdebug_get_code_coverage());
+					$this->adapter->xdebug_stop_code_coverage();
+				}
+
 				$this->score
-					->addMemoryUsage($this->class, $this->currentMethod, memory_get_usage(true) - $memory)
-					->addDuration($this->class, $this->currentMethod, microtime(true) - $time)
+					->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
+					->addDuration($this->class, $this->currentMethod, $duration)
 					->addOutput($this->class, $this->currentMethod, ob_get_clean())
 				;
 

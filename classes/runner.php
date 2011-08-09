@@ -334,28 +334,17 @@ class runner implements observable, adapter\aggregator
 						->setMaxChildrenNumber($this->maxChildrenNumber)
 					;
 
+					if ($this->codeCoverageIsEnabled() === true)
+					{
+						$test->enableCodeCoverage();
+					}
+
 					foreach ($this->testObservers as $observer)
 					{
 						$test->addObserver($observer);
 					}
 
-					$xdebugLoaded = $this->codeCoverageIsEnabled() === true && $this->adapter->extension_loaded('xdebug');
-
-					if ($xdebugLoaded === true)
-					{
-						$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-					}
-
-					$test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this);
-
-					if ($xdebugLoaded === true)
-					{
-						$this->score->getCoverage()->addXdebugDataForTest($test, $this->adapter->xdebug_get_code_coverage());
-
-						$this->adapter->xdebug_stop_code_coverage();
-					}
-
-					$this->score->merge($test->getScore());
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
 				}
 			}
 		}
