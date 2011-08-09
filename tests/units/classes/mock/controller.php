@@ -95,31 +95,28 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
+			->boolean(isset($mockController->{$method = uniqid()}))->isFalse()
+			->when(function() use ($mockController, $method) { $mockController->{$method} = uniqid(); })
+			->boolean(isset($mockController->{$method}))->isTrue()
+			->when(function() use ($mockController, $method) { unset($mockController->{$method}); })
+			->boolean(isset($mockController->{$method}))->isFalse()
 		;
 
-		$mockController->{$method = uniqid()} = function() {};
-
-		$this->assert
-			->variable($mockController->{$method})->isNotNull()
+		$this->mockGenerator
+			->generate('reflectionClass')
 		;
 
-		unset($mockController->{$method});
+		$reflectionClass = new \mock\reflectionClass($this);
+
+		$mockController = new mock\controller();
+		$mockController->control($reflectionClass);
 
 		$this->assert
-			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
-		;
-
-		$mockController->{$otherMethod = uniqid()} = uniqid();
-
-		$this->assert
-			->variable($mockController->{$otherMethod})->isNotNull()
-		;
-
-		unset($mockController->{$otherMethod});
-
-		$this->assert
-			->object($mockController->{$method})->isInstanceOf('mageekguy\atoum\test\adapter\callable')
+			->boolean(isset($mockController->getMethods))->isFalse()
+			->when(function() use ($mockController) { $mockController->getMethods = null; })
+			->boolean(isset($mockController->getMethods))->isTrue()
+			->when(function() use ($mockController) { unset($mockController->getMethods); })
+			->boolean(isset($mockController->getMethods))->isFalse()
 		;
 	}
 

@@ -42,7 +42,11 @@ class controller extends test\adapter
 	{
 		$this->checkMethod($method);
 
-		return parent::__unset($method);
+		parent::__unset($method);
+
+		$this->callables[$method] = null;
+
+		return $this;
 	}
 
 	public function disableMethodChecking()
