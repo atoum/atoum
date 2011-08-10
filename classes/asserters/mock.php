@@ -213,7 +213,7 @@ class mock extends atoum\asserter
 						),
 						$this->call,
 						$callsNumber
-					)
+					) . $this->getCallsAsString()
 			);
 		}
 
@@ -230,7 +230,7 @@ class mock extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s is called 0 time'), $this->call));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('method %s is called 0 time'), $this->call) . $this->getCallsAsString());
 		}
 
 		return $this;
@@ -255,7 +255,7 @@ class mock extends atoum\asserter
 					$this->call,
 					$callsNumber,
 					$number
-				)
+				) . $this->getCallsAsString()
 			);
 		}
 
@@ -361,6 +361,27 @@ class mock extends atoum\asserter
 		}
 
 		return $this;
+	}
+
+	protected function getCallsAsString()
+	{
+		$string = '';
+
+		if (($calls  = $this->mock->getMockController()->getCalls($this->call->getFunction())) !== null)
+		{
+			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
+
+			$phpCalls = array();
+
+			foreach (array_values($calls) as $call => $arguments)
+			{
+				$phpCalls[] = sprintf($format, $call + 1, new php\call($this->call->getFunction(), $arguments, $this->mock));
+			}
+
+			$string = PHP_EOL . join(PHP_EOL, $phpCalls);
+		}
+
+		return $string;
 	}
 }
 

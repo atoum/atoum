@@ -205,7 +205,7 @@ class adapter extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time') . $this->getCallsAsString(), $this->call));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this->call) . $this->getCallsAsString());
 		}
 
 		return $this;
