@@ -177,27 +177,6 @@ class adapter extends atoum\asserter
 		}
 		else
 		{
-			$callsAsString = '';
-
-			$calls = $this->adapter->getCalls($this->call->getFunction());
-
-			if ($calls !== null)
-			{
-				$callsAsString = array();
-
-				$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
-
-				$index = 0;
-
-				foreach ($calls as $arguments)
-				{
-					$call = new php\call($this->call->getFunction());
-					$callsAsString[] = sprintf($format, ++$index, $call->setArguments($arguments));
-				}
-
-				$callsAsString = PHP_EOL . join(PHP_EOL, $callsAsString);
-			}
-
 			$this->fail(
 				$failMessage !== null
 				? $failMessage
@@ -209,7 +188,7 @@ class adapter extends atoum\asserter
 						),
 						$this->call,
 						$callsNumber
-					) .  $callsAsString
+					) .  $this->getCallsAsString()
 			);
 		}
 
@@ -226,7 +205,7 @@ class adapter extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this->call));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time') . $this->getCallsAsString(), $this->call));
 		}
 
 		return $this;
@@ -251,7 +230,7 @@ class adapter extends atoum\asserter
 					$this->call,
 					$callsNumber,
 					$number
-				)
+				) . $this->getCallsAsString()
 			);
 		}
 
@@ -357,6 +336,27 @@ class adapter extends atoum\asserter
 		}
 
 		return $this;
+	}
+
+	protected function getCallsAsString()
+	{
+		$string = '';
+
+		if (($calls  = $this->adapter->getCalls($this->call->getFunction())) !== null)
+		{
+			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
+
+			$phpCalls = array();
+
+			foreach (array_values($calls) as $call => $arguments)
+			{
+				$phpCalls[] = sprintf($format, $call + 1, new php\call($this->call->getFunction(), $arguments));
+			}
+
+			$string = PHP_EOL . join(PHP_EOL, $phpCalls);
+		}
+
+		return $string;
 	}
 }
 
