@@ -41,7 +41,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $mockGenerator = null;
 	private $child = null;
 	private $testsToRun = 0;
-	private $numberOfChildren = 0;
+	private $phpCode = '';
+	private $children = array();
 	private $maxChildrenNumber = 1;
 	private $codeCoverage = false;
 
@@ -422,15 +423,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 			else
 			{
-				$failNumber = 0;
-				$errorNumber = 0;
-				$exceptionNumber = 0;
-				$children = array();
-				$stdOut = array();
-				$stdErr = array();
-				$pipes = array();
-				$null = null;
-				$phpCode =
+				$this->children = array();
+				$this->phpCode =
 					'<?php ' .
 					'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
 					'require(\'' . $runner->getPath() . '\');' .
@@ -445,89 +439,74 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'?>'
 				;
 
+				$failNumber = 0;
+				$errorNumber = 0;
+				$exceptionNumber = 0;
+				$null = null;
+
 				try
 				{
 					$this->callObservers(self::beforeSetUp);
 					$this->setUp();
 					$this->callObservers(self::afterSetUp);
 
-					while ($this->testsToRun > 0 || sizeof($children) > 0)
+					while (sizeof($this->runChild()->children) > 0)
 					{
-						while (($child = $this->getChild()) !== null)
+						$pipes = array();
+
+						foreach ($this->children as $child)
 						{
-							$this->currentMethod = array_shift($this->runTestMethods);
-
-							$this->callObservers(self::beforeTestMethod);
-
-							fwrite($child[1][0], sprintf($phpCode, $this->currentMethod, $child[2]));
-							fclose($child[1][0]);
-							unset($child[1][0]);
-
-							$children[$this->currentMethod] = $child;
-							$stdOut[$this->currentMethod] = '';
-							$stdErr[$this->currentMethod] = '';
-
-							if (--$this->testsToRun > 0)
+							if (isset($child[1][1]) === true)
 							{
-								$this->createChild();
+								$pipes[] = $child[1][1];
+							}
+
+							if (isset($child[1][2]) === true)
+							{
+								$pipes[] = $child[1][2];
 							}
 						}
 
-						$this->currentMethod = null;
+						$pipesUpdated = stream_select($pipes, $null, $null, $this->testsToRun > 0 && sizeof($this->children) < $this->maxChildrenNumber ? 0 : null);
 
-						$terminatedChildren = array();
-
-						while (sizeof($terminatedChildren) <= 0 && sizeof($children) > 0)
+						if ($pipesUpdated !== false)
 						{
-							$pipes = array();
-
-							foreach ($children as $child)
+							if ($pipesUpdated == 0)
 							{
-								if (isset($child[1][1]) === true)
-								{
-									$pipes[] = $child[1][1];
-								}
-
-								if (isset($child[1][2]) === true)
-								{
-									$pipes[] = $child[1][2];
-								}
+								$this->runChild();
 							}
-
-							if (stream_select($pipes, $null, $null, null) !== false)
+							else
 							{
 								foreach ($pipes as $writedPipe)
 								{
-									foreach ($children as $testMethod => $child)
+									foreach ($this->children as $testMethod => $child)
 									{
 										switch (true)
 										{
 											case isset($child[1][2]) && $writedPipe === $child[1][2]:
-												$stdErr[$testMethod] .= stream_get_contents($child[1][2]);
+												$this->children[$testMethod][4] .= stream_get_contents($child[1][2]);
 
 												if (feof($child[1][2]) === true)
 												{
 													fclose($child[1][2]);
-													unset($children[$testMethod][1][2]);
+													unset($this->children[$testMethod][1][2]);
 												}
 												break;
 
 											case isset($child[1][1]) && $writedPipe === $child[1][1]:
-												$stdOut[$testMethod] .= stream_get_contents($child[1][1]);
+												$this->children[$testMethod][3] .= stream_get_contents($child[1][1]);
 
 												if (feof($child[1][1]) === true)
 												{
 													fclose($child[1][1]);
-													unset($children[$testMethod][1][1]);
+													unset($this->children[$testMethod][1][1]);
 												}
 												break;
 										}
 									}
 								}
 
-								$terminatedChildren = array_filter($children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; });
-
-								foreach ($terminatedChildren as $testMethod => $terminatedChild)
+								foreach (array_filter($this->children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; }) as $testMethod => $terminatedChild)
 								{
 									proc_close($terminatedChild[0]);
 
@@ -535,23 +514,22 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$this->callObservers(self::afterTestMethod);
 
-									if ($stdOut[$testMethod] !== '')
+									$this->currentMethod = null;
+
+									if ($this->children[$testMethod][3] !== '')
 									{
-										$this->score->addOutput($this->class, $testMethod, $stdOut[$testMethod]);
+										$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
 									}
 
-									if ($stdErr[$testMethod] != '')
+									if ($this->children[$testMethod][4] != '')
 									{
 										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr[$testMethod]), $errors, PREG_SET_ORDER) === 0)
 										{
-											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $stdErr[$testMethod]);
+											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
 										}
-										else
+										else foreach ($errors as $error)
 										{
-											foreach ($errors as $error)
-											{
-												$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
-											}
+											$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
 										}
 									}
 
@@ -586,16 +564,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 										default:
 											$this->callObservers(self::success);
 									}
-
-									unset($stdOut[$testMethod]);
-									unset($stdErr[$testMethod]);
-
-									$this->currentMethod = null;
 								}
 
-								$children = array_filter($children, function($child) { return isset($child[1][1]) === true || isset($child[1][2]) === true; });
-
-								$this->numberOfChildren = sizeof($children);
+								$this->children = array_filter($this->children, function($child) { return isset($child[1][1]) === true || isset($child[1][2]) === true; });
 							}
 						}
 					}
@@ -691,7 +662,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 				if ($this->codeCoverageIsEnabled() === true)
 				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+					xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 				}
 
 				$time = microtime(true);
@@ -704,8 +675,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 				if ($this->codeCoverageIsEnabled() === true)
 				{
-					$this->score->getCoverage()->addXdebugDataForTest($this, $this->adapter->xdebug_get_code_coverage());
-					$this->adapter->xdebug_stop_code_coverage();
+					$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
+					xdebug_stop_code_coverage();
 				}
 
 				$this->score
@@ -810,40 +781,41 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $annotations;
 	}
 
-	private function createChild()
+	private function runChild()
 	{
-		$php = proc_open(
-			$this->getPhpPath(),
-			array(
-				0 => array('pipe', 'r'),
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w')
-			),
-			$pipes
-		);
-
-		$this->child = array($php, $pipes, $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), 'atm'));
-
-		return $this;
-	}
-
-	private function getChild()
-	{
-		$child = null;
-
-		if ($this->testsToRun > 0 && $this->numberOfChildren < $this->maxChildrenNumber)
+		if ($this->testsToRun > 0 && sizeof($this->children) < $this->maxChildrenNumber)
 		{
-			if ($this->child === null)
-			{
-				$this->createChild();
-			}
+			$php = proc_open(
+				$this->getPhpPath(),
+				array(
+					0 => array('pipe', 'r'),
+					1 => array('pipe', 'w'),
+					2 => array('pipe', 'w')
+				),
+				$pipes
+			);
 
-			$child = $this->child;
+			$this->currentMethod = array_shift($this->runTestMethods);
 
-			$this->numberOfChildren++;
+			$this->callObservers(self::beforeTestMethod);
+
+			fwrite($pipes[0], sprintf($this->phpCode, $this->currentMethod, $tmpFile = tempnam(sys_get_temp_dir(), 'atm')));
+			fclose($pipes[0]);
+			unset($pipes[0]);
+
+			$this->children[$this->currentMethod] = array(
+				$php,
+				$pipes,
+				$tmpFile,
+				'',
+				''
+			);
+
+			$this->currentMethod = null;
+			$this->testsToRun--;
 		}
 
-		return $child;
+		return $this;
 	}
 }
 
