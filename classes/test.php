@@ -523,7 +523,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									if ($this->children[$testMethod][4] != '')
 									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr[$testMethod]), $errors, PREG_SET_ORDER) === 0)
+										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
 										{
 											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
 										}
