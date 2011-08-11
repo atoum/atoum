@@ -247,18 +247,20 @@ class runner extends atoum\test
 
 	public function testGetRunningDuration()
 	{
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
+		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
 		$adapter->proc_close = function() {};
+		$adapter->proc_terminate = function() {};
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
 		$adapter->get_declared_classes = function() { return array(); };
-
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = uniqid();
 
 		$runner = new atoum\runner(null, $adapter, $superglobals);
 
@@ -277,16 +279,18 @@ class runner extends atoum\test
 
 	public function testGetTestNumber()
 	{
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
+		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
 		$adapter->proc_close = function() {};
-
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = uniqid();
+		$adapter->proc_terminate = function() {};
 
 		$runner = new atoum\runner(null, $adapter, $superglobals);
 
@@ -303,17 +307,19 @@ class runner extends atoum\test
 
 	public function testGetTestMethodNumber()
 	{
+		$superglobals = new atoum\superglobals();
+		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
+		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
+		$adapter->proc_terminate = function() {};
 		$adapter->proc_close = function() {};
 		$adapter->get_declared_classes = array();
-
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = uniqid();
 
 		$runner = new atoum\runner(null, $adapter, $superglobals);
 
@@ -509,14 +515,43 @@ class runner extends atoum\test
 				->call('setPhpVersion')->never()
 		;
 
+		$adapter->realpath = false;
+
+		$score->reset();
+		$scoreController->resetCalls();
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->setPathAndVersionInScore();
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->hasMessage('Unable to find \'' . $phpPath . '\'')
+			->adapter($adapter)
+				->call('realpath')->withArguments($phpPath)->once()
+				->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
+				->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
+			->mock($score)
+				->call('setAtoumVersion')->withArguments(null)->once()
+				->call('setAtoumPath')->withArguments(null)->once()
+				->call('setPhpPath')->never()
+				->call('setPhpVersion')->never()
+		;
+
 		$adapter->resetCalls();
-		$adapter->proc_open = function($cmd, $descriptors, & $pipes) use (& $php, & $stdOut) {
-			$pipes = array(1 => $stdOut = uniqid());
+
+		$adapter->realpath = $phpPath;
+		$adapter->proc_open = function($cmd, $descriptors, & $pipes) use (& $php, & $stdOut, & $stdErr) {
+			$pipes = array(
+				1 => $stdOut = uniqid(),
+				2 => $stErr = uniqid(),
+			);
 			return $php = uniqid();
 		};
 		$adapter->stream_get_contents = $phpVersion = uniqid();
 		$adapter->fclose = function() {};
 		$adapter->proc_close = function() {};
+		$adapter->proc_terminate = function() {};
 		$adapter->proc_get_status = array(
 			'running' => false,
 			'exitcode' => 126
@@ -531,7 +566,7 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to find \'' . $phpPath . '\' or it is not executable')
+				->hasMessage('Unable to execute \'' . $phpPath . '\'')
 			->adapter($adapter)
 				->call('realpath')->withArguments($phpPath)->once()
 				->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
@@ -560,7 +595,7 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to find \'' . $phpPath . '\' or it is not executable')
+				->hasMessage('Unable to execute \'' . $phpPath . '\'')
 			->adapter($adapter)
 				->call('realpath')->withArguments($phpPath)->once()
 				->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
@@ -575,6 +610,7 @@ class runner extends atoum\test
 
 		$adapter->resetCalls();
 		$adapter->proc_get_status = array(
+			'exitcode' => 0,
 			'running' => true
 		);
 

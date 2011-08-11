@@ -239,40 +239,45 @@ class runner implements observable, adapter\aggregator
 
 		$phpPath = $this->adapter->realpath($this->getPhpPath());
 
-		$descriptors = array(
-			1 => array('pipe', 'w'),
-		);
-
-		$php = @$this->adapter->invoke('proc_open', array($phpPath . ' --version', $descriptors, & $pipes));
-
-		if ($php === false)
+		if ($phpPath === false)
 		{
-			throw new exceptions\runtime('Unable to open \'' . $phpPath . '\'');
+			throw new exceptions\runtime('Unable to find \'' . $this->getPhpPath() . '\'');
 		}
-
-		$phpStatus = $this->adapter->proc_get_status($php);
-
-		if ($phpStatus['running'] === false)
+		else
 		{
+			$descriptors = array(
+				1 => array('pipe', 'w'),
+				2 => array('pipe', 'w'),
+			);
+
+			$php = @$this->adapter->invoke('proc_open', array($phpPath . ' --version', $descriptors, & $pipes));
+
+			if ($php === false)
+			{
+				throw new exceptions\runtime('Unable to open \'' . $phpPath . '\'');
+			}
+
+			$phpVersion = trim($this->adapter->stream_get_contents($pipes[1]));
+
+			$this->adapter->fclose($pipes[1]);
+			$this->adapter->fclose($pipes[2]);
+
+			$this->adapter->proc_terminate($php);
+
+			$phpStatus = $this->adapter->proc_get_status($php);
+
 			$this->adapter->proc_close($php);
 
-			switch ($phpStatus['exitcode'])
+			if ($phpStatus['exitcode'] !== 0)
 			{
-				case 126:
-				case 127:
-					throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+				throw new exceptions\runtime('Unable to execute \'' . $phpPath . '\'');
 			}
+
+			$this->score
+				->setPhpPath($phpPath)
+				->setPhpVersion($phpVersion)
+			;
 		}
-
-		$phpVersion = trim($this->adapter->stream_get_contents($pipes[1]));
-		$this->adapter->fclose($pipes[1]);
-
-		$this->adapter->proc_close($php);
-
-		$this->score
-			->setPhpPath($phpPath)
-			->setPhpVersion($phpVersion)
-		;
 
 		return $this;
 	}

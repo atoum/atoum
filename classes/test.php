@@ -439,9 +439,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'?>'
 				;
 
-				$failNumber = 0;
-				$errorNumber = 0;
-				$exceptionNumber = 0;
 				$null = null;
 
 				try
@@ -508,30 +505,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 								foreach (array_filter($this->children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; }) as $testMethod => $terminatedChild)
 								{
-									proc_close($terminatedChild[0]);
-
 									$this->currentMethod = $testMethod;
-
 									$this->callObservers(self::afterTestMethod);
-
 									$this->currentMethod = null;
 
-									if ($this->children[$testMethod][3] !== '')
+									$phpStatus = proc_get_status($terminatedChild[0]);
+
+									proc_close($terminatedChild[0]);
+
+									if ($phpStatus['exitcode'] !== 0)
 									{
-										$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
+										throw new exceptions\runtime('Unable to execute \'' . $phpPath . '\'');
 									}
 
-									if ($this->children[$testMethod][4] != '')
-									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
-										{
-											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
-										}
-										else foreach ($errors as $error)
-										{
-											$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
-										}
-									}
+									$score = null;
 
 									$tmpFileContent = @file_get_contents($terminatedChild[2]);
 
@@ -539,30 +526,54 @@ abstract class test implements observable, adapter\aggregator, \countable
 									{
 										$score = @unserialize($tmpFileContent);
 
-										if ($score instanceof score)
+										if ($score instanceof score === false)
 										{
-											$this->score->merge($score);
+											$score = null;
 										}
 									}
 
 									@unlink($terminatedChild[3]);
 
-									switch (true)
+									if ($score !== null)
 									{
-										case $failNumber < $this->score->getFailNumber():
+										$this->score->merge($score);
+
+										if ($this->children[$testMethod][3] !== '')
+										{
+											$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
+										}
+
+										if ($this->children[$testMethod][4] != '')
+										{
+											if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
+											{
+												$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
+											}
+											else foreach ($errors as $error)
+											{
+												$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+											}
+										}
+
+										if ($score->getFailNumber() > 0)
+										{
 											$this->callObservers(self::fail);
-											break;
+										}
 
-										case $errorNumber < $this->score->getErrorNumber():
+										if ($score->getErrorNumber() > 0)
+										{
 											$this->callObservers(self::error);
-											break;
+										}
 
-										case $exceptionNumber < $this->score->getExceptionNumber():
+										if ($score->getExceptionNumber() > 0)
+										{
 											$this->callObservers(self::exception);
-											break;
+										}
 
-										default:
+										if ($score->getPassNumber() > 0)
+										{
 											$this->callObservers(self::success);
+										}
 									}
 								}
 
@@ -785,7 +796,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->testsToRun > 0 && sizeof($this->children) < $this->maxChildrenNumber)
 		{
-			$php = proc_open(
+			$php = @proc_open(
 				$this->getPhpPath(),
 				array(
 					0 => array('pipe', 'r'),
