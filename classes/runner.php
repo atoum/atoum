@@ -270,7 +270,7 @@ class runner implements observable, adapter\aggregator
 
 			if ($phpStatus['exitcode'] !== 0)
 			{
-				throw new exceptions\runtime('Unable to execute \'' . $phpPath . '\'');
+				throw new exceptions\runtime('Unable to get PHP version from \'' . $phpPath . '\'');
 			}
 
 			$this->score

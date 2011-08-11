@@ -517,7 +517,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 									{
 										case 126:
 										case 127:
-											throw new exceptions\runtime('Unable to execute \'' . $this->getPhpPath() . '\'');
+											throw new exceptions\runtime('Unable to execute test with \'' . $this->getPhpPath() . '\'');
 									}
 
 									$score = null;
