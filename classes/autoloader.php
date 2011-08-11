@@ -16,7 +16,11 @@ class autoloader
 
 	public static function addDirectory($namespace, $directory)
 	{
-		if (isset(self::$directories[$namespace]) === false || in_array($directory, self::$directories[$namespace]) === false)
+		if (isset(self::$directories[$namespace]) === false)
+		{
+			self::$directories[$namespace] = array();
+		}
+		if (in_array($directory, self::$directories[$namespace]) === false)
 		{
 			self::$directories[$namespace][] = $directory;
 
@@ -31,15 +35,13 @@ class autoloader
 
 	public static function getPath($class)
 	{
-		$path = null;
-
 		foreach (self::$directories as $namespace => $directories)
 		{
 			if ($class !== $namespace && strpos($class, $namespace) === 0)
 			{
 				foreach ($directories as $directory)
 				{
-					$path = $directory . str_replace('\\', DIRECTORY_SEPARATOR, str_replace($namespace, '', $class)) . '.php';
+					$path = $directory . strtr(str_replace($namespace, '', $class), '\\', DIRECTORY_SEPARATOR) . '.php';
 
 					if (is_file($path) === true)
 					{
@@ -48,7 +50,6 @@ class autoloader
 				}
 			}
 		}
-
 		return null;
 	}
 
@@ -62,5 +63,3 @@ class autoloader
 }
 
 autoloader::register();
-
-?>
