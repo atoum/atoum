@@ -513,9 +513,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									proc_close($terminatedChild[0]);
 
-									if ($phpStatus['exitcode'] !== 0)
+									switch ($phpStatus['exitcode'])
 									{
-										throw new exceptions\runtime('Unable to execute \'' . $phpPath . '\'');
+										case 126:
+										case 127:
+											throw new exceptions\runtime('Unable to execute \'' . $this->getPhpPath() . '\'');
 									}
 
 									$score = null;
@@ -528,53 +530,50 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 										if ($score instanceof score === false)
 										{
-											$score = null;
+											$score = new score();
+
+											if ($this->children[$testMethod][3] !== '')
+											{
+												$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
+											}
+
+											if ($this->children[$testMethod][4] != '')
+											{
+												if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
+												{
+													$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
+												}
+												else foreach ($errors as $error)
+												{
+													$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+												}
+											}
 										}
 									}
 
 									@unlink($terminatedChild[3]);
 
-									if ($score !== null)
+									if ($score->getFailNumber() > 0)
 									{
-										$this->score->merge($score);
-
-										if ($this->children[$testMethod][3] !== '')
-										{
-											$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
-										}
-
-										if ($this->children[$testMethod][4] != '')
-										{
-											if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
-											{
-												$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
-											}
-											else foreach ($errors as $error)
-											{
-												$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
-											}
-										}
-
-										if ($score->getFailNumber() > 0)
-										{
-											$this->callObservers(self::fail);
-										}
-
-										if ($score->getErrorNumber() > 0)
-										{
-											$this->callObservers(self::error);
-										}
-
-										if ($score->getExceptionNumber() > 0)
-										{
-											$this->callObservers(self::exception);
-										}
-
-										if ($score->getPassNumber() > 0)
-										{
-											$this->callObservers(self::success);
-										}
+										$this->callObservers(self::fail);
 									}
+
+									if ($score->getErrorNumber() > 0)
+									{
+										$this->callObservers(self::error);
+									}
+
+									if ($score->getExceptionNumber() > 0)
+									{
+										$this->callObservers(self::exception);
+									}
+
+									if ($score->getPassNumber() > 0)
+									{
+										$this->callObservers(self::success);
+									}
+
+									$this->score->merge($score);
 								}
 
 								$this->children = array_filter($this->children, function($child) { return isset($child[1][1]) === true || isset($child[1][2]) === true; });

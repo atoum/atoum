@@ -10,7 +10,7 @@ class autoloader
 	{
 		if (spl_autoload_register(array(__CLASS__, 'getClass'), true, $prepend) === false)
 		{
-			throw new \runtimeException('Unable to register ' . __NAMESPACE__ . ' autoloader');
+			throw new \runtimeException('Unable to register ' . __NAMESPACE__ . ' as autoloader');
 		}
 	}
 
@@ -31,8 +31,6 @@ class autoloader
 
 	public static function getPath($class)
 	{
-		$path = null;
-
 		foreach (self::$directories as $namespace => $directories)
 		{
 			if ($class !== $namespace && strpos($class, $namespace) === 0)

@@ -7,6 +7,7 @@ use
 ;
 
 require_once(__DIR__ . '/../runner.php');
+require_once(__DIR__ . '/../../../constants.php');
 
 class autoloader extends atoum\test
 {
@@ -14,7 +15,10 @@ class autoloader extends atoum\test
 	{
 		$this->assert
 			->variable(atoum\autoloader::getPath(uniqid()))->isNull()
+			->variable(atoum\autoloader::getPath('mageekguy\atoum'))->isNull()
 			->variable(atoum\autoloader::getPath('\mageekguy\atoum'))->isNull()
+			->string(atoum\autoloader::getPath('mageekguy\atoum\test'))->isEqualTo(atoum\directory . '/classes/test.php')
+			->variable(atoum\autoloader::getPath('\mageekguy\atoum\test'))->isNull()
 		;
 	}
 }
