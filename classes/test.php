@@ -520,9 +520,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 											throw new exceptions\runtime('Unable to execute test with \'' . $this->getPhpPath() . '\'');
 									}
 
-									$score = null;
+									$score = new score();
 
 									$tmpFileContent = @file_get_contents($terminatedChild[2]);
+
+									@unlink($terminatedChild[2]);
 
 									if ($tmpFileContent !== false)
 									{
@@ -531,17 +533,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 										if ($score instanceof score === false)
 										{
 											$score = new score();
-
-											if ($this->children[$testMethod][3] !== '')
+										}
+										else
+										{
+											if ($terminatedChild[3] !== '')
 											{
-												$this->score->addOutput($this->class, $testMethod, $this->children[$testMethod][3]);
+												$this->score->addOutput($this->class, $testMethod, $terminatedChild[3]);
 											}
 
-											if ($this->children[$testMethod][4] != '')
+											if ($terminatedChild[4] !== '')
 											{
-												if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->children[$testMethod][4]), $errors, PREG_SET_ORDER) === 0)
+												if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($terminatedChild[4]), $errors, PREG_SET_ORDER) === 0)
 												{
-													$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $this->children[$testMethod][4]);
+													$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $terminatedChild[4]);
 												}
 												else foreach ($errors as $error)
 												{
@@ -550,8 +554,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 											}
 										}
 									}
-
-									@unlink($terminatedChild[3]);
 
 									if ($score->getFailNumber() > 0)
 									{
