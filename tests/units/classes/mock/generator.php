@@ -209,16 +209,11 @@ class generator extends atoum\test
 
 		$dummy = new $mockedUnknownClass();
 
-		$dummy->bar();
-
 		$this->assert
-			->array($dummy->getMockController()->getCalls('bar'))->hasSize(1)
-		;
-
-		$dummy->bar();
-
-		$this->assert
-			->array($dummy->getMockController()->getCalls('bar'))->hasSize(2)
+			->when(function() use ($dummy) { $dummy->bar(); })
+				->array($dummy->getMockController()->getCalls('bar'))->hasSize(1)
+			->when(function() use ($dummy) { $dummy->bar(); })
+				->array($dummy->getMockController()->getCalls('bar'))->hasSize(2)
 		;
 	}
 

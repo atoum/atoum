@@ -97,9 +97,9 @@ class controller extends atoum\test
 		$this->assert
 			->boolean(isset($mockController->{$method = uniqid()}))->isFalse()
 			->when(function() use ($mockController, $method) { $mockController->{$method} = uniqid(); })
-			->boolean(isset($mockController->{$method}))->isTrue()
+				->boolean(isset($mockController->{$method}))->isTrue()
 			->when(function() use ($mockController, $method) { unset($mockController->{$method}); })
-			->boolean(isset($mockController->{$method}))->isFalse()
+				->boolean(isset($mockController->{$method}))->isFalse()
 		;
 
 		$this->mockGenerator
@@ -114,9 +114,9 @@ class controller extends atoum\test
 		$this->assert
 			->boolean(isset($mockController->getMethods))->isFalse()
 			->when(function() use ($mockController) { $mockController->getMethods = null; })
-			->boolean(isset($mockController->getMethods))->isTrue()
+				->boolean(isset($mockController->getMethods))->isTrue()
 			->when(function() use ($mockController) { unset($mockController->getMethods); })
-			->boolean(isset($mockController->getMethods))->isFalse()
+				->boolean(isset($mockController->getMethods))->isFalse()
 		;
 	}
 
@@ -351,68 +351,64 @@ class controller extends atoum\test
 					4 => array($argument1, $argument2, $argument3)
 				)
 			)
-		;
-
-		$mockController->test2 = function() use ($return) { return $return; };
-
-		$this->assert
-			->string($mockController->invoke('test2', array($argument1)))->isEqualTo($return)
-			->array($mockController->getCalls())->isEqualTo(array(
-					'test' => array(
-						1 => array(),
-						2 => array($argument1),
-						3 => array($argument1, $argument2),
-						4 => array($argument1, $argument2, $argument3)
-					),
-					'test2' => array(
+			->when(function() use ($mockController, $return) { $mockController->test2 = function() use ($return) { return $return; }; })
+				->string($mockController->invoke('test2', array($argument1)))->isEqualTo($return)
+				->array($mockController->getCalls())->isEqualTo(array(
+						'test' => array(
+							1 => array(),
+							2 => array($argument1),
+							3 => array($argument1, $argument2),
+							4 => array($argument1, $argument2, $argument3)
+						),
+						'test2' => array(
+							5 => array($argument1)
+						)
+					)
+				)
+				->array($mockController->getCalls('test2'))->isEqualTo(array(
 						5 => array($argument1)
 					)
 				)
-			)
-			->array($mockController->getCalls('test2'))->isEqualTo(array(
-					5 => array($argument1)
+				->string($mockController->invoke('test2', array($argument1, $argument2)))->isEqualTo($return)
+				->array($mockController->getCalls())->isEqualTo(array(
+						'test' => array(
+							1 => array(),
+							2 => array($argument1),
+							3 => array($argument1, $argument2),
+							4 => array($argument1, $argument2, $argument3)
+						),
+						'test2' => array(
+							5 => array($argument1),
+							6 => array($argument1, $argument2)
+						)
+					)
 				)
-			)
-			->string($mockController->invoke('test2', array($argument1, $argument2)))->isEqualTo($return)
-			->array($mockController->getCalls())->isEqualTo(array(
-					'test' => array(
-						1 => array(),
-						2 => array($argument1),
-						3 => array($argument1, $argument2),
-						4 => array($argument1, $argument2, $argument3)
-					),
-					'test2' => array(
+				->array($mockController->getCalls('test2'))->isEqualTo(array(
 						5 => array($argument1),
 						6 => array($argument1, $argument2)
 					)
 				)
-			)
-			->array($mockController->getCalls('test2'))->isEqualTo(array(
-					5 => array($argument1),
-					6 => array($argument1, $argument2)
+				->string($mockController->invoke('test2', array($argument1, $argument2, $argument3)))->isEqualTo($return)
+				->array($mockController->getCalls())->isEqualTo(array(
+						'test' => array(
+							1 => array(),
+							2 => array($argument1),
+							3 => array($argument1, $argument2),
+							4 => array($argument1, $argument2, $argument3)
+						),
+						'test2' => array(
+							5 => array($argument1),
+							6 => array($argument1, $argument2),
+							7 => array($argument1, $argument2, $argument3)
+						)
+					)
 				)
-			)
-			->string($mockController->invoke('test2', array($argument1, $argument2, $argument3)))->isEqualTo($return)
-			->array($mockController->getCalls())->isEqualTo(array(
-					'test' => array(
-						1 => array(),
-						2 => array($argument1),
-						3 => array($argument1, $argument2),
-						4 => array($argument1, $argument2, $argument3)
-					),
-					'test2' => array(
+				->array($mockController->getCalls('test2'))->isEqualTo(array(
 						5 => array($argument1),
 						6 => array($argument1, $argument2),
 						7 => array($argument1, $argument2, $argument3)
 					)
 				)
-			)
-			->array($mockController->getCalls('test2'))->isEqualTo(array(
-					5 => array($argument1),
-					6 => array($argument1, $argument2),
-					7 => array($argument1, $argument2, $argument3)
-				)
-			)
 		;
 	}
 
@@ -455,17 +451,17 @@ class controller extends atoum\test
 		$mock = new \mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter);
 		$mockController->control($mock);
 
-		$mockController->{__FUNCTION__} = function() {};
-		$mockController->invoke(__FUNCTION__, array());
+		$mockController->{$method = __FUNCTION__} = function() {};
 
 		$this->assert
-			->variable($mockController->getMockClass())->isNotNull()
-			->array($mockController->getCallables())->isNotEmpty()
-			->array($mockController->getCalls())->isNotEmpty()
-			->object($mockController->reset())->isIdenticalTo($mockController)
-			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getCallables())->isEmpty()
-			->array($mockController->getCalls())->isEmpty()
+			->when(function() use ($mockController, $method) { $mockController->invoke($method, array()); })
+				->variable($mockController->getMockClass())->isNotNull()
+				->array($mockController->getCallables())->isNotEmpty()
+				->array($mockController->getCalls())->isNotEmpty()
+				->object($mockController->reset())->isIdenticalTo($mockController)
+				->variable($mockController->getMockClass())->isNull()
+				->array($mockController->getCallables())->isEmpty()
+				->array($mockController->getCalls())->isEmpty()
 		;
 	}
 
@@ -475,29 +471,17 @@ class controller extends atoum\test
 
 		$this->assert
 			->array($mockController->getCalls())->isEmpty()
-		;
-
-		$mockController->{$method = uniqid()} = function($arg) {};
-
-		$this->assert
-			->array($mockController->getCalls())->isEmpty()
-		;
-
-		$mockController->invoke($method, array($arg = uniqid()));
-
-		$this->assert
-			->array($mockController->getCalls())->isEqualTo(array($method => array(1 => array($arg))))
-			->array($mockController->getCalls($method))->isEqualTo(array(1 => array($arg)))
-			->array($mockController->getCalls($method, array($arg)))->isEqualTo(array(1 => array($arg)))
-		;
-
-		$mockController->invoke($method, array($otherArg = uniqid()));
-
-		$this->assert
-			->array($mockController->getCalls())->isEqualTo(array($method => array(1 => array($arg), 2 => array($otherArg))))
-			->array($mockController->getCalls($method))->isEqualTo(array(1 => array($arg), 2 => array($otherArg)))
-			->array($mockController->getCalls($method, array($arg)))->isEqualTo(array(1 => array($arg)))
-			->array($mockController->getCalls($method, array($otherArg)))->isEqualTo(array(2 => array($otherArg)))
+			->when(function() use ($mockController, & $method) { $mockController->{$method = uniqid()} = function($arg) {}; })
+				->array($mockController->getCalls())->isEmpty()
+			->when(function() use ($mockController, $method, & $arg) { $mockController->invoke($method, array($arg = uniqid())); })
+				->array($mockController->getCalls())->isEqualTo(array($method => array(1 => array($arg))))
+				->array($mockController->getCalls($method))->isEqualTo(array(1 => array($arg)))
+				->array($mockController->getCalls($method, array($arg)))->isEqualTo(array(1 => array($arg)))
+			->when(function() use ($mockController, $method, & $otherArg) { $mockController->invoke($method, array($otherArg = uniqid())); })
+				->array($mockController->getCalls())->isEqualTo(array($method => array(1 => array($arg), 2 => array($otherArg))))
+				->array($mockController->getCalls($method))->isEqualTo(array(1 => array($arg), 2 => array($otherArg)))
+				->array($mockController->getCalls($method, array($arg)))->isEqualTo(array(1 => array($arg)))
+				->array($mockController->getCalls($method, array($otherArg)))->isEqualTo(array(2 => array($otherArg)))
 		;
 	}
 
@@ -505,12 +489,13 @@ class controller extends atoum\test
 	{
 		$mockController = new mock\controller();
 		$mockController->{$method = uniqid()} = function() {};
-		$mockController->invoke($method, array());
 
 		$this->assert
-			->array($mockController->getCalls())->isNotEmpty()
-			->object($mockController->resetCalls())->isIdenticalTo($mockController)
 			->array($mockController->getCalls())->isEmpty()
+			->when(function() use ($mockController, $method) { $mockController->invoke($method, array()); })
+				->array($mockController->getCalls())->isNotEmpty()
+				->object($mockController->resetCalls())->isIdenticalTo($mockController)
+				->array($mockController->getCalls())->isEmpty()
 		;
 	}
 }

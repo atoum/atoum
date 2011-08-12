@@ -88,25 +88,12 @@ class adapter extends atoum\test
 
 		$this->assert
 			->variable($call->getFirstCall())->isNull()
-		;
-
-		$otherAdapter = new test\adapter();
-		$otherAdapter->md5(uniqid());
-
-		$this->assert
-			->variable($call->getFirstCall())->isNull()
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
+			->when(function() { $otherAdapter = new test\adapter(); $otherAdapter->md5(uniqid()); })
+				->variable($call->getFirstCall())->isNull()
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->integer($call->getFirstCall())->isEqualTo(2)
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->integer($call->getFirstCall())->isEqualTo(2)
 		;
 	}
 
@@ -120,25 +107,12 @@ class adapter extends atoum\test
 
 		$this->assert
 			->variable($call->getLastCall())->isNull()
-		;
-
-		$otherAdapter = new test\adapter();
-		$otherAdapter->md5(uniqid());
-
-		$this->assert
-			->variable($call->getLastCall())->isNull()
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(2)
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(3)
+			->when(function() { $otherAdapter = new test\adapter(); $otherAdapter->md5(uniqid()); })
+				->variable($call->getLastCall())->isNull()
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->integer($call->getLastCall())->isEqualTo(2)
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->integer($call->getLastCall())->isEqualTo(3)
 		;
 	}
 }

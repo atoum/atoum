@@ -132,18 +132,10 @@ class mock extends atoum\test
 
 		$this->assert
 			->variable($call->getFirstCall())->isNull()
-		;
-
-		$mock->foo();
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
-		;
-
-		$mock->foo();
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
+			->when(function() use ($mock) { $mock->foo(); })
+				->integer($call->getFirstCall())->isEqualTo(2)
+			->when(function() use ($mock) { $mock->foo(); })
+				->integer($call->getFirstCall())->isEqualTo(2)
 		;
 	}
 
@@ -168,18 +160,10 @@ class mock extends atoum\test
 
 		$this->assert
 			->variable($call->getLastCall())->isNull()
-		;
-
-		$mock->foo();
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(2)
-		;
-
-		$mock->foo();
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(3)
+			->when(function() use ($mock) { $mock->foo(); })
+				->integer($call->getLastCall())->isEqualTo(2)
+			->when(function() use ($mock) { $mock->foo(); })
+				->integer($call->getLastCall())->isEqualTo(3)
 		;
 	}
 }

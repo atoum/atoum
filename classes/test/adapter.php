@@ -13,6 +13,12 @@ class adapter extends atoum\adapter
 	protected $callables = array();
 
 	private static $callsNumber = 0;
+	private static $instances = array();
+
+	public function __construct()
+	{
+		self::$instances[] = $this;
+	}
 
 	public function __set($functionName, $mixed)
 	{
@@ -111,6 +117,14 @@ class adapter extends atoum\adapter
 	public static function getCallsNumber()
 	{
 		return self::$callsNumber;
+	}
+
+	public static function resetCallsForAllInstances()
+	{
+		foreach (self::$instances as $instance)
+		{
+			$instance->resetCalls();
+		}
 	}
 
 	protected static function isLanguageConstruct($functionName)

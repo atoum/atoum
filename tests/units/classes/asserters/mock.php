@@ -167,13 +167,13 @@ class mock extends atoum\test
 			)
 		;
 
-		$mock->getMockController()->{__FUNCTION__} = function() {};
-		$mock->{__FUNCTION__}();
+		$mock->getMockController()->{$method = __FUNCTION__} = function() {};
 
 		$this->assert
-			->object($asserter->wasCalled())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
+			->when(function() use ($mock, $method) { $mock->{$method}(); })
+				->object($asserter->wasCalled())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
 		;
 	}
 
@@ -209,27 +209,27 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$mock->getMockController()->{__FUNCTION__} = function() {};
-		$mock->{__FUNCTION__}();
+		$mock->getMockController()->{$method = __FUNCTION__} = function() {};
 
 		$this->assert
-			->exception(function() use (& $line, $asserter, & $failMessage) { $line = __LINE__; $asserter->wasNotCalled($failMessage = uniqid()); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage($failMessage)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::wasNotCalled()',
-						'fail' => $failMessage
+			->when(function() use ($mock, $method) { $mock->{$method}(); })
+				->exception(function() use (& $line, $asserter, & $failMessage) { $line = __LINE__; $asserter->wasNotCalled($failMessage = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($failMessage)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::wasNotCalled()',
+							'fail' => $failMessage
+						)
 					)
 				)
-			)
 		;
 	}
 
@@ -665,45 +665,40 @@ class mock extends atoum\test
 			)
 		;
 
-		$mock->foo($usedArg = uniqid());
-
-		$this->assert
-			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
-		;
-
 		$call = new php\call('foo', null, $mock);
 
-		$mock->foo($otherUsedArg = uniqid());
-
 		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg))
+			->when(function() use ($mock, & $usedArg) { $mock->foo($usedArg = uniqid()); })
+				->object($asserter->once())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+			->when(function() use ($mock, & $otherUsedArg) { $mock->foo($otherUsedArg = uniqid()); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
@@ -712,34 +707,29 @@ class mock extends atoum\test
 
 		$asserter->withArguments($usedArg = uniqid());
 
-		$mock->foo($usedArg);
-
 		$this->assert
-			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-		;
-
-		$asserter->withArguments($arg = uniqid());
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+			->when(function() use ($mock, $usedArg) { $mock->foo($usedArg); })
+				->object($asserter->once())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isZero()
+			->when(function() use ($asserter, & $arg) { $asserter->withArguments($arg = uniqid()); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						)
 					)
 				)
-			)
 		;
 
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
@@ -767,91 +757,83 @@ class mock extends atoum\test
 					)
 				)
 			)
-		;
-
-		$mock->foo(uniqid());
-
-		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls())))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
+			->when(function() use ($mock) { $mock->foo(uniqid()); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls())))
+				->integer($score->getPassNumber())->isEqualTo(0)
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
 
-		$mock->bar(uniqid());
-		$mock->foo(uniqid());
-
 		$this->assert
-			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is not called before method %s'), $asserter->getCall(), current($asserter->getBeforeMethodCalls())))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(3)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anotherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called before method %s'), $asserter->getCall(), current($asserter->getBeforeMethodCalls()))
+			->when(function() use ($mock) { $mock->bar(uniqid()); $mock->foo(uniqid()); })
+				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is not called before method %s'), $asserter->getCall(), current($asserter->getBeforeMethodCalls())))
+				->integer($score->getPassNumber())->isEqualTo(0)
+				->integer($score->getFailNumber())->isEqualTo(3)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anotherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called before method %s'), $asserter->getCall(), current($asserter->getBeforeMethodCalls()))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
 
-		$mock->foo(uniqid());
-		$mock->bar(uniqid());
-
 		$this->assert
-			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(2)
-			->integer($score->getFailNumber())->isEqualTo(3)
+			->when(function() use ($mock) { $mock->foo(uniqid()); $mock->bar(uniqid()); })
+				->object($asserter->once())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(2)
+				->integer($score->getFailNumber())->isEqualTo(3)
 		;
 
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
@@ -881,89 +863,84 @@ class mock extends atoum\test
 			)
 		;
 
-		$mock->foo(uniqid());
-
 		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls())))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls()))
+			->when(function() use ($mock) { $mock->foo(uniqid()); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls())))
+				->integer($score->getPassNumber())->isEqualTo(0)
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls()))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
 
-		$mock->foo(uniqid());
-		$mock->bar(uniqid());
-
 		$this->assert
-			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is not called after method %s'), $asserter->getCall(), current($asserter->getAfterMethodCalls())))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(3)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls()))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anotherLine,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called after method %s'), $asserter->getCall(), current($asserter->getAfterMethodCalls()))
+			->when(function() use ($mock) { $mock->foo(uniqid()); $mock->bar(uniqid()); })
+				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is not called after method %s'), $asserter->getCall(), current($asserter->getAfterMethodCalls())))
+				->integer($score->getPassNumber())->isEqualTo(0)
+				->integer($score->getFailNumber())->isEqualTo(3)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getAfterMethodCalls()))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anotherLine,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called after method %s'), $asserter->getCall(), current($asserter->getAfterMethodCalls()))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
 
-		$mock->bar(uniqid());
-		$mock->foo(uniqid());
-
 		$this->assert
-			->object($asserter->once())->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(2)
-			->integer($score->getFailNumber())->isEqualTo(3)
+			->when(function() use ($mock) { $mock->bar(uniqid()); $mock->foo(uniqid()); })
+				->object($asserter->once())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(2)
+				->integer($score->getFailNumber())->isEqualTo(3)
 		;
 
 		$asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score())));
@@ -973,29 +950,26 @@ class mock extends atoum\test
 
 		$asserter->beforeMethodCall('bar')->withArguments($arg = uniqid())->call('foo');
 
-		$mock->foo(uniqid());
-
 		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls())))
-			->integer($score->getPassNumber())->isEqualTo(0)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::once()',
-						'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
+			->when(function() use ($mock) { $mock->foo(uniqid()); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls())))
+				->integer($score->getPassNumber())->isEqualTo(0)
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::once()',
+							'fail' => sprintf($test->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls()))
+						)
 					)
 				)
-			)
 		;
-
-
 	}
 
 	public function testAtLeastOnce()
@@ -1050,19 +1024,11 @@ class mock extends atoum\test
 					)
 				)
 			)
-		;
-
-		$mock->foo(uniqid());
-
-		$this->assert
+			->when(function() use ($mock) { $mock->foo(uniqid()); })
 			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
-		;
-
-		$mock->foo(uniqid());
-
-		$this->assert
+			->when(function() use ($mock) { $mock->foo(uniqid()); })
 			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(1)
@@ -1098,19 +1064,12 @@ class mock extends atoum\test
 
 		$call = new php\call('foo', null, $mock);
 
-		$mock->foo($usedArg);
-
 		$this->assert
+			->when(function() use ($mock, $usedArg) { $mock->foo($usedArg); })
 			->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
-		;
-
-		$previousCall = $asserter->getCall();
-
-		$asserter->withArguments($otherArg = uniqid());
-
-		$this->assert
+			->when(function() use ($asserter, & $otherArg, & $previousCall) { $previousCall = $asserter->getCall(); $asserter->withArguments($otherArg = uniqid()); })
 			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->atLeastOnce(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
 				->hasMessage(sprintf($test->getLocale()->_('method %s is called 0 time'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
@@ -1196,83 +1155,74 @@ class mock extends atoum\test
 
 		$call = new php\call('foo', null, $mock);
 
-		$mock->foo($usedArg = uniqid());
-
 		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+			->when(function() use ($mock, & $usedArg) { $mock->foo($usedArg = uniqid()); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+				->integer($score->getPassNumber())->isZero()
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						)
 					)
 				)
-			)
-		;
-
-		$mock->foo($otherUsedArg = uniqid());
-
-		$this->assert
-			->object($asserter->exactly(2))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(2)
-		;
-
-		$mock->foo($anOtherUsedArg = uniqid());
-
-		$this->assert
-			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherUsedArg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(3)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anotherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherUsedArg))
+			->when(function() use ($mock, & $otherUsedArg) { $mock->foo($otherUsedArg = uniqid()); })
+				->object($asserter->exactly(2))->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(2)
+			->when(function() use ($mock, & $anOtherUsedArg) { $mock->foo($anOtherUsedArg = uniqid()); })
+				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherUsedArg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(3)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anotherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherUsedArg))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
@@ -1301,134 +1251,118 @@ class mock extends atoum\test
 					)
 				)
 			)
-		;
-
-		$mock->foo($usedArg = uniqid());
-
-		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+			->when(function() use ($mock, & $usedArg) { $mock->foo($usedArg = uniqid()); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+				->integer($score->getPassNumber())->isZero()
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						)
 					)
 				)
-			)
-		;
-
-		$mock->foo($arg);
-
-		$this->assert
-			->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
-			->integer($score->getPassNumber())->isZero()
-			->integer($score->getFailNumber())->isEqualTo(3)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anotherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
+				->integer($score->getPassNumber())->isZero()
+				->integer($score->getFailNumber())->isEqualTo(3)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anotherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+						)
 					)
 				)
-			)
-		;
-
-		$mock->foo($arg);
-
-		$this->assert
-			->object($asserter->exactly(2))->isIdenticalTo($asserter)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(3)
-		;
-
-		$mock->foo($arg);
-
-		$this->assert
-			->exception(function() use (& $anAnotherLine, $asserter) { $anAnotherLine = __LINE__; $asserter->exactly(2); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg)) . PHP_EOL . '[4] ' . $call->setArguments(array($arg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(4)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anotherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $anAnotherLine,
-						'asserter' => get_class($asserter) . '::exactly()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg)) . PHP_EOL . '[4] ' . $call->setArguments(array($arg))
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->object($asserter->exactly(2))->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(3)
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->exception(function() use (& $anAnotherLine, $asserter) { $anAnotherLine = __LINE__; $asserter->exactly(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg)) . PHP_EOL . '[4] ' . $call->setArguments(array($arg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(4)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall())
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anotherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anAnotherLine,
+							'asserter' => get_class($asserter) . '::exactly()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg)) . PHP_EOL . '[4] ' . $call->setArguments(array($arg))
+						)
 					)
 				)
-			)
 		;
 	}
 
@@ -1472,28 +1406,27 @@ class mock extends atoum\test
 
 		$call = new php\call('foo', null, $mock);
 
-		$mock->foo($usedArg = uniqid());
-
 		$this->assert
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isZero()
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::never()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+			->when(function() use ($mock, & $usedArg) { $mock->foo($usedArg = uniqid()); })
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isZero()
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg))
+						)
 					)
 				)
-			)
 		;
 
 		$mock->getMockController()->resetCalls();
@@ -1508,57 +1441,52 @@ class mock extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
-		$mock->foo($arg);
-
 		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::never()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
+						)
 					)
 				)
-			)
-		;
-
-		$mock->foo($arg);
-
-		$this->assert
-			->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->never(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::never()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
-					),
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::never()',
-						'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall())  . PHP_EOL . '[1] ' . $call->setArguments(array($arg)). PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->never(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(2)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
+						),
+						array(
+							'case' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall())  . PHP_EOL . '[1] ' . $call->setArguments(array($arg)). PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+						)
 					)
 				)
-			)
 		;
 
 		$asserter->withArguments(uniqid());

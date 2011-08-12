@@ -57,29 +57,21 @@ class file extends atoum\test
 
 	public function test__destruct()
 	{
-		$handle = uniqid();
-
 		$adapter = new atoum\test\adapter();
-		$adapter->fopen = function() use ($handle) { return $handle; };
+		$adapter->fopen = $handle = uniqid();
 		$adapter->fwrite = function() {};
 		$adapter->fclose = function() {};
 		$adapter->is_writable = function() { return true; };
-		$adapter->is_null = function() { return true; };
 
 		$file = new writers\file(null, $adapter);
 
 		$file->write('something');
 
-		$adapter->is_null = function() { return false; };
-
-		unset($file);
-
 		$this->assert
-			->adapter($adapter)
-				->call('is_null')->withArguments($handle)->once()
-				->call('fclose')->withArguments($handle)->once()
+			->when(function() use ($file) { $file->__destruct(); })
+				->adapter($adapter)
+					->call('fclose')->withArguments($handle)->once()
 		;
-
 	}
 
 	public function testWrite()
@@ -99,7 +91,6 @@ class file extends atoum\test
 		$this->assert
 			->object($file->write($string = uniqid()))->isIdenticalTo($file)
 			->adapter($adapter)
-				->call('is_null')->once()
 				->call('dirname')->withArguments('atoum.log')->once()
 				->call('is_writable')->withArguments('.')->once()
 				->call('fopen')->withArguments('atoum.log', 'w')->once()
@@ -114,7 +105,6 @@ class file extends atoum\test
 		$this->assert
 			->object($file->write($string = uniqid()))->isIdenticalTo($file)
 			->adapter($adapter)
-				->call('is_null')->withArguments($handle)->once()
 				->call('fwrite')->withArguments($handle, $string)->once()
 		;
 	}

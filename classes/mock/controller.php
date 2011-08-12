@@ -17,6 +17,11 @@ class controller extends test\adapter
 	private $disableMethodChecking = false;
 	private $reflectionClassInjector = null;
 
+	public function __construct()
+	{
+		parent::__construct();
+	}
+
 	public function __set($method, $mixed)
 	{
 		$this->checkMethod($method);

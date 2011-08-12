@@ -220,9 +220,9 @@ namespace mageekguy\atoum\tests\units
 				->object($test->disableCodeCoverage())->isIdenticalTo($test)
 				->boolean($test->codeCoverageIsEnabled())->isFalse()
 				->when(function() use ($test) { $test->enableCodeCoverage(); })
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->object($test->disableCodeCoverage())->isIdenticalTo($test)
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->object($test->disableCodeCoverage())->isIdenticalTo($test)
+					->boolean($test->codeCoverageIsEnabled())->isFalse()
 			;
 		}
 

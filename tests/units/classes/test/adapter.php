@@ -93,28 +93,15 @@ class adapter extends atoum\test
 		$this->assert
 			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
-		;
-
-		$adapter->md5 = uniqid();
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->array($adapter->getCallables())->isNotEmpty()
-			->array($adapter->getCalls())->isNotEmpty()
-		;
-
-		unset($adapter->{uniqid()});
-
-		$this->assert
-			->array($adapter->getCallables())->isNotEmpty()
-			->array($adapter->getCalls())->isNotEmpty()
-		;
-
-		unset($adapter->md5);
-
-		$this->assert
-			->array($adapter->getCallables())->isEmpty()
-			->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter) { $adapter->md5 = uniqid(); $adapter->md5(uniqid()); })
+				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getCalls())->isNotEmpty()
+			->when(function() use ($adapter) { unset($adapter->{uniqid()}); })
+				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getCalls())->isNotEmpty()
+			->when(function() use ($adapter) { unset($adapter->md5); })
+				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
 		;
 	}
 
@@ -148,9 +135,11 @@ class adapter extends atoum\test
 		$adapter->md5[1] = 1;
 		$adapter->md5[2] = 2;
 
-		$this->assert->integer($adapter->md5())->isEqualTo(1);
-		$this->assert->integer($adapter->md5())->isEqualTo(2);
-		$this->assert->integer($adapter->md5())->isEqualTo(0);
+		$this->assert
+			->integer($adapter->md5())->isEqualTo(1)
+			->integer($adapter->md5())->isEqualTo(2)
+			->integer($adapter->md5())->isEqualTo(0)
+		;
 	}
 
 	public function testGetCallsNumber()
@@ -186,55 +175,42 @@ class adapter extends atoum\test
 	{
 		$adapter = new atoum\test\adapter();
 
-		$this->assert->array($adapter->getCalls())->isEmpty();
-
-		$firstHash = uniqid();
-
-		$adapter->md5($firstHash);
-
 		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash)))
-		;
-
-		$secondHash = uniqid();
-		$adapter->md5($secondHash);
-
-		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash)))
-		;
-
-		$adapter->md5 = function() {};
-
-		$thirdHash = uniqid();
-		$adapter->md5($thirdHash);
-
-		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash))))
-			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-		;
-
-		$haystack = uniqid();
-		$needle = uniqid();
-		$offset = rand(0, 12);
-
-		$adapter->strpos($haystack, $needle, $offset);
-
-		$this->assert
-			->array($adapter->getCalls())->isEqualTo(array(
-						'md5' => array(
-							1 => array($firstHash),
-							2 => array($secondHash),
-							3 => array($thirdHash)
-						),
-						'strpos' => array(
-							4 => array($haystack, $needle, $offset)
-						)
-				)
+			->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter, & $firstHash) { $adapter->md5($firstHash = uniqid()); })
+				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash))))
+				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash)))
+			->when(function() use ($adapter, & $secondHash) { $adapter->md5($secondHash = uniqid()); })
+				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash))))
+				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash)))
+			->when(function() use ($adapter, & $thirdHash) {
+					$adapter->md5 = function() {};
+					$adapter->md5($thirdHash = uniqid());
+				}
 			)
-			->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-			->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
+				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash))))
+				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
+			->when(function() use ($adapter, & $haystack, & $needle, & $offset) {
+					$haystack = uniqid();
+					$needle = uniqid();
+					$offset = rand(0, 12);
+
+					$adapter->strpos($haystack, $needle, $offset);
+				}
+			)
+				->array($adapter->getCalls())->isEqualTo(array(
+							'md5' => array(
+								1 => array($firstHash),
+								2 => array($secondHash),
+								3 => array($thirdHash)
+							),
+							'strpos' => array(
+								4 => array($haystack, $needle, $offset)
+							)
+					)
+				)
+				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
+				->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
 		;
 	}
 
@@ -242,12 +218,11 @@ class adapter extends atoum\test
 	{
 		$adapter = new atoum\test\adapter();
 
-		$adapter->md5(uniqid());
-
 		$this->assert
-			->array($adapter->getCalls())->isNotEmpty()
-			->object($adapter->resetCalls())->isIdenticalTo($adapter)
-			->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->array($adapter->getCalls())->isNotEmpty()
+				->object($adapter->resetCalls())->isIdenticalTo($adapter)
+				->array($adapter->getCalls())->isEmpty()
 		;
 	}
 
@@ -261,37 +236,28 @@ class adapter extends atoum\test
 			->object($adapter->reset())->isIdenticalTo($adapter)
 			->array($adapter->getCallables())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->array($adapter->getCallables())->isEmpty()
-			->array($adapter->getCalls())->isNotEmpty()
-			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallables())->isEmpty()
-			->array($adapter->getCalls())->isEmpty()
-		;
-
-		$adapter->md5 = uniqid();
-
-		$this->assert
-			->array($adapter->getCallables())->isNotEmpty()
-			->array($adapter->getCalls())->isEmpty()
-			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallables())->isEmpty()
-			->array($adapter->getCalls())->isEmpty()
-		;
-
-		$adapter->md5 = uniqid();
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->array($adapter->getCallables())->isNotEmpty()
-			->array($adapter->getCalls())->isNotEmpty()
-			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallables())->isEmpty()
-			->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
+				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getCalls())->isNotEmpty()
+				->object($adapter->reset())->isIdenticalTo($adapter)
+				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter) { $adapter->md5 = uniqid(); })
+				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getCalls())->isEmpty()
+				->object($adapter->reset())->isIdenticalTo($adapter)
+				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
+			->when(function() use ($adapter) {
+					$adapter->md5 = uniqid();
+					$adapter->md5(uniqid());
+				}
+			)
+				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getCalls())->isNotEmpty()
+				->object($adapter->reset())->isIdenticalTo($adapter)
+				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
 		;
 	}
 
