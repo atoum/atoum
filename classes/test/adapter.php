@@ -22,12 +22,16 @@ class adapter extends atoum\adapter
 
 	public function __set($functionName, $mixed)
 	{
-		$this->{$functionName}->return = $mixed;
+		$this->__get($functionName)->return = $mixed;
+
+		return $this;
 	}
 
 	public function __get($functionName)
 	{
-		if (isset($this->{$functionName}) === false)
+		$functionName = strtolower($functionName);
+
+		if (isset($this->callables[$functionName]) === false)
 		{
 			$this->callables[$functionName] = new adapter\callable();
 		}
@@ -37,20 +41,27 @@ class adapter extends atoum\adapter
 
 	public function __isset($functionName)
 	{
-		return (isset($this->callables[$functionName]) === true);
+		return (isset($this->callables[strtolower($functionName)]) === true);
 	}
 
 	public function __unset($functionName)
 	{
 		if (isset($this->{$functionName}) === true)
 		{
+			$functionName = strtolower($functionName);
+
 			unset($this->callables[$functionName]);
 
-			if (isset($this->calls[$functionName]) === true)
+			foreach ($this->calls as $callName => $closure)
 			{
-				unset($this->calls[$functionName]);
+				if ($functionName == strtolower($callName))
+				{
+					unset($this->calls[$callName]);
+				}
 			}
 		}
+
+		return $this;
 	}
 
 	public function getCallables()
@@ -66,15 +77,25 @@ class adapter extends atoum\adapter
 		{
 			$calls = $this->calls;
 		}
-		else if (isset($this->calls[$functionName]) === true)
+		else
 		{
-			if ($arguments === null)
+			$functionName = strtolower($functionName);
+
+			foreach ($this->calls as $callName => $callArguments)
 			{
-				$calls = $this->calls[$functionName];
-			}
-			else
-			{
-				$calls = array_filter($this->calls[$functionName], function($callArguments) use ($arguments) { return $arguments == $callArguments; });
+				if ($functionName == strtolower($callName))
+				{
+					if ($arguments === null)
+					{
+						$calls = $callArguments;
+					}
+					else
+					{
+						$calls = array_filter($callArguments, function($callArguments) use ($arguments) { return $arguments == $callArguments; });
+					}
+
+					break;
+				}
 			}
 		}
 
@@ -129,7 +150,7 @@ class adapter extends atoum\adapter
 
 	protected static function isLanguageConstruct($functionName)
 	{
-		switch ($functionName)
+		switch (strtolower($functionName))
 		{
 			case 'array':
 			case 'echo':

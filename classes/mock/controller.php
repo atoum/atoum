@@ -49,7 +49,7 @@ class controller extends test\adapter
 
 		parent::__unset($method);
 
-		$this->callables[$method] = null;
+		$this->callables[strtolower($method)] = null;
 
 		return $this;
 	}
@@ -133,7 +133,7 @@ class controller extends test\adapter
 				}
 			);
 
-			array_walk($methods, function(& $value) { $value = $value->getName(); });
+			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
 			foreach ($this->callables as $method => $closure)
 			{
@@ -199,7 +199,7 @@ class controller extends test\adapter
 	{
 		if ($this->mockClass !== null && $this->disableMethodChecking === false)
 		{
-			if (array_key_exists($method, $this->callables) === false)
+			if (array_key_exists(strtolower($method), $this->callables) === false)
 			{
 				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
