@@ -10,6 +10,8 @@ use
 
 class phpArray extends asserters\variable
 {
+	protected $key = null;
+
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
@@ -21,6 +23,27 @@ class phpArray extends asserters\variable
 		else
 		{
 			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function getKey()
+	{
+		return $this->key;
+	}
+
+	public function atKey($key, $failMessage = null)
+	{
+		$this->valueIsSet()->key = $key;
+
+		if (isset($this->value[$this->key]) === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($this->key)));
 		}
 
 		return $this;
@@ -74,13 +97,24 @@ class phpArray extends asserters\variable
 
 	public function contains($value, $failMessage = null)
 	{
-		if (in_array($value, $this->valueIsSet()->value) === true)
+		if ($this->valueIsSet()->key === null)
+		{
+			if (in_array($value, $this->value) === true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
+			}
+		}
+		else if ($this->value[$this->key] == $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
 		}
 
 		return $this;
@@ -88,16 +122,32 @@ class phpArray extends asserters\variable
 
 	public function notContains($value, $failMessage = null)
 	{
-		if (in_array($value, $this->valueIsSet()->value) === false)
+		if ($this->valueIsSet()->key === null)
+		{
+			if (in_array($value, $this->value) === false)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
+			}
+		}
+		else if ($this->value[$this->key] != $value)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
 		}
 
 		return $this;
+	}
+
+	protected function valueIsSet($message = 'Array is undefined')
+	{
+		return parent::valueIsSet($message);
 	}
 
 	protected static function check($value, $method)

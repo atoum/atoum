@@ -11,6 +11,13 @@ require_once(__DIR__ . '/../../../constants.php');
 
 class autoloader extends atoum\test
 {
+	public function testGetDirectories()
+	{
+		$this->assert
+			->array(atoum\autoloader::getDirectories())->atKey('mageekguy\atoum')->contains(array(atoum\directory . '/classes'))
+		;
+	}
+
 	public function testGetPath()
 	{
 		$this->assert
