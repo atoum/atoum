@@ -11,7 +11,6 @@ class generator
 {
 	protected $test = null;
 	protected $aliases = array();
-	protected $asserters = array();
 
 	public function __construct(atoum\test $test)
 	{
@@ -27,9 +26,7 @@ class generator
 			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
 		}
 
-		$this->asserters[] = $asserter = new $class($this);
-
-		return $asserter;
+		return new $class($this);
 	}
 
 	public function __set($asserter, $class)
@@ -47,16 +44,6 @@ class generator
 		}
 
 		return $asserter;
-	}
-
-	public function resetAsserters()
-	{
-		foreach ($this->asserters as $asserter)
-		{
-			$asserter->reset();
-		}
-
-		return $this;
 	}
 
 	public function getTest()
