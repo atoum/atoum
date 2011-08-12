@@ -534,24 +534,22 @@ abstract class test implements observable, adapter\aggregator, \countable
 										{
 											$score = new score();
 										}
-										else
-										{
-											if ($terminatedChild[3] !== '')
-											{
-												$this->score->addOutput($this->class, $testMethod, $terminatedChild[3]);
-											}
+									}
 
-											if ($terminatedChild[4] !== '')
-											{
-												if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($terminatedChild[4]), $errors, PREG_SET_ORDER) === 0)
-												{
-													$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $terminatedChild[4]);
-												}
-												else foreach ($errors as $error)
-												{
-													$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
-												}
-											}
+									if ($terminatedChild[3] !== '')
+									{
+										$this->score->addOutput($this->class, $testMethod, $terminatedChild[3]);
+									}
+
+									if ($terminatedChild[4] !== '')
+									{
+										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($terminatedChild[4]), $errors, PREG_SET_ORDER) === 0)
+										{
+											$this->score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $terminatedChild[4]);
+										}
+										else foreach ($errors as $error)
+										{
+											$this->score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
 										}
 									}
 
