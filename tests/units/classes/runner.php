@@ -566,7 +566,7 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $phpPath . '\'')
+				->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
 			->adapter($adapter)
 				->call('realpath')->withArguments($phpPath)->once()
 				->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
@@ -595,7 +595,7 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Unable to execute \'' . $phpPath . '\'')
+				->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
 			->adapter($adapter)
 				->call('realpath')->withArguments($phpPath)->once()
 				->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
