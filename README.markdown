@@ -48,7 +48,11 @@ If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
 You just have to download [its PHAR archive](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) and store it where you wish, for example under `/path/to/project/tests/mageekguy.atoum.phar`.  
 This PHAR archive contains the latest development version to pass the totality of *atoum*'s unit tests.  
-*atoum*'s source code is also available via [the github repository](https://github.com/mageekguy/atoum).
+*atoum*'s source code is also available via [the github repository](https://github.com/mageekguy/atoum).  
+To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
+To do that, you just need to run the following command in your terminal :
+
+	# php mageekguy.atoum.phar --testIt
 
 ### Step 2 : Write your tests
 
