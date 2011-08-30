@@ -96,7 +96,7 @@ You should get the following result, or something equivalent :
 	> Atoum version XXX by Frédéric Hardy.
 	Error: Unattended exception: Tested class 'vendor\project\helloWorld' does not exist for test class 'vendor\project\tests\units\helloWorld'
 
-### Step 4 : Write the class corresponding to you test
+### Step 4 : Write the class corresponding to your test
 
 Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code :
 
