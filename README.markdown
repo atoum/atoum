@@ -15,10 +15,10 @@ Also, thanks to its *fluid interface*, it allows for writing unit tests in a fas
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
 *atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
 Of course, it can be used seamlessly for continuous integration, and given its design, it can be made to cope with specific needs extremely easily.  
-*atoum* also accomplishes all of this without affecting performance, since it has been developped to boast a reduced memory footprint while allowing for hastened test execution.  
+*atoum* also accomplishes all of this without affecting performance, since it has been developed to boast a reduced memory footprint while allowing for hastened test execution.  
 It can also generate unit test execution reports in the Xunit format, which makes it compatible with continuous integration tools such as [Jenkins](http://jenkins-ci.org/).  
 *atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
-Finally, even though it is developped mainly on UNIX, it can also work on Windows.  
+Finally, even though it is developed mainly on UNIX, it can also work on Windows.  
 
 ## Prerequisites to use *atoum*
 
