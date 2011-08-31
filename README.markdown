@@ -15,15 +15,15 @@ Also, thanks to its *fluid interface*, it allows for writing unit tests in a fas
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
 *atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
 Of course, it can be used seamlessly for continuous integration, and given its design, it can be made to cope with specific needs extremely easily.  
-*atoum* also accomplishes all of this without affecting performance, since it has been developped to boast a reduced memory footprint while allowing for hastened test execution.  
+*atoum* also accomplishes all of this without affecting performance, since it has been developed to boast a reduced memory footprint while allowing for hastened test execution.  
 It can also generate unit test execution reports in the Xunit format, which makes it compatible with continuous integration tools such as [Jenkins](http://jenkins-ci.org/).  
 *atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
-Finally, even though it is developped mainly on UNIX, it can also work on Windows.  
+Finally, even though it is developed mainly on UNIX, it can also work on Windows.  
 
 ## Prerequisites to use *atoum*
 
-*atoum* absolutely requires *PHP 5.3* or superior to work.  
-Should you want to use *atou* using its PHAR archive, you also need [PHP](http://www.php.net] to be able to access the `phar` module, which is normally available by default.  
+*atoum* absolutely requires *PHP 5.3* or later to work.  
+Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net] to be able to access the `phar` module, which is normally available by default.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i phar
@@ -96,7 +96,7 @@ You should get the following result, or something equivalent :
 	> Atoum version XXX by Frédéric Hardy.
 	Error: Unattended exception: Tested class 'vendor\project\helloWorld' does not exist for test class 'vendor\project\tests\units\helloWorld'
 
-### Step 4 : Write the class corresponding to you test
+### Step 4 : Write the class corresponding to your test
 
 Using again your preferred text editor, create the file `path/to/project/classes/helloWorld.php` and add the following code :
 
@@ -207,5 +207,5 @@ You can also ask for help from the *atoum* development staff on the IRC channel 
 
 ### Error: Constant __COMPILER_HALT_OFFSET__ already defined /path/to/mageekguy.atoum.phar
 
-This error comes from the fact the *atoum* PHAR archive is included in at least one place within your code, using `include` or `require`.  
+This error comes from the fact the *atoum* PHAR archive is included in more than one place within your code using `include` or `require`.  
 To fix this problem, you just need to include the archive by using only `include_once` or `require_once`, in order to ensure it is not included several times.
