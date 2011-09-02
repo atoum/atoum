@@ -13,6 +13,7 @@ class generator implements atoum\adapter\aggregator
 
 	protected $adapter = null;
 	protected $shuntedMethods = array();
+	protected $overloadedMethods = array();
 
 	private $defaultNamespace = null;
 	private $reflectionClassInjector = null;
@@ -83,7 +84,7 @@ class generator implements atoum\adapter\aggregator
 
 	public function overload(php\method $method)
 	{
-		$this->methods[$method->getName()] = $method;
+		$this->overloadedMethods[$method->getName()] = $method;
 
 		return $this;
 	}
@@ -153,7 +154,7 @@ class generator implements atoum\adapter\aggregator
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
 		$this->shuntedMethods = array();
-		$this->methods = array();
+		$this->overloadedMethods = array();
 
 		return $this;
 	}
@@ -231,25 +232,23 @@ class generator implements atoum\adapter\aggregator
 
 				$parameters = array();
 
-				if (isset($this->methods[$methodName]) === true)
+				if (isset($this->overloadedMethods[$methodName]) === true)
 				{
-					foreach ($this->methods[$methodName]->getArguments() as $argument)
+					foreach ($this->overloadedMethods[$methodName]->getArguments() as $argument)
 					{
 						$parameters[] = $argument->getVariable();
 					}
 
 					if ($isConstructor === true)
 					{
-						$this->methods[$methodName]->addArgument(php\method\argument::get('mockController')
+						$this->overloadedMethods[$methodName]->addArgument(php\method\argument::get('mockController')
 								->isObject('\\' . __NAMESPACE__ . '\\controller')
 								->setDefaultValue(null)
 							)
 						;
 					}
 
-					$methodCode = "\t" . ((string) $this->methods[$methodName]). PHP_EOL . "\t" . '{' . PHP_EOL;
-
-					unset($this->methods[$methodName]);
+					$methodCode = "\t" . ((string) $this->overloadedMethods[$methodName]). PHP_EOL . "\t" . '{' . PHP_EOL;
 				}
 				else
 				{
