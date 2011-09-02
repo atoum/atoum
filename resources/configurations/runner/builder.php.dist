@@ -10,7 +10,7 @@ $mailer = new atoum\mailers\mail();
 $mailer
 	->addTo('to@domain')
 	->setFrom('from@domain')
-	->setXMailer('Atoum builder')
+	->setXMailer('atoum builder')
 	->setReplyTo('reply@domain')
 	->setContentType('text/plain', 'utf-8')
 ;

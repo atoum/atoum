@@ -52,7 +52,7 @@ class score
 	{
 		if ($this->atoumPath !== null)
 		{
-			throw new exceptions\runtime('Atoum path is already set');
+			throw new exceptions\runtime('Path of atoum is already set');
 		}
 
 		$this->atoumPath = (string) $path;
@@ -64,7 +64,7 @@ class score
 	{
 		if ($this->atoumVersion !== null)
 		{
-			throw new exceptions\runtime('Atoum version is already set');
+			throw new exceptions\runtime('Version of atoum is already set');
 		}
 
 		$this->atoumVersion = (string) $version;

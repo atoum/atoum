@@ -93,7 +93,7 @@ Launch your terminal and run the following command :
 
 You should get the following result, or something equivalent :
 
-	> Atoum version XXX by Frédéric Hardy.
+	> atoum version XXX by Frédéric Hardy.
 	Error: Unattended exception: Tested class 'vendor\project\helloWorld' does not exist for test class 'vendor\project\tests\units\helloWorld'
 
 ### Step 4 : Write the class corresponding to your test
@@ -124,7 +124,7 @@ In the same terminal, run the following command once again :
 
 You should get the following result, or something equivalent :
 
-	> Atoum version 288 by Frédéric Hardy.
+	> atoum version 288 by Frédéric Hardy.
 	> Run vendor\project\tests\units\helloWorld...
 	[S___________________________________________________________][1/1]
 	=> Test duration: 0.00 second.

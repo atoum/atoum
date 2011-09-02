@@ -221,7 +221,7 @@ class runner extends atoum\script
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('Atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
+			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
 		;
 
 		$this->runTests = false;
@@ -249,7 +249,7 @@ class runner extends atoum\script
 					'-t <files>, --test-files <files>' => $this->locale->_('Use test files'),
 					'-d <directories>, --directories <directories>' => $this->locale->_('Use test files in <directories>'),
 					'-drt <string>, --default-report-title <string>' => $this->locale->_('Define default report title'),
-					'--testIt' => $this->locale->_('Execute all Atoum unit tests')
+					'--testIt' => $this->locale->_('Execute all atoum unit tests')
 				)
 				,
 				$options

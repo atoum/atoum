@@ -104,7 +104,7 @@ class stub extends scripts\runner
 				'-s, --signature' => $this->locale->_('Display phar signature, do not run any script'),
 				'-e <dir>, --extract <dir>' => $this->locale->_('Extract all file from phar to <dir>, do not run any script'),
 				'-er <dir>, --extractResourcesTo <dir>' => $this->locale->_('Extract resources from phar to <dir>, do not run any script'),
-				'--testIt' => $this->locale->_('Execute all Atoum unit tests, do not run default script'),
+				'--testIt' => $this->locale->_('Execute all atoum unit tests, do not run default script'),
 				'-u <script> <args>, --use <script> <args>' => $this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
 				'-ls, --list-scripts' => $this->locale->_('List available scripts')
 			)

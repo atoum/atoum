@@ -633,7 +633,7 @@ class score extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Atoum path is already set')
+				->hasMessage('Path of atoum is already set')
 			->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->string($score->getAtoumPath())->isEqualTo((string) $path)
 		;
@@ -651,7 +651,7 @@ class score extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Atoum version is already set')
+				->hasMessage('Version of atoum is already set')
 			->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->string($score->getAtoumVersion())->isEqualTo((string) $version)
 		;
