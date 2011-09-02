@@ -322,6 +322,8 @@ class runner implements observable, adapter\aggregator
 
 		if (sizeof($runTestClasses) > 0)
 		{
+			natsort($runTestClasses);
+
 			$phpPath = $this->getPhpPath();
 
 			foreach ($runTestClasses as $runTestClass)
