@@ -284,14 +284,14 @@ class runner implements observable, adapter\aggregator
 
 	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null)
 	{
+		$this->start = $this->adapter->microtime(true);
+
 		$this->score->reset();
 
 		if ($runInChildProcess === true)
 		{
 			$this->setPathAndVersionInScore();
 		}
-
-		$this->start = $this->adapter->microtime(true);
 
 		if ($this->defaultReportTitle !== null)
 		{
@@ -303,8 +303,6 @@ class runner implements observable, adapter\aggregator
 				}
 			}
 		}
-
-		$this->callObservers(self::runStart);
 
 		if ($testBaseClass === null)
 		{
@@ -319,6 +317,8 @@ class runner implements observable, adapter\aggregator
 				}
 			);
 		}
+
+		$this->callObservers(self::runStart);
 
 		if (sizeof($runTestClasses) > 0)
 		{
