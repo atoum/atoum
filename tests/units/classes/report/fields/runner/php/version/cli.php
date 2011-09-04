@@ -12,7 +12,7 @@ use
 	mageekguy\atoum\mock\mageekguy\atoum as mock
 ;
 
-require_once(__DIR__ . '/../../../../../../runner.php');
+require_once __DIR__ . '/../../../../../../runner.php';
 
 class cli extends units\report\fields\runner
 {

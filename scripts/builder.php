@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\scripts
 ;
 
-require_once(__DIR__ . '/../classes/autoloader.php');
+require_once __DIR__ . '/../classes/autoloader.php';
 
 $builder = new scripts\builder(__FILE__);
 

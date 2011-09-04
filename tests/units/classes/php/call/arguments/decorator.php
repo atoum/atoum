@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\php\call\arguments
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class decorator extends atoum\test
 {

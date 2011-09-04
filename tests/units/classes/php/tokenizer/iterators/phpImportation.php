@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\php\tokenizer\iterators
 ;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once __DIR__ . '/../../../../runner.php';
 
 class phpImportation extends atoum\test
 {

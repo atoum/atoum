@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\tools
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class diff extends atoum\test
 {

@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\annotations
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class extractor extends atoum\test
 {

@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\asserter
 ;
 
-require_once(__DIR__ . '/../runner.php');
+require_once __DIR__ . '/../runner.php';
 
 class score extends atoum\test
 {

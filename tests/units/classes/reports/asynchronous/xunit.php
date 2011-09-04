@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\reports\asynchronous as reports
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class xunit extends atoum\test
 {

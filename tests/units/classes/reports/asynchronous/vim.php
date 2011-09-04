@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\reports\asynchronous
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class vim extends atoum\test
 {

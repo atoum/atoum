@@ -12,7 +12,7 @@ use
 	mageekguy\atoum\report\fields\runner\tests
 ;
 
-require_once(__DIR__ . '/../../../../../../runner.php');
+require_once __DIR__ . '/../../../../../../runner.php';
 
 class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\coverage
 {

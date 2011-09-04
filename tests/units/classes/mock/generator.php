@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\mock
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class generator extends atoum\test
 {

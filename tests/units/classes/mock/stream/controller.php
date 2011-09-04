@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\mock\stream
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class controller extends atoum\test
 {

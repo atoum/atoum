@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\scripts;
 
-require_once(__DIR__ . '/../../constants.php');
+require_once __DIR__ . '/../../constants.php';
 
 use
 	mageekguy\atoum,
@@ -263,7 +263,7 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
-		include_once($path);
+		include_once $path;
 
 		if (in_array(realpath((string) $path), get_included_files(), true) === false)
 		{

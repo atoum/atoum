@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\report\fields\runner;
 
-require_once(__DIR__ . '/../../../../constants.php');
+require_once __DIR__ . '/../../../../constants.php';
 
 use
 	mageekguy\atoum\runner,

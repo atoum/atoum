@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-require_once(__DIR__ . '/../constants.php');
+require_once __DIR__ . '/../constants.php';
 
 class autoloader
 {
@@ -93,7 +93,7 @@ class autoloader
 	{
 		if (($path = $this->getPath($class)) !== null)
 		{
-			require($path);
+			require $path;
 		}
 	}
 }

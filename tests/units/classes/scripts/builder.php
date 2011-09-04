@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\scripts\builder\vcs
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class builder extends atoum\test
 {

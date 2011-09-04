@@ -135,7 +135,7 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script file %s does not exist for script %s'), $scriptFile, $script));
 				}
 
-				require_once($scriptFile);
+				require_once $scriptFile;
 
 				exit(0);
 

@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\report\fields\runner\coverage;
 
-require_once(__DIR__ . '/../../../../../constants.php');
+require_once __DIR__ . '/../../../../../constants.php';
 
 use
 	mageekguy\atoum,
@@ -96,7 +96,7 @@ class html extends report\fields\runner\coverage\cli
 
 						$declaredClasses = $this->adapter->get_declared_classes();
 
-						require_once($file->getPathname());
+						require_once $file->getPathname();
 
 						$xDebugData = $this->adapter->xdebug_get_code_coverage();
 

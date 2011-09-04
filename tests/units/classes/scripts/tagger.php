@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\scripts
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class tagger extends atoum\test
 {

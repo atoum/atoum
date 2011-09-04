@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\template
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class parser extends atoum\test
 {

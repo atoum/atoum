@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions\runtime
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class unexpectedValue extends atoum\test
 {

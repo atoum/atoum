@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\writers
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class file extends atoum\test
 {

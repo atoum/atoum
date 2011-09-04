@@ -10,7 +10,7 @@ use
 	mageekguy\atoum\asserters
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class adapter extends atoum\test
 {

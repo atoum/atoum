@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\cli
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class prompt extends atoum\test
 {

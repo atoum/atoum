@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\test\adapter
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class callable extends atoum\test
 {

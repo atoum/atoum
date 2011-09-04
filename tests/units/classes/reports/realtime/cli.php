@@ -10,7 +10,7 @@ use
 	mageekguy\atoum\report\fields
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class cli extends atoum\test
 {

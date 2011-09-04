@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\mock\php
 ;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once __DIR__ . '/../../../../runner.php';
 
 class argument extends atoum\test
 {

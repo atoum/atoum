@@ -16,7 +16,7 @@ use
 	mageekguy\atoum
 ;
 
-require_once(__DIR__ . '/../runner.php');
+require_once __DIR__ . '/../runner.php';
 
 class error extends atoum\test
 {

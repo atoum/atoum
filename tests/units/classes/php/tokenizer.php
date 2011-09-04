@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\php
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class tokenizer extends atoum\test
 {

@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\asserters\adapter\call;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once __DIR__ . '/../../../../runner.php';
 
 use
 	mageekguy\atoum,

@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class sizeOf extends atoum\test
 {

@@ -6,8 +6,8 @@ use
 	mageekguy\atoum
 ;
 
-require_once(__DIR__ . '/../runner.php');
-require_once(__DIR__ . '/../../../constants.php');
+require_once __DIR__ . '/../runner.php';
+require_once __DIR__ . '/../../../constants.php';
 
 class autoloader extends atoum\test
 {

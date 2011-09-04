@@ -522,7 +522,7 @@ class builder extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
 					}
 
-					require_once($file);
+					require_once $file;
 				}
 			},
 			array('-c', '--configuration-files')

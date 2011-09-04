@@ -18,7 +18,7 @@ namespace mageekguy\atoum\tests\units
 		mageekguy\atoum\mock
 	;
 
-	require_once(__DIR__ . '/../runner.php');
+	require_once __DIR__ . '/../runner.php';
 
 	/** @ignore on */
 	class emptyTest extends atoum\test {}

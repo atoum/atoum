@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions\logic
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 class badMethodCall extends atoum\test
 {

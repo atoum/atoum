@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\mailers
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class mail extends atoum\test
 {

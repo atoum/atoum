@@ -6,7 +6,7 @@ use
 	mageekguy\atoum
 ;
 
-require_once(__DIR__ . '/../../../runner.php');
+require_once __DIR__ . '/../../../runner.php';
 
 abstract class runner extends atoum\test
 {

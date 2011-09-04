@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\scripts
 ;
 
-require_once(__DIR__ . '/../../classes/autoloader.php');
+require_once __DIR__ . '/../../classes/autoloader.php';
 
 $generator = new scripts\phar\generator(__FILE__);
 $generator->setOriginDirectory(__DIR__ . '/../..');

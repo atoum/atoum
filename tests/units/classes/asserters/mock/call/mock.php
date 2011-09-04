@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\tests\units\asserters\mock\call;
 
-require_once(__DIR__ . '/../../../../runner.php');
+require_once __DIR__ . '/../../../../runner.php';
 
 use
 	mageekguy\atoum,

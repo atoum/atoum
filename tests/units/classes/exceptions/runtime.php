@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-require_once(__DIR__ . '/../../runner.php');
+require_once __DIR__ . '/../../runner.php';
 
 class runtime extends atoum\test
 {

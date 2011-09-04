@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\scripts
 ;
 
-require_once(__DIR__ . '/../classes/autoloader.php');
+require_once __DIR__ . '/../classes/autoloader.php';
 
 $tagger = new scripts\tagger(__FILE__);
 

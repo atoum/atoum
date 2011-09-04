@@ -13,7 +13,7 @@ use
 	mageekguy\atoum\report\fields\runner\coverage
 ;
 
-require_once(__DIR__ . '/../../../../../runner.php');
+require_once __DIR__ . '/../../../../../runner.php';
 
 class html extends atoum\test
 {
