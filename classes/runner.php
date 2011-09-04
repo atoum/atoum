@@ -7,8 +7,6 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-require_once(__DIR__ . '/autoloader.php');
-
 class runner implements observable, adapter\aggregator
 {
 	const runStart = 'runnerStart';

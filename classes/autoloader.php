@@ -2,36 +2,59 @@
 
 namespace mageekguy\atoum;
 
+require_once(__DIR__ . '/../constants.php');
+
 class autoloader
 {
-	protected static $directories = array(__NAMESPACE__ => array(__DIR__));
+	protected static $autoloader = null;
 
-	public static function register($prepend = false)
+	protected $directories = array(__NAMESPACE__ => array(__DIR__));
+
+	public function __construct()
 	{
-		if (spl_autoload_register(array(__CLASS__, 'getClass'), true, $prepend) === false)
+		$this->addDirectory(__NAMESPACE__, directory . '/' . basename(__DIR__));
+	}
+
+	public function register($prepend = false)
+	{
+		if (spl_autoload_register(array($this, 'getClass'), true, $prepend) === false)
 		{
-			throw new \runtimeException('Unable to register ' . __NAMESPACE__ . ' as autoloader');
+			throw new \runtimeException('Unable to register');
 		}
+
+		return $this;
 	}
 
-	public static function addDirectory($namespace, $directory)
+	public function unregister()
 	{
-		if (isset(self::$directories[$namespace]) === false || in_array($directory, self::$directories[$namespace]) === false)
+		if (spl_autoload_unregister(array($this, 'getClass')) === false)
 		{
-			self::$directories[$namespace][] = $directory;
-
-			krsort(self::$directories, \SORT_STRING);
+			throw new \runtimeException('Unable to unregister');
 		}
+
+		return $this;
 	}
 
-	public static function getDirectories()
+	public function addDirectory($namespace, $directory)
 	{
-		return self::$directories;
+		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
+		{
+			$this->directories[$namespace][] = $directory;
+
+			krsort($this->directories, \SORT_STRING);
+		}
+
+		return $this;
 	}
 
-	public static function getPath($class)
+	public function getDirectories()
 	{
-		foreach (self::$directories as $namespace => $directories)
+		return $this->directories;
+	}
+
+	public function getPath($class)
+	{
+		foreach ($this->directories as $namespace => $directories)
 		{
 			if ($class !== $namespace && strpos($class, $namespace) === 0)
 			{
@@ -50,15 +73,31 @@ class autoloader
 		return null;
 	}
 
-	protected static function getClass($class)
+	public static function set()
 	{
-		if (($path = self::getPath($class)) !== null)
+		if (static::$autoloader === null)
+		{
+			static::$autoloader = new static();
+			static::$autoloader->register();
+		}
+
+		return static::$autoloader;
+	}
+
+	public static function get()
+	{
+		return static::$autoloader;
+	}
+
+	protected function getClass($class)
+	{
+		if (($path = $this->getPath($class)) !== null)
 		{
 			require($path);
 		}
 	}
 }
 
-autoloader::register();
+autoloader::set();
 
 ?>

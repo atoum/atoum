@@ -427,11 +427,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->phpCode =
 					'<?php ' .
 					'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
-					'require(\'' . $runner->getPath() . '\');' .
 					'require(\'' . $this->path . '\');' .
-					'$locale = new ' . get_class($this->locale) . '(' . $this->locale->get() . ');' .
 					'$runner = new ' . $runner->getClass() . '();' .
-					'$runner->setLocale($locale);' .
+					'$runner->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
 					'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 					($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
 					'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .

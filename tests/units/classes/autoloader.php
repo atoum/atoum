@@ -13,19 +13,23 @@ class autoloader extends atoum\test
 {
 	public function testGetDirectories()
 	{
+		$autoloader = new atoum\autoloader();
+
 		$this->assert
-			->array(atoum\autoloader::getDirectories())->atKey('mageekguy\atoum')->contains(array(atoum\directory . '/classes'))
+			->array($autoloader->getDirectories())->atKey('mageekguy\atoum')->contains(array(atoum\directory . '/classes'))
 		;
 	}
 
 	public function testGetPath()
 	{
+		$autoloader = new atoum\autoloader();
+
 		$this->assert
-			->variable(atoum\autoloader::getPath(uniqid()))->isNull()
-			->variable(atoum\autoloader::getPath('mageekguy\atoum'))->isNull()
-			->variable(atoum\autoloader::getPath('\mageekguy\atoum'))->isNull()
-			->string(atoum\autoloader::getPath('mageekguy\atoum\test'))->isEqualTo(atoum\directory . '/classes/test.php')
-			->variable(atoum\autoloader::getPath('\mageekguy\atoum\test'))->isNull()
+			->variable($autoloader->getPath(uniqid()))->isNull()
+			->variable($autoloader->getPath('mageekguy\atoum'))->isNull()
+			->variable($autoloader->getPath('\mageekguy\atoum'))->isNull()
+			->string($autoloader->getPath('mageekguy\atoum\test'))->isEqualTo(atoum\directory . '/classes/test.php')
+			->variable($autoloader->getPath('\mageekguy\atoum\test'))->isNull()
 		;
 	}
 }
