@@ -426,7 +426,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->children = array();
 				$this->phpCode =
 					'<?php ' .
-					'define(\'' . __NAMESPACE__ . '\scripts\runner\autorun\', false);' .
+					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$runner = new ' . $runner->getClass() . '();' .
 					'$runner->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .

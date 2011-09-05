@@ -1,14 +1,16 @@
 <?php
 
-namespace mageekguy\atoum\scripts\runner;
+namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts
 ;
 
-require_once __DIR__ . '/../constants.php';
-require_once atoum\directory . '/classes/autoloader.php';
+if (defined(__NAMESPACE__ . '\running') === false)
+{
+	require_once __DIR__ . '/../classes/autoloader.php';
+}
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

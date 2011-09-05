@@ -2,10 +2,14 @@
 
 namespace mageekguy\atoum;
 
-defined($constant = __NAMESPACE__ . '\directory') || define($constant, ($pharPath = \phar::running(false)) ? 'phar://' . $pharPath : realpath(__DIR__));
-defined($constant = __NAMESPACE__ . '\version') || define($constant, preg_replace('/\$Rev: ([^ ]+) \$/', '$1', '$Rev: DEVELOPMENT $'));
-defined($constant = __NAMESPACE__ . '\author') || define($constant, 'Frédéric Hardy');
-defined($constant = __NAMESPACE__ . '\mail') || define($constant, 'support@atoum.org');
-defined($constant = __NAMESPACE__ . '\repository') || define($constant,  'https://github.com/mageekguy/atoum');
+if (defined(__NAMESPACE__ . '\running') === false)
+{
+	define(__NAMESPACE__ . '\running',  true);
+	define(__NAMESPACE__ . '\directory', \phar::running(true) ?: realpath(__DIR__));
+	define(__NAMESPACE__ . '\version', preg_replace('/\$Rev: ([^ ]+) \$/', '$1', '$Rev: DEVELOPMENT $'));
+	define(__NAMESPACE__ . '\author', 'Frédéric Hardy');
+	define(__NAMESPACE__ . '\mail', 'support@atoum.org');
+	define(__NAMESPACE__ . '\repository',  'https://github.com/mageekguy/atoum');
+}
 
 ?>

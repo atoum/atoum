@@ -1,16 +1,20 @@
 <?php
 
-namespace mageekguy\atoum\scripts\runner;
+namespace mageekguy\atoum;
 
-\phar::mapPhar('mageekguy.atoum.phar');
+const phar = 'mageekguy.atoum.phar';
+
+\phar::mapPhar(phar);
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts\phar
 ;
 
-require_once 'phar://mageekguy.atoum.phar/constants.php';
-require_once atoum\directory . '/classes/autoloader.php';
+if (defined(__NAMESPACE__ . '\running') === false)
+{
+	require_once 'phar://' . phar . '/classes/autoloader.php';
+}
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {
