@@ -394,7 +394,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
 	}
 
-	public function run(array $runTestMethods = array(), atoum\runner $runner = null)
+	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
 		$this->callObservers(self::runStart);
 
@@ -414,7 +414,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($this->testsToRun > 0)
 		{
-			if ($runner === null)
+			if ($runInChildProcess === false)
 			{
 				foreach ($this->runTestMethods as $testMethod)
 				{
@@ -428,12 +428,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'<?php ' .
 					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
-					'$runner = new ' . $runner->getClass() . '();' .
-					'$runner->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
-					'$runner->setPhpPath(\'' . $this->getPhpPath() . '\');' .
-					($runner->codeCoverageIsEnabled() === true ? '' : '$runner->disableCodeCoverage();') .
-					'$runner->run(array(\'' . $this->class . '\'), array(\'' . $this->class . '\' => array(\'%s\')), false);' .
-					'file_put_contents(\'%s\', serialize($runner->getScore()));' .
+					'$test = new ' . $this->class . '();' .
+					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
+					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
+					'$test->run(array(\'%s\'), false);' .
+					'file_put_contents(\'%s\', serialize($test->getScore()));' .
 					'?>'
 				;
 

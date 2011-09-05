@@ -194,7 +194,7 @@ class runner implements observable, adapter\aggregator
 
 	public function removeObserver(atoum\observers\runner $observer)
 	{
-		$this->observers = self::removeFromArray($this->observers, $observer);
+		$this->observers = self::remove($observer, $this->observers);
 
 		return $this;
 	}
@@ -218,7 +218,7 @@ class runner implements observable, adapter\aggregator
 
 	public function removeTestObserver(atoum\observers\test $observer)
 	{
-		$this->testObservers = self::removeFromArray($this->testObservers, $observer);
+		$this->testObservers = self::remove($observer, $this->testObservers);
 
 		return $this;
 	}
@@ -349,7 +349,7 @@ class runner implements observable, adapter\aggregator
 						$test->addObserver($observer);
 					}
 
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess === false ? null : $this)->getScore());
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess)->getScore());
 				}
 			}
 		}
@@ -378,7 +378,7 @@ class runner implements observable, adapter\aggregator
 
 	public function removeReport(atoum\report $report)
 	{
-		$this->reports = self::removeFromArray($this->reports, $report);
+		$this->reports = self::remove($report, $this->reports);
 
 		return $this
 			->removeObserver($report)
@@ -411,7 +411,7 @@ class runner implements observable, adapter\aggregator
 		return array(self::runStart, self::runStop);
 	}
 
-	protected static function removeFromArray(array $haystack, $needle)
+	protected static function remove($needle, array $haystack)
 	{
 		$key = array_search($needle, $haystack, true);
 
