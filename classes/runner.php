@@ -280,16 +280,13 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $runInChildProcess = true, $testBaseClass = null)
+	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
 		$this->start = $this->adapter->microtime(true);
 
 		$this->score->reset();
 
-		if ($runInChildProcess === true)
-		{
-			$this->setPathAndVersionInScore();
-		}
+		$this->setPathAndVersionInScore();
 
 		if ($this->defaultReportTitle !== null)
 		{
@@ -349,7 +346,7 @@ class runner implements observable, adapter\aggregator
 						$test->addObserver($observer);
 					}
 
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $runInChildProcess)->getScore());
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], true)->getScore());
 				}
 			}
 		}
