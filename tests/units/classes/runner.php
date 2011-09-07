@@ -93,10 +93,10 @@ class runner extends atoum\test
 
 	public function testGetPhpPath()
 	{
-		$superglobals = new atoum\superglobals();
-
 		$runner = new atoum\runner();
-		$runner->setSuperglobals($superglobals);
+		$runner
+			->setSuperglobals($superglobals = new atoum\superglobals())
+		;
 
 		$superglobals->_SERVER['_'] = $phpPath = uniqid();
 
@@ -104,10 +104,14 @@ class runner extends atoum\test
 			->string($runner->getPhpPath())->isEqualTo($phpPath)
 		;
 
-		unset($superglobals->_SERVER['_']);
-
 		$runner = new atoum\runner();
-		$runner->setSuperglobals($superglobals);
+		$runner
+			->setSuperglobals($superglobals = new atoum\superglobals())
+			->setAdapter($adapter = new atoum\test\adapter())
+		;
+
+		unset($superglobals->_SERVER['_']);
+		$adapter->is_executable = false;
 
 		$this->assert
 			->exception(function() use ($runner) {
@@ -115,6 +119,21 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+			->adapter($adapter)
+				->call('is_executable')->withArguments(PHP_BINDIR . '/php')->once()
+		;
+
+		$runner = new atoum\runner();
+		$runner
+			->setSuperglobals($superglobals = new atoum\superglobals())
+			->setAdapter($adapter = new atoum\test\adapter())
+		;
+
+		unset($superglobals->_SERVER['_']);
+		$adapter->is_executable = true;
+
+		$this->assert
+			->string($runner->getPhpPath())->isEqualTo(PHP_BINDIR . '/php')
 		;
 
 		$runner->setPhpPath($phpPath = uniqid());

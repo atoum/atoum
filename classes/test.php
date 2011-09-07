@@ -43,7 +43,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsToRun = 0;
 	private $phpCode = '';
 	private $children = array();
-	private $maxChildrenNumber = 1;
+	private $maxChildrenNumber = null;
 	private $codeCoverage = false;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
@@ -462,7 +462,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							}
 						}
 
-						$pipesUpdated = stream_select($pipes, $null, $null, $this->testsToRun > 0 && sizeof($this->children) < $this->maxChildrenNumber ? 0 : null);
+						$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
 
 						if ($pipesUpdated !== false)
 						{
@@ -791,7 +791,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function runChild()
 	{
-		if ($this->testsToRun > 0 && sizeof($this->children) < $this->maxChildrenNumber)
+		if ($this->canRunChild() === true)
 		{
 			$php = @proc_open(
 				$this->getPhpPath(),
@@ -824,6 +824,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return $this;
+	}
+
+	private function canRunChild()
+	{
+		return ($this->testsToRun > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 }
 

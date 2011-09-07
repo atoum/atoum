@@ -27,7 +27,7 @@ class runner implements observable, adapter\aggregator
 	protected $codeCoverage = true;
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
-	protected $maxChildrenNumber = 1;
+	protected $maxChildrenNumber = null;
 
 	private $start = null;
 	private $stop = null;
@@ -111,12 +111,21 @@ class runner implements observable, adapter\aggregator
 	{
 		if ($this->phpPath === null)
 		{
-			if (isset($this->superglobals->_SERVER['_']) === false)
+			if (isset($this->superglobals->_SERVER['_']) === true)
 			{
-				throw new exceptions\runtime('Unable to find PHP executable');
+				$this->setPhpPath($this->superglobals->_SERVER['_']);
 			}
+			else
+			{
+				$phpPath = PHP_BINDIR . '/php';
 
-			$this->setPhpPath($this->superglobals->_SERVER['_']);
+				if ($this->adapter->is_executable($phpPath) === false)
+				{
+					throw new exceptions\runtime('Unable to find PHP executable');
+				}
+
+				$this->setPhpPath($phpPath);
+			}
 		}
 
 		return $this->phpPath;
@@ -333,8 +342,12 @@ class runner implements observable, adapter\aggregator
 					$test
 						->setLocale($this->locale)
 						->setPhpPath($phpPath)
-						->setMaxChildrenNumber($this->maxChildrenNumber)
 					;
+
+					if ($this->maxChildrenNumber !== null)
+					{
+						$test->setMaxChildrenNumber($this->maxChildrenNumber);
+					}
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
