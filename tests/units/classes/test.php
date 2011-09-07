@@ -71,7 +71,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
 
@@ -87,7 +87,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
 
@@ -99,7 +99,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
 
@@ -111,7 +111,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
 		}
@@ -190,7 +190,7 @@ namespace mageekguy\atoum\tests\units
 			$test->setAdapter($adapter);
 
 			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->object($test->enableCodeCoverage())->isIdenticalTo($test)
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 			;
@@ -201,7 +201,7 @@ namespace mageekguy\atoum\tests\units
 			$test->setAdapter($adapter);
 
 			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->object($test->enableCodeCoverage())->isIdenticalTo($test)
 				->boolean($test->codeCoverageIsEnabled())->isFalse()
 			;
@@ -216,7 +216,7 @@ namespace mageekguy\atoum\tests\units
 			$test->setAdapter($adapter);
 
 			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->object($test->disableCodeCoverage())->isIdenticalTo($test)
 				->boolean($test->codeCoverageIsEnabled())->isFalse()
 				->when(function() use ($test) { $test->enableCodeCoverage(); })

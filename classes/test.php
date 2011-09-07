@@ -44,7 +44,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $phpCode = '';
 	private $children = array();
 	private $maxChildrenNumber = null;
-	private $codeCoverage = false;
+	private $codeCoverage = true;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
