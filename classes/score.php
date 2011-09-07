@@ -340,6 +340,13 @@ class score
 		return $this->case;
 	}
 
+	public function unsetCase()
+	{
+		$this->case = null;
+
+		return $this;
+	}
+
 	public function errorExists($message = null, $type = null)
 	{
 		$messageIsNull = $message === null;

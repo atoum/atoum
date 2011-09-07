@@ -178,6 +178,11 @@ namespace mageekguy\atoum\tests\units
 				->variable($test->getScore()->getCase())->isNull()
 				->object($test->assert($case = uniqid()))->isInstanceOf($test->getAsserterGenerator())
 				->string($test->getScore()->getCase())->isEqualTo($case)
+				->when(function() use ($test) { $test->assert; })
+					->variable($test->getScore()->getCase())->isNull()
+				->object($test->assert($case = uniqid()))->isInstanceOf($test->getAsserterGenerator())
+				->when(function() use ($test) { $test->assert(); })
+					->variable($test->getScore()->getCase())->isNull()
 			;
 		}
 

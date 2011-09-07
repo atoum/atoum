@@ -349,9 +349,9 @@ class runner implements observable, adapter\aggregator
 						$test->setMaxChildrenNumber($this->maxChildrenNumber);
 					}
 
-					if ($this->codeCoverageIsEnabled() === true)
+					if ($this->codeCoverageIsEnabled() === false)
 					{
-						$test->enableCodeCoverage();
+						$test->disableCodeCoverage();
 					}
 
 					foreach ($this->testObservers as $observer)

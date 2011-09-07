@@ -45,6 +45,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $children = array();
 	private $maxChildrenNumber = null;
 	private $codeCoverage = true;
+	private $assertHasCase = false;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
@@ -123,8 +124,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		switch ($property)
 		{
 			case 'define':
-			case 'assert':
 				return $this->getAsserterGenerator();
+
+			case 'assert':
+				return $this->unsetCaseOnAssert()->getAsserterGenerator();
 
 			case 'mockGenerator':
 				return $this->getMockGenerator();
@@ -143,11 +146,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this;
 
 			case 'assert':
+				$this->unsetCaseOnAssert();
+
 				$case = isset($arguments[0]) === false ? null : $arguments[0];
 
 				if ($case !== null)
 				{
-					$this->startCase($case);
+					$this->setCaseOnAssert($case);
 				}
 
 				return $this->getAsserterGenerator();
@@ -829,6 +834,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private function canRunChild()
 	{
 		return ($this->testsToRun > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+	}
+
+	private function setCaseOnAssert($case)
+	{
+		$this->startCase($case)->assertHasCase = true;
+
+		return $this;
+	}
+
+	private function unsetCaseOnAssert()
+	{
+		if ($this->assertHasCase === true)
+		{
+			$this->score->unsetCase();
+		}
+
+		return $this;
 	}
 }
 

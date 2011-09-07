@@ -1025,6 +1025,21 @@ class score extends atoum\test
 			->string($score->getCase())->isEqualTo((string) $case)
 		;
 	}
+
+	public function testUnsetCase()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->variable($score->getCase())->isNull()
+			->object($score->unsetCase())->isIdenticalTo($score)
+			->variable($score->getCase())->isNull()
+			->when(function() use ($score) { $score->setCase(uniqid()); })
+				->string($score->getCase())->isNotNull()
+				->object($score->unsetCase())->isIdenticalTo($score)
+				->variable($score->getCase())->isNull()
+		;
+	}
 }
 
 ?>
