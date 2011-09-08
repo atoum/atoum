@@ -218,6 +218,46 @@ class runner extends atoum\script
 		}
 	}
 
+	public function sendHostConfiguration()
+	{
+		$file = atoum\directory . '/tmp/' . $this->adapter->php_uname('n') . '.infos';
+
+		if ($this->adapter->file_exists($file) === false)
+		{
+			ob_start();
+			phpinfo(\INFO_GENERAL | INFO_CONFIGURATION | INFO_MODULES | INFO_ENVIRONMENT);
+			$data = ob_get_clean();
+
+			echo $this->locale->_('> It\'s the first time you use atoum on this host.') . PHP_EOL;
+			echo $this->locale->_('> This is your PHP configuration :') . PHP_EOL;
+			echo $data;
+			echo $this->locale->_('> To help atoum\'s development, do you want sent to its developpers these informations about your PHP configuration [Y/n] ? ');
+
+			$line = trim(fgets(STDIN));
+
+			if ($line === 'n')
+			{
+				echo $this->locale->_('=> No informations about your PHP configuration was sent !') . PHP_EOL;
+			}
+			else
+			{
+				$options = array('http' => array(
+						'method'  => 'POST',
+						'header'  => 'Content-type: application/x-www-form-urlencoded',
+						'content' => http_build_query(array('data' => $data))
+					)
+				);
+
+				if (@file_get_contents('http://stats.atoum.org/save.php', false, stream_context_create($options)) !== false)
+				{
+					echo $this->locale->_('=> Informations sent succesfully, thanks for you help !') . PHP_EOL;
+				}
+			}
+
+			@file_put_contents($file, $data);
+		}
+	}
+
 	public function version()
 	{
 		$this

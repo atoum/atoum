@@ -359,6 +359,7 @@ class runner implements observable, adapter\aggregator
 						$test->addObserver($observer);
 					}
 
+
 					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], true)->getScore());
 				}
 			}

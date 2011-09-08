@@ -44,7 +44,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $phpCode = '';
 	private $children = array();
 	private $maxChildrenNumber = null;
-	private $codeCoverage = true;
+	private $codeCoverage = false;
 	private $assertHasCase = false;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
@@ -54,6 +54,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setLocale($locale ?: new locale())
 			->setAdapter($adapter ?: new adapter())
 			->setSuperglobals(new atoum\superglobals())
+			->enableCodeCoverage()
 		;
 
 		$class = new \reflectionClass($this);
@@ -669,6 +670,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			try
 			{
+
 				$this->beforeTestMethod($this->currentMethod);
 
 				ob_start();
