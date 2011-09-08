@@ -4,7 +4,8 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tools\diffs
 ;
 
 class exception extends asserters\object
@@ -60,12 +61,7 @@ class exception extends asserters\object
 
 	public function hasDefaultCode($failMessage = null)
 	{
-		if (self::isException($this->value) === false)
-		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not an exception'), $this->value));
-		}
-
-		if ($this->value->getCode() === 0)
+		if ($this->valueIsSet()->value->getCode() === 0)
 		{
 			return $this->pass();
 		}
@@ -77,12 +73,7 @@ class exception extends asserters\object
 
 	public function hasCode($code, $failMessage = null)
 	{
-		if (self::isException($this->value) === false)
-		{
-			$this->fail(sprintf($this->getLocale()->_('code not found because %s is not an exception'), $this->value));
-		}
-
-		if ($this->value->getCode() === $code)
+		if ($this->valueIsSet()->value->getCode() === $code)
 		{
 			return $this->pass();
 		}
@@ -94,18 +85,39 @@ class exception extends asserters\object
 
 	public function hasMessage($message, $failMessage = null)
 	{
-		if (self::isException($this->value) === false)
-		{
-			$this->fail(sprintf($this->getLocale()->_('message not found because %s is not an exception'), $this->value));
-		}
-
-		if ($this->value->getMessage() == (string) $message)
+		if ($this->valueIsSet()->value->getMessage() == (string) $message)
 		{
 			return $this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('message \'%s\' is not identical to \'%s\''), $this->value->getMessage(), $message));
+		}
+	}
+
+	public function hasNestedException(\exception $exception = null, $failMessage = null)
+	{
+		if ($exception === null)
+		{
+			if ($this->valueIsSet()->value->getPrevious() !== null)
+			{
+				return $this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contain any nested exception'));
+			}
+		}
+		else
+		{
+			if ($this->valueIsSet()->value->getPrevious() == $exception)
+			{
+				return $this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contains this nested exception'));
+			}
 		}
 	}
 

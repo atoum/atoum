@@ -280,10 +280,12 @@ class variable extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 
+		$diff = new diffs\variable();
+
 		$this->assert
 			->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isIdenticalTo($notIdenticalValue = (string) $value); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)))
+				->hasMessage(sprintf($test->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)) . PHP_EOL . $diff->setReference($notIdenticalValue)->setData($asserter->getValue()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
@@ -291,7 +293,7 @@ class variable extends atoum\test
 		$this->assert
 			->exception(function() use ($asserter, $notIdenticalValue, & $failMessage) { $asserter->isIdenticalTo($notIdenticalValue, $failMessage = uniqid()); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage($failMessage)
+				->hasMessage($failMessage . PHP_EOL . $diff->setReference($notIdenticalValue)->setData($asserter->getValue()))
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(2)
 		;

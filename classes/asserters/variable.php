@@ -109,7 +109,13 @@ class variable extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->getTypeOf($value)));
+			$diff = new diffs\variable();
+
+			$this->fail(
+				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->getTypeOf($value))) .
+				PHP_EOL .
+				$diff->setReference($value)->setData($this->value)
+			);
 		}
 
 		return $this;

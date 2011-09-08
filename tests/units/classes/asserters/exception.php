@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -121,11 +122,57 @@ class exception extends atoum\test
 
 	public function testHasCode()
 	{
+		$code = rand(- PHP_INT_MAX, PHP_INT_MAX);
+
 		$this->assert
-			->exception(function() { throw new atoum\exceptions\runtime('An exception message to test!',33); })
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('An exception message to test!')
-				->hasCode(33);
+			->exception(function() use ($code) { throw new atoum\exceptions\runtime('', $code); })
+				->hasCode($code)
+		;
+	}
+
+	public function testHasMessage()
+	{
+		$message = uniqid();
+
+		$this->assert
+			->exception(function() use ($message) { throw new atoum\exceptions\runtime($message); })
+				->hasMessage($message)
+		;
+	}
+
+	public function testHasNestedException()
+	{
+		$asserter = new asserters\exception(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->hasNestedException();
+					}
+				)
+					->isInstanceOf('logicException')
+					->hasMessage('Exception is undefined')
+		;
+
+		$nestedException = new \exception();
+
+		$this->assert
+			->exception(function() use ($nestedException) { throw new atoum\exceptions\runtime('', 0, $nestedException); })
+				->hasNestedException()
+				->hasNestedException($nestedException)
+		;
+
+		$asserter->setWith(new atoum\exceptions\runtime('', 0, $nestedException));
+
+		$otherNestedException = new \exception();
+
+		$this->assert
+			->exception(function() use ($asserter, $otherNestedException) { $asserter->hasNestedException($otherNestedException); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage($test->getLocale()->_('exception does not contains this nested exception'))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
 	}
 }
 
