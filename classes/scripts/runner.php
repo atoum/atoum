@@ -49,6 +49,11 @@ class runner extends atoum\script
 		return $this->scoreFile;
 	}
 
+	public function getPhpConfiguration()
+	{
+		return array();
+	}
+
 	public function run(array $arguments = array())
 	{
 		$runner = $this->runner;
