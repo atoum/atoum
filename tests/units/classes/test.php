@@ -543,10 +543,23 @@ namespace mageekguy\atoum\tests\units
 
 		public function testRun()
 		{
-			$test = new emptyTest();
+			$this->mockGenerator
+				->generate('test', 'mock')
+				->generate('mageekguy\atoum\test', 'mock\tests\units')
+			;
+
+			$test = new \mock\tests\units\test();
 
 			$this->assert
 				->object($test->run())->isIdenticalTo($test)
+				->mock($test)
+					->call('callObservers')
+						->withArguments(\mageekguy\atoum\test::runStart)->once()
+						->withArguments(\mageekguy\atoum\test::runStop)->once()
+						->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
+						->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
+						->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
+						->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
 			;
 		}
 
