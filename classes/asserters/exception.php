@@ -116,7 +116,7 @@ class exception extends asserters\object
 			}
 			else
 			{
-				$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contains this nested exception'));
+				$this->fail($failMessage !== null ? $failMessage : $this->getLocale()->_('exception does not contain this nested exception'));
 			}
 		}
 	}
