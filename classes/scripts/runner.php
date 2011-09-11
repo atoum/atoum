@@ -49,9 +49,18 @@ class runner extends atoum\script
 		return $this->scoreFile;
 	}
 
-	public function getPhpConfiguration()
+	public function getSystemConfiguration()
 	{
-		return array();
+		return array(
+			'OS' => array(
+					'version' => php_uname('s'),
+					'arch' => php_uname('m')
+				),
+			'PHP' => array(
+					'version' => phpversion(),
+					'extensions' => get_loaded_extensions(true)
+				)
+		);
 	}
 
 	public function run(array $arguments = array())
@@ -223,19 +232,40 @@ class runner extends atoum\script
 		}
 	}
 
-	public function sendHostConfiguration()
+	public function sendSystemConfiguration()
 	{
-		$file = atoum\directory . '/tmp/' . $this->adapter->php_uname('n') . '.infos';
+		$sendSystemConfiguration = false;
 
-		if ($this->adapter->file_exists($file) === false)
+		$configuration = $this->getSystemConfiguration();
+		$configuration['HASH'] = sha1(serialize($configuration));
+
+		$knownConfiguration = @file_get_contents($configurationFile = atoum\directory . '/tmp/sys.conf');
+
+		if ($knownConfiguration === false)
 		{
-			ob_start();
-			phpinfo(\INFO_GENERAL | INFO_CONFIGURATION | INFO_MODULES | INFO_ENVIRONMENT);
-			$data = ob_get_clean();
+			echo $this->locale->_('> It\'s the first time you use atoum.') . PHP_EOL;
+			$sendSystemConfiguration = true;
+		}
+		else
+		{
+			$unserializedConfiguration = @unserialize($knownConfiguration);
 
-			echo $this->locale->_('> It\'s the first time you use atoum on this host.') . PHP_EOL;
+			if ($unserializedConfiguration === false || isset($unserializedConfiguration['HASH']) === false || $unserializedConfiguration['HASH'] != sha1($knownConfiguration))
+			{
+				echo $this->locale->_('> It\'s the first time you use atoum.') . PHP_EOL;
+				$sendSystemConfiguration = true;
+			}
+			else if ($configuration['HASH'] !== $unserializedConfiguration['HASH'])
+			{
+				echo $this->locale->_('> Your system configuration has changed.') . PHP_EOL;
+				$sendSystemConfiguration = true;
+			}
+		}
+
+		if ($sendSystemConfiguration === true)
+		{
 			echo $this->locale->_('> This is your PHP configuration :') . PHP_EOL;
-			echo $data;
+			echo $configuration;
 			echo $this->locale->_('> To help atoum\'s development, do you want sent to its developpers these informations about your PHP configuration [Y/n] ? ');
 
 			$line = trim(fgets(STDIN));
@@ -246,10 +276,12 @@ class runner extends atoum\script
 			}
 			else
 			{
+				$serializedConfiguration = serialize($configuration);
+
 				$options = array('http' => array(
 						'method'  => 'POST',
 						'header'  => 'Content-type: application/x-www-form-urlencoded',
-						'content' => http_build_query(array('data' => $data))
+						'content' => http_build_query(array('data' => $serializedConfiguration))
 					)
 				);
 
@@ -259,7 +291,7 @@ class runner extends atoum\script
 				}
 			}
 
-			@file_put_contents($file, $data);
+			@file_put_contents($configurationFile, $serializedConfiguration);
 		}
 	}
 

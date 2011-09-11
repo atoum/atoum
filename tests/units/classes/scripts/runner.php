@@ -35,12 +35,22 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testGetPhpConfiguration()
+	public function testGetSystemConfiguration()
 	{
 		$runner = new scripts\runner($name = uniqid());
 
 		$this->assert
-			->array($runner->getPhpConfiguration())->isEmpty()
+			->array($runner->getSystemConfiguration())->isEqualTo(array(
+					'OS' => array(
+							'version' => php_uname('s'),
+							'arch' => php_uname('m')
+						),
+					'PHP' => array(
+							'version' => phpversion(),
+							'extensions' => get_loaded_extensions(true)
+						)
+				)
+			)
 		;
 	}
 }
