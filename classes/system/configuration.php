@@ -31,7 +31,7 @@ class configuration implements \serializable
 			'==> Architecture: ' .$this->getOsArchitecture() . PHP_EOL .
 			'=> PHP:' . PHP_EOL .
 			'==> Version: ' . $this->getPhpVersion() . PHP_EOL .
-			'==> Extensions:' . PHP_EOL . '===> ' . join(PHP_EOL . '===> ', $this->getPhpExtensions()) . PHP_EOL
+			'==> Extensions: ' . join(', ', $this->getPhpExtensions()) . PHP_EOL
 		;
 	}
 

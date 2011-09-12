@@ -83,7 +83,7 @@ class configuration extends atoum\test
 				'==> Architecture: ' .$configuration->getOsArchitecture() . PHP_EOL .
 				'=> PHP:' . PHP_EOL .
 				'==> Version: ' . $configuration->getPhpVersion() . PHP_EOL .
-				'==> Extensions:' . PHP_EOL . '===> ' . join(PHP_EOL . '===> ', $configuration->getPhpExtensions()) . PHP_EOL
+				'==> Extensions: ' . join(', ', $configuration->getPhpExtensions()) . PHP_EOL
 			)
 		;
 	}
