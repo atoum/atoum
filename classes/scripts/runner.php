@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../constants.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\system,
 	mageekguy\atoum\exceptions
 ;
 
@@ -65,6 +66,8 @@ class runner extends atoum\script
 
 	public function run(array $arguments = array())
 	{
+//		$this->sendSystemConfiguration();
+
 		$runner = $this->runner;
 
 		$this->argumentsParser->addHandler(
@@ -236,26 +239,18 @@ class runner extends atoum\script
 	{
 		$sendSystemConfiguration = false;
 
-		$configuration = $this->getSystemConfiguration();
-		$configuration['HASH'] = sha1(serialize($configuration));
+		$currentConfiguration = new system\configuration();
 
-		$knownConfiguration = @file_get_contents($configurationFile = atoum\directory . '/tmp/sys.conf');
+		$previousConfiguration = @file_get_contents($configurationFile = atoum\directory . '/tmp/sys.conf');
 
-		if ($knownConfiguration === false)
+		if ($previousConfiguration === false)
 		{
-			echo $this->locale->_('> It\'s the first time you use atoum.') . PHP_EOL;
+			echo $this->locale->_('> It\'s the first time you use atoum in interactive mode.') . PHP_EOL;
 			$sendSystemConfiguration = true;
 		}
 		else
 		{
-			$unserializedConfiguration = @unserialize($knownConfiguration);
-
-			if ($unserializedConfiguration === false || isset($unserializedConfiguration['HASH']) === false || $unserializedConfiguration['HASH'] != sha1($knownConfiguration))
-			{
-				echo $this->locale->_('> It\'s the first time you use atoum.') . PHP_EOL;
-				$sendSystemConfiguration = true;
-			}
-			else if ($configuration['HASH'] !== $unserializedConfiguration['HASH'])
+			$previousConfiguration = @unserialize($previousConfiguration);
 			{
 				echo $this->locale->_('> Your system configuration has changed.') . PHP_EOL;
 				$sendSystemConfiguration = true;
@@ -265,7 +260,7 @@ class runner extends atoum\script
 		if ($sendSystemConfiguration === true)
 		{
 			echo $this->locale->_('> This is your PHP configuration :') . PHP_EOL;
-			echo $configuration;
+			echo $currentConfiguration;
 			echo $this->locale->_('> To help atoum\'s development, do you want sent to its developpers these informations about your PHP configuration [Y/n] ? ');
 
 			$line = trim(fgets(STDIN));
@@ -276,12 +271,10 @@ class runner extends atoum\script
 			}
 			else
 			{
-				$serializedConfiguration = serialize($configuration);
-
 				$options = array('http' => array(
 						'method'  => 'POST',
 						'header'  => 'Content-type: application/x-www-form-urlencoded',
-						'content' => http_build_query(array('data' => $serializedConfiguration))
+						'content' => http_build_query(array('data' => $currentConfiguration = serialize($currentConfiguration)))
 					)
 				);
 
@@ -291,7 +284,7 @@ class runner extends atoum\script
 				}
 			}
 
-			@file_put_contents($configurationFile, $serializedConfiguration);
+			@file_put_contents($configurationFile, $currentConfiguration);
 		}
 	}
 

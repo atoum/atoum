@@ -24,6 +24,38 @@ class configuration implements \serializable
 		);
 	}
 
+	public function __toString()
+	{
+		return '=> OS:' . PHP_EOL .
+			'==> Version: ' . $this->getOsVersion() . PHP_EOL .
+			'==> Architecture: ' .$this->getOsArchitecture() . PHP_EOL .
+			'=> PHP:' . PHP_EOL .
+			'==> Version: ' . $this->getPhpVersion() . PHP_EOL .
+			'==> Extensions:' . PHP_EOL . '===> ' . join(PHP_EOL . '===> ', $this->getPhpExtensions()) . PHP_EOL
+		;
+	}
+
+	public function getOsVersion()
+	{
+		return $this->data['OS']['version'];
+	}
+
+	public function getOsArchitecture()
+	{
+		return $this->data['OS']['arch'];
+	}
+
+	public function getPhpVersion()
+	{
+		return $this->data['PHP']['version'];
+	}
+
+	public function getPhpExtensions()
+	{
+		return $this->data['PHP']['extensions'];
+	}
+
+
 	public function serialize()
 	{
 		return serialize($this->get());
