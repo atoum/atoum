@@ -30,10 +30,19 @@ class configuration extends atoum\test
 						),
 					'PHP' => array(
 							'version' => phpversion(),
-							'extensions' => get_loaded_extensions(true)
+							'extensions' => array_merge(get_loaded_extensions(false), get_loaded_extensions(true))
 						)
 				)
 			)
+		;
+	}
+
+	public function testSerializable()
+	{
+		$configuration = new system\configuration();
+
+		$this->assert
+			->object(unserialize(serialize($configuration)))->isEqualTo($configuration)
 		;
 	}
 

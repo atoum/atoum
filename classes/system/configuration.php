@@ -19,14 +19,14 @@ class configuration implements \serializable
 				),
 			'PHP' => array(
 					'version' => phpversion(),
-					'extensions' => get_loaded_extensions(true)
+					'extensions' => array_merge(get_loaded_extensions(false), get_loaded_extensions(true))
 				)
 		);
 	}
 
 	public function serialize()
 	{
-		return serialize($this->data);
+		return serialize($this->get());
 	}
 
 	public function unserialize($string)
@@ -50,15 +50,15 @@ class configuration implements \serializable
 			case is_string($data['OS']['arch']) === false:
 			case isset($data['PHP']) === false:
 			case is_array($data['PHP']) === false:
-			case isset($data['version']) === false:
-			case is_string($data['version']) === false:
-			case isset($data['extensions']) === false:
-			case is_array($data['extensions']) === false:
+			case isset($data['PHP']['version']) === false:
+			case is_string($data['PHP']['version']) === false:
+			case isset($data['PHP']['extensions']) === false:
+			case is_array($data['PHP']['extensions']) === false:
 				$isConfigurationData = false;
 				break;
 
 			default:
-				foreach ($data['extensions'] as $extension)
+				foreach ($data['PHP']['extensions'] as $extension)
 				{
 					if (is_string($extension) === false)
 					{
