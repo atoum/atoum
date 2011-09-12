@@ -49,7 +49,7 @@ class controller extends test\adapter
 
 		parent::__unset($method);
 
-		$this->callables[strtolower($method)] = null;
+		$this->invokers[strtolower($method)] = null;
 
 		return $this;
 	}
@@ -135,7 +135,7 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
-			foreach ($this->callables as $method => $closure)
+			foreach ($this->invokers as $method => $closure)
 			{
 				if (in_array($method, $methods) === false)
 				{
@@ -145,9 +145,9 @@ class controller extends test\adapter
 
 			foreach ($methods as $method)
 			{
-				if (isset($this->callables[$method]) === false)
+				if (isset($this->invokers[$method]) === false)
 				{
-					$this->callables[$method] = null;
+					$this->invokers[$method] = null;
 				}
 			}
 
@@ -199,7 +199,7 @@ class controller extends test\adapter
 	{
 		if ($this->mockClass !== null && $this->disableMethodChecking === false)
 		{
-			if (array_key_exists(strtolower($method), $this->callables) === false)
+			if (array_key_exists(strtolower($method), $this->invokers) === false)
 			{
 				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}

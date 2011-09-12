@@ -15,7 +15,7 @@ class adapter extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$this->assert
-			->array($adapter->getCallables())->isEmpty()
+			->array($adapter->getInvokers())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 		;
 	}
@@ -34,8 +34,8 @@ class adapter extends atoum\test
 		$adapter->md5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\callable')
-			->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\callable')
+			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+			->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 			->string($adapter->invoke('MD5'))->isEqualTo($return)
 		;
@@ -43,8 +43,8 @@ class adapter extends atoum\test
 		$adapter->MD5 = $return = uniqid();
 
 		$this->assert
-			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\callable')
-			->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\callable')
+			->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+			->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
 			->string($adapter->invoke('md5'))->isEqualTo($return)
 			->string($adapter->invoke('MD5'))->isEqualTo($return)
 		;
@@ -110,31 +110,31 @@ class adapter extends atoum\test
 	{
 		$this->assert
 			->when(function() use (& $adapter) { $adapter = new atoum\test\adapter(); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { unset($adapter->md5); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { unset($adapter->MD5); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { $adapter->md5 = uniqid(); $adapter->md5(uniqid()); })
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->{uniqid()}); })
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->md5); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { $adapter->MD5 = uniqid(); $adapter->MD5(uniqid()); })
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->{uniqid()}); })
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->MD5); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 		;
 	}
@@ -168,13 +168,13 @@ class adapter extends atoum\test
 					}
 				)
 				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-				->hasMessage('Function \'require()\' is not callable by an adapter')
+				->hasMessage('Function \'require()\' is not invokable by an adapter')
 			->exception(function() use ($adapter) {
 						$adapter->REQUIRE(uNiqid());
 					}
 				)
 				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-				->hasMessage('Function \'REQUIRE()\' is not callable by an adapter')
+				->hasMessage('Function \'REQUIRE()\' is not invokable by an adapter')
 		;
 
 		$adapter->md5 = 0;
@@ -302,32 +302,32 @@ class adapter extends atoum\test
 		$adapter = new atoum\test\adapter();
 
 		$this->assert
-			->array($adapter->getCallables())->isEmpty()
+			->array($adapter->getInvokers())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 			->object($adapter->reset())->isIdenticalTo($adapter)
-			->array($adapter->getCallables())->isEmpty()
+			->array($adapter->getInvokers())->isEmpty()
 			->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { $adapter->md5(uniqid()); })
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 				->object($adapter->reset())->isIdenticalTo($adapter)
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) { $adapter->md5 = uniqid(); })
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($adapter->reset())->isIdenticalTo($adapter)
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 			->when(function() use ($adapter) {
 					$adapter->md5 = uniqid();
 					$adapter->md5(uniqid());
 				}
 			)
-				->array($adapter->getCallables())->isNotEmpty()
+				->array($adapter->getInvokers())->isNotEmpty()
 				->array($adapter->getCalls())->isNotEmpty()
 				->object($adapter->reset())->isIdenticalTo($adapter)
-				->array($adapter->getCallables())->isEmpty()
+				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 		;
 	}

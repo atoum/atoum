@@ -10,7 +10,7 @@ use
 class adapter extends atoum\adapter
 {
 	protected $calls = array();
-	protected $callables = array();
+	protected $invokers = array();
 
 	private static $callsNumber = 0;
 	private static $instances = array();
@@ -31,17 +31,17 @@ class adapter extends atoum\adapter
 	{
 		$functionName = strtolower($functionName);
 
-		if (isset($this->callables[$functionName]) === false)
+		if (isset($this->invokers[$functionName]) === false)
 		{
-			$this->callables[$functionName] = new adapter\callable();
+			$this->invokers[$functionName] = new adapter\invoker();
 		}
 
-		return $this->callables[$functionName];
+		return $this->invokers[$functionName];
 	}
 
 	public function __isset($functionName)
 	{
-		return (isset($this->callables[strtolower($functionName)]) === true);
+		return (isset($this->invokers[strtolower($functionName)]) === true);
 	}
 
 	public function __unset($functionName)
@@ -50,7 +50,7 @@ class adapter extends atoum\adapter
 		{
 			$functionName = strtolower($functionName);
 
-			unset($this->callables[$functionName]);
+			unset($this->invokers[$functionName]);
 
 			foreach ($this->calls as $callName => $closure)
 			{
@@ -64,9 +64,9 @@ class adapter extends atoum\adapter
 		return $this;
 	}
 
-	public function getCallables()
+	public function getInvokers()
 	{
-		return $this->callables;
+		return $this->invokers;
 	}
 
 	public function getCalls($functionName = null, array $arguments = null)
@@ -111,7 +111,7 @@ class adapter extends atoum\adapter
 
 	public function reset()
 	{
-		$this->callables = array();
+		$this->invokers = array();
 
 		return $this->resetCalls();
 	}
@@ -127,7 +127,7 @@ class adapter extends atoum\adapter
 	{
 		if (self::isLanguageConstruct($functionName) || (function_exists($functionName) === true && is_callable($functionName) === false))
 		{
-			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not callable by an adapter');
+			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
 		}
 
 		$this->addCall($functionName, $arguments);
