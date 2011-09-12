@@ -57,7 +57,7 @@ class progressBar
 
 			$this->currentTestNumber += $refreshLength;
 
-			if ($this->adapter->defined('STDOUT') === false || $this->adapter->function_exists('posix_isatty') === false || $this->adapter->posix_isatty(STDOUT) === false)
+			if ($this->adapter->defined('STDOUT') === false || ($this->adapter->function_exists('posix_isatty') === true && $this->adapter->posix_isatty(STDOUT) === false))
 			{
 				$this->progressBar = substr($this->progressBar, 0, $this->currentTestNumber) . $this->refresh . substr($this->progressBar, $this->currentTestNumber + 1);
 				$string .= PHP_EOL . $this->progressBar;

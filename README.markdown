@@ -209,3 +209,13 @@ You can also ask for help from the *atoum* development staff on the IRC channel 
 
 This error comes from the fact the *atoum* PHAR archive is included in more than one place within your code using `include` or `require`.  
 To fix this problem, you just need to include the archive by using only `include_once` or `require_once`, in order to ensure it is not included several times.
+
+### APC seems not work with *atoum*
+[APC](http://fr.php.net/manual/en/apc.configuration.php)  is a free, open, and robust framework for caching and optimizing PHP intermediate code distributed under the form of a PHP extension.  
+When testing classes that use APC, you may get some failure message showing that `apc_fetch` function is unable to retrieve a value.  
+As all PHP extension, APC has some configuration options to enable it :
+
+* `apc.enabled` whether to enable or disable APC ;
+* `apc.enable_cli`, whether to enable or disable APC for PHP CLI ;
+
+In order to use [APC](http://fr.php.net/manual/en/apc.configuration.php) with *atoum*, you have to set `apc.enabled` and `apc.enable_cli` to `1`, otherwise, it won't be enabled for the PHP CLI version, which is used by *atoum*.
