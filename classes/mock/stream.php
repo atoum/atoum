@@ -28,7 +28,26 @@ class stream
 			case 'stream_open':
 			case 'unlink':
 			case 'url_stat':
-				$this->streamController = self::get(parse_url($arguments[0], PHP_URL_HOST));
+				if (isset($arguments[0]) === false)
+				{
+					throw new exceptions\logic('Argument 0 is not set for function ' . $method . '()');
+				}
+
+				$scheme = self::name . '://';
+
+				if (strpos($arguments[0], $scheme) !== 0)
+				{
+					throw new exceptions\logic('Scheme is invalid in \'' . $argument[0] . '\'');
+				}
+
+				$name = substr($arguments[0], strlen($scheme));
+
+				if (isset(self::$streams[$name]) === false)
+				{
+					throw new exceptions\logic('Stream \'' . $argument[0] . '\' is undefined');
+				}
+
+				$this->streamController = self::$streams[$name];
 				break;
 		}
 

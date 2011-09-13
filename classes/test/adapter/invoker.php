@@ -116,17 +116,19 @@ class invoker implements \arrayAccess
 
 	public function invoke(array $arguments = array(), $call = 0)
 	{
-		if ($this->closureIsSetForCall($call) === false)
+		$currentCall = $call;
+
+		if ($this->closureIsSetForCall($currentCall) === false)
 		{
-			$call = 0;
+			$currentCall = 0;
 		}
 
-		if ($this->closureIsSetForCall($call) === false)
+		if ($this->closureIsSetForCall($currentCall) === false)
 		{
 			throw new exceptions\logic\invalidArgument('There is no closure defined for call ' . $call);
 		}
 
-		return call_user_func_array($this->closuresByCall[$call], $arguments);
+		return call_user_func_array($this->closuresByCall[$currentCall], $arguments);
 	}
 
 	public function atCall($call)

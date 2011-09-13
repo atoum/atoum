@@ -34,6 +34,18 @@ class controller extends test\adapter
 				return $this;
 
 			default:
+				$method = self::mapMethod($method);
+
+				switch ($method)
+				{
+					case 'dir_opendir':
+						$this->dir_closedir = true;
+						$this->dir_rewinddir = true;
+						$this->dir_readdir = false;
+						$this->url_stat = array('mode' => 16877);
+						break;
+				}
+
 				return parent::__set(self::mapMethod($method), $value);
 		}
 	}
@@ -45,6 +57,13 @@ class controller extends test\adapter
 
 	public function invoke($method, array $arguments = array())
 	{
+		$method = self::mapMethod($method);
+
+		if ($method === 'dir_rewinddir' && isset($this->{$method}) === true)
+		{
+			$this->resetCalls('dir_readdir');
+		}
+
 		return (isset($this->{$method = self::mapMethod($method)}) === false ? null : parent::invoke($method, $arguments));
 	}
 

@@ -216,88 +216,61 @@ class html extends atoum\test
 			->generate('splFileInfo')
 		;
 
-		$field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), $destinationDirectoryPath = uniqid(), uniqid(), null, null, null, null, null, null, $adapter = new test\adapter());
+		$firstFile = atoum\mock\stream::get('destinationDirectory/aDirectory/firstFile');
+		$firstFile->unlink = true;
+
+		$secondFile = atoum\mock\stream::get('destinationDirectory/aDirectory/secondFile');
+		$secondFile->unlink = true;
+
+		$aDirectory = atoum\mock\stream::get('destinationDirectory/aDirectory');
+		$aDirectory->opendir = true;
+		$aDirectory->readdir[1] = 'firstFile';
+		$aDirectory->readdir[2] = 'secondFile';
+		$aDirectory->readdir[3] = false;
+
+		$emptyDirectory = atoum\mock\stream::get('destinationDirectory/emptyDirectory');
+		$emptyDirectory->opendir = true;
+		$emptyDirectory->readdir[1] = false;
+
+		$anOtherFirstFile = atoum\mock\stream::get('destinationDirectory/anOtherDirectory/anOtherFirstFile');
+		$anOtherFirstFile->unlink = true;
+
+		$anOtherSecondFile = atoum\mock\stream::get('destinationDirectory/anOtherDirectory/anOtherSecondFile');
+		$anOtherSecondFile->unlink = true;
+
+		$anOtherDirectory = atoum\mock\stream::get('destinationDirectory/anOtherDirectory');
+		$anOtherDirectory->opendir = true;
+		$anOtherDirectory->readdir[1] = 'anOtherFirstFile';
+		$anOtherDirectory->readdir[2] = 'anOtherSecondFile';
+		$anOtherDirectory->readdir[3] = false;
+
+		$aFile = atoum\mock\stream::get('destinationDirectory/aFile');
+		$aFile->unlink = true;
+
+		$destinationDirectory = atoum\mock\stream::get('destinationDirectory');
+		$destinationDirectory->opendir = true;
+		$destinationDirectory->readdir[1] = 'aDirectory';
+		$destinationDirectory->readdir[2] = 'emptyDirectory';
+		$destinationDirectory->readdir[3] = 'anOtherDirectory';
+		$destinationDirectory->readdir[4] = 'aFile';
+		$destinationDirectory->readdir[5] = false;
+
+		$field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), $destinationDirectoryPath = 'atoum://destinationDirectory', uniqid(), null, null, null, null, null, null, $adapter = new test\adapter());
 
 		$adapter->rmdir = function() {};
 		$adapter->unlink = function() {};
 
-		$inode11Controller = new mock\controller();
-		$inode11Controller->__construct = function() {};
-		$inode11Controller->isDir = false;
-		$inode11Controller->getPathname = $inode11Path = uniqid();
-
-		$inode11 = new \mock\splFileInfo(uniqid(), $inode11Controller);
-
-		$inode12Controller = new mock\controller();
-		$inode12Controller->__construct = function() {};
-		$inode12Controller->isDir = false;
-		$inode12Controller->getPathname = $inode12Path = uniqid();
-
-		$inode12 = new \mock\splFileInfo(uniqid(), $inode12Controller);
-
-		$inode1Controller = new mock\controller();
-		$inode1Controller->__construct = function() {};
-		$inode1Controller->isDir = true;
-		$inode1Controller->getPathname = $inode1Path = uniqid();
-
-		$inode1 = new \mock\splFileInfo(uniqid(), $inode1Controller);
-
-		$inode2Controller = new mock\controller();
-		$inode2Controller->__construct = function() {};
-		$inode2Controller->isDir = false;
-		$inode2Controller->getPathname = $inode2Path = uniqid();
-
-		$inode2 = new \mock\splFileInfo(uniqid(), $inode2Controller);
-
-		$inode31Controller = new mock\controller();
-		$inode31Controller->__construct = function() {};
-		$inode31Controller->isDir = false;
-		$inode31Controller->getPathname = $inode31Path = uniqid();
-
-		$inode31 = new \mock\splFileInfo(uniqid(), $inode31Controller);
-
-		$inode32Controller = new mock\controller();
-		$inode32Controller->__construct = function() {};
-		$inode32Controller->isDir = false;
-		$inode32Controller->getPathname = $inode32Path = uniqid();
-
-		$inode32 = new \mock\splFileInfo(uniqid(), $inode32Controller);
-
-		$inode3Controller = new mock\controller();
-		$inode3Controller->__construct = function() {};
-		$inode3Controller->isDir = true;
-		$inode3Controller->getPathname = $inode3Path = uniqid();
-
-		$inode3 = new \mock\splFileInfo(uniqid(), $inode3Controller);
-
-		$inodeController = new mock\controller();
-		$inodeController->__construct = function() {};
-		$inodeController->isDir = true;
-		$inodeController->getPathname = $destinationDirectoryPath;
-
-		$inode = new \mock\splFileInfo(uniqid(), $inodeController);
-
-		$field->getMockController()->getDestinationDirectoryIterator = array(
-			$inode11,
-			$inode12,
-			$inode1,
-			$inode2,
-			$inode31,
-			$inode32,
-			$inode3,
-			$inode
-		);
-
 		$this->assert
 			->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
 			->adapter($adapter)
-				->call('unlink')->withArguments($inode11Path)->once()
-				->call('unlink')->withArguments($inode12Path)->once()
-				->call('rmdir')->withArguments($inode1Path)->once()
-				->call('unlink')->withArguments($inode2Path)->once()
-				->call('unlink')->withArguments($inode31Path)->once()
-				->call('unlink')->withArguments($inode32Path)->once()
-				->call('rmdir')->withArguments($inode3Path)->once()
+				->call('unlink')->withArguments('atoum://destinationDirectory/aDirectory/firstFile')->once()
+				->call('unlink')->withArguments('atoum://destinationDirectory/aDirectory/secondFile')->once()
+				->call('rmdir')->withArguments('atoum://destinationDirectory/aDirectory')->once()
+				->call('unlink')->withArguments('atoum://destinationDirectory/anOtherDirectory/anOtherFirstFile')->once()
+				->call('unlink')->withArguments('atoum://destinationDirectory/anOtherDirectory/anOtherSecondFile')->once()
+				->call('rmdir')->withArguments('atoum://destinationDirectory/anOtherDirectory')->once()
+				->call('unlink')->withArguments('atoum://destinationDirectory/aFile')->once()
+				->call('rmdir')->withArguments('atoum://destinationDirectory/emptyDirectory')->once()
 				->call('rmdir')->withArguments($destinationDirectoryPath)->never()
 		;
 

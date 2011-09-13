@@ -102,9 +102,16 @@ class adapter extends atoum\adapter
 		return $calls;
 	}
 
-	public function resetCalls()
+	public function resetCalls($functionName = null)
 	{
-		$this->calls = array();
+		if ($functionName === null)
+		{
+			$this->calls = array();
+		}
+		else if (isset($this->calls[$functionName]) === true)
+		{
+			unset($this->calls[$functionName]);
+		}
 
 		return $this;
 	}
@@ -132,7 +139,16 @@ class adapter extends atoum\adapter
 
 		$this->addCall($functionName, $arguments);
 
-		return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, sizeof($this->calls[$functionName])));
+		$call = sizeof($this->getCalls($functionName));
+
+		try
+		{
+			return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, $call));
+		}
+		catch (exceptions\logic\invalidArgument $exception)
+		{
+			throw new exceptions\logic('There is no return value defined for \'' . $functionName . '() at call ' . $call);
+		}
 	}
 
 	public static function getCallsNumber()
