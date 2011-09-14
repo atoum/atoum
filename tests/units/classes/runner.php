@@ -275,7 +275,7 @@ class runner extends atoum\test
 		$adapter->stream_get_contents = '';
 		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_close = function() {};
 		$adapter->proc_terminate = function() {};
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
@@ -307,7 +307,7 @@ class runner extends atoum\test
 		$adapter->stream_get_contents = '';
 		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_close = function() {};
 		$adapter->proc_terminate = function() {};
 
@@ -335,7 +335,7 @@ class runner extends atoum\test
 		$adapter->stream_get_contents = '';
 		$adapter->realpath = $phpPath;
 		$adapter->fclose = function() {};
-		$adapter->proc_get_status = array('exitcode' => 0, 'running' => true);
+		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_terminate = function() {};
 		$adapter->proc_close = function() {};
 		$adapter->get_declared_classes = array();
@@ -630,7 +630,7 @@ class runner extends atoum\test
 		$adapter->resetCalls();
 		$adapter->proc_get_status = array(
 			'exitcode' => 0,
-			'running' => true
+			'running' => false
 		);
 
 		$score->reset();

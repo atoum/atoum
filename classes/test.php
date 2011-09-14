@@ -515,6 +515,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$phpStatus = proc_get_status($terminatedChild[0]);
 
+									while ($phpStatus['running'] == true)
+									{
+										$phpStatus = proc_get_status($terminatedChild[0]);
+									}
+
 									proc_close($terminatedChild[0]);
 
 									switch ($phpStatus['exitcode'])

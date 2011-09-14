@@ -273,9 +273,14 @@ class runner implements observable, adapter\aggregator
 
 			$phpStatus = $this->adapter->proc_get_status($php);
 
+			while ($phpStatus['running'] == true)
+			{
+				$phpStatus = $this->adapter->proc_get_status($php);
+			}
+
 			$this->adapter->proc_close($php);
 
-			if ($phpStatus['exitcode'] !== 0)
+			if ($phpStatus['exitcode'] > 0)
 			{
 				throw new exceptions\runtime('Unable to get PHP version from \'' . $phpPath . '\'');
 			}
