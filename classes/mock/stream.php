@@ -3,17 +3,19 @@
 namespace mageekguy\atoum\mock;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\exceptions
 ;
 
 class stream
 {
-	const name = 'atoum';
+	const defaultProtocol = 'atoum';
 
 	public $context = null;
 
 	protected $streamController = null;
 
+	protected static $adapter = null;
 	protected static $streams = array();
 
 	public function __call($method, $arguments)
@@ -33,32 +35,45 @@ class stream
 					throw new exceptions\logic('Argument 0 is not set for function ' . $method . '()');
 				}
 
-				$scheme = self::name . '://';
-
-				if (strpos($arguments[0], $scheme) !== 0)
+				if (isset(self::$streams[$arguments[0]]) === false)
 				{
-					throw new exceptions\logic('Scheme is invalid in \'' . $argument[0] . '\'');
+					throw new exceptions\logic('Stream \'' . $arguments[0] . '\' is undefined');
 				}
 
-				$name = substr($arguments[0], strlen($scheme));
-
-				if (isset(self::$streams[$name]) === false)
-				{
-					throw new exceptions\logic('Stream \'' . $argument[0] . '\' is undefined');
-				}
-
-				$this->streamController = self::$streams[$name];
+				$this->streamController = self::$streams[$arguments[0]];
 				break;
 		}
 
 		return $this->streamController->invoke($method, $arguments);
 	}
 
+	public static function getAdapter()
+	{
+		self::$adapter = self::$adapter ?: new atoum\adapter();
+
+		return self::$adapter;
+	}
+
+	public static function setAdapter(atoum\adapter $adapter)
+	{
+		self::$adapter = $adapter;
+	}
+
 	public static function get($stream)
 	{
-		if (in_array(self::name, stream_get_wrappers()) === false && stream_wrapper_register(self::name, __CLASS__) === false)
+		$adapter = self::getAdapter();
+
+		$protocol = self::getProtocol($stream);
+
+		if ($protocol === null)
 		{
-			throw new exceptions\runtime('Unable to register ' . self::name . ' stream');
+			$protocol = self::defaultProtocol;
+			$stream = $protocol . '://' . $stream;
+		}
+
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
+		{
+			throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
 		}
 
 		if (isset(self::$streams[$stream]) === false)
@@ -67,6 +82,20 @@ class stream
 		}
 
 		return self::$streams[$stream];
+	}
+
+	public static function getProtocol($stream)
+	{
+		$scheme = null;
+
+		$schemeSeparator = strpos($stream, '://');
+
+		if ($schemeSeparator !== false)
+		{
+			$scheme = substr($stream, 0, $schemeSeparator);
+		}
+
+		return $scheme;
 	}
 }
 

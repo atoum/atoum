@@ -52,6 +52,10 @@ class runner extends atoum\script
 
 	public function run(array $arguments = array())
 	{
+		ini_set('log_errors_max_len', '0');
+		ini_set('log_errors', 'Off');
+		ini_set('display_errors', 'stderr');
+
 		$this->sendSystemConfiguration();
 
 		$runner = $this->runner;

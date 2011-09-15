@@ -112,7 +112,7 @@ abstract class asserter
 				{
 					$function = $backtrace['function'];
 				}
-				else if (is_a($backtrace['object'], __NAMESPACE__ . '\asserter\generator') === true && $backtrace['function'] == '__call')
+				else if ($backtrace['object'] instanceof $this->generator && $backtrace['function'] == '__call')
 				{
 					$function = $backtrace['args'][0];
 				}

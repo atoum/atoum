@@ -269,8 +269,6 @@ class runner implements observable, adapter\aggregator
 			$this->adapter->fclose($pipes[1]);
 			$this->adapter->fclose($pipes[2]);
 
-			$this->adapter->proc_terminate($php);
-
 			$phpStatus = $this->adapter->proc_get_status($php);
 
 			while ($phpStatus['running'] == true)

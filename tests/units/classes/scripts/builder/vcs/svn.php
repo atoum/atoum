@@ -350,69 +350,60 @@ class svn extends atoum\test
 			->generate('splFileInfo')
 		;
 
+		$firstFile = atoum\mock\stream::get('workingDirectory/aDirectory/firstFile');
+		$firstFile->unlink = true;
+
+		$secondFile = atoum\mock\stream::get('workingDirectory/aDirectory/secondFile');
+		$secondFile->unlink = true;
+
+		$aDirectory = atoum\mock\stream::get('workingDirectory/aDirectory');
+		$aDirectory->opendir = true;
+		$aDirectory->readdir[1] = 'firstFile';
+		$aDirectory->readdir[2] = 'secondFile';
+		$aDirectory->readdir[3] = false;
+
+		$emptyDirectory = atoum\mock\stream::get('workingDirectory/emptyDirectory');
+		$emptyDirectory->opendir = true;
+		$emptyDirectory->readdir[1] = false;
+
+		$anOtherFirstFile = atoum\mock\stream::get('workingDirectory/anOtherDirectory/anOtherFirstFile');
+		$anOtherFirstFile->unlink = true;
+
+		$anOtherSecondFile = atoum\mock\stream::get('workingDirectory/anOtherDirectory/anOtherSecondFile');
+		$anOtherSecondFile->unlink = true;
+
+		$anOtherDirectory = atoum\mock\stream::get('workingDirectory/anOtherDirectory');
+		$anOtherDirectory->opendir = true;
+		$anOtherDirectory->readdir[1] = 'anOtherFirstFile';
+		$anOtherDirectory->readdir[2] = 'anOtherSecondFile';
+		$anOtherDirectory->readdir[3] = false;
+
+		$aFile = atoum\mock\stream::get('workingDirectory/aFile');
+		$aFile->unlink = true;
+
+		$workingDirectory = atoum\mock\stream::get('workingDirectory');
+		$workingDirectory->opendir = true;
+		$workingDirectory->readdir[1] = 'aDirectory';
+		$workingDirectory->readdir[2] = 'emptyDirectory';
+		$workingDirectory->readdir[3] = 'anOtherDirectory';
+		$workingDirectory->readdir[4] = 'aFile';
+		$workingDirectory->readdir[5] = false;
+
 		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
 
-		$svn->setWorkingDirectory($workingDirectory = __DIR__);
-
-		$inode11Controller = new mock\controller();
-		$inode11Controller->__construct = function() {};
-		$inode11Controller->getPathname = $inode11Path = uniqid();
-		$inode11Controller->isDir = false;
-
-		$inode11 = new \mock\splFileInfo($inode11Path, $inode11Controller);
-
-		$inode12Controller = new mock\controller();
-		$inode12Controller->__construct = function() {};
-		$inode12Controller->getPathname = $inode12Path = uniqid();
-		$inode12Controller->isDir = false;
-
-		$inode12 = new \mock\splFileInfo($inode12Path, $inode12Controller);
-
-		$inode1Controller = new mock\controller();
-		$inode1Controller->__construct = function() {};
-		$inode1Controller->getPathname = $inode1Path = uniqid();
-		$inode1Controller->isDir = true;
-
-		$inode1 = new \mock\splFileInfo($inode1Path, $inode1Controller);
-
-		$inode2Controller = new mock\controller();
-		$inode2Controller->__construct = function() {};
-		$inode2Controller->getPathname = $inode2Path = uniqid();
-		$inode2Controller->isDir = false;
-
-		$inode2 = new \mock\splFileInfo($inode2Path, $inode2Controller);
-
-		$inode3Controller = new mock\controller();
-		$inode3Controller->__construct = function() {};
-		$inode3Controller->getPathname = $inode3Path = uniqid();
-		$inode3Controller->isDir = true;
-
-		$inode3 = new \mock\splFileInfo($inode3Path, $inode3Controller);
-
-		$inodeController = new mock\controller();
-		$inodeController->__construct = function() {};
-		$inodeController->getPathname = $workingDirectory = uniqid();
-		$inodeController->isDir = true;
-
-		$inode = new \mock\splFileInfo($workingDirectory, $inodeController);
-
-		$svnController->getWorkingDirectoryIterator = array(
-				$inode11,
-				$inode12,
-				$inode1,
-				$inode2,
-				$inode3
-		);
-
 		$this->assert
+			->when(function() use ($svn) { $svn->setWorkingDirectory('atoum://workingDirectory'); })
 			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('unlink')->withArguments($inode11Path)->once()
-				->call('unlink')->withArguments($inode12Path)->once()
-				->call('rmdir')->withArguments($inode1Path)->once()
-				->call('unlink')->withArguments($inode2Path)->once()
-				->call('rmdir')->withArguments($inode3Path)->once()
-				->call('rmdir')->withArguments($workingDirectory)->never()
+				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/firstFile')->once()
+				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/secondFile')->once()
+				->call('rmdir')->withArguments('atoum://workingDirectory/aDirectory')->once()
+				->call('rmdir')->withArguments('atoum://workingDirectory/emptyDirectory')->once()
+				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile')->once()
+				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile')->once()
+				->call('rmdir')->withArguments('atoum://workingDirectory/anOtherDirectory')->once()
+				->call('unlink')->withArguments('atoum://workingDirectory/aFile')->once()
+				->call('rmdir')->withArguments('atoum://workingDirectory')->never()
 		;
 	}
 }
