@@ -15,6 +15,7 @@ class stream extends atoum\test
 	{
 		$this->assert
 			->string(atoum\mock\stream::defaultProtocol)->isEqualTo('atoum')
+			->string(atoum\mock\stream::protocolSeparator)->isEqualTo('://')
 		;
 	}
 
@@ -45,7 +46,13 @@ class stream extends atoum\test
 				->adapter($adapter)
 					->call('stream_get_wrappers')->once()
 					->call('stream_wrapper_register')->withArguments(atoum\mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
-				->object(atoum\mock\stream::get($stream))->isIdenticalTo($streamController = atoum\mock\stream::get($stream))
+		;
+
+		$this->assert
+			->object(atoum\mock\stream::get($stream))->isIdenticalTo($streamController = atoum\mock\stream::get($stream))
+			->adapter($adapter)
+				->call('stream_get_wrappers')->never()
+				->call('stream_wrapper_register')->withArguments(atoum\mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->never()
 		;
 
 		$this->assert
@@ -57,14 +64,20 @@ class stream extends atoum\test
 		;
 
 		$this->assert
-			->when(function() use ($adapter) {
-					$adapter->stream_get_wrappers = array(atoum\mock\stream::defaultProtocol);
+				->object(atoum\mock\stream::get($otherStream))->isIdenticalTo(atoum\mock\stream::get($otherStream))
+				->adapter($adapter)
+					->call('stream_get_wrappers')->never()
+					->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->never()
+		;
+
+		$this->assert
+			->when(function() use ($adapter, & $alreadyRegisteredProtocol) {
+					$adapter->stream_get_wrappers = array($alreadyRegisteredProtocol = uniqid());
 				}
 			)
-				->object(atoum\mock\stream::get(uniqid()))->isEqualTo(new atoum\mock\stream\controller())
-				->adapter($adapter)
-					->call('stream_get_wrappers')->once()
-					->call('stream_wrapper_register')->withArguments(atoum\mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->never()
+				->exception(function() use ($alreadyRegisteredProtocol) { atoum\mock\stream::get($alreadyRegisteredProtocol . '://' . uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Stream ' . $alreadyRegisteredProtocol . ' is already registered')
 		;
 
 		$this->assert
@@ -73,12 +86,9 @@ class stream extends atoum\test
 					$adapter->stream_wrapper_register = false;
 				}
 			)
-				->exception(function() { atoum\mock\stream::get(uniqid()); })
+				->exception(function() use ($alreadyRegisteredProtocol) { atoum\mock\stream::get($alreadyRegisteredProtocol . '://' . uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to register ' . atoum\mock\stream::defaultProtocol . ' stream')
-				->adapter($adapter)
-					->call('stream_get_wrappers')->once()
-					->call('stream_wrapper_register')->withArguments(atoum\mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+					->hasMessage('Unable to register ' . $alreadyRegisteredProtocol . ' stream')
 		;
 	}
 

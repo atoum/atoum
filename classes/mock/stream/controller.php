@@ -46,7 +46,7 @@ class controller extends test\adapter
 						break;
 				}
 
-				return parent::__set(self::mapMethod($method), $value);
+				return parent::__set($method, $value);
 		}
 	}
 

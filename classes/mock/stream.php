@@ -10,6 +10,7 @@ use
 class stream
 {
 	const defaultProtocol = 'atoum';
+	const protocolSeparator = '://';
 
 	public $context = null;
 
@@ -17,6 +18,7 @@ class stream
 
 	protected static $adapter = null;
 	protected static $streams = array();
+	protected static $protocols = array();
 
 	public function __call($method, $arguments)
 	{
@@ -68,12 +70,21 @@ class stream
 		if ($protocol === null)
 		{
 			$protocol = self::defaultProtocol;
-			$stream = $protocol . '://' . $stream;
+			$stream = $protocol . self::protocolSeparator . $stream;
 		}
 
-		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
+		if (in_array($protocol, self::$protocols) === false)
 		{
-			throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
+			if (in_array($protocol, $adapter->stream_get_wrappers()) === true)
+			{
+				throw new exceptions\runtime('Stream ' . $protocol . ' is already registered');
+			}
+			else if ($adapter->stream_wrapper_register($protocol, __CLASS__) === false)
+			{
+				throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
+			}
+
+			self::$protocols[] = $protocol;
 		}
 
 		if (isset(self::$streams[$stream]) === false)
@@ -88,7 +99,7 @@ class stream
 	{
 		$scheme = null;
 
-		$schemeSeparator = strpos($stream, '://');
+		$schemeSeparator = strpos($stream, self::protocolSeparator);
 
 		if ($schemeSeparator !== false)
 		{
