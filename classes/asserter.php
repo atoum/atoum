@@ -86,7 +86,7 @@ abstract class asserter
 		return $this;
 	}
 
-	protected function fail($reason, $function = null)
+	protected function fail($reason)
 	{
 		$test = $this->generator->getTest();
 
@@ -106,20 +106,13 @@ abstract class asserter
 				$line = $backtrace['line'];
 			}
 
-			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true)
+			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
 			{
-				if (get_class($backtrace['object']) === $currentClass)
-				{
-					$function = $backtrace['function'];
-				}
-				else if ($backtrace['object'] instanceof $this->generator && $backtrace['function'] == '__call')
-				{
-					$function = $backtrace['args'][0];
-				}
+				$function = $backtrace['function'];
 			}
 		}
 
-		throw new asserter\exception($reason, $this->getScore()->addFail($file, $line, $class, $method, get_class($this) . '::' . $function . '()', $reason));
+		throw new asserter\exception($reason, $this->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason));
 	}
 }
 
