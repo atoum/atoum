@@ -270,7 +270,7 @@ class report implements observers\runner, observers\test, adapter\aggregator
 		return $this;
 	}
 
-	private function setRunnerFields(runner $runner, $event)
+	protected function setRunnerFields(runner $runner, $event)
 	{
 		$this->lastSetFields = array();
 		$this->lastEventValue = $event;
@@ -289,7 +289,7 @@ class report implements observers\runner, observers\test, adapter\aggregator
 		return $this;
 	}
 
-	private function setTestFields(test $test, $event)
+	protected function setTestFields(test $test, $event)
 	{
 		$this->lastSetFields = array();
 		$this->lastEventValue = $event;

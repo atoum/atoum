@@ -12,6 +12,7 @@ class xunit extends atoum\reports\asynchronous
 {
 	const defaultTitle = 'atoum testsuite';
 
+	protected $xunit = '';
 	protected $adapter = null;
 
 	public function __construct(atoum\adapter $adapter = null)
@@ -24,105 +25,112 @@ class xunit extends atoum\reports\asynchronous
 		}
 	}
 
-	public function runnerStop(atoum\runner $runner)
+	public function getRunnerFieldsAsString($event)
 	{
-		$this->title = $this->title ?: self::defaultTitle;
+		return $this->xunit;
+	}
 
-		$score = $runner->getScore();
+	protected function setRunnerFields(atoum\runner $runner, $event)
+	{
+		parent::setRunnerFields($runner, $event);
 
-		$document = new \DOMDocument('1.0', 'UTF-8');
-		$document->formatOutput = true;
-		$document->appendChild($root = $document->createElement('testsuites'));
-		$root->setAttribute('name', $this->title);
-		$durations = $score->getDurations();
-		$errors = $score->getErrors();
-		$excepts = $score->getExceptions();
-		$fails = $score->getFailAssertions();
+		$this->xunit = '';
 
-		$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
-
-		$classes = array();
-
-		foreach ($durations as $duration)
+		if ($event === atoum\runner::runStop)
 		{
-			if (isset($classes[$duration['class']]) === false)
+			$this->title = $this->title ?: self::defaultTitle;
+
+			$score = $runner->getScore();
+
+			$document = new \DOMDocument('1.0', 'UTF-8');
+			$document->formatOutput = true;
+			$document->appendChild($root = $document->createElement('testsuites'));
+			$root->setAttribute('name', $this->title);
+			$durations = $score->getDurations();
+			$errors = $score->getErrors();
+			$excepts = $score->getExceptions();
+			$fails = $score->getFailAssertions();
+
+			$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
+
+			$classes = array();
+
+			foreach ($durations as $duration)
 			{
-				$clname = $duration['class'];
-				$classes[$clname] = array(
-					'errors' => array_filter($errors, $filterClass),
-					'excepts' => array_filter($excepts, $filterClass),
-					'fails' => array_filter($fails, $filterClass),
-					'durations' => array_filter($durations, $filterClass)
-				);
-			}
-		}
-
-		$filterMethod = function ($element) use (& $method) { return ($element['method'] == $method); };
-
-		foreach ($classes as $name => $class)
-		{
-			$antiSlashOffset = strrpos($name, '\\');
-			$clname = substr($name, $antiSlashOffset + 1);
-
-			$root->appendChild($testSuite  = $document->createElement('testsuite'));
-
-			$testSuite->setAttribute('name', $clname);
-			$testSuite->setAttribute('package', substr($name, 0, $antiSlashOffset));
-			$testSuite->setAttribute('tests', sizeof($class['durations']));
-			$testSuite->setAttribute('failures', sizeof($class['fails']));
-			$testSuite->setAttribute('errors', sizeof($class['excepts']) + sizeof($class['errors']));
-
-			$time = 0;
-
-			foreach ($class['durations'] as $duration)
-			{
-				$time += $duration['value'];
-
-				$testSuite->appendChild($testCase = $document->createElement('testcase'));
-
-				$testCase->setAttribute('name', $duration['method']);
-				$testCase->setAttribute('time', $duration['value']);
-				$testCase->setAttribute('classname', $name);
-
-				foreach (array_filter($class['fails'], $filterMethod) as $fail)
+				if (isset($classes[$duration['class']]) === false)
 				{
-					$testCase->appendChild($xFail = $document->createElement('failure', $fail['fail']));
+					$clname = $duration['class'];
+					$classes[$clname] = array(
+						'errors' => array_filter($errors, $filterClass),
+						'excepts' => array_filter($excepts, $filterClass),
+						'fails' => array_filter($fails, $filterClass),
+						'durations' => array_filter($durations, $filterClass)
+					);
+				}
+			}
 
-					$xFail->setAttribute('type','Assertion Fail');
-					$xFail->setAttribute('message', $fail['asserter']);
+			$filterMethod = function ($element) use (& $method) { return ($element['method'] == $method); };
+
+			foreach ($classes as $name => $class)
+			{
+				$antiSlashOffset = strrpos($name, '\\');
+				$clname = substr($name, $antiSlashOffset + 1);
+
+				$root->appendChild($testSuite  = $document->createElement('testsuite'));
+
+				$testSuite->setAttribute('name', $clname);
+				$testSuite->setAttribute('package', substr($name, 0, $antiSlashOffset));
+				$testSuite->setAttribute('tests', sizeof($class['durations']));
+				$testSuite->setAttribute('failures', sizeof($class['fails']));
+				$testSuite->setAttribute('errors', sizeof($class['excepts']) + sizeof($class['errors']));
+
+				$time = 0;
+
+				foreach ($class['durations'] as $duration)
+				{
+					$time += $duration['value'];
+
+					$testSuite->appendChild($testCase = $document->createElement('testcase'));
+
+					$testCase->setAttribute('name', $duration['method']);
+					$testCase->setAttribute('time', $duration['value']);
+					$testCase->setAttribute('classname', $name);
+
+					foreach (array_filter($class['fails'], $filterMethod) as $fail)
+					{
+						$testCase->appendChild($xFail = $document->createElement('failure', $fail['fail']));
+
+						$xFail->setAttribute('type','Assertion Fail');
+						$xFail->setAttribute('message', $fail['asserter']);
+					}
+
+					foreach (array_filter($class['excepts'], $filterMethod) as $except)
+					{
+						$testCase->appendChild($xError = $document->createElement('error'));
+
+						$xError->setAttribute('type','Exception');
+						$xError->appendChild($document->createCDATASection($except['value']));
+					}
 				}
 
-				foreach (array_filter($class['excepts'], $filterMethod) as $except)
+				$testSuite->setAttribute('time', $time);
+
+				foreach ($class['errors'] as $error)
 				{
+					$testSuite->appendChild($testCase = $document->createElement('testcase'));
+
+					$testCase->setAttribute('name', $error['method']);
+					$testCase->setAttribute('time', '0');
+					$testCase->setAttribute('classname', $name);
+
 					$testCase->appendChild($xError = $document->createElement('error'));
 
-					$xError->setAttribute('type','Exception');
-					$xError->appendChild($document->createCDATASection($except['value']));
+					$xError->setAttribute('type', $error['type']);
+					$xError->appendChild($document->createCDATASection($cError['message']));
 				}
 			}
 
-			$testSuite->setAttribute('time', $time);
-
-			foreach ($class['errors'] as $error)
-			{
-				$testSuite->appendChild($testCase = $document->createElement('testcase'));
-
-				$testCase->setAttribute('name', $error['method']);
-				$testCase->setAttribute('time', '0');
-				$testCase->setAttribute('classname', $name);
-
-				$testCase->appendChild($xError = $document->createElement('error'));
-
-				$xError->setAttribute('type', $error['type']);
-				$xError->appendChild($document->createCDATASection($cError['message']));
-			}
-		}
-
-		$this->string = $document->saveXML();
-
-		foreach ($this->writers as $writer)
-		{
-			$writer->writeAsynchronousReport($this);
+			$this->xunit = $document->saveXML();
 		}
 
 		return $this;
