@@ -11,7 +11,7 @@ use
 class xunit extends atoum\reports\asynchronous
 {
 	const defaultTitle = 'atoum testsuite';
-	
+
 	protected $adapter = null;
 
 	public function __construct(atoum\adapter $adapter = null)
@@ -23,13 +23,13 @@ class xunit extends atoum\reports\asynchronous
 			throw new exceptions\runtime('libxml PHP extension is mandatory for xunit report');
 		}
 	}
-	
+
 	public function runnerStop(atoum\runner $runner)
 	{
-		$this->title = $this->title ?: self::defaultTitle; 
-		
+		$this->title = $this->title ?: self::defaultTitle;
+
 		$score = $runner->getScore();
-		
+
 		$document = new \DOMDocument('1.0', 'UTF-8');
 		$document->formatOutput = true;
 		$document->appendChild($root = $document->createElement('testsuites'));
@@ -65,7 +65,7 @@ class xunit extends atoum\reports\asynchronous
 			$clname = substr($name, $antiSlashOffset + 1);
 
 			$root->appendChild($testSuite  = $document->createElement('testsuite'));
-			
+
 			$testSuite->setAttribute('name', $clname);
 			$testSuite->setAttribute('package', substr($name, 0, $antiSlashOffset));
 			$testSuite->setAttribute('tests', sizeof($class['durations']));
@@ -78,11 +78,9 @@ class xunit extends atoum\reports\asynchronous
 			{
 				$time += $duration['value'];
 
-				$method = $duration['method'];
-
 				$testSuite->appendChild($testCase = $document->createElement('testcase'));
 
-				$testCase->setAttribute('name', $method);
+				$testCase->setAttribute('name', $duration['method']);
 				$testCase->setAttribute('time', $duration['value']);
 				$testCase->setAttribute('classname', $name);
 
@@ -107,11 +105,9 @@ class xunit extends atoum\reports\asynchronous
 
 			foreach ($class['errors'] as $error)
 			{
-				$method = $error['method'];
-
 				$testSuite->appendChild($testCase = $document->createElement('testcase'));
 
-				$testCase->setAttribute('name', $methName);
+				$testCase->setAttribute('name', $error['method']);
 				$testCase->setAttribute('time', '0');
 				$testCase->setAttribute('classname', $name);
 
@@ -123,12 +119,12 @@ class xunit extends atoum\reports\asynchronous
 		}
 
 		$this->string = $document->saveXML();
-		
+
 		foreach ($this->writers as $writer)
 		{
 			$writer->writeAsynchronousReport($this);
 		}
-		
+
 		return $this;
 	}
 }

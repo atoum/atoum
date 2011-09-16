@@ -17,8 +17,6 @@ class runner extends atoum\test
 	{
 		$this->assert
 			->testedClass->isSubclassOf('mageekguy\atoum\script')
-			->string(scripts\builder::defaultUnitTestRunnerScript)->isEqualTo('scripts/runner.php')
-			->string(scripts\builder::defaultPharGeneratorScript)->isEqualTo('scripts/phar/generator.php')
 		;
 	}
 
@@ -32,6 +30,7 @@ class runner extends atoum\test
 			->boolean(isset($runner->getAdapter()->exit))->isTrue()
 			->object($runner->getLocale())->isEqualTo(new atoum\locale())
 			->object($runner->getRunner())->isEqualTo(new atoum\runner())
+			->variable($runner->getScoreFile())->isNull()
 		;
 	}
 }

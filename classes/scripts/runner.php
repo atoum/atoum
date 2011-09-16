@@ -56,8 +56,6 @@ class runner extends atoum\script
 		ini_set('log_errors', 'Off');
 		ini_set('display_errors', 'stderr');
 
-		$this->sendSystemConfiguration();
-
 		$runner = $this->runner;
 
 		$this->argumentsParser->addHandler(
@@ -223,52 +221,6 @@ class runner extends atoum\script
 				}
 			}
 		}
-	}
-
-	public function sendSystemConfiguration()
-	{
-		if (in_array('http', stream_get_wrappers()) === true)
-		{
-			$currentConfiguration = new system\configuration();
-			$previousConfiguration = @file_get_contents($configurationFile = atoum\directory . '/tmp/sys.conf');
-
-			if ($previousConfiguration === false || $currentConfiguration->isEqualTo(@unserialize($previousConfiguration)) === false)
-			{
-				echo $this->locale->_('> This is your PHP configuration :') . PHP_EOL;
-				echo $currentConfiguration;
-				echo $this->locale->_('> To help atoum\'s development, do you want sent to its developpers these informations [Y/n] ? ');
-
-				$line = trim(fgets(STDIN));
-
-				$currentConfiguration = serialize($currentConfiguration);
-
-				if ($line === 'n')
-				{
-					echo $this->locale->_('=> No informations about your PHP configuration was sent !') . PHP_EOL;
-				}
-				else
-				{
-					@file_get_contents(
-						atoum\services\stats,
-						false,
-						stream_context_create(array(
-								'http' => array(
-									'method'  => 'POST',
-									'header'  => 'Content-type: application/x-www-form-urlencoded',
-									'content' => http_build_query(array('data' => $currentConfiguration))
-								)
-							)
-						)
-					);
-
-					echo $this->locale->_('=> Informations sent succesfully, thanks for you help !') . PHP_EOL;
-				}
-
-				@file_put_contents($configurationFile, $currentConfiguration);
-			}
-		}
-
-		return $this;
 	}
 
 	public function version()
