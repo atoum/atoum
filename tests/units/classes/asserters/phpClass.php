@@ -178,6 +178,9 @@ class phpClass extends atoum\test
 			->object($asserter->hasParent($parent))->isIdenticalTo($asserter)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->integer($score->getPassNumber())->isEqualTo(1)
+			->object($asserter->hasParent(strtoupper($parent)))->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(2)
 		;
 	}
 
@@ -229,6 +232,54 @@ class phpClass extends atoum\test
 		;
 	}
 
+	public function testIsSubclassOf()
+	{
+		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isSubclassOf(uniqid());
+					}
+				)
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+		;
+
+		$class = uniqid();
+		$parentClass = uniqid();
+
+		$mockController = new atoum\mock\controller();
+		$mockController->__construct = function() {};
+		$mockController->getName = function() use ($class) { return $class; };
+
+		$asserter
+			->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
+			->setWith($class)
+				->getScore()->reset()
+		;
+
+		$mockController->isSubclassOf = false;
+
+		$this->assert
+			->exception(function() use ($asserter, $parentClass) {
+					$asserter->isSubclassOf($parentClass);
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('Class %s is not a sub-class of %s'), $class, $parentClass))
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isZero()
+		;
+
+		$mockController->isSubclassOf = true;
+
+		$this->assert
+			->object($asserter->isSubclassOf($parentClass))->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
 	public function testHasInterface()
 	{
 		$asserter = new asserters\phpClass(new asserter\generator($test = new self($score = new atoum\score())));
@@ -255,7 +306,7 @@ class phpClass extends atoum\test
 				->getScore()->reset()
 		;
 
-		$mockController->getInterfaceNames = array();
+		$mockController->implementsInterface = false;
 
 		$this->assert
 			->exception(function() use ($asserter, $interface) {
@@ -268,7 +319,7 @@ class phpClass extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$mockController->getInterfaceNames = array(uniqid(), $interface, uniqid());
+		$mockController->implementsInterface = true;
 
 		$this->assert
 			->object($asserter->hasInterface($interface))->isIdenticalTo($asserter)

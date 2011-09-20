@@ -72,7 +72,7 @@ class phpClass extends atoum\asserter
 	{
 		$parentClass = $this->classIsSet()->class->getParentClass();
 
-		if ($parentClass !== false && $parentClass->getName() == $parent)
+		if ($parentClass !== false && strtolower($parentClass->getName()) == strtolower($parent))
 		{
 			$this->pass();
 		}
@@ -92,7 +92,7 @@ class phpClass extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not a sub-class of %s'), $this->class->getName(), $parent));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Class %s is not a sub-class of %s'), $this->class->getName(), $parent));
 		}
 
 		return $this;
@@ -114,7 +114,7 @@ class phpClass extends atoum\asserter
 
 	public function hasInterface($interface, $failMessage = null)
 	{
-		if (in_array(ltrim($interface, '\\'), $this->classIsSet()->class->getInterfaceNames()) === true)
+		if ($this->classIsSet()->class->implementsInterface($interface) === true)
 		{
 			$this->pass();
 		}
