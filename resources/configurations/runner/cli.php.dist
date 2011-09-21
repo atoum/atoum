@@ -18,6 +18,6 @@ Generate a CLI report.
 $cliReport = new atoum\reports\realtime\cli();
 $cliReport->addWriter($stdOutWriter);
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($cliReport);
+$runner->addReport($cliReport);
 
 ?>

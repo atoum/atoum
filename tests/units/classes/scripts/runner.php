@@ -31,6 +31,19 @@ class runner extends atoum\test
 			->object($runner->getLocale())->isEqualTo(new atoum\locale())
 			->object($runner->getRunner())->isEqualTo(new atoum\runner())
 			->variable($runner->getScoreFile())->isNull()
+			->array($runner->getArguments())->isEmpty()
+		;
+	}
+
+	public function testSetArguments()
+	{
+		$runner = new scripts\runner($name = uniqid());
+
+		$this->assert
+			->object($runner->setArguments(array()))->isIdenticalTo($runner)
+			->array($runner->getArguments())->isEmpty()
+			->object($runner->setArguments($arguments = array(uniqid(), uniqid(), uniqid())))->isIdenticalTo($runner)
+			->array($runner->getArguments())->isEqualTo($arguments)
 		;
 	}
 }

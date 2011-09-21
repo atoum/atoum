@@ -15,9 +15,11 @@ class runner extends atoum\script
 	protected $runner = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
+	protected $arguments = array();
 	protected $reportsEnabled = true;
 
 	protected static $autorunner = null;
+	protected static $runningRunner = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -50,8 +52,22 @@ class runner extends atoum\script
 		return $this->scoreFile;
 	}
 
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
+
+	public function setArguments(array $arguments)
+	{
+		$this->arguments = $arguments;
+
+		return $this;
+	}
+
 	public function run(array $arguments = array())
 	{
+		self::$runningRunner = $this;
+
 		ini_set('log_errors_max_len', '0');
 		ini_set('log_errors', 'Off');
 		ini_set('display_errors', 'stderr');
@@ -199,7 +215,7 @@ class runner extends atoum\script
 			array('--testIt')
 		);
 
-		parent::run($arguments);
+		parent::run(sizeof($arguments) <= 0 ? $arguments : $this->arguments);
 
 		if ($this->runTests === true)
 		{
@@ -221,6 +237,8 @@ class runner extends atoum\script
 				}
 			}
 		}
+
+		self::$runningRunner = null;
 	}
 
 	public function version()
@@ -268,6 +286,8 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
+		$runner = $this->getRunner();
+
 		include_once $path;
 
 		if (in_array(realpath((string) $path), get_included_files(), true) === false)
@@ -321,7 +341,9 @@ class runner extends atoum\script
 			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
-		$runnerScript = self::$autorunner = new static($name);
+		$runnerScript = new static($name);
+
+		self::$autorunner = $runnerScript->getRunner();
 
 		register_shutdown_function(function() use ($runnerScript) {
 				set_error_handler(function($error, $message, $file, $line) use ($runnerScript) {

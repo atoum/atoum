@@ -216,7 +216,7 @@ $vimReport
   ->addWriter($stdOutWriter)
 ;
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
+$runner->addReport($vimReport);
 
 ?>
 ftplugin/php/atoum.vim	[[[1

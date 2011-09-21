@@ -25,6 +25,6 @@ $cliReport
 	->addRunnerField($coverageField, array(atoum\runner::runStop))
 ;
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($cliReport);
+$runner->addReport($cliReport);
 
 ?>

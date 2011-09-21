@@ -25,6 +25,6 @@ $builderReport
 	->addWriter($mailWriter)
 ;
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($builderReport);
+$runner->addReport($builderReport);
 
 ?>
