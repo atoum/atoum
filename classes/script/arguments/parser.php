@@ -76,7 +76,7 @@ class parser implements \iteratorAggregate
 
 			if (self::isArgument($value) === false)
 			{
-				throw new exceptions\runtime\unexpectedValue('First argument is invalid');
+				throw new exceptions\runtime\unexpectedValue(sprintf('First argument (%s) is invalid', $value));
 			}
 
 			$argument = $value;
