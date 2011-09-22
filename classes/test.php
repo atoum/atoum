@@ -429,17 +429,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 			else
 			{
-				$this->children = array();
 				$this->phpCode =
 					'<?php ' .
+					'ob_start();' .
 					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
 					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
-					'$test->run(array(\'%s\'), false);' .
-					'file_put_contents(\'%s\', serialize($test->getScore()));' .
+					'$test->run(array($method = \'%s\'), false);' .
+					'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
 					'?>'
 				;
 
@@ -479,7 +479,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							{
 								if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
 								{
-									$child[4] .= stream_get_contents($child[1][2]);
+									$child[3] .= stream_get_contents($child[1][2]);
 
 									if (feof($child[1][2]) === true)
 									{
@@ -490,7 +490,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 								if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
 								{
-									$child[3] .= stream_get_contents($child[1][1]);
+									$child[2] .= stream_get_contents($child[1][1]);
 
 									if (feof($child[1][1]) === true)
 									{
@@ -527,13 +527,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$score = new score();
 
-									$tmpFileContent = @file_get_contents($child[2]);
-
-									@unlink($child[2]);
-
-									if ($tmpFileContent !== false)
+									if ($child[2] !== '')
 									{
-										$score = @unserialize($tmpFileContent);
+										$score = @unserialize($child[2]);
 
 										if ($score instanceof score === false)
 										{
@@ -543,14 +539,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									if ($child[3] !== '')
 									{
-										$score->addOutput($this->class, $testMethod, $child[3]);
-									}
-
-									if ($child[4] !== '')
-									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[4]), $errors, PREG_SET_ORDER) === 0)
+										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[4]);
+											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[3]);
 										}
 										else foreach ($errors as $error)
 										{
@@ -726,6 +717,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		ini_restore('display_errors');
 		ini_restore('log_errors');
+		ini_restore('log_errors_max_len');
 
 		return $this;
 	}
@@ -808,23 +800,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$pipes
 			);
 
-			$this->currentMethod = array_shift($this->runTestMethods);
+			$currentMethod = array_shift($this->runTestMethods);
 
 			$this->callObservers(self::beforeTestMethod);
 
-			fwrite($pipes[0], sprintf($this->phpCode, $this->currentMethod, $tmpFile = tempnam(sys_get_temp_dir(), 'atm')));
+			fwrite($pipes[0], sprintf($this->phpCode, $currentMethod));
 			fclose($pipes[0]);
 			unset($pipes[0]);
 
-			$this->children[$this->currentMethod] = array(
+			$this->children[$currentMethod] = array(
 				$php,
 				$pipes,
-				$tmpFile,
 				'',
 				''
 			);
 
-			$this->currentMethod = null;
 			$this->testsToRun--;
 		}
 
