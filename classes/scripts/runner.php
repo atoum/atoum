@@ -341,15 +341,13 @@ class runner extends atoum\script
 			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
-		$runnerScript = new static($name);
+		$autorunner = self::$autorunner = new static($name);
 
-		self::$autorunner = $runnerScript->getRunner();
-
-		register_shutdown_function(function() use ($runnerScript) {
-				set_error_handler(function($error, $message, $file, $line) use ($runnerScript) {
+		register_shutdown_function(function() use ($autorunner) {
+				set_error_handler(function($error, $message, $file, $line) use ($autorunner) {
 						if (error_reporting() !== 0)
 						{
-							$runnerScript->writeError($message . ' ' . $file . ' ' . $line);
+							$autorunner->writeError($message . ' ' . $file . ' ' . $line);
 
 							exit(2);
 						}
@@ -358,22 +356,22 @@ class runner extends atoum\script
 
 				try
 				{
-					$runnerScript->run();
+					$autorunner->run();
 				}
 				catch (\exception $exception)
 				{
-					$runnerScript->writeError($exception->getMessage());
+					$autorunner->writeError($exception->getMessage());
 
 					exit(3);
 				}
 
-				$score = $runnerScript->getRunner()->getScore();
+				$score = $autorunner->getRunner()->getScore();
 
 				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
 			}
 		);
 
-		return $runnerScript;
+		return $autorunner;
 	}
 }
 

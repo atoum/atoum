@@ -470,57 +470,53 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
 
-						if ($pipesUpdated !== false)
+						if ($pipesUpdated !== false && $pipesUpdated > 0)
 						{
-							if ($pipesUpdated == 0)
+							$children = $this->children;
+							$this->children = array();
+
+							foreach ($children as $testMethod => $child)
 							{
-								$this->runChild();
-							}
-							else
-							{
-								foreach ($pipes as $writedPipe)
+								if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
 								{
-									foreach ($this->children as $testMethod => $child)
+									$child[4] .= stream_get_contents($child[1][2]);
+
+									if (feof($child[1][2]) === true)
 									{
-										switch (true)
-										{
-											case isset($child[1][2]) && $writedPipe === $child[1][2]:
-												$this->children[$testMethod][4] .= stream_get_contents($child[1][2]);
-
-												if (feof($child[1][2]) === true)
-												{
-													fclose($child[1][2]);
-													unset($this->children[$testMethod][1][2]);
-												}
-												break;
-
-											case isset($child[1][1]) && $writedPipe === $child[1][1]:
-												$this->children[$testMethod][3] .= stream_get_contents($child[1][1]);
-
-												if (feof($child[1][1]) === true)
-												{
-													fclose($child[1][1]);
-													unset($this->children[$testMethod][1][1]);
-												}
-												break;
-										}
+										fclose($child[1][2]);
+										unset($child[1][2]);
 									}
 								}
 
-								foreach (array_filter($this->children, function($child) { return isset($child[1][1]) === false && isset($child[1][2]) === false; }) as $testMethod => $terminatedChild)
+								if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
 								{
-									$this->currentMethod = $testMethod;
-									$this->callObservers(self::afterTestMethod);
-									$this->currentMethod = null;
+									$child[3] .= stream_get_contents($child[1][1]);
 
-									$phpStatus = proc_get_status($terminatedChild[0]);
+									if (feof($child[1][1]) === true)
+									{
+										fclose($child[1][1]);
+										unset($child[1][1]);
+									}
+								}
+
+								if (isset($child[1][1]) === true || isset($child[1][2]) === true)
+								{
+									$this->children[] = $child;
+								}
+								else
+								{
+									$phpStatus = proc_get_status($child[0]);
 
 									while ($phpStatus['running'] == true)
 									{
-										$phpStatus = proc_get_status($terminatedChild[0]);
+										$phpStatus = proc_get_status($child[0]);
 									}
 
-									proc_close($terminatedChild[0]);
+									proc_close($child[0]);
+
+									$this->currentMethod = $testMethod;
+									$this->callObservers(self::afterTestMethod);
+									$this->currentMethod = null;
 
 									switch ($phpStatus['exitcode'])
 									{
@@ -531,9 +527,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$score = new score();
 
-									$tmpFileContent = @file_get_contents($terminatedChild[2]);
+									$tmpFileContent = @file_get_contents($child[2]);
 
-									@unlink($terminatedChild[2]);
+									@unlink($child[2]);
 
 									if ($tmpFileContent !== false)
 									{
@@ -545,16 +541,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 										}
 									}
 
-									if ($terminatedChild[3] !== '')
+									if ($child[3] !== '')
 									{
-										$score->addOutput($this->class, $testMethod, $terminatedChild[3]);
+										$score->addOutput($this->class, $testMethod, $child[3]);
 									}
 
-									if ($terminatedChild[4] !== '')
+									if ($child[4] !== '')
 									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($terminatedChild[4]), $errors, PREG_SET_ORDER) === 0)
+										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[4]), $errors, PREG_SET_ORDER) === 0)
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $terminatedChild[4]);
+											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[4]);
 										}
 										else foreach ($errors as $error)
 										{
@@ -584,8 +580,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$this->score->merge($score);
 								}
-
-								$this->children = array_filter($this->children, function($child) { return isset($child[1][1]) === true || isset($child[1][2]) === true; });
 							}
 						}
 					}
@@ -675,7 +669,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			try
 			{
-
 				$this->beforeTestMethod($this->currentMethod);
 
 				ob_start();
