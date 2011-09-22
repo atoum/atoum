@@ -215,7 +215,7 @@ class runner extends atoum\script
 			array('--testIt')
 		);
 
-		parent::run(sizeof($arguments) <= 0 ? $arguments : $this->arguments);
+		parent::run(sizeof($arguments) > 0 ? $arguments : $this->arguments);
 
 		if ($this->runTests === true)
 		{
