@@ -32,6 +32,64 @@ class runner extends atoum\test
 			->object($runner->getRunner())->isEqualTo(new atoum\runner())
 			->variable($runner->getScoreFile())->isNull()
 			->array($runner->getArguments())->isEmpty()
+			->array($runner->getHelp())->isEqualTo(array(
+					array(
+						array('-h', '--help'),
+						null,
+						'Display this help'
+					),
+					array(
+						array('-v', '--version'),
+						null,
+						'Display version'
+					),
+					array(
+						array('-p', '--php'),
+						'<path/to/php/binary>',
+						'Path to PHP binary which must be used to run tests'
+					),
+					array(
+						array('-drt', '--default-report-title'),
+						'<string>',
+						'Define default report title'
+					),
+					array(
+						array('-c', '--configuration-files'),
+						'<files>',
+						'Use configuration <files>'
+					),
+					array(
+						array('-sf', '--score-file'),
+						'<file>',
+						'Save score in <file>'
+					),
+					array(
+						array('-mcn', '--max-children-number'),
+						'<integer>',
+						'Maximum number of sub-processus which will be run simultaneously'
+					),
+					array(
+						array('-ncc', '--no-code-coverage'),
+						null,
+						'Disable code coverage'
+					),
+					array(
+						array('-t', '--test-files'),
+						'<files>',
+						'Execute unit test <files>'
+					),
+					array(
+						array('-d', '--directories'),
+						'<directories>',
+						'Execute unit test files in <directories>'
+					),
+					array(
+						array('--testIt'),
+						null,
+						'Execute atoum unit tests'
+					)
+				)
+			)
 		;
 	}
 
