@@ -215,7 +215,7 @@ class parser extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-				->hasMessage('First argument is invalid')
+				->hasMessage('First argument \'b\' is invalid')
 			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array()))
 			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
