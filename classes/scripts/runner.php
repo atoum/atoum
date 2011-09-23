@@ -154,7 +154,7 @@ class runner extends atoum\script
 					$script->runFile($path);
 				}
 			},
-			array('-t', '--test-files'),
+			array('-f', '--test-files'),
 			'<files>',
 			$this->locale->_('Execute unit test <files>')
 		);
@@ -175,6 +175,21 @@ class runner extends atoum\script
 			'<directories>',
 			$this->locale->_('Execute unit test files in <directories>')
 		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $tags) use ($runner) {
+				if (sizeof($tags) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$runner->setTags($tags);
+			},
+			array('-t', '--tags'),
+			'<tags>',
+			$this->locale->_('Execute only unit test with tags <tags>')
+		);
+
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {

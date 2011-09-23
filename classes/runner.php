@@ -28,6 +28,7 @@ class runner implements observable, adapter\aggregator
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
+	protected $tags = null;
 
 	private $start = null;
 	private $stop = null;
@@ -173,6 +174,18 @@ class runner implements observable, adapter\aggregator
 		$this->phpPath = (string) $path;
 
 		return $this;
+	}
+
+	public function setTags(array $tags)
+	{
+		$this->tags = $tags;
+
+		return $this;
+	}
+
+	public function getTags()
+	{
+		return $this->tags;
 	}
 
 	public function enableCodeCoverage()
@@ -337,7 +350,7 @@ class runner implements observable, adapter\aggregator
 			{
 				$test = new $runTestClass();
 
-				if ($test->isIgnored() === false)
+				if ($this->isIgnored($test) === false)
 				{
 					$this->testNumber++;
 					$this->testMethodNumber += sizeof($test);
@@ -423,6 +436,18 @@ class runner implements observable, adapter\aggregator
 	public static function getObserverEvents()
 	{
 		return array(self::runStart, self::runStop);
+	}
+
+	protected function isIgnored(test $test)
+	{
+		$isIgnored = $test->isIgnored();
+
+		if ($isIgnored === false && $this->tags !== null)
+		{
+			$isIgnored = ($testTags = $test->getTags()) === null || sizeof(array_intersect($this->tags, $testTags)) == 0;
+		}
+
+		return $isIgnored;
 	}
 
 	protected static function remove($needle, array $haystack)

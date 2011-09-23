@@ -22,13 +22,17 @@ class extractor implements \iteratorAggregate
 		{
 			foreach (explode("\n", trim(trim($comments, '/*'))) as $comment)
 			{
-				$comment = preg_split("/\s+/", trim(trim(trim($comment), '*/')));
+				$comment = trim(trim(trim($comment), '*/'));
 
-				if (sizeof($comment) == 2)
+				if (substr($comment, 0, 1) == '@')
 				{
-					if (substr($comment[0], 0, 1) == '@')
+					$comment = preg_split("/\s+/", $comment);
+
+					$sizeofComment = sizeof($comment);
+
+					if ($sizeofComment >= 2)
 					{
-						$this->annotations[substr($comment[0], 1)] = $comment[1];
+						$this->annotations[substr($comment[0], 1)] = $sizeofComment == 2 ? $comment[1] : join(' ', array_slice($comment, 1));
 					}
 				}
 			}

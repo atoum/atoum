@@ -179,6 +179,27 @@ class extractor extends atoum\test
 					$annotation => $value
 				)
 			)
+			->object($extractor->extract(
+					self::space() .
+					'/' .
+					self::star() .
+					'@' .
+					$annotation .
+					self::space() .
+					$value .
+					($firstSpace = self::space()) .
+					($otherValue = uniqid()) .
+					($secondSpace = self::space()) .
+					($anotherValue = uniqid()) .
+					self::space() .
+					self::star(10, 1) .
+					'/' .
+					self::space()
+				))->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isEqualTo(array(
+					$annotation => $value . ' ' . $otherValue . ' ' . $anotherValue
+				)
+			)
 		;
 	}
 

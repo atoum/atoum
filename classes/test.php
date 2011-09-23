@@ -33,6 +33,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $asserterGenerator = null;
 	private $score = null;
 	private $observers = array();
+	private $tags = null;
 	private $ignore = false;
 	private $testMethods = array();
 	private $runTestMethods = array();
@@ -86,6 +87,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				case 'ignore':
 					$this->ignore = $value == 'on';
+					break;
+
+				case 'tags':
+					$this->tags = explode(' ', $value);
 					break;
 			}
 		}
@@ -271,6 +276,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->phpPath;
 	}
 
+	public function getTags()
+	{
+		return $this->tags;
+	}
+
 	public function setAdapter(atoum\adapter $adapter)
 	{
 		$this->adapter = $adapter;
@@ -402,199 +412,202 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
-		$this->callObservers(self::runStart);
-
-		if (sizeof($runTestMethods) > 0)
+		if ($this->ignore === false)
 		{
-			$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
+			$this->callObservers(self::runStart);
 
-			if (sizeof($unknownTestMethods) > 0)
+			if (sizeof($runTestMethods) > 0)
 			{
-				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
-			}
+				$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
 
-			$this->runTestMethods = $runTestMethods;
-		}
-
-		$this->testsToRun = sizeof($this->runTestMethods);
-
-		if ($this->testsToRun > 0)
-		{
-			if ($runInChildProcess === false)
-			{
-				foreach ($this->runTestMethods as $testMethod)
+				if (sizeof($unknownTestMethods) > 0)
 				{
-					$this->runTestMethod($testMethod);
+					throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
 				}
+
+				$this->runTestMethods = $runTestMethods;
 			}
-			else
+
+			$this->testsToRun = sizeof($this->runTestMethods);
+
+			if ($this->testsToRun > 0)
 			{
-				$this->phpCode =
-					'<?php ' .
-					'ob_start();' .
-					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
-					'require \'' . $this->path . '\';' .
-					'$test = new ' . $this->class . '();' .
-					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
-					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
-					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
-					'$test->run(array($method = \'%s\'), false);' .
-					'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
-					'?>'
-				;
-
-				$null = null;
-
-				try
+				if ($runInChildProcess === false)
 				{
-					$this->callObservers(self::beforeSetUp);
-					$this->setUp();
-					$this->callObservers(self::afterSetUp);
-
-					while (sizeof($this->runChild()->children) > 0)
+					foreach ($this->runTestMethods as $testMethod)
 					{
-						$pipes = array();
+						$this->runTestMethod($testMethod);
+					}
+				}
+				else
+				{
+					$this->phpCode =
+						'<?php ' .
+						'ob_start();' .
+						'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
+						'require \'' . $this->path . '\';' .
+						'$test = new ' . $this->class . '();' .
+						'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
+						'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+						($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
+						'$test->run(array($method = \'%s\'), false);' .
+						'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
+						'?>'
+					;
 
-						foreach ($this->children as $child)
+					$null = null;
+
+					try
+					{
+						$this->callObservers(self::beforeSetUp);
+						$this->setUp();
+						$this->callObservers(self::afterSetUp);
+
+						while (sizeof($this->runChild()->children) > 0)
 						{
-							if (isset($child[1][1]) === true)
+							$pipes = array();
+
+							foreach ($this->children as $child)
 							{
-								$pipes[] = $child[1][1];
+								if (isset($child[1][1]) === true)
+								{
+									$pipes[] = $child[1][1];
+								}
+
+								if (isset($child[1][2]) === true)
+								{
+									$pipes[] = $child[1][2];
+								}
 							}
 
-							if (isset($child[1][2]) === true)
+							$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
+
+							if ($pipesUpdated !== false && $pipesUpdated > 0)
 							{
-								$pipes[] = $child[1][2];
-							}
-						}
+								$children = $this->children;
+								$this->children = array();
 
-						$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
-
-						if ($pipesUpdated !== false && $pipesUpdated > 0)
-						{
-							$children = $this->children;
-							$this->children = array();
-
-							foreach ($children as $testMethod => $child)
-							{
-								if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
+								foreach ($children as $testMethod => $child)
 								{
-									$child[3] .= stream_get_contents($child[1][2]);
-
-									if (feof($child[1][2]) === true)
+									if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
 									{
-										fclose($child[1][2]);
-										unset($child[1][2]);
+										$child[3] .= stream_get_contents($child[1][2]);
+
+										if (feof($child[1][2]) === true)
+										{
+											fclose($child[1][2]);
+											unset($child[1][2]);
+										}
 									}
-								}
 
-								if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
-								{
-									$child[2] .= stream_get_contents($child[1][1]);
-
-									if (feof($child[1][1]) === true)
+									if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
 									{
-										fclose($child[1][1]);
-										unset($child[1][1]);
+										$child[2] .= stream_get_contents($child[1][1]);
+
+										if (feof($child[1][1]) === true)
+										{
+											fclose($child[1][1]);
+											unset($child[1][1]);
+										}
 									}
-								}
 
-								if (isset($child[1][1]) === true || isset($child[1][2]) === true)
-								{
-									$this->children[] = $child;
-								}
-								else
-								{
-									$phpStatus = proc_get_status($child[0]);
-
-									while ($phpStatus['running'] == true)
+									if (isset($child[1][1]) === true || isset($child[1][2]) === true)
+									{
+										$this->children[] = $child;
+									}
+									else
 									{
 										$phpStatus = proc_get_status($child[0]);
-									}
 
-									proc_close($child[0]);
-
-									$this->currentMethod = $testMethod;
-									$this->callObservers(self::afterTestMethod);
-									$this->currentMethod = null;
-
-									switch ($phpStatus['exitcode'])
-									{
-										case 126:
-										case 127:
-											throw new exceptions\runtime('Unable to execute test with \'' . $this->getPhpPath() . '\'');
-									}
-
-									$score = new score();
-
-									if ($child[2] !== '')
-									{
-										$score = @unserialize($child[2]);
-
-										if ($score instanceof score === false)
+										while ($phpStatus['running'] == true)
 										{
-											$score = new score();
+											$phpStatus = proc_get_status($child[0]);
 										}
-									}
 
-									if ($child[3] !== '')
-									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
+										proc_close($child[0]);
+
+										$this->currentMethod = $testMethod;
+										$this->callObservers(self::afterTestMethod);
+										$this->currentMethod = null;
+
+										switch ($phpStatus['exitcode'])
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[3]);
+											case 126:
+											case 127:
+												throw new exceptions\runtime('Unable to execute test with \'' . $this->getPhpPath() . '\'');
 										}
-										else foreach ($errors as $error)
+
+										$score = new score();
+
+										if ($child[2] !== '')
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+											$score = @unserialize($child[2]);
+
+											if ($score instanceof score === false)
+											{
+												$score = new score();
+											}
 										}
-									}
 
-									if ($score->getFailNumber() > 0)
-									{
-										$this->callObservers(self::fail);
-									}
+										if ($child[3] !== '')
+										{
+											if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
+											{
+												$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[3]);
+											}
+											else foreach ($errors as $error)
+											{
+												$score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+											}
+										}
 
-									if ($score->getErrorNumber() > 0)
-									{
-										$this->callObservers(self::error);
-									}
+										if ($score->getFailNumber() > 0)
+										{
+											$this->callObservers(self::fail);
+										}
 
-									if ($score->getExceptionNumber() > 0)
-									{
-										$this->callObservers(self::exception);
-									}
+										if ($score->getErrorNumber() > 0)
+										{
+											$this->callObservers(self::error);
+										}
 
-									if ($score->getPassNumber() > 0)
-									{
-										$this->callObservers(self::success);
-									}
+										if ($score->getExceptionNumber() > 0)
+										{
+											$this->callObservers(self::exception);
+										}
 
-									$this->score->merge($score);
+										if ($score->getPassNumber() > 0)
+										{
+											$this->callObservers(self::success);
+										}
+
+										$this->score->merge($score);
+									}
 								}
 							}
 						}
+
+						$this
+							->callObservers(self::beforeTearDown)
+							->tearDown()
+							->callObservers(self::afterTearDown)
+						;
 					}
+					catch (\exception $exception)
+					{
+						$this
+							->callObservers(self::beforeTearDown)
+							->tearDown()
+							->callObservers(self::afterTearDown)
+						;
 
-					$this
-						->callObservers(self::beforeTearDown)
-						->tearDown()
-						->callObservers(self::afterTearDown)
-					;
-				}
-				catch (\exception $exception)
-				{
-					$this
-						->callObservers(self::beforeTearDown)
-						->tearDown()
-						->callObservers(self::afterTearDown)
-					;
-
-					throw $exception;
+						throw $exception;
+					}
 				}
 			}
-		}
 
-		$this->callObservers(self::runStop);
+			$this->callObservers(self::runStop);
+		}
 
 		return $this;
 	}

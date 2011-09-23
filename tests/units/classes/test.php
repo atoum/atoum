@@ -20,7 +20,10 @@ namespace mageekguy\atoum\tests\units
 
 	require_once __DIR__ . '/../runner.php';
 
-	/** @ignore on */
+	/**
+	@ignore on
+	@tags empty fake dummy
+	*/
 	class emptyTest extends atoum\test {}
 
 	/** @ignore on */
@@ -71,6 +74,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
+				->array($test->getTags())->isEqualTo(array('empty', 'fake', 'dummy'))
 				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -86,6 +90,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
+				->array($test->getTags())->isEqualTo(array('empty', 'fake', 'dummy'))
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -101,6 +106,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
+				->array($test->getTags())->isEqualTo(array('empty', 'fake', 'dummy'))
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -113,6 +119,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
+				->variable($test->getTags())->isNull()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
@@ -125,6 +132,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isFalse()
+				->variable($test->getTags())->isNull()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
 			;
