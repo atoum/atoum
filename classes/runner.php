@@ -118,8 +118,19 @@ class runner implements observable, adapter\aggregator
 			}
 			else
 			{
-				$phpPath = PHP_BINDIR . '/php';
-
+				if (getenv('windir'))
+				{
+					if (getenv('PHP_BINDIR') === false)
+					{
+						throw new exceptions\runtime('Unable to find PHP_BINDIR environment variable');
+					}
+					$phpPath = getenv('PHP_BINDIR') . '/php.exe';
+				}
+				else
+				{
+					$phpPath = PHP_BINDIR . '/php';
+				}
+				
 				if ($this->adapter->is_executable($phpPath) === false)
 				{
 					throw new exceptions\runtime('Unable to find PHP executable');
@@ -128,7 +139,7 @@ class runner implements observable, adapter\aggregator
 				$this->setPhpPath($phpPath);
 			}
 		}
-
+		
 		return $this->phpPath;
 	}
 
@@ -257,8 +268,17 @@ class runner implements observable, adapter\aggregator
 			->setAtoumPath($this->adapter->defined(static::atoumDirectoryConstant) === false ? null : $this->adapter->constant(static::atoumDirectoryConstant))
 		;
 
-		$phpPath = $this->adapter->realpath($this->getPhpPath());
-
+		$phpPath = '';
+		
+		if (getenv('windir')) 
+		{
+			$phpPath = '"' . $this->adapter->realpath($this->getPhpPath()) . '"';
+		}
+		else
+		{
+			$phpPath = $this->adapter->realpath($this->getPhpPath());
+		}
+		
 		if ($phpPath === false)
 		{
 			throw new exceptions\runtime('Unable to find \'' . $this->getPhpPath() . '\'');
