@@ -223,6 +223,93 @@ class string extends atoum\test
 			->integer($score->getFailNumber())->isZero()
 		;
 	}
+
+	public function testIsHash()
+	{
+		$string = 'hello';
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$algos = array_intersect(hash_algos(), array(
+			'sha1',
+			'md5',
+			'sha256',
+			'sha512',
+		));
+		sort($algos);
+
+		foreach ($algos as $i => $algo)
+		{
+			$testedMethod = 'is'.ucfirst($algo);
+
+			$asserter->setWith($value = hash($algo, $string));
+
+			$score->reset();
+
+			$this->assert
+				->object($asserter->$testedMethod())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isZero()
+			;
+
+			$asserter->setWith($newvalue = substr($value, 1));
+
+			$score->reset();
+
+			$diff = new diffs\variable();
+
+			$diff->setReference( $newvalue )->setData($value);
+
+			$this->assert
+				->exception(function() use ($asserter, $testedMethod, & $line) {
+					$line = __LINE__; $asserter->$testedMethod();
+				})
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
+				->integer($score->getPassNumber())->isZero()
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::' . $testedMethod . '()',
+						'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
+					)
+				))
+			;
+
+			$asserter->setWith($newvalue = 'z'.substr($value, 1) );
+
+			$score->reset();
+
+			$diff = new diffs\variable();
+
+			$diff->setReference($newvalue)->setData($value);
+
+			$this->assert
+				->exception(function() use ($asserter, $testedMethod, & $line) {
+					$line = __LINE__; $asserter->$testedMethod();
+				})
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
+				->integer($score->getPassNumber())->isZero()
+				->integer($score->getFailNumber())->isEqualTo(1)
+				->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::' . $testedMethod . '()',
+						'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
+					)
+				))
+			;
+		}
+	}
 }
 
 ?>
