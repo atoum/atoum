@@ -13,7 +13,7 @@ class generator extends atoum\script
 {
 	const phar = 'mageekguy.atoum.phar';
 
-	protected $help = false;
+	protected $generate = true;
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;
 	protected $stubFile = null;
@@ -172,35 +172,11 @@ class generator extends atoum\script
 
 	public function run(array $arguments = array())
 	{
-		$this->help = false;
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->help();
-			},
-			array('-h', '--help')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setDestinationDirectory($values[0]);
-			},
-			array('-d', '--directory')
-		);
+		$this->generate = true;
 
 		parent::run($arguments);
 
-		if ($this->help === false)
+		if ($this->generate === true)
 		{
 			$this->generate();
 		}
@@ -210,21 +186,9 @@ class generator extends atoum\script
 
 	public function help()
 	{
-		$this
-			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
-			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-		;
+		$this->generate = false;
 
-		$options = array(
-			'-h, --help' => $this->locale->_('Display this help'),
-			'-d <dir>, --directory <dir>' => $this->locale->_('Destination directory <dir>')
-		);
-
-		$this->writeLabels($options);
-
-		$this->help = true;
-
-		return $this;
+		return parent::help();
 	}
 
 	protected function generate()
@@ -353,6 +317,39 @@ class generator extends atoum\script
 		}
 
 		return $path;
+	}
+
+	protected function setArgumentHandlers()
+	{
+		$this->addArgumentHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->help();
+			},
+			array('-h', '--help'),
+			null,
+			'Display this help'
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) !== 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setDestinationDirectory($values[0]);
+			},
+			array('-d', '--directory'),
+			'<directory>',
+			$this->locale->_('Destination directory <dir>')
+		);
+
+		return $this;
 	}
 }
 

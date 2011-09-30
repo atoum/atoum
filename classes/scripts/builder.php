@@ -486,204 +486,7 @@ class builder extends atoum\script
 
 	public function run(array $arguments = array())
 	{
-		$builder = $this;
 
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) != 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script
-					->disablePharCreation()
-					->help()
-				;
-			},
-			array('-h', '--help')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $files) use ($builder) {
-				if (sizeof($files) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				foreach ($files as $file)
-				{
-					if (file_exists($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file path \'%s\' is invalid'), $file));
-					}
-
-					if (is_readable($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
-					}
-
-					require_once $file;
-				}
-			},
-			array('-c', '--configuration-files')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $files) use ($builder) {
-				if (sizeof($files) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				foreach ($files as $file)
-				{
-					if (file_exists($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Runner configuration file path \'%s\' is invalid'), $file));
-					}
-
-					if (is_readable($file) === false)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read runner configuration file \'%s\''), $file));
-					}
-
-					$script->addRunnerConfigurationFile($file);
-				}
-			},
-			array('-rc', '--runner-configuration-files')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $path) {
-				if (sizeof($path) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setPhpPath(current($path));
-			},
-			array('-p', '--php')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) {
-				if (sizeof($directory) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setWorkingDirectory(current($directory));
-			},
-			array('-w', '--working-directory')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) {
-				if (sizeof($directory) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setDestinationDirectory(current($directory));
-			},
-			array('-d', '--destination-directory')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $url) {
-				if (sizeof($url) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->getVcs()->setRepositoryUrl(current($url));
-			},
-			array('-r', '--repository-url')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) {
-				if (sizeof($directory) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setScoreDirectory(current($directory));
-			},
-			array('-sd', '--score-directory')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $file) {
-				if (sizeof($file) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setRevisionFile(current($file));
-			},
-			array('-rf', '--revision-file')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $directory) {
-				if (sizeof($directory) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setErrorsDirectory(current($directory));
-			},
-			array('-ed', '--errors-directory')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $version) {
-				if (sizeof($version) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setVersion(current($version));
-			},
-			array('-v', '--version')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $unitTestRunnerScript) {
-				if (sizeof($unitTestRunnerScript) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setUnitTestRunnerScript(current($unitTestRunnerScript));
-			},
-			array('-utrs', '--unit-test-runner-script')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $pharGeneratorScript) {
-				if (sizeof($pharGeneratorScript) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setPharGeneratorScript(current($pharGeneratorScript));
-			},
-			array('-pgs', '--phar-generator-script')
-		);
-
-		$this->argumentsParser->addHandler(
-			function($script, $argument, $reportTitle) {
-				if (sizeof($reportTitle) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setReportTitle(current($reportTitle));
-			},
-			array('-rt', '--report-title')
-		);
 
 		parent::run($arguments);
 
@@ -722,31 +525,6 @@ class builder extends atoum\script
 		return $this;
 	}
 
-	public function help()
-	{
-		$this
-			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
-			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-		;
-
-		$this->writeLabels(
-			array(
-				'-h, --help' => $this->locale->_('Display this help'),
-				'-c <file>, --configuration-file <file>' => $this->locale->_('Use <file> as configuration file for builder'),
-				'-rc <file>, --runner-configuration-file <file>' => $this->locale->_('Use <file> as configuration file for runner'),
-				'-v <string>, --v <string>' => $this->locale->_('Version <string> will be used as version name'),
-				'-rf <file>, --revision-file <file>' => $this->locale->_('Save last revision in <file>'),
-				'-sd <file>, --score-directory <directory>' => $this->locale->_('Save score in <directory>'),
-				'-r <url>, --repository-url <url>' => $this->locale->_('Url of repository'),
-				'-w <directory>, --working-directory <directory>' => $this->locale->_('Checkout file from repository in <directory>'),
-				'-d <directory>, --destination-directory <directory>' => $this->locale->_('Save phar in <directory>'),
-				'-ed <directory>, --errors-directory <directory>' => $this->locale->_('Save errors in <directory>')
-			)
-		);
-
-		return $this;
-	}
-
 	public function writeErrorInErrorsDirectory($error)
 	{
 		if ($this->errorsDirectory !== null)
@@ -765,6 +543,233 @@ class builder extends atoum\script
 				throw new exceptions\runtime('Unable to save error in file \'' . $errorFile . '\'');
 			}
 		}
+
+		return $this;
+	}
+
+	protected function setArgumentHandlers()
+	{
+		$builder = $this;
+
+		$this->addArgumentHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) != 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script
+					->disablePharCreation()
+					->help()
+				;
+			},
+			array('-h', '--help'),
+			null,
+			$this->locale->_('Display this help')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $files) use ($builder) {
+				if (sizeof($files) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				foreach ($files as $file)
+				{
+					if (file_exists($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file path \'%s\' is invalid'), $file));
+					}
+
+					if (is_readable($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
+					}
+
+					require_once $file;
+				}
+			},
+			array('-c', '--configuration-files'),
+			'<file>',
+			$this->locale->_('Use <file> as configuration file for builder')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $files) use ($builder) {
+				if (sizeof($files) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				foreach ($files as $file)
+				{
+					if (file_exists($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Runner configuration file path \'%s\' is invalid'), $file));
+					}
+
+					if (is_readable($file) === false)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read runner configuration file \'%s\''), $file));
+					}
+
+					$script->addRunnerConfigurationFile($file);
+				}
+			},
+			array('-rc', '--runner-configuration-files'),
+			'<file>',
+			 $this->locale->_('Use <file> as configuration file for runner')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $path) {
+				if (sizeof($path) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setPhpPath(current($path));
+			},
+			array('-p', '--php'),
+			'<path>',
+			$this->locale->_('Path to PHP binary')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setWorkingDirectory(current($directory));
+			},
+			array('-w', '--working-directory'),
+			'<directory>',
+			$this->locale->_('Checkout file from repository in <directory>')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setDestinationDirectory(current($directory));
+			},
+			array('-d', '--destination-directory'),
+			'<directory>',
+			$this->locale->_('Save phar in <directory>')
+
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setScoreDirectory(current($directory));
+			},
+			array('-sd', '--score-directory'),
+			'<directory>',
+			$this->locale->_('Save score in <directory>')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $directory) {
+				if (sizeof($directory) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setErrorsDirectory(current($directory));
+			},
+			array('-ed', '--errors-directory'),
+			'<directory>',
+			$this->locale->_('Save errors in <directory>')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $url) {
+				if (sizeof($url) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->getVcs()->setRepositoryUrl(current($url));
+			},
+			array('-r', '--repository-url'),
+			'<url>',
+			$this->locale->_('Url of repository')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $file) {
+				if (sizeof($file) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setRevisionFile(current($file));
+			},
+			array('-rf', '--revision-file'),
+			'<file>',
+			$this->locale->_('Save last revision in <file>')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $version) {
+				if (sizeof($version) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setVersion(current($version));
+			},
+			array('-v', '--version'),
+			'<string>',
+			$this->locale->_('Version <string> will be used as version name')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $unitTestRunnerScript) {
+				if (sizeof($unitTestRunnerScript) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setUnitTestRunnerScript(current($unitTestRunnerScript));
+			},
+			array('-utrs', '--unit-test-runner-script')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $pharGeneratorScript) {
+				if (sizeof($pharGeneratorScript) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setPharGeneratorScript(current($pharGeneratorScript));
+			},
+			array('-pgs', '--phar-generator-script')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $reportTitle) {
+				if (sizeof($reportTitle) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->setReportTitle(current($reportTitle));
+			},
+			array('-rt', '--report-title')
+		);
 
 		return $this;
 	}
