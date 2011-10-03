@@ -224,92 +224,298 @@ class string extends atoum\test
 		;
 	}
 
-	public function testIsHash()
+	public function testIsSha1()
 	{
-		$string = 'hello';
 		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
 
-		$algos = array_intersect(hash_algos(), array(
-			'sha1',
-			'md5',
-			'sha256',
-			'sha512',
-		));
-		sort($algos);
+        $asserter->setWith($value = hash('sha1', 'hello'));
 
-		foreach ($algos as $i => $algo)
-		{
-			$testedMethod = 'is'.ucfirst($algo);
+        $score->reset();
 
-			$asserter->setWith($value = hash($algo, $string));
+        $this->assert
+            ->object($asserter->isSha1())->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isZero()
+        ;
 
-			$score->reset();
+        $asserter->setWith($newvalue = substr($value, 1));
 
-			$this->assert
-				->object($asserter->$testedMethod())->isIdenticalTo($asserter)
-				->integer($score->getPassNumber())->isEqualTo(1)
-				->integer($score->getFailNumber())->isZero()
-			;
+        $score->reset();
 
-			$asserter->setWith($newvalue = substr($value, 1));
+        $diff = new diffs\variable();
 
-			$score->reset();
+        $diff->setReference( $newvalue )->setData($value);
 
-			$diff = new diffs\variable();
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha1();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha1()',
+                    'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
+                )
+            ))
+        ;
 
-			$diff->setReference( $newvalue )->setData($value);
+        $asserter->setWith($newvalue = 'z'.substr($value, 1) );
 
-			$this->assert
-				->exception(function() use ($asserter, $testedMethod, & $line) {
-					$line = __LINE__; $asserter->$testedMethod();
-				})
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
-				->integer($score->getPassNumber())->isZero()
-				->integer($score->getFailNumber())->isEqualTo(1)
-				->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::' . $testedMethod . '()',
-						'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
-					)
-				))
-			;
+        $score->reset();
 
-			$asserter->setWith($newvalue = 'z'.substr($value, 1) );
+        $diff = new diffs\variable();
 
-			$score->reset();
+        $diff->setReference($newvalue)->setData($value);
 
-			$diff = new diffs\variable();
-
-			$diff->setReference($newvalue)->setData($value);
-
-			$this->assert
-				->exception(function() use ($asserter, $testedMethod, & $line) {
-					$line = __LINE__; $asserter->$testedMethod();
-				})
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
-				->integer($score->getPassNumber())->isZero()
-				->integer($score->getFailNumber())->isEqualTo(1)
-				->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::' . $testedMethod . '()',
-						'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
-					)
-				))
-			;
-		}
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha1();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha1()',
+                    'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
+                )
+            ))
+        ;
 	}
+
+	public function testIsSha256()
+	{
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $asserter->setWith($value = hash('sha256', 'hello'));
+
+        $score->reset();
+
+        $this->assert
+            ->object($asserter->isSha256())->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isZero()
+        ;
+
+        $asserter->setWith($newvalue = substr($value, 1));
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference( $newvalue )->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha256();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha256()',
+                    'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
+                )
+            ))
+        ;
+
+        $asserter->setWith($newvalue = 'z'.substr($value, 1) );
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference($newvalue)->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha256();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha256()',
+                    'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
+                )
+            ))
+        ;
+	}
+
+	public function testIsSha512()
+	{
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $asserter->setWith($value = hash('sha512', 'hello'));
+
+        $score->reset();
+
+        $this->assert
+            ->object($asserter->isSha512())->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isZero()
+        ;
+
+        $asserter->setWith($newvalue = substr($value, 1));
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference( $newvalue )->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha512();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha512()',
+                    'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
+                )
+            ))
+        ;
+
+        $asserter->setWith($newvalue = 'z'.substr($value, 1) );
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference($newvalue)->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isSha512();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isSha512()',
+                    'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
+                )
+            ))
+        ;
+	}
+
+    public function testIsMd5()
+    {
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $asserter->setWith($value = hash('md5', 'hello'));
+
+        $score->reset();
+
+        $this->assert
+            ->object($asserter->isMd5())->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isZero()
+        ;
+
+        $asserter->setWith($newvalue = substr($value, 1));
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference( $newvalue )->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isMd5();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value)))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isMd5()',
+                    'fail' => sprintf($this->getLocale()->_('%s should be a string of %d characters'), $asserter, strlen($value))
+                )
+            ))
+        ;
+
+        $asserter->setWith($newvalue = 'z'.substr($value, 1) );
+
+        $score->reset();
+
+        $diff = new diffs\variable();
+
+        $diff->setReference($newvalue)->setData($value);
+
+        $this->assert
+            ->exception(function() use ($asserter, & $line) {
+                $line = __LINE__; $asserter->isMd5();
+            })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter))
+            ->integer($score->getPassNumber())->isZero()
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                array(
+                    'case' => null,
+                    'class' => __CLASS__,
+                    'method' => $test->getCurrentMethod(),
+                    'file' => __FILE__,
+                    'line' => $line,
+                    'asserter' => get_class($asserter) . '::isMd5()',
+                    'fail' => sprintf($test->getLocale()->_('%s does not match given pattern'), $asserter)
+                )
+            ))
+        ;
+    }
+
 }
 
 ?>
