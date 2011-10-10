@@ -16,10 +16,7 @@ define(__NAMESPACE__ . '\phar\name', 'mageekguy.atoum.phar');
 
 \phar::mapPhar(atoum\phar\name);
 
-if (defined(__NAMESPACE__ . '\running') === false)
-{
-	require_once 'phar://' . atoum\phar\name . '/classes/autoloader.php';
-}
+require_once 'phar://' . atoum\phar\name . '/classes/autoloader.php';
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

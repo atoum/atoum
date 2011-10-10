@@ -7,10 +7,7 @@ use
 	mageekguy\atoum\scripts
 ;
 
-if (defined(__NAMESPACE__ . '\running') === false)
-{
-	require_once __DIR__ . '/../classes/autoloader.php';
-}
+require_once __DIR__ . '/../classes/autoloader.php';
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {
