@@ -410,6 +410,82 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
 	}
 
+	public function runTestMethod($testMethod)
+	{
+		set_error_handler(array($this, 'errorHandler'));
+
+		ini_set('display_errors', 'stderr');
+		ini_set('log_errors', 'Off');
+		ini_set('log_errors_max_len', '0');
+
+		$this->currentMethod = $testMethod;
+
+		try
+		{
+			try
+			{
+				$this->beforeTestMethod($this->currentMethod);
+
+				ob_start();
+
+				if ($this->codeCoverageIsEnabled() === true)
+				{
+					xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+				}
+
+				$time = microtime(true);
+				$memory = memory_get_usage(true);
+
+				$this->{$testMethod}();
+
+				$memoryUsage = memory_get_usage(true) - $memory;
+				$duration = microtime(true) - $time;
+
+				if ($this->codeCoverageIsEnabled() === true)
+				{
+					$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
+					xdebug_stop_code_coverage();
+				}
+
+				$this->score
+					->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
+					->addDuration($this->class, $this->currentMethod, $duration)
+					->addOutput($this->class, $this->currentMethod, ob_get_clean())
+				;
+
+				$this->afterTestMethod($testMethod);
+			}
+			catch (\exception $exception)
+			{
+				$this->score->addOutput($this->class, $this->currentMethod, ob_get_clean());
+				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
+
+				throw $exception;
+			}
+		}
+		catch (asserter\exception $exception)
+		{
+			if ($this->score->failExists($exception) === false)
+			{
+				$this->addExceptionToScore($exception);
+			}
+		}
+		catch (\exception $exception)
+		{
+			$this->addExceptionToScore($exception);
+		}
+
+		$this->currentMethod = null;
+
+		restore_error_handler();
+
+		ini_restore('display_errors');
+		ini_restore('log_errors');
+		ini_restore('log_errors_max_len');
+
+		return $this;
+	}
+
 	public function run(array $runTestMethods = array(), $runInChildProcess = true)
 	{
 		if ($this->ignore === false)
@@ -450,7 +526,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
 						'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 						($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
-						'$test->run(array($method = \'%s\'), false);' .
+						'$test->runTestMethod($method = \'%s\');' .
 						'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
 						'?>'
 					;
@@ -656,82 +732,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	protected function beforeTestMethod($testMethod)
 	{
-		return $this;
-	}
-
-	protected function runTestMethod($testMethod)
-	{
-		set_error_handler(array($this, 'errorHandler'));
-
-		ini_set('display_errors', 'stderr');
-		ini_set('log_errors', 'Off');
-		ini_set('log_errors_max_len', '0');
-
-		$this->currentMethod = $testMethod;
-
-		try
-		{
-			try
-			{
-				$this->beforeTestMethod($this->currentMethod);
-
-				ob_start();
-
-				if ($this->codeCoverageIsEnabled() === true)
-				{
-					xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-				}
-
-				$time = microtime(true);
-				$memory = memory_get_usage(true);
-
-				$this->{$testMethod}();
-
-				$memoryUsage = memory_get_usage(true) - $memory;
-				$duration = microtime(true) - $time;
-
-				if ($this->codeCoverageIsEnabled() === true)
-				{
-					$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
-					xdebug_stop_code_coverage();
-				}
-
-				$this->score
-					->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
-					->addDuration($this->class, $this->currentMethod, $duration)
-					->addOutput($this->class, $this->currentMethod, ob_get_clean())
-				;
-
-				$this->afterTestMethod($testMethod);
-			}
-			catch (\exception $exception)
-			{
-				$this->score->addOutput($this->class, $this->currentMethod, ob_get_clean());
-				$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
-
-				throw $exception;
-			}
-		}
-		catch (asserter\exception $exception)
-		{
-			if ($this->score->failExists($exception) === false)
-			{
-				$this->addExceptionToScore($exception);
-			}
-		}
-		catch (\exception $exception)
-		{
-			$this->addExceptionToScore($exception);
-		}
-
-		$this->currentMethod = null;
-
-		restore_error_handler();
-
-		ini_restore('display_errors');
-		ini_restore('log_errors');
-		ini_restore('log_errors_max_len');
-
 		return $this;
 	}
 
