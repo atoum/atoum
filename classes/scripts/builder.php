@@ -298,11 +298,11 @@ class builder extends atoum\script
 
 			$phpPath = $this->getPhpPath();
 
-			$command = $phpPath . ' ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg(sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()))) . ' -ncc -sf ' . $scoreFile . ' -d ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $phpPath;
+			$command = escapeshellarg($phpPath) . ' ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript) . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg(sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()))) . ' -ncc -sf ' . escapeshellarg($scoreFile) . ' -d ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes') . ' -p ' . escapeshellarg($phpPath);
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
-				$command .= ' -c ' . $runnerConfigurationFile;
+				$command .= ' -c ' . escapeshellarg($runnerConfigurationFile);
 			}
 
 			try
@@ -416,7 +416,7 @@ class builder extends atoum\script
 					2 => array('pipe', 'w')
 				);
 
-				$command = $this->getPhpPath() . ' -d phar.readonly=0 -f ' . $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript . ' -- -d ' . $this->destinationDirectory;
+				$command = escapeshellarg($this->getPhpPath()) . ' -d phar.readonly=0 -f ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript) . ' -- -d ' . escapeshellarg($this->destinationDirectory);
 
 				while (sizeof($revisions) > 0)
 				{

@@ -393,7 +393,7 @@ class builder extends atoum\test
 		$adapter->unserialize = $score;
 		$adapter->unlink = true;
 
-		$command = $php . ' ' . $workingDirectory . \DIRECTORY_SEPARATOR . $unitTestRunnerScript . ' -drt ' . escapeshellarg($reportTitle) . ' -ncc -sf ' . $scoreFile . ' -d ' . $workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes -p ' . $php . ' -c ' . $runnerConfigurationFile ;
+		$command = escapeshellarg($php) . ' ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $unitTestRunnerScript) . ' -drt ' . escapeshellarg($reportTitle) . ' -ncc -sf ' . escapeshellarg($scoreFile) . ' -d ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes') . ' -p ' . escapeshellarg($php) . ' -c ' . escapeshellarg($runnerConfigurationFile);
 
 		$builderController = $builder->getMockController();
 		$builderController->writeErrorInErrorsDirectory = function() {};
@@ -668,7 +668,7 @@ class builder extends atoum\test
 			->boolean($builder->createPhar())->isFalse()
 			->mock($builder)
 				->call('writeErrorInErrorsDirectory')
-					->withArguments('Unable to execute \'' . $php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory . '\'')
+					->withArguments('Unable to execute \'' . escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory) . '\'')
 					->once()
 			->mock($vcs)
 				->call('setRevision')->withArguments($revision)->once()
@@ -692,7 +692,7 @@ class builder extends atoum\test
 					->once()
 				->call('tagVersion')->atLeastOnce()
 			->adapter($adapter)
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -715,7 +715,7 @@ class builder extends atoum\test
 				->call('setVersion')->withArguments($tag)->once()
 				->call('tagVersion')->once()
 			->adapter($adapter)
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -737,7 +737,7 @@ class builder extends atoum\test
 		$this->assert
 			->boolean($builder->createPhar())->isFalse()
 			->adapter($adapter)
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -763,7 +763,7 @@ class builder extends atoum\test
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
 				->call('file_get_contents')->withArguments($revisionFile)->once()
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -782,7 +782,7 @@ class builder extends atoum\test
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
 				->call('file_get_contents')->withArguments($revisionFile)->once()
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -818,7 +818,7 @@ class builder extends atoum\test
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
 				->call('file_get_contents')->withArguments($revisionFile)->once()
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->exactly(3)
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->exactly(3)
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()
@@ -841,7 +841,7 @@ class builder extends atoum\test
 			->boolean($builder->createPhar())->isTrue()
 			->adapter($adapter)
 				->call('file_get_contents')->withArguments($revisionFile)->once()
-				->call('proc_open')->withArguments($php . ' -d phar.readonly=0 -f ' . $workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript . ' -- -d ' . $destinationDirectory, array(2 => array('pipe', 'w')), $pipes)->once()
+				->call('proc_open')->withArguments(escapeshellarg($php) . ' -d phar.readonly=0 -f ' . escapeshellarg($workingDirectory . \DIRECTORY_SEPARATOR . $pharGeneratorScript) . ' -- -d ' . escapeshellarg($destinationDirectory), array(2 => array('pipe', 'w')), $pipes)->once()
 				->call('stream_get_contents')->withArguments($stdErr)->once()
 				->call('fclose')->withArguments($stdErr)->once()
 				->call('proc_close')->withArguments($resource)->once()

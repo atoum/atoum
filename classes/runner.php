@@ -28,7 +28,7 @@ class runner implements observable, adapter\aggregator
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
-	protected $tags = null;
+	protected $tags = array();
 
 	private $start = null;
 	private $stop = null;
@@ -270,7 +270,7 @@ class runner implements observable, adapter\aggregator
 				2 => array('pipe', 'w'),
 			);
 
-			$php = @$this->adapter->invoke('proc_open', array($phpPath . ' --version', $descriptors, & $pipes));
+			$php = @$this->adapter->invoke('proc_open', array(escapeshellarg($phpPath) . ' --version', $descriptors, & $pipes));
 
 			if ($php === false)
 			{
@@ -375,8 +375,7 @@ class runner implements observable, adapter\aggregator
 						$test->addObserver($observer);
 					}
 
-
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], true)->getScore());
+					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $this->tags)->getScore());
 				}
 			}
 		}
@@ -442,9 +441,9 @@ class runner implements observable, adapter\aggregator
 	{
 		$isIgnored = $test->isIgnored();
 
-		if ($isIgnored === false && $this->tags !== null)
+		if ($isIgnored === false && sizeof($this->tags) > 0)
 		{
-			$isIgnored = ($testTags = $test->getTags()) === null || sizeof(array_intersect($this->tags, $testTags)) == 0;
+			$isIgnored = sizeof($testTags = $test->getTags()) <= 0 || sizeof(array_intersect($this->tags, $testTags)) == 0;
 		}
 
 		return $isIgnored;
