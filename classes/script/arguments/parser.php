@@ -159,15 +159,53 @@ class parser implements \iteratorAggregate
 
 		list($argument, $values) = each($lastArgument);
 
-		if (isset($this->handlers[$argument]) === false)
-		{
-			unset($this->values[$argument]);
-		}
-		else
+		if (isset($this->handlers[$argument]) === true)
 		{
 			foreach ($this->handlers[$argument] as $handler)
 			{
 				$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
+			}
+		}
+		else
+		{
+			$argumentMetaphone = metaphone($argument);
+
+			$min = null;
+			$closestArgument = null;
+			$handlerArguments = array_keys($this->handlers);
+
+			natsort($handlerArguments);
+
+			foreach ($handlerArguments as $handlerArgument)
+			{
+				$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
+
+				if ($min === null || $levenshtein < $min)
+				{
+					$min = $levenshtein;
+					$closestArgument = $handlerArgument;
+				}
+			}
+
+			if ($closestArgument !== null)
+			{
+				if ($min > 0)
+				{
+					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\' ?');
+				}
+				else
+				{
+					$argument = $closestArgument;
+
+					foreach ($this->handlers[$argument] as $handler)
+					{
+						$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
+					}
+				}
+			}
+			else
+			{
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
 			}
 		}
 
