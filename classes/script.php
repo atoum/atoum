@@ -15,8 +15,10 @@ abstract class script implements atoum\adapter\aggregator
 	protected $locale = null;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
-	protected $argumentsParser = null;
 	protected $name = '';
+
+	private $help = array();
+	private $argumentsParser = null;
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
@@ -58,6 +60,8 @@ abstract class script implements atoum\adapter\aggregator
 	public function setArgumentsParser(script\arguments\parser $parser)
 	{
 		$this->argumentsParser = $parser->setScript($this);
+
+		$this->setArgumentHandlers();
 
 		return $this;
 	}
@@ -109,6 +113,41 @@ abstract class script implements atoum\adapter\aggregator
 	public function getErrors()
 	{
 		return $this->errors;
+	}
+
+	public function getHelp()
+	{
+		return $this->help;
+	}
+
+	public function help()
+	{
+		if (sizeof($this->help) > 0)
+		{
+			$this
+				->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+			;
+
+			$arguments = array();
+
+			foreach ($this->help as $help)
+			{
+				if ($help[1] !== null)
+				{
+					foreach ($help[0] as & $argument)
+					{
+						$argument .= ' ' . $help[1];
+					}
+				}
+
+				$arguments[join(', ', $help[0])] = $help[2];
+			}
+
+			$this->writeLabels($arguments);
+		}
+
+		return $this;
 	}
 
 	public function run(array $arguments = array())
@@ -168,6 +207,20 @@ abstract class script implements atoum\adapter\aggregator
 
 		return $this;
 	}
+
+	protected function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null)
+	{
+		if ($help !== null)
+		{
+			$this->help[] = array($arguments, $values, $help);
+		}
+
+		$this->argumentsParser->addHandler($handler, $arguments);
+
+		return $this;
+	}
+
+	protected abstract function setArgumentHandlers();
 }
 
 ?>

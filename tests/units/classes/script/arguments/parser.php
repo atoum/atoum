@@ -62,14 +62,6 @@ class parser extends atoum\test
 			->variable($parser->getValues(uniqid()))->isNull()
 		;
 
-		$parser->parse(array('-a'));
-
-		$this->assert
-			->array($parser->getValues())->isEmpty()
-			->variable($parser->getValues('-a'))->isNull()
-			->variable($parser->getValues(uniqid()))->isNull()
-		;
-
 		$parser
 			->addHandler(function($script, $argument, $value) {}, array('-a'))
 			->parse(array('-a'))
@@ -118,7 +110,11 @@ class parser extends atoum\test
 			->isEmpty()
 		;
 
-		$parser->parse(array('-a', 'a1', 'a2', '-b'));
+		$parser
+			->addHandler(function($script, $argument, $value) {}, array('-a'))
+			->addHandler(function($script, $argument, $value) {}, array('-b'))
+			->parse(array('-a', 'a1', 'a2', '-b'))
+		;
 
 		$this->assert
 			->object($parser->getIterator())->isInstanceOf('arrayIterator')
@@ -261,6 +257,24 @@ class parser extends atoum\test
 			->integer($invoke)->isEqualTo(5)
 			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(8)
+		;
+
+		$parser = new script\arguments\parser();
+
+		$invoke = 0;
+
+		$handler = function ($script, $argument, $values) use (& $invoke) { $invoke++; };
+
+		$parser->addHandler($handler, array('-directory'));
+
+		$this->assert
+			->object($parser->parse(array()))->isIdenticalTo($parser)
+			->integer($invoke)->isZero()
+			->exception(function() use ($parser) { $parser->parse(array('-direc')); })
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+				->hasMessage('Argument \'-direc\' is unknown, did you mean \'-directory\' ?')
+			->object($parser->parse(array('-DIRECTORY')))->isIdenticalTo($parser)
+			->integer($invoke)->isEqualTo(1)
 		;
 	}
 

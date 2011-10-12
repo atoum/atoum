@@ -12,7 +12,6 @@ use
 
 class runner extends atoum\script
 {
-	protected $help = array();
 	protected $runner = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
@@ -23,9 +22,188 @@ class runner extends atoum\script
 
 	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
 	{
-		parent::__construct($name, $locale, $adapter);
-
 		$this->setRunner($runner = new atoum\runner());
+
+		parent::__construct($name, $locale, $adapter);
+	}
+
+	public function setRunner(atoum\runner $runner)
+	{
+		$this->runner = $runner;
+
+		return $this;
+	}
+
+	public function getRunner()
+	{
+		return $this->runner;
+	}
+
+	public function setScoreFile($path)
+	{
+		$this->scoreFile = (string) $path;
+
+		return $this;
+	}
+
+	public function getScoreFile()
+	{
+		return $this->scoreFile;
+	}
+
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
+
+	public function setArguments(array $arguments)
+	{
+		$this->arguments = $arguments;
+
+		return $this;
+	}
+
+	public function run(array $arguments = array())
+	{
+		ini_set('log_errors_max_len', '0');
+		ini_set('log_errors', 'Off');
+		ini_set('display_errors', 'stderr');
+
+		parent::run(sizeof($arguments) > 0 ? $arguments : $this->arguments);
+
+		if ($this->runTests === true)
+		{
+			if ($this->runner->hasReports() === false)
+			{
+				$report = new atoum\reports\realtime\cli();
+				$report->addWriter(new atoum\writers\std\out());
+
+				$this->runner->addReport($report);
+			}
+
+			$this->runner->run();
+
+			if ($this->scoreFile !== null)
+			{
+				if ($this->adapter->file_put_contents($this->scoreFile, serialize($this->runner->getScore()), \LOCK_EX) === false)
+				{
+					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
+				}
+			}
+		}
+	}
+
+	public function version()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
+		;
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function help()
+	{
+		$this->runTests = false;
+
+		return parent::help();
+	}
+
+	public function includeFile($path)
+	{
+		$runner = $this->getRunner();
+
+		include_once $path;
+
+		if (in_array(realpath((string) $path), get_included_files(), true) === false)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
+		}
+
+		return $this;
+	}
+
+	public function runFile($path)
+	{
+		return $this->includeFile($path);
+	}
+
+	public function runDirectory($directory)
+	{
+		try
+		{
+			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			{
+				$this->runFile($path);
+			}
+		}
+		catch (exceptions\logic\invalidArgument $exception)
+		{
+			throw $exception;
+		}
+		catch (\exception $exception)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to read directory \'%s\''), $directory));
+		}
+
+		return $this;
+	}
+
+	public function testIt()
+	{
+		return $this->runDirectory(atoum\directory . '/tests/units/classes');
+	}
+
+	public static function getAutorunner()
+	{
+		return self::$autorunner;
+	}
+
+	public static function autorun($name)
+	{
+		if (self::$autorunner !== null)
+		{
+			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
+		}
+
+		$autorunner = self::$autorunner = new static($name);
+
+		register_shutdown_function(function() use ($autorunner) {
+				set_error_handler(function($error, $message, $file, $line) use ($autorunner) {
+						if (error_reporting() !== 0)
+						{
+							$autorunner->writeError($message . ' ' . $file . ' ' . $line);
+
+							exit(2);
+						}
+					}
+				);
+
+				try
+				{
+					$autorunner->run();
+				}
+				catch (\exception $exception)
+				{
+					$autorunner->writeError($exception->getMessage());
+
+					exit(3);
+				}
+
+				$score = $autorunner->getRunner()->getScore();
+
+				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+			}
+		);
+
+		return $autorunner;
+	}
+
+	protected function setArgumentHandlers()
+	{
+		$runner = $this->runner;
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {
@@ -204,214 +382,6 @@ class runner extends atoum\script
 			null,
 			$this->locale->_('Execute atoum unit tests')
 		);
-	}
-
-	public function setRunner(atoum\runner $runner)
-	{
-		$this->runner = $runner;
-
-		return $this;
-	}
-
-	public function getRunner()
-	{
-		return $this->runner;
-	}
-
-	public function setScoreFile($path)
-	{
-		$this->scoreFile = (string) $path;
-
-		return $this;
-	}
-
-	public function getScoreFile()
-	{
-		return $this->scoreFile;
-	}
-
-	public function getArguments()
-	{
-		return $this->arguments;
-	}
-
-	public function setArguments(array $arguments)
-	{
-		$this->arguments = $arguments;
-
-		return $this;
-	}
-
-	public function run(array $arguments = array())
-	{
-		ini_set('log_errors_max_len', '0');
-		ini_set('log_errors', 'Off');
-		ini_set('display_errors', 'stderr');
-
-		parent::run(sizeof($arguments) > 0 ? $arguments : $this->arguments);
-
-		if ($this->runTests === true)
-		{
-			if ($this->runner->hasReports() === false)
-			{
-				$report = new atoum\reports\realtime\cli();
-				$report->addWriter(new atoum\writers\std\out());
-
-				$this->runner->addReport($report);
-			}
-
-			$this->runner->run();
-
-			if ($this->scoreFile !== null)
-			{
-				if ($this->adapter->file_put_contents($this->scoreFile, serialize($this->runner->getScore()), \LOCK_EX) === false)
-				{
-					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
-				}
-			}
-		}
-	}
-
-	public function version()
-	{
-		$this
-			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
-		;
-
-		$this->runTests = false;
-
-		return $this;
-	}
-
-	public function help(array $options = array())
-	{
-		$this
-			->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
-			->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-		;
-
-		$runnerOptions = array();
-
-		foreach ($this->getHelp() as $help)
-		{
-			if ($help[1] !== null)
-			{
-				foreach ($help[0] as & $option)
-				{
-					$option .= ' ' . $help[1];
-				}
-			}
-
-			$runnerOptions[join(', ', $help[0])] = $help[2];
-		}
-
-		$this->writeLabels(array_merge($runnerOptions, $options));
-
-		$this->runTests = false;
-
-		return $this;
-	}
-
-	public function includeFile($path)
-	{
-		$runner = $this->getRunner();
-
-		include_once $path;
-
-		if (in_array(realpath((string) $path), get_included_files(), true) === false)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
-		}
-
-		return $this;
-	}
-
-	public function runFile($path)
-	{
-		return $this->includeFile($path);
-	}
-
-	public function runDirectory($directory)
-	{
-		try
-		{
-			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
-			{
-				$this->runFile($path);
-			}
-		}
-		catch (exceptions\logic\invalidArgument $exception)
-		{
-			throw $exception;
-		}
-		catch (\exception $exception)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to read directory \'%s\''), $directory));
-		}
-
-		return $this;
-	}
-
-	public function testIt()
-	{
-		return $this->runDirectory(atoum\directory . '/tests/units/classes');
-	}
-
-	public function getHelp()
-	{
-		return $this->help;
-	}
-
-	public static function getAutorunner()
-	{
-		return self::$autorunner;
-	}
-
-	public static function autorun($name)
-	{
-		if (self::$autorunner !== null)
-		{
-			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
-		}
-
-		$autorunner = self::$autorunner = new static($name);
-
-		register_shutdown_function(function() use ($autorunner) {
-				set_error_handler(function($error, $message, $file, $line) use ($autorunner) {
-						if (error_reporting() !== 0)
-						{
-							$autorunner->writeError($message . ' ' . $file . ' ' . $line);
-
-							exit(2);
-						}
-					}
-				);
-
-				try
-				{
-					$autorunner->run();
-				}
-				catch (\exception $exception)
-				{
-					$autorunner->writeError($exception->getMessage());
-
-					exit(3);
-				}
-
-				$score = $autorunner->getRunner()->getScore();
-
-				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
-			}
-		);
-
-		return $autorunner;
-	}
-
-	protected function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null)
-	{
-		$this->help[] = array($arguments, $values, $help);
-
-		$this->argumentsParser->addHandler($handler, $arguments);
 
 		return $this;
 	}

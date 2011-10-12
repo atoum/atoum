@@ -651,8 +651,8 @@ class generator extends atoum\test
 			->mock($stdout)
 				->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL)->once()
 				->call('write')->withArguments($generator->getLocale()->_('Available options are:') . PHP_EOL)->once()
-				->call('write')->withArguments('                    -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
-				->call('write')->withArguments('   -d <dir>, --directory <dir>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
+				->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
+				->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
 		;
 
 		$generator->setPharInjector(function($name) use (& $phar) {
