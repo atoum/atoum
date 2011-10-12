@@ -276,9 +276,6 @@ class parser extends atoum\test
 			->object($parser->parse(array('-DIRECTORY')))->isIdenticalTo($parser)
 			->integer($invoke)->isEqualTo(1)
 		;
-
-		var_dump(metaphone('toto'), metaphone('ToTo'));
-		var_dump(metaphone('status'), metaphone('statu'));
 	}
 
 	public function testIsArgument()
