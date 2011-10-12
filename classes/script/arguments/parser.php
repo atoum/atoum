@@ -187,7 +187,11 @@ class parser implements \iteratorAggregate
 				}
 			}
 
-			if ($closestArgument !== null)
+			if ($closestArgument === null)
+			{
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
+			}
+			else
 			{
 				if ($min > 0)
 				{
@@ -195,17 +199,11 @@ class parser implements \iteratorAggregate
 				}
 				else
 				{
-					$argument = $closestArgument;
-
-					foreach ($this->handlers[$argument] as $handler)
+					foreach ($this->handlers[$closestArgument] as $handler)
 					{
-						$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
+						$handler->__invoke($this->script, $closestArgument, $values, sizeof($this->values));
 					}
 				}
-			}
-			else
-			{
-				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
 			}
 		}
 
