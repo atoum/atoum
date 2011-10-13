@@ -556,9 +556,6 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		/**
-		@tags test
-		*/
 		public function testMethodIsIgnored()
 		{
 			$test = new emptyTest();
@@ -636,6 +633,20 @@ namespace mageekguy\atoum\tests\units
 			$this->assert
 				->variable($test->getTestedClassName())->isNull()
 				->variable($test->setTestsSubNamespace('test\unit')->getTestedClassName())->isEqualTo($className)
+			;
+		}
+
+		public function testMock()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->mock(__CLASS__))->isIdenticalTo($test)
+				->class('mock\\' . __CLASS__)->isSubClassOf(__CLASS__)
+				->object($test->mock(__CLASS__, 'foo'))->isIdenticalTo($test)
+				->class('foo\test')->isSubClassOf(__CLASS__)
+				->object($test->mock(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
+				->class('foo\bar')->isSubClassOf(__CLASS__)
 			;
 		}
 	}
