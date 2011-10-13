@@ -115,7 +115,7 @@ class runner extends atoum\script
 	{
 		$runner = $this->getRunner();
 
-		include_once $path;
+		@include_once $path;
 
 		if (in_array(realpath((string) $path), get_included_files(), true) === false)
 		{
@@ -270,7 +270,14 @@ class runner extends atoum\script
 
 				foreach ($files as $path)
 				{
-					$script->includeFile($path);
+					try
+					{
+						$script->includeFile($path);
+					}
+					catch (\exception $exception)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
+					}
 				}
 			},
 			array('-c', '--configuration-files'),
