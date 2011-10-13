@@ -161,10 +161,7 @@ class parser implements \iteratorAggregate
 
 		if (isset($this->handlers[$argument]) === true)
 		{
-			foreach ($this->handlers[$argument] as $handler)
-			{
-				$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
-			}
+			$this->invokeHandlersForArgument($argument, $values);
 		}
 		else
 		{
@@ -191,20 +188,24 @@ class parser implements \iteratorAggregate
 			{
 				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
 			}
+			else if ($min > 0)
+			{
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\' ?');
+			}
 			else
 			{
-				if ($min > 0)
-				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\' ?');
-				}
-				else
-				{
-					foreach ($this->handlers[$closestArgument] as $handler)
-					{
-						$handler->__invoke($this->script, $closestArgument, $values, sizeof($this->values));
-					}
-				}
+				$this->invokeHandlersForArgument($closestArgument, $values);
 			}
+		}
+
+		return $this;
+	}
+
+	protected function invokeHandlersForArgument($argument, $values)
+	{
+		foreach ($this->handlers[$argument] as $handler)
+		{
+			$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
 		}
 
 		return $this;
