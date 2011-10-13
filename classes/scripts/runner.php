@@ -127,7 +127,14 @@ class runner extends atoum\script
 
 	public function runFile($path)
 	{
-		return $this->includeFile($path);
+		try
+		{
+			return $this->includeFile($path);
+		}
+		catch (\exception $exception)
+		{
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Test file \'%s\' does not exist'), $path));
+		}
 	}
 
 	public function runDirectory($directory)
