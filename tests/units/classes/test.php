@@ -68,7 +68,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::beforeTearDown)->isEqualTo('beforeTestTearDown')
 				->string(atoum\test::afterTearDown)->isEqualTo('afterTestTearDown')
 				->string(atoum\test::runStop)->isEqualTo('testRunStop')
-				->string(atoum\test::defaultTestsSubNamespace)->isEqualTo('tests\units')
+				->string(atoum\test::defaultNamespace)->isEqualTo('tests\units')
 			;
 		}
 
@@ -86,7 +86,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getClassTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
-				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 
 			$adapter = new atoum\test\adapter();
@@ -104,7 +104,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getClassTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 
 			$score = new atoum\score();
@@ -122,7 +122,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getClassTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 
 			$test = new notEmptyTest($score, $locale, $adapter);
@@ -141,7 +141,7 @@ namespace mageekguy\atoum\tests\units
 					)
 				)
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 		}
 
@@ -330,13 +330,13 @@ namespace mageekguy\atoum\tests\units
 			$test = new self();
 
 			$this->assert
-				->string($test->getTestsSubNamespace())->isEqualTo(atoum\test::defaultTestsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 
-			$test->setTestsSubNamespace($testsSubNamespace = uniqid());
+			$test->setTestNamespace($testsSubNamespace = uniqid());
 
 			$this->assert
-				->string($test->getTestsSubNamespace())->isEqualTo($testsSubNamespace)
+				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
 			;
 		}
 
@@ -345,26 +345,26 @@ namespace mageekguy\atoum\tests\units
 			$test = new self();
 
 			$this->assert
-				->object($test->setTestsSubNamespace($testsSubNamespace = uniqid()))->isIdenticalTo($test)
-				->string($test->getTestsSubNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestsSubNamespace('\\' . ($testsSubNamespace = uniqid())))->isIdenticalTo($test)
-				->string($test->getTestsSubNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestsSubNamespace('\\' . ($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-				->string($test->getTestsSubNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestsSubNamespace(($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-				->string($test->getTestsSubNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestsSubNamespace($testsSubNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
-				->string($test->getTestsSubNamespace())->isEqualTo((string) $testsSubNamespace)
+				->object($test->setTestNamespace($testsSubNamespace = uniqid()))->isIdenticalTo($test)
+				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+				->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid())))->isIdenticalTo($test)
+				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+				->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+				->object($test->setTestNamespace(($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+				->object($test->setTestNamespace($testsSubNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+				->string($test->getTestNamespace())->isEqualTo((string) $testsSubNamespace)
 			;
 
 			$this->assert
 				->exception(function() use ($test) {
-							$test->setTestsSubNamespace('');
+							$test->setTestNamespace('');
 						}
 					)
 					->isInstanceOf('invalidArgumentException')
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Tests sub-namespace must not be empty')
+					->hasMessage('Test namespace must not be empty')
 			;
 		}
 
@@ -632,7 +632,7 @@ namespace mageekguy\atoum\tests\units
 
 			$this->assert
 				->variable($test->getTestedClassName())->isNull()
-				->variable($test->setTestsSubNamespace('test\unit')->getTestedClassName())->isEqualTo($className)
+				->variable($test->setTestNamespace('test\unit')->getTestedClassName())->isEqualTo($className)
 			;
 		}
 

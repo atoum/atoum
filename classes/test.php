@@ -24,7 +24,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
-	const defaultTestsSubNamespace = 'tests\units';
+	const defaultNamespace = 'tests\units';
 
 	private $phpPath = null;
 	private $path = '';
@@ -38,7 +38,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testMethods = array();
 	private $runTestMethods = array();
 	private $currentMethod = null;
-	private $testsSubNamespace = null;
+	private $testNamespace = null;
 	private $mockGenerator = null;
 	private $child = null;
 	private $testsToRun = 0;
@@ -47,6 +47,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $maxChildrenNumber = null;
 	private $codeCoverage = false;
 	private $assertHasCase = false;
+
+	private static $namespace = null;
 
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
@@ -68,7 +70,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($testedClassName === null)
 		{
-			throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestsSubNamespace() . '\'');
+			throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
 		}
 
 		if ($this->adapter->class_exists($testedClassName) === false)
@@ -241,21 +243,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
 	}
 
-	public function setTestsSubNamespace($testsSubNamespace)
+	public function setTestNamespace($testNamespace)
 	{
-		$this->testsSubNamespace = trim((string) $testsSubNamespace, '\\');
+		$this->testNamespace = self::cleanNamespace($testNamespace);
 
-		if ($this->testsSubNamespace === '')
+		if ($this->testNamespace === '')
 		{
-			throw new atoum\exceptions\logic\invalidArgument('Tests sub-namespace must not be empty');
+			throw new atoum\exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
 		return $this;
 	}
 
-	public function getTestsSubNamespace()
+	public function getTestNamespace()
 	{
-		return ($this->testsSubNamespace === null ? self::defaultTestsSubNamespace : $this->testsSubNamespace);
+		return $this->testNamespace ?: self::getNamespace();
 	}
 
 	public function setPhpPath($path)
@@ -364,13 +366,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$class = null;
 
 		$testClass = $this->getClass();
-		$testsSubNamespace = $this->getTestsSubNamespace();
+		$testNamespace = $this->getTestNamespace();
 
-		$position = strpos($testClass, $testsSubNamespace);
+		$position = strpos($testClass, $testNamespace);
 
 		if ($position !== false)
 		{
-			$class = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testsSubNamespace) + 1), '\\');
+			$class = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
 		}
 
 		return $class;
@@ -509,7 +511,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				catch (\exception $exception)
 				{
 					$this->score->addOutput($this->class, $this->currentMethod, ob_get_clean());
-					$this->score->addDuration($this->class, $this->currentMethod, microtime(true) - $time);
 
 					throw $exception;
 				}
@@ -764,6 +765,33 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+	public function setTestsSubNamespace($testsSubNamespace)
+	{
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::setTestNamespace() instead');
+	}
+
+	public function getTestsSubNamespace()
+	{
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::getTestNamespace() instead');
+	}
+
+	public static function setNamespace($namespace)
+	{
+		self::$namespace = self::cleanNamespace($namespace);
+
+		if (self::$namespace === '')
+		{
+			throw new atoum\exceptions\logic\invalidArgument('Namespace must not be empty');
+		}
+	}
+
+	public static function getNamespace()
+	{
+		return self::$namespace ?: self::defaultNamespace;
+	}
+
 	public static function getObserverEvents()
 	{
 		return array(
@@ -899,6 +927,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return $this;
+	}
+
+	private static function cleanNamespace($namespace)
+	{
+		return trim((string) $namespace, '\\');
 	}
 }
 
