@@ -71,6 +71,20 @@ class string extends variable
 		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
 	}
 
+	public function hasLength($length, $failMessage = null)
+	{
+		if (strlen($this->valueIsSet()->value) == $length)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not %d'), $this, $length));
+		}
+
+		return $this;
+	}
+
 	protected static function check($value, $method)
 	{
 		if (self::isString($value) === false)

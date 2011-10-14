@@ -223,8 +223,53 @@ class string extends atoum\test
 		;
 	}
 
-	public function testHasLenght()
+	public function testHasLength()
 	{
+		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+						$asserter->hasLength(rand(0, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+		;
+
+		$asserter->setWith('');
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isZero()
+			->exception(function() use ($asserter, & $requiredLength) {
+						$asserter->hasLength($requiredLength = rand(1, PHP_INT_MAX));
+					}
+				)
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('length of %s is not %d'), $asserter->getTypeOf(''), $requiredLength))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->object($asserter->hasLength(0))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+		;
+
+		$asserter->setWith($string = uniqid());
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$this->assert
+			->object($asserter->hasLength(strlen($string)))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
 	}
 }
 
