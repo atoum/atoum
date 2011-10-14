@@ -50,7 +50,6 @@ class string extends atoum\test
 		;
 	}
 
-
 	public function testSetWith()
 	{
 		$asserter = new asserters\string(new asserter\generator($test = new self($score = new atoum\score())));
@@ -222,6 +221,10 @@ class string extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;
+	}
+
+	public function testHasLenght()
+	{
 	}
 }
 
