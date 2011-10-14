@@ -47,7 +47,55 @@ class integer extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not greater than  %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not greater than %s'), $this, $this->getTypeOf($value)));
+		}
+
+		return $this;
+	}
+
+	public function isLowerThan($value, $failMessage = null)
+	{
+		self::check($value, __METHOD__);
+
+		if ($this->value < $value)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not lower than %s'), $this, $this->getTypeOf($value)));
+		}
+
+		return $this;
+	}
+
+	public function isGreaterThanOrEqualTo($value, $failMessage = null)
+	{
+		self::check($value, __METHOD__);
+
+		if ($this->value >= $value)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not greater than or equal to %s'), $this, $this->getTypeOf($value)));
+		}
+
+		return $this;
+	}
+
+	public function isLowerThanOrEqualTo($value, $failMessage = null)
+	{
+		self::check($value, __METHOD__);
+
+		if ($this->value <= $value)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not lower than or equal to %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
