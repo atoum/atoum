@@ -9,6 +9,14 @@ use
 	mageekguy\atoum\exceptions
 ;
 
+/**
+ * @property    asserter\generator  assert
+ * @property    asserter\generator  define
+ * @property    mock\generator      mockGenerator
+ *
+ * @method      asserter\generator  assert()
+ * @method      test                mock()
+ */
 abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
@@ -26,30 +34,147 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const runStop = 'testRunStop';
 	const defaultNamespace = 'tests\units';
 
+    /**
+     * Path to php binary
+     *
+     * @var string
+     */
 	private $phpPath = null;
+
+    /**
+     * Current test file path
+     *
+     * @var string
+     */
 	private $path = '';
+
+    /**
+     * Current test class name
+     *
+     * @var string
+     */
 	private $class = '';
+
+    /**
+     * @var atoum\adapter
+     */
 	private $adapter = null;
+
+    /**
+     * @var asserter\generator
+     */
 	private $asserterGenerator = null;
+
+    /**
+     * @var score
+     */
 	private $score = null;
+
+    /**
+     * @var array
+     */
 	private $observers = array();
+
+    /**
+     * @var array
+     */
 	private $tags = array();
+
+    /**
+     * @var boolean
+     */
 	private $ignore = false;
+
+    /**
+     * @var array
+     */
 	private $testMethods = array();
+
+    /**
+     * @var array
+     */
 	private $runTestMethods = array();
+
+    /**
+     * @var string
+     */
 	private $currentMethod = null;
+
+    /**
+     * @var string
+     */
 	private $testNamespace = null;
+
+    /**
+     * @var mock\generator
+     */
 	private $mockGenerator = null;
+
+    /**
+     * To delete ?
+     */
 	private $child = null;
+
+    /**
+     * @var type
+     */
 	private $testsToRun = 0;
+
+    /**
+     * @var string
+     */
 	private $phpCode = '';
+
+    /**
+     * @var array
+     */
 	private $children = array();
+
+    /**
+     * @var integer
+     */
 	private $maxChildrenNumber = null;
+
+    /**
+     * Whether or not to generate code coverage
+     *
+     * @var boolean
+     */
 	private $codeCoverage = false;
+
+    /**
+     * @var boolean
+     */
 	private $assertHasCase = false;
 
+
+    /**
+     * @var atoum\superglobals
+     */
+    public $superglobals = null;
+
+    /**
+     * @var locale
+     */
+    public $locale = null;
+
+    /**
+     * Current test namespace
+     *
+     * @var string
+     */
 	private static $namespace = null;
 
+
+    /**
+     * Constructor
+     *
+     * @param score $score
+     * @param locale $locale
+     * @param adapter $adapter
+     *
+     * @throws exceptions\runtime
+     */
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
 	{
 		$this
@@ -126,11 +251,25 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->runTestMethods = $this->getTestMethods();
 	}
 
+
+    /**
+     * @return string
+     */
 	public function __toString()
 	{
 		return $this->getClass();
 	}
 
+
+    /**
+     * Magic getter
+     *
+     * @param string $property
+     *
+     * @return asserter\generator|mock\generator
+     *
+     * @throws exceptions\logic\invalidArgument
+     */
 	public function __get($property)
 	{
 		switch ($property)
@@ -149,6 +288,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 	}
 
+
+    /**
+     * @param string $method
+     * @param array  $arguments
+     *
+     * @return test|asserter\generator
+     *
+     * @throws exceptions\logic\invalidArgument
+     */
 	public function __call($method, $arguments)
 	{
 		switch ($method)
@@ -174,11 +322,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 	}
 
+
+    /**
+     * @return type
+     */
 	public function codeCoverageIsEnabled()
 	{
 		return $this->codeCoverage;
 	}
 
+
+    /**
+     * @return test
+     */
 	public function enableCodeCoverage()
 	{
 		$this->codeCoverage = $this->adapter->extension_loaded('xdebug');
@@ -186,6 +342,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return test
+     */
 	public function disableCodeCoverage()
 	{
 		$this->codeCoverage = false;
@@ -193,6 +353,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param integer $number
+     *
+     * @return test
+     *
+     * @throws exceptions\logic\invalidArgument
+     */
 	public function setMaxChildrenNumber($number)
 	{
 		if ($number < 1)
@@ -205,6 +373,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param atoum\superglobals $superglobals
+     *
+     * @return test
+     */
 	public function setSuperglobals(atoum\superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
@@ -212,11 +386,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return atoum\superglobals
+     */
 	public function getSuperglobals()
 	{
 		return $this->superglobals;
 	}
 
+
+    /**
+     * @param mock\generator $generator
+     *
+     * @return test
+     */
 	public function setMockGenerator(mock\generator $generator)
 	{
 		$this->mockGenerator = $generator;
@@ -224,11 +408,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return mock\generator
+     */
 	public function getMockGenerator()
 	{
 		return $this->mockGenerator ?: $this->setMockGenerator(new mock\generator())->mockGenerator;
 	}
 
+
+    /**
+     * @param asserter\generator $generator
+     *
+     * @return test
+     */
 	public function setAsserterGenerator(asserter\generator $generator)
 	{
 		$this->asserterGenerator = $generator->setTest($this);
@@ -236,6 +430,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return asserter\generator
+     */
 	public function getAsserterGenerator()
 	{
 		atoum\test\adapter::resetCallsForAllInstances();
@@ -243,6 +441,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
 	}
 
+
+    /**
+     * @param string $testNamespace
+     *
+     * @return test
+     *
+     * @throws atoum\exceptions\logic\invalidArgument
+     */
 	public function setTestNamespace($testNamespace)
 	{
 		$this->testNamespace = self::cleanNamespace($testNamespace);
@@ -255,11 +461,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return string
+     */
 	public function getTestNamespace()
 	{
 		return $this->testNamespace ?: self::getNamespace();
 	}
 
+
+    /**
+     * @param string$path
+     *
+     * @return test
+     */
 	public function setPhpPath($path)
 	{
 		$this->phpPath = (string) $path;
@@ -267,6 +483,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return string
+     *
+     * @throws exceptions\runtime
+     */
 	public function getPhpPath()
 	{
 		if ($this->phpPath === null)
@@ -282,6 +504,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->phpPath;
 	}
 
+
+    /**
+     * @return array
+     */
 	public function getTags()
 	{
 		$tags = $this->getClassTags();
@@ -294,11 +520,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return array_values(array_unique($tags));
 	}
 
+
+    /**
+     * @return array
+     */
 	public function getClassTags()
 	{
 		return $this->tags;
 	}
 
+
+    /**
+     * @param string $testMethodName
+     *
+     * @return array
+     *
+     * @throws exceptions\logic\invalidargument
+     */
 	public function getMethodTags($testMethodName = null)
 	{
 		$tags = array();
@@ -325,6 +563,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $tags;
 	}
 
+
+    /**
+     * @param atoum\adapter $adapter
+     *
+     * @return test
+     */
 	public function setAdapter(atoum\adapter $adapter)
 	{
 		$this->adapter = $adapter;
@@ -332,11 +576,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return atoum\adapter
+     */
 	public function getAdapter()
 	{
 		return $this->adapter;
 	}
 
+
+    /**
+     * @param score $score
+     *
+     * @return test
+     */
 	public function setScore(score $score)
 	{
 		$this->score = $score;
@@ -344,11 +598,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return score
+     */
 	public function getScore()
 	{
 		return $this->score;
 	}
 
+
+    /**
+     * @param locale $locale
+     *
+     * @return test
+     */
 	public function setLocale(locale $locale)
 	{
 		$this->locale = $locale;
@@ -356,11 +620,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return locale
+     */
 	public function getLocale()
 	{
 		return $this->locale;
 	}
 
+
+    /**
+     * @return string
+     */
 	public function getTestedClassName()
 	{
 		$class = null;
@@ -378,16 +650,28 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $class;
 	}
 
+
+    /**
+     * @return string
+     */
 	public function getClass()
 	{
 		return $this->class;
 	}
 
+
+    /**
+     * @return string
+     */
 	public function getPath()
 	{
 		return $this->path;
 	}
 
+
+    /**
+     * @return array
+     */
 	public function getTestMethods()
 	{
 		$testMethods = array();
@@ -403,16 +687,30 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $testMethods;
 	}
 
+
+    /**
+     * @return string
+     */
 	public function getCurrentMethod()
 	{
 		return $this->currentMethod;
 	}
 
+
+    /**
+     * @return integer
+     */
 	public function count()
 	{
 		return sizeof($this->runTestMethods);
 	}
 
+
+    /**
+     * @param atoum\observers\test $observer
+     *
+     * @return test
+     */
 	public function addObserver(atoum\observers\test $observer)
 	{
 		$this->observers[] = $observer;
@@ -420,6 +718,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param string $method
+     *
+     * @return test
+     */
 	public function callObservers($method)
 	{
 		foreach ($this->observers as $observer)
@@ -430,6 +734,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param boolean $boolean
+     *
+     * @return test
+     */
 	public function ignore($boolean)
 	{
 		$this->ignore = ($boolean == true);
@@ -439,11 +749,24 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return boolean
+     */
 	public function isIgnored()
 	{
 		return ($this->ignore === true);
 	}
 
+
+    /**
+     * @param string $testMethodName
+     * @param array  $tags
+     *
+     * @return boolean
+     *
+     * @throws exceptions\logic\invalidArgument
+     */
 	public function methodIsIgnored($testMethodName, array $tags = array())
 	{
 		if (isset($this->testMethods[$testMethodName]) === false)
@@ -461,6 +784,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $isIgnored;
 	}
 
+
+    /**
+     * @param string $testMethod
+     * @param array  $tags
+     *
+     * @return test
+     *
+     * @throws exception
+     */
 	public function runTestMethod($testMethod, array $tags = array())
 	{
 		if ($this->methodIsIgnored($testMethod, $tags) === false)
@@ -539,6 +871,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param array $runTestMethods
+     * @param array $tags
+     *
+     * @return test
+     *
+     * @throws exceptions\logic\invalidArgument
+     * @throws exception
+     * @throws exceptions\runtime
+     */
 	public function run(array $runTestMethods = array(), array $tags = array())
 	{
 		if ($this->isIgnored() === false)
@@ -746,6 +1089,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param integer $errno
+     * @param string  $errstr
+     * @param string  $errfile
+     * @param integer $errline
+     * @param array   $context
+     *
+     * @return boolean
+     */
 	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
 	{
 		if (error_reporting() !== 0)
@@ -758,6 +1111,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return true;
 	}
 
+
+    /**
+     * Generate a mock
+     *
+     * @param string $class
+     * @param string $mockNamespace
+     * @param string $mockClass
+     *
+     * @return test
+     */
 	public function mock($class, $mockNamespace = null, $mockClass = null)
 	{
 		$this->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
@@ -765,18 +1128,34 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @deprecated
+     *
+     * @param string
+     */
 	public function setTestsSubNamespace($testsSubNamespace)
 	{
 		#DEPRECATED
 		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::setTestNamespace() instead');
 	}
 
+
+    /**
+     * @deprecated
+     */
 	public function getTestsSubNamespace()
 	{
 		#DEPRECATED
 		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::getTestNamespace() instead');
 	}
 
+
+    /**
+     * @param string $namespace
+     *
+     * @throws atoum\exceptions\logic\invalidArgument
+     */
 	public static function setNamespace($namespace)
 	{
 		self::$namespace = self::cleanNamespace($namespace);
@@ -787,11 +1166,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 	}
 
+
+    /**
+     * @return string
+     */
 	public static function getNamespace()
 	{
 		return self::$namespace ?: self::defaultNamespace;
 	}
 
+
+    /**
+     * @return array
+     */
 	public static function getObserverEvents()
 	{
 		return array(
@@ -810,11 +1197,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		);
 	}
 
+
+    /**
+     * @return test
+     */
 	protected function setUp()
 	{
 		return $this;
 	}
 
+
+    /**
+     * @param string $case
+     *
+     * @return test
+     */
 	protected function startCase($case)
 	{
 		$this->score->setCase($case);
@@ -822,21 +1219,43 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param string $testMethod current test method
+     *
+     * @return test
+     */
 	protected function beforeTestMethod($testMethod)
 	{
 		return $this;
 	}
 
+
+    /**
+     * @param string $testMethod current test method
+     *
+     * @return test
+     */
 	protected function afterTestMethod($testMethod)
 	{
 		return $this;
 	}
 
+
+    /**
+     * @return test
+     */
 	protected function tearDown()
 	{
 		return $this;
 	}
 
+
+    /**
+     * @param \exception $exception
+     *
+     * @return test
+     */
 	protected function addExceptionToScore(\exception $exception)
 	{
 		list($file, $line) = $this->getBacktrace($exception->getTrace());
@@ -846,6 +1265,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param array $trace
+     *
+     * @return array|null
+     */
 	protected function getBacktrace(array $trace = null)
 	{
 		$debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
@@ -869,6 +1294,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return null;
 	}
 
+
+    /**
+     * @return test
+     */
 	private function runChild()
 	{
 		if ($this->canRunChild() === true)
@@ -907,11 +1336,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return boolean
+     */
 	private function canRunChild()
 	{
 		return ($this->testsToRun > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
+
+    /**
+     * @param string $case
+     *
+     * @return test
+     */
 	private function setCaseOnAssert($case)
 	{
 		$this->startCase($case)->assertHasCase = true;
@@ -919,6 +1358,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @return test
+     */
 	private function unsetCaseOnAssert()
 	{
 		if ($this->assertHasCase === true)
@@ -929,6 +1372,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+
+    /**
+     * @param string $namespace
+     *
+     * @return string
+     */
 	private static function cleanNamespace($namespace)
 	{
 		return trim((string) $namespace, '\\');
