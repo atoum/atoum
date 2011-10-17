@@ -158,16 +158,6 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testSetTags()
-	{
-		$runner = new atoum\runner();
-
-		$this->assert
-			->object($runner->setTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($runner)
-			->array($runner->getTags())->isEqualTo($tags)
-		;
-	}
-
 	public function testAddObserver()
 	{
 		$runner = new atoum\runner();

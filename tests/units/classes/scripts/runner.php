@@ -94,6 +94,11 @@ class runner extends atoum\test
 						'Execute all <class::method>, * may be used as wildcard for class name or method name'
 					),
 					array(
+						array('-ns', '--namespaces'),
+						'<namespace>...',
+						'Execute all classes in all namespaces <namespace>'
+					),
+					array(
 						array('--testIt'),
 						null,
 						'Execute atoum unit tests'

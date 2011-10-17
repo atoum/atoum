@@ -29,6 +29,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $phpPath = null;
 	private $path = '';
 	private $class = '';
+	private $classNamespace = '';
 	private $adapter = null;
 	private $asserterGenerator = null;
 	private $score = null;
@@ -61,9 +62,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$class = new \reflectionClass($this);
 
-		$this->class = $class->getName();
-
 		$this->path = $class->getFilename();
+		$this->class = $class->getName();
+		$this->classNamespace = $class->getNamespaceName();
 
 		$testedClassName = $this->getTestedClassName();
 
@@ -380,6 +381,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getClass()
 	{
 		return $this->class;
+	}
+
+	public function getClassNamespace()
+	{
+		return $this->classNamespace;
 	}
 
 	public function getPath()

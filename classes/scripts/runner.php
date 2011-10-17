@@ -16,7 +16,8 @@ class runner extends atoum\script
 	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $arguments = array();
-	protected $reportsEnabled = true;
+	protected $namespaces = array();
+	protected $tags = array();
 	protected $methods = array();
 
 	protected static $autorunner = null;
@@ -82,7 +83,7 @@ class runner extends atoum\script
 				$this->runner->addReport($report);
 			}
 
-			$this->runner->run(sizeof($this->methods) <= 0 || isset($this->methods['*']) === true ? array() : array_keys($this->methods), $this->methods);
+			$this->runner->run($this->namespaces, $this->tags, sizeof($this->methods) <= 0 || isset($this->methods['*']) === true ? array() : array_keys($this->methods), $this->methods);
 
 			if ($this->scoreFile !== null)
 			{
@@ -164,7 +165,21 @@ class runner extends atoum\script
 		return $this->runDirectory(atoum\directory . '/tests/units/classes');
 	}
 
-	public function test($class, $method)
+	public function testNamespaces(array $namespace)
+	{
+		$this->namespaces = $namespace;
+
+		return $this;
+	}
+
+	public function testTags(array $tags)
+	{
+		$this->tags = $tags;
+
+		return $this;
+	}
+
+	public function testMethod($class, $method)
 	{
 		$this->methods[$class][] = $method;
 
@@ -383,7 +398,7 @@ class runner extends atoum\script
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
-				$runner->setTags($tags);
+				$script->testTags($tags);
 			},
 			array('-t', '--tags'),
 			'<tag>...',
@@ -406,12 +421,26 @@ class runner extends atoum\script
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					$script->test($method[0], $method[1]);
+					$script->testMethod($method[0], $method[1]);
 				}
 			},
 			array('-m', '--methods'),
 			'<class::method>...',
 			$this->locale->_('Execute all <class::method>, * may be used as wildcard for class name or method name')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $namespaces) {
+				if (sizeof($namespaces) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->testNamespaces($namespaces);
+			},
+			array('-ns', '--namespaces'),
+			'<namespace>...',
+			$this->locale->_('Execute all classes in all namespaces <namespace>')
 		);
 
 		$this->addArgumentHandler(
