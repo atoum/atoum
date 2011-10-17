@@ -8,20 +8,20 @@ use
 ;
 
 /**
- * @method   asserters\boolean      boolean()
- * @method   asserters\error        error()
- * @method   asserters\exception    exception()
- * @method   asserters\float        float()
- * @method   asserters\hash         hash()
- * @method   asserters\integer      integer()
- * @method   asserters\object       object()
- * @method   asserters\string       string()
- * @method   asserters\variable     variable()
+ * @method  mageekguy\atoum\asserters\boolean       boolean()
+ * @method  mageekguy\atoum\asserters\error         error()
+ * @method  mageekguy\atoum\asserters\exception     exception()
+ * @method  mageekguy\atoum\asserters\float         float()
+ * @method  mageekguy\atoum\asserters\hash          hash()
+ * @method  mageekguy\atoum\asserters\integer       integer()
+ * @method  mageekguy\atoum\asserters\object        object()
+ * @method  mageekguy\atoum\asserters\string        string()
+ * @method  mageekguy\atoum\asserters\variable      variable()
  */
 class generator
 {
     /**
-     * @var atoum\test
+     * @var mageekguy\atoum\test
      */
 	protected $test = null;
 
@@ -34,7 +34,7 @@ class generator
     /**
      * Constructor
      *
-     * @param atoum\test $test
+     * @param mageekguy\atoum\test $test
      */
 	public function __construct(atoum\test $test)
 	{
@@ -47,9 +47,9 @@ class generator
      *
      * @param string $asserterName
      *
-     * @return atoum\asserter
+     * @return mageekguy\atoum\asserter
      *
-     * @throws exceptions\logic\invalidArgument
+     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function __get($asserterName)
 	{
@@ -67,8 +67,8 @@ class generator
     /**
      * Magic setter
      *
-     * @param type $asserter
-     * @param type $class
+     * @param string $asserter
+     * @param string $class
      */
 	public function __set($asserter, $class)
 	{
@@ -80,7 +80,7 @@ class generator
      * @param string $asserter
      * @param array  $arguments
      *
-     * @return atoum\asserter
+     * @return mageekguy\atoum\asserter
      */
 	public function __call($asserter, $arguments)
 	{
@@ -96,7 +96,7 @@ class generator
 
 
     /**
-     * @return atoum\test
+     * @return mageekguy\atoum\test
      */
 	public function getTest()
 	{
@@ -105,7 +105,7 @@ class generator
 
 
     /**
-     * @return score
+     * @return mageekguy\atoum\score
      */
 	public function getScore()
 	{
@@ -114,7 +114,7 @@ class generator
 
 
     /**
-     * @return locale
+     * @return mageekguy\atoum\locale
      */
 	public function getLocale()
 	{
@@ -144,9 +144,9 @@ class generator
 
 
     /**
-     * @param atoum\test $test
+     * @param mageekguy\atoum\test $test
      *
-     * @return generator
+     * @return mageekguy\atoum\generator
      */
 	public function setTest(atoum\test $test)
 	{
@@ -160,7 +160,7 @@ class generator
      * @param string $alias
      * @param string $asserterClass
      *
-     * @return generator
+     * @return mageekguy\atoum\generator
      */
 	public function setAlias($alias, $asserterClass)
 	{
@@ -180,7 +180,7 @@ class generator
 
 
     /**
-     * @return generator
+     * @return mageekguy\atoum\generator
      */
 	public function resetAliases()
 	{
@@ -193,7 +193,7 @@ class generator
     /**
      * @param \closure $closure
      *
-     * @return generator
+     * @return mageekguy\atoum\generator
      */
 	public function when(\closure $closure)
 	{

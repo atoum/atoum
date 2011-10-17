@@ -40,6 +40,14 @@ class object extends asserters\variable
 		return $this;
 	}
 
+
+    /**
+     * @param string $value
+     *
+     * @return mageekguy\atoum\asserters\object
+     *
+     * @throws mageekguy\atoum\exceptions\logic 
+     */
 	public function isInstanceOf($value)
 	{
 		try
