@@ -17,6 +17,7 @@ class runner extends atoum\script
 	protected $scoreFile = null;
 	protected $arguments = array();
 	protected $reportsEnabled = true;
+	protected $methods = array();
 
 	protected static $autorunner = null;
 
@@ -81,7 +82,7 @@ class runner extends atoum\script
 				$this->runner->addReport($report);
 			}
 
-			$this->runner->run();
+			$this->runner->run(sizeof($this->methods) <= 0 || isset($this->methods['*']) === true ? array() : array_keys($this->methods), $this->methods);
 
 			if ($this->scoreFile !== null)
 			{
@@ -161,6 +162,13 @@ class runner extends atoum\script
 	public function testIt()
 	{
 		return $this->runDirectory(atoum\directory . '/tests/units/classes');
+	}
+
+	public function test($class, $method)
+	{
+		$this->methods[$class][] = $method;
+
+		return $this;
 	}
 
 	public static function getAutorunner()
@@ -265,7 +273,7 @@ class runner extends atoum\script
 			},
 			array('-drt', '--default-report-title'),
 			'<string>',
-			$this->locale->_('Define default report title')
+			$this->locale->_('Define default report title with <string>')
 		);
 
 		$this->addArgumentHandler(
@@ -288,8 +296,8 @@ class runner extends atoum\script
 				}
 			},
 			array('-c', '--configuration-files'),
-			'<files>',
-			$this->locale->_('Use configuration <files>')
+			'<file>...',
+			$this->locale->_('Use all configuration files <file>')
 		);
 
 		$this->addArgumentHandler(
@@ -303,7 +311,7 @@ class runner extends atoum\script
 			},
 			array('-sf', '--score-file'),
 			'<file>',
-			$this->locale->_('Save score in <file>')
+			$this->locale->_('Save score in file <file>')
 		);
 
 		$this->addArgumentHandler(
@@ -347,8 +355,8 @@ class runner extends atoum\script
 				}
 			},
 			array('-f', '--test-files'),
-			'<files>',
-			$this->locale->_('Execute unit test <files>')
+			'<file>...',
+			$this->locale->_('Execute all unit test files <file>')
 		);
 
 		$this->addArgumentHandler(
@@ -364,8 +372,8 @@ class runner extends atoum\script
 				}
 			},
 			array('-d', '--directories'),
-			'<directories>',
-			$this->locale->_('Execute unit test files in <directories>')
+			'<directory>...',
+			$this->locale->_('Execute unit test files in all <directory>')
 		);
 
 		$this->addArgumentHandler(
@@ -378,10 +386,33 @@ class runner extends atoum\script
 				$runner->setTags($tags);
 			},
 			array('-t', '--tags'),
-			'<tags>',
-			$this->locale->_('Execute only unit test with tags <tags>')
+			'<tag>...',
+			$this->locale->_('Execute only unit test with tags <tag>')
 		);
 
+		$this->addArgumentHandler(
+			function($script, $argument, $methods) {
+				if (sizeof($methods) <= 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				foreach ($methods as $method)
+				{
+					$method = explode('::', $method);
+
+					if (sizeof($method) != 2)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->test($method[0], $method[1]);
+				}
+			},
+			array('-m', '--methods'),
+			'<class::method>...',
+			$this->locale->_('Execute all <class::method>, * may be used as wildcard for class name or method name')
+		);
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {

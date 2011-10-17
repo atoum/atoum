@@ -51,17 +51,17 @@ class runner extends atoum\test
 					array(
 						array('-drt', '--default-report-title'),
 						'<string>',
-						'Define default report title'
+						'Define default report title with <string>'
 					),
 					array(
 						array('-c', '--configuration-files'),
-						'<files>',
-						'Use configuration <files>'
+						'<file>...',
+						'Use all configuration files <file>'
 					),
 					array(
 						array('-sf', '--score-file'),
 						'<file>',
-						'Save score in <file>'
+						'Save score in file <file>'
 					),
 					array(
 						array('-mcn', '--max-children-number'),
@@ -75,18 +75,23 @@ class runner extends atoum\test
 					),
 					array(
 						array('-f', '--test-files'),
-						'<files>',
-						'Execute unit test <files>'
+						'<file>...',
+						'Execute all unit test files <file>'
 					),
 					array(
 						array('-d', '--directories'),
-						'<directories>',
-						'Execute unit test files in <directories>'
+						'<directory>...',
+						'Execute unit test files in all <directory>'
 					),
 					array(
 						array('-t', '--tags'),
-						'<tags>',
-						'Execute only unit test with tags <tags>'
+						'<tag>...',
+						'Execute only unit test with tags <tag>'
+					),
+					array(
+						array('-m', '--methods'),
+						'<class::method>...',
+						'Execute all <class::method>, * may be used as wildcard for class name or method name'
 					),
 					array(
 						array('--testIt'),

@@ -40,7 +40,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $currentMethod = null;
 	private $testNamespace = null;
 	private $mockGenerator = null;
-	private $child = null;
 	private $testsToRun = 0;
 	private $phpCode = '';
 	private $children = array();
@@ -388,6 +387,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->path;
 	}
 
+	public function filterTestMethods(array $methods)
+	{
+		return array_values(array_uintersect($methods, $this->getTestMethods(), 'strcasecmp'));
+	}
+
 	public function getTestMethods()
 	{
 		$testMethods = array();
@@ -545,17 +549,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (sizeof($runTestMethods) > 0)
 			{
-				$unknownTestMethods = array_diff($runTestMethods, $this->getTestMethods());
-
-				if (sizeof($unknownTestMethods) > 0)
-				{
-					throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . current($unknownTestMethods) . '() is unknown or ignored');
-				}
-
-				$this->runTestMethods = $runTestMethods;
+				$this->runTestMethods = array_intersect($runTestMethods, $this->getTestMethods());
 			}
 
-			if (sizeof($tags) > 0)
+			if (sizeof($runTestMethods) > 0 && sizeof($tags) > 0)
 			{
 				$runTestMethods = array();
 
@@ -648,7 +645,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 								if (isset($child[1][1]) === true || isset($child[1][2]) === true)
 								{
-									$this->children[] = $child;
+									$this->children[$testMethod] = $child;
 								}
 								else
 								{

@@ -649,6 +649,28 @@ namespace mageekguy\atoum\tests\units
 				->class('foo\bar')->isSubClassOf(__CLASS__)
 			;
 		}
+
+		public function testFilterTestMethods()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->array($test->filterTestMethods(array()))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid())))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid(), uniqid())))->isEmpty()
+			;
+
+			$test = new notEmptyTest();
+
+			$this->assert
+				->array($test->filterTestMethods(array()))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid())))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid(), uniqid())))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
+				->array($test->filterTestMethods(array(uniqid(), 'testMethod1', uniqid(), 'testMethod2')))->isEqualTo(array('testMethod2'))
+				->array($test->filterTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
+			;
+		}
 	}
 }
 

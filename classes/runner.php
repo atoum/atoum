@@ -352,30 +352,50 @@ class runner implements observable, adapter\aggregator
 
 				if ($this->isIgnored($test) === false)
 				{
-					$this->testNumber++;
-					$this->testMethodNumber += sizeof($test);
+					$methods = array();
 
-					$test
-						->setLocale($this->locale)
-						->setPhpPath($phpPath)
-					;
-
-					if ($this->maxChildrenNumber !== null)
+					if (isset($runTestMethods['*']) === true)
 					{
-						$test->setMaxChildrenNumber($this->maxChildrenNumber);
+						$methods = $runTestMethods['*'];
 					}
 
-					if ($this->codeCoverageIsEnabled() === false)
+					if (isset($runTestMethods[$runTestClass]) === true)
 					{
-						$test->disableCodeCoverage();
+						$methods = $runTestMethods[$runTestClass];
 					}
 
-					foreach ($this->testObservers as $observer)
+					if (in_array('*', $methods) === true)
 					{
-						$test->addObserver($observer);
+						$methods = array();
 					}
 
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $this->tags)->getScore());
+					if (sizeof($methods) <= 0 || ($methods = $test->filterTestMethods($methods)))
+					{
+						$test
+							->setLocale($this->locale)
+							->setPhpPath($phpPath)
+						;
+
+						if ($this->maxChildrenNumber !== null)
+						{
+							$test->setMaxChildrenNumber($this->maxChildrenNumber);
+						}
+
+						if ($this->codeCoverageIsEnabled() === false)
+						{
+							$test->disableCodeCoverage();
+						}
+
+						foreach ($this->testObservers as $observer)
+						{
+							$test->addObserver($observer);
+						}
+
+						$this->score->merge($test->run($methods, $this->tags)->getScore());
+
+						$this->testNumber++;
+						$this->testMethodNumber += sizeof($methods) ?: sizeof($test);
+					}
 				}
 			}
 		}
