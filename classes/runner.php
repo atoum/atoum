@@ -28,7 +28,6 @@ class runner implements observable, adapter\aggregator
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
-	protected $tags = array();
 
 	private $start = null;
 	private $stop = null;
@@ -176,18 +175,6 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function setTags(array $tags)
-	{
-		$this->tags = $tags;
-
-		return $this;
-	}
-
-	public function getTags()
-	{
-		return $this->tags;
-	}
-
 	public function enableCodeCoverage()
 	{
 		$this->codeCoverage = true;
@@ -305,7 +292,7 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function run(array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
+	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
 		$this->start = $this->adapter->microtime(true);
 
@@ -350,32 +337,52 @@ class runner implements observable, adapter\aggregator
 			{
 				$test = new $runTestClass();
 
-				if ($this->isIgnored($test) === false)
+				if ($this->isIgnored($test, $namespaces, $tags) === false)
 				{
-					$this->testNumber++;
-					$this->testMethodNumber += sizeof($test);
+					$methods = array();
 
-					$test
-						->setLocale($this->locale)
-						->setPhpPath($phpPath)
-					;
-
-					if ($this->maxChildrenNumber !== null)
+					if (isset($runTestMethods['*']) === true)
 					{
-						$test->setMaxChildrenNumber($this->maxChildrenNumber);
+						$methods = $runTestMethods['*'];
 					}
 
-					if ($this->codeCoverageIsEnabled() === false)
+					if (isset($runTestMethods[$runTestClass]) === true)
 					{
-						$test->disableCodeCoverage();
+						$methods = $runTestMethods[$runTestClass];
 					}
 
-					foreach ($this->testObservers as $observer)
+					if (in_array('*', $methods) === true)
 					{
-						$test->addObserver($observer);
+						$methods = array();
 					}
 
-					$this->score->merge($test->run(isset($runTestMethods[$runTestClass]) === false ? array() : $runTestMethods[$runTestClass], $this->tags)->getScore());
+					if (sizeof($methods) <= 0 || ($methods = $test->filterTestMethods($methods)))
+					{
+						$test
+							->setLocale($this->locale)
+							->setPhpPath($phpPath)
+						;
+
+						if ($this->maxChildrenNumber !== null)
+						{
+							$test->setMaxChildrenNumber($this->maxChildrenNumber);
+						}
+
+						if ($this->codeCoverageIsEnabled() === false)
+						{
+							$test->disableCodeCoverage();
+						}
+
+						foreach ($this->testObservers as $observer)
+						{
+							$test->addObserver($observer);
+						}
+
+						$this->score->merge($test->run($methods, $tags)->getScore());
+
+						$this->testNumber++;
+						$this->testMethodNumber += sizeof($methods) ?: sizeof($test);
+					}
 				}
 			}
 		}
@@ -437,13 +444,20 @@ class runner implements observable, adapter\aggregator
 		return array(self::runStart, self::runStop);
 	}
 
-	protected function isIgnored(test $test)
+	protected function isIgnored(test $test, array $namespaces, array $tags)
 	{
 		$isIgnored = $test->isIgnored();
 
-		if ($isIgnored === false && sizeof($this->tags) > 0)
+		if ($isIgnored === false && sizeof($namespaces) > 0)
 		{
-			$isIgnored = sizeof($testTags = $test->getTags()) <= 0 || sizeof(array_intersect($this->tags, $testTags)) == 0;
+			$classNamespace = strtolower($test->getClassNamespace());
+
+			$isIgnored = sizeof(array_filter($namespaces, function($value) use ($classNamespace) { return strpos($classNamespace, strtolower($value)) === 0; })) <= 0;
+		}
+
+		if ($isIgnored === false && sizeof($tags) > 0)
+		{
+			$isIgnored = sizeof($testTags = $test->getTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
 		}
 
 		return $isIgnored;

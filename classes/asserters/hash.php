@@ -8,7 +8,6 @@ use
 
 class hash extends string
 {
-
 	public function isSha1($failMessage = null)
 	{
 		return $this->isHash(40, $failMessage);
@@ -42,7 +41,6 @@ class hash extends string
 
 		return $this;
 	}
-
 }
 
 ?>
