@@ -99,6 +99,11 @@ class runner extends atoum\test
 						'Execute all classes in all namespaces <namespace>'
 					),
 					array(
+						array('-l', '--loop'),
+						null,
+						'Execute tests in an infinite loop'
+					),
+					array(
 						array('--testIt'),
 						null,
 						'Execute atoum unit tests'

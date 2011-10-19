@@ -337,7 +337,7 @@ class runner implements observable, adapter\aggregator
 			{
 				$test = new $runTestClass();
 
-				if ($this->isIgnored($test, $namespaces, $tags) === false)
+				if (self::isIgnored($test, $namespaces, $tags) === false)
 				{
 					$methods = array();
 
@@ -444,7 +444,7 @@ class runner implements observable, adapter\aggregator
 		return array(self::runStart, self::runStop);
 	}
 
-	protected function isIgnored(test $test, array $namespaces, array $tags)
+	public static function isIgnored(test $test, array $namespaces, array $tags)
 	{
 		$isIgnored = $test->isIgnored();
 

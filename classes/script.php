@@ -152,6 +152,10 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function run(array $arguments = array())
 	{
+		ini_set('log_errors_max_len', '0');
+		ini_set('log_errors', 'Off');
+		ini_set('display_errors', 'stderr');
+
 		$this->argumentsParser->parse(sizeof($arguments) <= 0 ? null : $arguments);
 
 		return $this;
