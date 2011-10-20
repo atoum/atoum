@@ -99,7 +99,7 @@ class runner extends atoum\script
 				$currentRunFailed = $score->getFailNumber() > 0 || $score->getErrorNumber() > 0 || $score->getExceptionNumber() > 0;
 
 
-				if ($previousRunFailed === true && $currentRunFailed === false)
+				if ($previousRunFailed === true && $currentRunFailed === false && sizeof($classes) != 1)
 				{
 					$previousRunFailed = $currentRunFailed;
 					$methods = $this->methods;
@@ -535,7 +535,7 @@ class runner extends atoum\script
 
 	protected function runAgain()
 	{
-		$this->writeMessage($this->locale->_('Press <Enter> to reexecute tests...'));
+		$this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key to stop...'));
 
 		return (trim(fgets(STDIN)) === '');
 	}

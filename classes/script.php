@@ -161,6 +161,13 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 
+	public function prompt($message)
+	{
+		$this->outputWriter->write(rtrim($message));
+
+		return $this;
+	}
+
 	public function writeMessage($message)
 	{
 		$this->outputWriter->write(rtrim($message) . PHP_EOL);
