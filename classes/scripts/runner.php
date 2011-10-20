@@ -82,7 +82,7 @@ class runner extends atoum\script
 				$this->runner->addReport($report);
 			}
 
-			$hasFails = false;
+			$previousRunFailed = false;
 			$methods = $this->methods;
 
 			while ($this->runTests === true)
@@ -96,9 +96,12 @@ class runner extends atoum\script
 					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
 				}
 
-				if ($hasFails === true && $score->getFailNumber() <= 0)
+				$currentRunFailed = $score->getFailNumber() > 0 || $score->getErrorNumber() > 0 || $score->getExceptionNumber() > 0;
+
+
+				if ($previousRunFailed === true && $currentRunFailed === false)
 				{
-					$hasFails = false;
+					$previousRunFailed = $currentRunFailed;
 					$methods = $this->methods;
 				}
 				else if ($this->loop === false || $this->runAgain() === false)
@@ -107,15 +110,31 @@ class runner extends atoum\script
 				}
 				else
 				{
-					$hasFails = $score->getFailNumber() > 0;
+					$previousRunFailed = $currentRunFailed;
 
-					if ($hasFails === true)
+					if ($previousRunFailed === true)
 					{
 						$methods = array();
 
 						foreach ($score->getFailAssertions() as $fail)
 						{
 							$methods[$fail['class']][] = $fail['method'];
+						}
+
+						foreach ($score->getErrors() as $error)
+						{
+							if (isset($methods[$error['class']]) === false || in_array($error['method'], $methods[$error['class']]) === false)
+							{
+								$methods[$error['class']][] = $error['method'];
+							}
+						}
+
+						foreach ($score->getExceptions() as $exception)
+						{
+							if (isset($methods[$exception['class']]) === false || in_array($exception['method'], $methods[$exception['class']]) === false)
+							{
+								$methods[$exception['class']][] = $exception['method'];
+							}
 						}
 					}
 

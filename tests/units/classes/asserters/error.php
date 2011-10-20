@@ -38,7 +38,7 @@ class error extends atoum\test
 			->string(asserters\error::getAsString(E_DEPRECATED))->isEqualTo('E_DEPRECATED')
 			->string(asserters\error::getAsString(E_USER_DEPRECATED))->isEqualTo('E_USER_DEPRECATED')
 			->string(asserters\error::getAsString(E_ALL))->isEqualTo('E_ALL')
-			->string(asserters\error::getAsString(uniqid()))->isEqualTo('UNKNOWN')
+			->string(asserters\error::getAsString('unknown error'))->isEqualTo('UNKNOWN')
 		;
 	}
 
