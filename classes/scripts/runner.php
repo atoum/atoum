@@ -87,9 +87,7 @@ class runner extends atoum\script
 
 			while ($this->runTests === true)
 			{
-				$classes = sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
-
-				$score = $this->runner->run($this->namespaces, $this->tags, $classes, $methods);
+				$score = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
 
 				if ($this->scoreFile !== null && $this->adapter->file_put_contents($this->scoreFile, serialize($score), \LOCK_EX) === false)
 				{
@@ -98,8 +96,7 @@ class runner extends atoum\script
 
 				$currentRunFailed = $score->getFailNumber() > 0 || $score->getErrorNumber() > 0 || $score->getExceptionNumber() > 0;
 
-
-				if ($previousRunFailed === true && $currentRunFailed === false && sizeof($classes) != 1)
+				if ($previousRunFailed === true && $currentRunFailed === false && sizeof(self::getClassesOf($this->methods)) != 1)
 				{
 					$previousRunFailed = $currentRunFailed;
 					$methods = $this->methods;
@@ -535,9 +532,14 @@ class runner extends atoum\script
 
 	protected function runAgain()
 	{
-		$this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key to stop...'));
+		$this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...'));
 
 		return (trim(fgets(STDIN)) === '');
+	}
+
+	protected static function getClassesOf($methods)
+	{
+		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
 	}
 }
 

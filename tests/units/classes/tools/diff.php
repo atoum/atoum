@@ -57,7 +57,7 @@ class diff extends atoum\test
 				'-Reference' . PHP_EOL .
 				'+Data' . PHP_EOL .
 				'@@ -1 +1 @@' . PHP_EOL .
-				'+' . $data . PHP_EOL
+				'+' . $data
 			)
 		;
 
@@ -69,7 +69,7 @@ class diff extends atoum\test
 				'+Data' . PHP_EOL .
 				'@@ -1 +1,2 @@' . PHP_EOL .
 				'+' . $data . PHP_EOL .
-				'+' . $otherSecondString . PHP_EOL
+				'+' . $otherSecondString
 			)
 		;
 
@@ -84,7 +84,7 @@ class diff extends atoum\test
 				'+Data' . PHP_EOL .
 				'@@ -1 +1 @@' . PHP_EOL .
 				'-' . $reference . PHP_EOL .
-				'+' . $data . PHP_EOL
+				'+' . $data
 			)
 		;
 
@@ -99,7 +99,7 @@ class diff extends atoum\test
 				'+Data' . PHP_EOL .
 				'@@ -4 +4 @@' . PHP_EOL .
 				'-4'. PHP_EOL .
-				'+6' . PHP_EOL
+				'+6'
 			)
 		;
 
@@ -115,7 +115,7 @@ class diff extends atoum\test
 				'@@ -4 +4,2 @@' . PHP_EOL .
 				'-4'. PHP_EOL .
 				'+6' . PHP_EOL .
-				'+7' . PHP_EOL
+				'+7'
 			)
 		;
 	}

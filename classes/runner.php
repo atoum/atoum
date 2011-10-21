@@ -22,8 +22,8 @@ class runner implements observable, adapter\aggregator
 	protected $observers = array();
 	protected $testObservers = array();
 	protected $reports = array();
-	protected $testNumber = null;
-	protected $testMethodNumber = null;
+	protected $testNumber = 0;
+	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
@@ -295,6 +295,8 @@ class runner implements observable, adapter\aggregator
 	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
 		$this->start = $this->adapter->microtime(true);
+		$this->testNumber = 0;
+		$this->testMethodNumber = 0;
 
 		$this->score->reset();
 
@@ -378,10 +380,10 @@ class runner implements observable, adapter\aggregator
 							$test->addObserver($observer);
 						}
 
-						$this->score->merge($test->run($methods, $tags)->getScore());
-
 						$this->testNumber++;
 						$this->testMethodNumber += sizeof($methods) ?: sizeof($test);
+
+						$this->score->merge($test->run($methods, $tags)->getScore());
 					}
 				}
 			}
