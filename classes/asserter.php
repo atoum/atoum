@@ -8,6 +8,17 @@ use
 	mageekguy\atoum\exceptions
 ;
 
+/**
+ * @method  mageekguy\atoum\asserters\boolean       boolean()
+ * @method  mageekguy\atoum\asserters\error         error()
+ * @method  mageekguy\atoum\asserters\exception     exception()
+ * @method  mageekguy\atoum\asserters\float         float()
+ * @method  mageekguy\atoum\asserters\hash          hash()
+ * @method  mageekguy\atoum\asserters\integer       integer()
+ * @method  mageekguy\atoum\asserters\object        object()
+ * @method  mageekguy\atoum\asserters\string        string()
+ * @method  mageekguy\atoum\asserters\variable      variable()
+ */
 abstract class asserter
 {
 	protected $generator = null;
