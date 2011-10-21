@@ -53,7 +53,7 @@ class diff
 			}
 		}
 
-		return $string;
+		return trim($string);
 	}
 
 	public function setReference($mixed)

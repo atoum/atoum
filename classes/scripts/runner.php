@@ -19,6 +19,7 @@ class runner extends atoum\script
 	protected $namespaces = array();
 	protected $tags = array();
 	protected $methods = array();
+	protected $loop = false;
 
 	protected static $autorunner = null;
 
@@ -67,11 +68,9 @@ class runner extends atoum\script
 
 	public function run(array $arguments = array())
 	{
-		ini_set('log_errors_max_len', '0');
-		ini_set('log_errors', 'Off');
-		ini_set('display_errors', 'stderr');
+		$arguments = sizeof($arguments) > 0 ? $arguments : $this->arguments;
 
-		parent::run(sizeof($arguments) > 0 ? $arguments : $this->arguments);
+		parent::run($arguments);
 
 		if ($this->runTests === true)
 		{
@@ -83,16 +82,68 @@ class runner extends atoum\script
 				$this->runner->addReport($report);
 			}
 
-			$this->runner->run($this->namespaces, $this->tags, sizeof($this->methods) <= 0 || isset($this->methods['*']) === true ? array() : array_keys($this->methods), $this->methods);
+			$previousRunFailed = false;
+			$methods = $this->methods;
 
-			if ($this->scoreFile !== null)
+			while ($this->runTests === true)
 			{
-				if ($this->adapter->file_put_contents($this->scoreFile, serialize($this->runner->getScore()), \LOCK_EX) === false)
+				$classes = sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+
+				$score = $this->runner->run($this->namespaces, $this->tags, $classes, $methods);
+
+				if ($this->scoreFile !== null && $this->adapter->file_put_contents($this->scoreFile, serialize($score), \LOCK_EX) === false)
 				{
 					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
 				}
+
+				$currentRunFailed = $score->getFailNumber() > 0 || $score->getErrorNumber() > 0 || $score->getExceptionNumber() > 0;
+
+
+				if ($previousRunFailed === true && $currentRunFailed === false && sizeof($classes) != 1)
+				{
+					$previousRunFailed = $currentRunFailed;
+					$methods = $this->methods;
+				}
+				else if ($this->loop === false || $this->runAgain() === false)
+				{
+					$this->runTests = false;
+				}
+				else
+				{
+					$previousRunFailed = $currentRunFailed;
+
+					if ($previousRunFailed === true)
+					{
+						$methods = array();
+
+						foreach ($score->getFailAssertions() as $fail)
+						{
+							$methods[$fail['class']][] = $fail['method'];
+						}
+
+						foreach ($score->getErrors() as $error)
+						{
+							if (isset($methods[$error['class']]) === false || in_array($error['method'], $methods[$error['class']]) === false)
+							{
+								$methods[$error['class']][] = $error['method'];
+							}
+						}
+
+						foreach ($score->getExceptions() as $exception)
+						{
+							if (isset($methods[$exception['class']]) === false || in_array($exception['method'], $methods[$exception['class']]) === false)
+							{
+								$methods[$exception['class']][] = $exception['method'];
+							}
+						}
+					}
+
+					parent::run($arguments);
+				}
 			}
 		}
+
+		return $this;
 	}
 
 	public function version()
@@ -163,6 +214,13 @@ class runner extends atoum\script
 	public function testIt()
 	{
 		return $this->runDirectory(atoum\directory . '/tests/units/classes');
+	}
+
+	public function enableLoop()
+	{
+		$this->loop = true;
+
+		return $this;
 	}
 
 	public function testNamespaces(array $namespace)
@@ -445,6 +503,21 @@ class runner extends atoum\script
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {
+				if (sizeof($values) > 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->enableLoop();
+			},
+			array('-l', '--loop'),
+			null,
+			$this->locale->_('Execute tests in an infinite loop')
+		);
+
+
+		$this->addArgumentHandler(
+			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -458,6 +531,13 @@ class runner extends atoum\script
 		);
 
 		return $this;
+	}
+
+	protected function runAgain()
+	{
+		$this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key to stop...'));
+
+		return (trim(fgets(STDIN)) === '');
 	}
 }
 

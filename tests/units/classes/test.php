@@ -645,6 +645,8 @@ namespace mageekguy\atoum\tests\units
 				->class('mock\\' . __CLASS__)->isSubClassOf(__CLASS__)
 				->object($test->mock(__CLASS__, 'foo'))->isIdenticalTo($test)
 				->class('foo\test')->isSubClassOf(__CLASS__)
+				->object($test->mock(__CLASS__, 'foo\bar'))->isIdenticalTo($test)
+				->class('foo\bar\test')->isSubClassOf(__CLASS__)
 				->object($test->mock(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
 				->class('foo\bar')->isSubClassOf(__CLASS__)
 			;
