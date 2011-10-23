@@ -380,10 +380,13 @@ class runner implements observable, adapter\aggregator
 							$test->addObserver($observer);
 						}
 
-						$this->testNumber++;
-						$this->testMethodNumber += sizeof($methods) ?: sizeof($test);
-
 						$this->score->merge($test->run($methods, $tags)->getScore());
+
+						if (($sizeOfTest = sizeof($test)) > 0)
+						{
+							$this->testNumber++;
+							$this->testMethodNumber += $sizeOfTest;
+						}
 					}
 				}
 			}

@@ -41,7 +41,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $currentMethod = null;
 	private $testNamespace = null;
 	private $mockGenerator = null;
-	private $testsToRun = 0;
+	private $size = 0;
 	private $phpCode = '';
 	private $children = array();
 	private $maxChildrenNumber = null;
@@ -124,6 +124,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		$this->runTestMethods = $this->getTestMethods();
+		$this->size = sizeof($this->runTestMethods);
 	}
 
 	public function __toString()
@@ -420,7 +421,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function count()
 	{
-		return sizeof($this->runTestMethods);
+		return $this->size;
 	}
 
 	public function addObserver(atoum\observers\test $observer)
@@ -445,6 +446,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->ignore = ($boolean == true);
 
 		$this->runTestMethods = $this->getTestMethods();
+		$this->size = sizeof($this->runTestMethods);
 
 		return $this;
 	}
@@ -573,11 +575,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->runTestMethods = $runTestMethods;
 			}
 
-			$this->testsToRun = sizeof($this->runTestMethods);
+			$this->size = sizeof($this->runTestMethods);
 
 			$this->callObservers(self::runStart);
 
-			if ($this->testsToRun > 0)
+			if ($this->size > 0)
 			{
 				$this->phpCode =
 					'<?php ' .
@@ -903,8 +905,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				'',
 				''
 			);
-
-			$this->testsToRun--;
 		}
 
 		return $this;
@@ -912,7 +912,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function canRunChild()
 	{
-		return ($this->testsToRun > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+		return (sizeof($this->runTestMethods) > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
 	private function setCaseOnAssert($case)
