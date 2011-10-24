@@ -478,7 +478,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			set_error_handler(array($this, 'errorHandler'));
 
 			ini_set('display_errors', 'stderr');
-			ini_set('log_errors', 'Off');
+			ini_set('log_errors', 'On');
 			ini_set('log_errors_max_len', '0');
 
 			$this->currentMethod = $testMethod;
@@ -517,6 +517,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					;
 
 					$this->afterTestMethod($testMethod);
+
 				}
 				catch (\exception $exception)
 				{
@@ -564,7 +565,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->phpCode =
 					'<?php ' .
-					'ob_start();' .
 					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
@@ -572,7 +572,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
 					'$test->runTestMethod($method = \'%s\');' .
-					'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
+					'echo serialize($test->getScore());' .
 					'?>'
 				;
 

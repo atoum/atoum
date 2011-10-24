@@ -532,9 +532,7 @@ class runner extends atoum\script
 
 	protected function runAgain()
 	{
-		$this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...'));
-
-		return (trim(fgets(STDIN)) === '');
+		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
 	}
 
 	protected static function getClassesOf($methods)
