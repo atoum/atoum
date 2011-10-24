@@ -32,11 +32,6 @@ abstract class script implements atoum\adapter\aggregator
 			->setErrorWriter(new atoum\writers\std\err())
 		;
 
-		if (isset($this->adapter->exit) === false)
-		{
-			$this->adapter->exit = function($code) { exit($code); };
-		}
-
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
 			throw new exceptions\logic('\'' . $this->getName() . '\' must be used in CLI only');
@@ -59,7 +54,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function setArgumentsParser(script\arguments\parser $parser)
 	{
-		$this->argumentsParser = $parser->setScript($this);
+		$this->argumentsParser = $parser;
 
 		$this->setArgumentHandlers();
 
@@ -156,7 +151,7 @@ abstract class script implements atoum\adapter\aggregator
 		ini_set('log_errors', 'Off');
 		ini_set('display_errors', 'stderr');
 
-		$this->argumentsParser->parse(sizeof($arguments) <= 0 ? null : $arguments);
+		$this->argumentsParser->parse($this, sizeof($arguments) <= 0 ? array() : $arguments);
 
 		return $this;
 	}

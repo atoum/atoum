@@ -27,7 +27,6 @@ class runner extends atoum\test
 		$this->assert
 			->string($runner->getName())->isEqualTo($name)
 			->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->boolean(isset($runner->getAdapter()->exit))->isTrue()
 			->object($runner->getLocale())->isEqualTo(new atoum\locale())
 			->object($runner->getRunner())->isEqualTo(new atoum\runner())
 			->variable($runner->getScoreFile())->isNull()
