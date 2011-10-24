@@ -123,8 +123,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
-		$this->runTestMethods = $this->getTestMethods();
-		$this->size = sizeof($this->runTestMethods);
+		$this->runTestMethods($this->getTestMethods());
 	}
 
 	public function __toString()
@@ -394,18 +393,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->path;
 	}
 
-	public function filterTestMethods(array $methods)
+	public function filterTestMethods(array $methods, array $tags = array())
 	{
-		return array_values(array_uintersect($methods, $this->getTestMethods(), 'strcasecmp'));
+		return array_values(array_uintersect($methods, $this->getTestMethods($tags), 'strcasecmp'));
 	}
 
-	public function getTestMethods()
+	public function getTestMethods(array $tags = array())
 	{
 		$testMethods = array();
 
-		foreach ($this->testMethods as $methodName => $annotations)
+		foreach (array_keys($this->testMethods) as $methodName)
 		{
-			if (isset($annotations['ignore']) === true ? $annotations['ignore'] === false : $this->ignore === false)
+			if ($this->methodIsIgnored($methodName, $tags) === false)
 			{
 				$testMethods[] = $methodName;
 			}
@@ -445,8 +444,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->ignore = ($boolean == true);
 
-		$this->runTestMethods = $this->getTestMethods();
-		$this->size = sizeof($this->runTestMethods);
+		$this->runTestMethods($this->getTestMethods());
 
 		return $this;
 	}
@@ -456,18 +454,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return ($this->ignore === true);
 	}
 
-	public function methodIsIgnored($testMethodName, array $tags = array())
+	public function methodIsIgnored($methodName, array $tags = array())
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
+		if (isset($this->testMethods[$methodName]) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
 		}
 
-		$isIgnored = (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
+		$isIgnored = (isset($this->testMethods[$methodName]['ignore']) === true ? $this->testMethods[$methodName]['ignore'] : $this->ignore);
 
 		if ($isIgnored === false && sizeof($tags) > 0)
 		{
-			$isIgnored = sizeof($methodTags = $this->getMethodTags($testMethodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
 		}
 
 		return $isIgnored;
@@ -557,29 +555,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (sizeof($runTestMethods) > 0)
 			{
-				$this->runTestMethods = array_intersect($runTestMethods, $this->getTestMethods());
+				$this->runTestMethods(array_intersect($runTestMethods, $this->getTestMethods($tags)));
 			}
-
-			if (sizeof($runTestMethods) > 0 && sizeof($tags) > 0)
-			{
-				$runTestMethods = array();
-
-				foreach ($this->runTestMethods as $runTestMethod)
-				{
-					if ($this->methodIsIgnored($runTestMethod, $tags) === false)
-					{
-						$runTestMethods[] = $runTestMethod;
-					}
-				}
-
-				$this->runTestMethods = $runTestMethods;
-			}
-
-			$this->size = sizeof($this->runTestMethods);
 
 			$this->callObservers(self::runStart);
 
-			if ($this->size > 0)
+			if (sizeof($this) > 0)
 			{
 				$this->phpCode =
 					'<?php ' .
@@ -872,6 +853,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return null;
+	}
+
+	protected function runTestMethods(array $methods)
+	{
+		$this->runTestMethods = $methods;
+		$this->size = sizeof($this->runTestMethods);
+
+		return $this;
 	}
 
 	private function runChild()
