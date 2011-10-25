@@ -7,6 +7,29 @@ use
 	mageekguy\atoum\exceptions
 ;
 
+/**
+ * @method  mageekguy\atoum\asserters\adapter               adapter()
+ * @method  mageekguy\atoum\asserters\afterDestructionOf    afterDestructionOf()
+ * @method  mageekguy\atoum\asserters\boolean               boolean()
+ * @method  mageekguy\atoum\asserters\castToString          castToString()
+ * @method  mageekguy\atoum\asserters\dateTime              dateTime()
+ * @method  mageekguy\atoum\asserters\error                 error()
+ * @method  mageekguy\atoum\asserters\exception             exception()
+ * @method  mageekguy\atoum\asserters\float                 float()
+ * @method  mageekguy\atoum\asserters\hash                  hash()
+ * @method  mageekguy\atoum\asserters\integer               integer()
+ * @method  mageekguy\atoum\asserters\mock                  mock()
+ * @method  mageekguy\atoum\asserters\mysqlDateTime         mysqlDateTime()
+ * @method  mageekguy\atoum\asserters\object                object()
+ * @method  mageekguy\atoum\asserters\output                output()
+ * @method  mageekguy\atoum\asserters\phpArray              phpArray()
+ * @method  mageekguy\atoum\asserters\phpClass              phpClass()
+ * @method  mageekguy\atoum\asserters\sizeOf                sizeOf()
+ * @method  mageekguy\atoum\asserters\stream                stream()
+ * @method  mageekguy\atoum\asserters\string                string()
+ * @method  mageekguy\atoum\asserters\testedClass           testedClass()
+ * @method  mageekguy\atoum\asserters\variable              variable()
+ */
 class object extends asserters\variable
 {
 	public function __get($property)
@@ -46,7 +69,7 @@ class object extends asserters\variable
      *
      * @return mageekguy\atoum\asserters\object
      *
-     * @throws mageekguy\atoum\exceptions\logic 
+     * @throws mageekguy\atoum\exceptions\logic
      */
 	public function isInstanceOf($value)
 	{
