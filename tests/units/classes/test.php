@@ -493,6 +493,13 @@ namespace mageekguy\atoum\tests\units
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 				->sizeOf($test)->isEqualTo(2)
 				->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
+				->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1', 'testMethod2'))
+				->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1', 'testMethod2'))
+				->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2'))
+				->array($test->getTestMethods(array(uniqid())))->isEmpty()
+				->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
+				->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
+				->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
 			;
 		}
 

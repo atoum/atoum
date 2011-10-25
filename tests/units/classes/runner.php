@@ -314,13 +314,13 @@ class runner extends atoum\test
 		$runner = new atoum\runner(null, $adapter, $superglobals);
 
 		$this->assert
-			->variable($runner->getTestNumber())->isNull();
+			->integer($runner->getTestNumber())->isZero();
 		;
 
 		$runner->run();
 
 		$this->assert
-			->variable($runner->getTestNumber())->isNull();
+			->integer($runner->getTestNumber())->isZero();
 		;
 	}
 
@@ -343,13 +343,13 @@ class runner extends atoum\test
 		$runner = new atoum\runner(null, $adapter, $superglobals);
 
 		$this->assert
-			->variable($runner->getTestMethodNumber())->isNull();
+			->integer($runner->getTestMethodNumber())->isZero();
 		;
 
 		$runner->run();
 
 		$this->assert
-			->variable($runner->getTestMethodNumber())->isNull();
+			->integer($runner->getTestMethodNumber())->isZero();
 		;
 	}
 

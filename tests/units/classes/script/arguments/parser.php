@@ -11,35 +11,31 @@ require_once __DIR__ . '/../../../runner.php';
 
 class parser extends atoum\test
 {
+	public function testClass()
+	{
+		$this->assert
+			->testedClass->hasInterface('iteratorAggregate')
+		;
+	}
+
 	public function test__construct()
 	{
 		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($parser)->isInstanceOf('iteratorAggregate')
-			->object($parser->getSuperGlobals())->isInstanceOf('mageekguy\atoum\superglobals')
+			->object($parser->getSuperGlobals())->isEqualTo(new atoum\superglobals())
 			->array($parser->getValues())->isEmpty()
 			->array($parser->getHandlers())->isEmpty()
+			->object($parser->getIterator())->isEmpty()
 		;
 
 		$parser = new script\arguments\parser($superglobals = new atoum\superglobals());
 
 		$this->assert
 			->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
-		;
-	}
-
-	public function testSetScript()
-	{
-		$parser = new script\arguments\parser();
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\script')
-		;
-
-		$this->assert
-			->object($parser->setScript($script = new \mock\mageekguy\atoum\script(uniqid())))->isIdenticalTo($parser)
-			->object($parser->getScript())->isIdenticalTo($script)
+			->array($parser->getValues())->isEmpty()
+			->array($parser->getHandlers())->isEmpty()
+			->object($parser->getIterator())->isEmpty()
 		;
 	}
 
@@ -55,226 +51,208 @@ class parser extends atoum\test
 
 	public function testGetValues()
 	{
+		$this->mock('mageekguy\atoum\script');
+
+		$script = new \mock\mageekguy\atoum\script(uniqid());
+
 		$parser = new script\arguments\parser();
 
 		$this->assert
 			->array($parser->getValues())->isEmpty()
 			->variable($parser->getValues(uniqid()))->isNull()
-		;
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('-a'))
-			->parse(array('-a'))
-		;
-
-		$this->assert
-			->array($parser->getValues())->isEqualTo(array('-a' => array()))
-			->array($parser->getValues('-a'))->isEmpty()
-			->variable($parser->getValues(uniqid()))->isNull()
-		;
-
-		$parser->parse(array('-a', 'a1', 'a2'));
-
-		$this->assert
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-			->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-			->variable($parser->getValues(uniqid()))->isNull()
-		;
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('-b'))
-			->parse(array('-a', 'a1', 'a2', '-b'))
-		;
-
-		$this->assert
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-			->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-			->array($parser->getValues('-b'))->isEmpty()
-			->variable($parser->getValues(uniqid()))->isNull()
+			->when(function() use ($parser, $script) {
+					$parser
+						->addHandler(function($script, $argument, $value) {}, array('-a'))
+						->parse($script, array('-a'))
+					;
+				}
+			)
+				->array($parser->getValues())->isEqualTo(array('-a' => array()))
+				->array($parser->getValues('-a'))->isEmpty()
+				->variable($parser->getValues(uniqid()))->isNull()
+			->when(function() use ($parser, $script) {
+					$parser->parse($script, array('-a', 'a1', 'a2'));
+				}
+			)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+				->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+				->variable($parser->getValues(uniqid()))->isNull()
+			->when(function() use ($parser, $script) {
+					$parser
+						->addHandler(function($script, $argument, $value) {}, array('-b'))
+						->parse($script, array('-a', 'a1', 'a2', '-b'))
+					;
+				}
+			)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+				->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+				->array($parser->getValues('-b'))->isEmpty()
+				->variable($parser->getValues(uniqid()))->isNull()
 		;
 	}
 
 	public function testGetIterator()
 	{
+		$this->mock('mageekguy\atoum\script');
+
+		$script = new \mock\mageekguy\atoum\script(uniqid());
+
 		$parser = new script\arguments\parser();
 
 		$this->assert
-			->object($parser->getIterator())->isInstanceOf('arrayIterator')
-			->isEmpty()
-		;
-
-		$parser->parse(array());
-
-		$this->assert
-			->object($parser->getIterator())->isInstanceOf('arrayIterator')
-			->isEmpty()
-		;
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('-a'))
-			->addHandler(function($script, $argument, $value) {}, array('-b'))
-			->parse(array('-a', 'a1', 'a2', '-b'))
-		;
-
-		$this->assert
-			->object($parser->getIterator())->isInstanceOf('arrayIterator')
-			->isEqualTo(new \arrayIterator($parser->getValues()))
+			->when(function() use ($parser, $script) {
+					$parser->parse($script, array());
+				}
+			)
+				->object($parser->getIterator())
+					->isInstanceOf('arrayIterator')
+					->isEmpty()
+			->when(function() use ($parser, $script) {
+					$parser
+						->addHandler(function($script, $argument, $value) {}, array('-a'))
+						->addHandler(function($script, $argument, $value) {}, array('-b'))
+						->parse($script, array('-a', 'a1', 'a2', '-b'))
+					;
+				}
+			)
+				->object($parser->getIterator())
+					->isInstanceOf('arrayIterator')
+					->isEqualTo(new \arrayIterator($parser->getValues()))
 		;
 	}
 
 	public function testParse()
 	{
-		$superglobals = new atoum\superglobals();
+		$this->mock('mageekguy\atoum\script');
 
+		$script = new \mock\mageekguy\atoum\script(uniqid());
+
+		$superglobals = new atoum\superglobals();
 		$superglobals->_SERVER['argv'] = array();
 
 		$parser = new script\arguments\parser($superglobals);
 
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+		$this->assert('When using $_SERVER')
+			->object($parser->parse($script))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEmpty()
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array('scriptName');
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEmpty()
+			->when(function() use ($superglobals, $parser, & $invokeA) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a');
+					$parser->addHandler(function($script, $argument, $value) use (& $invokeA) { $invokeA++; }, array('-a'));
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array()))
+				->integer($invokeA)->isEqualTo(1)
+			->when(function() use ($superglobals, $parser, & $invokeB) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b');
+					$parser->addHandler(function($script, $argument, $value) use (& $invokeB) { $invokeB++; }, array('-b'));
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
+				->integer($invokeA)->isEqualTo(2)
+				->integer($invokeB)->isEqualTo(1)
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1');
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
+				->integer($invokeA)->isEqualTo(3)
+				->integer($invokeB)->isEqualTo(1)
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2');
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+				->integer($invokeA)->isEqualTo(4)
+				->integer($invokeB)->isEqualTo(1)
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b');
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+				->integer($invokeA)->isEqualTo(5)
+				->integer($invokeB)->isEqualTo(2)
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3');
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
+				->integer($invokeA)->isEqualTo(6)
+				->integer($invokeB)->isEqualTo(3)
+			->when(function() use ($superglobals, $parser, & $invokeC) {
+					$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c');
+					$parser->addHandler(function($script, $argument, $value) use (& $invokeC) { $invokeC++; }, array('--c'));
+				}
+			)
+				->object($parser->parse($script))->isIdenticalTo($parser)
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+				->integer($invokeA)->isEqualTo(7)
+				->integer($invokeB)->isEqualTo(4)
+				->integer($invokeC)->isEqualTo(1)
 		;
 
-		$superglobals->_SERVER['argv'] = array('scriptName');
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+		$this->assert('When using argument')
+			->when(function() use ($superglobals) {
+					$superglobals->_SERVER['argv'] = array();
+				}
+			)
+			->object($parser->parse($script, array()))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEmpty()
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a');
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('-a'))
-		;
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(7)
+			->integer($invokeB)->isEqualTo(4)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array()))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b');
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('-b'))
-		;
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(8)
+			->integer($invokeB)->isEqualTo(4)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', '-b')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1');
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(9)
+			->integer($invokeB)->isEqualTo(5)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', 'a1')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2');
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(10)
+			->integer($invokeB)->isEqualTo(5)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', 'a1', 'a2')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b');
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(11)
+			->integer($invokeB)->isEqualTo(5)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', 'a1', 'a2', '-b')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3');
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(12)
+			->integer($invokeB)->isEqualTo(6)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
-		;
-
-		$superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c');
-
-		$parser
-			->addHandler(function($script, $argument, $value) {}, array('--c'))
-		;
-
-		$this->assert
-			->object($parser->parse())->isIdenticalTo($parser)
+			->integer($invokeA)->isEqualTo(13)
+			->integer($invokeB)->isEqualTo(7)
+			->integer($invokeC)->isEqualTo(1)
+			->object($parser->parse($script, array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c')))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
-		;
-
-		$this->assert
-			->object($parser->parse(array()))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEmpty()
-			->exception(function() use ($parser) {
-					$parser->parse(array('b'));
+			->integer($invokeA)->isEqualTo(14)
+			->integer($invokeB)->isEqualTo(8)
+			->integer($invokeC)->isEqualTo(2)
+			->exception(function() use ($parser, $script) {
+					$parser->parse($script, array('b'));
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 				->hasMessage('First argument \'b\' is invalid')
-			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array()))
-			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
-			->object($parser->parse(array('-a', 'a1')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
-			->object($parser->parse(array('-a', 'a1', 'a2')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-			->object($parser->parse(array('-a', 'a1', 'a2', '-b')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-			->object($parser->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
-			->object($parser->parse(array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c')))->isIdenticalTo($parser)
-			->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
-		;
-
-		$parser = new script\arguments\parser();
-
-		$invoke = 0;
-
-		$handler = function ($script, $argument, $values) use (& $invoke) { $invoke++; };
-
-		$parser->addHandler($handler, array('-a'));
-
-		$this->assert
-			->object($parser->parse(array()))->isIdenticalTo($parser)
-			->integer($invoke)->isZero()
-			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
-			->integer($invoke)->isEqualTo(1)
-		;
-
-		$parser->addHandler($handler, array('-a'));
-
-		$this->assert
-			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
-			->integer($invoke)->isEqualTo(3)
-		;
-
-		$parser->addHandler($handler, array('-b'));
-
-		$this->assert
-			->object($parser->parse(array('-a')))->isIdenticalTo($parser)
-			->integer($invoke)->isEqualTo(5)
-			->object($parser->parse(array('-a', '-b')))->isIdenticalTo($parser)
-			->integer($invoke)->isEqualTo(8)
-		;
-
-		$parser = new script\arguments\parser();
-
-		$invoke = 0;
-
-		$handler = function ($script, $argument, $values) use (& $invoke) { $invoke++; };
-
-		$parser->addHandler($handler, array('-directory'));
-
-		$this->assert
-			->object($parser->parse(array()))->isIdenticalTo($parser)
-			->integer($invoke)->isZero()
-			->exception(function() use ($parser) { $parser->parse(array('-direc')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-				->hasMessage('Argument \'-direc\' is unknown, did you mean \'-directory\' ?')
-			->object($parser->parse(array('-DIRECTORY')))->isIdenticalTo($parser)
-			->integer($invoke)->isEqualTo(1)
 		;
 	}
 

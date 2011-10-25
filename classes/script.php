@@ -12,10 +12,11 @@ abstract class script implements atoum\adapter\aggregator
 {
 	const padding = '   ';
 
+	protected $name = '';
 	protected $locale = null;
+	protected $adapter = null;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
-	protected $name = '';
 
 	private $help = array();
 	private $argumentsParser = null;
@@ -31,11 +32,6 @@ abstract class script implements atoum\adapter\aggregator
 			->setOutputWriter(new atoum\writers\std\out())
 			->setErrorWriter(new atoum\writers\std\err())
 		;
-
-		if (isset($this->adapter->exit) === false)
-		{
-			$this->adapter->exit = function($code) { exit($code); };
-		}
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
@@ -59,7 +55,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function setArgumentsParser(script\arguments\parser $parser)
 	{
-		$this->argumentsParser = $parser->setScript($this);
+		$this->argumentsParser = $parser;
 
 		$this->setArgumentHandlers();
 
@@ -98,26 +94,21 @@ abstract class script implements atoum\adapter\aggregator
 		return $this->argumentsParser;
 	}
 
-	public function setLocale(atoum\locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
-	}
-
 	public function getLocale()
 	{
 		return $this->locale;
 	}
 
-	public function getErrors()
-	{
-		return $this->errors;
-	}
-
 	public function getHelp()
 	{
 		return $this->help;
+	}
+
+	public function setLocale(atoum\locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
 	}
 
 	public function help()
@@ -150,13 +141,25 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 
+	public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null)
+	{
+		if ($help !== null)
+		{
+			$this->help[] = array($arguments, $values, $help);
+		}
+
+		$this->argumentsParser->addHandler($handler, $arguments);
+
+		return $this;
+	}
+
 	public function run(array $arguments = array())
 	{
-		ini_set('log_errors_max_len', '0');
-		ini_set('log_errors', 'Off');
-		ini_set('display_errors', 'stderr');
+		$this->adapter->ini_set('log_errors_max_len', '0');
+		$this->adapter->ini_set('log_errors', 'Off');
+		$this->adapter->ini_set('display_errors', 'stderr');
 
-		$this->argumentsParser->parse(sizeof($arguments) <= 0 ? null : $arguments);
+		$this->argumentsParser->parse($this, $arguments);
 
 		return $this;
 	}
@@ -165,7 +168,7 @@ abstract class script implements atoum\adapter\aggregator
 	{
 		$this->outputWriter->write(rtrim($message));
 
-		return $this;
+		return trim(fgets(STDIN));
 	}
 
 	public function writeMessage($message)
@@ -215,18 +218,6 @@ abstract class script implements atoum\adapter\aggregator
 				}
 			}
 		}
-
-		return $this;
-	}
-
-	protected function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null)
-	{
-		if ($help !== null)
-		{
-			$this->help[] = array($arguments, $values, $help);
-		}
-
-		$this->argumentsParser->addHandler($handler, $arguments);
 
 		return $this;
 	}

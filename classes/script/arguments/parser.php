@@ -9,7 +9,6 @@ use
 
 class parser implements \iteratorAggregate
 {
-	protected $script = null;
 	protected $values = array();
 	protected $handlers = array();
 
@@ -23,18 +22,6 @@ class parser implements \iteratorAggregate
 		$this->superglobals = $superglobals;
 
 		return $this;
-	}
-
-	public function setScript(atoum\script $script)
-	{
-		$this->script = $script;
-
-		return $this;
-	}
-
-	public function getScript()
-	{
-		return $this->script;
 	}
 
 	public function getSuperglobals()
@@ -59,9 +46,9 @@ class parser implements \iteratorAggregate
 		return new \arrayIterator($this->getValues());
 	}
 
-	public function parse(array $array = null)
+	public function parse(atoum\script $script, array $array = array())
 	{
-		if ($array === null)
+		if (sizeof($array) <= 0)
 		{
 			$array = array_slice($this->superglobals->_SERVER['argv'], 1);
 		}
@@ -95,7 +82,7 @@ class parser implements \iteratorAggregate
 				}
 				else
 				{
-					$this->triggerHandlers();
+					$this->triggerHandlers($script);
 
 					$argument = $value;
 
@@ -105,7 +92,7 @@ class parser implements \iteratorAggregate
 				$arguments->next();
 			}
 
-			$this->triggerHandlers();
+			$this->triggerHandlers($script);
 		}
 
 		return $this;
@@ -153,7 +140,7 @@ class parser implements \iteratorAggregate
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 
-	protected function triggerHandlers()
+	protected function triggerHandlers(atoum\script $script)
 	{
 		$lastArgument = array_slice($this->values, -1);
 
@@ -161,7 +148,7 @@ class parser implements \iteratorAggregate
 
 		if (isset($this->handlers[$argument]) === true)
 		{
-			$this->invokeHandlersForArgument($argument, $values);
+			$this->invokeHandlers($script, $argument, $values);
 		}
 		else
 		{
@@ -194,18 +181,18 @@ class parser implements \iteratorAggregate
 			}
 			else
 			{
-				$this->invokeHandlersForArgument($closestArgument, $values);
+				$this->invokeHandlers($closestArgument, $values);
 			}
 		}
 
 		return $this;
 	}
 
-	protected function invokeHandlersForArgument($argument, $values)
+	protected function invokeHandlers(atoum\script $script, $argument, array $values)
 	{
 		foreach ($this->handlers[$argument] as $handler)
 		{
-			$handler->__invoke($this->script, $argument, $values, sizeof($this->values));
+			$handler->__invoke($script, $argument, $values, sizeof($this->values));
 		}
 
 		return $this;

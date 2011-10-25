@@ -121,6 +121,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testsToRun = 0;
 
     /**
+     * @var integer
+     */
+	private $size = 0;
+
+    /**
      * @var string
      */
 	private $phpCode = '';
@@ -248,7 +253,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
-		$this->runTestMethods = $this->getTestMethods();
+		$this->runTestMethods($this->getTestMethods());
 	}
 
 
@@ -672,21 +677,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->path;
 	}
 
-	public function filterTestMethods(array $methods)
+	public function filterTestMethods(array $methods, array $tags = array())
 	{
-		return array_values(array_uintersect($methods, $this->getTestMethods(), 'strcasecmp'));
+		return array_values(array_uintersect($methods, $this->getTestMethods($tags), 'strcasecmp'));
 	}
 
     /**
+     * @param array $tags
+     *
      * @return array
      */
-	public function getTestMethods()
+	public function getTestMethods(array $tags = array())
 	{
 		$testMethods = array();
 
-		foreach ($this->testMethods as $methodName => $annotations)
+		foreach (array_keys($this->testMethods) as $methodName)
 		{
-			if (isset($annotations['ignore']) === true ? $annotations['ignore'] === false : $this->ignore === false)
+			if ($this->methodIsIgnored($methodName, $tags) === false)
 			{
 				$testMethods[] = $methodName;
 			}
@@ -710,7 +717,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	public function count()
 	{
-		return sizeof($this->runTestMethods);
+		return $this->size;
 	}
 
 
@@ -752,7 +759,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->ignore = ($boolean == true);
 
-		$this->runTestMethods = $this->getTestMethods();
+		$this->runTestMethods($this->getTestMethods());
 
 		return $this;
 	}
@@ -768,25 +775,25 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param string $testMethodName
+     * @param string $methodName
      * @param array  $tags
      *
      * @return boolean
      *
      * @throws mageekguy\atoum\exceptions\logic\invalidArgument
      */
-	public function methodIsIgnored($testMethodName, array $tags = array())
+	public function methodIsIgnored($methodName, array $tags = array())
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
+		if (isset($this->testMethods[$methodName]) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
 		}
 
-		$isIgnored = (isset($this->testMethods[$testMethodName]['ignore']) === true ? $this->testMethods[$testMethodName]['ignore'] : $this->ignore);
+		$isIgnored = (isset($this->testMethods[$methodName]['ignore']) === true ? $this->testMethods[$methodName]['ignore'] : $this->ignore);
 
 		if ($isIgnored === false && sizeof($tags) > 0)
 		{
-			$isIgnored = sizeof($methodTags = $this->getMethodTags($testMethodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
 		}
 
 		return $isIgnored;
@@ -808,7 +815,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			set_error_handler(array($this, 'errorHandler'));
 
 			ini_set('display_errors', 'stderr');
-//			ini_set('log_errors', 'Off');
+			ini_set('log_errors', 'On');
 			ini_set('log_errors_max_len', '0');
 
 			$this->currentMethod = $testMethod;
@@ -847,6 +854,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					;
 
 					$this->afterTestMethod($testMethod);
+
 				}
 				catch (\exception $exception)
 				{
@@ -896,33 +904,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (sizeof($runTestMethods) > 0)
 			{
-				$this->runTestMethods = array_intersect($runTestMethods, $this->getTestMethods());
+				$this->runTestMethods(array_intersect($runTestMethods, $this->getTestMethods($tags)));
 			}
-
-			if (sizeof($runTestMethods) > 0 && sizeof($tags) > 0)
-			{
-				$runTestMethods = array();
-
-				foreach ($this->runTestMethods as $runTestMethod)
-				{
-					if ($this->methodIsIgnored($runTestMethod, $tags) === false)
-					{
-						$runTestMethods[] = $runTestMethod;
-					}
-				}
-
-				$this->runTestMethods = $runTestMethods;
-			}
-
-			$this->testsToRun = sizeof($this->runTestMethods);
 
 			$this->callObservers(self::runStart);
 
-			if ($this->testsToRun > 0)
+			if (sizeof($this) > 0)
 			{
 				$this->phpCode =
 					'<?php ' .
-					'ob_start();' .
 					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
@@ -930,7 +920,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
 					'$test->runTestMethod($method = \'%s\');' .
-					'echo serialize($test->getScore()->addOutput(\'' . $this->class . '\', $method, ob_get_clean()));' .
+					'echo serialize($test->getScore());' .
 					'?>'
 				;
 
@@ -1297,6 +1287,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
+     * @param array $methods
+     *
+     * @return mageekguy\atoum\test
+     */
+	protected function runTestMethods(array $methods)
+	{
+		$this->runTestMethods = $methods;
+		$this->size = sizeof($this->runTestMethods);
+
+		return $this;
+	}
+
+
+    /**
      * @return mageekguy\atoum\test
      */
 	private function runChild()
@@ -1330,8 +1334,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				'',
 				''
 			);
-
-			$this->testsToRun--;
 		}
 
 		return $this;
@@ -1343,7 +1345,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	private function canRunChild()
 	{
-		return ($this->testsToRun > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+		return (sizeof($this->runTestMethods) > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
 
