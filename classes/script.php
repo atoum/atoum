@@ -168,7 +168,7 @@ abstract class script implements atoum\adapter\aggregator
 	{
 		$this->outputWriter->write(rtrim($message));
 
-		return trim(fgets(STDIN));
+		return trim($this->adapter->fgets(STDIN));
 	}
 
 	public function writeMessage($message)
@@ -180,14 +180,14 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function writeError($message)
 	{
-		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), rtrim($message)) . PHP_EOL);
+		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
 
 		return $this;
 	}
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . $label . ': ' . $value . PHP_EOL);
+		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value) . PHP_EOL);
 	}
 
 	public function writeLabels(array $labels, $level = 1)

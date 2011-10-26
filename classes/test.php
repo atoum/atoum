@@ -478,7 +478,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			set_error_handler(array($this, 'errorHandler'));
 
 			ini_set('display_errors', 'stderr');
-			ini_set('log_errors', 'On');
+			ini_set('log_errors', 'Off');
 			ini_set('log_errors_max_len', '0');
 
 			$this->currentMethod = $testMethod;
@@ -608,7 +608,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							$children = $this->children;
 							$this->children = array();
 
-							foreach ($children as $testMethod => $child)
+							foreach ($children as $this->currentMethod => $child)
 							{
 								if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
 								{
@@ -634,7 +634,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 								if (isset($child[1][1]) === true || isset($child[1][2]) === true)
 								{
-									$this->children[$testMethod] = $child;
+									$this->children[$this->currentMethod] = $child;
 								}
 								else
 								{
@@ -647,40 +647,33 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									proc_close($child[0]);
 
-									$this->currentMethod = $testMethod;
-									$this->callObservers(self::afterTestMethod);
-									$this->currentMethod = null;
-
 									switch ($phpStatus['exitcode'])
 									{
 										case 126:
 										case 127:
-											throw new exceptions\runtime('Unable to execute test with \'' . $this->getPhpPath() . '\'');
+											throw new exceptions\runtime('Unable to execute test method ' . $this->class . '::' . $this->currentMethod . '()');
 									}
 
-									$score = new score();
+									$score = @unserialize($child[2]);
 
-									if ($child[2] !== '')
+									if ($score instanceof score === false)
 									{
-										$score = @unserialize($child[2]);
-
-										if ($score instanceof score === false)
-										{
-											$score = new score();
-										}
+										$score = new score();
 									}
 
 									if ($child[3] !== '')
 									{
 										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, 'UNKNOWN', $child[3]);
+											$score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $child[3]);
 										}
 										else foreach ($errors as $error)
 										{
-											$score->addError($this->path, null, $this->class, $testMethod, $error[1], $error[2], $error[3], $error[4]);
+											$score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
 										}
 									}
+
+									$this->callObservers(self::afterTestMethod);
 
 									if ($score->getFailNumber() > 0)
 									{
@@ -705,6 +698,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 									$this->score->merge($score);
 								}
 							}
+
+							$this->currentMethod = null;
 						}
 					}
 
