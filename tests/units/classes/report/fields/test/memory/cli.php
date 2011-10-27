@@ -103,7 +103,7 @@ class cli extends units\report\fields\test\memory
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 		$test->getMockController()->getScore = $score;
 
 		$this->assert
@@ -133,7 +133,7 @@ class cli extends units\report\fields\test\memory
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 		$test->getMockController()->getScore = $score;
 
 		$field = new test\memory\cli();

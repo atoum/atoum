@@ -12,30 +12,30 @@ class progressBar
 	const progressBarFormat = '[%s]';
 	const counterFormat = '[%s]';
 
-	protected $adapter = null;
+	protected $cli = null;
 	protected $refresh = null;
 	protected $counter = null;
 	protected $testsNumber = 0;
 	protected $progressBar = null;
 	protected $currentTestNumber = 0;
 
-	public function __construct(atoum\test $test, atoum\adapter $adapter = null)
+	public function __construct(atoum\test $test, atoum\cli $cli = null)
 	{
 		$this->testsNumber = sizeof($test);
 
-		$this->setAdapter($adapter ?: new atoum\adapter());
+		$this->setCli($cli ?: new atoum\cli());
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setCli(atoum\cli $cli)
 	{
-		$this->adapter = $adapter;
+		$this->cli = $cli;
 
 		return $this;
 	}
 
-	public function getAdapter()
+	public function getCli()
 	{
-		return $this->adapter;
+		return $this->cli;
 	}
 
 	public function __toString()
@@ -57,7 +57,7 @@ class progressBar
 
 			$this->currentTestNumber += $refreshLength;
 
-			if ($this->adapter->defined('STDOUT') === false || ($this->adapter->function_exists('posix_isatty') === true && $this->adapter->posix_isatty(STDOUT) === false))
+			if ($this->cli->isTerminal() === false)
 			{
 				$this->progressBar = substr($this->progressBar, 0, $this->currentTestNumber) . $this->refresh . substr($this->progressBar, $this->currentTestNumber + 1);
 				$string .= PHP_EOL . $this->progressBar;

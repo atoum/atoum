@@ -8,11 +8,11 @@ use
 
 class colorizer
 {
-	protected $adapter = null;
+	protected $cli = null;
 	protected $foreground = null;
 	protected $background = null;
 
-	public function __construct($foreground = null, $background = null, atoum\adapter $adapter = null)
+	public function __construct($foreground = null, $background = null, atoum\cli $cli = null)
 	{
 		if ($foreground !== null)
 		{
@@ -24,19 +24,19 @@ class colorizer
 			$this->setBackground($background);
 		}
 
-		$this->setAdapter($adapter ?: new atoum\adapter());
+		$this->setCli($cli ?: new atoum\cli());
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setCli(atoum\cli $cli)
 	{
-		$this->adapter = $adapter;
+		$this->cli = $cli;
 
 		return $this;
 	}
 
-	public function getAdapter()
+	public function getCli()
 	{
-		return $this->adapter;
+		return $this->cli;
 	}
 
 	public function setForeground($foreground)
@@ -65,7 +65,7 @@ class colorizer
 
 	public function colorize($string)
 	{
-		if ($this->adapter->defined('STDOUT') === true && $this->adapter->function_exists('posix_isatty') === true && $this->adapter->posix_isatty(STDOUT) === true && ($this->foreground !== null || $this->background !== null))
+		if ($this->cli->isTerminal() === true && ($this->foreground !== null || $this->background !== null))
 		{
 			if ($this->background !== null)
 			{

@@ -22,9 +22,7 @@ class progressBar extends atoum\test
 
 	public function test__construct()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
+		$this->mock('mageekguy\atoum\test');
 
 		$testAdapter = new atoum\test\adapter();
 		$testAdapter->class_exists = true;
@@ -32,13 +30,14 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
 
 		$testController->count = function() { return 0; };
 
 		$progressBar = new cli\progressBar($test);
 
 		$this->assert
+			->object($progressBar->getCli())->isEqualTo(new atoum\cli())
 			->castToString($progressBar)->isEqualTo('[' . str_repeat('_', 60) . '][0/0]')
 			->castToString($progressBar)->isEmpty()
 		;
@@ -94,8 +93,9 @@ class progressBar extends atoum\test
 
 	public function testRefresh()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
+		$this
+			->mock('mageekguy\atoum\cli')
+			->mock('mageekguy\atoum\test')
 		;
 
 		$testAdapter = new atoum\test\adapter();
@@ -104,16 +104,14 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
 
 		$testController->count = function() { return 0; };
 
-		$progressBarAdapter = new atoum\test\adapter();
-		$progressBarAdapter->defined = true;
-		$progressBarAdapter->function_exists = true;
-		$progressBarAdapter->posix_isatty = true;
+		$cli = new \mock\mageekguy\atoum\cli();
+		$cli->getMockController()->isTerminal = true;
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
@@ -123,7 +121,7 @@ class progressBar extends atoum\test
 
 		$testController->count = function() { return 1; };
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 		$progressBarLength = strlen($progressBarString);
@@ -136,7 +134,7 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
@@ -148,7 +146,7 @@ class progressBar extends atoum\test
 
 		$testController->count = function() { return 60; };
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 
@@ -185,7 +183,7 @@ class progressBar extends atoum\test
 
 		$testController->count = function() { return 61; };
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 
@@ -248,13 +246,13 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
 
 		$testController->count = function() { return 0; };
 
-		$progressBarAdapter->defined = false;
+		$cli->getMockController()->isTerminal = false;
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
@@ -264,7 +262,7 @@ class progressBar extends atoum\test
 
 		$testController->count = 3;
 
-		$progressBar = new cli\progressBar($test, $progressBarAdapter);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 		$progressBarLength = strlen($progressBarString);

@@ -34,15 +34,15 @@ class script extends atoum\test
 			->array($script->getHelp())->isEmpty()
 		;
 
-		$script = new mock\script($name = uniqid(), $locale = new atoum\locale(), $adapter = new atoum\adapter());
+		$script = new mock\script($name = uniqid(), $locale = new atoum\locale(), $adapter = new atoum\adapter(), $argumentsParser = new atoum\script\arguments\parser(), $stdOut = new atoum\writers\std\out(), $stdErr = new atoum\writers\std\err());
 
 		$this->assert
 			->string($script->getName())->isEqualTo($name)
 			->object($script->getLocale())->isIdenticalTo($locale)
 			->object($script->getAdapter())->isIdenticalTo($adapter)
-			->object($script->getArgumentsParser())->isEqualTo(new atoum\script\arguments\parser())
-			->object($script->getOutputWriter())->isEqualTo(new atoum\writers\std\out())
-			->object($script->getErrorWriter())->isEqualTo(new atoum\writers\std\err())
+			->object($script->getArgumentsParser())->isIdenticalTo($argumentsParser)
+			->object($script->getOutputWriter())->isIdenticalTo($stdOut)
+			->object($script->getErrorWriter())->isIdenticalTo($stdErr)
 			->array($script->getHelp())->isEmpty()
 		;
 
