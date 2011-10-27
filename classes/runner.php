@@ -182,7 +182,16 @@ class runner implements observable, adapter\aggregator
 			{
 				$methods = self::getMethods($testClass, $testMethods);
 
-				if (sizeof($methods) <= 0 || sizeof($test->filterTestMethods($methods)) > 0)
+				if (sizeof($methods) <= 0)
+				{
+					$methods = $test->getTestMethods($tags);
+				}
+				else
+				{
+					$methods = $test->getTaggedTestMethods($methods, $tags);
+				}
+
+				if (sizeof($methods) > 0)
 				{
 					$classes[] = $test;
 				}
@@ -337,9 +346,25 @@ class runner implements observable, adapter\aggregator
 			}
 		}
 
+		$declaredTestClasses = $this->getDeclaredTestClasses($testBaseClass);
+
 		if (sizeof($runTestClasses) <= 0)
 		{
-			$runTestClasses = $this->getDeclaredTestClasses($testBaseClass);
+			$runTestClasses = $declaredTestClasses;
+		}
+		else
+		{
+			switch (sizeof($notTestClasses = array_diff($runTestClasses, $declaredTestClasses)))
+			{
+				case 0;
+					break;
+
+				case 1:
+					throw new exceptions\logic\invalidArgument('Class ' . current($notTestClasses) . ' does not extend ' . $testBaseClass . ' or is abstract');
+
+				default:
+					throw new exceptions\logic\invalidArgument('Classes ' . join(', ', $notTestClasses) . ' does not extend ' . $testBaseClass . ' or are abstract');
+			}
 		}
 
 		$this->callObservers(self::runStart);
@@ -358,7 +383,16 @@ class runner implements observable, adapter\aggregator
 				{
 					$methods = self::getMethods($runTestClass, $runTestMethods);
 
-					if (sizeof($methods) <= 0 || sizeof($methods = $test->filterTestMethods($methods)) > 0)
+					if (sizeof($methods) <= 0)
+					{
+						$methods = $test->getTestMethods($tags);
+					}
+					else
+					{
+						$methods = $test->getTaggedTestMethods($methods, $tags);
+					}
+
+					if (($methodsNumber = sizeof($methods)) > 0)
 					{
 						$test
 							->setLocale($this->locale)
@@ -380,13 +414,10 @@ class runner implements observable, adapter\aggregator
 							$test->addObserver($observer);
 						}
 
-						$this->score->merge($test->run($methods, $tags)->getScore());
+						$this->score->merge($test->run($methods)->getScore());
 
-						if (($sizeOfTest = sizeof($test)) > 0)
-						{
-							$this->testNumber++;
-							$this->testMethodNumber += $sizeOfTest;
-						}
+						$this->testNumber++;
+						$this->testMethodNumber += $methodsNumber;
 					}
 				}
 			}

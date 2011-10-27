@@ -393,7 +393,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->path;
 	}
 
-	public function filterTestMethods(array $methods, array $tags = array())
+	public function getTaggedTestMethods(array $methods, array $tags = array())
 	{
 		return array_values(array_uintersect($methods, $this->getTestMethods($tags), 'strcasecmp'));
 	}
