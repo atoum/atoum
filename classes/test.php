@@ -675,23 +675,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$this->callObservers(self::afterTestMethod);
 
-									if ($score->getFailNumber() > 0)
+									switch (true)
 									{
-										$this->callObservers(self::fail);
-									}
+										case $score->getFailNumber() > 0:
+											$this->callObservers(self::fail);
+											break;
 
-									if ($score->getErrorNumber() > 0)
-									{
-										$this->callObservers(self::error);
-									}
-									else if ($score->getExceptionNumber() > 0)
-									{
-										$this->callObservers(self::exception);
-									}
+										case $score->getErrorNumber() > 0:
+											$this->callObservers(self::error);
+											break;
 
-									if ($score->getPassNumber() > 0)
-									{
-										$this->callObservers(self::success);
+										case $score->getExceptionNumber() > 0:
+											$this->callObservers(self::exception);
+											break;
+
+										case $score->getPassNumber() > 0:
+											$this->callObservers(self::success);
+											break;
 									}
 
 									$this->score->merge($score);
