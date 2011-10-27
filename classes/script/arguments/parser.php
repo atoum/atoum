@@ -181,7 +181,7 @@ class parser implements \iteratorAggregate
 			}
 			else
 			{
-				$this->invokeHandlers($closestArgument, $values);
+				$this->invokeHandlers($script, $closestArgument, $values);
 			}
 		}
 
