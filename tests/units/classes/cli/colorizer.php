@@ -26,7 +26,7 @@ class colorizer extends atoum\test
 		$this->assert
 			->variable($colorizer->getForeground())->isNull()
 			->variable($colorizer->getBackground())->isNull()
-			->object($colorizer->getAdapter())->isEqualTo(new atoum\adapter())
+			->object($colorizer->getCli())->isEqualTo(new atoum\cli())
 		;
 
 		$colorizer = new cli\colorizer($foreground = uniqid());
@@ -34,7 +34,7 @@ class colorizer extends atoum\test
 		$this->assert
 			->string($colorizer->getForeground())->isEqualTo($foreground)
 			->variable($colorizer->getBackground())->isNull()
-			->object($colorizer->getAdapter())->isEqualTo(new atoum\adapter())
+			->object($colorizer->getCli())->isEqualTo(new atoum\cli())
 		;
 
 		$colorizer = new cli\colorizer($foreground = rand(1, PHP_INT_MAX));
@@ -42,7 +42,7 @@ class colorizer extends atoum\test
 		$this->assert
 			->string($colorizer->getForeground())->isEqualTo($foreground)
 			->variable($colorizer->getBackground())->isNull()
-			->object($colorizer->getAdapter())->isEqualTo(new atoum\adapter())
+			->object($colorizer->getCli())->isEqualTo(new atoum\cli())
 		;
 
 		$colorizer = new cli\colorizer($foreground = uniqid(), $background = uniqid());
@@ -50,7 +50,7 @@ class colorizer extends atoum\test
 		$this->assert
 			->string($colorizer->getForeground())->isEqualTo($foreground)
 			->string($colorizer->getBackground())->isEqualTo($background)
-			->object($colorizer->getAdapter())->isEqualTo(new atoum\adapter())
+			->object($colorizer->getCli())->isEqualTo(new atoum\cli())
 		;
 
 		$colorizer = new cli\colorizer($foreground = uniqid(), $background = rand(1, PHP_INT_MAX));
@@ -58,25 +58,25 @@ class colorizer extends atoum\test
 		$this->assert
 			->string($colorizer->getForeground())->isEqualTo($foreground)
 			->string($colorizer->getBackground())->isEqualTo($background)
-			->object($colorizer->getAdapter())->isEqualTo(new atoum\adapter())
+			->object($colorizer->getCli())->isEqualTo(new atoum\cli())
 		;
 
-		$colorizer = new cli\colorizer($foreground = uniqid(), $background = rand(1, PHP_INT_MAX), $adapter = new atoum\adapter());
+		$colorizer = new cli\colorizer($foreground = uniqid(), $background = rand(1, PHP_INT_MAX), $cli = new atoum\cli());
 
 		$this->assert
 			->string($colorizer->getForeground())->isEqualTo($foreground)
 			->string($colorizer->getBackground())->isEqualTo($background)
-			->object($colorizer->getAdapter())->isIdenticalTo($adapter)
+			->object($colorizer->getCli())->isIdenticalTo($cli)
 		;
 	}
 
-	public function testSetAdapter()
+	public function testSetCli()
 	{
 		$colorizer = new cli\colorizer(uniqid());
 
 		$this->assert
-			->object($colorizer->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($colorizer)
-			->object($colorizer->getAdapter())->isIdenticalTo($adapter)
+			->object($colorizer->setCli($cli = new atoum\cli()))->isIdenticalTo($colorizer)
+			->object($colorizer->getCli())->isIdenticalTo($cli)
 		;
 	}
 
@@ -106,53 +106,37 @@ class colorizer extends atoum\test
 
 	public function testColorize()
 	{
-		$adapter = new atoum\test\adapter();
+		$this->mock('mageekguy\atoum\cli');
 
-		$colorizer = new cli\colorizer(null, null, $adapter);
+		$colorizer = new cli\colorizer(null, null, $cli = new \mock\mageekguy\atoum\cli());
 
-		$adapter->defined = function($constant) { return $constant == 'STDOUT'; };
-		$adapter->function_exists = function($function) { return $function == 'posix_isatty'; };
-		$adapter->posix_isatty = true;
+		$cli->getMockController()->isTerminal = true;
 
 		$this->assert
 			->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)
 		;
 
-		$colorizer = new cli\colorizer($foreground = uniqid(), null, $adapter);
+		$colorizer = new cli\colorizer($foreground = uniqid(), null, $cli);
 
 		$this->assert
 			->string($colorizer->colorize($string = uniqid()))->isEqualTo("\033[" . $foreground . 'm' . $string . "\033[0m")
 		;
 
-		$colorizer = new cli\colorizer($foreground = uniqid(), $background = uniqid(), $adapter);
+		$colorizer = new cli\colorizer($foreground = uniqid(), $background = uniqid(), $cli);
 
 		$this->assert
 			->string($colorizer->colorize($string = uniqid()))->isEqualTo("\033[" . $foreground . 'm' . "\033[" . $background . 'm' . $string . "\033[0m")
 		;
 
-		$colorizer = new cli\colorizer(null, $background = uniqid(), $adapter);
+		$colorizer = new cli\colorizer(null, $background = uniqid(), $cli);
 
 		$this->assert
 			->string($colorizer->colorize($string = uniqid()))->isEqualTo("\033[" . $background . 'm' . $string . "\033[0m")
 		;
 
-		$colorizer = new cli\colorizer($foreground = uniqid(), $background = uniqid(), $adapter);
+		$colorizer = new cli\colorizer($foreground = uniqid(), $background = uniqid(), $cli);
 
-		$adapter->defined = function($constant) { return $constant != 'STDOUT'; };
-
-		$this->assert
-			->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)
-		;
-
-		$adapter->defined = function($constant) { return $constant == 'STDOUT'; };
-		$adapter->function_exists = false;
-
-		$this->assert
-			->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)
-		;
-
-		$adapter->function_exists = function($function) { return $function == 'posix_isatty'; };
-		$adapter->posix_isatty = false;
+		$cli->getMockController()->isTerminal = false;
 
 		$this->assert
 			->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)

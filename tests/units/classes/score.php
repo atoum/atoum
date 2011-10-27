@@ -203,8 +203,8 @@ class score extends atoum\test
 	{
 		$score = new atoum\score();
 
-		$file = uniqid();
-		$line = rand(1, PHP_INT_MAX);
+		$file = 'a';
+		$line = 1;
 		$class = uniqid();
 		$method = uniqid();
 		$type = rand(1, PHP_INT_MAX);
@@ -233,8 +233,8 @@ class score extends atoum\test
 			->integer($score->getErrorNumber())->isEqualTo(1)
 		;
 
-		$otherFile = uniqid();
-		$otherLine = rand(1, PHP_INT_MAX);
+		$otherFile = 'b';
+		$otherLine = 10;
 		$otherClass = uniqid();
 		$otherMethod = uniqid();
 		$otherType = rand(1, PHP_INT_MAX);
@@ -290,17 +290,6 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
-						'class' => $otherClass,
-						'method' => $otherMethod,
-						'file' => $otherFile,
-						'line' => $otherLine,
-						'type' => $otherType,
-						'message' => $otherMessage,
-						'errorFile' => $otherErrorFile,
-						'errorLine' => $otherErrorLine
-					),
-					array(
-						'case' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -310,6 +299,17 @@ class score extends atoum\test
 						'errorFile' => $errorFile,
 						'errorLine' => $errorLine
 					),
+					array(
+						'case' => null,
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'file' => $otherFile,
+						'line' => $otherLine,
+						'type' => $otherType,
+						'message' => $otherMessage,
+						'errorFile' => $otherErrorFile,
+						'errorLine' => $otherErrorLine
+					)
 				)
 			)
 			->integer($score->getErrorNumber())->isEqualTo(3)
@@ -1038,6 +1038,101 @@ class score extends atoum\test
 				->string($score->getCase())->isNotNull()
 				->object($score->unsetCase())->isIdenticalTo($score)
 				->variable($score->getCase())->isNull()
+		;
+	}
+
+	public function testGetMethodsWithFail()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->array($score->getMethodsWithFail())->isEmpty()
+		;
+
+		$asserter = new atoum\asserters\integer(new asserter\generator(new self($score)));
+
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), $asserter, uniqid());
+
+		$this->assert
+			->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod)))
+		;
+
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), $asserter, uniqid());
+
+		$this->assert
+			->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+		;
+
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), $asserter, uniqid());
+
+		$this->assert
+			->array($score->getMethodsWithFail())->isEqualTo(array(
+					$class => array($classMethod, $classOtherMethod),
+					$otherClass => array($otherClassMethod)
+				)
+			)
+		;
+	}
+
+	public function testGetMethodsWithError()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->array($score->getMethodsWithError())->isEmpty()
+		;
+
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod)))
+		;
+
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+		;
+
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->array($score->getMethodsWithError())->isEqualTo(array(
+					$class => array($classMethod, $classOtherMethod),
+					$otherClass => array($otherClassMethod)
+				)
+			)
+		;
+	}
+
+	public function testGetMethodsWithException()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->array($score->getMethodsWithError())->isEmpty()
+		;
+
+		$score->addException(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), new \exception());
+
+		$this->assert
+			->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod)))
+		;
+
+		$score->addException(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), new \exception());
+
+		$this->assert
+			->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+		;
+
+		$score->addException(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), new \exception());
+
+		$this->assert
+			->array($score->getMethodsWithException())->isEqualTo(array(
+					$class => array($classMethod, $classOtherMethod),
+					$otherClass => array($otherClassMethod)
+				)
+			)
 		;
 	}
 }

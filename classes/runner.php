@@ -66,21 +66,11 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
 	public function setSuperglobals(atoum\superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
 
 		return $this;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
 	}
 
 	public function setDefaultReportTitle($title)
@@ -90,16 +80,33 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function getDefaultReportTitle()
-	{
-		return $this->defaultReportTitle;
-	}
-
 	public function setScore(score $score)
 	{
 		$this->score = $score;
 
 		return $this;
+	}
+
+	public function setAdapter(adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function getDefaultReportTitle()
+	{
+		return $this->defaultReportTitle;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
 	}
 
 	public function getScore()
@@ -131,13 +138,6 @@ class runner implements observable, adapter\aggregator
 		return $this->phpPath;
 	}
 
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
-	}
-
 	public function getAdapter()
 	{
 		return $this->adapter;
@@ -166,6 +166,30 @@ class runner implements observable, adapter\aggregator
 	public function getObservers()
 	{
 		return $this->observers;
+	}
+
+	public function getTestClasses(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
+	{
+		$classes = array();
+
+		$testClasses = $this->getDeclaredTestClasses($testBaseClass);
+
+		foreach ($testClasses as $testClass)
+		{
+			$test = new $testClass();
+
+			if (self::isIgnored($test, $namespaces, $tags) === false)
+			{
+				$methods = self::getMethods($testClass, $testMethods);
+
+				if (sizeof($methods) <= 0 || sizeof($test->filterTestMethods($methods)) > 0)
+				{
+					$classes[] = $test;
+				}
+			}
+		}
+
+		return $classes;
 	}
 
 	public function setPhpPath($path)
@@ -313,18 +337,9 @@ class runner implements observable, adapter\aggregator
 			}
 		}
 
-		if ($testBaseClass === null)
-		{
-			$testBaseClass = __NAMESPACE__ . '\test';
-		}
-
 		if (sizeof($runTestClasses) <= 0)
 		{
-			$runTestClasses = array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
-					$class = new \reflectionClass($class);
-					return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
-				}
-			);
+			$runTestClasses = $this->getDeclaredTestClasses($testBaseClass);
 		}
 
 		$this->callObservers(self::runStart);
@@ -341,24 +356,9 @@ class runner implements observable, adapter\aggregator
 
 				if (self::isIgnored($test, $namespaces, $tags) === false)
 				{
-					$methods = array();
+					$methods = self::getMethods($runTestClass, $runTestMethods);
 
-					if (isset($runTestMethods['*']) === true)
-					{
-						$methods = $runTestMethods['*'];
-					}
-
-					if (isset($runTestMethods[$runTestClass]) === true)
-					{
-						$methods = $runTestMethods[$runTestClass];
-					}
-
-					if (in_array('*', $methods) === true)
-					{
-						$methods = array();
-					}
-
-					if (sizeof($methods) <= 0 || ($methods = $test->filterTestMethods($methods)))
+					if (sizeof($methods) <= 0 || sizeof($methods = $test->filterTestMethods($methods)) > 0)
 					{
 						$test
 							->setLocale($this->locale)
@@ -402,6 +402,17 @@ class runner implements observable, adapter\aggregator
 	public function getRunningDuration()
 	{
 		return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
+	}
+
+	public function getDeclaredTestClasses($testBaseClass = null)
+	{
+		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
+
+		return array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
+				$class = new \reflectionClass($class);
+				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
+			}
+		);
 	}
 
 	public function addReport(atoum\report $report)
@@ -479,6 +490,28 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $haystack;
+	}
+
+	private static function getMethods($testClass, array $runTestMethods)
+	{
+		$methods = array();
+
+		if (isset($runTestMethods['*']) === true)
+		{
+			$methods = $runTestMethods['*'];
+		}
+
+		if (isset($runTestMethods[$testClass]) === true)
+		{
+			$methods = $runTestMethods[$testClass];
+		}
+
+		if (in_array('*', $methods) === true)
+		{
+			$methods = array();
+		}
+
+		return $methods;
 	}
 }
 

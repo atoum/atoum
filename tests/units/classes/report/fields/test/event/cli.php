@@ -42,7 +42,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 		$this->assert
 			->variable($event->getTest())->isNull()
 			->exception(function() use ($event) { $event->getProgressBar(); })
@@ -64,7 +64,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 
 		$event = new test\event\cli();
 
@@ -112,7 +112,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 
 		$this->assert
 			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
@@ -143,7 +143,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$testController = new atoum\mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
 
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };

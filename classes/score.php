@@ -270,17 +270,17 @@ class score
 
 	public function getFailAssertions()
 	{
-		return self::cleanAssertions($this->failAssertions);
+		return self::sort(self::cleanAssertions($this->failAssertions));
 	}
 
 	public function getErrors()
 	{
-		return $this->errors;
+		return self::sort($this->errors);
 	}
 
 	public function getExceptions()
 	{
-		return $this->exceptions;
+		return self::sort($this->exceptions);
 	}
 
 	public function getDurationNumber()
@@ -328,16 +328,31 @@ class score
 		return $this->coverage;
 	}
 
+	public function getCase()
+	{
+		return $this->case;
+	}
+
+	public function getMethodsWithFail()
+	{
+		return self::getMethods($this->getFailAssertions());
+	}
+
+	public function getMethodsWithError()
+	{
+		return self::getMethods($this->getErrors());
+	}
+
+	public function getMethodsWithException()
+	{
+		return self::getMethods($this->getExceptions());
+	}
+
 	public function setCase($case)
 	{
 		$this->case = (string) $case;
 
 		return $this;
-	}
-
-	public function getCase()
-	{
-		return $this->case;
 	}
 
 	public function unsetCase()
@@ -385,9 +400,44 @@ class score
 		return (sizeof(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
 	}
 
+	private static function getMethods(array $array)
+	{
+		$methods = array();
+
+		foreach ($array as $value)
+		{
+			if (isset($methods[$value['class']]) === false || in_array($value['method'], $methods[$value['class']]) === false)
+			{
+				$methods[$value['class']][] = $value['method'];
+			}
+		}
+
+		return $methods;
+	}
+
 	private static function cleanAssertions(array $assertions)
 	{
 		return array_map(function ($assertion) { unset($assertion['id']); return $assertion; }, array_values($assertions));
+	}
+
+	private static function sort(array $array)
+	{
+		usort($array, function($a, $b) {
+				switch (true)
+				{
+					case $a['file'] === $b['file'] && $a['line'] === $b['line']:
+						return 0;
+
+					case $a['file'] === $b['file']:
+						return $a['line'] < $b['line'] ? -1 : 1;
+
+					default:
+						return strcmp($a['file'], $b['file']);
+				}
+			}
+		);
+
+		return $array;
 	}
 }
 

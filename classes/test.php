@@ -170,23 +170,23 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	private static $namespace = null;
 
-
     /**
      * Constructor
      *
-     * @param mageekguy\atoum\score $score
-     * @param mageekguy\atoum\locale $locale
-     * @param mageekguy\atoum\adapter $adapter
+     * @param mageekguy\atoum\score         $score
+     * @param mageekguy\atoum\locale        $locale
+     * @param mageekguy\atoum\adapter       $adapter
+     * @param mageekguy\atoum\superglobals  $superglobals
      *
      * @throws mageekguy\atoum\exceptions\runtime
      */
-	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null)
+	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null)
 	{
 		$this
 			->setScore($score ?: new score())
 			->setLocale($locale ?: new locale())
 			->setAdapter($adapter ?: new adapter())
-			->setSuperglobals(new atoum\superglobals())
+			->setSuperglobals($superglobals ?: new superglobals())
 			->enableCodeCoverage()
 		;
 
@@ -1032,8 +1032,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 									{
 										$this->callObservers(self::error);
 									}
-
-									if ($score->getExceptionNumber() > 0)
+									else if ($score->getExceptionNumber() > 0)
 									{
 										$this->callObservers(self::exception);
 									}

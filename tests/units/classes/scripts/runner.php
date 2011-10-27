@@ -103,9 +103,14 @@ class runner extends atoum\test
 						'Execute tests in an infinite loop'
 					),
 					array(
-						array('--testIt'),
+						array('--test-it'),
 						null,
 						'Execute atoum unit tests'
+					),
+					array(
+						array('-ft', '--force-terminal'),
+						null,
+						'Force output as in terminal'
 					)
 				)
 			)

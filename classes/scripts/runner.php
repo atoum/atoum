@@ -74,68 +74,40 @@ class runner extends atoum\script
 
 		if ($this->runTests === true)
 		{
-			if ($this->runner->hasReports() === false)
+			if ($this->loop === true)
 			{
-				$report = new atoum\reports\realtime\cli();
-				$report->addWriter(new atoum\writers\std\out());
-
-				$this->runner->addReport($report);
+				$this->loop();
 			}
-
-			$previousRunFailed = false;
-			$methods = $this->methods;
-
-			while ($this->runTests === true)
+			else
 			{
-				$score = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
-
-				if ($this->scoreFile !== null && $this->adapter->file_put_contents($this->scoreFile, serialize($score), \LOCK_EX) === false)
+				if ($this->runner->hasReports() === false)
 				{
-					throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
+					$report = new atoum\reports\realtime\cli();
+					$report->addWriter(new atoum\writers\std\out());
+
+					$this->runner->addReport($report);
 				}
 
-				$currentRunFailed = $score->getFailNumber() > 0 || $score->getErrorNumber() > 0 || $score->getExceptionNumber() > 0;
+				$methods = $this->methods;
 
-				if ($previousRunFailed === true && $currentRunFailed === false && sizeof(self::getClassesOf($this->methods)) != 1)
-				{
-					$previousRunFailed = $currentRunFailed;
-					$methods = $this->methods;
-				}
-				else if ($this->loop === false || $this->runAgain() === false)
-				{
-					$this->runTests = false;
-				}
-				else
-				{
-					$previousRunFailed = $currentRunFailed;
+				$oldFailMethods = array();
 
-					if ($previousRunFailed === true)
+				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+				{
+					if (sizeof($oldFailMethods = self::getFailMethods($oldScore)) > 0)
 					{
-						$methods = array();
-
-						foreach ($score->getFailAssertions() as $fail)
-						{
-							$methods[$fail['class']][] = $fail['method'];
-						}
-
-						foreach ($score->getErrors() as $error)
-						{
-							if (isset($methods[$error['class']]) === false || in_array($error['method'], $methods[$error['class']]) === false)
-							{
-								$methods[$error['class']][] = $error['method'];
-							}
-						}
-
-						foreach ($score->getExceptions() as $exception)
-						{
-							if (isset($methods[$exception['class']]) === false || in_array($exception['method'], $methods[$exception['class']]) === false)
-							{
-								$methods[$exception['class']][] = $exception['method'];
-							}
-						}
+						$methods = $oldFailMethods;
 					}
+				}
 
-					parent::run($arguments);
+				$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
+
+				if (sizeof($oldFailMethods) > 0)
+				{
+					if (sizeof(self::getFailMethods($newScore)) <= 0 && sizeof($this->runner->getTestClasses($this->namespaces, $this->tags, $this->methods)) > 1)
+					{
+						$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+					}
 				}
 			}
 		}
@@ -512,7 +484,6 @@ class runner extends atoum\script
 			$this->locale->_('Execute tests in an infinite loop')
 		);
 
-
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {
 				if (sizeof($values) !== 0)
@@ -522,10 +493,25 @@ class runner extends atoum\script
 
 				$script->testIt();
 			},
-			array('--testIt'),
+			array('--test-it'),
 			null,
 			$this->locale->_('Execute atoum unit tests')
 		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $values) {
+				if (sizeof($values) > 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				\mageekguy\atoum\cli::forceTerminal();
+			},
+			array('-ft', '--force-terminal'),
+			null,
+			$this->locale->_('Force output as in terminal')
+		);
+
 
 		return $this;
 	}
@@ -535,9 +521,107 @@ class runner extends atoum\script
 		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
 	}
 
+	protected function loop()
+	{
+		if ($this->scoreFile === null)
+		{
+			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
+			@unlink($this->scoreFile);
+		}
+
+		while ($this->runTests === true)
+		{
+			$command = $this->runner->getPhpPath() . ' ' . join(' ', array_filter($_SERVER['argv'], function($value) { return ($value != '-l' && $value != '--loop'); })) . ' --score-file ' . $this->scoreFile;
+
+			$cli = new atoum\cli();
+
+			if ($cli->isTerminal() === true)
+			{
+				$command .= ' --force-terminal';
+			}
+
+			$php = proc_open(
+				escapeshellcmd($command),
+				array(
+					1 => array('pipe', 'w'),
+					2 => array('pipe', 'w')
+				),
+				$pipes
+			);
+
+			stream_set_blocking($pipes[1], 0);
+			stream_set_blocking($pipes[2], 0);
+
+			$null = null;
+
+			while (feof($pipes[1]) === false && feof($pipes[2]) === false)
+			{
+				$updatedPipes = $pipes;
+
+				$pipesUpdated = stream_select($updatedPipes, $null, $null, null);
+
+				if ($pipesUpdated !== false)
+				{
+					foreach ($updatedPipes as $pipe)
+					{
+						switch ($pipe)
+						{
+							case $pipes[1]:
+								$this->outputWriter->write(stream_get_contents($pipe));
+								break;
+
+							default:
+								$this->errorWriter->write(stream_get_contents($pipe));
+						}
+
+					}
+				}
+			}
+
+			if ($this->loop === false || $this->runAgain() === false)
+			{
+				$this->runTests = false;
+			}
+		}
+
+		return $this;
+	}
+
+	protected function saveScore(atoum\score $score)
+	{
+		if ($this->scoreFile !== null && $this->adapter->file_put_contents($this->scoreFile, serialize($score), \LOCK_EX) === false)
+		{
+			throw new exceptions\runtime('Unable to save score in \'' . $this->scoreFile . '\'');
+		}
+
+		return $this;
+	}
+
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+	}
+
+	private static function getFailMethods(atoum\score $score)
+	{
+		return self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException());
+	}
+
+	private static function mergeMethods(array $methods, array $newMethods)
+	{
+		foreach ($newMethods as $class => $classMethods)
+		{
+			if (isset($methods[$class]) === false)
+			{
+				$methods[$class] = $classMethods;
+			}
+			else
+			{
+				$methods[$class] = array_unique(array_merge($methods[$class], $classMethods));
+			}
+		}
+
+		return $methods;
 	}
 }
 

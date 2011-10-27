@@ -77,10 +77,10 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
-				->object($test->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+				->object($test->getScore())->isEqualTo(new atoum\score())
+				->object($test->getLocale())->isEqualTo(new atoum\locale())
+				->object($test->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 				->boolean($test->isIgnored())->isTrue()
 				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getClassTags())->isEqualTo($tags)
@@ -95,10 +95,10 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest(null, null, $adapter);
 
 			$this->assert
-				->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
-				->object($test->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+				->object($test->getScore())->isEqualTo(new atoum\score())
+				->object($test->getLocale())->isEqualTo(new atoum\locale())
+				->object($test->getAdapter())->isIdenticalTo($adapter)
+				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 				->boolean($test->isIgnored())->isTrue()
 				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getClassTags())->isEqualTo($tags)
@@ -107,16 +107,13 @@ namespace mageekguy\atoum\tests\units
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 			;
 
-			$score = new atoum\score();
-			$locale = new atoum\locale();
-
-			$test = new emptyTest($score, $locale, $adapter);
+			$test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals());
 
 			$this->assert
 				->object($test->getScore())->isIdenticalTo($score)
 				->object($test->getLocale())->isIdenticalTo($locale)
 				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+				->object($test->getSuperglobals())->isIdenticalTo($superglobals)
 				->boolean($test->isIgnored())->isTrue()
 				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getClassTags())->isEqualTo($tags)
