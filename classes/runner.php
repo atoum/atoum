@@ -178,23 +178,9 @@ class runner implements observable, adapter\aggregator
 		{
 			$test = new $testClass();
 
-			if (self::isIgnored($test, $namespaces, $tags) === false)
+			if (self::isIgnored($test, $namespaces, $tags) === false && self::getMethods($test, $testClass, $testMethods, $tags))
 			{
-				$methods = self::getMethods($testClass, $testMethods);
-
-				if (sizeof($methods) <= 0)
-				{
-					$methods = $test->getTestMethods($tags);
-				}
-				else
-				{
-					$methods = $test->getTaggedTestMethods($methods, $tags);
-				}
-
-				if (sizeof($methods) > 0)
-				{
-					$classes[] = $test;
-				}
+				$classes[] = $test;
 			}
 		}
 
@@ -354,22 +340,12 @@ class runner implements observable, adapter\aggregator
 		}
 		else
 		{
-			switch (sizeof($notTestClasses = array_diff($runTestClasses, $declaredTestClasses)))
-			{
-				case 0;
-					break;
-
-				case 1:
-					throw new exceptions\logic\invalidArgument('Class ' . current($notTestClasses) . ' does not extend ' . $testBaseClass . ' or is abstract');
-
-				default:
-					throw new exceptions\logic\invalidArgument('Classes ' . join(', ', $notTestClasses) . ' does not extend ' . $testBaseClass . ' or are abstract');
-			}
+			$runTestClasses = array_intersect($runTestClasses, $declaredTestClasses);
 		}
 
 		$this->callObservers(self::runStart);
 
-		if (sizeof($runTestClasses) > 0)
+		if ($runTestClasses)
 		{
 			natsort($runTestClasses);
 
@@ -379,46 +355,32 @@ class runner implements observable, adapter\aggregator
 			{
 				$test = new $runTestClass();
 
-				if (self::isIgnored($test, $namespaces, $tags) === false)
+				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestClass, $runTestMethods, $tags)))
 				{
-					$methods = self::getMethods($runTestClass, $runTestMethods);
+					$test
+						->setLocale($this->locale)
+						->setPhpPath($phpPath)
+					;
 
-					if (sizeof($methods) <= 0)
+					if ($this->maxChildrenNumber !== null)
 					{
-						$methods = $test->getTestMethods($tags);
+						$test->setMaxChildrenNumber($this->maxChildrenNumber);
 					}
-					else
+
+					if ($this->codeCoverageIsEnabled() === false)
 					{
-						$methods = $test->getTaggedTestMethods($methods, $tags);
+						$test->disableCodeCoverage();
 					}
 
-					if (($methodsNumber = sizeof($methods)) > 0)
+					foreach ($this->testObservers as $observer)
 					{
-						$test
-							->setLocale($this->locale)
-							->setPhpPath($phpPath)
-						;
-
-						if ($this->maxChildrenNumber !== null)
-						{
-							$test->setMaxChildrenNumber($this->maxChildrenNumber);
-						}
-
-						if ($this->codeCoverageIsEnabled() === false)
-						{
-							$test->disableCodeCoverage();
-						}
-
-						foreach ($this->testObservers as $observer)
-						{
-							$test->addObserver($observer);
-						}
-
-						$this->score->merge($test->run($methods)->getScore());
-
-						$this->testNumber++;
-						$this->testMethodNumber += $methodsNumber;
+						$test->addObserver($observer);
 					}
+
+					$this->score->merge($test->run($methods)->getScore());
+
+					$this->testNumber++;
+					$this->testMethodNumber += sizeof($methods);
 				}
 			}
 		}
@@ -495,14 +457,14 @@ class runner implements observable, adapter\aggregator
 	{
 		$isIgnored = $test->isIgnored();
 
-		if ($isIgnored === false && sizeof($namespaces) > 0)
+		if ($isIgnored === false && $namespaces)
 		{
 			$classNamespace = strtolower($test->getClassNamespace());
 
 			$isIgnored = sizeof(array_filter($namespaces, function($value) use ($classNamespace) { return strpos($classNamespace, strtolower($value)) === 0; })) <= 0;
 		}
 
-		if ($isIgnored === false && sizeof($tags) > 0)
+		if ($isIgnored === false && $tags)
 		{
 			$isIgnored = sizeof($testTags = $test->getTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
 		}
@@ -523,7 +485,7 @@ class runner implements observable, adapter\aggregator
 		return $haystack;
 	}
 
-	private static function getMethods($testClass, array $runTestMethods)
+	private static function getMethods(test $test, $testClass, array $runTestMethods, array $tags)
 	{
 		$methods = array();
 
@@ -540,6 +502,15 @@ class runner implements observable, adapter\aggregator
 		if (in_array('*', $methods) === true)
 		{
 			$methods = array();
+		}
+
+		if (sizeof($methods) <= 0)
+		{
+			$methods = $test->getTestMethods($tags);
+		}
+		else
+		{
+			$methods = $test->getTaggedTestMethods($methods, $tags);
 		}
 
 		return $methods;

@@ -68,7 +68,7 @@ class runner extends atoum\script
 
 	public function run(array $arguments = array())
 	{
-		$arguments = sizeof($arguments) > 0 ? $arguments : $this->arguments;
+		$arguments = $arguments ?: $this->arguments;
 
 		parent::run($arguments);
 
@@ -94,7 +94,9 @@ class runner extends atoum\script
 
 				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
 				{
-					if (sizeof($oldFailMethods = self::getFailMethods($oldScore)) > 0)
+					$oldFailMethods = self::getFailMethods($oldScore);
+
+					if ($oldFailMethods)
 					{
 						$methods = $oldFailMethods;
 					}
@@ -102,7 +104,7 @@ class runner extends atoum\script
 
 				$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
 
-				if (sizeof($oldFailMethods) > 0)
+				if ($oldFailMethods)
 				{
 					if (sizeof(self::getFailMethods($newScore)) <= 0 && sizeof($this->runner->getTestClasses($this->namespaces, $this->tags, $this->methods)) > 1)
 					{
@@ -372,7 +374,7 @@ class runner extends atoum\script
 
 		$this->addArgumentHandler(
 			function($script, $argument, $empty) use ($runner) {
-				if (sizeof($empty) > 0)
+				if ($empty)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -472,7 +474,7 @@ class runner extends atoum\script
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {
-				if (sizeof($values) > 0)
+				if ($values)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -500,7 +502,7 @@ class runner extends atoum\script
 
 		$this->addArgumentHandler(
 			function($script, $argument, $values) {
-				if (sizeof($values) > 0)
+				if ($values)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}

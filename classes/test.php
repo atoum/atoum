@@ -463,7 +463,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$isIgnored = (isset($this->testMethods[$methodName]['ignore']) === true ? $this->testMethods[$methodName]['ignore'] : $this->ignore);
 
-		if ($isIgnored === false && sizeof($tags) > 0)
+		if ($isIgnored === false && $tags)
 		{
 			$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
 		}
@@ -554,14 +554,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->isIgnored() === false)
 		{
-			if (sizeof($runTestMethods) > 0)
+			if ($runTestMethods)
 			{
 				$this->runTestMethods(array_intersect($runTestMethods, $this->getTestMethods($tags)));
 			}
 
 			$this->callObservers(self::runStart);
 
-			if (sizeof($this) > 0)
+			if (sizeof($this))
 			{
 				$this->phpCode =
 					'<?php ' .
@@ -584,7 +584,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$this->setUp();
 					$this->callObservers(self::afterSetUp);
 
-					while (sizeof($this->runChild()->children) > 0)
+					while ($this->runChild()->children)
 					{
 						$pipes = array();
 
@@ -603,7 +603,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
 
-						if ($pipesUpdated !== false && $pipesUpdated > 0)
+						if ($pipesUpdated)
 						{
 							$children = $this->children;
 							$this->children = array();
@@ -677,19 +677,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									switch (true)
 									{
-										case $score->getFailNumber() > 0:
+										case $score->getFailNumber():
 											$this->callObservers(self::fail);
 											break;
 
-										case $score->getErrorNumber() > 0:
+										case $score->getErrorNumber():
 											$this->callObservers(self::error);
 											break;
 
-										case $score->getExceptionNumber() > 0:
+										case $score->getExceptionNumber():
 											$this->callObservers(self::exception);
 											break;
 
-										case $score->getPassNumber() > 0:
+										case $score->getPassNumber():
 											$this->callObservers(self::success);
 											break;
 									}
@@ -895,7 +895,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function canRunChild()
 	{
-		return (sizeof($this->runTestMethods) > 0 && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
 	private function setCaseOnAssert($case)

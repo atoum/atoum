@@ -113,7 +113,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function help()
 	{
-		if (sizeof($this->help) > 0)
+		if ($this->help)
 		{
 			$this
 				->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
