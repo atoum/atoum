@@ -106,9 +106,14 @@ class runner extends atoum\script
 
 				if ($oldFailMethods)
 				{
-					if (sizeof(self::getFailMethods($newScore)) <= 0 && sizeof($this->runner->getTestClasses($this->namespaces, $this->tags, $this->methods)) > 1)
+					if (sizeof(self::getFailMethods($newScore)) <= 0)
 					{
-						$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+						$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
+
+						if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+						{
+							$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+						}
 					}
 				}
 			}
@@ -139,7 +144,7 @@ class runner extends atoum\script
 	{
 		$runner = $this->getRunner();
 
-		@include_once $path;
+		include_once $path;
 
 		if (in_array(realpath((string) $path), get_included_files(), true) === false)
 		{

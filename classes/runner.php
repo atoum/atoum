@@ -168,7 +168,7 @@ class runner implements observable, adapter\aggregator
 		return $this->observers;
 	}
 
-	public function getTestClasses(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
+	public function getTestMethods(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
 	{
 		$classes = array();
 
@@ -178,9 +178,14 @@ class runner implements observable, adapter\aggregator
 		{
 			$test = new $testClass();
 
-			if (self::isIgnored($test, $namespaces, $tags) === false && self::getMethods($test, $testClass, $testMethods, $tags))
+			if (self::isIgnored($test, $namespaces, $tags) === false)
 			{
-				$classes[] = $test;
+				$methods =  self::getMethods($test, $testMethods, $tags);
+
+				if ($methods)
+				{
+					$classes[$testClass] = $methods;
+				}
 			}
 		}
 
@@ -355,7 +360,7 @@ class runner implements observable, adapter\aggregator
 			{
 				$test = new $runTestClass();
 
-				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestClass, $runTestMethods, $tags)))
+				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 				{
 					$test
 						->setLocale($this->locale)
@@ -485,7 +490,7 @@ class runner implements observable, adapter\aggregator
 		return $haystack;
 	}
 
-	private static function getMethods(test $test, $testClass, array $runTestMethods, array $tags)
+	private static function getMethods(test $test, array $runTestMethods, array $tags)
 	{
 		$methods = array();
 
@@ -493,6 +498,8 @@ class runner implements observable, adapter\aggregator
 		{
 			$methods = $runTestMethods['*'];
 		}
+
+		$testClass = get_class($test);
 
 		if (isset($runTestMethods[$testClass]) === true)
 		{
