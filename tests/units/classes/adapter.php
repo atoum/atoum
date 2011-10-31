@@ -7,6 +7,7 @@ use
 ;
 
 require_once __DIR__ . '/../runner.php';
+//require_once '/tutu.php';
 
 class adapter extends atoum\test
 {

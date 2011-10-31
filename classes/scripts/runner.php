@@ -68,55 +68,62 @@ class runner extends atoum\script
 
 	public function run(array $arguments = array())
 	{
-		$arguments = $arguments ?: $this->arguments;
-
-		parent::run($arguments);
-
-		if ($this->runTests === true)
+		try
 		{
-			if ($this->loop === true)
-			{
-				$this->loop();
-			}
-			else
-			{
-				if ($this->runner->hasReports() === false)
-				{
-					$report = new atoum\reports\realtime\cli();
-					$report->addWriter(new atoum\writers\std\out());
+			parent::run($arguments ?: $this->arguments);
 
-					$this->runner->addReport($report);
+			if ($this->runTests === true)
+			{
+				if ($this->loop === true)
+				{
+					$this->loop();
 				}
-
-				$methods = $this->methods;
-
-				$oldFailMethods = array();
-
-				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+				else
 				{
-					$oldFailMethods = self::getFailMethods($oldScore);
+					if ($this->runner->hasReports() === false)
+					{
+						$report = new atoum\reports\realtime\cli();
+						$report->addWriter(new atoum\writers\std\out());
+
+						$this->runner->addReport($report);
+					}
+
+					$methods = $this->methods;
+
+					$oldFailMethods = array();
+
+					if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+					{
+						$oldFailMethods = self::getFailMethods($oldScore);
+
+						if ($oldFailMethods)
+						{
+							$methods = $oldFailMethods;
+						}
+					}
+
+					$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
 
 					if ($oldFailMethods)
 					{
-						$methods = $oldFailMethods;
-					}
-				}
-
-				$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
-
-				if ($oldFailMethods)
-				{
-					if (sizeof(self::getFailMethods($newScore)) <= 0)
-					{
-						$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
-
-						if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+						if (sizeof(self::getFailMethods($newScore)) <= 0)
 						{
-							$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+							$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
+
+							if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+							{
+								$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+							}
 						}
 					}
 				}
 			}
+		}
+		catch (atoum\exception $exception)
+		{
+			$this->writeError($exception->getMessage());
+
+			exit(2);
 		}
 
 		return $this;
@@ -142,14 +149,23 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
-		$runner = $this->getRunner();
+		$runner = $this;
+
+		set_error_handler(function($error, $message, $file, $line) use ($runner, $path) {
+				if (in_array(realpath((string) $path), get_included_files(), true) === true)
+				{
+					return false;
+				}
+				else
+				{
+					throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
+				}
+			}
+		);
 
 		include_once $path;
 
-		if (in_array(realpath((string) $path), get_included_files(), true) === false)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
-		}
+		restore_error_handler();
 
 		return $this;
 	}
@@ -160,7 +176,7 @@ class runner extends atoum\script
 		{
 			return $this->includeFile($path);
 		}
-		catch (\exception $exception)
+		catch (exceptions\runtime\file $exception)
 		{
 			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Test file \'%s\' does not exist'), $path));
 		}
@@ -168,20 +184,9 @@ class runner extends atoum\script
 
 	public function runDirectory($directory)
 	{
-		try
+		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
 		{
-			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
-			{
-				$this->runFile($path);
-			}
-		}
-		catch (exceptions\logic\invalidArgument $exception)
-		{
-			throw $exception;
-		}
-		catch (\exception $exception)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Unable to read directory \'%s\''), $directory));
+			$this->runFile($path);
 		}
 
 		return $this;
@@ -235,28 +240,7 @@ class runner extends atoum\script
 		$autorunner = self::$autorunner = new static($name);
 
 		register_shutdown_function(function() use ($autorunner) {
-				set_error_handler(function($error, $message, $file, $line) use ($autorunner) {
-						if (error_reporting() !== 0)
-						{
-							$autorunner->writeError($message . ' ' . $file . ' ' . $line);
-
-							exit(2);
-						}
-					}
-				);
-
-				try
-				{
-					$autorunner->run();
-				}
-				catch (\exception $exception)
-				{
-					$autorunner->writeError($exception->getMessage());
-
-					exit(3);
-				}
-
-				$score = $autorunner->getRunner()->getScore();
+				$score = $autorunner->run()->getRunner()->getScore();
 
 				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
 			}
