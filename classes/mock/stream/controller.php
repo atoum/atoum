@@ -29,7 +29,7 @@ class controller extends test\adapter
 
 			case 'file_put_contents':
 				$this->fopen = true;
-				$this->fwrite = $value === true;
+				$this->fwrite = $value;
 				$this->fclose = true;
 				return $this;
 
