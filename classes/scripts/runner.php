@@ -152,14 +152,17 @@ class runner extends atoum\script
 		$runner = $this;
 
 		set_error_handler(function($error, $message, $file, $line) use ($runner, $path) {
-				if (in_array(realpath((string) $path), get_included_files(), true) === true)
+				$pathLength = strlen($path);
+
+				foreach (get_included_files() as $includedFile)
 				{
-					return false;
+					if (strrpos($includedFile, $path) + $pathLength === strlen($includedFile))
+					{
+						return false;
+					}
 				}
-				else
-				{
-					throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
-				}
+
+				throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
 			}
 		);
 
