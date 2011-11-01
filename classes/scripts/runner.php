@@ -151,14 +151,21 @@ class runner extends atoum\script
 	{
 		$runner = $this;
 
-		set_error_handler(function($error, $message, $file, $line) use ($runner, $path) {
+		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($runner, $path, & $oldErrorHandler) {
 				$pathLength = strlen($path);
 
 				foreach (get_included_files() as $includedFile)
 				{
 					if (strrpos($includedFile, $path) + $pathLength === strlen($includedFile))
 					{
-						return false;
+						if ($oldErrorHandler === null)
+						{
+							return false;
+						}
+						else
+						{
+							$oldErrorHandler->__invoke($error, $message, $file, $line, $context);
+						}
 					}
 				}
 
