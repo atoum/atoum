@@ -656,6 +656,24 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testMockTestedClass()
+		{
+			$test = new emptyTest();
+
+			$testedClassName = $test->getTestedClassName();
+
+			$this->assert
+				->object($test->mockTestedClass())->isIdenticalTo($test)
+				->class('mock\\' . $testedClassName)->isSubClassOf($testedClassName)
+				->object($test->mockTestedClass('foo'))->isIdenticalTo($test)
+				->class('foo\emptyTest')->isSubClassOf($testedClassName)
+				->object($test->mockTestedClass('foo\bar'))->isIdenticalTo($test)
+				->class('foo\bar\emptyTest')->isSubClassOf($testedClassName)
+				->object($test->mockTestedClass('foo', 'bar'))->isIdenticalTo($test)
+				->class('foo\bar')->isSubClassOf($testedClassName)
+			;
+		}
+
 		public function testFilterTestMethods()
 		{
 			$test = new emptyTest();

@@ -745,6 +745,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+	public function mockTestedClass($mockNamespace = null, $mockClass = null)
+	{
+		$this->getMockGenerator()->generate($this->getTestedClassName(), $mockNamespace, $mockClass);
+
+		return $this;
+	}
+
 	public function setTestsSubNamespace($testsSubNamespace)
 	{
 		#DEPRECATED
