@@ -133,8 +133,7 @@ class runner extends atoum\test
 	{
 		$this->mock('mageekguy\atoum\locale');
 
-		$runner = new scripts\runner($name = uniqid());
-		$runner->setLocale($locale = new \mock\mageekguy\atoum\locale());
+		$runner = new scripts\runner($name = uniqid(), $locale = new \mock\mageekguy\atoum\locale());
 
 		$this->assert
 			->exception(function() use ($runner, & $file) {
@@ -144,6 +143,19 @@ class runner extends atoum\test
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime\file')
 				->hasMessage('Unable to include \'' . $file . '\'')
 			->mock($locale)->call('_')->withArguments('Unable to include \'%s\'')->once()
+		;
+
+		$streamController = atoum\mock\stream::get('includeWithOutput');
+		$streamController->file_get_contents = $output = uniqid();
+
+		$this->assert
+			->exception(function() use ($runner) {
+					$runner->includeFile('atoum://includeWithOutput');
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->hasMessage('There is output \'' . $output . '\' in \'atoum://includeWithOutput\'')
+			->mock($locale)->call('_')->withArguments('There is output \'%s\' in \'%s\'')->once()
 		;
 	}
 }
