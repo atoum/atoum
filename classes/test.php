@@ -118,11 +118,6 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @var integer
      */
-	private $testsToRun = 0;
-
-    /**
-     * @var integer
-     */
 	private $size = 0;
 
     /**
