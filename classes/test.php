@@ -487,9 +487,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				try
 				{
-					$this->beforeTestMethod($this->currentMethod);
-
 					ob_start();
+
+					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
@@ -510,14 +510,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
+					$this->afterTestMethod($testMethod);
+
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
 						->addDuration($this->class, $this->currentMethod, $duration)
 						->addOutput($this->class, $this->currentMethod, ob_get_clean())
 					;
-
-					$this->afterTestMethod($testMethod);
-
 				}
 				catch (\exception $exception)
 				{
