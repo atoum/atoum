@@ -26,12 +26,13 @@ class stream extends atoum\test
 		$this->assert
 			->variable($asserter->getStreamName())->isNull()
 			->variable($asserter->getStreamController())->isNull()
+			->object($asserter->getGenerator())->isIdenticalTo($generator)
 		;
 	}
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\stream($generator = new asserter\generator($this));
+		$asserter = new asserters\stream(new asserter\generator($this));
 
 		$this->assert
 			->object($asserter->setWith($stream = uniqid()))->isIdenticalTo($asserter)
@@ -50,7 +51,7 @@ class stream extends atoum\test
 
 	public function testIsRead()
 	{
-		$asserter = new asserters\stream($generator = new asserter\generator($this));
+		$asserter = new asserters\stream(new asserter\generator($test = new self($score = new atoum\score())));
 
 		$this->assert
 			->exception(function() use ($asserter) {
@@ -59,6 +60,78 @@ class stream extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Stream is undefined')
+		;
+
+		$streamController = atoum\mock\stream::get($streamName = uniqid());
+		$streamController->file_get_contents = uniqid();
+
+		$asserter->setWith($streamName);
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isRead(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage($failMessage = sprintf($test->getLocale()->_('stream %s is not read'), $streamName))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isRead()',
+						'fail' => $failMessage
+					)
+				)
+			)
+			->when(function() use ($streamName) { file_get_contents('atoum://' . $streamName); })
+				->object($asserter->isRead())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testIsWrited()
+	{
+		$asserter = new asserters\stream(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->exception(function() use ($asserter) {
+						$asserter->isWrited();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Stream is undefined')
+		;
+
+		$streamController = atoum\mock\stream::get($streamName = uniqid());
+		$streamController->file_put_contents = strlen($contents = uniqid());
+
+		$asserter->setWith($streamName);
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isWrited(); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage($failMessage = sprintf($test->getLocale()->_('stream %s is not writed'), $streamName))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isWrited()',
+						'fail' => $failMessage
+					)
+				)
+			)
+			->when(function() use ($streamName, $contents) { file_put_contents('atoum://' . $streamName, $contents); })
+				->object($asserter->isWrited())->isIdenticalTo($asserter)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(1)
 		;
 	}
 }

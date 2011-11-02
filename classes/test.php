@@ -819,9 +819,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				try
 				{
-					$this->beforeTestMethod($this->currentMethod);
-
 					ob_start();
+
+					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
 					{
@@ -842,14 +842,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
+					$this->afterTestMethod($testMethod);
+
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
 						->addDuration($this->class, $this->currentMethod, $duration)
 						->addOutput($this->class, $this->currentMethod, ob_get_clean())
 					;
-
-					$this->afterTestMethod($testMethod);
-
 				}
 				catch (\exception $exception)
 				{
@@ -1104,6 +1103,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function mock($class, $mockNamespace = null, $mockClass = null)
 	{
 		$this->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
+
+		return $this;
+	}
+
+
+    /**
+     * @param string $mockNamespace
+     * @param string $mockClass
+     *
+     * @return mageekguy\atoum\test
+     */
+	public function mockTestedClass($mockNamespace = null, $mockClass = null)
+	{
+		$this->getMockGenerator()->generate($this->getTestedClassName(), $mockNamespace, $mockClass);
 
 		return $this;
 	}

@@ -53,9 +53,36 @@ class stream extends atoum\asserter
 		return $this->streamController;
 	}
 
-	public function isRead()
+	public function isRead($failMessage = null)
 	{
-		$this->streamIsSet();
+		$calls = $this->streamIsSet()->streamController->getCalls();
+
+		if (isset($calls['stream_read']) === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not read'), $this->streamName));
+		}
+
+		return $this;
+	}
+
+	public function isWrited($failMessage = null)
+	{
+		$calls = $this->streamIsSet()->streamController->getCalls();
+
+		if (isset($calls['stream_write']) === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not writed'), $this->streamName));
+		}
+
+		return $this;
 	}
 
 	protected function streamIsSet()

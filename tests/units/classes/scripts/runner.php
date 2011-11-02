@@ -128,6 +128,24 @@ class runner extends atoum\test
 			->array($runner->getArguments())->isEqualTo($arguments)
 		;
 	}
+
+	public function testIncludeFile()
+	{
+		$this->mock('mageekguy\atoum\locale');
+
+		$runner = new scripts\runner($name = uniqid());
+		$runner->setLocale($locale = new \mock\mageekguy\atoum\locale());
+
+		$this->assert
+			->exception(function() use ($runner, & $file) {
+					$runner->includeFile($file = uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime\file')
+				->hasMessage('Unable to include \'' . $file . '\'')
+			->mock($locale)->call('_')->withArguments('Unable to include \'%s\'')->once()
+		;
+	}
 }
 
 ?>
