@@ -18,6 +18,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTestMethod = 'beforeTestMethod';
 	const fail = 'testAssertionFail';
 	const error = 'testError';
+	const uncompleted = 'testUncompleted';
 	const exception = 'testException';
 	const success = 'testAssertionSuccess';
 	const afterTestMethod = 'afterTestMethod';
@@ -646,18 +647,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									proc_close($child[0]);
 
-									switch ($phpStatus['exitcode'])
+									$score = new score();
+
+									$testScore = @unserialize($child[2]);
+
+									if ($testScore instanceof score)
 									{
-										case 126:
-										case 127:
-											throw new exceptions\runtime('Unable to execute test method ' . $this->class . '::' . $this->currentMethod . '()');
+										$score = $testScore;
 									}
-
-									$score = @unserialize($child[2]);
-
-									if ($score instanceof score === false)
+									else
 									{
-										$score = new score();
+										$score->addUncompletedTest($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
 									}
 
 									if ($child[3] !== '')
@@ -676,6 +676,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									switch (true)
 									{
+										case $score->getUncompletedTestNumber():
+											$this->callObservers(self::uncompleted);
+											break;
+
 										case $score->getFailNumber():
 											$this->callObservers(self::fail);
 											break;
@@ -786,6 +790,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			self::fail,
 			self::error,
 			self::exception,
+			self::uncompleted,
 			self::success,
 			self::afterTestMethod,
 			self::beforeTearDown,

@@ -27,7 +27,8 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEmpty()
 			->array($score->getDurations())->isEmpty()
 			->array($score->getMemoryUsages())->isEmpty()
-			->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+			->array($score->getUncompletedTests())->isEmpty()
+			->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage())
 		;
 
 		$score = new atoum\score($coverage = new atoum\score\coverage());
@@ -621,6 +622,41 @@ class score extends atoum\test
 		;
 	}
 
+	public function testAddUncompletedTest()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->array($score->getUncompletedTests())->isEmpty()
+			->object($score->addUncompletedTest($class = uniqid(), $method = uniqid(), $exitCode = rand(1, PHP_INT_MAX), $output = uniqid()))->isIdenticalTo($score)
+			->array($score->getUncompletedTests())->isEqualTo(array(
+					array(
+						'class' => $class,
+						'method' => $method,
+						'exitCode' => $exitCode,
+						'output' => $output,
+					)
+				)
+			)
+			->object($score->addUncompletedTest($otherClass = uniqid(), $otherMethod = uniqid(), $otherExitCode = rand(1, PHP_INT_MAX), $otherOutput = uniqid()))->isIdenticalTo($score)
+			->array($score->getUncompletedTests())->isEqualTo(array(
+					array(
+						'class' => $class,
+						'method' => $method,
+						'exitCode' => $exitCode,
+						'output' => $output,
+					),
+					array(
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'exitCode' => $otherExitCode,
+						'output' => $otherOutput,
+					)
+				)
+			)
+		;
+	}
+
 	public function testSetAtoumPath()
 	{
 		$score = new atoum\score();
@@ -784,6 +820,7 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEmpty()
 			->array($score->getDurations())->isEmpty()
 			->array($score->getMemoryUsages())->isEmpty()
+			->array($score->getUncompletedTests())->isEmpty()
 		;
 
 		$score->addPass();
@@ -793,6 +830,7 @@ class score extends atoum\test
 		$score->addOutput(uniqid(), uniqid(), uniqid());
 		$score->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+		$score->addUncompletedTest(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid());
 
 		$this->assert
 			->integer($score->getPassNumber())->isEqualTo(1)
@@ -810,6 +848,7 @@ class score extends atoum\test
 			->integer($score->getOutputNumber())->isEqualTo(1)
 			->integer($score->getDurationNumber())->isEqualTo(1)
 			->integer($score->getMemoryUsageNumber())->isEqualTo(1)
+			->integer($score->getUncompletedTestNumber())->isEqualTo(1)
 		;
 
 		$otherScore->addPass();
@@ -819,6 +858,7 @@ class score extends atoum\test
 		$otherScore->addOutput(uniqid(), uniqid(), uniqid());
 		$otherScore->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+		$otherScore->addUncompletedTest(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid());
 
 		$this->assert
 			->integer($otherScore->getPassNumber())->isEqualTo(1)
@@ -828,6 +868,7 @@ class score extends atoum\test
 			->integer($otherScore->getOutputNumber())->isEqualTo(1)
 			->integer($otherScore->getDurationNumber())->isEqualTo(1)
 			->integer($otherScore->getMemoryUsageNumber())->isEqualTo(1)
+			->integer($otherScore->getUncompletedTestNumber())->isEqualTo(1)
 			->object($score->merge($otherScore))->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isEqualTo(2)
 			->integer($score->getFailNumber())->isEqualTo(2)
@@ -836,6 +877,7 @@ class score extends atoum\test
 			->integer($score->getOutputNumber())->isEqualTo(2)
 			->integer($score->getDurationNumber())->isEqualTo(2)
 			->integer($score->getMemoryUsageNumber())->isEqualTo(2)
+			->integer($score->getUncompletedTestNumber())->isEqualTo(2)
 			->object($score->merge($otherScore))->isIdenticalTo($score)
 			->integer($score->getPassNumber())->isEqualTo(3)
 			->integer($score->getFailNumber())->isEqualTo(3)
@@ -844,6 +886,7 @@ class score extends atoum\test
 			->integer($score->getOutputNumber())->isEqualTo(3)
 			->integer($score->getDurationNumber())->isEqualTo(3)
 			->integer($score->getMemoryUsageNumber())->isEqualTo(3)
+			->integer($score->getUncompletedTestNumber())->isEqualTo(3)
 		;
 	}
 

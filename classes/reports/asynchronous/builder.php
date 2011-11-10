@@ -82,6 +82,15 @@ class builder extends atoum\reports\asynchronous
 				),
 				array(atoum\runner::runStop)
 			)
+			->addRunnerField(new runner\tests\uncompleted\cli(
+					null,
+					null,
+					new prompt('   '),
+					null,
+					new prompt('      ')
+				),
+				array(atoum\runner::runStop)
+			)
 			->addRunnerField(
 				new runner\tests\duration\cli(),
 				array(atoum\runner::runStop)

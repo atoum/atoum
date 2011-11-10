@@ -101,9 +101,9 @@ class cli extends units\report\fields\runner
 	{
 		$field = new runner\result\cli();
 
-		$this->mockGenerator
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
+		$this
+			->mock('mageekguy\atoum\score')
+			->mock('mageekguy\atoum\runner')
 		;
 
 		$score = new \mock\mageekguy\atoum\score();
@@ -151,12 +151,12 @@ class cli extends units\report\fields\runner
 
 	public function test__toString()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
-			->generate('mageekguy\atoum\locale')
-			->generate('mageekguy\atoum\cli\prompt')
-			->generate('mageekguy\atoum\cli\colorizer')
+		$this
+			->mock('mageekguy\atoum\score')
+			->mock('mageekguy\atoum\runner')
+			->mock('mageekguy\atoum\locale')
+			->mock('mageekguy\atoum\cli\prompt')
+			->mock('mageekguy\atoum\cli\colorizer')
 		;
 
 		$score = new \mock\mageekguy\atoum\score();
@@ -193,19 +193,19 @@ class cli extends units\report\fields\runner
 		$localeController->__ = function($singularString, $pluralString, $number) use (& $testString, & $testMethodString, & $assertionString, & $errorString, & $exceptionString) {
 			switch ($singularString)
 			{
-				case '%d test':
+				case '%s test':
 					return $testString = uniqid();
 
-				case '%d method':
+				case '%s method':
 					return $testMethodString = uniqid();
 
-				case '%d assertion':
+				case '%s assertion':
 					return $assertionString = uniqid();
 
-				case '%d error':
+				case '%s error':
 					return $errorString = uniqid();
 
-				case '%d exception':
+				case '%s exception':
 					return $exceptionString = uniqid();
 
 				default:
@@ -257,7 +257,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
 			->mock($locale)
 				->call('__')->withArguments('%s test', '%s tests', 1)->once()
-				->call('__')->withArguments('%s method', '%s methods', 1)->once()
+				->call('__')->withArguments('%s/%s method', '%s/%s methods', 1)->once()
 				->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
 				->call('__')->withArguments('%s error', '%s errors', 0)->once()
 				->call('__')->withArguments('%s exception', '%s exceptions', 0)->once()
@@ -305,7 +305,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
 			->mock($locale)
 				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
-				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s/%s method', '%s/%s methods', $testMethodNumber)->once()
 				->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
 				->call('__')->withArguments('%s error', '%s errors', 0)->once()
 				->call('__')->withArguments('%s exception', '%s exceptions', 0)->once()
@@ -322,6 +322,7 @@ class cli extends units\report\fields\runner
 		$scoreController->getFailNumber = 1;
 		$scoreController->getErrorNumber = 1;
 		$scoreController->getExceptionNumber = 1;
+		$scoreController->getUncompletedTestNumber = 1;
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
@@ -353,7 +354,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
 			->mock($locale)
 				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
-				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s/%s method', '%s/%s methods', $testMethodNumber)->once()
 				->call('__')->withArguments('%s failure', '%s failures', 1)->once()
 				->call('__')->withArguments('%s error', '%s errors', 1)->once()
 				->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
@@ -370,6 +371,7 @@ class cli extends units\report\fields\runner
 		$scoreController->getFailNumber = $failNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX);
+		$scoreController->getUncompletedTestNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
 
 		$field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale);
 
@@ -401,7 +403,7 @@ class cli extends units\report\fields\runner
 			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
 			->mock($locale)
 				->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
-				->call('__')->withArguments('%s method', '%s methods', $testMethodNumber)->once()
+				->call('__')->withArguments('%s/%s method', '%s/%s methods', $testMethodNumber)->once()
 				->call('__')->withArguments('%s failure', '%s failures', $failNumber)->once()
 				->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 				->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()

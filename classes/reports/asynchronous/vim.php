@@ -89,6 +89,15 @@ class vim extends reports\asynchronous
 					),
 					array(atoum\runner::runStop)
 				)
+			->addRunnerField(new runner\tests\uncompleted\cli(
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt
+					),
+					array(atoum\runner::runStop)
+				)
 			->addRunnerField(
 				new runner\outputs\cli(
 					$firstLevelPrompt,

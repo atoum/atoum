@@ -31,6 +31,7 @@ class report implements observers\runner, observers\test, adapter\aggregator
 			test::fail => array(),
 			test::error => array(),
 			test::exception => array(),
+			test::uncompleted => array(),
 			test::afterTestMethod => array(),
 			test::beforeTearDown => array(),
 			test::afterTearDown => array(),
@@ -197,6 +198,11 @@ class report implements observers\runner, observers\test, adapter\aggregator
 	}
 
 	public function testException(test $test)
+	{
+		return $this->setTestFields($test, __FUNCTION__);
+	}
+
+	public function testUncompleted(test $test)
 	{
 		return $this->setTestFields($test, __FUNCTION__);
 	}

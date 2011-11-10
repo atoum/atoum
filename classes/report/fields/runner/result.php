@@ -15,6 +15,7 @@ abstract class result extends report\fields\runner
 	protected $failNumber = null;
 	protected $errorNumber = null;
 	protected $exceptionNumber = null;
+	protected $uncompletedTestNumber = null;
 
 	public function getTestNumber()
 	{
@@ -46,6 +47,11 @@ abstract class result extends report\fields\runner
 		return $this->exceptionNumber;
 	}
 
+	public function getUncompletedTestNumber()
+	{
+		return $this->uncompletedTestNumber;
+	}
+
 	public function setWithRunner(runner $runner, $event = null)
 	{
 		if ($event === runner::runStop)
@@ -58,6 +64,7 @@ abstract class result extends report\fields\runner
 			$this->failNumber = $score->getFailNumber();
 			$this->errorNumber = $score->getErrorNumber();
 			$this->exceptionNumber = $score->getExceptionNumber();
+			$this->uncompletedTestNumber = $score->getUncompletedTestNumber();
 		}
 
 		return $this;
