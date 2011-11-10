@@ -573,9 +573,9 @@ namespace mageekguy\atoum\tests\units
 
 		public function testRun()
 		{
-			$this->mockGenerator
-				->generate('test', 'mock')
-				->generate('mageekguy\atoum\test', 'mock\tests\units')
+			$this
+				->mock('test', 'mock')
+				->mockTestedClass('mock\tests\units')
 			;
 
 			$test = new \mock\tests\units\test();
@@ -595,9 +595,7 @@ namespace mageekguy\atoum\tests\units
 
 		public function testGetTestedClassName()
 		{
-			$this->mockGenerator
-				->generate('mageekguy\atoum\test', 'mageekguy\atoum\mock\mageekguy\atoum\tests\units')
-			;
+			$this->mockTestedClass('mageekguy\atoum\mock\mageekguy\atoum\tests\units');
 
 			$test = new mock\mageekguy\atoum\tests\units\test();
 

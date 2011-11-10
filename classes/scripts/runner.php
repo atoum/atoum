@@ -169,13 +169,22 @@ class runner extends atoum\script
 					}
 				}
 
+				restore_error_handler();
+
 				throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
 			}
 		);
 
+		ob_start();
+
 		include_once $path;
 
 		restore_error_handler();
+
+		if (($output = ob_get_clean()) != '')
+		{
+			throw new exceptions\runtime(sprintf($runner->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
+		}
 
 		return $this;
 	}
@@ -184,6 +193,7 @@ class runner extends atoum\script
 	{
 		try
 		{
+
 			return $this->includeFile($path);
 		}
 		catch (exceptions\runtime\file $exception)
