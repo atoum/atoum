@@ -27,7 +27,7 @@ class phpCallback extends asserters\variable
 	{
 		if (self::isCallback($value) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a valid format callback');
+			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a valid callback');
 		}
 	}
 
