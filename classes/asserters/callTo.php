@@ -37,6 +37,7 @@ class callTo extends asserters\variable
 			return call_user_func_array(array($this, 'checkReturn'), $arguments);
 		}
 		elseif (stripos($method, 'returnHas') === 0) {
+			$this->executeCallback();
 			$generator = strtolower($method{9}) . substr($method, 10);
 			return $this->generator->$generator($this->return);
 		}
