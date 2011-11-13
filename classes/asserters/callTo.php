@@ -1,7 +1,7 @@
 <?php
 
 namespace mageekguy\atoum\asserters;
-// ©◊this->assert->callTo(callbackQuiVaBien)->withArguments('a', 'b', 'c')->return('abc')->hasOutput('abc')
+
 use
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
@@ -36,7 +36,7 @@ class callTo extends asserters\variable
 		{
 			return call_user_func_array(array($this, 'checkReturn'), $arguments);
 		}
-		elseif (stripos($method, 'returnHas') === 0) {
+		elseif (stripos($method, 'returnAs') === 0) {
 			$this->executeCallback();
 			$generator = strtolower($method{9}) . substr($method, 10);
 			return $this->generator->$generator($this->return);
@@ -81,7 +81,7 @@ class callTo extends asserters\variable
 		return $this;
 	}
 
-	public function outputHasString()
+	public function outputAsString()
 	{
 		$this->executeCallback();
 		return $this->generator->string($this->output);
