@@ -67,6 +67,12 @@ class callTo extends asserters\variable
 		return $this->generator->$assertName($this->return);
 	}
 
+	public function getReturn()
+	{
+		$this->executeCallback();
+		return $this->return;
+	}
+
 	public function hasOutput($compareTo, $failMessage = null)
 	{
 		$this->executeCallback();
@@ -86,6 +92,12 @@ class callTo extends asserters\variable
 	{
 		$this->executeCallback();
 		return $this->generator->string($this->output);
+	}
+
+	public function getOutput()
+	{
+		$this->executeCallback();
+		return $this->output;
 	}
 
 	private function executeCallback()
