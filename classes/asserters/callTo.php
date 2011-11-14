@@ -34,12 +34,7 @@ class callTo extends asserters\variable
 	{
 		if($method == 'return')
 		{
-			return call_user_func_array(array($this, 'checkReturn'), $arguments);
-		}
-		elseif (stripos($method, 'returnAs') === 0) {
-			$this->executeCallback();
-			$generator = strtolower($method{9}) . substr($method, 10);
-			return $this->generator->$generator($this->return);
+			return call_user_func_array(array($this, 'hasReturn'), $arguments);
 		}
 		return parent::__call($method, $arguments);
 	}
@@ -51,7 +46,7 @@ class callTo extends asserters\variable
 		return $this;
 	}
 
-	private function checkReturn($compareTo, $failMessage = null)
+	private function hasReturn($compareTo, $failMessage = null)
 	{
 		$this->executeCallback();
 		if ($this->return === $compareTo)
@@ -64,6 +59,12 @@ class callTo extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function returnAs($assertName)
+	{
+		$this->executeCallback();
+		return $this->generator->$assertName($this->return);
 	}
 
 	public function hasOutput($compareTo, $failMessage = null)
