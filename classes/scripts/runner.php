@@ -149,7 +149,7 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
-		$runner = $this;
+		$runner = $this->getRunner();
 
 		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($runner, $path, & $oldErrorHandler) {
 				$pathLength = strlen($path);
@@ -193,7 +193,6 @@ class runner extends atoum\script
 	{
 		try
 		{
-
 			return $this->includeFile($path);
 		}
 		catch (exceptions\runtime\file $exception)
