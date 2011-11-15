@@ -149,9 +149,10 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
+		$script = $this;
 		$runner = $this->getRunner();
 
-		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($runner, $path, & $oldErrorHandler) {
+		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($script, $runner, $path, & $oldErrorHandler) {
 				$pathLength = strlen($path);
 
 				foreach (get_included_files() as $includedFile)
@@ -171,7 +172,7 @@ class runner extends atoum\script
 
 				restore_error_handler();
 
-				throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
+				throw new exceptions\runtime\file(sprintf($script->getLocale()->_('Unable to include \'%s\''), $path));
 			}
 		);
 
@@ -183,7 +184,7 @@ class runner extends atoum\script
 
 		if (($output = ob_get_clean()) != '')
 		{
-			throw new exceptions\runtime(sprintf($runner->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
+			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
 		}
 
 		return $this;
