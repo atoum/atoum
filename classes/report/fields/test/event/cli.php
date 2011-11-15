@@ -47,6 +47,10 @@ class cli extends report\fields\test\event
 					case atoum\test::exception:
 						$progressBar->refresh('E');
 						break;
+
+					case atoum\test::uncompleted:
+						$progressBar->refresh('U');
+						break;
 				}
 
 				$string = (string) $progressBar;

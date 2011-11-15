@@ -168,6 +168,8 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 			->castToString($event)->isEqualTo((string) $progressBar->refresh('E'))
 			->object($event->setWithTest($test, atoum\test::success))->isIdenticalTo($event)
 			->castToString($event)->isEqualTo((string) $progressBar->refresh('S'))
+			->object($event->setWithTest($test, atoum\test::uncompleted))->isIdenticalTo($event)
+			->castToString($event)->isEqualTo((string) $progressBar->refresh('U'))
 			->object($event->setWithTest($test, atoum\test::afterTestMethod))->isIdenticalTo($event)
 			->castToString($event)->isEqualTo((string) $progressBar)
 			->object($event->setWithTest($test, atoum\test::beforeTearDown))->isIdenticalTo($event)

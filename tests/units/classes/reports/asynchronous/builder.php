@@ -65,6 +65,13 @@ class builder extends atoum\test
 						null,
 						new prompt('      ')
 					),
+					new runner\tests\uncompleted\cli(
+						null,
+						null,
+						new prompt('   '),
+						null,
+						new prompt('      ')
+					),
 					new runner\tests\duration\cli(),
 					new runner\tests\memory\cli(),
 					new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      '))

@@ -40,6 +40,12 @@ class cli extends realtime
 		$exceptionPrompt = clone $thirdLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
 
+		$uncompletedTestColorizer = new colorizer('0;37');
+		$uncompletedTestMethodPrompt = clone $secondLevelPrompt;
+		$uncompletedTestMethodPrompt->setColorizer($uncompletedTestColorizer);
+		$uncompletedTestOutputPrompt = clone $thirdLevelPrompt;
+		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
+
 		$this
 			->addRunnerField(new runner\atoum\cli(
 						$firstLevelPrompt,
@@ -123,6 +129,15 @@ class cli extends realtime
 						$exceptionMethodPrompt,
 						null,
 						$exceptionPrompt
+					),
+					array(atoum\runner::runStop)
+				)
+			->addRunnerField(new runner\tests\uncompleted\cli(
+						$firstLevelPrompt,
+						$uncompletedTestColorizer,
+						$uncompletedTestMethodPrompt,
+						null,
+						$uncompletedTestOutputPrompt
 					),
 					array(atoum\runner::runStop)
 				)

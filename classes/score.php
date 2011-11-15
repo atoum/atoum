@@ -17,6 +17,7 @@ class score
 	private $durations = array();
 	private $memoryUsages = array();
 	private $coverage = null;
+	private $uncompletedTests = array();
 	private $case = null;
 	private $phpPath = null;
 	private $phpVersion = null;
@@ -195,6 +196,18 @@ class score
 		return $this;
 	}
 
+	public function addUncompletedTest($class, $method, $exitCode, $output)
+	{
+		$this->uncompletedTests[] = array(
+			'class' => $class,
+			'method' => $method,
+			'exitCode' => $exitCode,
+			'output' => $output
+		);
+
+		return $this;
+	}
+
 	public function merge(score $score)
 	{
 		$this->passAssertions += $score->passAssertions;
@@ -205,6 +218,7 @@ class score
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
 		$this->coverage->merge($score->coverage);
+		$this->uncompletedTests = array_merge($this->uncompletedTests, $score->uncompletedTests);
 
 		return $this;
 	}
@@ -323,9 +337,19 @@ class score
 		return sizeof($this->errors);
 	}
 
+	public function getUncompletedTestNumber()
+	{
+		return sizeof($this->uncompletedTests);
+	}
+
 	public function getCoverage()
 	{
 		return $this->coverage;
+	}
+
+	public function getUncompletedTests()
+	{
+		return $this->uncompletedTests;
 	}
 
 	public function getCase()

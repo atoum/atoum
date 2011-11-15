@@ -82,6 +82,13 @@ class cli extends atoum\test
 						new prompt('=> ', new colorizer('0;35')),
 						null,
 						new prompt('==> ', new colorizer('0;35'))
+					),
+					new fields\runner\tests\uncompleted\cli(
+						new prompt('> '),
+						new colorizer('0;37'),
+						new prompt('=> ', new colorizer('0;37')),
+						null,
+						new prompt('==> ', new colorizer('0;37'))
 					)
 				)
 			)

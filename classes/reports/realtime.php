@@ -59,6 +59,11 @@ abstract class realtime extends atoum\report
 		return parent::testException($test)->write(__FUNCTION__);
 	}
 
+	public function testUncompleted(atoum\test $test)
+	{
+		return parent::testUncompleted($test)->write(__FUNCTION__);
+	}
+
 	public function afterTestMethod(atoum\test $test)
 	{
 		return parent::afterTestMethod($test)->write(__FUNCTION__);

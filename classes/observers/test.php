@@ -15,6 +15,7 @@ interface test extends atoum\observer
 	public function testAssertionFail(atoum\test $test);
 	public function testError(atoum\test $test);
 	public function testException(atoum\test $test);
+	public function testUncompleted(atoum\test $test);
 	public function testAssertionSuccess(atoum\test $test);
 	public function afterTestMethod(atoum\test $test);
 	public function beforeTestTearDown(atoum\test $test);
