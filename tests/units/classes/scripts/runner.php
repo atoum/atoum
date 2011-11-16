@@ -157,6 +157,15 @@ class runner extends atoum\test
 				->hasMessage('There is output \'' . $output . '\' in \'atoum://includeWithOutput\'')
 			->mock($locale)->call('_')->withArguments('There is output \'%s\' in \'%s\'')->once()
 		;
+
+		$streamController = atoum\mock\stream::get('includeWithoutOutput');
+		$streamController->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>';
+
+		$this->assert
+			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
+			->object($runner->includeFile('atoum://includeWithoutOutput'))->isIdenticalTo($runner)
+			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
+		;
 	}
 }
 
