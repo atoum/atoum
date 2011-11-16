@@ -150,9 +150,8 @@ class runner extends atoum\script
 	public function includeFile($path)
 	{
 		$script = $this;
-		$runner = $this->getRunner();
 
-		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($script, $runner, $path, & $oldErrorHandler) {
+		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($script, $path, & $oldErrorHandler) {
 				$pathLength = strlen($path);
 
 				foreach (get_included_files() as $includedFile)
@@ -178,7 +177,7 @@ class runner extends atoum\script
 
 		ob_start();
 
-		include_once $path;
+		self::includeForRunner($this->getRunner(), $path);
 
 		restore_error_handler();
 
@@ -611,6 +610,11 @@ class runner extends atoum\script
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+	}
+
+	protected static function includeForRunner(atoum\runner $runner, $path)
+	{
+		include_once $path;
 	}
 
 	private static function getFailMethods(atoum\score $score)
