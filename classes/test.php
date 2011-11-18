@@ -83,7 +83,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setAlias('class', 'phpClass')
 		;
 
-		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
+		$annotationExtractor = new annotations\extractor();
+
+		foreach ($annotationExtractor->extract($class->getDocComment()) as $annotation => $value)
 		{
 			switch ($annotation)
 			{
@@ -105,7 +107,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$annotations = array();
 
-				foreach (new annotations\extractor($publicMethod->getDocComment()) as $annotation => $value)
+				foreach ($annotationExtractor->reset()->extract($publicMethod->getDocComment()) as $annotation => $value)
 				{
 					switch ($annotation)
 					{
