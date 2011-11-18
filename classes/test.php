@@ -3,7 +3,6 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
@@ -154,10 +153,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		switch ($method)
 		{
-			case 'mock':
-				$this->getMockGenerator()->generate(isset($arguments[0]) === false ? null : $arguments[0], isset($arguments[1]) === false ? null : $arguments[1], isset($arguments[2]) === false ? null : $arguments[2]);
-				return $this;
-
 			case 'assert':
 				$this->unsetCaseOnAssert();
 
@@ -206,7 +201,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function setSuperglobals(atoum\superglobals $superglobals)
+	public function setSuperglobals(superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
 
@@ -239,7 +234,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getAsserterGenerator()
 	{
-		atoum\test\adapter::resetCallsForAllInstances();
+		test\adapter::resetCallsForAllInstances();
 
 		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
 	}
@@ -250,7 +245,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($this->testNamespace === '')
 		{
-			throw new atoum\exceptions\logic\invalidArgument('Test namespace must not be empty');
+			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
 		return $this;
@@ -317,7 +312,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (isset($this->testMethods[$testMethodName]) === false)
 			{
-				throw new exceptions\logic\invalidargument('test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+				throw new exceptions\logic\invalidargument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
 			}
 
 			$tags = isset($this->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
@@ -326,7 +321,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $tags;
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
 
@@ -419,12 +414,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->currentMethod;
 	}
 
+	public function getMaxChildrenNumber()
+	{
+		return $this->maxChildrenNumber;
+	}
+
 	public function count()
 	{
 		return $this->size;
 	}
 
-	public function addObserver(atoum\observers\test $observer)
+	public function addObserver(observers\test $observer)
 	{
 		$this->observers[] = $observer;
 
@@ -565,7 +565,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->phpCode =
 					'<?php ' .
-					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
+					'define(\'mageekguy\atoum\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
@@ -771,7 +771,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if (self::$namespace === '')
 		{
-			throw new atoum\exceptions\logic\invalidArgument('Namespace must not be empty');
+			throw new exceptions\logic\invalidArgument('Namespace must not be empty');
 		}
 	}
 
