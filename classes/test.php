@@ -292,9 +292,29 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return array_values(array_unique($tags));
 	}
 
+	public function setClassTags(array $tags)
+	{
+		$this->tags = $tags;
+
+		return $this;
+	}
+
+
 	public function getClassTags()
 	{
 		return $this->tags;
+	}
+
+	public function setMethodTags($testMethodName, array $tags)
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new exceptions\logic\invalidargument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		$this->testMethods[$testMethodName]['tags'] = $tags;
+
+		return $this;
 	}
 
 	public function getMethodTags($testMethodName = null)

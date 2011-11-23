@@ -592,11 +592,36 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testGetMethodTags()
+		public function testSetClassTags()
 		{
 			$test = new emptyTest();
 
 			$this->assert
+				->object($test->setClassTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+				->array($test->getClassTags())->isEqualTo($tags)
+			;
+		}
+
+
+		public function testSetMethodTags()
+		{
+			$test = new notEmptyTest();
+
+			$this->assert
+				->object($test->setMethodTags('testMethod1', $tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+				->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
+				->exception(function() use ($test, & $method) { $test->setMethodTags($method = uniqid(), array()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			;
+		}
+
+		public function testGetMethodTags()
+		{
+			$test = new notemptyTest();
+
+			$this->assert
+				->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
 				->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
