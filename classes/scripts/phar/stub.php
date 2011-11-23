@@ -120,19 +120,13 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function includeFile($path)
+	public function includeDefaultConfigFile()
 	{
 		try
 		{
-			parent::includeFile($path);
+			$this->includeFile(dirname(\phar::running(false)) . '/' . self::defaultConfigFile);
 		}
-		catch (\exception $exception)
-		{
-			if (in_array((string) $path, get_included_files(), true) === false)
-			{
-				throw $exception;
-			}
-		}
+		catch (\exception $exception) {};
 
 		return $this;
 	}

@@ -20,6 +20,13 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testClassConstants()
+	{
+		$this->assert
+			->string(scripts\runner::defaultConfigFile)->isEqualTo('.atoum')
+		;
+	}
+
 	public function test__construct()
 	{
 		$runner = new scripts\runner($name = uniqid());
@@ -165,6 +172,19 @@ class runner extends atoum\test
 			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
 			->object($runner->includeFile('atoum://includeWithoutOutput'))->isIdenticalTo($runner)
 			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
+		;
+	}
+
+	public function testIncludeDefaultConfigFile()
+	{
+		$this->mock('mageekguy\atoum\scripts\runner');
+
+		$runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid());
+		$runner->getMockController()->includeFile = function() {};
+
+		$this->assert
+			->object($runner->includeDefaultConfigFile())->isIdenticalTo($runner)
+			->mock($runner)->call('includeFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
 		;
 	}
 }

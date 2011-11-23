@@ -12,6 +12,8 @@ use
 
 class runner extends atoum\script
 {
+	const defaultConfigFile = '.atoum';
+
 	protected $runner = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
@@ -74,6 +76,8 @@ class runner extends atoum\script
 
 			if ($this->runTests === true)
 			{
+				$this->includeDefaultConfigFile();
+
 				if ($this->loop === true)
 				{
 					$this->loop();
@@ -185,6 +189,17 @@ class runner extends atoum\script
 		{
 			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
 		}
+
+		return $this;
+	}
+
+	public function includeDefaultConfigFile()
+	{
+		try
+		{
+			$this->includeFile(atoum\directory . '/' . self::defaultConfigFile);
+		}
+		catch (\exception $exception) {};
 
 		return $this;
 	}
