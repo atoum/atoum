@@ -602,7 +602,6 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-
 		public function testSetMethodTags()
 		{
 			$test = new notEmptyTest();

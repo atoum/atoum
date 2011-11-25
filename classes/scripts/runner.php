@@ -160,7 +160,7 @@ class runner extends atoum\script
 
 				foreach (get_included_files() as $includedFile)
 				{
-					if (strrpos($includedFile, $path) + $pathLength === strlen($includedFile))
+					if ($path === $includedFile)
 					{
 						if ($oldErrorHandler === null)
 						{
@@ -168,12 +168,10 @@ class runner extends atoum\script
 						}
 						else
 						{
-							$oldErrorHandler->__invoke($error, $message, $file, $line, $context);
+							return $oldErrorHandler->__invoke($error, $message, $file, $line, $context);
 						}
 					}
 				}
-
-				restore_error_handler();
 
 				throw new exceptions\runtime\file(sprintf($script->getLocale()->_('Unable to include \'%s\''), $path));
 			}
@@ -181,7 +179,16 @@ class runner extends atoum\script
 
 		ob_start();
 
-		self::includeForRunner($this->getRunner(), $path);
+		try
+		{
+			self::includeForRunner($this->getRunner(), $path);
+		}
+		catch (exceptions\runtime\file $exception)
+		{
+			restore_error_handler();
+
+			throw $exception;
+		}
 
 		restore_error_handler();
 
@@ -199,7 +206,7 @@ class runner extends atoum\script
 		{
 			$this->includeFile(atoum\directory . '/' . self::defaultConfigFile);
 		}
-		catch (\exception $exception) {};
+		catch (exceptions\runtime\file $exception) {};
 
 		return $this;
 	}
