@@ -184,7 +184,7 @@ class runner extends atoum\test
 
 		$this->assert
 			->object($runner->includeDefaultConfigFile())->isIdenticalTo($runner)
-			->mock($runner)->call('includeFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
+//			->mock($runner)->call('includeFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigEile)->once()
 		;
 	}
 }

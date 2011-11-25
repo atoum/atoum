@@ -3,6 +3,7 @@
 namespace mageekguy\atoum;
 
 use
+	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
@@ -299,7 +300,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-
 	public function getClassTags()
 	{
 		return $this->tags;
@@ -309,7 +309,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if (isset($this->testMethods[$testMethodName]) === false)
 		{
-			throw new exceptions\logic\invalidargument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
 		}
 
 		$this->testMethods[$testMethodName]['tags'] = $tags;
@@ -334,7 +334,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (isset($this->testMethods[$testMethodName]) === false)
 			{
-				throw new exceptions\logic\invalidargument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
 			}
 
 			$tags = isset($this->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
