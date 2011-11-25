@@ -43,6 +43,16 @@ namespace mageekguy\atoum\tests\units
 		public function testMethod2() {}
 	}
 
+	class foo extends atoum\test
+	{
+		public function __construct()
+		{
+			$this->setTestedClassName('mageekguy\atoum\test');
+
+			parent::__construct();
+		}
+	}
+
 	class test extends atoum\test
 	{
 		public function testClass()
@@ -649,48 +659,20 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testGetTestedClassName()
+		public function testSetTestedClassName()
 		{
-			$this->mockTestedClass('mageekguy\atoum\mock\mageekguy\atoum\tests\units');
-
-			$test = new mock\mageekguy\atoum\tests\units\test();
-
-			$testMockController = $test->getMockController();
-			$testMockController->getClass = function() use (& $testClassName) { return $testClassName; };
-
-			$className = 'name\space\foo';
-			$testClassName = 'name\space\tests\units\foo';
+			$test = new self();
 
 			$this->assert
-				->string($test->getTestedClassName())->isEqualTo($className)
+				->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Tested class name is already defined')
 			;
 
-			$testClassName = 'name\space\foo';
+			$test = new foo();
 
 			$this->assert
-				->variable($test->getTestedClassName())->isNull()
-			;
-
-			$className = 'foo';
-			$testClassName = '\tests\units\foo';
-
-			$this->assert
-				->string($test->getTestedClassName())->isEqualTo($className)
-			;
-
-			$className = 'foo';
-			$testClassName = 'tests\units\foo';
-
-			$this->assert
-				->string($test->getTestedClassName())->isEqualTo($className)
-			;
-
-			$className = 'name\space\foo';
-			$testClassName = 'name\space\test\unit\foo';
-
-			$this->assert
-				->variable($test->getTestedClassName())->isNull()
-				->variable($test->setTestNamespace('test\unit')->getTestedClassName())->isEqualTo($className)
+				->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
 			;
 		}
 
