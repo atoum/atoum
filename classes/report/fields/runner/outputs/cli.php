@@ -134,7 +134,7 @@ class cli extends outputs
 					}
 					else
 					{
-						$method = sprintf($this->locale->_('In %s::%s() in case \'%s\''), $output['class'], $output['method'], $output['case']);
+						$method = sprintf($this->locale->_('In %s::%s() %s'), $output['class'], $output['method'], $output['case']);
 					}
 
 					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize($method)) .  PHP_EOL;

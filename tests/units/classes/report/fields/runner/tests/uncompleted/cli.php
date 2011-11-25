@@ -156,7 +156,7 @@ class cli extends units\report\fields\runner
 
 		$score->getMockController()->getUncompletedTests = array();
 
-		$this->assert('There is no uncompleted method')
+		$this->assert('when there is no uncompleted method')
 			->castToString($defaultField)->isEmpty()
 			->castToString($defaultField->setWithRunner($runner))->isEmpty()
 			->castToString($defaultField->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
@@ -189,7 +189,7 @@ class cli extends units\report\fields\runner
 			)
 		);
 
-		$this->assert('There is uncompleted methods and no case')
+		$this->assert('when there is uncompleted methods and no case')
 			->castToString($defaultField-> setWithRunner($runner))->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedTests)) . PHP_EOL .
 				sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
 				'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
