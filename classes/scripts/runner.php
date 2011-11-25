@@ -12,7 +12,7 @@ use
 
 class runner extends atoum\script
 {
-	const defaultConfigFile = '.atoum';
+	const defaultConfigFile = '.atoum.php';
 
 	protected $runner = null;
 	protected $runTests = true;

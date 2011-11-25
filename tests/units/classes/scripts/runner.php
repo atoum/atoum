@@ -23,7 +23,7 @@ class runner extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(scripts\runner::defaultConfigFile)->isEqualTo('.atoum')
+			->string(scripts\runner::defaultConfigFile)->isEqualTo('.atoum.php')
 		;
 	}
 
