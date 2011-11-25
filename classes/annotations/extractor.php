@@ -14,6 +14,13 @@ class extractor implements \iteratorAggregate
 		}
 	}
 
+	public function reset()
+	{
+		$this->annotations = array();
+
+		return $this;
+	}
+
 	public function extract($comments)
 	{
 		$comments = trim((string) $comments);

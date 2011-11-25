@@ -88,6 +88,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+				->variable($test->getMaxChildrenNumber())->isNull()
 			;
 
 			$adapter = new atoum\test\adapter();
@@ -106,6 +107,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+				->variable($test->getMaxChildrenNumber())->isNull()
 			;
 
 			$test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals());
@@ -121,6 +123,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+				->variable($test->getMaxChildrenNumber())->isNull()
 			;
 
 			$test = new notEmptyTest($score, $locale, $adapter);
@@ -140,6 +143,7 @@ namespace mageekguy\atoum\tests\units
 				)
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+				->variable($test->getMaxChildrenNumber())->isNull()
 			;
 		}
 
@@ -411,6 +415,22 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testSetMaxChildrenNumber()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->exception(function() use ($test) { $test->setMaxChildrenNumber(- rand(1, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Maximum number of children must be greater or equal to 1')
+				->exception(function() use ($test) { $test->setMaxChildrenNumber(0); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Maximum number of children must be greater or equal to 1')
+				->object($test->setMaxChildrenNumber($maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+				->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
+			;
+		}
+
 		public function testGetClass()
 		{
 			$test = new emptyTest();
@@ -567,6 +587,41 @@ namespace mageekguy\atoum\tests\units
 
 			$this->assert
 				->exception(function() use ($test, & $method) { $test->methodIsIgnored($method = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			;
+		}
+
+		public function testSetClassTags()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->object($test->setClassTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+				->array($test->getClassTags())->isEqualTo($tags)
+			;
+		}
+
+		public function testSetMethodTags()
+		{
+			$test = new notEmptyTest();
+
+			$this->assert
+				->object($test->setMethodTags('testMethod1', $tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+				->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
+				->exception(function() use ($test, & $method) { $test->setMethodTags($method = uniqid(), array()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			;
+		}
+
+		public function testGetMethodTags()
+		{
+			$test = new notemptyTest();
+
+			$this->assert
+				->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
+				->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
 			;

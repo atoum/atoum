@@ -12,6 +12,8 @@ use
 
 class runner extends atoum\script
 {
+	const defaultConfigFile = '.atoum.php';
+
 	protected $runner = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
@@ -74,6 +76,8 @@ class runner extends atoum\script
 
 			if ($this->runTests === true)
 			{
+				$this->includeDefaultConfigFile();
+
 				if ($this->loop === true)
 				{
 					$this->loop();
@@ -149,14 +153,14 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
-		$runner = $this;
+		$script = $this;
 
-		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($runner, $path, & $oldErrorHandler) {
+		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($script, $path, & $oldErrorHandler) {
 				$pathLength = strlen($path);
 
 				foreach (get_included_files() as $includedFile)
 				{
-					if (strrpos($includedFile, $path) + $pathLength === strlen($includedFile))
+					if ($path === $includedFile)
 					{
 						if ($oldErrorHandler === null)
 						{
@@ -164,27 +168,45 @@ class runner extends atoum\script
 						}
 						else
 						{
-							$oldErrorHandler->__invoke($error, $message, $file, $line, $context);
+							return $oldErrorHandler->__invoke($error, $message, $file, $line, $context);
 						}
 					}
 				}
 
-				restore_error_handler();
-
-				throw new exceptions\runtime\file(sprintf($runner->getLocale()->_('Unable to include \'%s\''), $path));
+				throw new exceptions\runtime\file(sprintf($script->getLocale()->_('Unable to include \'%s\''), $path));
 			}
 		);
 
 		ob_start();
 
-		include_once $path;
+		try
+		{
+			self::includeForRunner($this->getRunner(), $path);
+		}
+		catch (exceptions\runtime\file $exception)
+		{
+			restore_error_handler();
+
+			throw $exception;
+		}
 
 		restore_error_handler();
 
 		if (($output = ob_get_clean()) != '')
 		{
-			throw new exceptions\runtime(sprintf($runner->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
+			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
 		}
+
+		return $this;
+	}
+
+	public function includeDefaultConfigFile()
+	{
+		try
+		{
+			$this->includeFile(atoum\directory . '/' . self::defaultConfigFile);
+		}
+		catch (exceptions\runtime\file $exception) {};
 
 		return $this;
 	}
@@ -193,7 +215,6 @@ class runner extends atoum\script
 	{
 		try
 		{
-
 			return $this->includeFile($path);
 		}
 		catch (exceptions\runtime\file $exception)
@@ -611,6 +632,11 @@ class runner extends atoum\script
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+	}
+
+	protected static function includeForRunner(atoum\runner $runner, $path)
+	{
+		include_once $path;
 	}
 
 	private static function getFailMethods(atoum\score $score)

@@ -203,6 +203,25 @@ class extractor extends atoum\test
 		;
 	}
 
+	public function testReset()
+	{
+		$extractor = new annotations\extractor();
+
+		$this->assert
+			->array($extractor->getAnnotations())->isEmpty()
+			->object($extractor->reset())->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isEmpty()
+		;
+
+		$extractor->extract('/** @foo bar */');
+
+		$this->assert
+			->array($extractor->getAnnotations())->isNotEmpty()
+			->object($extractor->reset())->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isEmpty()
+		;
+	}
+
 	public function testGetIterator()
 	{
 		$annotation = uniqid();

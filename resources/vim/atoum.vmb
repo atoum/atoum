@@ -2,11 +2,11 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-130
+127
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
-" Licence:					GPL version 2.0 license
+" Licence:					BSD
 "=============================================================================
 if !exists('g:atoum#php')
 	let g:atoum#php = 'php'
@@ -26,7 +26,9 @@ function atoum#run(file, bang)
 
 		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
 
-		setlocal filetype=atoum
+		syntax on
+
+		set filetype=atoum
 		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
 
 		%d
@@ -78,17 +80,13 @@ function atoum#defineConfiguration(directory, configuration, extension)
 endfunction
 "goToFailure {{{1
 function atoum#goToFailure(line)
-	let pattern = '^In file \(\f\+\) on line \(\d\+\).*$'
+	let pattern = 'In file \(\f\+\) on line \(\d\+\).*$'
 
 	if (matchstr(a:line, pattern) != '')
 		execute bufwinnr('^' . substitute(a:line, pattern, '\1', '') . '$') . 'wincmd w'
 		execute substitute(a:line, pattern, '\2', '')
 		wincmd _
 	endif
-endfunction
-"goToNextFailure {{{1
-function atoum#goToNextFailure()
-	call search('^In file \(\f\+\) on line \(\d\+\).*$', 'cw')
 endfunction
 "makeVimball {{{1
 function atoum#makeVimball()
@@ -122,7 +120,6 @@ function atoum#makeVimball()
 		execute '%MkVimball! atoum'
 
 		setlocal nomodified
-
 		bwipeout
 
 		echomsg 'Vimball is in ''' . getcwd() . ''''
@@ -216,7 +213,7 @@ $vimReport
   ->addWriter($stdOutWriter)
 ;
 
-$runner->addReport($vimReport);
+atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
 
 ?>
 ftplugin/php/atoum.vim	[[[1
@@ -224,7 +221,7 @@ ftplugin/php/atoum.vim	[[[1
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
-" Licence:					GPL version 2.0 license
+" Licence:					BSD
 "=============================================================================
 if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 	let b:atoum_loaded = 1
@@ -251,7 +248,7 @@ finish
 
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 syntax/atoum.vim	[[[1
-146
+166
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -324,6 +321,26 @@ if !exists('b:current_syntax')
 
 	syntax match atoumErrorDescriptionPrompt '^==> ' contained
 	highlight default atoumErrorDescriptionPrompt guifg=Yellow ctermfg=Yellow
+
+	syntax region atoumUncompletedMethodDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ uncompleted methods\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumUncompletedMethodTitle,atoumUncompletedMethodMethodPrompt,atoumUncompletedMethodMethod,atoumUncompletedMethodDescriptionPrompt,atoumUncompletedMethodDescription,atoumUncompletedMethodOutput
+
+	syntax match atoumUncompletedMethodOutput '.*$' contained
+	highlight default atoumUncompletedMethodOutput guifg=White ctermfg=White
+
+	syntax match atoumUncompletedMethodDescription '.\+::.\+() with exit code [^:]\+:' contained
+	highlight default atoumUncompletedMethodDescription guifg=Brown ctermfg=Brown
+
+	syntax match atoumUncompletedMethodMethod '.\+::.\+():$' contained
+	highlight default atoumUncompletedMethodMethod guifg=Brown ctermfg=Brown
+
+	syntax match atoumUncompletedMethodTitle 'There \(is\|are\) \d\+ uncompleted methods\?:$' contained
+	highlight default atoumUncompletedMethodTitle guifg=Brown ctermfg=Brown
+
+	syntax match atoumUncompletedMethodMethodPrompt '^=> ' contained
+	highlight default atoumUncompletedMethodMethodPrompt guifg=Brown ctermfg=Brown
+
+	syntax match atoumUncompletedMethodDescriptionPrompt '^==> ' contained
+	highlight default atoumUncompletedMethodDescriptionPrompt guifg=Brown ctermfg=Brown
 
 	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionMethodPrompt,atoumExceptionMethod,atoumExceptionDescriptionPrompt,atoumExceptionDescription
 

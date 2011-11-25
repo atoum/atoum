@@ -3,19 +3,18 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
 /**
- * @property    mageekguy\atoum\asserter\generator  assert
- * @property    mageekguy\atoum\asserter\generator  define
- * @property    mageekguy\atoum\mock\generator      mockGenerator
+ * @property    \mageekguy\atoum\asserter\generator assert
+ * @property    \mageekguy\atoum\asserter\generator define
+ * @property    \mageekguy\atoum\mock\generator     mockGenerator
  *
- * @method      mageekguy\atoum\asserter\generator  assert()
- * @method      mageekguy\atoum\test                mock()
+ * @method      \mageekguy\atoum\asserter\generator  assert()
  */
 abstract class test implements observable, adapter\aggregator, \countable
 {
@@ -62,17 +61,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $classNamespace = '';
 
     /**
-     * @var mageekguy\atoum\adapter
+     * @var \mageekguy\atoum\adapter
      */
 	private $adapter = null;
 
     /**
-     * @var mageekguy\atoum\asserter\generator
+     * @var \mageekguy\atoum\asserter\generator
      */
 	private $asserterGenerator = null;
 
     /**
-     * @var mageekguy\atoum\score
+     * @var \mageekguy\atoum\score
      */
 	private $score = null;
 
@@ -112,7 +111,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testNamespace = null;
 
     /**
-     * @var mageekguy\atoum\mock\generator
+     * @var \mageekguy\atoum\mock\generator
      */
 	private $mockGenerator = null;
 
@@ -150,12 +149,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @var mageekguy\atoum\superglobals
+     * @var \mageekguy\atoum\superglobals
      */
     public $superglobals = null;
 
     /**
-     * @var mageekguy\atoum\locale
+     * @var \mageekguy\atoum\locale
      */
     public $locale = null;
 
@@ -169,12 +168,12 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * Constructor
      *
-     * @param mageekguy\atoum\score         $score
-     * @param mageekguy\atoum\locale        $locale
-     * @param mageekguy\atoum\adapter       $adapter
-     * @param mageekguy\atoum\superglobals  $superglobals
+     * @param \mageekguy\atoum\score         $score
+     * @param \mageekguy\atoum\locale        $locale
+     * @param \mageekguy\atoum\adapter       $adapter
+     * @param \mageekguy\atoum\superglobals  $superglobals
      *
-     * @throws mageekguy\atoum\exceptions\runtime
+     * @throws \mageekguy\atoum\exceptions\runtime
      */
 	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null)
 	{
@@ -209,7 +208,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setAlias('class', 'phpClass')
 		;
 
-		foreach (new annotations\extractor($class->getDocComment()) as $annotation => $value)
+		$annotationExtractor = new annotations\extractor();
+
+		foreach ($annotationExtractor->extract($class->getDocComment()) as $annotation => $value)
 		{
 			switch ($annotation)
 			{
@@ -231,7 +232,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$annotations = array();
 
-				foreach (new annotations\extractor($publicMethod->getDocComment()) as $annotation => $value)
+				foreach ($annotationExtractor->reset()->extract($publicMethod->getDocComment()) as $annotation => $value)
 				{
 					switch ($annotation)
 					{
@@ -267,9 +268,9 @@ abstract class test implements observable, adapter\aggregator, \countable
      *
      * @param string $property
      *
-     * @return mageekguy\atoum\asserter\generator|mageekguy\atoum\mock\generator
+     * @return \mageekguy\atoum\asserter\generator|\mageekguy\atoum\mock\generator
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function __get($property)
 	{
@@ -294,18 +295,14 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @param string $method
      * @param array  $arguments
      *
-     * @return mageekguy\atoum\test|mageekguy\atoum\asserter\generator
+     * @return \mageekguy\atoum\test|\mageekguy\atoum\asserter\generator
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function __call($method, $arguments)
 	{
 		switch ($method)
 		{
-			case 'mock':
-				$this->getMockGenerator()->generate(isset($arguments[0]) === false ? null : $arguments[0], isset($arguments[1]) === false ? null : $arguments[1], isset($arguments[2]) === false ? null : $arguments[2]);
-				return $this;
-
 			case 'assert':
 				$this->unsetCaseOnAssert();
 
@@ -334,7 +331,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function enableCodeCoverage()
 	{
@@ -345,7 +342,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function disableCodeCoverage()
 	{
@@ -358,9 +355,9 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param integer $number
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function setMaxChildrenNumber($number)
 	{
@@ -374,13 +371,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-
     /**
-     * @param mageekguy\atoum\superglobals $superglobals
+     * @param \mageekguy\atoum\superglobals $superglobals
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
-	public function setSuperglobals(atoum\superglobals $superglobals)
+	public function setSuperglobals(superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
 
@@ -389,7 +385,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\superglobals
+     * @return \mageekguy\atoum\superglobals
      */
 	public function getSuperglobals()
 	{
@@ -398,9 +394,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\mock\generator $generator
+     * @param \mageekguy\atoum\mock\generator $generator
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function setMockGenerator(mock\generator $generator)
 	{
@@ -411,7 +407,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\mock\generator
+     * @return \mageekguy\atoum\mock\generator
      */
 	public function getMockGenerator()
 	{
@@ -420,9 +416,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\asserter\generator $generator
+     * @param \mageekguy\atoum\asserter\generator $generator
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function setAsserterGenerator(asserter\generator $generator)
 	{
@@ -433,11 +429,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\asserter\generator
+     * @return \mageekguy\atoum\asserter\generator
      */
 	public function getAsserterGenerator()
 	{
-		atoum\test\adapter::resetCallsForAllInstances();
+		test\adapter::resetCallsForAllInstances();
 
 		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
 	}
@@ -446,9 +442,9 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $testNamespace
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function setTestNamespace($testNamespace)
 	{
@@ -456,7 +452,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if ($this->testNamespace === '')
 		{
-			throw new atoum\exceptions\logic\invalidArgument('Test namespace must not be empty');
+			throw new exceptions\logic\invalidArgument('Test namespace must not be empty');
 		}
 
 		return $this;
@@ -475,7 +471,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string$path
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function setPhpPath($path)
 	{
@@ -488,7 +484,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @return string
      *
-     * @throws mageekguy\atoum\exceptions\runtime
+     * @throws \mageekguy\atoum\exceptions\runtime
      */
 	public function getPhpPath()
 	{
@@ -523,6 +519,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
+     * @param array $tags
+     *
+     * @return \mageekguy\atoum\test
+     */
+	public function setClassTags(array $tags)
+	{
+		$this->tags = $tags;
+
+		return $this;
+	}
+
+
+    /**
      * @return array
      */
 	public function getClassTags()
@@ -532,11 +541,32 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
+     * @param string$testMethodName
+     * @param array $tags
+     *
+     * @return \mageekguy\atoum\test
+     *
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
+     */
+    public function setMethodTags($testMethodName, array $tags)
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		$this->testMethods[$testMethodName]['tags'] = $tags;
+
+		return $this;
+	}
+
+
+    /**
      * @param string $testMethodName
      *
      * @return array
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidargument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidargument
      */
 	public function getMethodTags($testMethodName = null)
 	{
@@ -555,7 +585,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			if (isset($this->testMethods[$testMethodName]) === false)
 			{
-				throw new exceptions\logic\invalidargument('test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
 			}
 
 			$tags = isset($this->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
@@ -566,11 +596,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\adapter $adapter
+     * @param \mageekguy\atoum\adapter $adapter
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
-	public function setAdapter(atoum\adapter $adapter)
+	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
 
@@ -579,7 +609,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\adapter
+     * @return \mageekguy\atoum\adapter
      */
 	public function getAdapter()
 	{
@@ -588,9 +618,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\score $score
+     * @param \mageekguy\atoum\score $score
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function setScore(score $score)
 	{
@@ -601,7 +631,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\score
+     * @return \mageekguy\atoum\score
      */
 	public function getScore()
 	{
@@ -610,9 +640,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\locale $locale
+     * @param \mageekguy\atoum\locale $locale
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function setLocale(locale $locale)
 	{
@@ -623,7 +653,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\locale
+     * @return \mageekguy\atoum\locale
      */
 	public function getLocale()
 	{
@@ -711,6 +741,15 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @return integer
      */
+    public function getMaxChildrenNumber()
+	{
+		return $this->maxChildrenNumber;
+	}
+
+
+    /**
+     * @return integer
+     */
 	public function count()
 	{
 		return $this->size;
@@ -718,11 +757,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param mageekguy\atoum\observers\test $observer
+     * @param \mageekguy\atoum\observers\test $observer
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
-	public function addObserver(atoum\observers\test $observer)
+	public function addObserver(observers\test $observer)
 	{
 		$this->observers[] = $observer;
 
@@ -733,7 +772,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $method
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function callObservers($method)
 	{
@@ -749,7 +788,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param boolean $boolean
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function ignore($boolean)
 	{
@@ -776,7 +815,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      *
      * @return boolean
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
      */
 	public function methodIsIgnored($methodName, array $tags = array())
 	{
@@ -800,9 +839,9 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @param string $testMethod
      * @param array  $tags
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      *
-     * @throws mageekguy\atoum\exception
+     * @throws \mageekguy\atoum\exception
      */
 	public function runTestMethod($testMethod, array $tags = array())
 	{
@@ -887,11 +926,11 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @param array $runTestMethods
      * @param array $tags
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      *
-     * @throws mageekguy\atoum\exceptions\logic\invalidArgument
-     * @throws mageekguy\atoum\exception
-     * @throws mageekguy\atoum\exceptions\runtime
+     * @throws \mageekguy\atoum\exceptions\logic\invalidArgument
+     * @throws \mageekguy\atoum\exception
+     * @throws \mageekguy\atoum\exceptions\runtime
      */
 	public function run(array $runTestMethods = array(), array $tags = array())
 	{
@@ -908,7 +947,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->phpCode =
 					'<?php ' .
-					'define(\'' . __NAMESPACE__ . '\autorun\', false);' .
+					'define(\'mageekguy\atoum\autorun\', false);' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
@@ -1100,7 +1139,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @param string $mockNamespace
      * @param string $mockClass
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function mock($class, $mockNamespace = null, $mockClass = null)
 	{
@@ -1114,7 +1153,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @param string $mockNamespace
      * @param string $mockClass
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	public function mockTestedClass($mockNamespace = null, $mockClass = null)
 	{
@@ -1157,7 +1196,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		if (self::$namespace === '')
 		{
-			throw new atoum\exceptions\logic\invalidArgument('Namespace must not be empty');
+			throw new exceptions\logic\invalidArgument('Namespace must not be empty');
 		}
 	}
 
@@ -1195,7 +1234,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function setUp()
 	{
@@ -1206,7 +1245,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $case
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function startCase($case)
 	{
@@ -1219,7 +1258,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $testMethod current test method
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function beforeTestMethod($testMethod)
 	{
@@ -1230,7 +1269,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $testMethod current test method
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function afterTestMethod($testMethod)
 	{
@@ -1239,7 +1278,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function tearDown()
 	{
@@ -1250,7 +1289,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param \exception $exception
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function addExceptionToScore(\exception $exception)
 	{
@@ -1294,7 +1333,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param array $methods
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	protected function runTestMethods(array $methods)
 	{
@@ -1306,7 +1345,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	private function runChild()
 	{
@@ -1357,7 +1396,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $case
      *
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	private function setCaseOnAssert($case)
 	{
@@ -1368,7 +1407,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return mageekguy\atoum\test
+     * @return \mageekguy\atoum\test
      */
 	private function unsetCaseOnAssert()
 	{
