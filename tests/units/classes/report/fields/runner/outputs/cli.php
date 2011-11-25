@@ -251,7 +251,7 @@ class cli extends units\report\fields\runner
 				$methodPrompt .
 				sprintf(
 					$locale->_('%s:'),
-					$methodColorizer->colorize('In ' . $class . '::' . $method . '() in case \'' . $case . '\'')
+					$methodColorizer->colorize('In ' . $class . '::' . $method . '() ' . $case)
 				) .
 				PHP_EOL .
 				$outputPrompt .
@@ -259,7 +259,7 @@ class cli extends units\report\fields\runner
 				$methodPrompt .
 				sprintf(
 					$locale->_('%s:'),
-					$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '() in case \'' . $otherCase . '\'')
+					$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '() ' . $otherCase)
 				) .
 				PHP_EOL .
 				$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
