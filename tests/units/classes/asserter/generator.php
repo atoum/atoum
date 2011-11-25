@@ -32,10 +32,10 @@ class generator extends atoum\test
 			)
 			->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 			->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
-		;
-
-		$this->assert
 			->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
+			->object($generator->assert())->isEqualTo($generator)
+			->object($generator->assert($case = uniqid()))->isEqualTo($generator)
+			->string($generator->getTest()->getScore()->getCase())->isEqualTo($case)
 		;
 	}
 

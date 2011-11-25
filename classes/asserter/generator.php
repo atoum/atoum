@@ -34,16 +34,32 @@ class generator
 		$this->setAlias($asserter, $class);
 	}
 
-	public function __call($asserter, $arguments)
+	public function __call($method, $arguments)
 	{
-		$asserter = $this->{$asserter};
-
-		if (sizeof($arguments) > 0)
+		switch ($method)
 		{
-			call_user_func_array(array($asserter, 'setWith'), $arguments);
-		}
+			case 'assert':
+				$this->getTest()->getScore()->unsetCase();
 
-		return $asserter;
+				$case = isset($arguments[0]) === false ? null : $arguments[0];
+
+				if ($case !== null)
+				{
+					$this->getTest()->getScore()->setCase($case);
+				}
+
+				return $this;
+
+			default:
+				$asserter = $this->{$method};
+
+				if (sizeof($arguments) > 0)
+				{
+					call_user_func_array(array($asserter, 'setWith'), $arguments);
+				}
+
+				return $asserter;
+		}
 	}
 
 	public function getTest()
