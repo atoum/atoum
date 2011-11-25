@@ -30,6 +30,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $phpPath = null;
 	private $path = '';
 	private $class = '';
+	private $testedClass = null;
 	private $classNamespace = '';
 	private $adapter = null;
 	private $asserterGenerator = null;
@@ -381,19 +382,33 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getTestedClassName()
 	{
-		$class = null;
-
-		$testClass = $this->getClass();
-		$testNamespace = $this->getTestNamespace();
-
-		$position = strpos($testClass, $testNamespace);
-
-		if ($position !== false)
+		if ($this->testedClass === null)
 		{
-			$class = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
+			$class = null;
+
+			$testClass = $this->getClass();
+			$testNamespace = $this->getTestNamespace();
+
+			$position = strpos($testClass, $testNamespace);
+
+			if ($position !== false)
+			{
+				$this->testedClass = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
+			}
 		}
 
-		return $class;
+		return $this->testedClass;
+	}
+
+	public function setTestedClassName($className)
+	{
+		if ($this->testedClass !== null)
+		{
+			throw new exceptions\runtime('Tested class name is already defined');
+		}
+		$this->testedClass = $className;
+
+		return $this;
 	}
 
 	public function getClass()
