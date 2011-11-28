@@ -229,31 +229,27 @@ namespace mageekguy\atoum\tests\units
 
 		public function testEnableCodeCoverage()
 		{
-			$adapter = new atoum\test\adapter();
-
-			$adapter->extension_loaded = true;
-
-			$test = new emptyTest(null, null, $adapter);
-
-			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->object($test->enableCodeCoverage())->isIdenticalTo($test)
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->when(function() use ($test) { $test->disableCodeCoverage(); })
-					->boolean($test->codeCoverageIsEnabled())->isFalse()
-					->object($test->enableCodeCoverage())->isIdenticalTo($test)
-					->boolean($test->codeCoverageIsEnabled())->isTrue()
-
-			;
-
-			$adapter->extension_loaded = false;
-
-			$test = new emptyTest(null, null, $adapter);
-
-			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
-				->object($test->enableCodeCoverage())->isIdenticalTo($test)
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
+			$this
+				->assert('Code coverage must be enabled only if xdebug is available')
+					->if($adapter = new atoum\test\adapter())
+					->and($adapter->extension_loaded = function($extension) { return $extension == 'xdebug'; })
+					->and($test = new emptyTest(null, null, $adapter))
+					->then
+						->boolean($test->codeCoverageIsEnabled())->isTrue()
+						->object($test->enableCodeCoverage())->isIdenticalTo($test)
+						->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->if($test->disableCodeCoverage())
+					->then
+						->boolean($test->codeCoverageIsEnabled())->isFalse()
+						->object($test->enableCodeCoverage())->isIdenticalTo($test)
+						->boolean($test->codeCoverageIsEnabled())->isTrue()
+				->assert('Code coverage must not be enabled if xdebug is not available')
+					->if($adapter->extension_loaded = function($extension) { return ($extension == 'xdebug' ? false : true); })
+					->and($test = new emptyTest(null, null, $adapter))
+					->then
+						->boolean($test->codeCoverageIsEnabled())->isFalse()
+						->object($test->enableCodeCoverage())->isIdenticalTo($test)
+						->boolean($test->codeCoverageIsEnabled())->isFalse()
 			;
 		}
 
