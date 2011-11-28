@@ -48,7 +48,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $children = array();
 	private $maxChildrenNumber = null;
 	private $codeCoverage = false;
-	private $assertHasCase = false;
 
 	private static $namespace = null;
 
@@ -143,7 +142,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this->getAsserterGenerator();
 
 			case 'assert':
-				return $this->unsetCaseOnAssert()->getAsserterGenerator();
+				return $this->stopCase()->getAsserterGenerator();
 
 			case 'mockGenerator':
 				return $this->getMockGenerator();
@@ -158,13 +157,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		switch ($method)
 		{
 			case 'assert':
-				$this->unsetCaseOnAssert();
+				$this->stopCase();
 
 				$case = isset($arguments[0]) === false ? null : $arguments[0];
 
 				if ($case !== null)
 				{
-					$this->setCaseOnAssert($case);
+					$this->startCase($case);
 				}
 
 				return $this->getAsserterGenerator();
@@ -603,6 +602,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->phpCode =
 					'<?php ' .
 					'define(\'mageekguy\atoum\autorun\', false);' .
+					'require_once \'' . directory . '/scripts/runner.php\';' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
@@ -841,9 +841,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	protected function startCase($case)
+	public function startCase($case)
 	{
 		$this->score->setCase($case);
+
+		return $this;
+	}
+
+	public function stopCase()
+	{
+		$this->score->unsetCase();
 
 		return $this;
 	}
@@ -942,23 +949,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private function canRunChild()
 	{
 		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
-	}
-
-	private function setCaseOnAssert($case)
-	{
-		$this->startCase($case)->assertHasCase = true;
-
-		return $this;
-	}
-
-	private function unsetCaseOnAssert()
-	{
-		if ($this->assertHasCase === true)
-		{
-			$this->score->unsetCase();
-		}
-
-		return $this;
 	}
 
 	private static function cleanNamespace($namespace)

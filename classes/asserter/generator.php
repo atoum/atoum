@@ -19,14 +19,21 @@ class generator
 
 	public function __get($asserterName)
 	{
-		$class = $this->getAsserterClass($asserterName);
-
-		if (class_exists($class, true) === false)
+		switch ($asserterName)
 		{
-			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
-		}
+			case 'then':
+				return $this;
 
-		return new $class($this);
+			default:
+				$class = $this->getAsserterClass($asserterName);
+
+				if (class_exists($class, true) === false)
+				{
+					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+				}
+
+				return new $class($this);
+		}
 	}
 
 	public function __set($asserter, $class)
@@ -39,15 +46,19 @@ class generator
 		switch ($method)
 		{
 			case 'assert':
-				$this->getTest()->getScore()->unsetCase();
+				$this->getTest()->stopCase();
 
 				$case = isset($arguments[0]) === false ? null : $arguments[0];
 
 				if ($case !== null)
 				{
-					$this->getTest()->getScore()->setCase($case);
+					$this->getTest()->startCase($case);
 				}
 
+				return $this;
+
+			case 'if':
+			case 'and':
 				return $this;
 
 			default:
@@ -55,8 +66,8 @@ class generator
 
 				if (sizeof($arguments) > 0)
 				{
-					call_user_func_array(array($asserter, 'setWith'), $arguments);
 				}
+					call_user_func_array(array($asserter, 'setWith'), $arguments);
 
 				return $asserter;
 		}
