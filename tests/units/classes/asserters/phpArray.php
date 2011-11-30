@@ -380,7 +380,7 @@ class phpArray extends atoum\test
                 ->isInstanceOf('mageekguy\atoum\asserter\exception')
             ->integer($score->getPassNumber())->isEqualTo(0)
             ->integer($score->getFailNumber())->isEqualTo(1);
-
+        
         $score->reset();
         $this->assert
             ->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
@@ -486,6 +486,135 @@ class phpArray extends atoum\test
 			)
 		;
 	}
+
+    public function testHasKey ()
+    {
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->hasSize(rand(0, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, & $key) { $line = __LINE__; $asserter->hasKey($key = rand(1, PHP_INT_MAX)); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key)))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::hasKey()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key))
+					)
+				)
+			)
+		;
+
+		$asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->hasKey(0))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->object($asserter->hasKey(1))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->object($asserter->hasKey(2))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(3)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->object($asserter->hasKey(3))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(4)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->object($asserter->hasKey(4))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(5)
+			->integer($score->getFailNumber())->isEqualTo(0)
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasKey(5); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf(5)))
+			->integer($score->getPassNumber())->isEqualTo(5)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::hasKey()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf(5))
+					)
+				)
+			)
+		;
+    }
+
+    public function testNotHasKey ()
+    {
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->hasSize(rand(0, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+		$this->assert
+                ->object($asserter->notHasKey(1))
+                    ->isIdenticalTo($asserter)
+                ->integer($score->getPassNumber())->isEqualTo(1)
+                ->integer($score->getFailNumber())->isEqualTo(0);
+
+		$asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notHasKey(0); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s has a key %s'), $asserter, $asserter->getTypeOf(0)))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::notHasKey()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s has a key %s'), $asserter, $asserter->getTypeOf(0))
+					)
+				)
+			)
+            ->object($asserter->notHasKey(5))
+                ->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(1);
+		;
+    }
 }
 
 ?>

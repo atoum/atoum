@@ -15,6 +15,7 @@ class phpArray extends asserters\variable
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
+        //TODO: BUG key doit être remis à null
 
 		if (self::isArray($this->value) === false)
 		{
@@ -37,7 +38,7 @@ class phpArray extends asserters\variable
 	{
 		$this->valueIsSet()->key = $key;
 
-		if (isset($this->value[$this->key]) === true)
+		if (isset($this->value[$this->key]) === true)//TODO: BUG, si $this->key vaut null, ça plante de façon non justifiée
 		{
 			$this->pass();
 		}
@@ -113,6 +114,34 @@ class phpArray extends asserters\variable
 	public function notContains($value, $failMessage = null)
     {
         return $this->notContainsCommon($value, $failMessage, false);
+    }
+
+    public function hasKey ($value, $failMessage = null)
+    {
+        if (array_key_exists($value, $this->valueIsSet()->value))
+        {
+            $this->pass();
+        }
+        else
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($value))));
+        }
+
+        return $this;
+    }
+
+    public function notHasKey ($value, $failMessage = null)
+    {
+        if (!array_key_exists($value, $this->valueIsSet()->value))
+        {
+            $this->pass();
+        }
+        else
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has a key %s'), $this, $this->getTypeOf($value))));
+        }
+
+        return $this;
     }
 
 	protected function valueIsSet($message = 'Array is undefined')
