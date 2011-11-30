@@ -954,6 +954,23 @@ class score extends atoum\test
 			->integer($score->errorExists($message, $otherType))->isEqualTo(2)
 			->integer($score->errorExists(null, $otherType))->isEqualTo(2)
 		;
+
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $otherType, $pattern = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+
+		$this->assert
+			->variable($score->errorExists(uniqid()))->isNull()
+			->variable($score->errorExists(uniqid(), rand(1, PHP_INT_MAX)))->isNull()
+			->integer($score->errorExists($message))->isEqualTo(0)
+			->integer($score->errorExists(null, $type))->isEqualTo(0)
+			->integer($score->errorExists($message, $type))->isEqualTo(0)
+			->integer($score->errorExists($otherMessage, $type))->isEqualTo(1)
+			->integer($score->errorExists($otherMessage, $otherType))->isEqualTo(3)
+			->integer($score->errorExists($message, $otherType))->isEqualTo(2)
+			->integer($score->errorExists(null, $otherType))->isEqualTo(2)
+			->integer($score->errorExists($pattern, $otherType))->isEqualTo(4)
+			->variable($score->errorExists('/FOO/', $otherType))->isNull()
+			->integer($score->errorExists('/FOO/', $otherType, true))->isEqualTo(4)
+		;
 	}
 
 	public function testDeleteError()
