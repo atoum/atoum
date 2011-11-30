@@ -608,7 +608,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
 					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
-					'$test->runTestMethod($method = \'%s\');' .
+					'$test->runTestMethod(\'%s\');' .
 					'echo serialize($test->getScore());' .
 					'?>'
 				;
@@ -800,6 +800,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		#DEPRECATED
 		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::getTestNamespace() instead');
+	}
+
+	public function getOutput()
+	{
+		return ob_get_clean() ?: '';
 	}
 
 	public static function setNamespace($namespace)

@@ -257,6 +257,100 @@ class error extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->array($score->getErrors())->isEmpty()
 		;
+
+		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+
+		$asserter
+			->withPattern('/FOO/')
+			->withType(null);
+		;
+
+		$this->assert
+			->object($asserter->exists())->isIdenticalTo($asserter)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::exists()',
+						'fail' => sprintf($test->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type))
+					)
+				)
+			)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->array($score->getErrors())->isEmpty()
+		;
+	}
+
+	public function testWithType()
+	{
+		$asserter = new asserters\error(new asserter\generator(new self()));
+
+		$this->assert
+			->object($asserter->withType($type = rand(1, PHP_INT_MAX)))->isIdenticalTo($asserter)
+			->integer($asserter->getType())->isEqualTo($type)
+		;
+	}
+
+	public function testWithAnyType()
+	{
+		$asserter = new asserters\error(new asserter\generator(new self()));
+
+		$this->assert
+			->if($asserter->withType(rand(1, PHP_INT_MAX)))
+			->then
+				->variable($asserter->getType())->isNotNull()
+				->object($asserter->withAnyType())->isIdenticalTo($asserter)
+				->variable($asserter->getType())->isNull()
+		;
+	}
+
+	public function testWithMessage()
+	{
+		$asserter = new asserters\error(new asserter\generator(new self()));
+
+		$this->assert
+			->object($asserter->withMessage($message = uniqid()))->isIdenticalTo($asserter)
+			->string($asserter->getMessage())->isEqualTo($message)
+			->boolean($asserter->messageIsPattern())->isFalse()
+		;
+	}
+
+	public function testWithPattern()
+	{
+		$asserter = new asserters\error(new asserter\generator(new self()));
+
+		$this->assert
+			->boolean($asserter->messageIsPattern())->isFalse()
+			->object($asserter->withPattern($pattern = uniqid()))->isIdenticalTo($asserter)
+			->string($asserter->getMessage())->isEqualTo($pattern)
+			->boolean($asserter->messageIsPattern())->isTrue()
+		;
+	}
+
+	public function testWithAnyMessage()
+	{
+		$asserter = new asserters\error(new asserter\generator(new self()));
+
+		$this->assert
+			->if($asserter->withMessage(uniqid()))
+			->then
+				->variable($asserter->getMessage())->isNotNull()
+				->boolean($asserter->messageIsPattern())->isFalse()
+				->object($asserter->withAnyMessage())->isIdenticalTo($asserter)
+				->variable($asserter->getMessage())->isNull()
+				->boolean($asserter->messageIsPattern())->isFalse()
+			->if($asserter->withPattern(uniqid()))
+			->then
+				->variable($asserter->getMessage())->isNotNull()
+				->boolean($asserter->messageIsPattern())->isTrue()
+				->object($asserter->withAnyMessage())->isIdenticalTo($asserter)
+				->variable($asserter->getMessage())->isNull()
+				->boolean($asserter->messageIsPattern())->isFalse()
+		;
 	}
 }
 
