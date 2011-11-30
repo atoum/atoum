@@ -288,7 +288,7 @@ class phpArray extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isZero()
 		;
-	}
+    }
 
 	public function testContains()
 	{
@@ -334,6 +334,13 @@ class phpArray extends atoum\test
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
 
+        $score->reset();
+        $this->assert
+                ->object($asserter->contains("$value"))->isIdenticalTo($asserter)
+                ->integer($score->getPassNumber())->isEqualTo(1)
+                ->integer($score->getFailNumber())->isZero()
+        ;
+
 		$asserter->atKey(2)->getScore()->reset();
 
 		$this->assert
@@ -361,6 +368,44 @@ class phpArray extends atoum\test
 			)
 		;
 	}
+
+    public function testStrictlyContains ()
+    {
+        $asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $asserter->setWith(array(1));
+        $score->reset();
+        $this->assert
+            ->exception(function() use ($asserter) {$asserter->strictlyContains('1'); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1);
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0);
+    }
+
+    public function testStrictlyNotContains ()
+    {
+        $asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $asserter->setWith(array(1));
+        $score->reset();
+        $this->assert
+            ->exception(function() use ($asserter) {$asserter->strictlyNotContains(1); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1);
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyNotContains('1'))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0);
+    }
 
 	public function testNotContains()
 	{
@@ -404,6 +449,15 @@ class phpArray extends atoum\test
 				)
 			)
 		;
+
+        $score->reset();
+        $this->assert
+                ->exception(function() use($asserter, $inArray){
+                                $asserter->notContains("$inArray");
+                            })
+                ->integer($score->getPassNumber())->isEqualTo(0)
+                ->integer($score->getFailNumber())->isEqualTo(1)
+        ;
 
 		$asserter->atKey(2)->getScore()->reset();
 

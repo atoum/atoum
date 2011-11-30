@@ -95,55 +95,25 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-	public function contains($value, $failMessage = null)
-	{
-		if ($this->valueIsSet()->key === null)
-		{
-			if (in_array($value, $this->value) === true)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
-			}
-		}
-		else if ($this->value[$this->key] == $value)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
-		}
+    public function strictlyContains($value, $failMessage = null)
+    {
+        return $this->containsCommon($value, $failMessage, true);
+    }
 
-		return $this;
-	}
+	public function contains($value, $failMessage = null)
+    {
+        return $this->containsCommon($value, $failMessage, false);
+    }
+
+    public function strictlyNotContains($value, $failMessage = null)
+    {
+        return $this->notContainsCommon($value, $failMessage, true);
+    }
 
 	public function notContains($value, $failMessage = null)
-	{
-		if ($this->valueIsSet()->key === null)
-		{
-			if (in_array($value, $this->value) === false)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
-			}
-		}
-		else if ($this->value[$this->key] != $value)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
-		}
-
-		return $this;
-	}
+    {
+        return $this->notContainsCommon($value, $failMessage, false);
+    }
 
 	protected function valueIsSet($message = 'Array is undefined')
 	{
@@ -156,6 +126,56 @@ class phpArray extends asserters\variable
 		{
 			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an array');
 		}
+	}
+
+    protected function containsCommon($value, $failMessage = null, $strict)
+	{
+		if ($this->valueIsSet()->key === null)
+		{
+			if (in_array($value, $this->value, $strict) === true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
+			}
+		}
+		else if ($strict ? $this->value[$this->key] === $value : $this->value[$this->key] == $value)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
+		}
+
+		return $this;
+	}
+
+    protected function notContainsCommon($value, $failMessage = null, $strict)
+	{
+		if ($this->valueIsSet()->key === null)
+		{
+			if (in_array($value, $this->value, $strict) === false)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
+			}
+		}
+		else if ($strict ? $this->value[$this->key] !== $value : $this->value[$this->key] != $value)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
+		}
+
+		return $this;
 	}
 
 	protected static function isArray($value)
