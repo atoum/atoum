@@ -220,7 +220,8 @@ class phpArray extends atoum\test
 			->exception(function() use ($asserter) {
 					$asserter->contains(uniqid());
 				}
-			)->isInstanceOf('mageekguy\atoum\exceptions\logic')
+			)
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Array is undefined')
 		;
 
@@ -261,6 +262,359 @@ class phpArray extends atoum\test
                 ->integer($score->getFailNumber())->isZero()
         ;
 	}
+
+	public function testContainsValues()
+	{
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->contains(uniqid());
+				}
+			)
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+        $asserter->setWith(array(1, 2, 3, 4, 5));
+
+        $score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->containsValues(array(6)); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array(6))))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::containsValues()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array(6)))
+					)
+				)
+			)
+		;
+
+        $score->reset();
+        $this->assert
+            ->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->containsValues(array("$notInArray")); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("$notInArray"))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::containsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("$notInArray")))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array(1)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array("1", 2, "4")))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+	}
+
+    public function testNotContainsValues()
+    {
+        $asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $this->assert
+            ->boolean($asserter->wasSet())->isFalse()
+            ->exception(function() use ($asserter) {
+                    $asserter->contains(uniqid());
+                }
+            )
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->hasMessage('Array is undefined')
+        ;
+
+        $asserter->setWith(array(1, 2, 3, 4, 5));
+
+        $score->reset();
+
+        $this->assert
+            ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notContainsValues(array(1, 6)); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::notContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1)))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notContainsValues(array("1", "6")); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array("1"))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::notContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array("1")))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array(1)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->containsValues(array("1", 2, "4")))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+    }
+
+
+	public function testStrictlyContainsValues()
+	{
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->contains(uniqid());
+				}
+			)
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+        $asserter->setWith(array(1, 2, 3, 4, 5));
+
+        $score->reset();
+
+		$this->assert
+			->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->strictlyContainsValues(array(6)); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array(6))))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::strictlyContainsValues()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array(6)))
+					)
+				)
+			)
+		;
+
+        $score->reset();
+        $this->assert
+            ->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->strictlyContainsValues(array("6")); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("6"))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::strictlyContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("6")))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->exception(function() use (& $line, $asserter, & $notInArray) { $line = __LINE__; $asserter->strictlyContainsValues(array("1")); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("1"))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::strictlyContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("1")))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyContainsValues(array(1)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyContainsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->strictlyContainsValues(array("1", 2, "4")); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("1", "4"))))
+                ->integer($score->getPassNumber())->isEqualTo(0)
+                ->integer($score->getFailNumber())->isEqualTo(1)
+                ->array($score->getFailAssertions())->isEqualTo(array(
+                        array(
+                            'case' => null,
+                            'class' => __CLASS__,
+                            'method' => $test->getCurrentMethod(),
+                            'file' => __FILE__,
+                            'line' => $line,
+                            'asserter' => get_class($asserter) . '::strictlyContainsValues()',
+                            'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array("1", "4")))
+                        )
+                    )
+                )
+            ;
+	}
+
+    public function testStrictlyNotContainsValues()
+    {
+        $asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+        $this->assert
+            ->boolean($asserter->wasSet())->isFalse()
+            ->exception(function() use ($asserter) {
+                    $asserter->contains(uniqid());
+                }
+            )
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                ->hasMessage('Array is undefined')
+        ;
+
+        $asserter->setWith(array(1, 2, 3, 4, 5));
+
+        $score->reset();
+
+        $this->assert
+            ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->strictlyNotContainsValues(array(1)); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::strictlyNotContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1)))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->strictlyNotContainsValues(array(1, "2", 3)); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                ->hasMessage(sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1, 3))))
+            ->integer($score->getPassNumber())->isEqualTo(0)
+            ->integer($score->getFailNumber())->isEqualTo(1)
+            ->array($score->getFailAssertions())->isEqualTo(array(
+                    array(
+                        'case' => null,
+                        'class' => __CLASS__,
+                        'method' => $test->getCurrentMethod(),
+                        'file' => __FILE__,
+                        'line' => $line,
+                        'asserter' => get_class($asserter) . '::strictlyNotContainsValues()',
+                        'fail' => $failMessage = sprintf($test->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1, 3)))
+                    )
+                )
+            )
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyNotContainsValues(array("1")))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+
+        $score->reset();
+        $this->assert
+            ->object($asserter->strictlyNotContainsValues(array(6, 7, "2", 8)))->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(0)
+        ;
+    }
 
     public function testStrictlyContains ()
     {

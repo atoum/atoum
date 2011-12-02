@@ -118,6 +118,68 @@ class phpArray extends asserters\variable
         return $this;
     }
 
+    public function containsValues (array $values, $failMessage = null)
+    {
+        return $this->containsValuesCommon($values, $failMessage, false);
+    }
+
+    public function strictlyContainsValues (array $values, $failMessage = null)
+    {
+        return $this->containsValuesCommon($values, $failMessage, true);
+    }
+
+    public function notContainsValues (array $values, $failMessage = null)
+    {
+        return $this->notContainsValuesCommon($values, $failMessage, false);
+    }
+
+    public function strictlyNotContainsValues (array $values, $failMessage = null)
+    {
+        return $this->notContainsValuesCommon($values, $failMessage, true);
+    }
+
+    protected function containsValuesCommon ($values, $failMessage, $strict)
+    {
+        $missing = array();
+        foreach ($values as $value)
+        {
+            if (!in_array($value, $this->value, $strict))
+            {
+                $missing[] = $value;
+            }
+        }
+        if (count($missing))
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain values %s'), $this, $this->getTypeOf($missing))));
+        }
+        else
+        {
+            $this->pass();
+        }
+        return $this;
+    }
+
+    protected function notContainsValuesCommon ($values, $failMessage, $strict)
+    {
+        $shouldNotBePresent = array();
+        foreach ($values as $value)
+        {
+            if (in_array($value, $this->value, $strict))
+            {
+                $shouldNotBePresent[] = $value;
+            }
+        }
+        if (count($shouldNotBePresent))
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should not contain values %s'), $this, $this->getTypeOf($shouldNotBePresent))));
+        }
+        else
+        {
+            $this->pass();
+        }
+        return $this;
+    }
+
 	protected function valueIsSet($message = 'Array is undefined')
 	{
 		return parent::valueIsSet($message);
