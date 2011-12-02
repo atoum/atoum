@@ -10,12 +10,9 @@ use
 
 class phpArray extends asserters\variable
 {
-	protected $key = null;
-
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
-        //TODO: BUG key doit être remis à null
 
 		if (self::isArray($this->value) === false)
 		{
@@ -24,27 +21,6 @@ class phpArray extends asserters\variable
 		else
 		{
 			$this->pass();
-		}
-
-		return $this;
-	}
-
-	public function getKey()
-	{
-		return $this->key;
-	}
-
-	public function atKey($key, $failMessage = null)
-	{
-		$this->valueIsSet()->key = $key;
-
-		if (isset($this->value[$this->key]) === true)//TODO: BUG, si $this->key vaut null, ça plante de façon non justifiée
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($this->key)));
 		}
 
 		return $this;
@@ -118,7 +94,7 @@ class phpArray extends asserters\variable
 
     public function hasKey ($value, $failMessage = null)
     {
-        if (array_key_exists($value, $this->valueIsSet()->value))
+        if (array_key_exists($value, $this->value))
         {
             $this->pass();
         }
@@ -126,13 +102,12 @@ class phpArray extends asserters\variable
         {
             $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($value))));
         }
-
         return $this;
     }
 
     public function notHasKey ($value, $failMessage = null)
     {
-        if (!array_key_exists($value, $this->valueIsSet()->value))
+        if (!array_key_exists($value, $this->value))
         {
             $this->pass();
         }
@@ -140,7 +115,6 @@ class phpArray extends asserters\variable
         {
             $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has a key %s'), $this, $this->getTypeOf($value))));
         }
-
         return $this;
     }
 
@@ -159,51 +133,27 @@ class phpArray extends asserters\variable
 
     protected function containsCommon($value, $failMessage = null, $strict)
 	{
-		if ($this->valueIsSet()->key === null)
-		{
-			if (in_array($value, $this->value, $strict) === true)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
-			}
-		}
-		else if ($strict ? $this->value[$this->key] === $value : $this->value[$this->key] == $value)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
-		}
-
+        if (in_array($value, $this->valueIsSet()->value, $strict) === true)
+        {
+            $this->pass();
+        }
+        else
+        {
+            $this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
+        }
 		return $this;
 	}
 
     protected function notContainsCommon($value, $failMessage = null, $strict)
 	{
-		if ($this->valueIsSet()->key === null)
-		{
-			if (in_array($value, $this->value, $strict) === false)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
-			}
-		}
-		else if ($strict ? $this->value[$this->key] !== $value : $this->value[$this->key] != $value)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($this->key)));
-		}
-
+        if (in_array($value, $this->valueIsSet()->value, $strict) === false)
+        {
+            $this->pass();
+        }
+        else
+        {
+            $this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
+        }
 		return $this;
 	}
 
