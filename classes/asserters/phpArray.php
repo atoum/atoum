@@ -92,6 +92,48 @@ class phpArray extends asserters\variable
         return $this->notContainsCommon($value, $failMessage, false);
     }
 
+    public function hasKeys (array $values, $failMessage = null)
+    {
+        $missing = array();
+        foreach ($values as $value)
+        {
+            if (!array_key_exists($value, $this->value))
+            {
+                $missing[] = $value;
+            }
+        }
+        if (count($missing))
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should have keys %s'), $this, $this->getTypeOf($missing))));
+        }
+        else
+        {
+            $this->pass();
+        }
+        return $this;
+    }
+
+    public function notHasKeys (array $values, $failMessage = null)
+    {
+        $shouldNotBePresent = array();
+        foreach ($values as $value)
+        {
+            if (array_key_exists($value, $this->value))
+            {
+                $shouldNotBePresent[] = $value;
+            }
+        }
+        if (count($shouldNotBePresent))
+        {
+            $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should not have keys %s'), $this, $this->getTypeOf($shouldNotBePresent))));
+        }
+        else
+        {
+            $this->pass();
+        }
+        return $this;
+    }
+
     public function hasKey ($value, $failMessage = null)
     {
         if (array_key_exists($value, $this->value))
