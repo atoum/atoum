@@ -835,6 +835,128 @@ class phpArray extends atoum\test
             ->integer($score->getFailNumber())->isEqualTo(1);
 		;
     }
+
+    public function testNotHasKeys ()
+    {
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->hasSize(rand(0, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+		$this->assert
+                ->object($asserter->notHasKeys(array(1)))
+                    ->isIdenticalTo($asserter)
+                ->integer($score->getPassNumber())->isEqualTo(1)
+                ->integer($score->getFailNumber())->isEqualTo(0);
+
+        $score->reset();
+        $this->assert
+                ->object($asserter->notHasKeys(array(0, 1)))
+                    ->isIdenticalTo($asserter)
+                ->integer($score->getPassNumber())->isEqualTo(1)
+                ->integer($score->getFailNumber())->isEqualTo(0);
+
+		$asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->notHasKeys(array(0, "premier", 2)); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s should not have keys %s'), $asserter, $asserter->getTypeOf(array(0, 2))))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::notHasKeys()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s should not have keys %s'), $asserter, $asserter->getTypeOf(array(0, 2)))
+					)
+				)
+			)
+            ->object($asserter->notHasKeys(array(5, "6")))
+                ->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(1);
+		;
+    }
+
+    public function testHasKeys ()
+    {
+		$asserter = new asserters\phpArray(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$this->assert
+			->boolean($asserter->wasSet())->isFalse()
+			->exception(function() use ($asserter) {
+					$asserter->hasSize(rand(0, PHP_INT_MAX));
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Array is undefined')
+		;
+
+		$asserter->setWith(array());
+
+		$score->reset();
+		$this->assert
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasKeys(array(0)); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($test->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array(0))))
+                ->integer($score->getPassNumber())->isEqualTo(0)
+                ->integer($score->getFailNumber())->isEqualTo(1)
+                ->array($score->getFailAssertions())->isEqualTo(array(
+                        array(
+                            'case' => null,
+                            'class' => __CLASS__,
+                            'method' => $test->getCurrentMethod(),
+                            'file' => __FILE__,
+                            'line' => $line,
+                            'asserter' => get_class($asserter) . '::hasKeys()',
+                            'fail' => $failMessage = sprintf($test->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array(2)))
+                        )
+                    )
+                );
+
+		$asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid()));
+
+		$score->reset();
+		$this->assert
+			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasKeys(array(0, "first", 2, "second")); })
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array("first", "second"))))
+			->integer($score->getPassNumber())->isEqualTo(0)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+					array(
+						'case' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::hasKeys()',
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array("first", "second")))
+					)
+				)
+			)
+            ->object($asserter->hasKeys(array(0, 2, 4)))
+                ->isIdenticalTo($asserter)
+            ->integer($score->getPassNumber())->isEqualTo(1)
+            ->integer($score->getFailNumber())->isEqualTo(1);
+		;
+    }
 }
 
 ?>
