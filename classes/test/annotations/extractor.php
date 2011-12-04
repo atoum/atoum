@@ -42,7 +42,7 @@ class extractor extends atoum\annotations\extractor
 					break;
 
 				case 'tags':
-					$test->setClassTags($value);
+					$test->setTags($value);
 					break;
 			}
 		}
@@ -52,6 +52,22 @@ class extractor extends atoum\annotations\extractor
 
 	public function setTestMethod(atoum\test $test, $method, $comments)
 	{
+		foreach ($this->extract($comments) as $annotation => $value)
+		{
+			switch ($annotation)
+			{
+				case 'ignore':
+					$test->ignoreMethod($method, $value);
+					break;
+
+				case 'tags':
+					$test->setMethodTags($method, $value);
+					break;
+			}
+		}
+
 		return $this;
 	}
 }
+
+?>

@@ -21,7 +21,9 @@ class generator
 	{
 		switch ($asserterName)
 		{
+			case 'if':
 			case 'then':
+			case 'and':
 				return $this;
 
 			default:

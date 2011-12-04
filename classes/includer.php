@@ -2,44 +2,37 @@
 
 namespace mageekguy\atoum;
 
+use
+	mageekguy\atoum\includer
+;
+
 class includer
 {
-	protected $errorHandler = null;
-
-	public function __construct(\closure $errorHandler = null)
+	public function includePath($path, \closure $closure = null)
 	{
-		if ($errorHandler !== null)
+		$errors = array();
+
+		$errorHandler = set_error_handler(function($error, $message, $file, $line, $context) use (& $errors) {
+				$errors[] = func_get_args();
+			}
+		);
+
+		$closure = $closure ?: function($path) { include_once($path); };
+
+		$closure($path);
+
+		restore_error_handler();
+
+		if (in_array($path, get_included_files()) === false)
 		{
-			$this->setErrorHandler($errorHandler);
+			throw new includer\exception('Unable to include \'' . $path . '\'');
 		}
-	}
-
-	public function getErrorHandler()
-	{
-		return $this->errorHandler;
-	}
-
-	public function setErrorHandler(\closure $errorHandler)
-	{
-		$this->errorHandler = $errorHandler;
-
-		return $this;
-	}
-
-	public function includeOnce($path)
-	{
-		$oldErrorHandler = null;
-
-		if ($this->errorHandler !== null)
+		else if ($errorHandler !== null)
 		{
-			$oldErrorHandler = set_error_handler($this->errorHandler);
-		}
-
-		include_once $path;
-
-		if ($oldErrorHandler !== null)
-		{
-			restore_error_handler();
+			foreach ($errors as $error)
+			{
+				call_user_func_array($errorHandler, $error);
+			}
 		}
 
 		return $this;

@@ -58,13 +58,13 @@ class extractor extends atoum\test
 		$this->assert
 			->object($extractor->setTest($test = new self(), ''))->isIdenticalTo($extractor)
 			->boolean($test->isIgnored())->isFalse()
-			->array($test->getTags())->isEmpty()
+			->array($test->getAllTags())->isEmpty()
 			->object($extractor->setTest($test = new self(), '/** @ignore on */'))->isIdenticalTo($extractor)
 			->boolean($test->isIgnored())->isTrue()
-			->array($test->getClassTags())->isEmpty()
+			->array($test->getTags())->isEmpty()
 			->object($extractor->setTest($test = new self(), '/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
 			->boolean($test->isIgnored())->isFalse()
-			->array($test->getClassTags())->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
+			->array($test->getTags())->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
 		;
 	}
 
@@ -73,7 +73,23 @@ class extractor extends atoum\test
 		$extractor = new annotations\extractor();
 
 		$this->assert
-			->object($extractor->setTestMethod($test = new self(), uniqid(), ''))->isIdenticalTo($extractor)
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, ''))->isIdenticalTo($extractor)
+			->boolean($test->methodIsIgnored(__FUNCTION__))->isFalse()
+			->array($test->getMethodTags(__FUNCTION__))->isEmpty()
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @ignore on */'))->isIdenticalTo($extractor)
+			->boolean($test->methodIsIgnored(__FUNCTION__))->isTrue()
+			->array($test->getMethodTags(__FUNCTION__))->isEmpty()
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @ignore off */'))->isIdenticalTo($extractor)
+			->boolean($test->methodIsIgnored(__FUNCTION__))->isFalse()
+			->array($test->getMethodTags(__FUNCTION__))->isEmpty()
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
+			->boolean($test->methodIsIgnored(__FUNCTION__))->isFalse()
+			->array($test->getMethodTags(__FUNCTION__))->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @tags aTag otherTag anotherTag' . "\n" . '@ignore on */'))->isIdenticalTo($extractor)
+			->boolean($test->methodIsIgnored(__FUNCTION__))->isTrue()
+			->array($test->getMethodTags(__FUNCTION__))->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
 		;
 	}
 }
+
+?>
