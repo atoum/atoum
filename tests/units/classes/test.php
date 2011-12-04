@@ -93,12 +93,13 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 				->boolean($test->isIgnored())->isTrue()
-				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getClassTags())->isEqualTo($tags)
+				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 				->variable($test->getMaxChildrenNumber())->isNull()
+				->variable($test->getBootstrapFile())->isNull()
 			;
 
 			$adapter = new atoum\test\adapter();
@@ -112,8 +113,8 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 				->boolean($test->isIgnored())->isTrue()
-				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getClassTags())->isEqualTo($tags)
+				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
@@ -128,8 +129,8 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isIdenticalTo($superglobals)
 				->boolean($test->isIgnored())->isTrue()
-				->array($test->getTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getClassTags())->isEqualTo($tags)
+				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
@@ -144,8 +145,8 @@ namespace mageekguy\atoum\tests\units
 				->object($test->getAdapter())->isIdenticalTo($adapter)
 				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 				->boolean($test->isIgnored())->isTrue()
-				->array($test->getTags())->isEqualTo(array('test', 'method', 'one', 'two'))
-				->array($test->getClassTags())->isEmpty()
+				->array($test->getAllTags())->isEqualTo(array('test', 'method', 'one', 'two'))
+				->array($test->getTags())->isEmpty()
 				->array($test->getMethodTags())->isEqualTo(array(
 						'testMethod1' => array('test', 'method', 'one'),
 						'testMethod2' => array('test', 'method', 'two')
@@ -421,6 +422,16 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testSetBootstrapFile()
+		{
+			$this->assert
+				->if($test = new emptyTest())
+				->then
+					->object($test->setBootstrapFile($path = uniqid()))->isIdenticalTo($test)
+					->string($test->getBootstrapFile())->isEqualTo($path)
+			;
+		}
+
 		public function testSetMaxChildrenNumber()
 		{
 			$test = new emptyTest();
@@ -466,6 +477,19 @@ namespace mageekguy\atoum\tests\units
 				->object($test->ignore(true))->isIdenticalTo($test)
 				->boolean($test->isIgnored())->isTrue()
 			;
+
+			$test = new notEmptyTest();
+
+			$this->assert
+				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+				->object($test->ignore(false))->isIdenticalTo($test)
+				->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
+				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+				->object($test->ignore(true))->isIdenticalTo($test)
+				->boolean($test->methodIsIgnored('testMethod1'))->istrue()
+				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+			;
 		}
 
 		public function testGetCurrentMethod()
@@ -486,11 +510,23 @@ namespace mageekguy\atoum\tests\units
 			$test = new notEmptyTest();
 
 			$this->assert
-				->boolean($test->isIgnored())->isTrue()
-				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeOf($test)->isEqualTo(1)
-				->sizeOf($test->ignore(false))->isEqualTo(2)
+				->if
+					->boolean($test->isIgnored())->isTrue()
+				->then
+					->sizeOf($test)->isEqualTo(0)
+				->if($test->ignore(false))
+				->then
+					->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
+					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+					->sizeOf($test)->isEqualTo(2)
+				->if($test->ignoreMethod('testMethod1', true))
+					->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+					->sizeOf($test)->isEqualTo(1)
+				->if($test->ignoreMethod('testMethod2', true))
+					->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+					->sizeOf($test)->isEqualTo(0)
 			;
 		}
 
@@ -509,9 +545,9 @@ namespace mageekguy\atoum\tests\units
 			$this->assert
 				->boolean($test->isIgnored())->isTrue()
 				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeOf($test)->isEqualTo(1)
-				->array($test->getTestMethods())->isEqualTo(array('testMethod2'))
+				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+				->sizeOf($test)->isEqualTo(0)
+				->array($test->getTestMethods())->isEmpty()
 				->boolean($test->ignore(false)->isIgnored())->isFalse()
 				->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
 				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
@@ -524,18 +560,6 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
 				->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
 				->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
-			;
-		}
-
-		public function testIgnoreMethod()
-		{
-			$test = new notEmptyTest();
-
-			$this->assert
-				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->boolean($test->ignore(false)->methodIsIgnored('testMethod1'))->isFalse()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 			;
 		}
 
@@ -598,13 +622,13 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testSetClassTags()
+		public function testSetTags()
 		{
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setClassTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
-				->array($test->getClassTags())->isEqualTo($tags)
+				->object($test->setTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+				->array($test->getTags())->isEqualTo($tags)
 			;
 		}
 
@@ -706,7 +730,7 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testFilterTestMethods()
+		public function testGetTaggedTestMethods()
 		{
 			$test = new emptyTest();
 
@@ -719,12 +743,27 @@ namespace mageekguy\atoum\tests\units
 			$test = new notEmptyTest();
 
 			$this->assert
-				->array($test->getTaggedTestMethods(array()))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid(), 'testMethod2')))->isEqualTo(array('testMethod2'))
-				->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
+				->if
+					->boolean($test->isIgnored())->isTrue()
+				->then
+					->array($test->getTaggedTestMethods(array()))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid(), 'testMethod2')))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEmpty()
+				->if($test->ignore(false))
+				->then
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEqualTo(array('testMethod1'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod1', 'Testmethod2'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEqualTo(array('Testmethod1'))
+				->if($test->ignoreMethod('testMethod1', true))
+				->then
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod1', uniqid())))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
+					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEmpty()
 			;
 		}
 	}

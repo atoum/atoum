@@ -30,7 +30,7 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
 
 		$testController->count = function() { return 0; };
 
@@ -104,7 +104,7 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
 
 		$testController->count = function() { return 0; };
 
@@ -246,7 +246,7 @@ class progressBar extends atoum\test
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
 
 		$testController->count = function() { return 0; };
 

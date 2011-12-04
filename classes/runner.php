@@ -28,6 +28,7 @@ class runner implements observable, adapter\aggregator
 	protected $phpPath = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
+	protected $bootstrapFile = null;
 
 	private $start = null;
 	private $stop = null;
@@ -90,6 +91,13 @@ class runner implements observable, adapter\aggregator
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function setBootstrapFile($path)
+	{
+		$this->bootstrapFile = $path;
 
 		return $this;
 	}
@@ -166,6 +174,11 @@ class runner implements observable, adapter\aggregator
 	public function getObservers()
 	{
 		return $this->observers;
+	}
+
+	public function getBootstrapFile()
+	{
+		return $this->bootstrapFile;
 	}
 
 	public function getTestMethods(array $namespaces = array(), array $tags = array(), array $testMethods = array(), $testBaseClass = null)
@@ -363,8 +376,9 @@ class runner implements observable, adapter\aggregator
 				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 				{
 					$test
-						->setLocale($this->locale)
 						->setPhpPath($phpPath)
+						->setLocale($this->locale)
+						->setBootstrapFile($this->bootstrapFile)
 					;
 
 					if ($this->maxChildrenNumber !== null)
@@ -471,7 +485,7 @@ class runner implements observable, adapter\aggregator
 
 		if ($isIgnored === false && $tags)
 		{
-			$isIgnored = sizeof($testTags = $test->getTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
+			$isIgnored = sizeof($testTags = $test->getAllTags()) <= 0 || sizeof(array_intersect($tags, $testTags)) == 0;
 		}
 
 		return $isIgnored;

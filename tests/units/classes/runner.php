@@ -360,6 +360,16 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testGetBootstrapFile()
+	{
+		$this->assert
+			->if($runner = new atoum\runner())
+			->then
+				->object($runner->setBootstrapFile($path = uniqid()))->isIdenticalTo($runner)
+				->string($runner->getBootstrapFile())->isEqualTo($path)
+		;
+	}
+
 	public function testHasReports()
 	{
 		$runner = new atoum\runner();

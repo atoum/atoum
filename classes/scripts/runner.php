@@ -15,6 +15,7 @@ class runner extends atoum\script
 	const defaultConfigFile = '.atoum.php';
 
 	protected $runner = null;
+	protected $includer = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $arguments = array();
@@ -25,9 +26,12 @@ class runner extends atoum\script
 
 	protected static $autorunner = null;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null, atoum\runner $runner = null, atoum\includer $includer = null)
 	{
-		$this->setRunner($runner = new atoum\runner());
+		$this
+			->setRunner($runner ?: new atoum\runner())
+			->setIncluder($includer ?: new atoum\includer())
+		;
 
 		parent::__construct($name, $locale, $adapter);
 	}
@@ -42,6 +46,18 @@ class runner extends atoum\script
 	public function getRunner()
 	{
 		return $this->runner;
+	}
+
+	public function setIncluder(atoum\includer $includer)
+	{
+		$this->includer = $includer;
+
+		return $this;
+	}
+
+	public function getIncluder()
+	{
+		return $this->includer;
 	}
 
 	public function setScoreFile($path)
@@ -153,44 +169,20 @@ class runner extends atoum\script
 
 	public function includeFile($path)
 	{
-		$script = $this;
+		$runner = $this->runner;
 
-		$oldErrorHandler = set_error_handler(function($error, $message, $file, $line, $context) use ($script, $path, & $oldErrorHandler) {
-				$pathLength = strlen($path);
-
-				foreach (get_included_files() as $includedFile)
-				{
-					if ($path === $includedFile)
-					{
-						if ($oldErrorHandler === null)
-						{
-							return false;
-						}
-						else
-						{
-							return $oldErrorHandler->__invoke($error, $message, $file, $line, $context);
-						}
-					}
-				}
-
-				throw new exceptions\runtime\file(sprintf($script->getLocale()->_('Unable to include \'%s\''), $path));
-			}
-		);
+		$realpath = (parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path));
 
 		ob_start();
 
 		try
 		{
-			self::includeForRunner($this->getRunner(), $path);
+			$this->includer->includePath($realpath, function($path) use ($runner) { include_once($path); });
 		}
-		catch (exceptions\runtime\file $exception)
+		catch (atoum\includer\exception $exception)
 		{
-			restore_error_handler();
-
-			throw $exception;
+			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
 		}
-
-		restore_error_handler();
 
 		if (($output = ob_get_clean()) != '')
 		{
@@ -390,7 +382,7 @@ class runner extends atoum\script
 
 		$this->addArgumentHandler(
 			function($script, $argument, $maxChildrenNumber) use ($runner) {
-				if (sizeof($maxChildrenNumber) > 1)
+				if (sizeof($maxChildrenNumber) != 1)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
@@ -542,6 +534,27 @@ class runner extends atoum\script
 			array('-ft', '--force-terminal'),
 			null,
 			$this->locale->_('Force output as in terminal')
+		);
+
+		$this->addArgumentHandler(
+			function($script, $argument, $values) use ($runner) {
+				if (sizeof($values) != 1)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$bootstrapFile = realpath($values[0]);
+
+				if ($bootstrapFile === false || is_file($bootstrapFile) === false || is_readable($bootstrapFile) === false)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bootstrap file \'%s\' does not exist'), $values[0]));
+				}
+
+				$runner->setBootstrapFile($bootstrapFile);
+			},
+			array('-bf', '--bootstrap-file'),
+			'<file>',
+			$this->locale->_('Include <file> before executing each test method')
 		);
 
 

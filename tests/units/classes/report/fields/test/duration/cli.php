@@ -96,7 +96,7 @@ class cli extends units\report\fields\test\duration
 		$testController->getTestedClassName = uniqid();
 		$testController->getScore = $score;
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
 
 		$this->assert
 			->variable($field->getValue())->isNull()
@@ -135,7 +135,7 @@ class cli extends units\report\fields\test\duration
 		$testController->getTestedClassName = uniqid();
 		$testController->getScore = $score;
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
 
 		$field = new test\duration\cli();
 

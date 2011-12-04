@@ -48,16 +48,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $children = array();
 	private $maxChildrenNumber = null;
 	private $codeCoverage = false;
+	private $includer = null;
+	private $bootstrapFile = null;
 
 	private static $namespace = null;
 
-	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null)
+	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null, includer $includer = null)
 	{
 		$this
 			->setScore($score ?: new score())
 			->setLocale($locale ?: new locale())
 			->setAdapter($adapter ?: new adapter())
 			->setSuperglobals($superglobals ?: new superglobals())
+			->setIncluder($includer ?: new includer())
 			->enableCodeCoverage()
 		;
 
@@ -106,23 +109,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			if (strpos($methodName, self::testMethodPrefix) === 0)
 			{
-				$annotations = array();
+				$this->testMethods[$methodName] = array();
+			}
+		}
 
-				foreach ($annotationExtractor->reset()->extract($publicMethod->getDocComment()) as $annotation => $value)
+		foreach ($this->testMethods as $methodName => & $annotations)
+		{
+			$testMethod = $class->getMethod($methodName);
+
+			foreach ($annotationExtractor->reset()->extract($testMethod->getDocComment()) as $annotation => $value)
+			{
+				switch ($annotation)
 				{
-					switch ($annotation)
-					{
-						case 'ignore':
-							$annotations['ignore'] = $value == 'on';
-							break;
+					case 'ignore':
+						$annotations['ignore'] = $value == 'on';
+						break;
 
-						case 'tags':
-							$annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
-							break;
-					}
+					case 'tags':
+						$annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
+						break;
 				}
-
-				$this->testMethods[$methodName] = $annotations;
 			}
 		}
 
@@ -216,6 +222,30 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->superglobals;
 	}
 
+	public function setIncluder(includer $includer)
+	{
+		$this->includer = $includer;
+
+		return $this;
+	}
+
+	public function getIncluder()
+	{
+		return $this->includer;
+	}
+
+	public function setBootstrapFile($path)
+	{
+		$this->bootstrapFile = $path;
+
+		return $this;
+	}
+
+	public function getBootstrapFile()
+	{
+		return $this->bootstrapFile;
+	}
+
 	public function setMockGenerator(mock\generator $generator)
 	{
 		$this->mockGenerator = $generator;
@@ -281,26 +311,29 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->phpPath;
 	}
 
-	public function getTags()
+	public function getAllTags()
 	{
-		$tags = $this->getClassTags();
+		$tags = $this->getTags();
 
-		foreach ($this->getMethodTags() as $methodTags)
+		foreach ($this->testMethods as $annotations)
 		{
-			$tags = array_merge($tags, $methodTags);
+			if (isset($annotations['tags']) === true)
+			{
+				$tags = array_merge($tags, array_diff($annotations['tags'], $tags));
+			}
 		}
 
-		return array_values(array_unique($tags));
+		return array_values($tags);
 	}
 
-	public function setClassTags(array $tags)
+	public function setTags(array $tags)
 	{
 		$this->tags = $tags;
 
 		return $this;
 	}
 
-	public function getClassTags()
+	public function getTags()
 	{
 		return $this->tags;
 	}
@@ -321,7 +354,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$tags = array();
 
-		$classTags = $this->getClassTags();
+		$classTags = $this->getTags();
 
 		if ($testMethodName === null)
 		{
@@ -481,9 +514,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->ignore = ($boolean == true);
 
-		$this->runTestMethods($this->getTestMethods());
-
-		return $this;
+		return $this->runTestMethods($this->getTestMethods());
 	}
 
 	public function isIgnored()
@@ -491,18 +522,28 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return ($this->ignore === true);
 	}
 
+	public function ignoreMethod($methodName, $boolean)
+	{
+		$this->checkMethod($methodName)->testMethods[$methodName]['ignore'] = $boolean == true;
+
+		return $this->runTestMethods($this->getTestMethods());
+	}
+
 	public function methodIsIgnored($methodName, array $tags = array())
 	{
-		if (isset($this->testMethods[$methodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
-		}
+		$isIgnored = $this->checkMethod($methodName)->ignore;
 
-		$isIgnored = (isset($this->testMethods[$methodName]['ignore']) === true ? $this->testMethods[$methodName]['ignore'] : $this->ignore);
-
-		if ($isIgnored === false && $tags)
+		if ($isIgnored === false)
 		{
-			$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			if (isset($this->testMethods[$methodName]['ignore']) === true)
+			{
+				$isIgnored = $this->testMethods[$methodName]['ignore'];
+			}
+
+			if ($isIgnored === false && $tags)
+			{
+				$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			}
 		}
 
 		return $isIgnored;
@@ -526,6 +567,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					ob_start();
 
+					if ($this->bootstrapFile != '')
+					{
+						$this->includer->includePath($this->bootstrapFile);
+					}
+
 					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
@@ -547,7 +593,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
-					$this->afterTestMethod($testMethod);
+					$this->afterTestMethod($this->currentMethod);
 
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
@@ -606,7 +652,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
-					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');'
+				;
+
+				if ($this->bootstrapFile !== null)
+				{
+					$this->phpCode .= '$test->setBootstrapFile(\'' . $this->getBootstrapFile() . '\');';
+				}
+
+				$this->phpCode .=
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
 					'$test->runTestMethod(\'%s\');' .
 					'echo serialize($test->getScore());' .
@@ -841,11 +895,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		);
 	}
 
-	protected function setUp()
-	{
-		return $this;
-	}
-
 	public function startCase($case)
 	{
 		$this->score->setCase($case);
@@ -857,6 +906,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->score->unsetCase();
 
+		return $this;
+	}
+
+	protected function setUp()
+	{
 		return $this;
 	}
 
@@ -915,6 +969,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+	protected function checkMethod($methodName)
+	{
+		if (isset($this->testMethods[$methodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
+		}
+
+		return $this;
+	}
+
 	private function runChild()
 	{
 		if ($this->canRunChild() === true)
@@ -933,8 +997,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			stream_set_blocking($pipes[2], 0);
 
 			$currentMethod = array_shift($this->runTestMethods);
-
-			$this->callObservers(self::beforeTestMethod);
 
 			fwrite($pipes[0], sprintf($this->phpCode, $currentMethod));
 			fclose($pipes[0]);

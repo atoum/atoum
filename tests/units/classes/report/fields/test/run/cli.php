@@ -75,7 +75,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
 
 		$this->assert
 			->object($field->setWithTest($test))->isIdenticalTo($field)
@@ -119,7 +119,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
 		$testController = new mock\controller();
 		$testController->getTestedClassName = uniqid();
 
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, $testController);
+		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
 
 		$field = new test\run\cli();
 
