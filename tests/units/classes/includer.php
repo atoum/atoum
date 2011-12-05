@@ -11,7 +11,7 @@ require __DIR__ . '/../runner.php';
 
 class includer extends atoum\test
 {
-	public function testIncludeOnce()
+	public function testIncludePath()
 	{
 		$this->assert
 			->if($includer = new atoum\includer())
