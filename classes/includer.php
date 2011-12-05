@@ -23,15 +23,20 @@ class includer
 
 		restore_error_handler();
 
-		if (in_array($path, get_included_files()) === false)
+		if (sizeof($errors) > 0)
 		{
-			throw new includer\exception('Unable to include \'' . $path . '\'');
-		}
-		else if ($errorHandler !== null)
-		{
-			foreach ($errors as $error)
+			$realpath = parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path) ?: $path;
+
+			if (in_array($path, get_included_files(), true) === false)
 			{
-				call_user_func_array($errorHandler, $error);
+				throw new includer\exception('Unable to include \'' . $path . '\'');
+			}
+			else if ($errorHandler !== null)
+			{
+				foreach ($errors as $error)
+				{
+					call_user_func_array($errorHandler, $error);
+				}
 			}
 		}
 
