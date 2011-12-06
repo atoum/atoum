@@ -75,22 +75,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setAlias('class', 'phpClass')
 		;
 
-		$annotationExtractor = new annotations\extractor();
-
-		foreach ($annotationExtractor->extract($class->getDocComment()) as $annotation => $value)
-		{
-			switch ($annotation)
-			{
-				case 'ignore':
-					$this->ignore = $value == 'on';
-					break;
-
-				case 'tags':
-					$this->tags = array_values(array_unique(preg_split('/\s+/', $value)));
-					break;
-			}
-		}
-
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
 			$methodName = $publicMethod->getName();
@@ -101,23 +85,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
+		$annotationExtractor = new test\annotations\extractor();
+
+		$annotationExtractor->setTest($this, $class->getDocComment());
+
 		foreach ($this->testMethods as $methodName => & $annotations)
 		{
-			$testMethod = $class->getMethod($methodName);
-
-			foreach ($annotationExtractor->reset()->extract($testMethod->getDocComment()) as $annotation => $value)
-			{
-				switch ($annotation)
-				{
-					case 'ignore':
-						$annotations['ignore'] = $value == 'on';
-						break;
-
-					case 'tags':
-						$annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
-						break;
-				}
-			}
+			$annotationExtractor->setTestMethod($this, $methodName, $class->getMethod($methodName)->getDocComment());
 		}
 
 		$this->runTestMethods($this->getTestMethods());
