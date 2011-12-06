@@ -21,13 +21,22 @@ class controller extends test\adapter
 		switch ($method)
 		{
 			case 'file_get_contents':
-				$this->fopen = true;
-				$this->fread[1] = $value;
-				$this->fread[2] = '';
-				$this->fclose = true;
+				if ($value === false)
+				{
+					$this->fopen = false;
+				}
+				else
+				{
+					$this->stat = array('mode' => 33188);
+					$this->fopen = true;
+					$this->fread[1] = $value;
+					$this->fread[2] = '';
+					$this->fclose = true;
+				}
 				return $this;
 
 			case 'file_put_contents':
+				$this->stat = array('mode' => 33188);
 				$this->fopen = true;
 				$this->fwrite = $value;
 				$this->fclose = true;

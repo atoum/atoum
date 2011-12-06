@@ -27,8 +27,8 @@ class output extends atoum\test
 			->object($asserter->getScore())->isIdenticalTo($this->getScore())
 			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
 			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getValue())->isNull()
-			->boolean($asserter->wasSet())->isFalse()
+			->string($asserter->getValue())->isEmpty()
+			->boolean($asserter->wasSet())->isTrue()
 		;
 	}
 

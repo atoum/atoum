@@ -65,14 +65,23 @@ class generator
      */
 	public function __get($asserterName)
 	{
-		$class = $this->getAsserterClass($asserterName);
-
-		if (class_exists($class, true) === false)
+		switch ($asserterName)
 		{
-			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
-		}
+			case 'if':
+			case 'then':
+			case 'and':
+				return $this;
 
-		return new $class($this);
+			default:
+				$class = $this->getAsserterClass($asserterName);
+
+				if (class_exists($class, true) === false)
+				{
+					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+				}
+
+				return new $class($this);
+		}
 	}
 
 
@@ -89,21 +98,41 @@ class generator
 
 
     /**
-     * @param string $asserter
+     * @param string $method
      * @param array  $arguments
      *
      * @return mageekguy\atoum\asserter
      */
-	public function __call($asserter, $arguments)
+	public function __call($method, $arguments)
 	{
-		$asserter = $this->{$asserter};
-
-		if (sizeof($arguments) > 0)
+		switch ($method)
 		{
-			call_user_func_array(array($asserter, 'setWith'), $arguments);
-		}
+			case 'assert':
+				$this->getTest()->stopCase();
 
-		return $asserter;
+				$case = isset($arguments[0]) === false ? null : $arguments[0];
+
+				if ($case !== null)
+				{
+					$this->getTest()->startCase($case);
+				}
+
+				return $this;
+
+			case 'if':
+			case 'and':
+				return $this;
+
+			default:
+				$asserter = $this->{$method};
+
+				if (sizeof($arguments) > 0)
+				{
+				}
+					call_user_func_array(array($asserter, 'setWith'), $arguments);
+
+				return $asserter;
+		}
 	}
 
 

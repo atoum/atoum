@@ -386,14 +386,14 @@ class score
 		return $this;
 	}
 
-	public function errorExists($message = null, $type = null)
+	public function errorExists($message = null, $type = null, $messageIsPattern = false)
 	{
 		$messageIsNull = $message === null;
 		$typeIsNull = $type === null;
 
 		foreach ($this->errors as $key => $error)
 		{
-			$messageMatch = $messageIsNull === true ? true : $error['message'] == $message;
+			$messageMatch = $messageIsNull === true ? true : ($messageIsPattern == false ? $message == $error['message'] : preg_match($message, $error['message']) == 1);
 			$typeMatch = $typeIsNull === true ? true : $error['type'] == $type;
 
 			if ($messageMatch === true && $typeMatch === true)

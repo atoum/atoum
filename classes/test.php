@@ -58,6 +58,11 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @var string
      */
+	private $testedClass = null;
+
+    /**
+     * @var string
+     */
 	private $classNamespace = '';
 
     /**
@@ -143,10 +148,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $codeCoverage = false;
 
     /**
-     * @var boolean
+     * @var \mageekguy\atoum\includer
      */
-	private $assertHasCase = false;
+	private $includer = null;
 
+    /**
+     * @var string
+     */
+	private $bootstrapFile = null;
 
     /**
      * @var \mageekguy\atoum\superglobals
@@ -168,20 +177,22 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * Constructor
      *
-     * @param \mageekguy\atoum\score         $score
-     * @param \mageekguy\atoum\locale        $locale
-     * @param \mageekguy\atoum\adapter       $adapter
-     * @param \mageekguy\atoum\superglobals  $superglobals
+     * @param \mageekguy\atoum\score        $score
+     * @param \mageekguy\atoum\locale       $locale
+     * @param \mageekguy\atoum\adapter      $adapter
+     * @param \mageekguy\atoum\superglobals $superglobals
+     * @param \mageekguy\atoum\includer     $includer
      *
      * @throws \mageekguy\atoum\exceptions\runtime
      */
-	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null)
+	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null, includer $includer = null)
 	{
 		$this
 			->setScore($score ?: new score())
 			->setLocale($locale ?: new locale())
 			->setAdapter($adapter ?: new adapter())
 			->setSuperglobals($superglobals ?: new superglobals())
+			->setIncluder($includer ?: new includer())
 			->enableCodeCoverage()
 		;
 
@@ -191,66 +202,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$testedClassName = $this->getTestedClassName();
+		$annotationExtractor = new test\annotations\extractor();
 
-		if ($testedClassName === null)
+		$annotationExtractor->setTest($this, $class->getDocComment());
+
+		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
+			if (strpos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			{
+				$this->testMethods[$methodName] = array();
+
+				$annotationExtractor->setTestMethod($this, $methodName, $publicMethod->getDocComment());
+			}
 		}
 
-		if ($this->adapter->class_exists($testedClassName) === false)
-		{
-			throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
-		}
+		$this->runTestMethods($this->getTestMethods());
 
 		$this->getAsserterGenerator()
 			->setAlias('array', 'phpArray')
 			->setAlias('class', 'phpClass')
 		;
-
-		$annotationExtractor = new annotations\extractor();
-
-		foreach ($annotationExtractor->extract($class->getDocComment()) as $annotation => $value)
-		{
-			switch ($annotation)
-			{
-				case 'ignore':
-					$this->ignore = $value == 'on';
-					break;
-
-				case 'tags':
-					$this->tags = array_values(array_unique(preg_split('/\s+/', $value)));
-					break;
-			}
-		}
-
-		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
-		{
-			$methodName = $publicMethod->getName();
-
-			if (strpos($methodName, self::testMethodPrefix) === 0)
-			{
-				$annotations = array();
-
-				foreach ($annotationExtractor->reset()->extract($publicMethod->getDocComment()) as $annotation => $value)
-				{
-					switch ($annotation)
-					{
-						case 'ignore':
-							$annotations['ignore'] = $value == 'on';
-							break;
-
-						case 'tags':
-							$annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
-							break;
-					}
-				}
-
-				$this->testMethods[$methodName] = $annotations;
-			}
-		}
-
-		$this->runTestMethods($this->getTestMethods());
 	}
 
 
@@ -280,7 +251,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this->getAsserterGenerator();
 
 			case 'assert':
-				return $this->unsetCaseOnAssert()->getAsserterGenerator();
+				return $this->stopCase()->getAsserterGenerator();
 
 			case 'mockGenerator':
 				return $this->getMockGenerator();
@@ -304,13 +275,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		switch ($method)
 		{
 			case 'assert':
-				$this->unsetCaseOnAssert();
+				$this->stopCase();
 
 				$case = isset($arguments[0]) === false ? null : $arguments[0];
 
 				if ($case !== null)
 				{
-					$this->setCaseOnAssert($case);
+					$this->startCase($case);
 				}
 
 				return $this->getAsserterGenerator();
@@ -390,6 +361,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getSuperglobals()
 	{
 		return $this->superglobals;
+	}
+
+
+	public function setIncluder(includer $includer)
+	{
+		$this->includer = $includer;
+
+		return $this;
+	}
+
+	public function getIncluder()
+	{
+		return $this->includer;
+	}
+
+	public function setBootstrapFile($path)
+	{
+		$this->bootstrapFile = $path;
+
+		return $this;
+	}
+
+	public function getBootstrapFile()
+	{
+		return $this->bootstrapFile;
 	}
 
 
@@ -505,16 +501,19 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @return array
      */
-	public function getTags()
+	public function getAllTags()
 	{
-		$tags = $this->getClassTags();
+		$tags = $this->getTags();
 
-		foreach ($this->getMethodTags() as $methodTags)
+		foreach ($this->testMethods as $annotations)
 		{
-			$tags = array_merge($tags, $methodTags);
+			if (isset($annotations['tags']) === true)
+			{
+				$tags = array_merge($tags, array_diff($annotations['tags'], $tags));
+			}
 		}
 
-		return array_values(array_unique($tags));
+		return array_values($tags);
 	}
 
 
@@ -523,7 +522,7 @@ abstract class test implements observable, adapter\aggregator, \countable
      *
      * @return \mageekguy\atoum\test
      */
-	public function setClassTags(array $tags)
+	public function setTags(array $tags)
 	{
 		$this->tags = $tags;
 
@@ -534,7 +533,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @return array
      */
-	public function getClassTags()
+	public function getTags()
 	{
 		return $this->tags;
 	}
@@ -572,7 +571,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$tags = array();
 
-		$classTags = $this->getClassTags();
+		$classTags = $this->getTags();
 
 		if ($testMethodName === null)
 		{
@@ -666,19 +665,38 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	public function getTestedClassName()
 	{
-		$class = null;
-
-		$testClass = $this->getClass();
-		$testNamespace = $this->getTestNamespace();
-
-		$position = strpos($testClass, $testNamespace);
-
-		if ($position !== false)
+		if ($this->testedClass === null)
 		{
-			$class = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
+			$class = null;
+
+			$testClass = $this->getClass();
+			$testNamespace = $this->getTestNamespace();
+
+			$position = strpos($testClass, $testNamespace);
+
+			if ($position === false)
+			{
+				throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
+			}
+			else
+			{
+				$this->setTestedClassName(trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\'));
+			}
 		}
 
-		return $class;
+		return $this->testedClass;
+	}
+
+	public function setTestedClassName($className)
+	{
+		if ($this->testedClass !== null)
+		{
+			throw new exceptions\runtime('Tested class name is already defined');
+		}
+
+		$this->testedClass = $className;
+
+		return $this;
 	}
 
 
@@ -794,9 +812,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->ignore = ($boolean == true);
 
-		$this->runTestMethods($this->getTestMethods());
-
-		return $this;
+		return $this->runTestMethods($this->getTestMethods());
 	}
 
 
@@ -809,6 +825,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 	}
 
 
+	public function ignoreMethod($methodName, $boolean)
+	{
+		$this->checkMethod($methodName)->testMethods[$methodName]['ignore'] = $boolean == true;
+
+		return $this->runTestMethods($this->getTestMethods());
+	}
+
     /**
      * @param string $methodName
      * @param array  $tags
@@ -819,16 +842,19 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	public function methodIsIgnored($methodName, array $tags = array())
 	{
-		if (isset($this->testMethods[$methodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
-		}
+		$isIgnored = $this->checkMethod($methodName)->ignore;
 
-		$isIgnored = (isset($this->testMethods[$methodName]['ignore']) === true ? $this->testMethods[$methodName]['ignore'] : $this->ignore);
-
-		if ($isIgnored === false && $tags)
+		if ($isIgnored === false)
 		{
-			$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			if (isset($this->testMethods[$methodName]['ignore']) === true)
+			{
+				$isIgnored = $this->testMethods[$methodName]['ignore'];
+			}
+
+			if ($isIgnored === false && $tags)
+			{
+				$isIgnored = sizeof($methodTags = $this->getMethodTags($methodName)) <= 0 || sizeof(array_intersect($tags, $methodTags)) <= 0;
+			}
 		}
 
 		return $isIgnored;
@@ -861,6 +887,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					ob_start();
 
+					if ($this->bootstrapFile != null)
+					{
+						$this->includer->includePath($this->bootstrapFile);
+					}
+
+					if ($this->adapter->class_exists($testedClassName = $this->getTestedClassName()) === false)
+					{
+						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
+					}
+
 					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
@@ -882,7 +918,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
-					$this->afterTestMethod($testMethod);
+					$this->afterTestMethod($this->currentMethod);
 
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
@@ -948,12 +984,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->phpCode =
 					'<?php ' .
 					'define(\'mageekguy\atoum\autorun\', false);' .
+					'require_once \'' . directory . '/scripts/runner.php\';' .
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
-					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');' .
+					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');'
+				;
+
+				if ($this->bootstrapFile !== null)
+				{
+					$this->phpCode .= '$test->setBootstrapFile(\'' . $this->getBootstrapFile() . '\');';
+				}
+
+				$this->phpCode .=
 					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
-					'$test->runTestMethod($method = \'%s\');' .
+					'$test->runTestMethod(\'%s\');' .
 					'echo serialize($test->getScore());' .
 					'?>'
 				;
@@ -1185,6 +1230,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 	}
 
 
+	public function getOutput()
+	{
+		return ob_get_clean() ?: '';
+	}
+
+
     /**
      * @param string $namespace
      *
@@ -1232,25 +1283,30 @@ abstract class test implements observable, adapter\aggregator, \countable
 		);
 	}
 
+    /**
+     * @param string $case
+     *
+     * @return \mageekguy\atoum\test
+     */
+	public function startCase($case)
+	{
+		$this->score->setCase($case);
+
+		return $this;
+	}
+
+	public function stopCase()
+	{
+		$this->score->unsetCase();
+
+		return $this;
+	}
 
     /**
      * @return \mageekguy\atoum\test
      */
 	protected function setUp()
 	{
-		return $this;
-	}
-
-
-    /**
-     * @param string $case
-     *
-     * @return \mageekguy\atoum\test
-     */
-	protected function startCase($case)
-	{
-		$this->score->setCase($case);
-
 		return $this;
 	}
 
@@ -1347,6 +1403,20 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @return \mageekguy\atoum\test
      */
+	protected function checkMethod($methodName)
+	{
+		if (isset($this->testMethods[$methodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
+		}
+
+		return $this;
+	}
+
+
+    /**
+     * @return \mageekguy\atoum\test
+     */
 	private function runChild()
 	{
 		if ($this->canRunChild() === true)
@@ -1365,8 +1435,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			stream_set_blocking($pipes[2], 0);
 
 			$currentMethod = array_shift($this->runTestMethods);
-
-			$this->callObservers(self::beforeTestMethod);
 
 			fwrite($pipes[0], sprintf($this->phpCode, $currentMethod));
 			fclose($pipes[0]);
@@ -1392,39 +1460,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
-
-    /**
-     * @param string $case
-     *
-     * @return \mageekguy\atoum\test
-     */
-	private function setCaseOnAssert($case)
-	{
-		$this->startCase($case)->assertHasCase = true;
-
-		return $this;
-	}
-
-
-    /**
-     * @return \mageekguy\atoum\test
-     */
-	private function unsetCaseOnAssert()
-	{
-		if ($this->assertHasCase === true)
-		{
-			$this->score->unsetCase();
-		}
-
-		return $this;
-	}
-
-
-    /**
-     * @param string $namespace
-     *
-     * @return string
-     */
+    
 	private static function cleanNamespace($namespace)
 	{
 		return trim((string) $namespace, '\\');

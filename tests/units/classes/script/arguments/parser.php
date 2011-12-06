@@ -132,7 +132,7 @@ class parser extends atoum\test
 
 		$parser = new script\arguments\parser($superglobals);
 
-		$this->assert('When using $_SERVER')
+		$this->assert('when using $_SERVER')
 			->object($parser->parse($script))->isIdenticalTo($parser)
 			->array($parser->getValues())->isEmpty()
 			->when(function() use ($superglobals) {
@@ -202,7 +202,7 @@ class parser extends atoum\test
 				->integer($invokeC)->isEqualTo(1)
 		;
 
-		$this->assert('When using argument')
+		$this->assert('when using argument')
 			->when(function() use ($superglobals) {
 					$superglobals->_SERVER['argv'] = array();
 				}
