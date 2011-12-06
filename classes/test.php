@@ -70,31 +70,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$this->getAsserterGenerator()
-			->setAlias('array', 'phpArray')
-			->setAlias('class', 'phpClass')
-		;
-
-		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
-		{
-			$methodName = $publicMethod->getName();
-
-			if (strpos($methodName, self::testMethodPrefix) === 0)
-			{
-				$this->testMethods[$methodName] = array();
-			}
-		}
-
 		$annotationExtractor = new test\annotations\extractor();
 
 		$annotationExtractor->setTest($this, $class->getDocComment());
 
-		foreach ($this->testMethods as $methodName => & $annotations)
+		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			$annotationExtractor->setTestMethod($this, $methodName, $class->getMethod($methodName)->getDocComment());
+			if (strpos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			{
+				$this->testMethods[$methodName] = array();
+
+				$annotationExtractor->setTestMethod($this, $methodName, $publicMethod->getDocComment());
+			}
 		}
 
 		$this->runTestMethods($this->getTestMethods());
+
+		$this->getAsserterGenerator()
+			->setAlias('array', 'phpArray')
+			->setAlias('class', 'phpClass')
+		;
 	}
 
 	public function __toString()
