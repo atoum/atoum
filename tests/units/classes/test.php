@@ -681,18 +681,23 @@ namespace mageekguy\atoum\tests\units
 
 		public function testSetTestedClassName()
 		{
-			$test = new self();
+			$test = new foo();
 
 			$this->assert
+				->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
 				->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Tested class name is already defined')
 			;
 
-			$test = new foo();
+			$test = new self();
 
 			$this->assert
-				->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
+				->object($test->setTestedClassName($class = uniqid()))->isIdenticalTo($test)
+				->string($test->getTestedClassName())->isEqualTo($class)
+				->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Tested class name is already defined')
 			;
 		}
 

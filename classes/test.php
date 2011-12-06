@@ -70,18 +70,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$testedClassName = $this->getTestedClassName();
-
-		if ($testedClassName === null)
-		{
-			throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
-		}
-
-		if ($this->adapter->class_exists($testedClassName) === false)
-		{
-			throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
-		}
-
 		$this->getAsserterGenerator()
 			->setAlias('array', 'phpArray')
 			->setAlias('class', 'phpClass')
@@ -423,9 +411,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			$position = strpos($testClass, $testNamespace);
 
-			if ($position !== false)
+			if ($position === false)
 			{
-				$this->testedClass = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
+				throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
+			}
+			else
+			{
+				$this->setTestedClassName(trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\'));
 			}
 		}
 
@@ -438,6 +430,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			throw new exceptions\runtime('Tested class name is already defined');
 		}
+
 		$this->testedClass = $className;
 
 		return $this;
@@ -567,9 +560,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					ob_start();
 
-					if ($this->bootstrapFile != '')
+					if ($this->bootstrapFile != null)
 					{
 						$this->includer->includePath($this->bootstrapFile);
+					}
+
+					if ($this->adapter->class_exists($testedClassName = $this->getTestedClassName()) === false)
+					{
+						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
 					$this->beforeTestMethod($this->currentMethod);
