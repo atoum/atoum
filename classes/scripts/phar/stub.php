@@ -120,11 +120,11 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function includeDefaultConfigFile()
+	public function useDefaultConfigFile()
 	{
 		try
 		{
-			$this->includeFile(dirname(\phar::running(false)) . '/' . self::defaultConfigFile);
+			$this->useConfigFile(dirname(\phar::running(false)) . '/' . self::defaultConfigFile);
 		}
 		catch (\exception $exception) {};
 
