@@ -241,7 +241,7 @@ class mock extends atoum\asserter
 
 	public function never($failMessage = null)
 	{
-		return $this->exactly(0);
+		return $this->exactly(0, $failMessage);
 	}
 
 	protected function mockIsSet()
