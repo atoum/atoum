@@ -250,9 +250,9 @@ class runner extends atoum\test
 					$runner->useConfigFile($file = uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime\file')
-				->hasMessage('Unable to include \'' . $file . '\'')
-			->mock($locale)->call('_')->withArguments('Unable to include \'%s\'')->once()
+				->isInstanceOf('mageekguy\atoum\includer\exception')
+				->hasMessage('Unable to find configuration file \'' . $file . '\'')
+			->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
 		;
 
 		$streamController = atoum\mock\stream::get('includeWithOutput');
@@ -264,8 +264,8 @@ class runner extends atoum\test
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('There is output \'' . $output . '\' in \'atoum://includeWithOutput\'')
-			->mock($locale)->call('_')->withArguments('There is output \'%s\' in \'%s\'')->once()
+				->hasMessage('There is output \'' . $output . '\' in configuration file \'atoum://includeWithOutput\'')
+			->mock($locale)->call('_')->withArguments('There is output \'%s\' in configuration file \'%s\'')->once()
 		;
 
 		$streamController = atoum\mock\stream::get('includeWithoutOutput');
