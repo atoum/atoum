@@ -48,7 +48,7 @@ class stub extends scripts\runner
 
 	public function infos()
 	{
-		$phar = new \phar(\phar::running());
+		$phar = new \phar($this->getName());
 
 		$this
 			->writeMessage($this->locale->_('Informations:') . PHP_EOL)
@@ -62,7 +62,7 @@ class stub extends scripts\runner
 
 	public function signature()
 	{
-		$phar = new \phar(\phar::running());
+		$phar = new \phar($this->getName());
 
 		$signature = $phar->getSignature();
 
@@ -124,7 +124,7 @@ class stub extends scripts\runner
 	{
 		try
 		{
-			$this->useConfigFile(dirname(\phar::running(false)) . '/' . self::defaultConfigFile);
+			$this->useConfigFile(dirname($this->getName()) . '/' . self::defaultConfigFile);
 		}
 		catch (\exception $exception) {};
 

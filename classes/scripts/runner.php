@@ -179,12 +179,12 @@ class runner extends atoum\script
 		}
 		catch (atoum\includer\exception $exception)
 		{
-			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
+			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
 		}
 
 		if (($output = ob_get_clean()) != '')
 		{
-			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
+			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in configuration file \'%s\''), $output, $path));
 		}
 
 		return $this;
@@ -196,7 +196,7 @@ class runner extends atoum\script
 		{
 			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
 		}
-		catch (exceptions\runtime\file $exception) {};
+		catch (atoum\includer\exception $exception) {};
 
 		return $this;
 	}
