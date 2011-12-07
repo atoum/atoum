@@ -31,23 +31,29 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
 			->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 			->object($runner->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+			->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+			->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 			->variable($runner->getDefaultReportTitle())->isNull()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
 		;
 
-		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter());
+		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter(), $superglobals = new atoum\superglobals(), $locale = new atoum\locale(), $includer = new atoum\includer());
 
 		$this->assert
 			->object($runner->getScore())->isIdenticalTo($score)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
-			->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-			->object($runner->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+			->object($runner->getSuperglobals())->isIdenticalTo($superglobals)
+			->object($runner->getLocale())->isIdenticalTo($locale)
+			->object($runner->getIncluder())->isIdenticalTo($includer)
 			->variable($runner->getRunningDuration())->isNull()
 			->boolean($runner->codeCoverageIsEnabled())->isTrue()
 			->variable($runner->getDefaultReportTitle())->isNull()
+			->array($runner->getObservers())->isEmpty()
+			->array($runner->getTestObservers())->isEmpty()
 		;
 	}
 

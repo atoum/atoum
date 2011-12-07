@@ -92,7 +92,7 @@ class runner extends atoum\script
 
 			if ($this->runTests === true)
 			{
-				$this->includeDefaultConfigFile();
+				$this->useDefaultConfigFile();
 
 				if ($this->loop === true)
 				{
@@ -167,17 +167,15 @@ class runner extends atoum\script
 		return parent::help();
 	}
 
-	public function includeFile($path)
+	public function useConfigFile($path)
 	{
 		$runner = $this->runner;
-
-		$realpath = (parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path));
 
 		ob_start();
 
 		try
 		{
-			$this->includer->includePath($realpath, function($path) use ($runner) { include_once($path); });
+			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
 		}
 		catch (atoum\includer\exception $exception)
 		{
@@ -192,42 +190,20 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function includeDefaultConfigFile()
+	public function useDefaultConfigFile()
 	{
 		try
 		{
-			$this->includeFile(atoum\directory . '/' . self::defaultConfigFile);
+			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
 		}
 		catch (exceptions\runtime\file $exception) {};
 
 		return $this;
 	}
 
-	public function runFile($path)
-	{
-		try
-		{
-			return $this->includeFile($path);
-		}
-		catch (exceptions\runtime\file $exception)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Test file \'%s\' does not exist'), $path));
-		}
-	}
-
-	public function runDirectory($directory)
-	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
-		{
-			$this->runFile($path);
-		}
-
-		return $this;
-	}
-
 	public function testIt()
 	{
-		return $this->runDirectory(atoum\directory . '/tests/units/classes');
+		return $this->runner->addTestsFromDirectory(atoum\directory . '/tests/units/classes');
 	}
 
 	public function enableLoop()
@@ -353,7 +329,7 @@ class runner extends atoum\script
 				{
 					try
 					{
-						$script->includeFile($path);
+						$script->useConfigFile($path);
 					}
 					catch (\exception $exception)
 					{
@@ -409,7 +385,7 @@ class runner extends atoum\script
 		);
 
 		$this->addArgumentHandler(
-			function($script, $argument, $files) {
+			function($script, $argument, $files) use ($runner) {
 				if (sizeof($files) <= 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -417,7 +393,7 @@ class runner extends atoum\script
 
 				foreach ($files as $path)
 				{
-					$script->runFile($path);
+					$runner->addTest($path);
 				}
 			},
 			array('-f', '--test-files'),
@@ -426,7 +402,7 @@ class runner extends atoum\script
 		);
 
 		$this->addArgumentHandler(
-			function($script, $argument, $directories) {
+			function($script, $argument, $directories) use ($runner) {
 				if (sizeof($directories) <= 0)
 				{
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -434,7 +410,7 @@ class runner extends atoum\script
 
 				foreach ($directories as $directory)
 				{
-					$script->runDirectory($directory);
+					$runner->addTestsFromDirectory($directory);
 				}
 			},
 			array('-d', '--directories'),

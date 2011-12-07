@@ -17,8 +17,10 @@ class runner implements observable, adapter\aggregator
 	protected $path = '';
 	protected $class = '';
 	protected $score = null;
-	protected $locale = null;
 	protected $adapter = null;
+	protected $superglobals = null;
+	protected $locale = null;
+	protected $includer = null;
 	protected $observers = array();
 	protected $testObservers = array();
 	protected $reports = array();
@@ -33,19 +35,80 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null)
+	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null, locale $locale = null, includer $includer = null)
 	{
 		$this
 			->setSuperglobals($superglobals ?: new superglobals())
 			->setAdapter($adapter ?: new adapter())
 			->setScore($score ?: new score())
-			->setLocale(new locale())
+			->setLocale($locale ?: new locale())
+			->setIncluder($includer ?: new includer())
 		;
 
 		$runnerClass = new \reflectionClass($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setScore(score $score)
+	{
+		$this->score = $score;
+
+		return $this;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
+	}
+
+	public function setAdapter(adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setSuperglobals(atoum\superglobals $superglobals)
+	{
+		$this->superglobals = $superglobals;
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
+	}
+
+	public function setLocale(locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function setIncluder(includer $includer)
+	{
+		$this->includer = $includer;
+
+		return $this;
+	}
+
+	public function getIncluder()
+	{
+		return $this->includer;
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -60,37 +123,9 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function setLocale(locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
-	}
-
-	public function setSuperglobals(atoum\superglobals $superglobals)
-	{
-		$this->superglobals = $superglobals;
-
-		return $this;
-	}
-
 	public function setDefaultReportTitle($title)
 	{
 		$this->defaultReportTitle = (string) $title;
-
-		return $this;
-	}
-
-	public function setScore(score $score)
-	{
-		$this->score = $score;
-
-		return $this;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
 
 		return $this;
 	}
@@ -102,24 +137,9 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
 	public function getDefaultReportTitle()
 	{
 		return $this->defaultReportTitle;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
-	}
-
-	public function getScore()
-	{
-		return $this->score;
 	}
 
 	public function getPhpPath()
@@ -144,11 +164,6 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $this->phpPath;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function getPath()
@@ -409,6 +424,39 @@ class runner implements observable, adapter\aggregator
 		$this->callObservers(self::runStop);
 
 		return $this->score;
+	}
+
+	public function addTest($path)
+	{
+		$runner = $this;
+
+		ob_start();
+
+		try
+		{
+			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
+		}
+		catch (atoum\includer\exception $exception)
+		{
+			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+		}
+
+		if (($output = ob_get_clean()) != '')
+		{
+			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in test file \'%s\''), $output, $path));
+		}
+
+		return $this;
+	}
+
+	public function addTestsFromDirectory($directory)
+	{
+		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+		{
+			$this->addTest($path);
+		}
+
+		return $this;
 	}
 
 	public function getRunningDuration()
