@@ -239,7 +239,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testIncludeFile()
+	public function testUseConfigFile()
 	{
 		$this->mock('mageekguy\atoum\locale');
 
@@ -247,7 +247,7 @@ class runner extends atoum\test
 
 		$this->assert
 			->exception(function() use ($runner, & $file) {
-					$runner->includeFile($file = uniqid());
+					$runner->useConfigFile($file = uniqid());
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime\file')
@@ -260,7 +260,7 @@ class runner extends atoum\test
 
 		$this->assert
 			->exception(function() use ($runner) {
-					$runner->includeFile('atoum://includeWithOutput');
+					$runner->useConfigFile('atoum://includeWithOutput');
 				}
 			)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -273,21 +273,21 @@ class runner extends atoum\test
 
 		$this->assert
 			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
-			->object($runner->includeFile('atoum://includeWithoutOutput'))->isIdenticalTo($runner)
+			->object($runner->useConfigFile('atoum://includeWithoutOutput'))->isIdenticalTo($runner)
 			->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
 		;
 	}
 
-	public function testIncludeDefaultConfigFile()
+	public function testUseDefaultConfigFile()
 	{
 		$this->mock('mageekguy\atoum\scripts\runner');
 
 		$runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid());
-		$runner->getMockController()->includeFile = function() {};
+		$runner->getMockController()->useConfigFile = function() {};
 
 		$this->assert
-			->object($runner->includeDefaultConfigFile())->isIdenticalTo($runner)
-			->mock($runner)->call('includeFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
+			->object($runner->useDefaultConfigFile())->isIdenticalTo($runner)
+			->mock($runner)->call('useConfigFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
 		;
 	}
 }
