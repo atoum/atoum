@@ -194,7 +194,7 @@ class mock extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-        $this->exactly(1, $failMessage);
+        return $this->exactly(1, $failMessage);
 	}
 
 	public function atLeastOnce($failMessage = null)
