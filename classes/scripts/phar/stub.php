@@ -26,24 +26,16 @@ class stub extends scripts\runner
 
 	public function useScript($script)
 	{
-		switch ($script)
+		$scriptFile = self::getScriptFile($script);
+
+		if (file_exists($scriptFile) === false)
 		{
-			case 'builder':
-			case 'tagger':
-				$scriptFile = self::getScriptFile($script);
-
-				if (file_exists($scriptFile) === false)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script file %s does not exist for script %s'), $scriptFile, $script));
-				}
-
-				require_once $scriptFile;
-
-				exit(0);
-
-			default:
-				throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
 		}
+
+		require_once $scriptFile;
+
+		exit(0);
 	}
 
 	public function infos()
@@ -198,7 +190,11 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
+				unset($_SERVER['argv'][1]);
+				unset($_SERVER['argv'][2]);
+
 				$script->useScript($values[0]);
+
 			},
 			array('-u', '--use'),
 			'<script> <args>',
