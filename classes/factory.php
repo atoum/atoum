@@ -17,7 +17,7 @@ class factory
 
 	public function setCurrentClass($class)
 	{
-		$this->currentClass = $class;
+		$this->currentClass = trim($class, '\\');
 
 		return $this;
 	}
@@ -40,7 +40,11 @@ class factory
 			$topLevelNamespace = substr($class, 0, $firstOccurrence);
 		}
 
-		if (isset($this->importedNamespaces[$topLevelNamespace]) === true)
+		if ($this->currentClass !== null && isset($this->importedNamespacesByClass[$this->currentClass][$topLevelNamespace]) === true)
+		{
+			$class = $this->importedNamespacesByClass[$this->currentClass][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
+		}
+		else if (isset($this->importedNamespaces[$topLevelNamespace]) === true)
 		{
 			$class = $this->importedNamespaces[$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
 		}

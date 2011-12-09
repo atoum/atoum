@@ -47,6 +47,30 @@ class factory extends atoum\test
 			->if($factory->importNamespace('mageekguy\atoum', 'foo'))
 			->then
 				->object($test = $factory->build('foo\tests\units\factory'))->isInstanceOf(__CLASS__)
+			->if($factory = new atoum\factory())
+			->and($factory->setCurrentClass(__CLASS__))
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
+				->object($arrayIterator = $factory->build('arrayIterator', array()))->isInstanceOf('arrayIterator')
+				->variable($arrayIterator->current())->isNull()
+				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
+				->object($arrayIterator = $factory->build('arrayIterator', array(array(1, 2, 3))))->isInstanceOf('arrayIterator')
+				->integer($arrayIterator->current())->isEqualTo(1)
+				->object($test = $factory->build(__CLASS__))->isInstanceOf(__CLASS__)
+			->if($factory->setBuilder('arrayIterator', null))
+			->then
+				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
+					->isInstanceOf('mageekguy\atoum\factory\exception')
+					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
+			->if($factory->importNamespace('mageekguy\atoum'))
+			->then
+				->object($test = $factory->build('atoum\tests\units\factory'))->isInstanceOf(__CLASS__)
+				->exception(function() use ($factory) { $factory->build('\atoum\tests\units\factory'); })
+					->isInstanceOf('mageekguy\atoum\factory\exception')
+					->hasMessage('Unable to build an instance of class \'\atoum\tests\units\factory\' because class does not exist')
+			->if($factory->importNamespace('mageekguy\atoum', 'foo'))
+			->then
+				->object($test = $factory->build('foo\tests\units\factory'))->isInstanceOf(__CLASS__)
 		;
 	}
 
