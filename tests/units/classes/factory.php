@@ -16,7 +16,7 @@ class factory extends atoum\test
 			->if($factory = new atoum\factory())
 			->then
 				->array($factory->getBuilders())->isEmpty()
-				->array($factory->getImportedNamespaces())->isEmpty()
+				->array($factory->getImportations())->isEmpty()
 				->variable($factory->getCurrentClass())->isNull()
 		;
 	}
@@ -33,18 +33,18 @@ class factory extends atoum\test
 				->object($arrayIterator = $factory->build('arrayIterator', array(array(1, 2, 3))))->isInstanceOf('arrayIterator')
 				->integer($arrayIterator->current())->isEqualTo(1)
 				->object($test = $factory->build(__CLASS__))->isInstanceOf(__CLASS__)
-			->if($factory->setBuilder('arrayIterator', null))
+			->if($factory->returnWhenBuild('arrayIterator', null))
 			->then
 				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
-			->if($factory->importNamespace('mageekguy\atoum'))
+			->if($factory->import('mageekguy\atoum'))
 			->then
 				->object($test = $factory->build('atoum\tests\units\factory'))->isInstanceOf(__CLASS__)
 				->exception(function() use ($factory) { $factory->build('\atoum\tests\units\factory'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to build an instance of class \'\atoum\tests\units\factory\' because class does not exist')
-			->if($factory->importNamespace('mageekguy\atoum', 'foo'))
+			->if($factory->import('mageekguy\atoum', 'foo'))
 			->then
 				->object($test = $factory->build('foo\tests\units\factory'))->isInstanceOf(__CLASS__)
 			->if($factory = new atoum\factory())
@@ -57,20 +57,23 @@ class factory extends atoum\test
 				->object($arrayIterator = $factory->build('arrayIterator', array(array(1, 2, 3))))->isInstanceOf('arrayIterator')
 				->integer($arrayIterator->current())->isEqualTo(1)
 				->object($test = $factory->build(__CLASS__))->isInstanceOf(__CLASS__)
-			->if($factory->setBuilder('arrayIterator', null))
+			->if($factory->returnWhenBuild('arrayIterator', null))
 			->then
 				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
-			->if($factory->importNamespace('mageekguy\atoum'))
+			->if($factory->import('mageekguy\atoum'))
 			->then
 				->object($test = $factory->build('atoum\tests\units\factory'))->isInstanceOf(__CLASS__)
 				->exception(function() use ($factory) { $factory->build('\atoum\tests\units\factory'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to build an instance of class \'\atoum\tests\units\factory\' because class does not exist')
-			->if($factory->importNamespace('mageekguy\atoum', 'foo'))
+			->if($factory->import('mageekguy\atoum', 'foo'))
 			->then
 				->object($test = $factory->build('foo\tests\units\factory'))->isInstanceOf(__CLASS__)
+			->if($factory->import(__CLASS__, 'bar'))
+			->then
+				->object($test = $factory->build('bar'))->isInstanceOf(__CLASS__)
 		;
 	}
 
@@ -83,10 +86,18 @@ class factory extends atoum\test
 				->object($factory->setBuilder('arrayIterator', function() use ($arrayIterator) { return $arrayIterator; }))->isIdenticalTo($factory)
 				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
 				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
-			->if($otherArrayIterator = new \arrayIterator())
-				->object($factory->setBuilder('arrayIterator', $otherArrayIterator))->isIdenticalTo($factory)
+		;
+	}
+
+	public function testReturnWhenBuild()
+	{
+		$this->assert
+			->if($factory = new atoum\factory())
+			->and($arrayIterator = new \arrayIterator())
+			->then
+				->object($factory->returnWhenBuild('arrayIterator', $arrayIterator))->isIdenticalTo($factory)
 				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
-				->object($factory->build('arrayIterator'))->isIdenticalTo($otherArrayIterator)
+				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
 		;
 	}
 
@@ -114,6 +125,20 @@ class factory extends atoum\test
 		;
 	}
 
+	public function testUnsetCurrentClass()
+	{
+		$this->assert
+			->if($factory = new atoum\factory())
+			->then
+				->object($factory->unsetCurrentClass())->isIdenticalTo($factory)
+				->variable($factory->getCurrentClass())->isNull()
+			->if($factory->setCurrentClass(__CLASS__))
+			->then
+				->object($factory->unsetCurrentClass())->isIdenticalTo($factory)
+				->variable($factory->getCurrentClass())->isNull()
+		;
+	}
+
 	public function unsetCurrentClass()
 	{
 		$this->assert
@@ -125,38 +150,38 @@ class factory extends atoum\test
 		;
 	}
 
-	public function testImportNamespace()
+	public function testImport()
 	{
 		$this->assert
 			->if($factory = new atoum\factory())
 			->then
-				->object($factory->importNamespace('foo'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo'))
-				->object($factory->importNamespace('\foo'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo'))
-				->object($factory->importNamespace('foo', 'bar'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo'))
-				->object($factory->importNamespace('foo\bar', 'truc'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar'))
-				->object($factory->importNamespace('foo\bar\toto', 'tutu'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar', 'tutu' => 'foo\bar\toto'))
-				->exception(function() use ($factory) { $factory->importNamespace('foo\bar\tutu'); })
+				->object($factory->import('foo'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo'))
+				->object($factory->import('\foo'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo'))
+				->object($factory->import('foo', 'bar'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo'))
+				->object($factory->import('foo\bar', 'truc'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar'))
+				->object($factory->import('foo\bar\toto', 'tutu'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar', 'tutu' => 'foo\bar\toto'))
+				->exception(function() use ($factory) { $factory->import('foo\bar\tutu'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to use \'foo\bar\tutu\' as \'tutu\' because the name is already in use')
 			->if($factory->setCurrentClass(__CLASS__))
 			->then
-				->array($factory->getImportedNamespaces())->isEmpty()
-				->object($factory->importNamespace('foo'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo'))
-				->object($factory->importNamespace('\foo'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo'))
-				->object($factory->importNamespace('foo', 'bar'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo'))
-				->object($factory->importNamespace('foo\bar', 'truc'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar'))
-				->object($factory->importNamespace('foo\bar\toto', 'tutu'))->isIdenticalTo($factory)
-				->array($factory->getImportedNamespaces())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar', 'tutu' => 'foo\bar\toto'))
-				->exception(function() use ($factory) { $factory->importNamespace('foo\bar\tutu'); })
+				->array($factory->getImportations())->isEmpty()
+				->object($factory->import('foo'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo'))
+				->object($factory->import('\foo'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo'))
+				->object($factory->import('foo', 'bar'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo'))
+				->object($factory->import('foo\bar', 'truc'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar'))
+				->object($factory->import('foo\bar\toto', 'tutu'))->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar', 'tutu' => 'foo\bar\toto'))
+				->exception(function() use ($factory) { $factory->import('foo\bar\tutu'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to use \'foo\bar\tutu\' as \'tutu\' because the name is already in use')
 		;

@@ -10,14 +10,21 @@ class factory
 {
 	protected $builders = array();
 	protected $currentClass = null;
-	protected $importedNamespaces = array();
-	protected $importedNamespacesByClass = array();
+	protected $importations = array();
+	protected $importationsByClass = array();
 
 	private static $classes = array();
 
 	public function setCurrentClass($class)
 	{
 		$this->currentClass = trim($class, '\\');
+
+		return $this;
+	}
+
+	public function unsetCurrentClass()
+	{
+		$this->currentClass = null;
 
 		return $this;
 	}
@@ -31,25 +38,7 @@ class factory
 	{
 		$instance = null;
 
-		if (($firstOccurrence = strpos($class, '\\')) === false || $firstOccurrence === 0)
-		{
-			$topLevelNamespace = $class;
-		}
-		else
-		{
-			$topLevelNamespace = substr($class, 0, $firstOccurrence);
-		}
-
-		if ($this->currentClass !== null && isset($this->importedNamespacesByClass[$this->currentClass][$topLevelNamespace]) === true)
-		{
-			$class = $this->importedNamespacesByClass[$this->currentClass][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
-		}
-		else if (isset($this->importedNamespaces[$topLevelNamespace]) === true)
-		{
-			$class = $this->importedNamespaces[$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
-		}
-
-		if ($this->builderIsSet($class) === true)
+		if ($this->builderIsSet($class = $this->resolveClassName($class)) === true)
 		{
 			if (($instance = $this->builders[$class]->__invoke($arguments)) instanceof $class === false)
 			{
@@ -81,21 +70,21 @@ class factory
 		return $instance;
 	}
 
-	public function setBuilder($class, $value)
+	public function setBuilder($class, \closure $builder)
 	{
-		if ($value instanceof \closure === false)
-		{
-			$value = function() use ($value) { return $value; };
-		}
-
-		$this->builders[$class] = $value;
+		$this->builders[$this->resolveClassName($class)] = $builder;
 
 		return $this;
 	}
 
+	public function returnWhenBuild($class, $value)
+	{
+		return $this->setBuilder($class, function() use ($value) { return $value; });
+	}
+
 	public function builderIsSet($class)
 	{
-		return (isset($this->builders[$class]) === true);
+		return (isset($this->builders[$this->resolveClassName($class)]) === true);
 	}
 
 	public function getBuilder($class)
@@ -108,43 +97,83 @@ class factory
 		return $this->builders;
 	}
 
-	public function importNamespace($namespace, $alias = null)
+	public function import($string, $alias = null)
 	{
-		$namespace = trim($namespace, '\\');
+		$string = trim($string, '\\');
 
 		if ($alias !== null)
 		{
 			$alias = trim($alias, '\\');
 		}
-		else if (($lastOccurence = strrpos($namespace, '\\')) === false)
+		else if (($lastOccurence = strrpos($string, '\\')) === false)
 		{
-			$alias = $namespace;
+			$alias = $string;
 		}
 		else
 		{
-			$alias = substr($namespace, $lastOccurence + 1);
+			$alias = substr($string, $lastOccurence + 1);
 		}
 
-		if (isset($this->importedNamespaces[$alias]) === true && $this->importedNamespaces[$alias] != $namespace)
+		if (isset($this->importations[$alias]) === true && $this->importations[$alias] != $string)
 		{
-			throw new factory\exception('Unable to use \'' . $namespace . '\' as \'' . $alias . '\' because the name is already in use');
+			throw new factory\exception('Unable to use \'' . $string . '\' as \'' . $alias . '\' because the name is already in use');
 		}
 
 		if ($this->currentClass === null)
 		{
-			$this->importedNamespaces[$alias] = $namespace;
+			$this->importations[$alias] = $string;
 		}
 		else
 		{
-			$this->importedNamespacesByClass[$this->currentClass][$alias] = $namespace;
+			$this->importationsByClass[$this->currentClass][$alias] = $string;
 		}
 
 		return $this;
 	}
 
-	public function getImportedNamespaces()
+	public function getImportations()
 	{
-		return ($this->currentClass === null ? $this->importedNamespaces : (isset($this->importedNamespacesByClass[$this->currentClass]) === false ? array() : $this->importedNamespacesByClass[$this->currentClass]));
+		return ($this->currentClass === null ? $this->importations : (isset($this->importationsByClass[$this->currentClass]) === false ? array() : $this->importationsByClass[$this->currentClass]));
+	}
+
+	protected function resolveClassName($class)
+	{
+		if (($firstOccurrence = strpos($class, '\\')) === false || $firstOccurrence > 0)
+		{
+			if ($firstOccurrence === false)
+			{
+				$topLevelNamespace = $class;
+			}
+			else
+			{
+				$topLevelNamespace = substr($class, 0, $firstOccurrence);
+			}
+
+			if ($this->currentClass !== null && isset($this->importationsByClass[$this->currentClass][$topLevelNamespace]) === true)
+			{
+				if ($firstOccurrence === false)
+				{
+					$class = $this->importationsByClass[$this->currentClass][$topLevelNamespace];
+				}
+				else
+				{
+					$class = $this->importationsByClass[$this->currentClass][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
+				}
+			}
+			else if (isset($this->importations[$topLevelNamespace]) === true)
+			{
+				if ($firstOccurrence === false)
+				{
+					$class = $this->importations[$topLevelNamespace];
+				}
+				else
+				{
+					$class = $this->importations[$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
+				}
+			}
+		}
+
+		return $class;
 	}
 }
 
