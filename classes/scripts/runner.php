@@ -26,14 +26,26 @@ class runner extends atoum\script
 
 	protected static $autorunner = null;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null, atoum\runner $runner = null, atoum\includer $includer = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
-		$this
-			->setRunner($runner ?: new atoum\runner())
-			->setIncluder($includer ?: new atoum\includer())
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
+
+		$factory
+			->setCurrentClass(__CLASS__)
+			->import('mageekguy\atoum')
 		;
 
-		parent::__construct($name, $locale, $adapter);
+		$this
+			->setRunner($factory->build('atoum\runner'))
+			->setIncluder($factory->build('atoum\includer'))
+		;
+
+		$factory->unsetCurrentClass();
+
+		parent::__construct($name, $factory);
 	}
 
 	public function setRunner(atoum\runner $runner)

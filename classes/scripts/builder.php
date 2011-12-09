@@ -33,16 +33,28 @@ class builder extends atoum\script
 	protected $reportTitle = null;
 	protected $runnerConfigurationFiles = array();
 
-	public function __construct($name, builder\vcs $vcs = null, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
-		parent::__construct($name, $locale, $adapter);
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
+
+		parent::__construct($name, $factory);
+
+		$factory
+			->setCurrentClass(__CLASS__)
+			->import('mageekguy\atoum')
+		;
 
 		$this
-			->setVcs($vcs ?: new builder\vcs\svn($this->adapter))
-			->setSuperglobals(new atoum\superglobals())
+			->setVcs($factory->build('atoum\scripts\builder\vcs\svn'))
+			->setSuperglobals($factory->build('atoum\superglobals'))
 			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
 			->setPharGeneratorScript(self::defaultPharGeneratorScript)
 		;
+
+		$factory->unsetCurrentClass();
 	}
 
 	public function setVcs(builder\vcs $vcs)

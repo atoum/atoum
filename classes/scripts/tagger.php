@@ -13,11 +13,25 @@ class tagger extends atoum\script
 	protected $engine = null;
 	protected $tagVersion = true;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
-		$this->setEngine(new tagger\engine($adapter));
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
 
-		parent::__construct($name, $locale, $this->engine->getAdapter());
+
+		parent::__construct($name, $factory);
+
+		$factory
+			->setCurrentClass(__CLASS__)
+			->import('mageekguy\atoum')
+			->import('mageekguy\atoum\scripts\tagger')
+		;
+
+		$this->setEngine($factory->build('tagger\engine', array($this->getAdapter())));
+
+		$factory->unsetCurrentClass();
 	}
 
 	public function setEngine(tagger\engine $engine)

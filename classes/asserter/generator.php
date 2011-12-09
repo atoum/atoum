@@ -26,6 +26,9 @@ class generator
 			case 'and':
 				return $this;
 
+			case 'assert':
+				return $this->test->assert;
+
 			default:
 				$class = $this->getAsserterClass($asserterName);
 

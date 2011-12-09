@@ -127,7 +127,13 @@ class runner extends atoum\test
 						)
 					)
 				)
-			->if($scriptRunner = new scripts\runner($name = uniqid(), $locale = new atoum\locale(), $adapter = new atoum\adapter(), $runner = new atoum\runner(), $includer = new atoum\includer()))
+			->if($factory = new atoum\factory())
+			->and($factory->import('mageekguy\atoum'))
+			->and($factory->returnWhenBuild('atoum\locale', $locale = new atoum\locale()))
+			->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\adapter()))
+			->and($factory->returnWhenBuild('atoum\runner', $runner = new atoum\runner()))
+			->and($factory->returnWhenBuild('atoum\includer', $includer = new atoum\includer()))
+			->and($scriptRunner = new scripts\runner($name = uniqid(), $factory))
 			->then
 				->string($scriptRunner->getName())->isEqualTo($name)
 				->object($scriptRunner->getAdapter())->isIdenticalTo($adapter)
@@ -243,7 +249,10 @@ class runner extends atoum\test
 	{
 		$this->mock('mageekguy\atoum\locale');
 
-		$runner = new scripts\runner($name = uniqid(), $locale = new \mock\mageekguy\atoum\locale());
+		$factory = new atoum\factory();
+		$factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new \mock\mageekguy\atoum\locale());
+
+		$runner = new scripts\runner($name = uniqid(), $factory);
 
 		$this->assert
 			->exception(function() use ($runner, & $file) {
