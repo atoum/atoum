@@ -16,10 +16,10 @@ class autoloader extends atoum\test
 		$autoloader = new atoum\autoloader();
 
 		$this->assert
-			->array($autoloader->getDirectories())->atKey('mageekguy\atoum')->contains(array(atoum\directory . '/classes'))
-		;
+            ->array($directories = $autoloader->getDirectories())->hasKey('mageekguy\atoum')
+            ->array($directories['mageekguy\atoum'])->isEqualTo(array(atoum\directory . '/classes'));
 	}
-
+    
 	public function testGetPath()
 	{
 		$autoloader = new atoum\autoloader();
