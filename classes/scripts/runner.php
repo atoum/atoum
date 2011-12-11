@@ -343,7 +343,7 @@ class runner extends atoum\script
 					{
 						$script->useConfigFile($path);
 					}
-					catch (\exception $exception)
+					catch (includer\exception $exception)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
 					}
