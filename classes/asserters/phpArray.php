@@ -168,7 +168,7 @@ class phpArray extends asserters\variable
 		return $this->notContainsArray($values, $failMessage, true);
 	}
 
-	protected function containsValue($value, $failMessage = null, $strict)
+	protected function containsValue($value, $failMessage, $strict)
 	{
 		if (in_array($value, $this->valueIsSet()->value, $strict) === true)
 		{
@@ -186,7 +186,7 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-	protected function notContainsValue($value, $failMessage = null, $strict)
+	protected function notContainsValue($value, $failMessage, $strict)
 	{
 		if (in_array($value, $this->valueIsSet()->value, $strict) === false)
 		{
