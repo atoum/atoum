@@ -345,7 +345,7 @@ class runner extends atoum\script
 					}
 					catch (\exception $exception)
 					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_("Unable to import the configuration file '%s'\n\t%s"), $path, $exception->getMessage()));
 					}
 				}
 			},
