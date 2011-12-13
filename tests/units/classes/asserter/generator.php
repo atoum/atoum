@@ -87,6 +87,18 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testGetScore()
+	{
+		$this->assert
+			->if($generator = new asserter\generator())
+			->then
+				->variable($generator->getScore())->isNull()
+			->if($generator = new asserter\generator($this))
+			->then
+				->object($generator->getScore())->isIdenticalTo($this->getScore())
+		;
+	}
+
 	public function testWhen()
 	{
 		$this->assert

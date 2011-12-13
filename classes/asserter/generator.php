@@ -99,7 +99,7 @@ class generator
 
 	public function getScore()
 	{
-		return $this->test->getScore();
+		return $this->test === null ? null : $this->test->getScore();
 	}
 
 	public function setLocale(atoum\locale $locale)

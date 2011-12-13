@@ -32,10 +32,10 @@ abstract class asserter
 		return $this;
 	}
 
-	public function getScore()
-	{
-		return $this->generator->getScore();
-	}
+//	public function getScore()
+//	{
+//		return $this->generator->getScore();
+//	}
 
 	public function getLocale()
 	{
@@ -81,38 +81,47 @@ abstract class asserter
 
 	protected function pass()
 	{
-		$this->getScore()->addPass();
+		$test = $this->generator->getTest();
+
+		if ($test !== null)
+		{
+			$test->getScore()->addPass();
+		}
 
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
+		$failId = null;
+
 		$test = $this->generator->getTest();
 
-		$class = $test->getClass();
-		$method = $test->getCurrentMethod();
-		$file = $test->getPath();
-
-		$line = null;
-		$function = null;
-
-		$currentClass = get_class($this);
-
-		foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
+		if ($test !== null)
 		{
-			if ($line === null && isset($backtrace['line']) === true)
+			$line = null;
+			$function = null;
+			$class = $test->getClass();
+			$method = $test->getCurrentMethod();
+			$file = $test->getPath();
+
+			foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
 			{
-				$line = $backtrace['line'];
+				if ($line === null && isset($backtrace['line']) === true)
+				{
+					$line = $backtrace['line'];
+				}
+
+				if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
+				{
+					$function = $backtrace['function'];
+				}
 			}
 
-			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
-			{
-				$function = $backtrace['function'];
-			}
+			$failId = $test->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason);
 		}
 
-		throw new asserter\exception($reason, $this->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason));
+		throw new asserter\exception($reason, $failId);
 	}
 }
 

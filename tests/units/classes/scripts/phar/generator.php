@@ -146,15 +146,6 @@ class generator extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Destination directory must be different from origin directory')
-			->if($realDirectory = $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . uniqid())
-			->and($adapter->realpath = function($path) use ($realDirectory) { return $realDirectory; })
-			->then
-				->exception(function() use ($generator) {
-						$generator->setDestinationDirectory(uniqid());
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Origin directory must not include destination directory')
 		;
 	}
 
