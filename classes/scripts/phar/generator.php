@@ -79,10 +79,6 @@ class generator extends atoum\script
 		{
 			throw new exceptions\runtime('Destination directory must be different from origin directory');
 		}
-		else if (strpos($destinationDirectory, $this->originDirectory) === 0)
-		{
-			throw new exceptions\runtime('Origin directory must not include destination directory');
-		}
 
 		$this->destinationDirectory = $destinationDirectory;
 
