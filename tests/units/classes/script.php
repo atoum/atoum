@@ -236,7 +236,7 @@ class script extends atoum\test
 					->string($script->prompt($message = uniqid()))->isEqualTo($input)
 					->mock($stdOut)->call('write')->withArguments($message)->once()
 					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-			->assert
+			->assert()
 					->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
 					->mock($stdOut)->call('write')->withArguments($message)->once()
 					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()

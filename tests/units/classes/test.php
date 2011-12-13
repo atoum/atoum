@@ -327,7 +327,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale())))->isIdenticalTo($test)
+				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator()))->isIdenticalTo($test)
 				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
 				->object($asserterGenerator->getTest())->isIdenticalTo($test)
 				->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())

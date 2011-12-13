@@ -226,7 +226,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		test\adapter::resetCallsForAllInstances();
 
-		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
+		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this))->asserterGenerator;
 	}
 
 	public function setTestNamespace($testNamespace)
@@ -864,6 +864,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function startCase($case)
 	{
+		test\adapter::resetCallsForAllInstances();
+
 		$this->score->setCase($case);
 
 		return $this;
@@ -871,6 +873,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function stopCase()
 	{
+		test\adapter::resetCallsForAllInstances();
+
 		$this->score->unsetCase();
 
 		return $this;
