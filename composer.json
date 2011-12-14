@@ -1,11 +1,10 @@
 {
     "name": "mageekguy/atoum",
-	 "type": "unit testing framework",
-	 "description": "Simple modern and intuitive unit testing framework for PHP 5.3+"
-	 "keywords": ["test","unit testing"],
+    "type": "library",
+    "description": "Simple modern and intuitive unit testing framework for PHP 5.3+",
+    "keywords": ["TDD","atoum","test","unit testing"],
     "homepage": "http://www.atoum.org",
     "license": "BSD",
-	 "version": "1.0.0"
     "authors": [
         {
             "name": "Frédéric Hardy",
