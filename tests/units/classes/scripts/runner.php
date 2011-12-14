@@ -264,19 +264,6 @@ class runner extends atoum\test
 			->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
 		;
 
-		$streamController = atoum\mock\stream::get('includeWithOutput');
-		$streamController->file_get_contents = $output = uniqid();
-
-		$this->assert
-			->exception(function() use ($runner) {
-					$runner->useConfigFile('atoum://includeWithOutput');
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('There is output \'' . $output . '\' in configuration file \'atoum://includeWithOutput\'')
-			->mock($locale)->call('_')->withArguments('There is output \'%s\' in configuration file \'%s\'')->once()
-		;
-
 		$streamController = atoum\mock\stream::get('includeWithoutOutput');
 		$streamController->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>';
 

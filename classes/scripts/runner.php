@@ -183,8 +183,6 @@ class runner extends atoum\script
 	{
 		$runner = $this->runner;
 
-		ob_start();
-
 		try
 		{
 			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
@@ -192,11 +190,6 @@ class runner extends atoum\script
 		catch (atoum\includer\exception $exception)
 		{
 			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
-		}
-
-		if (($output = ob_get_clean()) != '')
-		{
-			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in configuration file \'%s\''), $output, $path));
 		}
 
 		return $this;
