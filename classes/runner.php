@@ -152,7 +152,24 @@ class runner implements observable, adapter\aggregator
 			}
 			else
 			{
-				$phpPath = PHP_BINDIR . '/php';
+				if (DIRECTORY_SEPARATOR === '/')
+				{
+					$phpPath = PHP_BINDIR . '/php';
+				}
+				else
+				{
+					$phpPath = getenv('PHP_PEAR_PHP_BIN');
+
+					if ($phpPath === false)
+					{
+						$phpPath = getenv('PHPBIN');
+
+						if ($phpPath === false)
+						{
+							$phpPath = getenv('PHPRC');
+						}
+					}
+				}
 
 				if ($this->adapter->is_executable($phpPath) === false)
 				{
@@ -430,8 +447,6 @@ class runner implements observable, adapter\aggregator
 	{
 		$runner = $this;
 
-		ob_start();
-
 		try
 		{
 			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
@@ -439,11 +454,6 @@ class runner implements observable, adapter\aggregator
 		catch (atoum\includer\exception $exception)
 		{
 			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
-		}
-
-		if (($output = ob_get_clean()) != '')
-		{
-			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in test file \'%s\''), $output, $path));
 		}
 
 		return $this;
