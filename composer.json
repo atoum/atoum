@@ -10,7 +10,7 @@
             "name": "Frédéric Hardy",
             "email": "frederic.hardy@atoum.org",
             "homepage": "http://blog.mageekbox.net"
-        }
+        },
     "require": {
         "php": ">=5.3.0"
     }
