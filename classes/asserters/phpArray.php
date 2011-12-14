@@ -150,22 +150,22 @@ class phpArray extends asserters\variable
 
 	public function containsValues(array $values, $failMessage = null)
 	{
-		return $this->containsArray($values, $failMessage, false);
+		return $this->intersect($values, $failMessage, false);
 	}
 
 	public function strictlyContainsValues(array $values, $failMessage = null)
 	{
-		return $this->containsArray($values, $failMessage, true);
+		return $this->intersect($values, $failMessage, true);
 	}
 
 	public function notContainsValues(array $values, $failMessage = null)
 	{
-		return $this->notContainsArray($values, $failMessage, false);
+		return $this->notIntersect($values, $failMessage, false);
 	}
 
 	public function strictlyNotContainsValues(array $values, $failMessage = null)
 	{
-		return $this->notContainsArray($values, $failMessage, true);
+		return $this->notIntersect($values, $failMessage, true);
 	}
 
 	protected function containsValue($value, $failMessage, $strict)
@@ -204,15 +204,11 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-	protected function containsArray(array $values, $failMessage, $strict)
+	protected function intersect(array $values, $failMessage, $strict)
 	{
 		$unknownValues = array();
 
-		if ($strict === false)
-		{
-			$unknownValues = array_diff($values, $this->value);
-		}
-		else foreach ($values as $value) if (in_array($value, $this->value, true) === false)
+		foreach ($values as $value) if (in_array($value, $this->value, $strict) === false)
 		{
 			$unknownValues[] = $value;
 		}
@@ -233,15 +229,11 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-	protected function notContainsArray(array $values, $failMessage, $strict)
+	protected function notIntersect(array $values, $failMessage, $strict)
 	{
 		$knownValues = array();
 
-		if ($strict === false)
-		{
-			$knownValues = array_intersect($values, $this->value);
-		}
-		else foreach ($values as $value) if (in_array($value, $this->value, $strict) === true)
+		foreach ($values as $value) if (in_array($value, $this->value, $strict) === true)
 		{
 			$knownValues[] = $value;
 		}
