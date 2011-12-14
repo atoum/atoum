@@ -208,7 +208,9 @@ class runner extends atoum\script
 
 	public function testIt()
 	{
-		return $this->runner->addTestsFromDirectory(atoum\directory . '/tests/units/classes');
+		$this->runner->addTestsFromDirectory(atoum\directory . '/tests/units/classes');
+
+		return $this;
 	}
 
 	public function enableLoop()
