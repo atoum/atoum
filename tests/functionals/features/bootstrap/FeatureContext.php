@@ -22,6 +22,12 @@ class FeatureContext extends BehatContext
 	{
 		$this->assert = new atoum\asserter\generator();
 		$this->workingDirectory = __DIR__ . '/../../tmp';
+
+		chdir($this->workingDirectory);
+
+		@unlink($this->workingDirectory . '/' . atoum\scripts\phar\generator::phar);
+
+		exec('php -d phar.readonly=0 ' . atoum\directory . '/scripts/phar/generator.php -d ' . $this->workingDirectory);
 	}
 
 	/**
@@ -29,8 +35,6 @@ class FeatureContext extends BehatContext
 	 */
 	public function iHaveAnAtoumPharArchive()
 	{
-		exec('php -d phar.readonly=0 ' . atoum\directory . '/scripts/phar/generator.php -d ' . $this->workingDirectory);
-
 		$this->assert
 			->boolean(is_file($this->workingDirectory . '/' . atoum\scripts\phar\generator::phar))->isTrue('Unable to generate PHAR archive in \'' . $this->workingDirectory . '\'')
 		;
@@ -41,8 +45,6 @@ class FeatureContext extends BehatContext
 	 */
 	public function iRunAtoumPharArchiveWithArgument($argument)
 	{
-		$this->ouput = null;
-
 		ob_start();
 
 		passthru(escapeshellcmd('php ' . $this->workingDirectory . '/' . atoum\scripts\phar\generator::phar . ' ' . $argument));
@@ -58,5 +60,13 @@ class FeatureContext extends BehatContext
 		$this->assert
 			->string($this->output)->match($regex)
 		;
+	}
+
+	/**
+	 * @Given /^i have a configuration file "([^"]*)" which contents "([^"]*)"$/
+	 */
+	public function iHaveAConfigurationFileWhichContents($file, $contents)
+	{
+		file_put_contents($this->workingDirectory . '/' . $file, $contents);
 	}
 }
