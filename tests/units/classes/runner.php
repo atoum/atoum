@@ -31,7 +31,6 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
 			->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->object($runner->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
 			->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 			->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
 			->variable($runner->getRunningDuration())->isNull()
@@ -41,12 +40,11 @@ class runner extends atoum\test
 			->array($runner->getTestObservers())->isEmpty()
 		;
 
-		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter(), $superglobals = new atoum\superglobals(), $locale = new atoum\locale(), $includer = new atoum\includer());
+		$runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter(), $locale = new atoum\locale(), $includer = new atoum\includer());
 
 		$this->assert
 			->object($runner->getScore())->isIdenticalTo($score)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
-			->object($runner->getSuperglobals())->isIdenticalTo($superglobals)
 			->object($runner->getLocale())->isIdenticalTo($locale)
 			->object($runner->getIncluder())->isIdenticalTo($includer)
 			->variable($runner->getRunningDuration())->isNull()
@@ -64,16 +62,6 @@ class runner extends atoum\test
 		$this->assert
 			->object($runner->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($runner)
 			->object($runner->getAdapter())->isIdenticalTo($adapter)
-		;
-	}
-
-	public function testSetSuperglobals()
-	{
-		$runner = new atoum\runner();
-
-		$this->assert
-			->object($runner->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($runner)
-			->object($runner->getSuperglobals())->isIdenticalTo($superglobals);
 		;
 	}
 
@@ -100,52 +88,30 @@ class runner extends atoum\test
 	public function testGetPhpPath()
 	{
 		$runner = new atoum\runner();
-		$runner
-			->setSuperglobals($superglobals = new atoum\superglobals())
-		;
+		$runner->setAdapter($adapter = new atoum\test\adapter());
 
-		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+		$adapter->getenv = function($variable) use (& $pearPhpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearPhpPath = uniqid()); };
 
 		$this->assert
-			->string($runner->getPhpPath())->isEqualTo($phpPath)
+			->string($runner->getPhpPath())->isEqualTo($pearPhpPath)
 		;
 
 		$runner = new atoum\runner();
-		$runner
-			->setSuperglobals($superglobals = new atoum\superglobals())
-			->setAdapter($adapter = new atoum\test\adapter())
-		;
+		$runner->setAdapter($adapter = new atoum\test\adapter());
 
-		unset($superglobals->_SERVER['_']);
-		$adapter->is_executable = false;
+		$adapter->getenv = function($variable) use (& $phpBinPath) {
+			switch ($variable)
+			{
+				case 'PHPBIN':
+					return ($phpBinPath = uniqid());
 
-		$this->assert
-			->exception(function() use ($runner) {
-					$runner->getPhpPath();
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-			->adapter($adapter)
-				->call('is_executable')->withArguments(PHP_BINDIR . '/php')->once()
-		;
-
-		$runner = new atoum\runner();
-		$runner
-			->setSuperglobals($superglobals = new atoum\superglobals())
-			->setAdapter($adapter = new atoum\test\adapter())
-		;
-
-		unset($superglobals->_SERVER['_']);
-		$adapter->is_executable = true;
+				default:
+					return false;
+			}
+		};
 
 		$this->assert
-			->string($runner->getPhpPath())->isEqualTo(PHP_BINDIR . '/php')
-		;
-
-		$runner->setPhpPath($phpPath = uniqid());
-
-		$this->assert
-			->string($runner->getPhpPath())->isEqualTo($phpPath)
+			->string($runner->getPhpPath())->isEqualTo($phpBinPath)
 		;
 	}
 
@@ -272,14 +238,12 @@ class runner extends atoum\test
 
 	public function testGetRunningDuration()
 	{
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = $phpPath = uniqid();
-
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
-		$adapter->realpath = $phpPath;
+		$adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); };
+		$adapter->realpath = function($path) { return $path; };
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_close = function() {};
@@ -287,7 +251,7 @@ class runner extends atoum\test
 		$adapter->microtime = function() { static $call = 0; return (++$call * 100); };
 		$adapter->get_declared_classes = function() { return array(); };
 
-		$runner = new atoum\runner(null, $adapter, $superglobals);
+		$runner = new atoum\runner(null, $adapter);
 
 		$this->assert
 			->variable($runner->getRunningDuration())->isNull()
@@ -304,20 +268,18 @@ class runner extends atoum\test
 
 	public function testGetTestNumber()
 	{
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = $phpPath = uniqid();
-
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
-		$adapter->realpath = $phpPath;
+		$adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); };
+		$adapter->realpath = function($path) { return $path; };
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_close = function() {};
 		$adapter->proc_terminate = function() {};
 
-		$runner = new atoum\runner(null, $adapter, $superglobals);
+		$runner = new atoum\runner(null, $adapter);
 
 		$this->assert
 			->integer($runner->getTestNumber())->isZero();
@@ -332,21 +294,19 @@ class runner extends atoum\test
 
 	public function testGetTestMethodNumber()
 	{
-		$superglobals = new atoum\superglobals();
-		$superglobals->_SERVER['_'] = $phpPath = uniqid();
-
 		$adapter = new atoum\test\adapter();
 		$adapter->get_declared_classes = array();
 		$adapter->proc_open = function() {};
 		$adapter->stream_get_contents = '';
-		$adapter->realpath = $phpPath;
+		$adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); };
+		$adapter->realpath = function($path) { return $path; };
 		$adapter->fclose = function() {};
 		$adapter->proc_get_status = array('exitcode' => 0, 'running' => false);
 		$adapter->proc_terminate = function() {};
 		$adapter->proc_close = function() {};
 		$adapter->get_declared_classes = array();
 
-		$runner = new atoum\runner(null, $adapter, $superglobals);
+		$runner = new atoum\runner(null, $adapter);
 
 		$this->assert
 			->integer($runner->getTestMethodNumber())->isZero();
@@ -523,13 +483,10 @@ class runner extends atoum\test
 		$adapter = new atoum\test\adapter();
 		$adapter->defined = false;
 
-		$superglobals = new atoum\superglobals();
-
-		$runner = new atoum\runner($score, $adapter, $superglobals);
-
-		$superglobals->_SERVER['_'] = $phpPath = uniqid();
+		$runner = new atoum\runner($score, $adapter);
 
 		$adapter->proc_open = false;
+		$adapter->getenv = function($variable) use (& $phpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $phpPath = uniqid()); };
 		$adapter->realpath = function($path) { return $path; };
 
 		$this->assert
@@ -575,7 +532,7 @@ class runner extends atoum\test
 
 		$adapter->resetCalls();
 
-		$adapter->realpath = $phpPath;
+		$adapter->realpath = function($path) { return $path; };
 		$adapter->proc_open = function($cmd, $descriptors, & $pipes) use (& $php, & $stdOut, & $stdErr) {
 			$pipes = array(
 				1 => $stdOut = uniqid(),

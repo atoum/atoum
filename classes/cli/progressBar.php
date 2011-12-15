@@ -15,13 +15,13 @@ class progressBar
 	protected $cli = null;
 	protected $refresh = null;
 	protected $counter = null;
-	protected $testsNumber = 0;
+	protected $iterations = 0;
 	protected $progressBar = null;
 	protected $currentTestNumber = 0;
 
-	public function __construct(atoum\test $test, atoum\cli $cli = null)
+	public function __construct($iterations, atoum\cli $cli = null)
 	{
-		$this->testsNumber = sizeof($test);
+		$this->iterations = $iterations;
 
 		$this->setCli($cli ?: new atoum\cli());
 	}
@@ -44,9 +44,9 @@ class progressBar
 
 		if ($this->progressBar === null && $this->counter === null)
 		{
-			$this->progressBar = sprintf(self::progressBarFormat, ($this->testsNumber > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->testsNumber), self::width, '_', STR_PAD_RIGHT)));
+			$this->progressBar = sprintf(self::progressBarFormat, ($this->iterations > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations), self::width, '_', STR_PAD_RIGHT)));
 
-			$this->counter = '[' . sprintf('%' . strlen((string) $this->testsNumber) . 'd', $this->currentTestNumber) . '/' . $this->testsNumber . ']';
+			$this->counter = '[' . sprintf('%' . strlen((string) $this->iterations) . 'd', $this->currentTestNumber) . '/' . $this->iterations . ']';
 
 			$string .= $this->progressBar . $this->counter;
 		}
@@ -69,13 +69,13 @@ class progressBar
 				$string .= $this->progressBar;
 			}
 
-			$this->counter = '[' . sprintf('%' . strlen((string) $this->testsNumber) . 'd', $this->currentTestNumber) . '/' . $this->testsNumber . ']';
+			$this->counter = '[' . sprintf('%' . strlen((string) $this->iterations) . 'd', $this->currentTestNumber) . '/' . $this->iterations . ']';
 
 			$string .= $this->counter;
 
-			if ($this->testsNumber > self::width && $this->currentTestNumber % (self::width - 1) == 0)
+			if ($this->iterations > self::width && $this->currentTestNumber % (self::width - 1) == 0)
 			{
-				$this->progressBar = '[' . str_pad(str_repeat('.', min(self::width, $this->testsNumber - $this->currentTestNumber)), self::width, '_', STR_PAD_RIGHT) . ']';
+				$this->progressBar = '[' . str_pad(str_repeat('.', min(self::width, $this->iterations - $this->currentTestNumber)), self::width, '_', STR_PAD_RIGHT) . ']';
 				$this->counter = '';
 
 				$string .= PHP_EOL . $this->progressBar;
@@ -89,7 +89,7 @@ class progressBar
 
 	public function refresh($value)
 	{
-		if ($this->testsNumber > 0 && $this->currentTestNumber < $this->testsNumber)
+		if ($this->iterations > 0 && $this->currentTestNumber < $this->iterations)
 		{
 			$this->refresh .= $value;
 		}

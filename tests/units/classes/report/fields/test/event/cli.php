@@ -48,7 +48,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 			->exception(function() use ($event) { $event->getProgressBar(); })
 				->isInstanceOf('logicException')
 				->hasMessage('Unable to get progress bar because test is undefined')
-			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('mageekguy\atoum\cli\progressBar')
+			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('mageekguy\atoum\test\cli\progressBar')
 		;
 	}
 
@@ -115,7 +115,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
 
 		$this->assert
-			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
+			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\test\cli\progressBar($test); }))->isIdenticalTo($event)
 			->object($event->setWithTest($test)->getProgressBar())->isIdenticalTo($progressBar)
 		;
 
@@ -148,7 +148,7 @@ class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
 		$count = rand(1, PHP_INT_MAX);
 		$test->getMockController()->count = function() use ($count) { return $count; };
 
-		$progressBar = new atoum\cli\progressBar($test);
+		$progressBar = new atoum\test\cli\progressBar($test);
 
 		$this->assert
 			->string($event->__toString($progressBar))->isEmpty()
