@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli;
+namespace mageekguy\atoum\tests\units\test\cli;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\cli,
-	mageekguy\atoum\mock
+	mageekguy\atoum\mock,
+	mageekguy\atoum\test\cli
 ;
 
-require_once __DIR__ . '/../../runner.php';
+require_once __DIR__ . '/../../../runner.php';
 
 class progressBar extends atoum\test
 {
@@ -22,32 +22,72 @@ class progressBar extends atoum\test
 
 	public function test__construct()
 	{
+		$this->mock('mageekguy\atoum\test');
+
+		$testAdapter = new atoum\test\adapter();
+		$testAdapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
+
+		$testController->count = function() { return 0; };
+
+		$progressBar = new cli\progressBar($test);
+
 		$this->assert
-			->if($progressBar = new cli\progressBar(0))
-			->then
-				->object($progressBar->getCli())->isEqualTo(new atoum\cli())
-				->castToString($progressBar)->isEqualTo('[' . str_repeat('_', 60) . '][0/0]')
-				->castToString($progressBar)->isEmpty()
-			->if($progressBar = new cli\progressBar(1))
-			->then
-				->castToString($progressBar)->isEqualTo('[.' . str_repeat('_', 59) . '][0/1]')
-				->castToString($progressBar)->isEmpty()
-			->if($progressBar = new cli\progressBar($count = rand(2, 9)))
-			->then
-				->castToString($progressBar)->isEqualTo('[' . str_repeat('.', $count) . str_repeat('_', 60 - $count) . '][0/' . $count . ']')
-				->castToString($progressBar)->isEmpty()
-			->if($progressBar = new cli\progressBar($count = rand(10, 60)))
-			->then
-				->castToString($progressBar)->isEqualTo('[' . str_repeat('.', $count) . str_repeat('_', 60 - $count) . '][ 0/' . $count . ']')
-				->castToString($progressBar)->isEmpty()
-			->if($progressBar = new cli\progressBar(61))
-			->then
-				->castToString($progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][ 0/61]')
-				->castToString($progressBar)->isEmpty()
-			->if($progressBar = new cli\progressBar($count = rand(100, PHP_INT_MAX)))
-			->then
-				->castToString($progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][' . sprintf('%' . strlen((string) $count) . 'd', 0) . '/' . $count . ']')
-				->castToString($progressBar)->isEmpty()
+			->object($progressBar->getCli())->isEqualTo(new atoum\cli())
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('_', 60) . '][0/0]')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$testController->count = function() { return 1; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$count = rand(2, 9);
+		$testController->count = function() use ($count) { return $count; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$count = rand(10, 60);
+		$testController->count = function() use ($count) { return $count; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][ 0/' . sizeof($test) . ']')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$testController->count = function() { return 61; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][ 0/' . sizeof($test) . ']')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$count = rand(100, PHP_INT_MAX);
+		$testController->count = function() use ($count) { return $count; };
+
+		$progressBar = new cli\progressBar($test);
+
+		$this->assert
+			->castToString($progressBar)->isEqualTo('[' . str_repeat('.', 59) . '>][' . sprintf('%' . strlen((string) sizeof($test)) . 'd', 0) . '/' . sizeof($test) . ']')
+			->castToString($progressBar)->isEmpty()
 		;
 	}
 
@@ -55,12 +95,23 @@ class progressBar extends atoum\test
 	{
 		$this
 			->mock('mageekguy\atoum\cli')
+			->mock('mageekguy\atoum\test')
 		;
+
+		$testAdapter = new atoum\test\adapter();
+		$testAdapter->class_exists = true;
+
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
+
+		$testController->count = function() { return 0; };
 
 		$cli = new \mock\mageekguy\atoum\cli();
 		$cli->getMockController()->isTerminal = true;
 
-		$progressBar = new cli\progressBar(0, $cli);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
@@ -68,30 +119,34 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar(1, $cli);
+		$testController->count = function() { return 1; };
+
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 		$progressBarLength = strlen($progressBarString);
 
 		$this->assert
-			->string($progressBarString)->isEqualTo('[.' . str_repeat('_', 59) . '][0/1]')
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
 			->castToString($progressBar)->isEmpty()
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
 			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar(1, $cli);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
-			->castToString($progressBar, null, "\010")->isEqualTo('[.' . str_repeat('_', 59) . '][0/1]' . str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
+			->castToString($progressBar, null, "\010")->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']' . str_repeat("\010", $progressBarLength - 1) . 'F' . str_repeat('_', 59) . '][1/1]')
 			->castToString($progressBar)->isEmpty()
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar(60, $cli);
+		$testController->count = function() { return 60; };
+
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 
@@ -126,7 +181,9 @@ class progressBar extends atoum\test
 				->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar(61, $cli);
+		$testController->count = function() { return 61; };
+
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 
@@ -186,9 +243,16 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
+		$testController = new mock\controller();
+		$testController->getTestedClassName = uniqid();
+
+		$test = new \mock\mageekguy\atoum\test(null, null, $testAdapter, null, null, $testController);
+
+		$testController->count = function() { return 0; };
+
 		$cli->getMockController()->isTerminal = false;
 
-		$progressBar = new cli\progressBar(0, $cli);
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$this->assert
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
@@ -196,13 +260,15 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEmpty()
 		;
 
-		$progressBar = new cli\progressBar(3, $cli);
+		$testController->count = 3;
+
+		$progressBar = new cli\progressBar($test, $cli);
 
 		$progressBarString = (string) $progressBar;
 		$progressBarLength = strlen($progressBarString);
 
 		$this->assert
-			->string($progressBarString)->isEqualTo('[...' . str_repeat('_', 57) . '][0/3]')
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', sizeof($test)) . str_repeat('_', 60 - sizeof($test)) . '][0/' . sizeof($test) . ']')
 			->castToString($progressBar)->isEmpty()
 			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
 			->castToString($progressBar)->isEqualTo(PHP_EOL . '[' . 'F..' . str_repeat('_', 57) . '][1/3]')

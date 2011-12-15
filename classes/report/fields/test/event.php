@@ -4,8 +4,8 @@ namespace mageekguy\atoum\report\fields\test;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\cli,
 	mageekguy\atoum\report,
+	mageekguy\atoum\test\cli,
 	mageekguy\atoum\exceptions
 ;
 

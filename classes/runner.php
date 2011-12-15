@@ -18,7 +18,6 @@ class runner implements observable, adapter\aggregator
 	protected $class = '';
 	protected $score = null;
 	protected $adapter = null;
-	protected $superglobals = null;
 	protected $locale = null;
 	protected $includer = null;
 	protected $observers = array();
@@ -35,10 +34,9 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null, locale $locale = null, includer $includer = null)
+	public function __construct(score $score = null, adapter $adapter = null, locale $locale = null, includer $includer = null)
 	{
 		$this
-			->setSuperglobals($superglobals ?: new superglobals())
 			->setAdapter($adapter ?: new adapter())
 			->setScore($score ?: new score())
 			->setLocale($locale ?: new locale())
@@ -73,18 +71,6 @@ class runner implements observable, adapter\aggregator
 	public function getAdapter()
 	{
 		return $this->adapter;
-	}
-
-	public function setSuperglobals(atoum\superglobals $superglobals)
-	{
-		$this->superglobals = $superglobals;
-
-		return $this;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
 	}
 
 	public function setLocale(locale $locale)
@@ -150,7 +136,7 @@ class runner implements observable, adapter\aggregator
 			{
 				if (($phpPath = $this->adapter->getenv('PHPBIN')) === false)
 				{
-					if (DIRECTORY_SEPARATOR === '\\' || ($phpPath = ($this->adapter->defined('PHP_BINARY') ? PHP_BINARY : PHP_BINDIR . '/php')) === false)
+					if ($this->adapter->constant('DIRECTORY_SEPARATOR') === '\\' || ($phpPath = ($this->adapter->defined('PHP_BINARY') ? PHP_BINARY : PHP_BINDIR . '/php')) === false)
 					{
 						throw new exceptions\runtime('Unable to find PHP executable');
 					}
