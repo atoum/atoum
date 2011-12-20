@@ -21,17 +21,25 @@ abstract class asynchronous extends atoum\report
 	{
 		parent::handleEvent($event, $observable)->getFieldsAsString($event);
 
-		if ($event === atoum\runner::runStop)
+		switch ($event)
 		{
-			if ($this->title !== null)
-			{
-				$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
-			}
+			case atoum\test::fail:
+			case atoum\test::error:
+			case atoum\test::exception:
+				$this->fail = true;
+				break;
 
-			foreach ($this->writers as $writer)
-			{
-				$writer->writeAsynchronousReport($this);
-			}
+			case atoum\runner::runStop:
+				if ($this->title !== null)
+				{
+					$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
+				}
+
+				foreach ($this->writers as $writer)
+				{
+					$writer->writeAsynchronousReport($this);
+				}
+				break;
 		}
 
 		return $this;
