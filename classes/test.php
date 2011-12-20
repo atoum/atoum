@@ -39,6 +39,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $observers = array();
 	private $tags = array();
 	private $ignore = false;
+	private $dataProviders = array();
 	private $testMethods = array();
 	private $runTestMethods = array();
 	private $currentMethod = null;
@@ -334,6 +335,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $tags;
 	}
 
+	public function getDataProviders()
+	{
+		return $this->dataProviders;
+	}
+
 	public function setAdapter(adapter $adapter)
 	{
 		$this->adapter = $adapter;
@@ -550,7 +556,37 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$time = microtime(true);
 					$memory = memory_get_usage(true);
 
-					$this->{$testMethod}();
+					if (isset($this->dataProviders[$testMethod]) === false)
+					{
+						$this->{$testMethod}();
+					}
+					else
+					{
+						$data = $this->{$this->dataProviders[$testMethod]}();
+
+						if (is_array($data) === false && $data instanceof \traversable === false)
+						{
+							throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or a traversable instance');
+						}
+
+						$reflectionMethod = new \reflectionMethod($this, $testMethod);
+						$numberOfArguments = $reflectionMethod->getNumberOfRequiredParameters();
+
+						foreach ($data as $key => $arguments)
+						{
+							if (is_array($arguments) === false)
+							{
+								throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array at key ' . $key);
+							}
+
+							if (sizeof($arguments) != $numberOfArguments)
+							{
+								throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return ' . $numberOfArguments . ' argument(s) at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
+							}
+
+							call_user_func_array(array($this, $testMethod), $arguments);
+						}
+					}
 
 					$memoryUsage = memory_get_usage(true) - $memory;
 					$duration = microtime(true) - $time;
@@ -858,6 +894,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 		test\adapter::resetCallsForAllInstances();
 
 		$this->score->unsetCase();
+
+		return $this;
+	}
+
+	public function setDataProvider($testMethodName, $dataProvider)
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		if (method_exists($this, $dataProvider) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . $dataProvider . '() is unknown');
+		}
+
+		$this->dataProviders[$testMethodName] = $dataProvider;
 
 		return $this;
 	}
