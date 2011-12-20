@@ -3,27 +3,38 @@
 namespace mageekguy\atoum\report\fields\test;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report
+	mageekguy\atoum\test,
+	mageekguy\atoum\locale,
+	mageekguy\atoum\report,
+	mageekguy\atoum\observable
 ;
 
-abstract class duration extends report\fields\test
+abstract class duration extends report\field
 {
 	protected $value = null;
+
+	public function __construct(locale $locale = null)
+	{
+		parent::__construct(array(test::runStop), $locale);
+	}
 
 	public function getValue()
 	{
 		return $this->value;
 	}
 
-	public function setWithTest(atoum\test $test, $event = null)
+	public function handleEvent($event, observable $observable)
 	{
-		if ($event === atoum\test::runStop)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->value = $test->getScore()->getTotalDuration();
+			return false;
 		}
+		else
+		{
+			$this->value = $observable->getScore()->getTotalDuration();
 
-		return $this;
+			return true;
+		}
 	}
 }
 

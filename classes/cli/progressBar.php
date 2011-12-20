@@ -21,13 +21,31 @@ class progressBar
 	protected $iterations = 0;
 	protected $currentIteration = 0;
 
-	public function __construct($iterations, atoum\cli $cli = null)
+	public function __construct($iterations = 0, atoum\cli $cli = null)
 	{
 		$this->iterations = $iterations;
 		$this->progressBarFormat = self::defaultProgressBarFormat;
 		$this->counterFormat = self::defaultCounterFormat;
 
 		$this->setCli($cli ?: new atoum\cli());
+	}
+
+	public function reset()
+	{
+		$this->refresh = null;
+		$this->iterations = 0;
+		$this->currentIteration = 0;
+		$this->progressBar = null;
+		$this->counter = null;
+
+		return $this;
+	}
+
+	public function setIterations($iterations)
+	{
+		$this->reset()->iterations = (int) $iterations;
+
+		return $this;
 	}
 
 	public function setCli(atoum\cli $cli)

@@ -12,6 +12,8 @@ use
 abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
+	const defaultNamespace = 'tests\units';
+
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -25,7 +27,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
-	const defaultNamespace = 'tests\units';
 
 	private $phpPath = null;
 	private $path = '';
@@ -455,18 +456,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->size;
 	}
 
-	public function addObserver(observers\test $observer)
+	public function addObserver(observer $observer)
 	{
 		$this->observers[] = $observer;
 
 		return $this;
 	}
 
-	public function callObservers($method)
+	public function callObservers($event)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->{$method}($this);
+			$observer->handleEvent($event, $this);
 		}
 
 		return $this;
@@ -841,25 +842,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public static function getNamespace()
 	{
 		return self::$namespace ?: self::defaultNamespace;
-	}
-
-	public static function getObserverEvents()
-	{
-		return array(
-			self::runStart,
-			self::beforeSetUp,
-			self::afterSetUp,
-			self::beforeTestMethod,
-			self::fail,
-			self::error,
-			self::exception,
-			self::uncompleted,
-			self::success,
-			self::afterTestMethod,
-			self::beforeTearDown,
-			self::afterTearDown,
-			self::runStop
-		);
 	}
 
 	public function startCase($case)

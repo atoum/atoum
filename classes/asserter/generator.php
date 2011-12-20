@@ -61,6 +61,14 @@ class generator
 	{
 		switch ($method)
 		{
+			case 'if':
+				if ($this->test !== null)
+				{
+					$this->test->stopCase();
+				}
+
+				return $this;
+
 			case 'assert':
 				if ($this->test !== null)
 				{
@@ -76,7 +84,6 @@ class generator
 
 				return $this;
 
-			case 'if':
 			case 'and':
 				return $this;
 

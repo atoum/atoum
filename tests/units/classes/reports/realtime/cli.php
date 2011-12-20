@@ -19,7 +19,7 @@ class cli extends atoum\test
 		$report = new reports\realtime\cli();
 
 		$this->assert
-			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
+			->array($report->getFields())->isEqualTo(array(
 					new fields\runner\atoum\cli(
 						new prompt('> '),
 						new colorizer('1;36')
@@ -32,10 +32,7 @@ class cli extends atoum\test
 						new prompt('> '),
 						new colorizer('1;36'),
 						new prompt('=> ', new colorizer('1;36'))
-					)
-				)
-			)
-			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
+					),
 					new fields\runner\tests\duration\cli(
 						new prompt('> '),
 						new colorizer('1;36')
@@ -89,58 +86,11 @@ class cli extends atoum\test
 						new prompt('=> ', new colorizer('0;37')),
 						null,
 						new prompt('==> ', new colorizer('0;37'))
-					)
-				)
-			)
-			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
+					),
 					new fields\test\run\cli(
 						new prompt('> '),
 						new colorizer('1;36')
 					),
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::beforeSetUp))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::afterSetUp))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::beforeTestMethod))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::success))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::fail))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::error))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::exception))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::afterTestMethod))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::beforeTearDown))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::afterTearDown))->isEqualTo(array(
-					new fields\test\event\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
 					new fields\test\event\cli(),
 					new fields\test\duration\cli(
 						new prompt('=> ', new colorizer('1;36'))

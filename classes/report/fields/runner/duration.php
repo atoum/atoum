@@ -3,27 +3,38 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
+	mageekguy\atoum\locale,
 	mageekguy\atoum\runner,
-	mageekguy\atoum\report
+	mageekguy\atoum\report,
+	mageekguy\atoum\observable
 ;
 
-abstract class duration extends report\fields\runner
+abstract class duration extends report\field
 {
 	protected $value = null;
+
+	public function __construct(locale $locale = null)
+	{
+		parent::__construct(array(runner::runStop), $locale);
+	}
 
 	public function getValue()
 	{
 		return $this->value;
 	}
 
-	public function setWithRunner(runner $runner, $event = null)
+	public function handleEvent($event, observable $observable)
 	{
-		if ($event === runner::runStop)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->value = $runner->getRunningDuration();
+			return false;
 		}
+		else
+		{
+			$this->value = $observable->getRunningDuration();
 
-		return $this;
+			return true;
+		}
 	}
 }
 
