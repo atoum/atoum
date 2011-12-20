@@ -34,7 +34,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not have size %d'), $this, $size));
 		}
 
 		return $this;
