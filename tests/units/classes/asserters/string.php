@@ -127,7 +127,7 @@ class string extends atoum\test
 					}
 				)
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage($test->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
+				->hasMessage($test->getLocale()->_('strings are not equal') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
 		;
 	}
 
@@ -159,7 +159,7 @@ class string extends atoum\test
 					}
 				)
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage($test->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference('')->setData($string))
+				->hasMessage($test->getLocale()->_('strings are not equal') . PHP_EOL . $diff->setReference('')->setData($string))
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
 		;
