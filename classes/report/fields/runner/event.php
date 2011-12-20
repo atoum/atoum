@@ -1,27 +1,27 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test;
+namespace mageekguy\atoum\report\fields\runner;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\test,
+	mageekguy\atoum\runner,
+	mageekguy\atoum\locale,
 	mageekguy\atoum\report,
-	mageekguy\atoum\test\cli,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\observable
 ;
 
 abstract class event extends report\fields\event
 {
-	public function __construct(atoum\locale $locale = null)
+	public function __construct(locale $locale = null)
 	{
 		parent::__construct(array(
-				test::runStart,
+				runner::runStart,
 				test::fail,
 				test::error,
 				test::uncompleted,
 				test::exception,
 				test::success,
-				test::runStop
+				runner::runStop
 			),
 			$locale
 		);

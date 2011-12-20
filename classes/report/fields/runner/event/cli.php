@@ -1,15 +1,16 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\event;
+namespace mageekguy\atoum\report\fields\runner\event;
 
 use
 	mageekguy\atoum\test,
+	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\cli\progressBar
 ;
 
-class cli extends report\fields\test\event
+class cli extends report\fields\runner\event
 {
 	protected $progressBar = null;
 
@@ -31,7 +32,7 @@ class cli extends report\fields\test\event
 
 		if ($this->observable !== null)
 		{
-			if ($this->event === test::runStop)
+			if ($this->event === runner::runStop)
 			{
 				$string = PHP_EOL;
 			}
@@ -39,8 +40,8 @@ class cli extends report\fields\test\event
 			{
 				switch ($this->event)
 				{
-					case test::runStart:
-						$this->progressBar->reset()->setIterations(sizeof($this->observable));
+					case runner::runStart:
+						$this->progressBar->reset()->setIterations($this->observable->getTestMethodNumber());
 						break;
 
 					case test::success:
@@ -63,7 +64,7 @@ class cli extends report\fields\test\event
 						$this->progressBar->refresh('U');
 						break;
 
-					case test::runStop:
+					case runner::runStop:
 						$this->progressBar->reset();
 						break;
 				}
