@@ -9,10 +9,11 @@ use
 
 class runner implements observable, adapter\aggregator
 {
-	const runStart = 'runnerStart';
-	const runStop = 'runnerStop';
 	const atoumVersionConstant = 'mageekguy\atoum\version';
 	const atoumDirectoryConstant = 'mageekguy\atoum\directory';
+
+	const runStart = 'runnerStart';
+	const runStop = 'runnerStop';
 
 	protected $path = '';
 	protected $class = '';
@@ -229,47 +230,28 @@ class runner implements observable, adapter\aggregator
 		return $this->codeCoverage;
 	}
 
-	public function addObserver(atoum\observers\runner $observer)
+	public function addObserver(atoum\observer $observer)
 	{
 		$this->observers[] = $observer;
 
 		return $this;
 	}
 
-	public function removeObserver(atoum\observers\runner $observer)
+	public function removeObserver(atoum\observer $observer)
 	{
 		$this->observers = self::remove($observer, $this->observers);
 
 		return $this;
 	}
 
-	public function callObservers($method)
+	public function callObservers($event)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->{$method}($this);
+			$observer->handleEvent($event, $this);
 		}
 
 		return $this;
-	}
-
-	public function addTestObserver(atoum\observers\test $observer)
-	{
-		$this->testObservers[] = $observer;
-
-		return $this;
-	}
-
-	public function removeTestObserver(atoum\observers\test $observer)
-	{
-		$this->testObservers = self::remove($observer, $this->testObservers);
-
-		return $this;
-	}
-
-	public function getTestObservers()
-	{
-		return $this->testObservers;
 	}
 
 	public function setPathAndVersionInScore()
@@ -389,7 +371,7 @@ class runner implements observable, adapter\aggregator
 						$test->disableCodeCoverage();
 					}
 
-					foreach ($this->testObservers as $observer)
+					foreach ($this->observers as $observer)
 					{
 						$test->addObserver($observer);
 					}
@@ -455,20 +437,14 @@ class runner implements observable, adapter\aggregator
 	{
 		$this->reports[] = $report;
 
-		return $this
-			->addObserver($report)
-			->addTestObserver($report)
-		;
+		return $this->addObserver($report);
 	}
 
 	public function removeReport(atoum\report $report)
 	{
 		$this->reports = self::remove($report, $this->reports);
 
-		return $this
-			->removeObserver($report)
-			->removeTestObserver($report)
-		;
+		return $this->removeObserver($report);
 	}
 
 	public function removeReports()
@@ -489,11 +465,6 @@ class runner implements observable, adapter\aggregator
 	public function getReports()
 	{
 		return $this->reports;
-	}
-
-	public static function getObserverEvents()
-	{
-		return array(self::runStart, self::runStop);
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)

@@ -2,6 +2,9 @@
 
 namespace mageekguy\atoum;
 
-interface observer {}
+interface observer
+{
+	public function handleEvent($event, observable $observable);
+}
 
 ?>

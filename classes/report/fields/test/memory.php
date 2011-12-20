@@ -4,26 +4,36 @@ namespace mageekguy\atoum\report\fields\test;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\report
 ;
 
-abstract class memory extends report\fields\test
+abstract class memory extends report\field
 {
 	protected $value = null;
+
+	public function __construct(atoum\locale $locale = null)
+	{
+		parent::__construct(array(test::runStop), $locale);
+	}
 
 	public function getValue()
 	{
 		return $this->value;
 	}
 
-	public function setWithTest(atoum\test $test, $event = null)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		if ($event === atoum\test::runStop)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->value = $test->getScore()->getTotalMemoryUsage();
+			return false;
 		}
+		else
+		{
+			$this->value = $observable->getScore()->getTotalMemoryUsage();
 
-		return $this;
+			return true;
+		}
 	}
 }
 

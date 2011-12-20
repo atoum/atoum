@@ -4,26 +4,37 @@ namespace mageekguy\atoum\report\fields\runner;
 
 use
 	mageekguy\atoum\runner,
-	mageekguy\atoum\report
+	mageekguy\atoum\locale,
+	mageekguy\atoum\observable,
+	mageekguy\atoum\report\field
 ;
 
-abstract class outputs extends report\fields\runner
+abstract class outputs extends field
 {
 	protected $runner = null;
+
+	public function __construct(locale $locale = null)
+	{
+		parent::__construct(array(runner::runStop), $locale);
+	}
 
 	public function getRunner()
 	{
 		return $this->runner;
 	}
 
-	public function setWithRunner(runner $runner, $event = null)
+	public function handleEvent($event, observable $observable)
 	{
-		if ($this->runner !== $runner)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->runner = $runner;
+			return false;
 		}
+		else
+		{
+			$this->runner = $observable;
 
-		return $this;
+			return true;
+		}
 	}
 }
 

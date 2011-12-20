@@ -14,246 +14,237 @@ use
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\runner\tests\coverage
+class cli extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner')
+			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\coverage')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new tests\coverage\cli();
-
 		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt())
-			->object($field->getClassPrompt())->isEqualTo(new prompt())
-			->object($field->getMethodPrompt())->isEqualTo(new prompt())
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
-			->object($field->getLocale())->isEqualTo(new locale())
-			->variable($field->getCoverage())->isNull()
-		;
-
-		$field = new tests\coverage\cli(null, null, null, null, null, null);
-
-		$this->assert
-			->object($field->getTitlePrompt())->isEqualTo(new prompt())
-			->object($field->getClassPrompt())->isEqualTo(new prompt())
-			->object($field->getMethodPrompt())->isEqualTo(new prompt())
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
-			->object($field->getLocale())->isEqualTo(new locale())
-			->variable($field->getCoverage())->isNull()
-		;
-
-
-		$field = new tests\coverage\cli($titlePrompt = new prompt(), $classPrompt = new prompt(), $methodPrompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $locale = new locale());
-
-		$this->assert
-			->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
-			->object($field->getClassPrompt())->isIdenticalTo($classPrompt)
-			->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
-			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-			->object($field->getCoverageColorizer())->isIdenticalTo($coverageColorizer)
-			->object($field->getLocale())->isIdenticalTo($locale)
-			->variable($field->getCoverage())->isNull()
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->getTitlePrompt())->isEqualTo(new prompt())
+				->object($field->getClassPrompt())->isEqualTo(new prompt())
+				->object($field->getMethodPrompt())->isEqualTo(new prompt())
+				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
+				->object($field->getLocale())->isEqualTo(new locale())
+				->variable($field->getCoverage())->isNull()
+				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+			->if($field = new tests\coverage\cli(null, null, null, null, null, null))
+			->then
+				->object($field->getTitlePrompt())->isEqualTo(new prompt())
+				->object($field->getClassPrompt())->isEqualTo(new prompt())
+				->object($field->getMethodPrompt())->isEqualTo(new prompt())
+				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
+				->object($field->getLocale())->isEqualTo(new locale())
+				->variable($field->getCoverage())->isNull()
+				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+			->if($field = new tests\coverage\cli($titlePrompt = new prompt(), $classPrompt = new prompt(), $methodPrompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $locale = new locale()))
+			->then
+				->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
+				->object($field->getClassPrompt())->isIdenticalTo($classPrompt)
+				->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
+				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+				->object($field->getCoverageColorizer())->isIdenticalTo($coverageColorizer)
+				->object($field->getLocale())->isIdenticalTo($locale)
+				->variable($field->getCoverage())->isNull()
+				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
 		;
 	}
 
 	public function testSetTitlePrompt()
 	{
-		$field = new tests\coverage\cli();
-
 		$this->assert
-			->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getTitlePrompt())->isEqualTo($prompt)
-		;
-	}
-
-	public function testSetMethodPrompt()
-	{
-		$field = new tests\coverage\cli();
-
-		$this->assert
-			->object($field->setClassPrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getClassPrompt())->isEqualTo($prompt)
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getTitlePrompt())->isEqualTo($prompt)
+			->if($field = new tests\coverage\cli(new prompt()))
+			->then
+				->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getTitlePrompt())->isEqualTo($prompt)
 		;
 	}
 
 	public function testSetClassPrompt()
 	{
-		$field = new tests\coverage\cli();
-
 		$this->assert
-			->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getMethodPrompt())->isEqualTo($prompt)
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getMethodPrompt())->isEqualTo($prompt)
+			->if($field = new tests\coverage\cli(null, new prompt()))
+			->then
+				->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getMethodPrompt())->isEqualTo($prompt)
+		;
+	}
+
+	public function testSetMethodPrompt()
+	{
+		$this->assert
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->setClassPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getClassPrompt())->isEqualTo($prompt)
+			->if($field = new tests\coverage\cli(null, null, new prompt()))
+			->then
+				->object($field->setClassPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getClassPrompt())->isEqualTo($prompt)
 		;
 	}
 
 	public function testSetTitleColorizer()
 	{
-		$field = new tests\coverage\cli();
-
 		$this->assert
-			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+			->if($field = new tests\coverage\cli(null, null, null, new colorizer()))
+			->then
+				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetTitleCoverageColorizer()
 	{
-		$field = new tests\coverage\cli();
-
 		$this->assert
-			->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
+			->if($field = new tests\coverage\cli())
+			->then
+				->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
+			->if($field = new tests\coverage\cli(null, null, null, null, new colorizer()))
+			->then
+				->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
-	public function testSetWithRunner()
+	public function testHandleEvent()
 	{
-		$field = new tests\coverage\cli();
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
-		;
-
-		$scoreCoverage = new score\coverage();
-
-		$score = new \mock\mageekguy\atoum\score();
-		$score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; };
-
-		$runner = new \mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = function () use ($score) { return $score; };
-
 		$this->assert
-			->variable($field->getCoverage())->isNull()
-			->object($field->setWithRunner($runner))->isIdenticalTo($field)
-			->variable($field->getCoverage())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStart))->isIdenticalTo($field)
-			->variable($field->getCoverage())->isNull()
-			->object($field->setWithRunner($runner, atoum\runner::runStop))->isIdenticalTo($field)
-			->variable($field->getCoverage())->isIdenticalTo($scoreCoverage)
+			->if($field = new tests\coverage\cli())
+			->then
+				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
+				->variable($field->getCoverage())->isNull()
+				->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isTrue()
+				->object($field->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
 		;
 	}
 
 	public function test__toString()
 	{
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
-		;
-
-		$scoreCoverage = new score\coverage();
-
-		$score = new \mock\mageekguy\atoum\score();
-		$score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; };
-
-		$runner = new \mock\mageekguy\atoum\runner();
-		$runner->getMockController()->getScore = function () use ($score) { return $score; };
-
-		$field = new tests\coverage\cli();
-
-		$this->assert
-			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEmpty()
-		;
-
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
-
-		$class = new \mock\reflectionClass(uniqid(), $classController);
-
-		$methodController = new mock\controller();
-		$methodController->__construct = function() {};
-		$methodController->isAbstract = false;
-		$methodController->getFileName = function() use (& $classFile) { return $classFile; };
-		$methodController->getDeclaringClass = $class;
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getStartLine = 6;
-		$methodController->getEndLine = 8;
-
-		$classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController));
-
-		$scoreCoverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
-
-		$classFile = uniqid();
-		$className = uniqid();
-		$methodName = uniqid();
-
-		$xdebugData = array(
-		  $classFile =>
-			 array(
-				5 => 1,
-				6 => 2,
-				7 => 3,
-				8 => 2,
-				9 => 1
-			),
-		  uniqid() =>
-			 array(
-				5 => 2,
-				6 => 3,
-				7 => 4,
-				8 => 3,
-				9 => 2
-			)
-		);
-
-		$scoreCoverage->addXdebugDataForTest($this, $xdebugData);
-
-		$field = new tests\coverage\cli();
-
-		$this->assert
-			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(
-					$field->getTitlePrompt() . sprintf($field->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
-					$field->getClassPrompt() . sprintf($field->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
-					$field->getMethodPrompt() . sprintf($field->getLocale()->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
-			)
-		;
-
-		$field = new tests\coverage\cli($titlePrompt = new prompt(uniqid()), $classPrompt = new prompt(uniqid()), $methodPrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $coverageColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
-
-		$this->assert
-			->castToString($field)->isEmpty()
-			->castToString($field->setWithRunner($runner))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStart))->isEmpty()
-			->castToString($field->setWithRunner($runner, atoum\runner::runStop))->isEqualTo(
-					$titlePrompt .
-					sprintf(
-						$locale->_('%s: %s'),
-						$titleColorizer->colorize($locale->_('Code coverage value')),
-						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValue() * 100.0))
-					) .
-					PHP_EOL .
-					$classPrompt .
-					sprintf(
-						$locale->_('%s: %s'),
-						$titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
-						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
-					) .
-					PHP_EOL .
-					$methodPrompt .
-					sprintf(
-						$locale->_('%s: %s'),
-						$titleColorizer->colorize(sprintf($locale->_('%s::%s()'), $className, $methodName)),
-						$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
-					) .
-					PHP_EOL
-			)
+		$this
+			->mock('reflectionClass')
+			->mock('reflectionMethod')
+			->mock('mageekguy\atoum\score')
+			->assert
+				->if($scoreCoverage = new score\coverage())
+				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
+				->and($runner = new atoum\runner($score))
+				->and($defaultField = new tests\coverage\cli())
+				->and($customField = new tests\coverage\cli($titlePrompt = new prompt(uniqid()), $classPrompt = new prompt(uniqid()), $methodPrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $coverageColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
+				->and($customField->handleEvent(atoum\runner::runStart, $runner))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+				->and($customField->handleEvent(atoum\runner::runStop, $runner))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($classController = new mock\controller())
+				->and($classController->__construct = function() {})
+				->and($classController->getName = function() use (& $className) { return $className; })
+				->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+				->and($class = new \mock\reflectionClass(uniqid(), $classController))
+				->and($methodController = new mock\controller())
+				->and($methodController->__construct = function() {})
+				->and($methodController->isAbstract = false)
+				->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+				->and($methodController->getDeclaringClass = $class)
+				->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+				->and($methodController->getStartLine = 6)
+				->and($methodController->getEndLine = 8)
+				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+				->and($scoreCoverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
+				->and($className = uniqid())
+				->and($methodName = uniqid())
+				->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(
+							  ($classFile = uniqid()) =>
+								 array(
+									5 => 1,
+									6 => 2,
+									7 => 3,
+									8 => 2,
+									9 => 1
+								),
+							  uniqid() =>
+								 array(
+									5 => 2,
+									6 => 3,
+									7 => 4,
+									8 => 3,
+									9 => 2
+								)
+							)
+						)
+					)
+				->and($defaultField = new tests\coverage\cli())
+				->and($customField = new tests\coverage\cli($titlePrompt = new prompt(uniqid()), $classPrompt = new prompt(uniqid()), $methodPrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $coverageColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
+				->and($customField->handleEvent(atoum\runner::runStart, $runner))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+				->and($customField->handleEvent(atoum\runner::runStop, $runner))
+				->then
+					->castToString($defaultField)->isEqualTo(
+							$defaultField->getTitlePrompt() . sprintf($defaultField->getLocale()->_('Code coverage value: %3.2f%%'), $scoreCoverage->getValue() * 100) . PHP_EOL .
+							$defaultField->getClassPrompt() . sprintf($defaultField->getLocale()->_('Class %s: %3.2f%%'), $className, $scoreCoverage->getValueForClass($className) * 100.0) . PHP_EOL .
+							$defaultField->getMethodPrompt() . sprintf($defaultField->getLocale()->_('%s::%s(): %3.2f%%'), $className, $methodName, $scoreCoverage->getValueForMethod($className, $methodName) * 100.0) . PHP_EOL
+						)
+					->castToString($customField)->isEqualTo(
+							$titlePrompt .
+							sprintf(
+								$locale->_('%s: %s'),
+								$titleColorizer->colorize($locale->_('Code coverage value')),
+								$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValue() * 100.0))
+							) .
+							PHP_EOL .
+							$classPrompt .
+							sprintf(
+								$locale->_('%s: %s'),
+								$titleColorizer->colorize(sprintf($locale->_('Class %s'), $className)),
+								$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className) * 100.0))
+							) .
+							PHP_EOL .
+							$methodPrompt .
+							sprintf(
+								$locale->_('%s: %s'),
+								$titleColorizer->colorize(sprintf($locale->_('%s::%s()'), $className, $methodName)),
+								$coverageColorizer->colorize(sprintf('%3.2f%%', $scoreCoverage->getValueForClass($className, $methodName) * 100.0))
+							) .
+							PHP_EOL
+						)
 		;
 	}
 }

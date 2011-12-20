@@ -4,26 +4,36 @@ namespace mageekguy\atoum\report\fields\runner\tests;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report
+	mageekguy\atoum\report,
+	mageekguy\atoum\runner
 ;
 
-abstract class coverage extends report\fields\runner
+abstract class coverage extends report\field
 {
 	protected $coverage = null;
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function __construct(atoum\locale $locale = null)
 	{
-		if ($event === atoum\runner::runStop)
-		{
-			$this->coverage = $runner->getScore()->getCoverage();
-		}
-
-		return $this;
+		parent::__construct(array(runner::runStop), $locale);
 	}
 
 	public function getCoverage()
 	{
 		return $this->coverage;
+	}
+
+	public function handleEvent($event, atoum\observable $observable)
+	{
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			return false;
+		}
+		else
+		{
+			$this->coverage = $observable->getScore()->getCoverage();
+
+			return true;
+		}
 	}
 }
 

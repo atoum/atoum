@@ -13,133 +13,132 @@ use
 
 require_once __DIR__ . '/../../../../../../runner.php';
 
-class cli extends units\report\fields\runner
+class cli extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\fields\runner\php\path')
+			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\php\path')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new runner\php\path\cli();
-
 		$this->assert
-			->object($field->getPrompt())->isEqualTo(new prompt())
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getPathColorizer())->isEqualTo(new colorizer())
-			->object($field->getLocale())->isEqualTo(new locale())
-		;
-
-		$field = new runner\php\path\cli(null, null, null, null);
-
-		$this->assert
-			->object($field->getPrompt())->isEqualTo(new prompt())
-			->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-			->object($field->getPathColorizer())->isEqualTo(new colorizer())
-			->object($field->getLocale())->isEqualTo(new locale())
-		;
-
-		$field = new runner\php\path\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $pathColorizer = new colorizer(), $locale = new locale());
-
-		$this->assert
-			->object($field->getLocale())->isIdenticalTo($locale)
-			->object($field->getPrompt())->isIdenticalTo($prompt)
-			->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-			->object($field->getPathColorizer())->isIdenticalTo($pathColorizer)
+			->if($field = new runner\php\path\cli())
+			->then
+				->object($field->getPrompt())->isEqualTo(new prompt())
+				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+				->object($field->getPathColorizer())->isEqualTo(new colorizer())
+				->object($field->getLocale())->isEqualTo(new locale())
+			->if($field = new runner\php\path\cli(null, null, null, null))
+			->then
+				->object($field->getPrompt())->isEqualTo(new prompt())
+				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
+				->object($field->getPathColorizer())->isEqualTo(new colorizer())
+				->object($field->getLocale())->isEqualTo(new locale())
+			->if($field = new runner\php\path\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $pathColorizer = new colorizer(), $locale = new locale()))
+			->then
+				->object($field->getLocale())->isIdenticalTo($locale)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
+				->object($field->getPathColorizer())->isIdenticalTo($pathColorizer)
 		;
 	}
 
 	public function testSetPrompt()
 	{
-		$field = new runner\php\path\cli();
-
 		$this->assert
-			->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getPrompt())->isIdenticalTo($prompt)
+			->if($field = new runner\php\path\cli())
+			->then
+				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
+			->if($field = new runner\php\path\cli(new prompt()))
+			->then
+				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
 	public function testSetTitleColorizer()
 	{
-		$field = new runner\php\path\cli();
-
 		$this->assert
-			->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+			->if($field = new runner\php\path\cli())
+			->then
+				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+			->if($field = new runner\php\path\cli(null, new colorizer()))
+			->then
+				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
 	public function testSetPathColorizer()
 	{
-		$field = new runner\php\path\cli();
-
 		$this->assert
-			->object($field->setPathColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getPathColorizer())->isIdenticalTo($colorizer)
+			->if($field = new runner\php\path\cli())
+			->then
+				->object($field->setPathColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getPathColorizer())->isIdenticalTo($colorizer)
+			->if($field = new runner\php\path\cli(null, null, new colorizer()))
+			->then
+				->object($field->setPathColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getPathColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
-	public function testSetWithRunner()
+	public function testHandleEvent()
 	{
-		$field = new runner\php\path\cli();
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
-		;
-
-		$score = new \mock\mageekguy\atoum\score();
-		$scoreController = $score->getMockController();
-		$scoreController->getPhpPath = $phpPath = uniqid();
-
-		$runner = new \mock\mageekguy\atoum\runner();
-		$runnerController = $runner->getMockController();
-		$runnerController->getScore = $score;
-
-		$this->assert
-			->object($field->setWithRunner($runner))->isIdenticalTo($field)
-			->string($field->getPath())->isEqualTo($phpPath)
+		$this
+			->mock('mageekguy\atoum\score')
+			->assert
+				->if($field = new runner\php\path\cli())
+				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
+				->then
+					->boolean($field->handleEvent(atoum\runner::runStop, new atoum\runner()))->isFalse()
+					->variable($field->getPath())->isNull()
+					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner($score)))->isTrue()
+					->string($field->getPath())->isEqualTo($phpPath)
 		;
 	}
 
 	public function test__toString()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\runner')
-		;
-
-		$score = new \mock\mageekguy\atoum\score();
-		$scoreController = $score->getMockController();
-		$scoreController->getPhpPath = $phpPath = uniqid();
-
-		$runner = new \mock\mageekguy\atoum\runner();
-		$runnerController = $runner->getMockController();
-		$runnerController->getScore = $score;
-
-		$field = new runner\php\path\cli();
-		$field->setWithRunner($runner);
-
-		$this->assert
-			->castToString($field)->isEqualTo('PHP path:' . ' ' . $phpPath . PHP_EOL)
-		;
-
-		$field = new runner\php\path\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
-		$field->setWithRunner($runner);
-
-		$this->assert
-			->castToString($field)->isEqualTo(
-				$prompt .
-				sprintf(
-					$locale->_('%1$s: %2$s'),
-					$titleColorizer->colorize($locale->_('PHP path')),
-					$pathColorizer->colorize($phpPath)
-				) .
-				PHP_EOL
-			)
+		$this
+			->mock('mageekguy\atoum\score')
+			->assert
+				->if($score = new \mock\mageekguy\atoum\score())
+				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
+				->and($defaultField = new runner\php\path\cli())
+				->then
+					->castToString($defaultField)->isEqualTo('PHP path: ' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->then
+					->castToString($defaultField)->isEqualTo('PHP path:' . ' ' . $phpPath . PHP_EOL)
+				->if($customField = new runner\php\path\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+				->then
+					->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							$locale->_('%1$s: %2$s'),
+							$titleColorizer->colorize($locale->_('PHP path')),
+							$pathColorizer->colorize('')
+						) .
+						PHP_EOL
+					)
+				->if($customField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->then
+					->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							$locale->_('%1$s: %2$s'),
+							$titleColorizer->colorize($locale->_('PHP path')),
+							$pathColorizer->colorize($phpPath)
+						) .
+						PHP_EOL
+					)
 		;
 	}
 }

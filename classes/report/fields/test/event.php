@@ -4,25 +4,41 @@ namespace mageekguy\atoum\report\fields\test;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\report,
 	mageekguy\atoum\test\cli,
 	mageekguy\atoum\exceptions
 ;
 
-abstract class event extends report\fields\test
+abstract class event extends report\field
 {
 	protected $test = null;
-	protected $value = null;
+	protected $event = null;
 	protected $progressBarInjector = null;
+
+	public function __construct(atoum\locale $locale = null)
+	{
+		parent::__construct(array(
+				test::runStart,
+				test::fail,
+				test::error,
+				test::uncompleted,
+				test::exception,
+				test::success,
+				test::runStop
+			),
+			$locale
+		);
+	}
 
 	public function getTest()
 	{
 		return $this->test;
 	}
 
-	public function getValue()
+	public function getEvent()
 	{
-		return $this->value;
+		return $this->event;
 	}
 
 	public function getProgressBar()
@@ -49,12 +65,25 @@ abstract class event extends report\fields\test
 		return $this;
 	}
 
-	public function setWithTest(atoum\test $test, $event = null)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		$this->test = $test;
-		$this->value = $event;
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			$this->event = null;
 
-		return $this;
+			return false;
+		}
+		else
+		{
+			if ($event === test::runStart)
+			{
+				$this->test = $observable;
+			}
+
+			$this->event = $event;
+
+			return true;
+		}
 	}
 }
 

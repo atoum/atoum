@@ -4,26 +4,36 @@ namespace mageekguy\atoum\report\fields\test;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\report
 ;
 
-abstract class run extends report\fields\test
+abstract class run extends report\field
 {
 	protected $testClass = null;
+
+	public function __construct(atoum\locale $locale = null)
+	{
+		parent::__construct(array(test::runStart), $locale);
+	}
 
 	public function getTestClass()
 	{
 		return $this->testClass;
 	}
 
-	public function setWithTest(atoum\test $test, $event = null)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		if ($event === atoum\test::runStart)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->testClass = $test->getClass();
+			return false;
 		}
+		else
+		{
+			$this->testClass = $observable->getClass();
 
-		return $this;
+			return true;
+		}
 	}
 }
 

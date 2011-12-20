@@ -22,105 +22,90 @@ class vim extends reports\asynchronous
 		$thirdLevelPrompt = new prompt('==> ');
 
 		$this
-			->addRunnerField(new runner\atoum\cli($firstLevelPrompt, null), array(atoum\runner::runStart))
-			->addRunnerField(new runner\php\path\cli(
+			->addField(new runner\atoum\cli(
 						$firstLevelPrompt
-					),
-					array(atoum\runner::runStart)
+					)
 				)
-			->addRunnerField(new runner\php\version\cli(
+			->addField(new runner\php\path\cli(
+						$firstLevelPrompt
+					)
+				)
+			->addField(new runner\php\version\cli(
 						$firstLevelPrompt,
 						null,
 						$secondLevelPrompt
-					),
-					array(atoum\runner::runStart)
+					)
 				)
-			->addRunnerField(new runner\tests\duration\cli(
+			->addField(new runner\tests\duration\cli(
 						$firstLevelPrompt
-					),
-					array(atoum\runner::runStop)
+					)
 				)
-			->addRunnerField(new runner\tests\memory\cli(
+			->addField(new runner\tests\memory\cli(
 						$firstLevelPrompt
-					),
-					array(atoum\runner::runStop)
+					)
 				)
-			->addRunnerField(new runner\tests\coverage\cli(
+			->addField(new runner\tests\coverage\cli(
 						$firstLevelPrompt,
 						$secondLevelPrompt,
 						$thirdLevelPrompt
-					),
-					array(atoum\runner::runStop)
+					)
 				)
-			->addRunnerField(new runner\duration\cli(
+			->addField(new runner\duration\cli(
 						$firstLevelPrompt
-					),
-					array(atoum\runner::runStop)
+					)
 				)
-			->addRunnerField(new runner\result\cli(
-					),
-					array(atoum\runner::runStop)
+			->addField(new runner\result\cli(
+					)
 				)
-			->addRunnerField(new runner\failures\cli(
+			->addField(new runner\failures\cli(
 						$firstLevelPrompt,
 						null,
-						$secondLevelPrompt,
-						null
-					),
-					array(atoum\runner::runStop)
+						$secondLevelPrompt
+					)
 				)
-			->addRunnerField(new runner\errors\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt,
-						null
-					),
-					array(atoum\runner::runStop)
-				)
-			->addRunnerField(new runner\exceptions\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt,
-						null
-					),
-					array(atoum\runner::runStop)
-				)
-			->addRunnerField(new runner\tests\uncompleted\cli(
+			->addField(new runner\errors\cli(
 						$firstLevelPrompt,
 						null,
 						$secondLevelPrompt,
 						null,
 						$thirdLevelPrompt
-					),
-					array(atoum\runner::runStop)
+					)
 				)
-			->addRunnerField(
+			->addField(new runner\exceptions\cli(
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt
+					)
+				)
+			->addField(new runner\tests\uncompleted\cli(
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt
+					)
+				)
+			->addField(
 				new runner\outputs\cli(
 					$firstLevelPrompt,
 					null,
 					$secondLevelPrompt
-				),
-				array(atoum\runner::runStop)
+				)
 			)
-			->addTestField(new test\run\cli(
-						$firstLevelPrompt
-					),
-					array(atoum\test::runStart)
+			->addField(new test\run\cli(
+					$firstLevelPrompt
 				)
-			->addTestField(new test\duration\cli(
-						$secondLevelPrompt
-					),
-					array(atoum\test::runStop)
+			)
+			->addField(new test\duration\cli(
+					$secondLevelPrompt
 				)
-			->addTestField(new test\memory\cli(
-						$secondLevelPrompt
-					),
-					array(atoum\test::runStop)
+			)
+			->addField(new test\memory\cli(
+					$secondLevelPrompt
 				)
+			)
 		;
 	}
 }
