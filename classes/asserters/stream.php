@@ -44,9 +44,14 @@ class stream extends atoum\asserter
 		}
 
 		return $this;
-	}
+  }
 
-	public function isWrited($failMessage = null)
+  public function isWrited($failMessage = null)
+  {
+    return $this->isWritten($failMessage);
+  }
+
+	public function isWritten($failMessage = null)
 	{
 		$calls = $this->streamIsSet()->streamController->getCalls();
 
@@ -56,7 +61,7 @@ class stream extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not writed'), $this->streamName));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not written'), $this->streamName));
 		}
 
 		return $this;
