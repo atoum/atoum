@@ -68,7 +68,7 @@ class string extends variable
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
+		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equal'));
 	}
 
 	public function hasLength($length, $failMessage = null)

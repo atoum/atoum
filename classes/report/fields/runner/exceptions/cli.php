@@ -150,7 +150,7 @@ class cli extends report\fields\runner\exceptions
 						$this->exceptionPrompt .
 						sprintf(
 							$this->locale->_('%s:'),
-							$this->colorizeException(sprintf($this->locale->_('Exception throwed in file %s on line %d'), $exception['file'], $exception['line']))
+							$this->colorizeException(sprintf($this->locale->_('Exception thrown in file %s on line %d'), $exception['file'], $exception['line']))
 						) .
 						PHP_EOL
 					;
