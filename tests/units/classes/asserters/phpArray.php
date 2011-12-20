@@ -89,7 +89,7 @@ class phpArray extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter, & $size) { $line = __LINE__; $asserter->hasSize($size = rand(1, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s has not size %d'), $asserter, $size))
+				->hasMessage(sprintf($test->getLocale()->_('%s does not have size %d'), $asserter, $size))
 			->integer($score->getPassNumber())->isEqualTo(0)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
@@ -100,7 +100,7 @@ class phpArray extends atoum\test
 						'file' => __FILE__,
 						'line' => $line,
 						'asserter' => get_class($asserter) . '::hasSize()',
-						'fail' => $failMessage = sprintf($test->getLocale()->_('%s has not size %d'), $asserter, $size)
+						'fail' => $failMessage = sprintf($test->getLocale()->_('%s does not have size %d'), $asserter, $size)
 					)
 				)
 			)
