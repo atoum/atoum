@@ -124,6 +124,11 @@ class runner extends atoum\test
 							array('-bf', '--bootstrap-file'),
 							'<file>',
 							'Include <file> before executing each test method'
+						),
+						array(
+							array('-ulr', '--use-light-report'),
+							null,
+							'Use "light" CLI report'
 						)
 					)
 				)
@@ -227,6 +232,11 @@ class runner extends atoum\test
 							array('-bf', '--bootstrap-file'),
 							'<file>',
 							'Include <file> before executing each test method'
+						),
+						array(
+							array('-ulr', '--use-light-report'),
+							null,
+							'Use "light" CLI report'
 						)
 					)
 				)
