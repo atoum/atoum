@@ -46,6 +46,10 @@ class extractor extends atoum\test
 			->array($extractor->getAnnotations())->isIdenticalTo(array('tags' => array('aTag')))
 			->object($extractor->extract('/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
 			->array($extractor->getAnnotations())->isIdenticalTo(array('tags' => array('aTag', 'otherTag', 'anotherTag')))
+			->object($extractor->extract('/** @dataProvider aDataProvider */'))->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isIdenticalTo(array('dataProvider' => 'aDataProvider'))
+			->object($extractor->extract('/** @DATApROVIDER aDataProvider */'))->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isIdenticalTo(array('dataProvider' => 'aDataProvider'))
 			->object($extractor->extract('/** @foo bar */'))->isIdenticalTo($extractor)
 			->array($extractor->getAnnotations())->isEmpty()
 		;
