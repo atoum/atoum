@@ -23,6 +23,11 @@ abstract class asynchronous extends atoum\report
 
 		if ($event === atoum\runner::runStop)
 		{
+			if ($this->title !== null)
+			{
+				$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
+			}
+
 			foreach ($this->writers as $writer)
 			{
 				$writer->writeAsynchronousReport($this);
