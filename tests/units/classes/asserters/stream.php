@@ -113,7 +113,7 @@ class stream extends atoum\test
 		$this->assert
 			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isWrited(); })
 				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage($failMessage = sprintf($test->getLocale()->_('stream %s is not writed'), $streamName))
+				->hasMessage($failMessage = sprintf($test->getLocale()->_('stream %s is not written'), $streamName))
 			->integer($score->getPassNumber())->isZero()
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
