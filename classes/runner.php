@@ -341,46 +341,55 @@ class runner implements observable, adapter\aggregator
 			$runTestClasses = array_intersect($runTestClasses, $declaredTestClasses);
 		}
 
+		natsort($runTestClasses);
+
+		$tests = array();
+
+		foreach ($runTestClasses as $runTestClass)
+		{
+			$test = new $runTestClass();
+
+			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+			{
+				$tests[] = array($test, $methods);
+
+				$this->testNumber++;
+				$this->testMethodNumber += sizeof($methods);
+			}
+		}
+
 		$this->callObservers(self::runStart);
 
-		if ($runTestClasses)
+		if ($tests)
 		{
-			natsort($runTestClasses);
-
 			$phpPath = $this->getPhpPath();
 
-			foreach ($runTestClasses as $runTestClass)
+			foreach ($tests as $testMethods)
 			{
-				$test = new $runTestClass();
+				list($test, $methods) = $testMethods;
 
-				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+				$test
+					->setPhpPath($phpPath)
+					->setLocale($this->locale)
+					->setBootstrapFile($this->bootstrapFile)
+				;
+
+				if ($this->maxChildrenNumber !== null)
 				{
-					$test
-						->setPhpPath($phpPath)
-						->setLocale($this->locale)
-						->setBootstrapFile($this->bootstrapFile)
-					;
-
-					if ($this->maxChildrenNumber !== null)
-					{
-						$test->setMaxChildrenNumber($this->maxChildrenNumber);
-					}
-
-					if ($this->codeCoverageIsEnabled() === false)
-					{
-						$test->disableCodeCoverage();
-					}
-
-					foreach ($this->observers as $observer)
-					{
-						$test->addObserver($observer);
-					}
-
-					$this->score->merge($test->run($methods)->getScore());
-
-					$this->testNumber++;
-					$this->testMethodNumber += sizeof($methods);
+					$test->setMaxChildrenNumber($this->maxChildrenNumber);
 				}
+
+				if ($this->codeCoverageIsEnabled() === false)
+				{
+					$test->disableCodeCoverage();
+				}
+
+				foreach ($this->observers as $observer)
+				{
+					$test->addObserver($observer);
+				}
+
+				$this->score->merge($test->run($methods)->getScore());
 			}
 		}
 
