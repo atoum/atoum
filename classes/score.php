@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
@@ -12,6 +13,7 @@ class score
 	private $passAssertions = 0;
 	private $failAssertions = array();
 	private $exceptions = array();
+	private $runtimeExceptions = array();
 	private $errors = array();
 	private $outputs = array();
 	private $durations = array();
@@ -136,6 +138,13 @@ class score
 			'line' => $line,
 			'value' => (string) $exception
 		);
+
+		return $this;
+	}
+
+	public function addRuntimeException(test\exceptions\runtime $exception)
+	{
+		$this->runtimeExceptions[] = $exception;
 
 		return $this;
 	}
@@ -307,6 +316,11 @@ class score
 		return self::sort($this->exceptions);
 	}
 
+	public function getRuntimeExceptions()
+	{
+		return $this->runtimeExceptions;
+	}
+
 	public function getDurationNumber()
 	{
 		return sizeof($this->durations);
@@ -330,6 +344,11 @@ class score
 	public function getExceptionNumber()
 	{
 		return sizeof($this->exceptions);
+	}
+
+	public function getRuntimeExceptionNumber()
+	{
+		return sizeof($this->runtimeExceptions);
 	}
 
 	public function getMemoryUsageNumber()
