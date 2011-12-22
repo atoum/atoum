@@ -574,6 +574,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						foreach ($data as $key => $arguments)
 						{
+							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
+
 							if (is_array($arguments) === false)
 							{
 								throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array at key ' . $key);
@@ -585,6 +587,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 							}
 
 							call_user_func_array(array($this, $testMethod), $arguments);
+
+							$this->score->unsetDataSet();
 						}
 					}
 
