@@ -20,6 +20,7 @@ abstract class event extends report\fields\event
 				test::error,
 				test::uncompleted,
 				test::exception,
+				test::runtimeException,
 				test::success,
 				test::runStop
 			),

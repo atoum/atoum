@@ -697,6 +697,29 @@ class score extends atoum\test
 		;
 	}
 
+	public function testAddRuntimeException()
+	{
+		$this->assert
+			->if($score = new atoum\score())
+			->then
+				->array($score->getRuntimeExceptions())->isEmpty()
+				->integer($score->getRuntimeExceptionNumber())->isZero()
+				->object($score->addRuntimeException($exception = new atoum\test\exceptions\runtime()))->isIdenticalTo($score)
+				->array($score->getRuntimeExceptions())->isEqualTo(array(
+						$exception
+					)
+				)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(1)
+				->object($score->addRuntimeException($otherException = new atoum\test\exceptions\runtime()))->isIdenticalTo($score)
+				->array($score->getRuntimeExceptions())->isEqualTo(array(
+						$exception,
+						$otherException
+					)
+				)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(2)
+		;
+	}
+
 	public function testSetAtoumPath()
 	{
 		$score = new atoum\score();
@@ -1139,6 +1162,21 @@ class score extends atoum\test
 		;
 	}
 
+	public function testUnsetCase()
+	{
+		$score = new atoum\score();
+
+		$this->assert
+			->variable($score->getCase())->isNull()
+			->object($score->unsetCase())->isIdenticalTo($score)
+			->variable($score->getCase())->isNull()
+			->when(function() use ($score) { $score->setCase(uniqid()); })
+				->string($score->getCase())->isNotNull()
+				->object($score->unsetCase())->isIdenticalTo($score)
+				->variable($score->getCase())->isNull()
+		;
+	}
+
 	public function testUnsetDataSet()
 	{
 		$this->assert
@@ -1152,21 +1190,6 @@ class score extends atoum\test
 				->object($score->unsetDataSet())->isIdenticalTo($score)
 				->variable($score->getDataSetKey())->isNull()
 				->variable($score->getDataSetProvider())->isNull()
-		;
-	}
-
-	public function testUnsetCase()
-	{
-		$score = new atoum\score();
-
-		$this->assert
-			->variable($score->getCase())->isNull()
-			->object($score->unsetCase())->isIdenticalTo($score)
-			->variable($score->getCase())->isNull()
-			->when(function() use ($score) { $score->setCase(uniqid()); })
-				->string($score->getCase())->isNotNull()
-				->object($score->unsetCase())->isIdenticalTo($score)
-				->variable($score->getCase())->isNull()
 		;
 	}
 

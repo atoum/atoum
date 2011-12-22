@@ -31,44 +31,46 @@ class cli extends report\fields\test\event
 
 		if ($this->observable !== null)
 		{
-			if ($this->event === test::runStop)
+			switch ($this->event)
 			{
-				$string = PHP_EOL;
-			}
-			else
-			{
-				switch ($this->event)
-				{
-					case test::runStart:
-						$this->progressBar->reset()->setIterations(sizeof($this->observable));
-						break;
+				case test::runStop:
+				case test::runtimeException:
+					$string = PHP_EOL;
+					break;
 
-					case test::success:
-						$this->progressBar->refresh('S');
-						break;
+				default:
+					switch ($this->event)
+					{
+						case test::runStart:
+							$this->progressBar->reset()->setIterations(sizeof($this->observable));
+							break;
 
-					case test::fail:
-						$this->progressBar->refresh('F');
-						break;
+						case test::success:
+							$this->progressBar->refresh('S');
+							break;
 
-					case test::error:
-						$this->progressBar->refresh('e');
-						break;
+						case test::fail:
+							$this->progressBar->refresh('F');
+							break;
 
-					case test::exception:
-						$this->progressBar->refresh('E');
-						break;
+						case test::error:
+							$this->progressBar->refresh('e');
+							break;
 
-					case test::uncompleted:
-						$this->progressBar->refresh('U');
-						break;
+						case test::exception:
+							$this->progressBar->refresh('E');
+							break;
 
-					case test::runStop:
-						$this->progressBar->reset();
-						break;
-				}
+						case test::uncompleted:
+							$this->progressBar->refresh('U');
+							break;
 
-				$string = (string) $this->progressBar;
+						case test::runStop:
+							$this->progressBar->reset();
+							break;
+					}
+
+					$string = (string) $this->progressBar;
 			}
 		}
 

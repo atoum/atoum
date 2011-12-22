@@ -22,6 +22,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const error = 'testError';
 	const uncompleted = 'testUncompleted';
 	const exception = 'testException';
+	const runtimeException = 'testRuntimeException';
 	const success = 'testAssertionSuccess';
 	const afterTestMethod = 'afterTestMethod';
 	const beforeTearDown = 'beforeTestTearDown';
@@ -566,27 +567,27 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						if (is_array($data) === false && $data instanceof \traversable === false)
 						{
-							throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or a traversable instance');
+							throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or an iterator');
 						}
 
-						$reflectionMethod = new \reflectionMethod($this, $testMethod);
-						$numberOfArguments = $reflectionMethod->getNumberOfRequiredParameters();
+						$reflectedTestMethod = new \reflectionMethod($this, $testMethod);
+						$numberOfArguments = $reflectedTestMethod->getNumberOfRequiredParameters();
 
 						foreach ($data as $key => $arguments)
 						{
-							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
-
 							if (is_array($arguments) === false)
 							{
-								throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array at key ' . $key);
+								$arguments = array($arguments);
 							}
 
 							if (sizeof($arguments) != $numberOfArguments)
 							{
-								throw new exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return ' . $numberOfArguments . ' argument(s) at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
+								throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
 							}
 
-							call_user_func_array(array($this, $testMethod), $arguments);
+							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
+
+							$reflectedTestMethod->invokeArgs($this, $arguments);
 
 							$this->score->unsetDataSet();
 						}
@@ -622,6 +623,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					$this->addExceptionToScore($exception);
 				}
+			}
+			catch (test\exceptions\runtime $exception)
+			{
+				$this->score->addRuntimeException($exception);
 			}
 			catch (\exception $exception)
 			{
@@ -775,6 +780,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									switch (true)
 									{
+										case $score->getRuntimeExceptionNumber() > 0:
+											$this->callObservers(self::runtimeException);
+											throw current($score->getRuntimeExceptions());
+
 										case $score->getUncompletedTestNumber():
 											$this->callObservers(self::uncompleted);
 											break;
