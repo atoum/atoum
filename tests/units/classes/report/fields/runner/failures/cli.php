@@ -153,6 +153,7 @@ class cli extends atoum\test
 				->if($score->getMockController()->getFailAssertions = $fails = array(
 							array(
 								'case' => null,
+								'dataSetKey' => null,
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
 								'file' => $file = uniqid(),
@@ -162,6 +163,7 @@ class cli extends atoum\test
 							),
 							array(
 								'case' => null,
+								'dataSetKey' => null,
 								'class' => $otherClass = uniqid(),
 								'method' => $otherMethod = uniqid(),
 								'file' => $otherFile = uniqid(),
@@ -212,6 +214,7 @@ class cli extends atoum\test
 				->if($score->getMockController()->getFailAssertions = $fails = array(
 							array(
 								'case' => $case =  uniqid(),
+								'dataSetKey' => null,
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
 								'file' => $file = uniqid(),
@@ -220,8 +223,8 @@ class cli extends atoum\test
 								'fail' => $fail = uniqid()
 							),
 							array(
-								'case' => null,
 								'case' => $otherCase =  uniqid(),
+								'dataSetKey' => null,
 								'class' => $otherClass = uniqid(),
 								'method' => $otherMethod = uniqid(),
 								'file' => $otherFile = uniqid(),
@@ -267,6 +270,67 @@ class cli extends atoum\test
 						) .
 						PHP_EOL .
 						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) .
+						PHP_EOL
+					)
+				->if($score->getMockController()->getFailAssertions = $fails = array(
+							array(
+								'case' => $case =  uniqid(),
+								'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
+								'class' => $class = uniqid(),
+								'method' => $method = uniqid(),
+								'file' => $file = uniqid(),
+								'line' => $line = uniqid(),
+								'asserter' => $asserter = uniqid(),
+								'fail' => $fail = uniqid()
+							),
+							array(
+								'case' => $otherCase =  uniqid(),
+								'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
+								'class' => $otherClass = uniqid(),
+								'method' => $otherMethod = uniqid(),
+								'file' => $otherFile = uniqid(),
+								'line' => $otherLine = uniqid(),
+								'asserter' => $otherAsserter = uniqid(),
+								'fail' => $otherFail = uniqid()
+							)
+						)
+					)
+				->and($defaultField = new runner\failures\cli())
+				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+				->then
+					->castToString($defaultField)->isEmpty()
+					->castToString($customField)->isEmpty()
+				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+				->and($customField->handleEvent(atoum\runner::runStop, $runner))
+				->then
+					->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+						$class . '::' . $method . '():' . PHP_EOL .
+						sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s', $file, $line, $case, $asserter, $dataSetKey, $fail) . PHP_EOL .
+						$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+						sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherFail) . PHP_EOL
+					)
+					->castToString($customField)->isEqualTo(
+						$titlePrompt .
+						sprintf(
+							$locale->_('%s:'),
+							$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+						) .
+						PHP_EOL .
+						$methodPrompt .
+						sprintf(
+							$locale->_('%s:'),
+							$methodColorizer->colorize($class . '::' . $method . '()')
+						) .
+						PHP_EOL .
+						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s'), $file, $line, $case, $asserter, $dataSetKey, $fail) .
+						PHP_EOL .
+						$methodPrompt .
+						sprintf(
+							$locale->_('%s:'),
+							$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+						) .
+						PHP_EOL .
+						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherFail) .
 						PHP_EOL
 					)
 		;

@@ -97,7 +97,7 @@ class progressBar
 
 			if ($this->iterations > self::width && $this->iterations - $this->currentIteration && $this->currentIteration % (self::width - 1) == 0)
 			{
-				$this->progressBar = '[' . (($this->iterations - $this->currentIteration) > self::width ? str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations - $this->currentIteration), self::width, '_', STR_PAD_RIGHT)) . ']';
+				$this->progressBar = '[' . (($this->iterations - $this->currentIteration) > (self::width - 1) ? str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations - $this->currentIteration), self::width, '_', STR_PAD_RIGHT)) . ']';
 				$this->counter = '';
 
 				$string .= PHP_EOL . $this->progressBar;

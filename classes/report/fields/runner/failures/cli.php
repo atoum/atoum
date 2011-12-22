@@ -109,13 +109,23 @@ class cli extends runner\failures
 						PHP_EOL
 					;
 
-					if ($fail['case'] === null)
+					switch (true)
 					{
-						$string .= sprintf($this->locale->_('In file %s on line %d, %s failed: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']);
-					}
-					else
-					{
-						$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $fail['file'], $fail['line'], $fail['case'], $fail['asserter'], $fail['fail']);
+						case $fail['case'] === null && $fail['dataSetKey'] === null:
+							$string .= sprintf($this->locale->_('In file %s on line %d, %s failed: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['fail']);
+							break;
+
+						case $fail['case'] === null && $fail['dataSetKey'] !== null:
+							$string .= sprintf($this->locale->_('In file %s on line %d, %s failed for data set #%s: %s'), $fail['file'], $fail['line'], $fail['asserter'], $fail['dataSetKey'], $fail['fail']);
+							break;
+
+						case $fail['case'] !== null && $fail['dataSetKey'] === null:
+							$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $fail['file'], $fail['line'], $fail['case'], $fail['asserter'], $fail['fail']);
+							break;
+
+						case $fail['case'] !== null && $fail['dataSetKey'] !== null:
+							$string .= sprintf($this->locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s'), $fail['file'], $fail['line'], $fail['case'],  $fail['asserter'], $fail['dataSetKey'], $fail['fail']);
+							break;
 					}
 
 					$string .= PHP_EOL;
