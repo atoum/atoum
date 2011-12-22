@@ -45,6 +45,8 @@ class float extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -97,18 +99,19 @@ class float extends atoum\test
 			->integer($score->getPassNumber())->isEqualTo(1)
 			->integer($score->getFailNumber())->isEqualTo(1)
 			->array($score->getFailAssertions())->isEqualTo(array(
-						array(
-							'case' => null,
-							'class' => __CLASS__,
-							'method' => $test->getCurrentMethod(),
-							'file' => __FILE__,
-							'line' => $line,
-							'asserter' => get_class($asserter) . '::isEqualTo()',
-							'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value) . PHP_EOL . $diff)
-						)
+					array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => __CLASS__,
+						'method' => $test->getCurrentMethod(),
+						'file' => __FILE__,
+						'line' => $line,
+						'asserter' => get_class($asserter) . '::isEqualTo()',
+						'fail' => sprintf($test->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value) . PHP_EOL . $diff)
 					)
 				)
-			;
+			);
 	}
 }
 

@@ -70,6 +70,8 @@ class object extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -124,6 +126,8 @@ class object extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -171,6 +175,8 @@ class object extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,

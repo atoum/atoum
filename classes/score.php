@@ -19,6 +19,8 @@ class score
 	private $coverage = null;
 	private $uncompletedTests = array();
 	private $case = null;
+	private $dataSetKey = null;
+	private $dataSetProvider = null;
 	private $phpPath = null;
 	private $phpVersion = null;
 	private $atoumPath = null;
@@ -109,6 +111,8 @@ class score
 		$this->failAssertions[] = array(
 			'id' => ++self::$failId,
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -124,6 +128,8 @@ class score
 	{
 		$this->exceptions[] = array(
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -138,6 +144,8 @@ class score
 	{
 		$this->errors[] = array(
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -157,6 +165,8 @@ class score
 		{
 			$this->outputs[] = array(
 				'case' => $this->case,
+				'dataSetKey' => $this->dataSetKey,
+				'dataSetProvider' => $this->dataSetProvider,
 				'class' => $class,
 				'method' => $method,
 				'value' => $output
@@ -357,6 +367,16 @@ class score
 		return $this->case;
 	}
 
+	public function getDataSetKey()
+	{
+		return $this->dataSetKey;
+	}
+
+	public function getDataSetProvider()
+	{
+		return $this->dataSetProvider;
+	}
+
 	public function getMethodsWithFail()
 	{
 		return self::getMethods($this->getFailAssertions());
@@ -379,9 +399,25 @@ class score
 		return $this;
 	}
 
+	public function setDataSet($key, $dataProvider)
+	{
+		$this->dataSetKey = $key;
+		$this->dataSetProvider = $dataProvider;
+
+		return $this;
+	}
+
 	public function unsetCase()
 	{
 		$this->case = null;
+
+		return $this;
+	}
+
+	public function unsetDataSet()
+	{
+		$this->dataSetKey = null;
+		$this->dataSetProvider = null;
 
 		return $this;
 	}
