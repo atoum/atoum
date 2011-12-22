@@ -298,6 +298,84 @@ class progressBar extends atoum\test
 			->castToString($progressBar)->isEqualTo(PHP_EOL . '[' . 'FFS' . str_repeat('_', 57) . '][3/3]')
 			->castToString($progressBar)->isEmpty()
 		;
+
+		$cli->getMockController()->isTerminal = true;
+
+		$progressBar = new cli\progressBar(177, $cli);
+
+		$progressBarString = (string) $progressBar;
+
+		$this->assert
+			->string($progressBarString)->isEqualTo('[' . str_repeat('.', 59) . '>][  0/177]')
+			->castToString($progressBar)->isEmpty()
+		;
+
+		$nextProgressBarString = 'F' . str_repeat('.', 58) . '>][  1/177]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($progressBarString) - 1) . $nextProgressBarString)
+			->castToString($progressBar)->isEmpty()
+		;
+
+		for ($i = 2; $i <= 58; $i++)
+		{
+			$currentProgressBarString = $nextProgressBarString;
+
+			$nextProgressBarString = 'F' . str_repeat('.', 59 - $i) . '>][' . sprintf('%3d', $i) . '/177]';
+
+			$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+				->castToString($progressBar)->isEmpty()
+			;
+		}
+
+		$currentProgressBarString = $nextProgressBarString;
+
+		$nextProgressBarString = '[' . str_repeat('.', 59) . '>]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . 'F>][ 59/177]' . "\n" . $nextProgressBarString)
+			->castToString($progressBar)->isEmpty()
+		;
+
+		for ($i = 60; $i <= 117; $i++)
+		{
+			$currentProgressBarString = $nextProgressBarString;
+
+			$nextProgressBarString = 'F' . str_repeat('.', 118 - $i) . '>][' . sprintf('%3d', $i) . '/177]';
+
+			$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+				->castToString($progressBar)->isEmpty()
+			;
+		}
+
+		$currentProgressBarString = $nextProgressBarString;
+
+		$nextProgressBarString = '[' . str_repeat('.', 59) . '_]';
+
+		$this->assert
+			->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+			->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . 'F>][118/177]' . "\n" . $nextProgressBarString)
+			->castToString($progressBar)->isEmpty()
+		;
+
+		for ($i = 119; $i <= 176; $i++)
+		{
+			$currentProgressBarString = $nextProgressBarString;
+
+			$nextProgressBarString = 'F' . str_repeat('.', 177 - $i) . '_][' . sprintf('%3d', $i) . '/177]';
+
+			$this->assert
+				->object($progressBar->refresh('F'))->isIdenticalTo($progressBar)
+				->castToString($progressBar, null, "\010")->isEqualTo(str_repeat("\010", strlen($currentProgressBarString) - 1) . $nextProgressBarString)
+				->castToString($progressBar)->isEmpty()
+			;
+		}
 	}
 }
 
