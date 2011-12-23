@@ -2,96 +2,60 @@
 
 namespace mageekguy\atoum\tests\units\reports;
 
+require __DIR__ . '/../../runner.php';
+
 use
 	mageekguy\atoum
 ;
 
-require_once __DIR__ . '/../../runner.php';
-
 class asynchronous extends atoum\test
 {
-	public function testRunnerStop()
+	public function testHandleEvent()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\reports\asynchronous')
-			->generate('mageekguy\atoum\report\writers\asynchronous')
-			->generate('mageekguy\atoum\locale')
-		;
-
-		$writer = new \mock\mageekguy\atoum\report\writers\asynchronous();
-		$writer->getMockController()->writeAsynchronousReport = function() {};
-
-		$report = new \mock\mageekguy\atoum\reports\asynchronous($locale = new \mock\mageekguy\atoum\locale(), $adapter = new atoum\test\adapter());
-		$report->addWriter($writer);
-
-		$runner = new atoum\runner();
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport', array($report))
-			->mock($locale)->call('_')->never()
-			->variable($report->getTitle())->isNull()
-		;
-
-		$writer->getMockController()->resetCalls();
-		$locale->getMockCoNtroller()->resetCalls();
-
-		$report->setTitle($title = uniqid());
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
-			->string($report->getTitle())->isEqualTo($title)
-		;
-
-		$writer->getMockController()->resetCalls();
-		$locale->getMockCoNtroller()->resetCalls();
-
-		$report
-			->setTitle($title = '%3$s')
-		;
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
-			->mock($locale)->call('_')->withArguments('H:i:s')->once()
-			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
-			->string($report->getTitle())->isEqualTo('SUCCESS')
-		;
-
-		$writer->getMockController()->resetCalls();
-		$locale->getMockCoNtroller()->resetCalls();
-
-		$adapter->date = function($arg) { return $arg; };
-
-		$report->setTitle($title = '%1$s %2$s %3$s');
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
-			->mock($locale)->call('_')->withArguments('H:i:s')->once()
-			->mock($locale)->call('_')->withArguments('SUCCESS')->once()
-			->string($report->getTitle())->isEqualTo('Y-m-d H:i:s SUCCESS')
-		;
-
-		$writer->getMockController()->resetCalls();
-		$locale->getMockCoNtroller()->resetCalls();
-
-		$report
-			->setTitle($title = '%1$s %2$s %3$s')
-			->testAssertionFail(new self())
-		;
-
-		$this->assert
-			->object($report->runnerStop($runner))->isIdenticalTo($report)
-			->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->mock($locale)->call('_')->withArguments('Y-m-d')->once()
-			->mock($locale)->call('_')->withArguments('H:i:s')->once()
-			->mock($locale)->call('_')->withArguments('FAIL')->once()
-			->string($report->getTitle())->isEqualTo('Y-m-d H:i:s FAIL')
+		$this
+			->mock('mageekguy\atoum\reports\asynchronous')
+			->assert
+				->if($report = new \mock\mageekguy\atoum\reports\asynchronous(null, $adapter = new atoum\test\adapter()))
+				->then
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->variable($report->getTitle())->isNull()
+				->if($report->setTitle($title = uniqid()))
+				->then
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo($title)
+				->if($adapter->date = function($format) { return $format; })
+				->and($report->setTitle('%1$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . '%3$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . 'SUCCESS' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . '%3$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\test::success, $this))->isIdenticalTo($report)
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . 'SUCCESS' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . '%3$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\test::fail, $this))->isIdenticalTo($report)
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . 'FAIL' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . '%3$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\test::error, $this))->isIdenticalTo($report)
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . 'FAIL' . $title)
+				->if($report->setTitle('%1$s' . '%2$s' . '%3$s' . ($title = uniqid())))
+				->then
+					->object($report->handleEvent(atoum\test::exception, $this))->isIdenticalTo($report)
+					->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
+					->string($report->getTitle())->isEqualTo('Y-m-d' . 'H:i:s' . 'FAIL' . $title)
 		;
 	}
 }

@@ -26,29 +26,21 @@ class stub extends scripts\runner
 
 	public function useScript($script)
 	{
-		switch ($script)
+		$scriptFile = self::getScriptFile($script);
+
+		if (file_exists($scriptFile) === false)
 		{
-			case 'builder':
-			case 'tagger':
-				$scriptFile = self::getScriptFile($script);
-
-				if (file_exists($scriptFile) === false)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script file %s does not exist for script %s'), $scriptFile, $script));
-				}
-
-				require_once $scriptFile;
-
-				exit(0);
-
-			default:
-				throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
+			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Script %s does not exist'), $script));
 		}
+
+		require_once $scriptFile;
+
+		exit(0);
 	}
 
 	public function infos()
 	{
-		$phar = new \phar(\phar::running());
+		$phar = new \phar($this->getName());
 
 		$this
 			->writeMessage($this->locale->_('Informations:') . PHP_EOL)
@@ -62,7 +54,7 @@ class stub extends scripts\runner
 
 	public function signature()
 	{
-		$phar = new \phar(\phar::running());
+		$phar = new \phar($this->getName());
 
 		$signature = $phar->getSignature();
 
@@ -120,11 +112,11 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function includeDefaultConfigFile()
+	public function useDefaultConfigFile()
 	{
 		try
 		{
-			$this->includeFile(dirname(\phar::running(false)) . '/' . self::defaultConfigFile);
+			$this->useConfigFile(dirname($this->getName()) . '/' . self::defaultConfigFile);
 		}
 		catch (\exception $exception) {};
 
@@ -198,7 +190,11 @@ class stub extends scripts\runner
 					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 				}
 
+				unset($_SERVER['argv'][1]);
+				unset($_SERVER['argv'][2]);
+
 				$script->useScript($values[0]);
+
 			},
 			array('-u', '--use'),
 			'<script> <args>',

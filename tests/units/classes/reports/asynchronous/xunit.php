@@ -32,20 +32,7 @@ class xunit extends atoum\test
 		$report = new reports\xunit();
 
 		$this->assert
-			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
-			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::beforeSetUp))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::afterSetUp))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::beforeTestMethod))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::success))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::fail))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::error))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::exception))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::afterTestMethod))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::beforeTearDown))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::afterTearDown))->isEqualTo(array())
-			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array())
+			->array($report->getFields(atoum\runner::runStart))->isEmpty()
 			->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 
@@ -54,20 +41,7 @@ class xunit extends atoum\test
 
 		$this->assert
 			->when(function() use (& $report, $adapter) { $report = new reports\xunit($adapter); })
-				->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array())
-				->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::beforeSetUp))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::afterSetUp))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::beforeTestMethod))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::success))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::fail))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::error))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::exception))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::afterTestMethod))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::beforeTearDown))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::afterTearDown))->isEqualTo(array())
-				->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array())
+				->array($report->getFields())->isEmpty()
 				->object($report->getAdapter())->isIdenticalTo($adapter)
 				->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
 		;
@@ -84,20 +58,31 @@ class xunit extends atoum\test
 			;
 	}
 
-	public function testRunnerStop()
+	public function testSetAdapter()
 	{
 		$report = new reports\xunit();
 
 		$this->assert
-			->variable($report->getTitle())->isNull()
-			->castToString($report)->isEmpty()
-			->string($report->runnerStop(new atoum\runner())->getTitle())->isEqualTo(atoum\reports\asynchronous\xunit::defaultTitle)
-			->castToString($report)->isNotEmpty();
+			->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
+			->object($report->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testHandleEvent()
+	{
+		$this->assert
+			->if($report = new reports\xunit())
+			->then
+				->variable($report->getTitle())->isNull()
+				->castToString($report)->isEmpty()
+				->string($report->handleEvent(atoum\runner::runStop, new atoum\runner())->getTitle())->isEqualTo(atoum\reports\asynchronous\xunit::defaultTitle)
+				->castToString($report)->isNotEmpty()
+		;
 
 		$report = new reports\xunit();
 
 		$this->assert
-			->string($report->setTitle($title = uniqid())->runnerStop(new atoum\runner())->getTitle())
+			->string($report->setTitle($title = uniqid())->handleEvent(atoum\runner::runStop, new atoum\runner())->getTitle())
 			->isEqualTo($title);
 
 		$report = new reports\xunit();
@@ -107,18 +92,8 @@ class xunit extends atoum\test
 		$writer->getMockController()->write = function($something) use ($writer) { return $writer; };
 
 		$this->assert
-			->when(function() use ($report, $writer) { $report->addWriter($writer)->runnerStop(new \mageekguy\atoum\runner()); })
+			->when(function() use ($report, $writer) { $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner()); })
 				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$report = new reports\xunit();
-
-		$this->assert
-			->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
-			->object($report->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 }

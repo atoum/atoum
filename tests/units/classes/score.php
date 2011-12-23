@@ -21,6 +21,8 @@ class score extends atoum\test
 			->variable($score->getAtoumPath())->isNull()
 			->variable($score->getAtoumVersion())->isNull()
 			->integer($score->getPassNumber())->isZero()
+			->variable($score->getDataSetKey())->isNull()
+			->variable($score->getDataSetProvider())->isNull()
 			->array($score->getFailAssertions())->isEmpty()
 			->array($score->getExceptions())->isEmpty()
 			->array($score->getErrors())->isEmpty()
@@ -39,6 +41,8 @@ class score extends atoum\test
 			->variable($score->getAtoumPath())->isNull()
 			->variable($score->getAtoumVersion())->isNull()
 			->integer($score->getPassNumber())->isZero()
+			->variable($score->getDataSetKey())->isNull()
+			->variable($score->getDataSetProvider())->isNull()
 			->array($score->getFailAssertions())->isEmpty()
 			->array($score->getExceptions())->isEmpty()
 			->array($score->getErrors())->isEmpty()
@@ -66,6 +70,8 @@ class score extends atoum\test
 			->array($score->getExceptions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -88,6 +94,8 @@ class score extends atoum\test
 			->array($score->getExceptions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -96,6 +104,8 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -154,6 +164,8 @@ class score extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -178,6 +190,8 @@ class score extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -187,6 +201,8 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -220,6 +236,8 @@ class score extends atoum\test
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -248,6 +266,8 @@ class score extends atoum\test
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -259,6 +279,8 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -280,6 +302,8 @@ class score extends atoum\test
 			->array($score->getErrors())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -291,6 +315,8 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -302,6 +328,8 @@ class score extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'file' => $otherFile,
@@ -332,6 +360,8 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
@@ -350,12 +380,16 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
@@ -372,18 +406,24 @@ class score extends atoum\test
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $moreOutput
@@ -654,6 +694,29 @@ class score extends atoum\test
 					)
 				)
 			)
+		;
+	}
+
+	public function testAddRuntimeException()
+	{
+		$this->assert
+			->if($score = new atoum\score())
+			->then
+				->array($score->getRuntimeExceptions())->isEmpty()
+				->integer($score->getRuntimeExceptionNumber())->isZero()
+				->object($score->addRuntimeException($exception = new atoum\test\exceptions\runtime()))->isIdenticalTo($score)
+				->array($score->getRuntimeExceptions())->isEqualTo(array(
+						$exception
+					)
+				)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(1)
+				->object($score->addRuntimeException($otherException = new atoum\test\exceptions\runtime()))->isIdenticalTo($score)
+				->array($score->getRuntimeExceptions())->isEqualTo(array(
+						$exception,
+						$otherException
+					)
+				)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(2)
 		;
 	}
 
@@ -1032,6 +1095,8 @@ class score extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'file' => $file,
@@ -1086,6 +1151,17 @@ class score extends atoum\test
 		;
 	}
 
+	public function testSetDataSet()
+	{
+		$this->assert
+			->if($score = new atoum\score())
+			->then
+				->object($score->setDataSet($key = rand(1, PHP_INT_MAX), $dataProvider = uniqid()))->isIdenticalTo($score)
+				->integer($score->getDataSetKey())->isEqualTo($key)
+				->string($score->getDataSetProvider())->isEqualTo($dataProvider)
+		;
+	}
+
 	public function testUnsetCase()
 	{
 		$score = new atoum\score();
@@ -1098,6 +1174,22 @@ class score extends atoum\test
 				->string($score->getCase())->isNotNull()
 				->object($score->unsetCase())->isIdenticalTo($score)
 				->variable($score->getCase())->isNull()
+		;
+	}
+
+	public function testUnsetDataSet()
+	{
+		$this->assert
+			->if($score = new atoum\score())
+			->then
+				->object($score->unsetDataSet())->isIdenticalTo($score)
+				->variable($score->getDataSetKey())->isNull()
+				->variable($score->getDataSetProvider())->isNull()
+			->if($score->setDataSet(rand(1, PHP_INT_MAX), uniqid()))
+			->then
+				->object($score->unsetDataSet())->isIdenticalTo($score)
+				->variable($score->getDataSetKey())->isNull()
+				->variable($score->getDataSetProvider())->isNull()
 		;
 	}
 

@@ -26,14 +26,26 @@ class runner extends atoum\script
 
 	protected static $autorunner = null;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null, atoum\runner $runner = null, atoum\includer $includer = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
-		$this
-			->setRunner($runner ?: new atoum\runner())
-			->setIncluder($includer ?: new atoum\includer())
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
+
+		$factory
+			->setCurrentClass(__CLASS__)
+			->import('mageekguy\atoum')
 		;
 
-		parent::__construct($name, $locale, $adapter);
+		$this
+			->setRunner($factory->build('atoum\runner'))
+			->setIncluder($factory->build('atoum\includer'))
+		;
+
+		$factory->unsetCurrentClass();
+
+		parent::__construct($name, $factory);
 	}
 
 	public function setRunner(atoum\runner $runner)
@@ -92,7 +104,7 @@ class runner extends atoum\script
 
 			if ($this->runTests === true)
 			{
-				$this->includeDefaultConfigFile();
+				$this->useDefaultConfigFile();
 
 				if ($this->loop === true)
 				{
@@ -167,67 +179,38 @@ class runner extends atoum\script
 		return parent::help();
 	}
 
-	public function includeFile($path)
+	public function useConfigFile($path)
 	{
 		$runner = $this->runner;
 
-		$realpath = (parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path));
-
-		ob_start();
-
 		try
 		{
-			$this->includer->includePath($realpath, function($path) use ($runner) { include_once($path); });
+			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
 		}
 		catch (atoum\includer\exception $exception)
 		{
-			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to include \'%s\''), $path));
-		}
-
-		if (($output = ob_get_clean()) != '')
-		{
-			throw new exceptions\runtime(sprintf($this->getLocale()->_('There is output \'%s\' in \'%s\''), $output, $path));
+			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
 		}
 
 		return $this;
 	}
 
-	public function includeDefaultConfigFile()
+	public function useDefaultConfigFile()
 	{
 		try
 		{
-			$this->includeFile(atoum\directory . '/' . self::defaultConfigFile);
+			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
 		}
-		catch (exceptions\runtime\file $exception) {};
-
-		return $this;
-	}
-
-	public function runFile($path)
-	{
-		try
-		{
-			return $this->includeFile($path);
-		}
-		catch (exceptions\runtime\file $exception)
-		{
-			throw new exceptions\logic\invalidArgument(sprintf($this->getLocale()->_('Test file \'%s\' does not exist'), $path));
-		}
-	}
-
-	public function runDirectory($directory)
-	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
-		{
-			$this->runFile($path);
-		}
+		catch (atoum\includer\exception $exception) {};
 
 		return $this;
 	}
 
 	public function testIt()
 	{
-		return $this->runDirectory(atoum\directory . '/tests/units/classes');
+		$this->runner->addTestsFromDirectory(atoum\directory . '/tests/units/classes');
+
+		return $this;
 	}
 
 	public function enableLoop()
@@ -286,277 +269,277 @@ class runner extends atoum\script
 	{
 		$runner = $this->runner;
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+		$this
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$script->help();
-			},
-			array('-h', '--help'),
-			null,
-			$this->locale->_('Display this help')
-		);
+						$script->help();
+					},
+					array('-h', '--help'),
+					null,
+					$this->locale->_('Display this help')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						$script->version();
+					},
+					array('-v', '--version'),
+					null,
+					$this->locale->_('Display version')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $path) use ($runner) {
+						if (sizeof($path) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$script->version();
-			},
-			array('-v', '--version'),
-			null,
-			$this->locale->_('Display version')
-		);
+						$runner->setPhpPath(current($path));
+					},
+					array('-p', '--php'),
+					'<path/to/php/binary>',
+					$this->locale->_('Path to PHP binary which must be used to run tests')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $defaultReportTitle) use ($runner) {
+						if (sizeof($defaultReportTitle) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $path) use ($runner) {
-				if (sizeof($path) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						$runner->setDefaultReportTitle(current($defaultReportTitle));
+					},
+					array('-drt', '--default-report-title'),
+					'<string>',
+					$this->locale->_('Define default report title with <string>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $files) use ($runner) {
+						if (sizeof($files) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$runner->setPhpPath(current($path));
-			},
-			array('-p', '--php'),
-			'<path/to/php/binary>',
-			$this->locale->_('Path to PHP binary which must be used to run tests')
-		);
+						foreach ($files as $path)
+						{
+							try
+							{
+								$script->useConfigFile($path);
+							}
+							catch (includer\exception $exception)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
+							}
+						}
+					},
+					array('-c', '--configuration-files'),
+					'<file>...',
+					$this->locale->_('Use all configuration files <file>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $file) {
+						if (sizeof($file) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $defaultReportTitle) use ($runner) {
-				if (sizeof($defaultReportTitle) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						$script->setScoreFile(current($file));
+					},
+					array('-sf', '--score-file'),
+					'<file>',
+					$this->locale->_('Save score in file <file>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $maxChildrenNumber) use ($runner) {
+						if (sizeof($maxChildrenNumber) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$runner->setDefaultReportTitle(current($defaultReportTitle));
-			},
-			array('-drt', '--default-report-title'),
-			'<string>',
-			$this->locale->_('Define default report title with <string>')
-		);
+						$runner->setMaxChildrenNumber(current($maxChildrenNumber));
+					},
+					array('-mcn', '--max-children-number'),
+					'<integer>',
+					$this->locale->_('Maximum number of sub-processus which will be run simultaneously')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $empty) use ($runner) {
+						if ($empty)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $files) use ($runner) {
-				if (sizeof($files) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						$runner->disableCodeCoverage();
+					},
+					array('-ncc', '--no-code-coverage'),
+					null,
+					$this->locale->_('Disable code coverage')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $files) use ($runner) {
+						if (sizeof($files) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				foreach ($files as $path)
-				{
-					try
-					{
-						$script->includeFile($path);
-					}
-					catch (\exception $exception)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
-					}
-				}
-			},
-			array('-c', '--configuration-files'),
-			'<file>...',
-			$this->locale->_('Use all configuration files <file>')
-		);
+						foreach ($files as $path)
+						{
+							$runner->addTest($path);
+						}
+					},
+					array('-f', '--test-files'),
+					'<file>...',
+					$this->locale->_('Execute all unit test files <file>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $directories) use ($runner) {
+						if (sizeof($directories) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $file) {
-				if (sizeof($file) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						foreach ($directories as $directory)
+						{
+							$runner->addTestsFromDirectory($directory);
+						}
+					},
+					array('-d', '--directories'),
+					'<directory>...',
+					$this->locale->_('Execute unit test files in all <directory>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $tags) use ($runner) {
+						if (sizeof($tags) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$script->setScoreFile(current($file));
-			},
-			array('-sf', '--score-file'),
-			'<file>',
-			$this->locale->_('Save score in file <file>')
-		);
+						$script->testTags($tags);
+					},
+					array('-t', '--tags'),
+					'<tag>...',
+					$this->locale->_('Execute only unit test with tags <tag>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $methods) {
+						if (sizeof($methods) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $maxChildrenNumber) use ($runner) {
-				if (sizeof($maxChildrenNumber) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						foreach ($methods as $method)
+						{
+							$method = explode('::', $method);
 
-				$runner->setMaxChildrenNumber(current($maxChildrenNumber));
-			},
-			array('-mcn', '--max-children-number'),
-			'<integer>',
-			$this->locale->_('Maximum number of sub-processus which will be run simultaneously')
-		);
+							if (sizeof($method) != 2)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $empty) use ($runner) {
-				if ($empty)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+							$script->testMethod($method[0], $method[1]);
+						}
+					},
+					array('-m', '--methods'),
+					'<class::method>...',
+					$this->locale->_('Execute all <class::method>, * may be used as wildcard for class name or method name')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $namespaces) {
+						if (sizeof($namespaces) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				$runner->disableCodeCoverage();
-			},
-			array('-ncc', '--no-code-coverage'),
-			null,
-			$this->locale->_('Disable code coverage')
-		);
+						$script->testNamespaces($namespaces);
+					},
+					array('-ns', '--namespaces'),
+					'<namespace>...',
+					$this->locale->_('Execute all classes in all namespaces <namespace>')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if ($values)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $files) {
-				if (sizeof($files) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						$script->enableLoop();
+					},
+					array('-l', '--loop'),
+					null,
+					$this->locale->_('Execute tests in an infinite loop')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				foreach ($files as $path)
-				{
-					$script->runFile($path);
-				}
-			},
-			array('-f', '--test-files'),
-			'<file>...',
-			$this->locale->_('Execute all unit test files <file>')
-		);
+						$script->testIt();
+					},
+					array('--test-it'),
+					null,
+					$this->locale->_('Execute atoum unit tests')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if ($values)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $directories) {
-				if (sizeof($directories) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						\mageekguy\atoum\cli::forceTerminal();
+					},
+					array('-ft', '--force-terminal'),
+					null,
+					$this->locale->_('Force output as in terminal')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) use ($runner) {
+						if (sizeof($values) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-				foreach ($directories as $directory)
-				{
-					$script->runDirectory($directory);
-				}
-			},
-			array('-d', '--directories'),
-			'<directory>...',
-			$this->locale->_('Execute unit test files in all <directory>')
-		);
+						$bootstrapFile = realpath($values[0]);
 
-		$this->addArgumentHandler(
-			function($script, $argument, $tags) use ($runner) {
-				if (sizeof($tags) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+						if ($bootstrapFile === false || is_file($bootstrapFile) === false || is_readable($bootstrapFile) === false)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bootstrap file \'%s\' does not exist'), $values[0]));
+						}
 
-				$script->testTags($tags);
-			},
-			array('-t', '--tags'),
-			'<tag>...',
-			$this->locale->_('Execute only unit test with tags <tag>')
-		);
+						$runner->setBootstrapFile($bootstrapFile);
+					},
+					array('-bf', '--bootstrap-file'),
+					'<file>',
+					$this->locale->_('Include <file> before executing each test method')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) use ($runner) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $methods) {
-				if (sizeof($methods) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				foreach ($methods as $method)
-				{
-					$method = explode('::', $method);
-
-					if (sizeof($method) != 2)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->testMethod($method[0], $method[1]);
-				}
-			},
-			array('-m', '--methods'),
-			'<class::method>...',
-			$this->locale->_('Execute all <class::method>, * may be used as wildcard for class name or method name')
-		);
-
-		$this->addArgumentHandler(
-			function($script, $argument, $namespaces) {
-				if (sizeof($namespaces) <= 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->testNamespaces($namespaces);
-			},
-			array('-ns', '--namespaces'),
-			'<namespace>...',
-			$this->locale->_('Execute all classes in all namespaces <namespace>')
-		);
-
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if ($values)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->enableLoop();
-			},
-			array('-l', '--loop'),
-			null,
-			$this->locale->_('Execute tests in an infinite loop')
-		);
-
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->testIt();
-			},
-			array('--test-it'),
-			null,
-			$this->locale->_('Execute atoum unit tests')
-		);
-
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if ($values)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				\mageekguy\atoum\cli::forceTerminal();
-			},
-			array('-ft', '--force-terminal'),
-			null,
-			$this->locale->_('Force output as in terminal')
-		);
-
-		$this->addArgumentHandler(
-			function($script, $argument, $values) use ($runner) {
-				if (sizeof($values) != 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$bootstrapFile = realpath($values[0]);
-
-				if ($bootstrapFile === false || is_file($bootstrapFile) === false || is_readable($bootstrapFile) === false)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bootstrap file \'%s\' does not exist'), $values[0]));
-				}
-
-				$runner->setBootstrapFile($bootstrapFile);
-			},
-			array('-bf', '--bootstrap-file'),
-			'<file>',
-			$this->locale->_('Include <file> before executing each test method')
-		);
-
+						$report = new atoum\reports\realtime\cli\light();
+						$report->addWriter(new atoum\writers\std\out());
+						$runner->addReport($report);
+					},
+					array('-ulr', '--use-light-report'),
+					null,
+					$this->locale->_('Use "light" CLI report')
+				)
+		;
 
 		return $this;
 	}

@@ -22,42 +22,45 @@ class script extends atoum\test
 	{
 		$this->mock('mageekguy\atoum\script');
 
-		$script = new mock\script($name = uniqid());
 
 		$this->assert
-			->string($script->getName())->isEqualTo($name)
-			->object($script->getLocale())->isEqualTo(new atoum\locale())
-			->object($script->getAdapter())->isEqualTo(new atoum\adapter())
-			->object($script->getArgumentsParser())->isEqualTo(new atoum\script\arguments\parser())
-			->object($script->getOutputWriter())->isEqualTo(new atoum\writers\std\out())
-			->object($script->getErrorWriter())->isEqualTo(new atoum\writers\std\err())
-			->array($script->getHelp())->isEmpty()
-		;
-
-		$script = new mock\script($name = uniqid(), $locale = new atoum\locale(), $adapter = new atoum\adapter(), $argumentsParser = new atoum\script\arguments\parser(), $stdOut = new atoum\writers\std\out(), $stdErr = new atoum\writers\std\err());
-
-		$this->assert
-			->string($script->getName())->isEqualTo($name)
-			->object($script->getLocale())->isIdenticalTo($locale)
-			->object($script->getAdapter())->isIdenticalTo($adapter)
-			->object($script->getArgumentsParser())->isIdenticalTo($argumentsParser)
-			->object($script->getOutputWriter())->isIdenticalTo($stdOut)
-			->object($script->getErrorWriter())->isIdenticalTo($stdErr)
-			->array($script->getHelp())->isEmpty()
-		;
-
-		$this->assert
-			->when(function() use (& $adapter) {
-					$adapter = new atoum\test\adapter();
-					$adapter->php_sapi_name = uniqid();
-				}
-			)
-			->exception(function() use ($adapter, & $name) {
-					new mock\script($name = uniqid(), null, $adapter);
-				}
-			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
-				->hasMessage('\'' . $name . '\' must be used in CLI only')
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->string($script->getName())->isEqualTo($name)
+				->object($script->getLocale())->isEqualTo(new atoum\locale())
+				->object($script->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($script->getArgumentsParser())->isEqualTo(new atoum\script\arguments\parser())
+				->object($script->getOutputWriter())->isEqualTo(new atoum\writers\std\out())
+				->object($script->getErrorWriter())->isEqualTo(new atoum\writers\std\err())
+				->array($script->getHelp())->isEmpty()
+			->if($factory = new atoum\factory())
+			->and($factory->import('mageekguy\atoum'))
+			->and($factory->import('mageekguy\atoum\writers\std'))
+			->and($factory->import('mageekguy\atoum\script\arguments'))
+			->and($factory->returnWhenBuild('atoum\locale', $locale = new atoum\locale()))
+			->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\adapter()))
+			->and($factory->returnWhenBuild('arguments\parser', $argumentsParser = new atoum\script\arguments\parser()))
+			->and($factory->returnWhenBuild('std\out', $stdOut = new atoum\writers\std\out()))
+			->and($factory->returnWhenBuild('std\err', $stdErr = new atoum\writers\std\err()))
+			->and($script = new mock\script($name = uniqid(), $factory))
+			->then
+				->string($script->getName())->isEqualTo($name)
+				->object($script->getLocale())->isIdenticalTo($locale)
+				->object($script->getAdapter())->isIdenticalTo($adapter)
+				->object($script->getArgumentsParser())->isIdenticalTo($argumentsParser)
+				->object($script->getOutputWriter())->isIdenticalTo($stdOut)
+				->object($script->getErrorWriter())->isIdenticalTo($stdErr)
+				->array($script->getHelp())->isEmpty()
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->php_sapi_name = uniqid())
+			->and($factory->returnWhenBuild('atoum\adapter', $adapter))
+			->then
+				->exception(function() use ($factory, & $name) {
+						new mock\script($name = uniqid(), $factory);
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 	}
 
@@ -191,61 +194,58 @@ class script extends atoum\test
 		$this
 			->mock('mageekguy\atoum\script')
 			->mock('mageekguy\atoum\script\arguments\parser')
-		;
-
-		$argumentsParser = new mock\script\arguments\parser();
-		$argumentsParser->getMockController()->addHandler = function() {};
-
-		$script = new mock\script(uniqid(), null, $adapter = new atoum\test\adapter());
-		$script->setArgumentsParser($argumentsParser);
-
-		$this->assert
-			->object($script->run())->isIdenticalTo($script)
-			->mock($argumentsParser)->call('parse')->withArguments($script, array())->once()
-			->adapter($adapter)->call('ini_set')->withArguments('log_errors_max_len', 0)->once()
-			->adapter($adapter)->call('ini_set')->withArguments('log_errors', 'Off')->once()
-			->adapter($adapter)->call('ini_set')->withArguments('display_errors', 'stderr')->once()
+			->assert
+				->if($argumentsParser = new mock\script\arguments\parser())
+				->and($argumentsParser->getMockController()->addHandler = function() {})
+				->and($factory = new atoum\factory())
+				->and($factory->import('mageekguy\atoum'))
+				->and($factory->import('mageekguy\atoum\script\arguments'))
+				->and($factory->returnWhenBuild('arguments\parser', $argumentsParser))
+				->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\test\adapter()))
+				->and($script = new mock\script(uniqid(), $factory))
+				->then
+					->object($script->run())->isIdenticalTo($script)
+					->mock($argumentsParser)->call('parse')->withArguments($script, array())->once()
+					->adapter($adapter)->call('ini_set')->withArguments('log_errors_max_len', 0)->once()
+					->adapter($adapter)->call('ini_set')->withArguments('log_errors', 'Off')->once()
+					->adapter($adapter)->call('ini_set')->withArguments('display_errors', 'stderr')->once()
 		;
 	}
 
 	public function testPrompt()
 	{
-		$this
-			->mock('mageekguy\atoum\script')
-			->mock('mageekguy\atoum\writers\std\out')
-		;
-
-		$stdout = new mock\writers\std\out();
-		$stdout->getMockCOntroller()->write = function() {};
-
-		$script = new mock\script(uniqid(), null, $adapter = new atoum\test\adapter());
-		$script->setOutputWriter($stdout);
-
-		$adapter->fgets = $input = uniqid();
-
 		if (defined('STDIN') === false)
 		{
 			define('STDIN', rand(1, PHP_INT_MAX));
 		}
 
-		$this->assert
-			->string($script->prompt($message = uniqid()))->isEqualTo($input)
-			->mock($stdout)->call('write')->withArguments($message)->once()
-			->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-		;
-
-		$this->assert
-			->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
-			->mock($stdout)->call('write')->withArguments($message)->once()
-			->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-		;
-
-		$adapter->fgets = ' ' . ($input = uniqid()) . "\t";
-
-		$this->assert
-			->string($script->prompt($message = uniqid()))->isEqualTo($input)
-			->mock($stdout)->call('write')->withArguments($message)->once()
-			->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
+		$this
+			->mock('mageekguy\atoum\script')
+			->mock('mageekguy\atoum\writers\std\out')
+			->assert
+				->if($stdOut = new mock\writers\std\out())
+				->and($stdOut->getMockCOntroller()->write = function() {})
+				->and($adapter = new atoum\test\adapter())
+				->and($adapter->fgets = $input = uniqid())
+				->and($factory = new atoum\factory())
+				->and($factory->import('mageekguy\atoum'))
+				->and($factory->returnWhenBuild('atoum\adapter', $adapter))
+				->and($factory->returnWhenBuild('atoum\writers\std\out', $stdOut))
+				->and($script = new mock\script(uniqid(), $factory))
+				->then
+					->string($script->prompt($message = uniqid()))->isEqualTo($input)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
+			->assert()
+					->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
+			->assert
+				->if($adapter->fgets = ' ' . ($input = uniqid()) . "\t")
+				->then
+					->string($script->prompt($message = uniqid()))->isEqualTo($input)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
 		;
 	}
 
@@ -256,30 +256,30 @@ class script extends atoum\test
 			->mock('mageekguy\atoum\writers\std\out')
 		;
 
-		$stdout = new mock\writers\std\out();
-		$stdout->getMockCOntroller()->write = function() {};
+		$stdOut = new mock\writers\std\out();
+		$stdOut->getMockCOntroller()->write = function() {};
 
 		$script = new mock\script(uniqid());
-		$script->setOutputWriter($stdout);
+		$script->setOutputWriter($stdOut);
 
 		$this->assert
 			->object($script->writeMessage($message = uniqid()))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeMessage(($message = uniqid()) . PHP_EOL))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeMessage(($message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeMessage(($message = PHP_EOL . $message) . ' ' . PHP_EOL))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
 		;
 	}
 
@@ -333,40 +333,40 @@ class script extends atoum\test
 			->mock('mageekguy\atoum\writers\std\out')
 		;
 
-		$stdout = new mock\writers\std\out();
-		$stdout->getMockCOntroller()->write = function() {};
+		$stdOut = new mock\writers\std\out();
+		$stdOut->getMockCOntroller()->write = function() {};
 
 		$script = new mock\script(uniqid());
-		$script->setOutputWriter($stdout);
+		$script->setOutputWriter($stdOut);
 
 		$this->assert
 			->object($script->writeLabel($label = uniqid(), $message = uniqid()))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeLabel($label, $message, 0))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeLabel(($label = ' ' . $label) . PHP_EOL, ' ' . $message . ' ' . PHP_EOL))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeLabel($label, $message, 0))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeLabel($label = uniqid(), $message = uniqid(), 1))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 		;
 
 		$this->assert
 			->object($script->writeLabel($label, $message, 2))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments(atoum\script::padding . atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments(atoum\script::padding . atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 		;
 	}
 
@@ -377,15 +377,15 @@ class script extends atoum\test
 			->mock('mageekguy\atoum\writers\std\out')
 		;
 
-		$stdout = new mock\writers\std\out();
-		$stdout->getMockCOntroller()->write = function() {};
+		$stdOut = new mock\writers\std\out();
+		$stdOut->getMockCOntroller()->write = function() {};
 
 		$script = new mock\script(uniqid());
-		$script->setOutputWriter($stdout);
+		$script->setOutputWriter($stdOut);
 
 		$this->assert
 			->object($script->writeLabels(array($label = uniqid() => $message = uniqid())))->isIdenticalTo($script)
-			->mock($stdout)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+			->mock($stdOut)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 			->object($script->writeLabels(array(
 						$label1 = uniqid() => $message1 = uniqid(),
 						$label2 = uniqid() => $message2 = uniqid(),
@@ -394,7 +394,7 @@ class script extends atoum\test
 				)
 			)
 				->isIdenticalTo($script)
-			->mock($stdout)
+			->mock($stdOut)
 				->call('write')->withArguments(atoum\script::padding . $label1 . ': ' . $message1 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . $label2 . ': ' . $message2 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . $label3 . ': ' . $message3 . PHP_EOL)->once()
@@ -406,7 +406,7 @@ class script extends atoum\test
 				)
 			)
 				->isIdenticalTo($script)
-			->mock($stdout)
+			->mock($stdOut)
 				->call('write')->withArguments(atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
@@ -418,7 +418,7 @@ class script extends atoum\test
 				)
 			)
 				->isIdenticalTo($script)
-			->mock($stdout)
+			->mock($stdOut)
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
@@ -430,7 +430,7 @@ class script extends atoum\test
 				)
 			)
 				->isIdenticalTo($script)
-			->mock($stdout)
+			->mock($stdOut)
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message21 . PHP_EOL)->once()
 				->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '               ' . ': ' . $message22 . PHP_EOL)->once()

@@ -12,7 +12,6 @@ class xunit extends atoum\reports\asynchronous
 {
 	const defaultTitle = 'atoum testsuite';
 
-	protected $xunit = '';
 	protected $adapter = null;
 
 	public function __construct(atoum\adapter $adapter = null)
@@ -25,22 +24,17 @@ class xunit extends atoum\reports\asynchronous
 		}
 	}
 
-	public function getRunnerFieldsAsString($event)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		return $this->xunit;
-	}
+		parent::handleEvent($event, $observable);
 
-	protected function setRunnerFields(atoum\runner $runner, $event)
-	{
-		parent::setRunnerFields($runner, $event);
-
-		$this->xunit = '';
+		$this->string = '';
 
 		if ($event === atoum\runner::runStop)
 		{
 			$this->title = $this->title ?: self::defaultTitle;
 
-			$score = $runner->getScore();
+			$score = $observable->getScore();
 
 			$document = new \DOMDocument('1.0', 'UTF-8');
 			$document->formatOutput = true;
@@ -130,7 +124,7 @@ class xunit extends atoum\reports\asynchronous
 				}
 			}
 
-			$this->xunit = $document->saveXML();
+			$this->string = $document->saveXML();
 		}
 
 		return $this;

@@ -10,175 +10,138 @@ use
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\test\event
+class cli extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test')
+			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\event')
 		;
 	}
 
 	public function test__construct()
 	{
-		$event = new test\event\cli();
-
 		$this->assert
-			->variable($event->getValue())->isNull()
+			->if($field = new test\event\cli())
+			->then
+				->variable($field->getObservable())->isNull()
+				->variable($field->getEvent())->isNull()
+				->object($field->getProgressBar())->isEqualTo(new atoum\cli\progressBar())
 		;
 	}
 
-	public function testGetProgressBar()
+	public function testHandleEvent()
 	{
-		$event = new test\event\cli();
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
-
-		$testController = new mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-		$this->assert
-			->variable($event->getTest())->isNull()
-			->exception(function() use ($event) { $event->getProgressBar(); })
-				->isInstanceOf('logicException')
-				->hasMessage('Unable to get progress bar because test is undefined')
-			->object($event->setWithTest($test)->getProgressBar())->isInstanceOf('mageekguy\atoum\cli\progressBar')
-		;
-	}
-
-	public function testSetWithTest()
-	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
-
-		$testController = new mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-
-		$event = new test\event\cli();
-
-		$this->assert
-			->object($event->setWithTest($test))->isIdenticalTo($event)
-			->variable($event->getValue())->isNull()
-			->object($event->setWithTest($test, atoum\test::runStart))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::runStart)
-			->object($event->setWithTest($test, atoum\test::beforeSetUp))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::beforeSetUp)
-			->object($event->setWithTest($test, atoum\test::afterSetUp))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::afterSetUp)
-			->object($event->setWithTest($test, atoum\test::beforeTestMethod))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::beforeTestMethod)
-			->object($event->setWithTest($test, atoum\test::fail))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::fail)
-			->object($event->setWithTest($test, atoum\test::error))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::error)
-			->object($event->setWithTest($test, atoum\test::exception))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::exception)
-			->object($event->setWithTest($test, atoum\test::success))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::success)
-			->object($event->setWithTest($test, atoum\test::afterTestMethod))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::afterTestMethod)
-			->object($event->setWithTest($test, atoum\test::beforeTearDown))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::beforeTearDown)
-			->object($event->setWithTest($test, atoum\test::afterTearDown))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::afterTearDown)
-			->object($event->setWithTest($test, atoum\test::runStop))->isIdenticalTo($event)
-			->string($event->getValue())->isEqualTo(atoum\test::runStop)
-		;
-	}
-
-	public function testSetProgressBarInjector()
-	{
-		$event = new test\event\cli();
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
-
-		$testController = new mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-
-		$this->assert
-			->object($event->setProgressBarInjector(function($test) use (& $progressBar) { return $progressBar = new atoum\cli\progressBar($test); }))->isIdenticalTo($event)
-			->object($event->setWithTest($test)->getProgressBar())->isIdenticalTo($progressBar)
-		;
-
-		$this->assert
-			->exception(function() use ($event) {
-						$event->setProgressBarInjector(function() {});
-					}
-				)
-				->isInstanceOf('invalidArgumentException')
-				->hasMessage('Progress bar injector must take one argument')
+		$this
+			->mock('mageekguy\atoum\test')
+			->assert
+				->if($adapter = new atoum\test\adapter())
+				->and($adapter->class_exists = true)
+				->and($testController = new mock\controller())
+				->and($testController->getTestedClassName = uniqid())
+				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->and($field = new test\event\cli())
+				->then
+					->boolean($field->handleEvent(atoum\runner::runStart, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\runner::runStop, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::runStart, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::runStart)
+					->object($field->getObservable())->isIdenticalTo($test)
+					->boolean($field->handleEvent(atoum\test::beforeSetUp, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::afterSetUp, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::beforeTestMethod, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::fail, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::fail)
+					->object($field->getObservable())->isIdenticalTo($test)
+					->boolean($field->handleEvent(atoum\test::error, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::error)
+					->object($field->getObservable())->isIdenticalTo($test)
+					->boolean($field->handleEvent(atoum\test::exception, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::exception)
+					->object($field->getObservable())->isIdenticalTo($test)
+					->boolean($field->handleEvent(atoum\test::success, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::success)
+					->object($field->getObservable())->isIdenticalTo($test)
+					->boolean($field->handleEvent(atoum\test::afterTestMethod, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::beforeTearDown, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::afterTearDown, $test))->isFalse()
+					->variable($field->getEvent())->isNull()
+					->variable($field->getObservable())->isNull()
+					->boolean($field->handleEvent(atoum\test::runStop, $test))->isTrue()
+					->string($field->getEvent())->isEqualTo(atoum\test::runStop)
+					->object($field->getObservable())->isIdenticalTo($test)
 		;
 	}
 
 	public function test__toString()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$event = new test\event\cli();
-
-		$adapter = new atoum\test\adapter();
-		$adapter->class_exists = true;
-
-		$testController = new atoum\mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-
-		$count = rand(1, PHP_INT_MAX);
-		$test->getMockController()->count = function() use ($count) { return $count; };
-
-		$progressBar = new atoum\cli\progressBar($test);
-
-		$this->assert
-			->string($event->__toString($progressBar))->isEmpty()
-			->object($event->setWithTest($test, atoum\test::runStart))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::beforeSetUp))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::afterSetUp))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::beforeTestMethod))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::fail))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar->refresh('F'))
-			->object($event->setWithTest($test, atoum\test::error))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar->refresh('e'))
-			->object($event->setWithTest($test, atoum\test::exception))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar->refresh('E'))
-			->object($event->setWithTest($test, atoum\test::success))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar->refresh('S'))
-			->object($event->setWithTest($test, atoum\test::uncompleted))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar->refresh('U'))
-			->object($event->setWithTest($test, atoum\test::afterTestMethod))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::beforeTearDown))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::afterTearDown))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo((string) $progressBar)
-			->object($event->setWithTest($test, atoum\test::runStop))->isIdenticalTo($event)
-			->castToString($event)->isEqualTo(PHP_EOL)
+		$this
+			->mock('mageekguy\atoum\test')
+			->assert
+				->if($adapter = new atoum\test\adapter())
+				->and($adapter->class_exists = true)
+				->and($testController = new atoum\mock\controller())
+				->and($testController->getTestedClassName = uniqid())
+				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->and($field = new test\event\cli())
+				->and($count = rand(1, PHP_INT_MAX))
+				->and($test->getMockController()->count = function() use ($count) { return $count; })
+				->and($progressBar = new atoum\test\cli\progressBar($test))
+				->then
+					->castToString($field)->isEmpty()
+				->if($field->handleEvent(atoum\test::runStart, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::beforeSetUp, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::afterSetUp, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::beforeTestMethod, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::fail, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('F'))
+				->if($field->handleEvent(atoum\test::error, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('e'))
+				->if($field->handleEvent(atoum\test::exception, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('E'))
+				->if($field->handleEvent(atoum\test::success, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('S'))
+				->if($field->handleEvent(atoum\test::uncompleted, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('U'))
+				->if($field->handleEvent(atoum\test::afterTestMethod, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::beforeTearDown, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::afterTearDown, $test))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar)
+				->if($field->handleEvent(atoum\test::runStop, $test))
+				->then
+					->castToString($field)->isEqualTo(PHP_EOL)
 		;
 	}
 }

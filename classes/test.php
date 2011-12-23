@@ -19,6 +19,8 @@ use
 abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
+	const defaultNamespace = 'tests\units';
+
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -27,12 +29,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const error = 'testError';
 	const uncompleted = 'testUncompleted';
 	const exception = 'testException';
+	const runtimeException = 'testRuntimeException';
 	const success = 'testAssertionSuccess';
 	const afterTestMethod = 'afterTestMethod';
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
-	const defaultNamespace = 'tests\units';
 
     /**
      * Path to php binary
@@ -94,6 +96,11 @@ abstract class test implements observable, adapter\aggregator, \countable
      * @var boolean
      */
 	private $ignore = false;
+
+    /**
+     * @var array
+     */
+	private $dataProviders = array();
 
     /**
      * @var array
@@ -431,7 +438,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		test\adapter::resetCallsForAllInstances();
 
-		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this, $this->locale))->asserterGenerator;
+		return $this->asserterGenerator ?: $this->setAsserterGenerator(new asserter\generator($this))->asserterGenerator;
 	}
 
 
@@ -591,6 +598,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 		}
 
 		return $tags;
+	}
+
+
+    /**
+     * @return array
+     */
+	public function getDataProviders()
+	{
+		return $this->dataProviders;
 	}
 
 
@@ -775,11 +791,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param \mageekguy\atoum\observers\test $observer
+     * @param \mageekguy\atoum\observer $observer
      *
      * @return \mageekguy\atoum\test
      */
-	public function addObserver(observers\test $observer)
+	public function addObserver(observer $observer)
 	{
 		$this->observers[] = $observer;
 
@@ -788,15 +804,15 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @param string $method
+     * @param string $event
      *
      * @return \mageekguy\atoum\test
      */
-	public function callObservers($method)
+	public function callObservers($event)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->{$method}($this);
+			$observer->handleEvent($event, $this);
 		}
 
 		return $this;
@@ -907,7 +923,41 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$time = microtime(true);
 					$memory = memory_get_usage(true);
 
-					$this->{$testMethod}();
+					if (isset($this->dataProviders[$testMethod]) === false)
+					{
+						$this->{$testMethod}();
+					}
+					else
+					{
+						$data = $this->{$this->dataProviders[$testMethod]}();
+
+						if (is_array($data) === false && $data instanceof \traversable === false)
+						{
+							throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or an iterator');
+						}
+
+						$reflectedTestMethod = new \reflectionMethod($this, $testMethod);
+						$numberOfArguments = $reflectedTestMethod->getNumberOfRequiredParameters();
+
+						foreach ($data as $key => $arguments)
+						{
+							if (is_array($arguments) === false)
+							{
+								$arguments = array($arguments);
+							}
+
+							if (sizeof($arguments) != $numberOfArguments)
+							{
+								throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
+							}
+
+							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
+
+							$reflectedTestMethod->invokeArgs($this, $arguments);
+
+							$this->score->unsetDataSet();
+						}
+					}
 
 					$memoryUsage = memory_get_usage(true) - $memory;
 					$duration = microtime(true) - $time;
@@ -939,6 +989,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					$this->addExceptionToScore($exception);
 				}
+			}
+			catch (test\exceptions\runtime $exception)
+			{
+				$this->score->addRuntimeException($exception);
 			}
 			catch (\exception $exception)
 			{
@@ -1103,6 +1157,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									switch (true)
 									{
+										case $score->getRuntimeExceptionNumber() > 0:
+											$this->callObservers(self::runtimeException);
+											throw current($score->getRuntimeExceptions());
+
 										case $score->getUncompletedTestNumber():
 											$this->callObservers(self::uncompleted);
 											break;
@@ -1230,6 +1288,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 	}
 
 
+    /**
+     * @return string
+     */
 	public function getOutput()
 	{
 		return ob_get_clean() ?: '';
@@ -1239,7 +1300,7 @@ abstract class test implements observable, adapter\aggregator, \countable
     /**
      * @param string $namespace
      *
-     * @throws atoum\exceptions\logic\invalidArgument
+     * @throws exceptions\logic\invalidArgument
      */
 	public static function setNamespace($namespace)
 	{
@@ -1262,45 +1323,58 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 
     /**
-     * @return array
-     */
-	public static function getObserverEvents()
-	{
-		return array(
-			self::runStart,
-			self::beforeSetUp,
-			self::afterSetUp,
-			self::beforeTestMethod,
-			self::fail,
-			self::error,
-			self::exception,
-			self::uncompleted,
-			self::success,
-			self::afterTestMethod,
-			self::beforeTearDown,
-			self::afterTearDown,
-			self::runStop
-		);
-	}
-
-    /**
      * @param string $case
      *
      * @return \mageekguy\atoum\test
      */
 	public function startCase($case)
 	{
+		test\adapter::resetCallsForAllInstances();
+
 		$this->score->setCase($case);
 
 		return $this;
 	}
 
+
+    /**
+     * @return \mageekguy\atoum\test
+     */
 	public function stopCase()
 	{
+		test\adapter::resetCallsForAllInstances();
+
 		$this->score->unsetCase();
 
 		return $this;
 	}
+
+
+    /**
+     * @param string $testMethodName
+     * @param string $dataProvider
+     *
+     * @return \mageekguy\atoum\test
+     *
+     * @throws exceptions\logic\invalidArgument
+     */
+	public function setDataProvider($testMethodName, $dataProvider)
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		if (method_exists($this, $dataProvider) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . $dataProvider . '() is unknown');
+		}
+
+		$this->dataProviders[$testMethodName] = $dataProvider;
+
+		return $this;
+	}
+
 
     /**
      * @return \mageekguy\atoum\test

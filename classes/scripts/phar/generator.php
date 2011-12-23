@@ -22,9 +22,14 @@ class generator extends atoum\script
 	private $srcIteratorInjector = null;
 	private $configurationsIteratorInjector = null;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
-		parent::__construct($name, $locale, $adapter);
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
+
+		parent::__construct($name, $factory);
 
 		$this->pharInjector = function ($name) { return new \phar($name); };
 		$this->srcIteratorInjector = function ($directory) { return new \recursiveDirectoryIterator($directory); };
@@ -73,10 +78,6 @@ class generator extends atoum\script
 		else if ($this->originDirectory !== null && $destinationDirectory === $this->originDirectory)
 		{
 			throw new exceptions\runtime('Destination directory must be different from origin directory');
-		}
-		else if (strpos($destinationDirectory, $this->originDirectory) === 0)
-		{
-			throw new exceptions\runtime('Origin directory must not include destination directory');
 		}
 
 		$this->destinationDirectory = $destinationDirectory;

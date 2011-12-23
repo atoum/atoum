@@ -9,21 +9,43 @@ use
 class progressBar
 {
 	const width = 60;
-	const progressBarFormat = '[%s]';
-	const counterFormat = '[%s]';
+	const defaultProgressBarFormat = '[%s]';
+	const defaultCounterFormat = '[%s/%s]';
 
 	protected $cli = null;
 	protected $refresh = null;
-	protected $counter = null;
-	protected $testsNumber = 0;
 	protected $progressBar = null;
-	protected $currentTestNumber = 0;
+	protected $progressBarFormat = null;
+	protected $counter = null;
+	protected $counterFormat = null;
+	protected $iterations = 0;
+	protected $currentIteration = 0;
 
-	public function __construct(atoum\test $test, atoum\cli $cli = null)
+	public function __construct($iterations = 0, atoum\cli $cli = null)
 	{
-		$this->testsNumber = sizeof($test);
+		$this->iterations = $iterations;
+		$this->progressBarFormat = self::defaultProgressBarFormat;
+		$this->counterFormat = self::defaultCounterFormat;
 
 		$this->setCli($cli ?: new atoum\cli());
+	}
+
+	public function reset()
+	{
+		$this->refresh = null;
+		$this->iterations = 0;
+		$this->currentIteration = 0;
+		$this->progressBar = null;
+		$this->counter = null;
+
+		return $this;
+	}
+
+	public function setIterations($iterations)
+	{
+		$this->reset()->iterations = (int) $iterations;
+
+		return $this;
 	}
 
 	public function setCli(atoum\cli $cli)
@@ -44,9 +66,9 @@ class progressBar
 
 		if ($this->progressBar === null && $this->counter === null)
 		{
-			$this->progressBar = sprintf(self::progressBarFormat, ($this->testsNumber > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->testsNumber), self::width, '_', STR_PAD_RIGHT)));
+			$this->progressBar = sprintf($this->progressBarFormat, ($this->iterations > self::width ?  str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations), self::width, '_', STR_PAD_RIGHT)));
 
-			$this->counter = '[' . sprintf('%' . strlen((string) $this->testsNumber) . 'd', $this->currentTestNumber) . '/' . $this->testsNumber . ']';
+			$this->counter = sprintf($this->counterFormat, sprintf('%' . strlen((string) $this->iterations) . 'd', $this->currentIteration), $this->iterations);
 
 			$string .= $this->progressBar . $this->counter;
 		}
@@ -55,11 +77,11 @@ class progressBar
 		{
 			$refreshLength = strlen($this->refresh);
 
-			$this->currentTestNumber += $refreshLength;
+			$this->currentIteration += $refreshLength;
 
 			if ($this->cli->isTerminal() === false)
 			{
-				$this->progressBar = substr($this->progressBar, 0, $this->currentTestNumber) . $this->refresh . substr($this->progressBar, $this->currentTestNumber + 1);
+				$this->progressBar = substr($this->progressBar, 0, $this->currentIteration) . $this->refresh . substr($this->progressBar, $this->currentIteration + 1);
 				$string .= PHP_EOL . $this->progressBar;
 			}
 			else
@@ -69,13 +91,13 @@ class progressBar
 				$string .= $this->progressBar;
 			}
 
-			$this->counter = '[' . sprintf('%' . strlen((string) $this->testsNumber) . 'd', $this->currentTestNumber) . '/' . $this->testsNumber . ']';
+			$this->counter = sprintf($this->counterFormat, sprintf('%' . strlen((string) $this->iterations) . 'd', $this->currentIteration), $this->iterations);
 
 			$string .= $this->counter;
 
-			if ($this->testsNumber > self::width && $this->currentTestNumber % (self::width - 1) == 0)
+			if ($this->iterations > self::width && $this->iterations - $this->currentIteration && $this->currentIteration % (self::width - 1) == 0)
 			{
-				$this->progressBar = '[' . str_pad(str_repeat('.', min(self::width, $this->testsNumber - $this->currentTestNumber)), self::width, '_', STR_PAD_RIGHT) . ']';
+				$this->progressBar = '[' . (($this->iterations - $this->currentIteration) > (self::width - 1) ? str_repeat('.', self::width - 1) . '>' : str_pad(str_repeat('.', $this->iterations - $this->currentIteration), self::width, '_', STR_PAD_RIGHT)) . ']';
 				$this->counter = '';
 
 				$string .= PHP_EOL . $this->progressBar;
@@ -89,7 +111,7 @@ class progressBar
 
 	public function refresh($value)
 	{
-		if ($this->testsNumber > 0 && $this->currentTestNumber < $this->testsNumber)
+		if ($this->iterations > 0 && $this->currentIteration < $this->iterations)
 		{
 			$this->refresh .= $value;
 		}

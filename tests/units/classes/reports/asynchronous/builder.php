@@ -27,18 +27,14 @@ class builder extends atoum\test
 		$report = new reports\builder();
 
 		$this->assert
-			->array($report->getRunnerFields(atoum\runner::runStart))->isEqualTo(array(
+			->array($report->getFields())->isEqualTo(array(
 					new runner\atoum\cli(),
-					new runner\php\path\cli(
-					),
+					new runner\php\path\cli(),
 					new runner\php\version\cli(
 						null,
 						null,
 						new prompt('   ')
-					)
-				)
-			)
-			->array($report->getRunnerFields(atoum\runner::runStop))->isEqualTo(array(
+					),
 					new runner\duration\cli(),
 					new runner\result\cli(),
 					new runner\failures\cli(
@@ -74,24 +70,8 @@ class builder extends atoum\test
 					),
 					new runner\tests\duration\cli(),
 					new runner\tests\memory\cli(),
-					new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      '))
-				)
-			)
-			->array($report->getTestFields(atoum\test::runStart))->isEqualTo(array(
-					new test\run\cli()
-				)
-			)
-			->array($report->getTestFields(atoum\test::beforeSetUp))->isEmpty()
-			->array($report->getTestFields(atoum\test::afterSetUp))->isEmpty()
-			->array($report->getTestFields(atoum\test::beforeTestMethod))->isEmpty()
-			->array($report->getTestFields(atoum\test::success))->isEmpty()
-			->array($report->getTestFields(atoum\test::fail))->isEmpty()
-			->array($report->getTestFields(atoum\test::error))->isEmpty()
-			->array($report->getTestFields(atoum\test::exception))->isEmpty()
-			->array($report->getTestFields(atoum\test::afterTestMethod))->isEmpty()
-			->array($report->getTestFields(atoum\test::beforeTearDown))->isEmpty()
-			->array($report->getTestFields(atoum\test::afterTearDown))->isEmpty()
-			->array($report->getTestFields(atoum\test::runStop))->isEqualTo(array(
+					new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      ')),
+					new test\run\cli(),
 					new test\duration\cli(new prompt('   ')),
 					new test\memory\cli(new prompt('   '))
 				)

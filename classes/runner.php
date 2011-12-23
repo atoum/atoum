@@ -9,16 +9,18 @@ use
 
 class runner implements observable, adapter\aggregator
 {
-	const runStart = 'runnerStart';
-	const runStop = 'runnerStop';
 	const atoumVersionConstant = 'mageekguy\atoum\version';
 	const atoumDirectoryConstant = 'mageekguy\atoum\directory';
+
+	const runStart = 'runnerStart';
+	const runStop = 'runnerStop';
 
 	protected $path = '';
 	protected $class = '';
 	protected $score = null;
-	protected $locale = null;
 	protected $adapter = null;
+	protected $locale = null;
+	protected $includer = null;
 	protected $observers = array();
 	protected $testObservers = array();
 	protected $reports = array();
@@ -33,19 +35,67 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null, superglobals $superglobals = null)
+	public function __construct(score $score = null, adapter $adapter = null, locale $locale = null, includer $includer = null)
 	{
 		$this
-			->setSuperglobals($superglobals ?: new superglobals())
 			->setAdapter($adapter ?: new adapter())
 			->setScore($score ?: new score())
-			->setLocale(new locale())
+			->setLocale($locale ?: new locale())
+			->setIncluder($includer ?: new includer())
 		;
 
 		$runnerClass = new \reflectionClass($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setScore(score $score)
+	{
+		$this->score = $score;
+
+		return $this;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
+	}
+
+	public function setAdapter(adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setLocale(locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function setIncluder(includer $includer)
+	{
+		$this->includer = $includer;
+
+		return $this;
+	}
+
+	public function getIncluder()
+	{
+		return $this->includer;
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -60,37 +110,9 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function setLocale(locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
-	}
-
-	public function setSuperglobals(atoum\superglobals $superglobals)
-	{
-		$this->superglobals = $superglobals;
-
-		return $this;
-	}
-
 	public function setDefaultReportTitle($title)
 	{
 		$this->defaultReportTitle = (string) $title;
-
-		return $this;
-	}
-
-	public function setScore(score $score)
-	{
-		$this->score = $score;
-
-		return $this;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
 
 		return $this;
 	}
@@ -102,53 +124,30 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
 	public function getDefaultReportTitle()
 	{
 		return $this->defaultReportTitle;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
-	}
-
-	public function getScore()
-	{
-		return $this->score;
 	}
 
 	public function getPhpPath()
 	{
 		if ($this->phpPath === null)
 		{
-			if (isset($this->superglobals->_SERVER['_']) === true)
+			if (($phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN')) === false)
 			{
-				$this->setPhpPath($this->superglobals->_SERVER['_']);
-			}
-			else
-			{
-				$phpPath = PHP_BINDIR . '/php';
-
-				if ($this->adapter->is_executable($phpPath) === false)
+				if (($phpPath = $this->adapter->getenv('PHPBIN')) === false)
 				{
-					throw new exceptions\runtime('Unable to find PHP executable');
+					if ($this->adapter->constant('DIRECTORY_SEPARATOR') === '\\' || ($phpPath = ($this->adapter->defined('PHP_BINARY') ? PHP_BINARY : PHP_BINDIR . '/php')) === false)
+					{
+						throw new exceptions\runtime('Unable to find PHP executable');
+					}
 				}
-
-				$this->setPhpPath($phpPath);
 			}
+
+			$this->setPhpPath($phpPath);
 		}
 
 		return $this->phpPath;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function getPath()
@@ -231,47 +230,28 @@ class runner implements observable, adapter\aggregator
 		return $this->codeCoverage;
 	}
 
-	public function addObserver(atoum\observers\runner $observer)
+	public function addObserver(atoum\observer $observer)
 	{
 		$this->observers[] = $observer;
 
 		return $this;
 	}
 
-	public function removeObserver(atoum\observers\runner $observer)
+	public function removeObserver(atoum\observer $observer)
 	{
 		$this->observers = self::remove($observer, $this->observers);
 
 		return $this;
 	}
 
-	public function callObservers($method)
+	public function callObservers($event)
 	{
 		foreach ($this->observers as $observer)
 		{
-			$observer->{$method}($this);
+			$observer->handleEvent($event, $this);
 		}
 
 		return $this;
-	}
-
-	public function addTestObserver(atoum\observers\test $observer)
-	{
-		$this->testObservers[] = $observer;
-
-		return $this;
-	}
-
-	public function removeTestObserver(atoum\observers\test $observer)
-	{
-		$this->testObservers = self::remove($observer, $this->testObservers);
-
-		return $this;
-	}
-
-	public function getTestObservers()
-	{
-		return $this->testObservers;
 	}
 
 	public function setPathAndVersionInScore()
@@ -361,46 +341,55 @@ class runner implements observable, adapter\aggregator
 			$runTestClasses = array_intersect($runTestClasses, $declaredTestClasses);
 		}
 
+		natsort($runTestClasses);
+
+		$tests = array();
+
+		foreach ($runTestClasses as $runTestClass)
+		{
+			$test = new $runTestClass();
+
+			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+			{
+				$tests[] = array($test, $methods);
+
+				$this->testNumber++;
+				$this->testMethodNumber += sizeof($methods);
+			}
+		}
+
 		$this->callObservers(self::runStart);
 
-		if ($runTestClasses)
+		if ($tests)
 		{
-			natsort($runTestClasses);
-
 			$phpPath = $this->getPhpPath();
 
-			foreach ($runTestClasses as $runTestClass)
+			foreach ($tests as $testMethods)
 			{
-				$test = new $runTestClass();
+				list($test, $methods) = $testMethods;
 
-				if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+				$test
+					->setPhpPath($phpPath)
+					->setLocale($this->locale)
+					->setBootstrapFile($this->bootstrapFile)
+				;
+
+				if ($this->maxChildrenNumber !== null)
 				{
-					$test
-						->setPhpPath($phpPath)
-						->setLocale($this->locale)
-						->setBootstrapFile($this->bootstrapFile)
-					;
-
-					if ($this->maxChildrenNumber !== null)
-					{
-						$test->setMaxChildrenNumber($this->maxChildrenNumber);
-					}
-
-					if ($this->codeCoverageIsEnabled() === false)
-					{
-						$test->disableCodeCoverage();
-					}
-
-					foreach ($this->testObservers as $observer)
-					{
-						$test->addObserver($observer);
-					}
-
-					$this->score->merge($test->run($methods)->getScore());
-
-					$this->testNumber++;
-					$this->testMethodNumber += sizeof($methods);
+					$test->setMaxChildrenNumber($this->maxChildrenNumber);
 				}
+
+				if ($this->codeCoverageIsEnabled() === false)
+				{
+					$test->disableCodeCoverage();
+				}
+
+				foreach ($this->observers as $observer)
+				{
+					$test->addObserver($observer);
+				}
+
+				$this->score->merge($test->run($methods)->getScore());
 			}
 		}
 
@@ -409,6 +398,32 @@ class runner implements observable, adapter\aggregator
 		$this->callObservers(self::runStop);
 
 		return $this->score;
+	}
+
+	public function addTest($path)
+	{
+		$runner = $this;
+
+		try
+		{
+			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
+		}
+		catch (atoum\includer\exception $exception)
+		{
+			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+		}
+
+		return $this;
+	}
+
+	public function addTestsFromDirectory($directory)
+	{
+		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+		{
+			$this->addTest($path);
+		}
+
+		return $this;
 	}
 
 	public function getRunningDuration()
@@ -431,20 +446,14 @@ class runner implements observable, adapter\aggregator
 	{
 		$this->reports[] = $report;
 
-		return $this
-			->addObserver($report)
-			->addTestObserver($report)
-		;
+		return $this->addObserver($report);
 	}
 
 	public function removeReport(atoum\report $report)
 	{
 		$this->reports = self::remove($report, $this->reports);
 
-		return $this
-			->removeObserver($report)
-			->removeTestObserver($report)
-		;
+		return $this->removeObserver($report);
 	}
 
 	public function removeReports()
@@ -465,11 +474,6 @@ class runner implements observable, adapter\aggregator
 	public function getReports()
 	{
 		return $this->reports;
-	}
-
-	public static function getObserverEvents()
-	{
-		return array(self::runStart, self::runStop);
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)

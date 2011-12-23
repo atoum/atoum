@@ -14,149 +14,187 @@ use
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class cli extends \mageekguy\atoum\tests\units\report\fields\test\run
+class cli extends atoum\test
 {
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test')
+			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\run')
 		;
 	}
 
 	public function test__construct()
 	{
-		$field = new test\run\cli();
-
 		$this->assert
-			->object($field->getLocale())->isEqualTo(new locale())
-			->variable($field->getTestClass())->isNull()
-		;
-
-		$field = new test\run\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale());
-
-		$this->assert
-			->object($field->getPrompt())->isIdenticalTo($prompt)
-			->object($field->getColorizer())->isIdenticalTo($colorizer)
-			->object($field->getLocale())->isIdenticalTo($locale)
+			->if($field = new test\run\cli())
+			->then
+				->object($field->getLocale())->isEqualTo(new locale())
+				->variable($field->getTestClass())->isNull()
+				->object($field->getLocale())->isEqualTo(new atoum\locale())
+			->if($field = new test\run\cli($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale()))
+			->then
+				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->getColorizer())->isIdenticalTo($colorizer)
+				->object($field->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
 	public function testSetPrompt()
 	{
-		$field = new test\run\cli();
-
 		$this->assert
-			->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
-			->object($field->getPrompt())->isIdenticalTo($prompt)
+			->if($field = new test\run\cli())
+			->then
+				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
+			->if($field = new test\run\cli(new prompt()))
+			->then
+				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
 		;
 	}
 
 	public function testSetColorizer()
 	{
-		$field = new test\run\cli();
-
 		$this->assert
-			->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getColorizer())->isIdenticalTo($colorizer)
+			->if($field = new test\run\cli())
+			->then
+				->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getColorizer())->isIdenticalTo($colorizer)
+			->if($field = new test\run\cli(null, new colorizer()))
+			->then
+				->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getColorizer())->isIdenticalTo($colorizer)
 		;
 	}
 
-	public function testSetWithTest()
+	public function testHandleEvent()
 	{
-		$field = new test\run\cli();
 
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$adapter = new adapter();
-		$adapter->class_exists = true;
-
-		$testController = new mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-
-		$this->assert
-			->object($field->setWithTest($test))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::runStop))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::beforeSetUp))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::afterSetUp))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::beforeTestMethod))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::fail))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::error))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::exception))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::success))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::afterTestMethod))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::beforeTearDown))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::afterTearDown))->isIdenticalTo($field)
-			->variable($field->getTestClass())->isNull()
-			->object($field->setWithTest($test, atoum\test::runStart))->isIdenticalTo($field)
-			->string($field->getTestClass())->isEqualTo($test->getClass())
+		$this
+			->mock('mageekguy\atoum\test')
+			->assert
+				->if($field = new test\run\cli())
+				->and($adapter = new adapter())
+				->and($adapter->class_exists = true)
+				->and($testController = new mock\controller())
+				->and($testController->getTestedClassName = uniqid())
+				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->then
+					->boolean($field->handleEvent(atoum\test::runStop, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::beforeSetUp, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::afterSetUp, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::beforeTestMethod, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::fail, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::error, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::exception, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::success, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::afterTestMethod, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::beforeTearDown, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::afterTearDown, $test))->isFalse()
+					->variable($field->getTestClass())->isNull()
+					->boolean($field->handleEvent(atoum\test::runStart, $test))->isTrue()
+					->string($field->getTestClass())->isEqualTo($test->getClass())
 		;
 	}
 
 	public function test__toString()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\test')
-		;
-
-		$adapter = new adapter();
-		$adapter->class_exists = true;
-
-		$testController = new mock\controller();
-		$testController->getTestedClassName = uniqid();
-
-		$test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController);
-
-		$field = new test\run\cli();
-
-		$this->assert
-			->castToString($field)->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStop))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeSetUp))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterSetUp))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeTestMethod))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::fail))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::error))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::exception))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::success))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterTearDown))->isEqualTo('There is currently no test running.' . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo(sprintf('%s...', $test->getClass()) . PHP_EOL)
-		;
-
-		$field = new test\run\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale());
-
-		$this->assert
-			->castToString($field)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStop))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeSetUp))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterSetUp))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeTestMethod))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::fail))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::error))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::exception))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::success))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterTestMethod))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::beforeTearDown))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::afterTearDown))->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
-			->castToString($field->setWithTest($test, atoum\test::runStart))->isEqualTo($prompt . sprintf($locale->_('%s...'), $colorizer->colorize($test->getClass())) . PHP_EOL)
+		$this
+			->mock('mageekguy\atoum\test')
+			->assert
+				->if($adapter = new adapter())
+				->and($adapter->class_exists = true)
+				->and($testController = new mock\controller())
+				->and($testController->getTestedClassName = uniqid())
+				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->and($defaultField = new test\run\cli())
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::runStop, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::beforeSetUp, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::afterSetUp, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::beforeTestMethod, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::fail, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::error, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::exception, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::success, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::afterTestMethod, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::beforeTearDown, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::afterTearDown, $test))
+				->then
+					->castToString($defaultField)->isEqualTo('There is currently no test running.' . PHP_EOL)
+				->if($defaultField->handleEvent(atoum\test::runStart, $test))
+				->then
+					->castToString($defaultField)->isEqualTo(sprintf('%s...', $test->getClass()) . PHP_EOL)
+				->if($customField = new test\run\cli($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::runStop, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::beforeSetUp, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::afterSetUp, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::beforeTestMethod, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::fail, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::error, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::exception, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::success, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::afterTestMethod, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::beforeTearDown, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::afterTearDown, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')) . PHP_EOL)
+				->if($customField->handleEvent(atoum\test::runStart, $test))
+				->then
+					->castToString($customField)->isEqualTo($prompt . sprintf($locale->_('%s...'), $colorizer->colorize($test->getClass())) . PHP_EOL)
 		;
 	}
 }

@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
@@ -12,6 +13,7 @@ class score
 	private $passAssertions = 0;
 	private $failAssertions = array();
 	private $exceptions = array();
+	private $runtimeExceptions = array();
 	private $errors = array();
 	private $outputs = array();
 	private $durations = array();
@@ -19,6 +21,8 @@ class score
 	private $coverage = null;
 	private $uncompletedTests = array();
 	private $case = null;
+	private $dataSetKey = null;
+	private $dataSetProvider = null;
 	private $phpPath = null;
 	private $phpVersion = null;
 	private $atoumPath = null;
@@ -109,6 +113,8 @@ class score
 		$this->failAssertions[] = array(
 			'id' => ++self::$failId,
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -124,6 +130,8 @@ class score
 	{
 		$this->exceptions[] = array(
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -134,10 +142,19 @@ class score
 		return $this;
 	}
 
+	public function addRuntimeException(test\exceptions\runtime $exception)
+	{
+		$this->runtimeExceptions[] = $exception;
+
+		return $this;
+	}
+
 	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null)
 	{
 		$this->errors[] = array(
 			'case' => $this->case,
+			'dataSetKey' => $this->dataSetKey,
+			'dataSetProvider' => $this->dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -157,6 +174,8 @@ class score
 		{
 			$this->outputs[] = array(
 				'case' => $this->case,
+				'dataSetKey' => $this->dataSetKey,
+				'dataSetProvider' => $this->dataSetProvider,
 				'class' => $class,
 				'method' => $method,
 				'value' => $output
@@ -297,6 +316,11 @@ class score
 		return self::sort($this->exceptions);
 	}
 
+	public function getRuntimeExceptions()
+	{
+		return $this->runtimeExceptions;
+	}
+
 	public function getDurationNumber()
 	{
 		return sizeof($this->durations);
@@ -320,6 +344,11 @@ class score
 	public function getExceptionNumber()
 	{
 		return sizeof($this->exceptions);
+	}
+
+	public function getRuntimeExceptionNumber()
+	{
+		return sizeof($this->runtimeExceptions);
 	}
 
 	public function getMemoryUsageNumber()
@@ -357,6 +386,16 @@ class score
 		return $this->case;
 	}
 
+	public function getDataSetKey()
+	{
+		return $this->dataSetKey;
+	}
+
+	public function getDataSetProvider()
+	{
+		return $this->dataSetProvider;
+	}
+
 	public function getMethodsWithFail()
 	{
 		return self::getMethods($this->getFailAssertions());
@@ -379,9 +418,25 @@ class score
 		return $this;
 	}
 
+	public function setDataSet($key, $dataProvider)
+	{
+		$this->dataSetKey = $key;
+		$this->dataSetProvider = $dataProvider;
+
+		return $this;
+	}
+
 	public function unsetCase()
 	{
 		$this->case = null;
+
+		return $this;
+	}
+
+	public function unsetDataSet()
+	{
+		$this->dataSetKey = null;
+		$this->dataSetProvider = null;
 
 		return $this;
 	}

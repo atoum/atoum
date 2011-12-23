@@ -4,13 +4,19 @@ namespace mageekguy\atoum\report\fields\runner\tests;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report
+	mageekguy\atoum\report,
+	mageekguy\atoum\runner
 ;
 
-abstract class memory extends report\fields\runner
+abstract class memory extends report\field
 {
 	protected $value = null;
 	protected $testNumber = null;
+
+	public function __construct(atoum\locale $locale = null)
+	{
+		parent::__construct(array(runner::runStop), $locale);
+	}
 
 	public function getValue()
 	{
@@ -22,15 +28,19 @@ abstract class memory extends report\fields\runner
 		return $this->testNumber;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		if ($event === atoum\runner::runStop)
+		if (parent::handleEvent($event, $observable) === false)
 		{
-			$this->value = $runner->getScore()->getTotalMemoryUsage();
-			$this->testNumber = $runner->getTestNumber();
+			return false;
 		}
+		else
+		{
+			$this->value = $observable->getScore()->getTotalMemoryUsage();
+			$this->testNumber = $observable->getTestNumber();
 
-		return $this;
+			return true;
+		}
 	}
 }
 

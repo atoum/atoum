@@ -22,7 +22,7 @@ $coverageField->setRootUrl('http://url/of/web/site');
 $cliReport = new atoum\reports\realtime\cli();
 $cliReport
 	->addWriter($stdOutWriter)
-	->addRunnerField($coverageField, array(atoum\runner::runStop))
+	->addField($coverageField, array(atoum\runner::runStop))
 ;
 
 $runner->addReport($cliReport);

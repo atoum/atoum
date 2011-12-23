@@ -134,6 +134,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -156,6 +158,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -221,6 +225,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -654,6 +660,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -681,6 +689,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -690,6 +700,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -721,6 +733,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -748,6 +762,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -766,6 +782,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -775,6 +793,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -798,6 +818,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -807,6 +829,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -816,6 +840,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -852,6 +878,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -873,6 +901,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -882,6 +912,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -905,6 +937,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -914,6 +948,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -923,6 +959,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -960,6 +998,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1015,6 +1055,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1051,6 +1093,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1078,6 +1122,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1087,6 +1133,8 @@ class mock extends atoum\test
 					),
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1142,6 +1190,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1165,6 +1215,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1174,6 +1226,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1196,6 +1250,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1205,6 +1261,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1214,6 +1272,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1242,6 +1302,8 @@ class mock extends atoum\test
 			->array($score->getFailAssertions())->isEqualTo(array(
 					array(
 						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
 						'class' => __CLASS__,
 						'method' => $test->getCurrentMethod(),
 						'file' => __FILE__,
@@ -1260,6 +1322,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1269,6 +1333,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1287,6 +1353,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1296,6 +1364,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1305,6 +1375,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1327,6 +1399,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1336,6 +1410,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1345,6 +1421,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1354,6 +1432,8 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1418,6 +1498,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1451,6 +1533,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1469,6 +1553,8 @@ class mock extends atoum\test
 				->array($score->getFailAssertions())->isEqualTo(array(
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
@@ -1478,12 +1564,56 @@ class mock extends atoum\test
 						),
 						array(
 							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
 							'class' => __CLASS__,
 							'method' => $test->getCurrentMethod(),
 							'file' => __FILE__,
 							'line' => $otherLine,
 							'asserter' => get_class($asserter) . '::never()',
 							'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall())  . PHP_EOL . '[1] ' . $call->setArguments(array($arg)). PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+						)
+					)
+				)
+			->when(function() use ($mock, $arg) { $mock->foo($arg); })
+				->exception(function() use (& $anOtherLine, $asserter, & $message) { $anOtherLine = __LINE__; $asserter->never($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+				->integer($score->getPassNumber())->isEqualTo(1)
+				->integer($score->getFailNumber())->isEqualTo(3)
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $line,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg))
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $otherLine,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => sprintf($test->getLocale()->_('method %s is called 2 times instead of 0'), $asserter->getCall())  . PHP_EOL . '[1] ' . $call->setArguments(array($arg)). PHP_EOL . '[2] ' . $call->setArguments(array($arg))
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => __CLASS__,
+							'method' => $test->getCurrentMethod(),
+							'file' => __FILE__,
+							'line' => $anOtherLine,
+							'asserter' => get_class($asserter) . '::never()',
+							'fail' => $message
 						)
 					)
 				)
@@ -1494,7 +1624,7 @@ class mock extends atoum\test
 		$this->assert
 			->object($asserter->never())->isIdenticalTo($asserter)
 			->integer($score->getPassNumber())->isEqualTo(2)
-			->integer($score->getFailNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(3)
 		;
 	}
 }

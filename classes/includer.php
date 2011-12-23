@@ -27,7 +27,7 @@ class includer
 		{
 			$realpath = parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path) ?: $path;
 
-			if (in_array($path, get_included_files(), true) === false)
+			if (in_array($realpath, get_included_files(), true) === false)
 			{
 				throw new includer\exception('Unable to include \'' . $path . '\'');
 			}

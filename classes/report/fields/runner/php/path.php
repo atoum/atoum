@@ -4,23 +4,36 @@ namespace mageekguy\atoum\report\fields\runner\php;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report
+	mageekguy\atoum\report,
+	mageekguy\atoum\runner
 ;
 
-abstract class path extends report\fields\runner
+abstract class path extends report\field
 {
 	protected $path = null;
+
+	public function __construct(atoum\locale $locale = null)
+	{
+		parent::__construct(array(runner::runStart), $locale);
+	}
 
 	public function getPath()
 	{
 		return $this->path;
 	}
 
-	public function setWithRunner(atoum\runner $runner, $event = null)
+	public function handleEvent($event, atoum\observable $observable)
 	{
-		$this->path = $runner->getScore()->getPhpPath();
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			return false;
+		}
+		else
+		{
+			$this->path = $observable->getScore()->getPhpPath();
 
-		return $this;
+			return true;
+		}
 	}
 }
 

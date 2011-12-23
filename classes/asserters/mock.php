@@ -217,30 +217,7 @@ class mock extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments()));
-
-		if (($callsNumber = sizeof($calls)) === 1)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail(
-				$failMessage !== null
-				? $failMessage
-				: sprintf(
-						$this->getLocale()->__(
-							'method %s is called %d time instead of 1',
-							'method %s is called %d times instead of 1',
-							$callsNumber
-						),
-						$this->call,
-						$callsNumber
-					) . $this->getCallsAsString()
-			);
-		}
-
-		return $this;
+        return $this->exactly(1, $failMessage);
 	}
 
 	public function atLeastOnce($failMessage = null)
@@ -287,7 +264,7 @@ class mock extends atoum\asserter
 
 	public function never($failMessage = null)
 	{
-		return $this->exactly(0);
+		return $this->exactly(0, $failMessage);
 	}
 
 	protected function mockIsSet()

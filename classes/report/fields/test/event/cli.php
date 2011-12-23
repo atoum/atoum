@@ -3,57 +3,74 @@
 namespace mageekguy\atoum\report\fields\test\event;
 
 use
-	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\report,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\cli\progressBar
 ;
 
 class cli extends report\fields\test\event
 {
+	protected $progressBar = null;
+
+	public function __construct(progressBar $progressBar = null, atoum\locale $locale = null)
+	{
+		parent::__construct($locale);
+
+		$this->progressBar = $progressBar ?: new progressBar();
+	}
+
+	public function getProgressBar()
+	{
+		return $this->progressBar;
+	}
+
 	public function __toString()
 	{
-		static $progressBar = null;
-
 		$string = '';
 
-		if ($this->value === atoum\test::runStart)
+		if ($this->observable !== null)
 		{
-			$progressBar = $this->getProgressBar();
-			$string = (string) $progressBar;
-		}
-		else if ($progressBar !== null)
-		{
-			if ($this->value === atoum\test::runStop)
+			switch ($this->event)
 			{
-				$progressBar = null;
-				$string = PHP_EOL;
-			}
-			else
-			{
-				switch ($this->value)
-				{
-					case atoum\test::success:
-						$progressBar->refresh('S');
-						break;
+				case test::runStop:
+				case test::runtimeException:
+					$string = PHP_EOL;
+					break;
 
-					case atoum\test::fail:
-						$progressBar->refresh('F');
-						break;
+				default:
+					switch ($this->event)
+					{
+						case test::runStart:
+							$this->progressBar->reset()->setIterations(sizeof($this->observable));
+							break;
 
-					case atoum\test::error:
-						$progressBar->refresh('e');
-						break;
+						case test::success:
+							$this->progressBar->refresh('S');
+							break;
 
-					case atoum\test::exception:
-						$progressBar->refresh('E');
-						break;
+						case test::fail:
+							$this->progressBar->refresh('F');
+							break;
 
-					case atoum\test::uncompleted:
-						$progressBar->refresh('U');
-						break;
-				}
+						case test::error:
+							$this->progressBar->refresh('e');
+							break;
 
-				$string = (string) $progressBar;
+						case test::exception:
+							$this->progressBar->refresh('E');
+							break;
+
+						case test::uncompleted:
+							$this->progressBar->refresh('U');
+							break;
+
+						case test::runStop:
+							$this->progressBar->reset();
+							break;
+					}
+
+					$string = (string) $this->progressBar;
 			}
 		}
 

@@ -21,22 +21,34 @@ abstract class script implements atoum\adapter\aggregator
 	private $help = array();
 	private $argumentsParser = null;
 
-	public function __construct($name, atoum\locale $locale = null, atoum\adapter $adapter = null, script\arguments\parser $argumentsParser = null, atoum\writer $outputWriter = null, atoum\writer $errorWriter = null)
+	public function __construct($name, atoum\factory $factory = null)
 	{
+		if ($factory === null)
+		{
+			$factory = new atoum\factory();
+		}
+
+		$factory
+			->setCurrentClass(__CLASS__)
+			->import('mageekguy\atoum')
+		;
+
 		$this->name = (string) $name;
 
 		$this
-			->setLocale($locale ?: new atoum\locale())
-			->setAdapter($adapter ?: new atoum\adapter())
-			->setArgumentsParser($argumentsParser ?: new script\arguments\parser())
-			->setOutputWriter($outputWriter ?: new atoum\writers\std\out())
-			->setErrorWriter($errorWriter ?: new atoum\writers\std\err())
+			->setLocale($factory->build('atoum\locale'))
+			->setAdapter($factory->build('atoum\adapter'))
+			->setArgumentsParser($factory->build('atoum\script\arguments\parser'))
+			->setOutputWriter($factory->build('atoum\writers\std\out'))
+			->setErrorWriter($factory->build('atoum\writers\std\err'))
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
 			throw new exceptions\logic('\'' . $this->getName() . '\' must be used in CLI only');
-		}
+	 	}
+
+		$factory->unsetCurrentClass();
 	}
 
 	public function setOutputWriter(atoum\writer $writer)

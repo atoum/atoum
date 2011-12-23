@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-127
+137
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -31,14 +31,15 @@ function atoum#run(file, bang)
 		set filetype=atoum
 		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
 
-		%d
+		%d _
 
 		let message = 'Execute ' . _ . '...'
 
 		call append(0, message)
 
 		echo message
-		2d | resize 1 | redraw
+
+		2d _ | resize 1 | redraw
 
 		execute 'silent! %!'. _
 		execute 'resize ' . line('$')
@@ -47,7 +48,6 @@ function atoum#run(file, bang)
 
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
 		nnoremap <silent> <buffer> <LocalLeader><CR> :call atoum#goToFailure(getline('.'))<CR>
-		nnoremap <silent> <buffer> <LocalLeader>n :call atoum#goToNextFailure()<CR>
 
 		set nocursorline
 
@@ -64,6 +64,16 @@ function atoum#run(file, bang)
 		if (success > 0)
 			execute success
 		else
+			let result = getline(1, '$')
+
+			let oldErrorFormat = &errorformat
+
+			let &errorformat = 'In\ file\ %f\ on\ line\ %l\,\ %m'
+
+			cgete filter(result, 'v:val =~ "^In file "')
+
+			let &errorformat = oldErrorFormat
+
 			let failure = search('^Failure ', 'w')
 
 			if (failure > 0)

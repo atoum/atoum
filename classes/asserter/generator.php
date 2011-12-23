@@ -38,19 +38,34 @@ class generator
 	protected $test = null;
 
     /**
+     *
+     * @var mageekguy\atoum\locale
+     */
+	protected $locale = null;
+
+    /**
      * @var array
      */
 	protected $aliases = array();
-
 
     /**
      * Constructor
      *
      * @param mageekguy\atoum\test $test
      */
-	public function __construct(atoum\test $test)
+	public function __construct(atoum\test $test = null, atoum\locale $locale = null)
 	{
-		$this->setTest($test);
+		if ($test !== null)
+		{
+			$this->setTest($test);
+
+			if ($locale === null)
+			{
+				$locale = $test->getLocale();
+			}
+		}
+
+		$this->setLocale($locale ?: new atoum\locale());
 	}
 
 
@@ -71,6 +86,9 @@ class generator
 			case 'then':
 			case 'and':
 				return $this;
+
+			case 'assert':
+				return $this->assert();
 
 			default:
 				$class = $this->getAsserterClass($asserterName);
@@ -107,19 +125,29 @@ class generator
 	{
 		switch ($method)
 		{
-			case 'assert':
-				$this->getTest()->stopCase();
-
-				$case = isset($arguments[0]) === false ? null : $arguments[0];
-
-				if ($case !== null)
+			case 'if':
+				if ($this->test !== null)
 				{
-					$this->getTest()->startCase($case);
+					$this->test->stopCase();
 				}
 
 				return $this;
 
-			case 'if':
+			case 'assert':
+				if ($this->test !== null)
+				{
+					$this->test->stopCase();
+
+					$case = isset($arguments[0]) === false ? null : $arguments[0];
+
+					if ($case !== null)
+					{
+						$this->test->startCase($case);
+					}
+				}
+
+				return $this;
+
 			case 'and':
 				return $this;
 
@@ -128,8 +156,8 @@ class generator
 
 				if (sizeof($arguments) > 0)
 				{
-				}
 					call_user_func_array(array($asserter, 'setWith'), $arguments);
+				}
 
 				return $asserter;
 		}
@@ -150,7 +178,14 @@ class generator
      */
 	public function getScore()
 	{
-		return $this->test->getScore();
+		return $this->test === null ? null : $this->test->getScore();
+	}
+
+	public function setLocale(atoum\locale $locale)
+	{
+		$this->locale = $locale;
+
+		return $this;
 	}
 
 
@@ -159,7 +194,7 @@ class generator
      */
 	public function getLocale()
 	{
-		return $this->test->getLocale();
+		return $this->locale;
 	}
 
 
@@ -193,7 +228,7 @@ class generator
 	{
 		$this->test = $test;
 
-		return $this;
+		return $this->setLocale($test->getLocale());
 	}
 
 

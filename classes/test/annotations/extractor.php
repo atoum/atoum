@@ -16,15 +16,18 @@ class extractor extends atoum\annotations\extractor
 
 		foreach ($annotations as $annotation => $value)
 		{
-			switch ($annotation)
+			switch (strtolower($annotation))
 			{
 				case 'ignore':
-					$this->annotations[$annotation] = strcasecmp($value, 'on') == 0;
+					$this->annotations['ignore'] = strcasecmp($value, 'on') == 0;
 					break;
 
 				case 'tags':
-					$this->annotations[$annotation] = array_values(array_unique(preg_split('/\s+/', $value)));
+					$this->annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
 					break;
+
+				case 'dataprovider':
+					$this->annotations['dataProvider'] = $value;
 			}
 		}
 
@@ -62,6 +65,10 @@ class extractor extends atoum\annotations\extractor
 
 				case 'tags':
 					$test->setMethodTags($method, $value);
+					break;
+
+				case 'dataProvider':
+					$test->setDataProvider($method, $value);
 					break;
 			}
 		}

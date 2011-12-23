@@ -35,52 +35,58 @@ class builder extends atoum\test
 
 	public function test__construct()
 	{
-		$builder = new scripts\builder($name = uniqid());
-
 		$this->assert
-			->string($builder->getName())->isEqualTo($name)
-			->object($builder->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-			->object($builder->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->object($builder->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-			->object($builder->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
-			->object($builder->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
-			->object($builder->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
-			->array($builder->getRunnerConfigurationFiles())->isEmpty()
-			->variable($builder->getVersion())->isNull()
-			->variable($builder->getWorkingDirectory())->isNull()
-			->variable($builder->getDestinationDirectory())->isNull()
-			->variable($builder->getErrorsDirectory())->isNull()
-			->variable($builder->getScoreDirectory())->isNull()
-			->variable($builder->getRevisionFile())->isNull()
-			->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
-			->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
-			->variable($builder->getReportTitle())->isNull()
-			->object($builder->getVcs())->isInstanceOf('mageekguy\atoum\scripts\builder\vcs\svn')
-			->variable($builder->getTaggerEngine())->isNull()
-		;
-
-		$builder = new scripts\builder($name = uniqid(), $vcs = new vcs\svn(), $locale = new atoum\locale(), $adapter = new atoum\adapter());
-
-		$this->assert
-			->string($builder->getName())->isEqualTo($name)
-			->object($builder->getLocale())->isEqualTo($locale)
-			->object($builder->getAdapter())->isEqualTo($adapter)
-			->object($builder->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-			->object($builder->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
-			->object($builder->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
-			->object($builder->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
-			->array($builder->getRunnerConfigurationFiles())->isEmpty()
-			->variable($builder->getVersion())->isNull()
-			->variable($builder->getWorkingDirectory())->isNull()
-			->variable($builder->getDestinationDirectory())->isNull()
-			->variable($builder->getErrorsDirectory())->isNull()
-			->variable($builder->getScoreDirectory())->isNull()
-			->variable($builder->getRevisionFile())->isNull()
-			->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
-			->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
-			->variable($builder->getReportTitle())->isNull()
-			->object($builder->getVcs())->isIdenticalTo($vcs)
-			->variable($builder->getTaggerEngine())->isNull()
+			->if($builder = new scripts\builder($name = uniqid()))
+			->then
+				->string($builder->getName())->isEqualTo($name)
+				->object($builder->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($builder->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($builder->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
+				->object($builder->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
+				->object($builder->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+				->object($builder->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+				->array($builder->getRunnerConfigurationFiles())->isEmpty()
+				->variable($builder->getVersion())->isNull()
+				->variable($builder->getWorkingDirectory())->isNull()
+				->variable($builder->getDestinationDirectory())->isNull()
+				->variable($builder->getErrorsDirectory())->isNull()
+				->variable($builder->getScoreDirectory())->isNull()
+				->variable($builder->getRevisionFile())->isNull()
+				->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
+				->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
+				->variable($builder->getReportTitle())->isNull()
+				->object($builder->getVcs())->isInstanceOf('mageekguy\atoum\scripts\builder\vcs\svn')
+				->variable($builder->getTaggerEngine())->isNull()
+			->if($factory = new atoum\factory())
+			->and($factory->import('mageekguy\atoum'))
+			->and($factory->returnWhenBuild('atoum\locale', $locale = new atoum\locale()))
+			->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\adapter()))
+			->and($factory->returnWhenBuild('atoum\script\arguments\parser', $argumentsParser = new atoum\script\arguments\parser()))
+			->and($factory->returnWhenBuild('atoum\writers\std\out', $stdOut = new atoum\writers\std\out()))
+			->and($factory->returnWhenBuild('atoum\writers\std\err', $stdErr = new atoum\writers\std\err()))
+			->and($factory->returnWhenBuild('atoum\superglobals', $superglobals = new atoum\superglobals()))
+			->and($factory->returnWhenBuild('atoum\scripts\builder\vcs\svn', $vcs = new atoum\scripts\builder\vcs\svn()))
+			->and( $builder = new scripts\builder($name = uniqid(), $factory))
+			->then
+				->string($builder->getName())->isEqualTo($name)
+				->object($builder->getLocale())->isIdenticalTo($locale)
+				->object($builder->getAdapter())->isIdenticalTo($adapter)
+				->object($builder->getArgumentsParser())->isIdenticalTo($argumentsParser)
+				->object($builder->getOutputWriter())->isIdenticalTo($stdOut)
+				->object($builder->getErrorWriter())->isIdenticalTo($stdErr)
+				->object($builder->getSuperglobals())->isIdenticalTo($superglobals)
+				->array($builder->getRunnerConfigurationFiles())->isEmpty()
+				->variable($builder->getVersion())->isNull()
+				->variable($builder->getWorkingDirectory())->isNull()
+				->variable($builder->getDestinationDirectory())->isNull()
+				->variable($builder->getErrorsDirectory())->isNull()
+				->variable($builder->getScoreDirectory())->isNull()
+				->variable($builder->getRevisionFile())->isNull()
+				->string($builder->getUnitTestRunnerScript())->isEqualTo(scripts\builder::defaultUnitTestRunnerScript)
+				->variable($builder->getReportTitle())->isNull()
+				->string($builder->getPharGeneratorScript())->isEqualTo(scripts\builder::defaultPharGeneratorScript)
+				->object($builder->getVcs())->isIdenticalTo($vcs)
+				->variable($builder->getTaggerEngine())->isNull()
 		;
 	}
 
@@ -334,13 +340,19 @@ class builder extends atoum\test
 
 	public function testCheckUnitTests()
 	{
-		$this->mockGenerator
-			->generate($this->getTestedClassName())
-			->generate('mageekguy\atoum\score')
-			->generate('mageekguy\atoum\scripts\builder\vcs')
+		$this
+			->mock($this->getTestedClassName())
+			->mock('mageekguy\atoum\score')
+			->mock('mageekguy\atoum\scripts\builder\vcs')
 		;
 
-		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter = new atoum\test\adapter());
+		$factory = new atoum\factory();
+		$factory
+			->import('mageekguy\atoum')
+			->returnWhenBuild('atoum\adapter', $adapter = new atoum\test\adapter())
+		;
+
+		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $factory);
 
 		$builder->disableUnitTestChecking();
 
@@ -594,13 +606,19 @@ class builder extends atoum\test
 
 	public function testCreatePhar()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder')
-			->generate('mageekguy\atoum\scripts\builder\vcs')
-			->generate('mageekguy\atoum\scripts\tagger\engine')
+		$this
+			->mock('mageekguy\atoum\scripts\builder')
+			->mock('mageekguy\atoum\scripts\builder\vcs')
+			->mock('mageekguy\atoum\scripts\tagger\engine')
 		;
 
-		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter = new atoum\test\adapter());
+		$factory = new atoum\factory();
+		$factory
+			->import('mageekguy\atoum')
+			->returnWhenBuild('atoum\adapter', $adapter = new atoum\test\adapter())
+		;
+
+		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $factory);
 
 		$builder
 			->setTaggerEngine($taggerEngine = new \mock\mageekguy\atoum\scripts\tagger\engine())
@@ -855,9 +873,7 @@ class builder extends atoum\test
 
 	public function testRun()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder')
-		;
+		$this->mock('mageekguy\atoum\scripts\builder');
 
 		$adapter = new atoum\test\adapter();
 		$adapter->file_get_contents = false;
@@ -868,7 +884,13 @@ class builder extends atoum\test
 		$adapter->fclose = function() {};
 		$adapter->unlink = function() {};
 
-		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), null, null, $adapter);
+		$factory = new atoum\factory();
+		$factory
+			->import('mageekguy\atoum')
+			->returnWhenBuild('atoum\adapter', $adapter)
+		;
+
+		$builder = new \mock\mageekguy\atoum\scripts\builder(uniqid(), $factory);
 
 		$builderController = $builder->getMockController();
 		$builderController->createPhar = function() {};
@@ -890,34 +912,29 @@ class builder extends atoum\test
 
 	public function testWriteInErrorDirectory()
 	{
-		$adapter = new atoum\test\adapter();
-
-		$builder = new scripts\builder(uniqid(), null, null, $adapter);
-
-		$adapter->file_put_contents = function() {};
-
 		$this->assert
-			->variable($builder->getErrorsDirectory())->isNull()
-			->object($builder->writeErrorInErrorsDirectory(uniqid()))->isIdenticalTo($builder)
-			->adapter($adapter)->call('file_put_contents')->never()
+			->if($factory = new atoum\factory())
+			->and($factory->import('mageekguy\atoum'))
+			->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\test\adapter()))
+			->and($adapter->file_put_contents = function() {})
+			->and($builder = new scripts\builder(uniqid(), $factory))
+			->then
+				->variable($builder->getErrorsDirectory())->isNull()
+				->object($builder->writeErrorInErrorsDirectory(uniqid()))->isIdenticalTo($builder)
+				->adapter($adapter)->call('file_put_contents')->never()
+			->if($builder->setErrorsDirectory($errorDirectory = uniqid()))
+			->then
+				->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
+				->exception(function() use ($builder) {
+							$builder->writeErrorInErrorsDirectory(uniqid());
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic')
+						->hasMessage('Revision is undefined')
+				->adapter($adapter)->call('file_put_contents')->never()
 		;
 
-		$builder->setErrorsDirectory($errorDirectory = uniqid());
-
-		$this->assert
-			->string($builder->getErrorsDirectory())->isEqualTo($errorDirectory)
-			->exception(function() use ($builder) {
-						$builder->writeErrorInErrorsDirectory(uniqid());
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Revision is undefined')
-			->adapter($adapter)->call('file_put_contents')->never()
-		;
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs')
-		;
+		$this->mock('mageekguy\atoum\scripts\builder\vcs');
 
 		$vcsController = new mock\controller();
 		$vcsController->__construct = function() {};

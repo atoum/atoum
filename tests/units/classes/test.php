@@ -41,6 +41,10 @@ namespace mageekguy\atoum\tests\units
 		@tags test method two
 		*/
 		public function testMethod2() {}
+
+		public function aDataProvider()
+		{
+		}
 	}
 
 	class foo extends atoum\test
@@ -96,6 +100,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
+				->array($test->getDataProviders())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 				->variable($test->getMaxChildrenNumber())->isNull()
@@ -116,6 +121,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
+				->array($test->getDataProviders())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 				->variable($test->getMaxChildrenNumber())->isNull()
@@ -132,6 +138,7 @@ namespace mageekguy\atoum\tests\units
 				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 				->array($test->getTags())->isEqualTo($tags)
 				->array($test->getMethodTags())->isEmpty()
+				->array($test->getDataProviders())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 				->variable($test->getMaxChildrenNumber())->isNull()
@@ -152,6 +159,7 @@ namespace mageekguy\atoum\tests\units
 						'testMethod2' => array('test', 'method', 'two')
 					)
 				)
+				->array($test->getDataProviders())->isEmpty()
 				->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 				->variable($test->getMaxChildrenNumber())->isNull()
@@ -327,7 +335,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale())))->isIdenticalTo($test)
+				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator()))->isIdenticalTo($test)
 				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
 				->object($asserterGenerator->getTest())->isIdenticalTo($test)
 				->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
@@ -769,6 +777,27 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getTaggedTestMethods(array(uniqid(), 'testMethod2', uniqid())))->isEqualTo(array('testMethod2'))
 					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2')))->isEqualTo(array('Testmethod2'))
 					->array($test->getTaggedTestMethods(array(uniqid(), 'Testmethod1', uniqid(), 'Testmethod2'), array('one')))->isEmpty()
+			;
+		}
+
+		public function testSetDataProvider()
+		{
+			$test = new emptyTest();
+
+			$this->assert
+				->exception(function() use ($test, & $method) { $test->setDataProvider($method = uniqid(), uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			;
+
+			$test = new notEmptyTest();
+
+			$this->assert
+				->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod1', $dataProvider = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
+				->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
+				->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
 			;
 		}
 	}

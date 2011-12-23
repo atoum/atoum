@@ -9,11 +9,16 @@ use
 	mageekguy\atoum\report
 ;
 
-abstract class atoum extends report\fields\runner
+abstract class atoum extends report\field
 {
 	protected $author = null;
 	protected $path = null;
 	protected $version = null;
+
+	public function __construct(\mageekguy\atoum\locale $locale = null)
+	{
+		parent::__construct(array(runner::runStart), $locale);
+	}
 
 	public function getAuthor()
 	{
@@ -30,16 +35,20 @@ abstract class atoum extends report\fields\runner
 		return $this->path;
 	}
 
-	public function setWithRunner(runner $runner, $event = null)
+	public function handleEvent($event, \mageekguy\atoum\observable $observable)
 	{
-		if ($event === runner::runStart)
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			return false;
+		}
+		else
 		{
 			$this->author = \mageekguy\atoum\author;
-			$this->path = $runner->getScore()->getAtoumPath();
-			$this->version = $runner->getScore()->getAtoumVersion();
-		}
+			$this->path = $observable->getScore()->getAtoumPath();
+			$this->version = $observable->getScore()->getAtoumVersion();
 
-		return $this;
+			return true;
+		}
 	}
 }
 
