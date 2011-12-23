@@ -9,6 +9,10 @@ use
 ;
 
 /**
+ * @method  mageekguy\atoum\asserter                        if()
+ * @method  mageekguy\atoum\asserter                        and()
+ * @method  mageekguy\atoum\asserter                        then()
+ *
  * @method  mageekguy\atoum\asserters\adapter               adapter()
  * @method  mageekguy\atoum\asserters\afterDestructionOf    afterDestructionOf()
  * @method  mageekguy\atoum\asserters\boolean               boolean()

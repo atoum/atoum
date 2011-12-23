@@ -1460,7 +1460,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
 	}
 
-    
+
 	private static function cleanNamespace($namespace)
 	{
 		return trim((string) $namespace, '\\');
