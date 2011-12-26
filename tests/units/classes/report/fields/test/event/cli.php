@@ -100,7 +100,7 @@ class cli extends atoum\test
 				->and($field = new test\event\cli())
 				->and($count = rand(1, PHP_INT_MAX))
 				->and($test->getMockController()->count = function() use ($count) { return $count; })
-				->and($progressBar = new atoum\test\cli\progressBar($test))
+				->and($progressBar = new atoum\cli\progressBar(sizeof($test)))
 				->then
 					->castToString($field)->isEmpty()
 				->if($field->handleEvent(atoum\test::runStart, $test))
