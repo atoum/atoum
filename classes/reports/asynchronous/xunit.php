@@ -12,7 +12,7 @@ class xunit extends atoum\reports\asynchronous
 {
 	const defaultTitle = 'atoum testsuite';
 
-	protected $adapter = null;
+	protected $score = null;
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
@@ -26,24 +26,27 @@ class xunit extends atoum\reports\asynchronous
 
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		parent::handleEvent($event, $observable);
+		$this->score = ($event !== atoum\runner::runStop) ? null : $observable->getScore();
 
+		return parent::handleEvent($event, $observable);
+	}
+
+	public function getFieldsAsString($event)
+	{
 		$this->string = '';
 
 		if ($event === atoum\runner::runStop)
 		{
 			$this->title = $this->title ?: self::defaultTitle;
 
-			$score = $observable->getScore();
-
 			$document = new \DOMDocument('1.0', 'UTF-8');
 			$document->formatOutput = true;
 			$document->appendChild($root = $document->createElement('testsuites'));
 			$root->setAttribute('name', $this->title);
-			$durations = $score->getDurations();
-			$errors = $score->getErrors();
-			$excepts = $score->getExceptions();
-			$fails = $score->getFailAssertions();
+			$durations = $this->score->getDurations();
+			$errors = $this->score->getErrors();
+			$excepts = $this->score->getExceptions();
+			$fails = $this->score->getFailAssertions();
 
 			$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
 
