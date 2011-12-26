@@ -213,39 +213,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetFileIteratorInjector()
-	{
-		$this
-			->mock('recursiveDirectoryIterator')
-			->assert
-				->if($adapter = new atoum\test\adapter())
-				->and($adapter->php_sapi_name = function() { return 'cli'; })
-				->and($adapter->realpath = function($path) { return $path; })
-				->and($adapter->is_dir = function() { return true; })
-				->and($factory = new atoum\factory())
-				->and($factory->import('mageekguy\atoum'))
-				->and($factory->returnWhenBuild('atoum\adapter', $adapter))
-				->and($generator = new phar\generator(uniqid(), $factory))
-				->then
-					->exception(function() use ($generator) {
-							$generator->setSrcIteratorInjector(function() {});
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Source iterator injector must take one argument')
-				->if($mockController = new mock\controller())
-				->and($mockController->injectInNextMockInstance())
-				->and($mockController->__construct = function() {})
-				->and($iterator = new \mock\recursiveDirectoryIterator($directory = uniqid()))
-				->then
-					->exception(function() use ($generator, $directory) { $generator->getSrcIterator($directory); })
-						->isInstanceOf('unexpectedValueException')
-						->hasMessage('RecursiveDirectoryIterator::__construct(' . $directory . '): failed to open dir: No such file or directory')
-					->object($generator->setSrcIteratorInjector(function($directory) use ($iterator) { return $iterator; }))->isIdenticalTo($generator)
-					->object($generator->getSrcIterator(uniqid()))->isIdenticalTo($iterator)
-		;
-	}
-
 	public function testSetOutputWriter()
 	{
 		$generator = new phar\generator(uniqid());
@@ -301,248 +268,217 @@ class generator extends atoum\test
 	{
 		$this
 			->mock('phar')
-			->mock('recursiveDirectoryIterator')
 			->mock('mageekguy\atoum\writers\std\out')
 			->mock('mageekguy\atoum\writers\std\err')
 			->assert
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->php_sapi_name = function() { return 'cli'; })
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($adapter->is_dir = function() { return true; })
-			->and($adapter->is_file = function() { return true; })
-			->and($adapter->unlink = function() {})
-			->and($factory = new atoum\factory())
-			->and($factory->import('mageekguy\atoum'))
-			->and($factory->returnWhenBuild('atoum\adapter', $adapter))
-			->and($generator = new phar\generator(uniqid(), $factory))
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Origin directory must be defined')
-			->if($generator->setOriginDirectory($originDirectory = uniqid()))
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Destination directory must be defined')
-			->if($generator->setDestinationDirectory(uniqid()))
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stub file must be defined')
-			->if($generator->setStubFile($stubFile = uniqid()))
-			->and($adapter->is_readable = function() { return false; })
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
-			->if($adapter->is_readable = function($path) use ($originDirectory) { return ($path === $originDirectory); })
-			->and($adapter->is_writable = function() { return false; })
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
-			->if($adapter->is_writable = function() { return true; })
-			->then
-				->exception(function () use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
-			->if($adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === $originDirectory || $path === $stubFile); })
-			->and($generator->setPharInjector(function($name) { return null; }))
-			->then
-				->exception(function() use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Phar injector must return a \phar instance')
-			->if($generator->setPharInjector(function($name) use (& $phar) {
-						$pharController = new mock\controller();
-						$pharController->__construct = function() {};
-						$pharController->setStub = function() {};
-						$pharController->setMetadata = function() {};
-						$pharController->buildFromIterator = function() {};
-						$pharController->setSignatureAlgorithm = function() {};
-						$pharController->offsetGet = function() {};
-						$pharController->injectInNextMockInstance();
+				->if($originDirectoryController = mock\stream::get('originDirectory'))
+				->and($originDirectoryController->opendir = true)
+				->and($adapter = new atoum\test\adapter())
+				->and($adapter->php_sapi_name = function() { return 'cli'; })
+				->and($adapter->realpath = function($path) { return $path; })
+				->and($adapter->is_dir = function() { return true; })
+				->and($adapter->is_file = function() { return true; })
+				->and($adapter->unlink = function() {})
+				->and($factory = new atoum\factory())
+				->and($factory->import('mageekguy\atoum'))
+				->and($factory->returnWhenBuild('atoum\adapter', $adapter))
+				->and($generator = new phar\generator(uniqid(), $factory))
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Origin directory must be defined')
+				->if($generator->setOriginDirectory($originDirectory = 'atoum://originDirectory'))
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Destination directory must be defined')
+				->if($generator->setDestinationDirectory(uniqid()))
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Stub file must be defined')
+				->if($generator->setStubFile($stubFile = uniqid()))
+				->and($adapter->is_readable = function() { return false; })
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
+				->if($adapter->is_readable = function($path) use ($originDirectory) { return ($path === $originDirectory); })
+				->and($adapter->is_writable = function() { return false; })
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Destination directory \'' . $generator->getDestinationDirectory() . '\' is not writable')
+				->if($adapter->is_writable = function() { return true; })
+				->then
+					->exception(function () use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
+				->if($adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === $originDirectory || $path === $stubFile); })
+				->and($generator->setPharInjector(function($name) { return null; }))
+				->then
+					->exception(function() use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic')
+						->hasMessage('Phar injector must return a \phar instance')
+				->if($generator->setPharInjector(function($name) use (& $phar) {
+							$pharController = new mock\controller();
+							$pharController->__construct = function() {};
+							$pharController->setStub = function() {};
+							$pharController->setMetadata = function() {};
+							$pharController->buildFromIterator = function() {};
+							$pharController->setSignatureAlgorithm = function() {};
+							$pharController->offsetGet = function() {};
+							$pharController->injectInNextMockInstance();
 
-						return ($phar = new \mock\phar($name));
-					}
+							return ($phar = new \mock\phar($name));
+						}
+					)
 				)
-			)
-			->and($generator->setSrcIteratorInjector(function($directory) { return null; }))
-			->then
-				->exception(function() use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Source iterator injector must return a \recursiveDirectoryIterator instance')
-			->if($generator->setSrcIteratorInjector(function($directory) use (& $srcIterator) {
-						$srcIteratorController = new mock\controller();
-						$srcIteratorController->injectInNextMockInstance();
-						$srcIteratorController->__construct = function() {};
-						$srcIteratorController->injectInNextMockInstance();
-						return ($srcIterator = new \mock\recursiveDirectoryIterator($directory));
-					}
-				)
-			)
-			->and($generator->setConfigurationsIteratorInjector(function($directory) use (& $configurationsIterator) {
-						$configurationsIteratorController = new mock\controller();
-						$configurationsIteratorController->injectInNextMockInstance();
-						$configurationsIteratorController->__construct = function() {};
-						$configurationsIteratorController->injectInNextMockInstance();
-						return ($configurationsIterator = new \mock\recursiveDirectoryIterator($directory));
-					}
-				)
-			)
-			->and($adapter->file_get_contents = function($file) { return false; })
-			->then
-				->exception(function() use ($generator) {
-						$generator->run();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
-			->if($adapter->file_get_contents = function($file) use ($generator, & $description) {
-					switch ($file)
-					{
-						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
-							return ($description = uniqid());
+				->and($adapter->file_get_contents = function($file) { return false; })
+				->then
+					->exception(function() use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('ABOUT file is missing in \'' . $generator->getOriginDirectory() . '\'')
+				->if($adapter->file_get_contents = function($file) use ($generator, & $description) {
+						switch ($file)
+						{
+							case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+								return ($description = uniqid());
 
-						default:
-							return false;
-					}
-				}
-			)
-			->then
-				->exception(function() use ($generator) {
-						$generator->run();
+							default:
+								return false;
+						}
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
-			->if($adapter->file_get_contents = function($file) use ($generator, & $description, & $licence, & $stub) {
-					switch ($file)
-					{
-						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
-							return ($description = uniqid());
+				->then
+					->exception(function() use ($generator) {
+							$generator->run();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('COPYING file is missing in \'' . $generator->getOriginDirectory() . '\'')
+				->if($adapter->file_get_contents = function($file) use ($generator, & $description, & $licence, & $stub) {
+						switch ($file)
+						{
+							case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'ABOUT':
+								return ($description = uniqid());
 
-						case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'COPYING':
-							return ($licence = uniqid());
+							case $generator->getOriginDirectory() . DIRECTORY_SEPARATOR . 'COPYING':
+								return ($licence = uniqid());
 
-						case $generator->getStubFile():
-							return ($stub = uniqid());
+							case $generator->getStubFile():
+								return ($stub = uniqid());
 
-						default:
-							return uniqid();
+							default:
+								return uniqid();
+						}
 					}
-				}
-			)
-			->then
-				->object($generator->run())->isIdenticalTo($generator)
-				->mock($phar)
-					->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)->once()
-					->call('setMetadata')
-						->withArguments(array(
-								'version' => atoum\version,
-								'author' => atoum\author,
-								'support' => atoum\mail,
-								'repository' => atoum\repository,
-								'description' => $description,
-								'licence' => $licence
+				)
+				->then
+					->object($generator->run())->isIdenticalTo($generator)
+					->mock($phar)
+						->call('__construct')->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)->once()
+						->call('setMetadata')
+							->withArguments(array(
+									'version' => atoum\version,
+									'author' => atoum\author,
+									'support' => atoum\mail,
+									'repository' => atoum\repository,
+									'description' => $description,
+									'licence' => $licence
+								)
 							)
-						)
-						->once()
-					->call('setStub')->withArguments($stub, null)->once()
-					->call('buildFromIterator')
-						->withArguments(new \recursiveIteratorIterator(new atoum\src\iterator\filter($srcIterator)), $generator->getOriginDirectory())
-						->once()
-					->call('setSignatureAlgorithm')
-						->withArguments(\phar::SHA1, null)
-						->once()
-				->mock($srcIterator)
-					->call('__construct')->withArguments($generator->getOriginDirectory(), null)->once()
-			->if($superglobals = new atoum\superglobals())
-			->and($superglobals->_SERVER = array('argv' => array(uniqid(), '--help')))
-			->and($generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals)))
-			->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
-			->and($stdout->getMockController()->write = function() {})
-			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
-			->and($stderr->getMockController()->write = function() {})
-			->and($generator->setOutputWriter($stdout))
-			->and($generator->setErrorWriter($stderr))
-			->then
-				->object($generator->run())->isIdenticalTo($generator)
-				->mock($stdout)
-					->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL)->once()
-					->call('write')->withArguments($generator->getLocale()->_('Available options are:') . PHP_EOL)->once()
-					->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
-					->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
-			->if($generator->setPharInjector(function($name) use (& $phar) {
-						$pharController = new mock\controller();
-						$pharController->injectInNextMockInstance();
-						$pharController->__construct = function() {};
-						$pharController->setStub = function() {};
-						$pharController->setMetadata = function() {};
-						$pharController->buildFromIterator = function() {};
-						$pharController->setSignatureAlgorithm = function() {};
-						$pharController->offsetGet = function() {};
-						$pharController->injectInNextMockInstance();
+							->once()
+						->call('setStub')->withArguments($stub, null)->once()
+						->call('buildFromIterator')
+							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), ''), null)
+							->once()
+						->call('setSignatureAlgorithm')
+							->withArguments(\phar::SHA1, null)
+							->once()
+				->if($superglobals = new atoum\superglobals())
+				->and($superglobals->_SERVER = array('argv' => array(uniqid(), '--help')))
+				->and($generator->setArgumentsParser(new atoum\script\arguments\parser($superglobals)))
+				->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
+				->and($stdout->getMockController()->write = function() {})
+				->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
+				->and($stderr->getMockController()->write = function() {})
+				->and($generator->setOutputWriter($stdout))
+				->and($generator->setErrorWriter($stderr))
+				->then
+					->object($generator->run())->isIdenticalTo($generator)
+					->mock($stdout)
+						->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL)->once()
+						->call('write')->withArguments($generator->getLocale()->_('Available options are:') . PHP_EOL)->once()
+						->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
+						->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
+				->if($generator->setPharInjector(function($name) use (& $phar) {
+							$pharController = new mock\controller();
+							$pharController->injectInNextMockInstance();
+							$pharController->__construct = function() {};
+							$pharController->setStub = function() {};
+							$pharController->setMetadata = function() {};
+							$pharController->buildFromIterator = function() {};
+							$pharController->setSignatureAlgorithm = function() {};
+							$pharController->offsetGet = function() {};
+							$pharController->injectInNextMockInstance();
 
-						return ($phar = new \mock\phar($name));
-					}
+							return ($phar = new \mock\phar($name));
+						}
+					)
 				)
-			)
-			->then
-				->object($generator->run(array('-d', $directory = uniqid())))->isIdenticalTo($generator)
-				->string($generator->getDestinationDirectory())->isEqualTo($directory)
-				->mock($phar)
-					->call('__construct')
-						->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)
-						->once()
-					->call('setMetadata')
-						->withArguments(
-							array(
-								'version' => atoum\version,
-								'author' => atoum\author,
-								'support' => atoum\mail,
-								'repository' => atoum\repository,
-								'description' => $description,
-								'licence' => $licence
+				->then
+					->object($generator->run(array('-d', $directory = uniqid())))->isIdenticalTo($generator)
+					->string($generator->getDestinationDirectory())->isEqualTo($directory)
+					->mock($phar)
+						->call('__construct')
+							->withArguments($generator->getDestinationDirectory() . DIRECTORY_SEPARATOR . atoum\scripts\phar\generator::phar, null, null, null)
+							->once()
+						->call('setMetadata')
+							->withArguments(
+								array(
+									'version' => atoum\version,
+									'author' => atoum\author,
+									'support' => atoum\mail,
+									'repository' => atoum\repository,
+									'description' => $description,
+									'licence' => $licence
+								)
 							)
-						)
-						->once()
-					->call('setStub')->withArguments($stub, null)->once()
-					->call('buildFromIterator')
-						->withArguments(new \recursiveIteratorIterator(new atoum\src\iterator\filter($srcIterator)), $generator->getOriginDirectory())
-						->once()
-					->call('setSignatureAlgorithm')
-						->withArguments(\phar::SHA1, null)
-						->once()
-				->mock($srcIterator)
-					->call('__construct')
-						->withArguments($generator->getOriginDirectory(), null)
-						->once()
-				->adapter($adapter)
-					->call('unlink')->withArguments($directory . DIRECTORY_SEPARATOR . phar\generator::phar)->once()
+							->once()
+						->call('setStub')->withArguments($stub, null)->once()
+						->call('buildFromIterator')
+							->withArguments(new atoum\src\iterator($generator->getOriginDirectory()), null)
+							->once()
+						->call('setSignatureAlgorithm')
+							->withArguments(\phar::SHA1, null)
+							->once()
+					->adapter($adapter)
+						->call('unlink')->withArguments($directory . DIRECTORY_SEPARATOR . phar\generator::phar)->once()
 		;
 	}
 }

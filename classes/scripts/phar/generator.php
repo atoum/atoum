@@ -19,8 +19,6 @@ class generator extends atoum\script
 	protected $stubFile = null;
 
 	private $pharInjector = null;
-	private $srcIteratorInjector = null;
-	private $configurationsIteratorInjector = null;
 
 	public function __construct($name, atoum\factory $factory = null)
 	{
@@ -32,8 +30,6 @@ class generator extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this->pharInjector = function ($name) { return new \phar($name); };
-		$this->srcIteratorInjector = function ($directory) { return new \recursiveDirectoryIterator($directory); };
-		$this->configurationsIteratorInjector = function ($directory) { return new \recursiveDirectoryIterator($directory); };
 	}
 
 	public function setOriginDirectory($directory)
@@ -133,44 +129,6 @@ class generator extends atoum\script
 		return $this;
 	}
 
-	public function getSrcIterator($directory)
-	{
-		return $this->srcIteratorInjector->__invoke($directory);
-	}
-
-	public function setSrcIteratorInjector(\closure $srcIteratorInjector)
-	{
-		$closure = new \reflectionMethod($srcIteratorInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\runtime('Source iterator injector must take one argument');
-		}
-
-		$this->srcIteratorInjector = $srcIteratorInjector;
-
-		return $this;
-	}
-
-	public function getConfigurationsIterator($directory)
-	{
-		return $this->configurationsIteratorInjector->__invoke($directory);
-	}
-
-	public function setConfigurationsIteratorInjector(\closure $configurationsIteratorInjector)
-	{
-		$closure = new \reflectionMethod($configurationsIteratorInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\runtime('Configurations iterator injector must take one argument');
-		}
-
-		$this->configurationsIteratorInjector = $configurationsIteratorInjector;
-
-		return $this;
-	}
-
 	public function run(array $arguments = array())
 	{
 		$this->generate = true;
@@ -235,13 +193,6 @@ class generator extends atoum\script
 			throw new exceptions\logic('Phar injector must return a \phar instance');
 		}
 
-		$srcIterator = $this->getSrcIterator($this->originDirectory);
-
-		if ($srcIterator instanceof \recursiveDirectoryIterator === false)
-		{
-			throw new exceptions\logic('Source iterator injector must return a \recursiveDirectoryIterator instance');
-		}
-
 		$description = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
 
 		if ($description === false)
@@ -275,30 +226,7 @@ class generator extends atoum\script
 					)
 				);
 
-		$phar->buildFromIterator(new \recursiveIteratorIterator(new atoum\src\iterator\filter($srcIterator)), $this->originDirectory);
-
-		$configurationsIterator = $this->getConfigurationsIterator($phar['resources/configurations']);
-
-		if ($configurationsIterator instanceof \recursiveDirectoryIterator === false)
-		{
-			throw new exceptions\logic('Configurations iterator injector must return a \recursiveDirectoryIterator instance');
-		}
-
-		$configurationsIterator->setFlags(\filesystemIterator::CURRENT_AS_SELF);
-
-		foreach (new \recursiveIteratorIterator($configurationsIterator) as $configurations)
-		{
-			if ($configurations->current()->isFile() === true)
-			{
-				$path = $configurations->getSubpathname();
-
-				if (substr($path, -4) === '.php')
-				{
-					unset($phar['resources/configurations/' . $path]);
-				}
-			}
-		}
-
+		$phar->buildFromIterator(new atoum\src\iterator($this->originDirectory, ''));
 		$phar->setSignatureAlgorithm(\phar::SHA1);
 
 		return $this;
