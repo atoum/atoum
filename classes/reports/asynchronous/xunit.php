@@ -31,7 +31,7 @@ class xunit extends atoum\reports\asynchronous
 		return parent::handleEvent($event, $observable);
 	}
 
-	public function getFieldsAsString($event)
+	public function build($event)
 	{
 		$this->string = '';
 
