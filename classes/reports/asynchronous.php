@@ -19,8 +19,6 @@ abstract class asynchronous extends atoum\report
 
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		parent::handleEvent($event, $observable)->getFieldsAsString($event);
-
 		switch ($event)
 		{
 			case atoum\test::fail:
@@ -28,18 +26,21 @@ abstract class asynchronous extends atoum\report
 			case atoum\test::exception:
 				$this->fail = true;
 				break;
+		}
 
-			case atoum\runner::runStop:
-				if ($this->title !== null)
-				{
-					$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
-				}
+		parent::handleEvent($event, $observable)->build($event);
 
-				foreach ($this->writers as $writer)
-				{
-					$writer->writeAsynchronousReport($this);
-				}
-				break;
+		if ($event === atoum\runner::runStop)
+		{
+			if ($this->title !== null)
+			{
+				$this->title = sprintf($this->title, $this->adapter->date($this->locale->_('Y-m-d')), $this->adapter->date($this->locale->_('H:i:s')), $this->fail === true ? $this->locale->_('FAIL') : $this->locale->_('SUCCESS'));
+			}
+
+			foreach ($this->writers as $writer)
+			{
+				$writer->writeAsynchronousReport($this);
+			}
 		}
 
 		return $this;
@@ -50,7 +51,7 @@ abstract class asynchronous extends atoum\report
 		return $this->doAddWriter($writer);
 	}
 
-	protected function getFieldsAsString($event)
+	protected function build($event)
 	{
 		foreach ($this->lastSetFields as $field)
 		{
