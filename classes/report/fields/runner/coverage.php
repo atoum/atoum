@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
-	mageekguy\atoum,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report
 ;
@@ -12,7 +11,7 @@ abstract class coverage extends report\field
 {
 	protected $coverage = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct(\mageekguy\atoum\locale $locale = null)
 	{
 		parent::__construct(array(runner::runStop), $locale);
 	}
@@ -22,7 +21,7 @@ abstract class coverage extends report\field
 		return $this->coverage;
 	}
 
-	public function handleEvent($event, atoum\observable $observable)
+	public function handleEvent($event, \mageekguy\atoum\observable $observable)
 	{
 		if (parent::handleEvent($event, $observable) === false)
 		{
