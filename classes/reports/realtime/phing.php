@@ -20,7 +20,7 @@ class phing extends realtime
     protected $codeCoverageReportPath;
     protected $codeCoverageReportUrl;
 
-    public function __construct($showProgress, $showCodeCoverage, $showMissingCodeCoverage, $showDuration, $showMemory, $codeCoverageReportPath, $codeCoverageReportUrl)
+    public function __construct($showProgress = true, $showCodeCoverage = true, $showMissingCodeCoverage = true, $showDuration = true, $showMemory = true, $codeCoverageReportPath = null, $codeCoverageReportUrl = null)
     {
         parent::__construct(null, null);
 
@@ -69,21 +69,8 @@ class phing extends realtime
                                  ),
                                  array(atoum\runner::runStart)
         );
-        if ($this->showCodeCoverage) {
-            $this->addField(new runner\tests\coverage\phing(
-                                      $firstLevelPrompt,
-                                      $secondLevelPrompt,
-                                      new prompt('  ', $firstLevelColorizer),
-                                      $firstLevelColorizer,
-                                      null,
-                                      null,
-                                      $this->showMissingCodeCoverage
-                                  ),
-                                  array(atoum\runner::runStop)
-            );
-        }
         if ($this->showDuration) {
-            $this->addField(new runner\duration\phing(
+            $this->addField(new runner\duration\cli(
                                       $firstLevelPrompt,
                                       $firstLevelColorizer
                                   ),
@@ -94,6 +81,19 @@ class phing extends realtime
             $this->addField(new runner\tests\memory\phing(
                                       $firstLevelPrompt,
                                       $firstLevelColorizer
+                                  ),
+                                  array(atoum\runner::runStop)
+            );
+        }
+        if ($this->showCodeCoverage) {
+            $this->addField(new runner\tests\coverage\cli(
+                                      $firstLevelPrompt,
+                                      $secondLevelPrompt,
+                                      new prompt('  ', $firstLevelColorizer),
+                                      $firstLevelColorizer,
+                                      null,
+                                      null,
+                                      $this->showMissingCodeCoverage
                                   ),
                                   array(atoum\runner::runStop)
             );
