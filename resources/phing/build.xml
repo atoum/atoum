@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project name="Atoum" default="test">
+<project name="atoum" default="test">
     <taskdef name="atoum" classpath="./" classname="AtoumTask"/>
 
     <!-- ============================================  -->
