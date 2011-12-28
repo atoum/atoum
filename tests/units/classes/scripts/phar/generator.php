@@ -310,6 +310,7 @@ class generator extends atoum\test
 								$pharController->buildFromIterator = function() {};
 								$pharController->setSignatureAlgorithm = function() {};
 								$pharController->offsetGet = function() {};
+								$pharController->offsetSet = function() {};
 								$pharController->injectInNextMockInstance();
 
 								return ($phar = new \mock\phar($name));
@@ -407,6 +408,7 @@ class generator extends atoum\test
 							$pharController->buildFromIterator = function() {};
 							$pharController->setSignatureAlgorithm = function() {};
 							$pharController->offsetGet = function() {};
+							$pharController->offsetSet = function() {};
 							$pharController->injectInNextMockInstance();
 
 							return ($phar = new \mock\phar($name));

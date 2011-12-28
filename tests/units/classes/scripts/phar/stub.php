@@ -30,6 +30,7 @@ class stub extends atoum\test
 	public function testUpdate()
 	{
 		$this
+			->mock('phar')
 			->mock('mageekguy\atoum\locale')
 			->mock('mageekguy\atoum\writers\std\out')
 			->assert
@@ -42,14 +43,40 @@ class stub extends atoum\test
 				->then
 					->exception(function() use ($stub) { $stub->update(); })
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Unable to update the PHAR Archive, phar.readonly is set, use \'-d phar.readonly=0\'')
+						->hasMessage('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'')
 				->if($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 0 : $name = 'allow_url_fopen' ? 0 : ini_get($name); })
 				->then
 					->exception(function() use ($stub) { $stub->update(); })
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Unable to update the PHAR Archive, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'')
+						->hasMessage('Unable to update the PHAR, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'')
 				->if($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 0 : $name = 'allow_url_fopen' ? 1 : ini_get($name); })
-				->and($adapter->file_get_contents = json_encode(array()))
+				->and($stub->getFactory()->setBuilder('phar', function($path) use (& $phar) {
+							$pharController = new atoum\mock\controller();
+							$pharController->__construct = function() {};
+							$pharController->offsetExists = true;
+							$pharController->offsetGet = 'versions';
+							$pharController->offsetSet = function() {};
+							$pharController->injectInNextMockInstance();
+							$phar = new \mock\phar($path);
+
+							return $phar;
+						}
+					)
+				)
+				->and($adapter->file_get_contents = function($path) {
+						switch ($path)
+						{
+							case 'versions':
+								return serialize(array('1' => uniqid(), 'current' => '1'));
+
+							case phar\stub::updateUrl:
+								return json_encode(array());
+
+							default:
+								return '';
+						}
+					}
+				)
 				->then
 					->object($stub->update())->isIdenticalTo($stub)
 					->mock($locale)

@@ -139,12 +139,26 @@ class stub extends scripts\runner
 	{
 		if ($this->adapter->ini_get('phar.readonly') == true)
 		{
-			throw new exceptions\runtime('Unable to update the PHAR Archive, phar.readonly is set, use \'-d phar.readonly=0\'');
+			throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
 		}
 
 		if ($this->adapter->ini_get('allow_url_fopen') == false)
 		{
-			throw new exceptions\runtime('Unable to update the PHAR Archive, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'');
+			throw new exceptions\runtime('Unable to update the PHAR, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'');
+		}
+
+		$currentPhar = $this->factory->build('phar', array($this->getName()));
+
+		if (isset($currentPhar['versions']) === false)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file does not exist');
+		}
+
+		$versions = unserialize($this->adapter->file_get_contents($currentPhar['versions']));
+
+		if (is_array($versions) === false || sizeof($versions) <= 0 || isset($versions['current']) === false)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file is invalid');
 		}
 
 		$this->writeMessage($this->locale->_('Checking if a new version is available...'));
@@ -164,8 +178,6 @@ class stub extends scripts\runner
 				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
 			}
 
-			$currentPhar = $this->factory->build('phar', array($this->getName()));
-
 			$newPharIterator = new \recursiveIteratorIterator(new \recursiveDirectoryIterator('phar://' . $tmpFile . '/1'));
 
 			$size = 0;
@@ -181,22 +193,59 @@ class stub extends scripts\runner
 
 			$this->outputWriter->write($progressBar);
 
-			$newCurrentDirectory = atoum\phar\currentDirectory + 1;
+			$newCurrentDirectory = sizeof($versions);
+
+			$pharPathLength = strlen('phar://' . $tmpFile . '/1/');
 
 			foreach ($newPharIterator as $newFile)
 			{
-				$currentPhar[$newCurrentDirectory . '/' . preg_replace('#^phar://' . preg_quote($tmpFile) . '/#', '', (string) $newFile)] = $this->adapter->file_get_contents($newFile);
+				$currentPhar[$newCurrentDirectory . '/' . substr((string) $newFile, $pharPathLength)] = $this->adapter->file_get_contents($newFile);
 
 				$this->outputWriter->write($progressBar->refresh('='));
 			}
 
 			$this->outputWriter->write(PHP_EOL);
 
-			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully'), $data['version']));
+			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully !'), $data['version']));
 
 			@$this->adapter->unlink($tmpFile);
 
-			$currentPhar->setStub(preg_replace("#('\\\phar\\\currentDirectory',\s+')[^']+(')#", ('${1}' . $newCurrentDirectory . '${2}'), $currentPhar->getStub()));
+			$versions[$newCurrentDirectory] = $data['version'];
+			$versions['current'] = $newCurrentDirectory;
+
+			$currentPhar['versions'] = serialize($versions);
+		}
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function listAvailableVersions()
+	{
+		$currentPhar = $this->factory->build('phar', array($this->getName()));
+
+		if (isset($currentPhar['versions']) === false)
+		{
+			throw new exceptions\runtime('Unable to list available versions in PHAR, the versions\'s file does not exist');
+		}
+
+		$versions = unserialize(file_get_contents($currentPhar['versions']));
+
+		if (is_array($versions) === false || sizeof($versions) <= 0 || isset($versions['current']) === false)
+		{
+			throw new exceptions\runtime('Unable to list available versions in PHAR, the versions\'s file is invalid');
+		}
+
+		$currentDirectory = $versions['current'];
+
+		unset($versions['current']);
+
+		asort($versions);
+
+		foreach ($versions as $directory => $version)
+		{
+			$this->writeMessage(($directory == $currentDirectory ? '*' : ' ') . ' ' . $version);
 		}
 
 		$this->runTests = false;
@@ -309,6 +358,21 @@ class stub extends scripts\runner
 			null,
 			$this->locale->_('Update atoum')
 		);
+
+		$this->addArgumentHandler(
+	      function($script, $argument, $values) {
+				if (sizeof($values) > 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->listAvailableVersions();
+			},
+			array('-lav', '--list-available-versions'),
+			null,
+			$this->locale->_('List available versions in the PHAR')
+		);
+
 
 		return $this;
 	}

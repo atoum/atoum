@@ -176,6 +176,8 @@ class generator extends atoum\script
 
 		$phar = $this->factory->build('phar', array($pharFile));
 
+		$phar['versions'] = serialize(array('1' => atoum\version, 'current' => '1'));
+
 		$phar->setStub($stub);
 		$phar->setMetadata(
 			array(
