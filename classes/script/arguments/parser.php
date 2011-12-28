@@ -125,6 +125,13 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
+	public function resetHandlers()
+	{
+		$this->handlers = array();
+
+		return $this;
+	}
+
 	public function argumentIsHandled($argument)
 	{
 		return (isset($this->values[$argument]) === true);

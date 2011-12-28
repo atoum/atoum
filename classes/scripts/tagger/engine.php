@@ -120,7 +120,7 @@ class engine implements adapter\aggregator
 
 		if ($this->srcIteratorInjector === null)
 		{
-			$this->setSrcIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))); });
+			$this->setSrcIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory)); });
 		}
 
 		return $this->srcIteratorInjector->__invoke($this->srcDirectory);
@@ -163,7 +163,7 @@ class engine implements adapter\aggregator
 				$this->adapter->mkdir($directory, 0777, true);
 			}
 
-			if ($this->adapter->file_put_contents($path, preg_replace(self::defaultVersionPattern, $this->version, $fileContents), \LOCK_EX) === false)
+			if ($this->adapter->file_put_contents($path, preg_replace($this->versionPattern, $this->version, $fileContents), \LOCK_EX) === false)
 			{
 				throw new exceptions\runtime('Unable to tag, path \'' . $path . '\' is unwritable');
 			}

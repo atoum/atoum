@@ -13,10 +13,11 @@ if (extension_loaded('phar') === false)
 }
 
 define(__NAMESPACE__ . '\phar\name', 'mageekguy.atoum.phar');
+define(__NAMESPACE__ . '\phar\currentDirectory', '1');
 
 \phar::mapPhar(atoum\phar\name);
 
-require_once 'phar://' . atoum\phar\name . '/classes/autoloader.php';
+require_once 'phar://' . atoum\phar\name . '/' . atoum\phar\currentDirectory . '/classes/autoloader.php';
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

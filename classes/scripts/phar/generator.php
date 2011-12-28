@@ -18,20 +18,6 @@ class generator extends atoum\script
 	protected $destinationDirectory = null;
 	protected $stubFile = null;
 
-	private $pharInjector = null;
-
-	public function __construct($name, atoum\factory $factory = null)
-	{
-		if ($factory === null)
-		{
-			$factory = new atoum\factory();
-		}
-
-		parent::__construct($name, $factory);
-
-		$this->pharInjector = function ($name) { return new \phar($name); };
-	}
-
 	public function setOriginDirectory($directory)
 	{
 		$originDirectory = $this->cleanPath($directory);
@@ -110,25 +96,6 @@ class generator extends atoum\script
 		return $this->stubFile;
 	}
 
-	public function getPhar($name)
-	{
-		return $this->pharInjector->__invoke($name);
-	}
-
-	public function setPharInjector(\closure $pharInjector)
-	{
-		$closure = new \reflectionMethod($pharInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\runtime('Phar injector must take one argument');
-		}
-
-		$this->pharInjector = $pharInjector;
-
-		return $this;
-	}
-
 	public function run(array $arguments = array())
 	{
 		$this->generate = true;
@@ -186,13 +153,6 @@ class generator extends atoum\script
 
 		@$this->adapter->unlink($pharFile);
 
-		$phar = $this->getPhar($pharFile);
-
-		if ($phar instanceof \phar === false)
-		{
-			throw new exceptions\logic('Phar injector must return a \phar instance');
-		}
-
 		$description = @$this->adapter->file_get_contents($this->originDirectory . DIRECTORY_SEPARATOR . 'ABOUT');
 
 		if ($description === false)
@@ -214,19 +174,21 @@ class generator extends atoum\script
 			throw new exceptions\runtime(sprintf($this->locale->_('Unable to read stub file \'%s\''), $this->stubFile));
 		}
 
+		$phar = $this->factory->build('phar', array($pharFile));
+
 		$phar->setStub($stub);
+		$phar->setMetadata(
+			array(
+				'version' => atoum\version,
+				'author' => atoum\author,
+				'support' => atoum\mail,
+				'repository' => atoum\repository,
+				'description' => $description,
+				'licence' => $licence
+			)
+		);
 
-		$phar->setMetadata(array(
-					'version' => atoum\version,
-					'author' => atoum\author,
-					'support' => atoum\mail,
-					'repository' => atoum\repository,
-					'description' => $description,
-					'licence' => $licence
-					)
-				);
-
-		$phar->buildFromIterator(new atoum\src\iterator($this->originDirectory, ''));
+		$phar->buildFromIterator(new atoum\src\iterator($this->originDirectory, '1'));
 		$phar->setSignatureAlgorithm(\phar::SHA1);
 
 		return $this;
@@ -250,35 +212,34 @@ class generator extends atoum\script
 
 	protected function setArgumentHandlers()
 	{
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+		return $this
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				$script->help();
-			},
-			array('-h', '--help'),
-			null,
-			'Display this help'
-		);
+					$script->help();
+				},
+				array('-h', '--help'),
+				null,
+				'Display this help'
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->setDestinationDirectory($values[0]);
-			},
-			array('-d', '--directory'),
-			'<directory>',
-			$this->locale->_('Destination directory <dir>')
-		);
-
-		return $this;
+					$script->setDestinationDirectory($values[0]);
+				},
+				array('-d', '--directory'),
+				'<directory>',
+				$this->locale->_('Destination directory <dir>')
+			)
+		;
 	}
 }
 
