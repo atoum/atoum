@@ -46,7 +46,7 @@ class generator extends atoum\test
 				->variable($generator->getDestinationDirectory())->isNull()
 				->object($generator->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
 			->if($factory->returnWhenBuild('atoum\locale', $locale = new atoum\locale()))
-			->if($factory->returnWhenBuild('atoum\script\arguments\parser', $argumentsParser = new atoum\script\arguments\parser()))
+			->and($factory->returnWhenBuild('atoum\script\arguments\parser', $argumentsParser = new atoum\script\arguments\parser()))
 			->and($generator = new phar\generator($name = uniqid(), $factory))
 			->then
 				->string($generator->getName())->isEqualTo($name)
@@ -181,55 +181,24 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetPharInjector()
-	{
-		$this
-			->mock('phar')
-			->assert
-				->if($adapter = new atoum\test\adapter())
-				->and($adapter->php_sapi_name = function() { return 'cli'; })
-				->and($adapter->realpath = function($path) { return $path; })
-				->and($adapter->is_dir = function() { return true; })
-				->and($factory = new atoum\factory())
-				->and($factory->import('mageekguy\atoum'))
-				->and($factory->returnWhenBuild('atoum\adapter', $adapter))
-				->and($generator = new phar\generator(uniqid(), null, $adapter))
-				->then
-					->exception(function() use ($generator) {
-							$generator->setPharInjector(function() {});
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Phar injector must take one argument')
-				->if($mockController = new mock\controller())
-				->and($mockController->injectInNextMockInstance())
-				->and($mockController->__construct = function() {})
-				->and($phar = new \mock\phar($pharName = uniqid()))
-				->then
-				->exception(function() use ($generator, $pharName) { $generator->getPhar($pharName); })
-					->isInstanceOf('unexpectedValueException')
-				->object($generator->setPharInjector(function($name) use ($phar) { return $phar; }))->isIdenticalTo($generator)
-				->object($generator->getPhar(uniqid()))->isIdenticalTo($phar)
-		;
-	}
-
 	public function testSetOutputWriter()
 	{
-		$generator = new phar\generator(uniqid());
-
 		$this->assert
-			->object($generator->setOutputWriter($stdout = new atoum\writers\std\out()))->isIdenticalTo($generator)
-			->object($generator->getOutputWriter())->isIdenticalTo($stdout)
+			->if($generator = new phar\generator(uniqid()))
+			->then
+				->object($generator->setOutputWriter($stdout = new atoum\writers\std\out()))->isIdenticalTo($generator)
+				->object($generator->getOutputWriter())->isIdenticalTo($stdout)
 		;
 	}
 
 	public function testSetErrorWriter()
 	{
-		$generator = new phar\generator(uniqid());
 
 		$this->assert
-			->object($generator->setErrorWriter($stderr = new atoum\writers\std\err()))->isIdenticalTo($generator)
-			->object($generator->getErrorWriter())->isIdenticalTo($stderr)
+			->if($generator = new phar\generator(uniqid()))
+			->then
+				->object($generator->setErrorWriter($stderr = new atoum\writers\std\err()))->isIdenticalTo($generator)
+				->object($generator->getErrorWriter())->isIdenticalTo($stderr)
 		;
 	}
 
@@ -333,26 +302,19 @@ class generator extends atoum\test
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
 				->if($adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === $originDirectory || $path === $stubFile); })
-				->and($generator->setPharInjector(function($name) { return null; }))
-				->then
-					->exception(function() use ($generator) {
-							$generator->run();
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic')
-						->hasMessage('Phar injector must return a \phar instance')
-				->if($generator->setPharInjector(function($name) use (& $phar) {
-							$pharController = new mock\controller();
-							$pharController->__construct = function() {};
-							$pharController->setStub = function() {};
-							$pharController->setMetadata = function() {};
-							$pharController->buildFromIterator = function() {};
-							$pharController->setSignatureAlgorithm = function() {};
-							$pharController->offsetGet = function() {};
-							$pharController->injectInNextMockInstance();
+				->and($generator->setFactory($factory->setBuilder('phar', function($name) use (& $phar) {
+								$pharController = new mock\controller();
+								$pharController->__construct = function() {};
+								$pharController->setStub = function() {};
+								$pharController->setMetadata = function() {};
+								$pharController->buildFromIterator = function() {};
+								$pharController->setSignatureAlgorithm = function() {};
+								$pharController->offsetGet = function() {};
+								$pharController->injectInNextMockInstance();
 
-							return ($phar = new \mock\phar($name));
-						}
+								return ($phar = new \mock\phar($name));
+							}
+						)
 					)
 				)
 				->and($adapter->file_get_contents = function($file) { return false; })
@@ -415,7 +377,7 @@ class generator extends atoum\test
 							->once()
 						->call('setStub')->withArguments($stub, null)->once()
 						->call('buildFromIterator')
-							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), ''), null)
+							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), '1'), null)
 							->once()
 						->call('setSignatureAlgorithm')
 							->withArguments(\phar::SHA1, null)
@@ -436,7 +398,7 @@ class generator extends atoum\test
 						->call('write')->withArguments($generator->getLocale()->_('Available options are:') . PHP_EOL)->once()
 						->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
 						->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
-				->if($generator->setPharInjector(function($name) use (& $phar) {
+				->if($generator->getFactory()->setBuilder('phar', function($name) use (& $phar) {
 							$pharController = new mock\controller();
 							$pharController->injectInNextMockInstance();
 							$pharController->__construct = function() {};
@@ -472,7 +434,7 @@ class generator extends atoum\test
 							->once()
 						->call('setStub')->withArguments($stub, null)->once()
 						->call('buildFromIterator')
-							->withArguments(new atoum\src\iterator($generator->getOriginDirectory()), null)
+							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), '1'), null)
 							->once()
 						->call('setSignatureAlgorithm')
 							->withArguments(\phar::SHA1, null)

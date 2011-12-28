@@ -6,7 +6,7 @@ use
 	mageekguy\atoum
 ;
 
-class iterator implements \iterator
+class iterator implements \outerIterator
 {
 	protected $pharDirectory = '';
 	protected $sourceDirectory = '';
@@ -17,6 +17,7 @@ class iterator implements \iterator
 		$this->sourceDirectory = (string) $sourceDirectory;
 		$this->pharDirectory = $pharDirectory === null ? null : (string) $pharDirectory;
 		$this->innerIterator = new \recursiveIteratorIterator(new iterator\filter(new \recursiveDirectoryIterator($this->sourceDirectory)));
+
 		$this->innerIterator->rewind();
 	}
 

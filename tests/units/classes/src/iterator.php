@@ -14,7 +14,7 @@ class iterator extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->hasInterface('iterator');
+		$this->assert->testedClass->hasInterface('outerIterator');
 	}
 
 	public function test__construct()

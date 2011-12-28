@@ -12,6 +12,7 @@ class stub extends scripts\runner
 {
 	const scriptsDirectory = 'scripts';
 	const scriptsExtension = '.php';
+	const updateUrl = 'http://downloads.atoum.org/update.php?version=%s';
 
 	public function listScripts()
 	{
@@ -123,6 +124,86 @@ class stub extends scripts\runner
 		return $this;
 	}
 
+	public function version()
+	{
+		$this
+			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()) . PHP_EOL)
+		;
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function update()
+	{
+		if ($this->adapter->ini_get('phar.readonly') == true)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR Archive, phar.readonly is set, use \'-d phar.readonly=0\'');
+		}
+
+		if ($this->adapter->ini_get('allow_url_fopen') == false)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR Archive, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'');
+		}
+
+		$this->writeMessage($this->locale->_('Checking if a new version is available...'));
+
+		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, atoum\version)), true);
+
+		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)
+		{
+			$this->writeMessage($this->locale->_('There is no new version available'));
+		}
+		else
+		{
+			$tmpFile = $this->adapter->realpath($this->adapter->sys_get_temp_dir()) . '/' . md5($data['version']) . '.phar';
+
+			if ($this->adapter->file_put_contents($tmpFile, utf8_decode($data['phar'])) === false)
+			{
+				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
+			}
+
+			$currentPhar = $this->factory->build('phar', array($this->getName()));
+
+			$newPharIterator = new \recursiveIteratorIterator(new \recursiveDirectoryIterator('phar://' . $tmpFile . '/1'));
+
+			$size = 0;
+
+			foreach ($newPharIterator as $file)
+			{
+				$size++;
+			}
+
+			$progressBar = $this->factory->build('atoum\cli\progressBar', array($size));
+
+			$this->writeMessage(sprintf($this->locale->_('Update files to version \'%s\'...'), $data['version']));
+
+			$this->outputWriter->write($progressBar);
+
+			$newCurrentDirectory = atoum\phar\currentDirectory + 1;
+
+			foreach ($newPharIterator as $newFile)
+			{
+				$currentPhar[$newCurrentDirectory . '/' . preg_replace('#^phar://' . preg_quote($tmpFile) . '/#', '', (string) $newFile)] = $this->adapter->file_get_contents($newFile);
+
+				$this->outputWriter->write($progressBar->refresh('='));
+			}
+
+			$this->outputWriter->write(PHP_EOL);
+
+			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully'), $data['version']));
+
+			@$this->adapter->unlink($tmpFile);
+
+			$currentPhar->setStub(preg_replace("#('\\\phar\\\currentDirectory',\s+')[^']+(')#", ('${1}' . $newCurrentDirectory . '${2}'), $currentPhar->getStub()));
+		}
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
 	protected function setArgumentHandlers()
 	{
 		parent::setArgumentHandlers();
@@ -215,12 +296,26 @@ class stub extends scripts\runner
 			$this->locale->_('List available scripts')
 		);
 
+		$this->addArgumentHandler(
+	      function($script, $argument, $values) {
+				if (sizeof($values) > 0)
+				{
+					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+				}
+
+				$script->update();
+			},
+			array('--update'),
+			null,
+			$this->locale->_('Update atoum')
+		);
+
 		return $this;
 	}
 
 	protected static function getScriptFile($scriptName)
 	{
-		return \Phar::running() . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
+		return atoum\directory . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
 	}
 }
 
