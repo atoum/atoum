@@ -32,7 +32,7 @@ class phing extends report\fields\runner\tests\coverage\cli
         if ($this->coverage !== null && sizeof($this->coverage) > 0) {
             $string .= $this->titlePrompt .
                        sprintf(
-                           $this->locale->_('%s: %s'),
+                           $this->locale->_('%s : %s'),
                            $this->titleColorizer->colorize($this->locale->_('Code coverage value')),
                            $this->coverageColorizer->colorize(sprintf('%3.2f%%', $this->coverage->getValue() * 100.0))
                        ) .

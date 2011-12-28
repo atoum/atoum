@@ -13,20 +13,24 @@ class phing extends report\fields\test\event\cli
     {
         $string = '';
 
-        if ($this->value === atoum\test::runStart) {
+        if ($this->event === atoum\test::runStart) {
             $string = '[';
         }
         else
         {
-            if ($this->value === atoum\test::runStop) {
+            if ($this->event === atoum\test::runStop) {
                 $string = '] ';
             }
             else
             {
-                switch ($this->value)
+                switch ($this->event)
                 {
                     case atoum\test::success:
                         $string = 'S';
+                        break;
+
+                    case atoum\test::uncompleted:
+                        $string = 'U';
                         break;
 
                     case atoum\test::fail:
