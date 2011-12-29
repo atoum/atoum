@@ -17,12 +17,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\duration')
-		;
-        $this->assert
-        			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\duration\cli')
-   		;
+		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\duration\cli') ;
 	}
 
 	public function test__construct()
@@ -57,7 +52,6 @@ class phing extends atoum\test
 
 	public function testSetPrompt()
 	{
-
 		$this->assert
 			->if($field = new duration\phing())
 			->then

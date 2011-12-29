@@ -3,51 +3,42 @@
 namespace mageekguy\atoum\report\fields\test\event;
 
 use
-mageekguy\atoum,
-mageekguy\atoum\report,
-mageekguy\atoum\exceptions;
+	mageekguy\atoum,
+	mageekguy\atoum\report,
+	mageekguy\atoum\exceptions
+;
 
 class phing extends report\fields\test\event\cli
 {
-    public function __toString()
-    {
-        $string = '';
+	public function __toString()
+	{
+		switch ($this->event)
+		{
+			case atoum\test::runStart:
+				return '[';
 
-        if ($this->event === atoum\test::runStart) {
-            $string = '[';
-        }
-        else
-        {
-            if ($this->event === atoum\test::runStop) {
-                $string = '] ';
-            }
-            else
-            {
-                switch ($this->event)
-                {
-                    case atoum\test::success:
-                        $string = 'S';
-                        break;
+			case atoum\test::runStop:
+				 return '] ';
 
-                    case atoum\test::uncompleted:
-                        $string = 'U';
-                        break;
+			case atoum\test::success:
+				 return 'S';
 
-                    case atoum\test::fail:
-                        $string = 'F';
-                        break;
+			case atoum\test::uncompleted:
+				 return 'U';
 
-                    case atoum\test::error:
-                        $string = 'e';
-                        break;
+			case atoum\test::fail:
+				 return 'F';
 
-                    case atoum\test::exception:
-                        $string = 'E';
-                        break;
-                }
-            }
-        }
+			case atoum\test::error:
+				 return 'e';
 
-        return $string;
-    }
+			case atoum\test::exception:
+				 return 'E';
+
+			default:
+				 return '';
+		}
+	}
 }
+
+?>

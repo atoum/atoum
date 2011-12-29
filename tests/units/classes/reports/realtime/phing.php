@@ -19,21 +19,15 @@ class phing extends atoum\test
 		$this->assert
 			->if($report = new reports\realtime\phing())
 			->then
-				->variable($report->getCodecoveragereportpath())
-                    ->isNull()
-                ->variable($report->getCodecoveragereporturl())
-                    ->isNull()
-                ->boolean($report->getShowDuration())
-                    ->isTrue()
-                ->boolean($report->getShowMemory())
-                    ->isTrue()
-                ->boolean($report->getShowMissingCodeCoverage())
-                    ->isTrue()
-                ->boolean($report->getShowCodeCoverage())
-                    ->isTrue()
-                ->boolean($report->getShowProgress())
-                    ->isTrue()
-        ;
+				->variable($report->getCodeCoverageReportPath())->isNull()
+				->variable($report->getCodeCoverageReportUrl())->isNull()
+				->boolean($report->durationIsShowed())->isTrue()
+				->boolean($report->memoryIsShowed())->isTrue()
+				->boolean($report->codeCoverageIsShowed())->isTrue()
+				->boolean($report->missingCodeCoverageIsShowed())->isTrue()
+				->boolean($report->progressIsShowed())->isTrue()
+		  ;
 	}
 }
+
 ?>
