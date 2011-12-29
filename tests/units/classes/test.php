@@ -573,28 +573,10 @@ namespace mageekguy\atoum\tests\units
 
 		public function testGetPhpPath()
 		{
-			$superglobals = new atoum\superglobals();
-
 			$test = new emptyTest();
-			$test->setSuperglobals($superglobals);
-
-			$superglobals->_SERVER['_'] = $phpPath = uniqid();
 
 			$this->assert
-				->string($test->getPhpPath())->isEqualTo($phpPath)
-			;
-
-			unset($superglobals->_SERVER['_']);
-
-			$test = new emptyTest();
-			$test->setSuperglobals($superglobals);
-
-			$this->assert
-				->exception(function() use ($test) {
-						$test->getPhpPath();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->variable($test->getPhpPath())->isNull()
 			;
 
 			$test->setPhpPath($phpPath = uniqid());
