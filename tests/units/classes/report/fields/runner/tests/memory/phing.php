@@ -18,12 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\runner\tests\memory')
-		;
-        $this->assert
-      			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\runner\tests\memory\cli')
-      		;
+	  $this->assert->testedClass->isSubClassOf('mageekguy\atoum\report\fields\runner\tests\memory\cli');
 	}
 
 	public function test__construct()

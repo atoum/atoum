@@ -18,8 +18,7 @@ class phing extends \mageekguy\atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->class($this->getTestedClassName())->isSubclassOf('mageekguy\atoum\report\field')
+		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\field')
 		;
 	}
 

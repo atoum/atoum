@@ -18,12 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\coverage')
-		;
-        $this->assert
-        			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\coverage\cli')
-        		;
+		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\coverage\cli');
 	}
 
 	public function test__construct()
@@ -39,6 +34,7 @@ class phing extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getCoverage())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+				->boolean($field->missingCodeCoverageIsShowed())->isTrue()
 			->if($field = new tests\coverage\phing(null, null, null, null, null, null))
 			->then
 				->object($field->getTitlePrompt())->isEqualTo(new prompt())
@@ -49,7 +45,8 @@ class phing extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getCoverage())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new tests\coverage\phing($titlePrompt = new prompt(), $classPrompt = new prompt(), $methodPrompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $locale = new locale()))
+				->boolean($field->missingCodeCoverageIsShowed())->isTrue()
+			->if($field = new tests\coverage\phing($titlePrompt = new prompt(), $classPrompt = new prompt(), $methodPrompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $locale = new locale(), false))
 			->then
 				->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
 				->object($field->getClassPrompt())->isIdenticalTo($classPrompt)
@@ -59,6 +56,7 @@ class phing extends atoum\test
 				->object($field->getLocale())->isIdenticalTo($locale)
 				->variable($field->getCoverage())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+				->boolean($field->missingCodeCoverageIsShowed())->isFalse()
 		;
 	}
 
@@ -129,6 +127,18 @@ class phing extends atoum\test
 			->then
 				->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
+		;
+	}
+
+	public function testShowMissingCodeCoverage()
+	{
+		$this->assert
+			->if($field = new tests\coverage\phing())
+			->then
+				->object($field->showMissingCodeCoverage(true))->isIdenticalTo($field)
+				->boolean($field->missingCodeCoverageIsShowed())->isTrue()
+				->object($field->showMissingCodeCoverage(false))->isIdenticalTo($field)
+				->boolean($field->missingCodeCoverageIsShowed())->isFalse()
 		;
 	}
 
