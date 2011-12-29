@@ -265,8 +265,6 @@ class stub extends scripts\runner
 
 		$this->runTests = false;
 
-		var_dump($this->runTests);
-
 		return $this;
 	}
 
