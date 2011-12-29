@@ -54,7 +54,7 @@ class stub extends atoum\test
 							$pharController = new atoum\mock\controller();
 							$pharController->__construct = function() {};
 							$pharController->offsetExists = true;
-							$pharController->offsetGet = 'versions';
+							$pharController->offsetGet = function($path) { return $path; };
 							$pharController->offsetSet = function() {};
 							$pharController->injectInNextMockInstance();
 							$phar = new \mock\phar($path);
@@ -82,7 +82,8 @@ class stub extends atoum\test
 					->mock($locale)
 						->call('_')
 							->withArguments('Checking if a new version is available...')->once()
-							->withArguments('There is no new version available')->once()
+							->withArguments('Checking if a new version is available... Done !')->once()
+							->withArguments('There is no new version available !')->once()
 		;
 	}
 }

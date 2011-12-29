@@ -147,27 +147,20 @@ class stub extends scripts\runner
 			throw new exceptions\runtime('Unable to update the PHAR, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'');
 		}
 
-		$currentPhar = $this->factory->build('phar', array($this->getName()));
-
-		if (isset($currentPhar['versions']) === false)
-		{
-			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file does not exist');
-		}
-
-		$versions = unserialize($this->adapter->file_get_contents($currentPhar['versions']));
-
-		if (is_array($versions) === false || sizeof($versions) <= 0 || isset($versions['current']) === false)
+		if (($versions = $this->getVersions($currentPhar = $this->factory->build('phar', array($this->getName())))) === null)
 		{
 			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file is invalid');
 		}
 
-		$this->writeMessage($this->locale->_('Checking if a new version is available...'));
+		$this->outputWriter->write($this->locale->_('Checking if a new version is available...'));
 
 		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, atoum\version)), true);
 
+		$this->writeMessage("\r" . $this->locale->_('Checking if a new version is available... Done !'));
+
 		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)
 		{
-			$this->writeMessage($this->locale->_('There is no new version available'));
+			$this->writeMessage($this->locale->_('There is no new version available !'));
 		}
 		else
 		{
@@ -178,42 +171,31 @@ class stub extends scripts\runner
 				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
 			}
 
-			$newPharIterator = new \recursiveIteratorIterator(new \recursiveDirectoryIterator('phar://' . $tmpFile . '/1'));
+			$this->outputWriter->write(sprintf($this->locale->_('Update atoum to version \'%s\'...'), $data['version']));
 
-			$size = 0;
-
-			foreach ($newPharIterator as $file)
-			{
-				$size++;
-			}
-
-			$progressBar = $this->factory->build('atoum\cli\progressBar', array($size));
-
-			$this->writeMessage(sprintf($this->locale->_('Update files to version \'%s\'...'), $data['version']));
-
-			$this->outputWriter->write($progressBar);
+			$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
 
 			$newCurrentDirectory = sizeof($versions);
 
-			$pharPathLength = strlen('phar://' . $tmpFile . '/1/');
-
-			foreach ($newPharIterator as $newFile)
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($pharPath)) as $newFile)
 			{
 				$currentPhar[$newCurrentDirectory . '/' . substr((string) $newFile, $pharPathLength)] = $this->adapter->file_get_contents($newFile);
-
-				$this->outputWriter->write($progressBar->refresh('='));
 			}
 
-			$this->outputWriter->write(PHP_EOL);
-
-			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully !'), $data['version']));
+			$this->writeMessage("\r" . sprintf($this->locale->_('Update atoum to version \'%s\'... Done !'), $data['version']));
 
 			@$this->adapter->unlink($tmpFile);
+
+			$this->outputWriter->write(sprintf($this->locale->_('Enable version \'%s\'...'), $data['version']));
 
 			$versions[$newCurrentDirectory] = $data['version'];
 			$versions['current'] = $newCurrentDirectory;
 
 			$currentPhar['versions'] = serialize($versions);
+
+			$this->writeMessage("\r" . sprintf($this->locale->_('Enable version \'%s\'... Done !'), $data['version']));
+
+			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully !'), $data['version']));
 		}
 
 		$this->runTests = false;
@@ -253,128 +235,220 @@ class stub extends scripts\runner
 		return $this;
 	}
 
+	public function enableVersion($versionName, \phar $phar = null)
+	{
+		if ($phar === null)
+		{
+			$phar = $this->factory->build('phar', array($this->getName()));
+		}
+
+		if (($versions = $this->getVersions($phar)) === null)
+		{
+			throw new exceptions\runtime('Unable to enable version \'' . $versionName . '\', the versions\'s file is invalid');
+		}
+
+		$versionDirectory = array_search($versionName, $versions);
+
+		if ($versionDirectory === null)
+		{
+			throw new exceptions\runtime('Unable to enable version \'' . $versionName . '\' because it does not exist');
+		}
+
+		$versions['current'] = $versionDirectory;
+
+		$phar['versions'] = serialize($versions);
+
+		return $this;
+	}
+
+	public function deleteVersion($versionName, \phar $phar = null)
+	{
+		if ($phar === null)
+		{
+			$phar = $this->factory->build('phar', array($this->getName()));
+		}
+
+		if (($versions = $this->getVersions($phar)) === null)
+		{
+			throw new exceptions\runtime('Unable to delete version \'' . $versionName . '\', the versions\'s file is invalid');
+		}
+
+		$versionDirectory = array_search($versionName, $versions);
+
+		if ($versionDirectory === null)
+		{
+			throw new exceptions\runtime('Unable to delete version \'' . $versionName . '\' because it does not exist');
+		}
+
+		if ($versionDirectory == $versions['current'])
+		{
+			throw new exceptions\runtime('Unable to delete version \'' . $versionName . '\' because it is the current version');
+		}
+
+		unset($versions[$versionDirectory]);
+
+		unset($phar[$versionDirectory]);
+
+		$phar['versions'] = serialize($versions);
+
+		return $this;
+	}
+
 	protected function setArgumentHandlers()
 	{
 		parent::setArgumentHandlers();
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+		$this
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				$script->infos();
-			},
-			array('-i', '--infos'),
-			null,
-			$this->locale->_('Display informations, do not run any script')
-		);
+					$script->infos();
+				},
+				array('-i', '--infos'),
+				null,
+				$this->locale->_('Display informations, do not run any script')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+					$script->signature();
+				},
+				array('-s', '--signature'),
+				null,
+				$this->locale->_('Display phar signature, do not run any script')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				$script->signature();
-			},
-			array('-s', '--signature'),
-			null,
-			$this->locale->_('Display phar signature, do not run any script')
-		);
+					$script->extractTo($values[0]);
+				},
+				array('-e', '--extractTo'),
+				'<directory>',
+				$this->locale->_('Extract all file from phar to <directory>, do not run any script')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) !== 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+					$script->extractResourcesTo($values[0]);
+				},
+				array('-er', '--extractResourcesTo'),
+				'<directory>',
+				$this->locale->_('Extract resources from phar to <directory>, do not run any script')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values, $position) {
+					if ($position !== 1 || sizeof($values) !== 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				$script->extractTo($values[0]);
-			},
-			array('-e', '--extractTo'),
-			'<directory>',
-			$this->locale->_('Extract all file from phar to <directory>, do not run any script')
-		);
+					unset($_SERVER['argv'][1]);
+					unset($_SERVER['argv'][2]);
 
-		$this->addArgumentHandler(
-			function($script, $argument, $values) {
-				if (sizeof($values) !== 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+					$script->useScript($values[0]);
 
-				$script->extractResourcesTo($values[0]);
-			},
-			array('-er', '--extractResourcesTo'),
-			'<directory>',
-			$this->locale->_('Extract resources from phar to <directory>, do not run any script')
-		);
+				},
+				array('-u', '--use'),
+				'<script> <args>',
+				$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-		$this->addArgumentHandler(
-	      function($script, $argument, $values, $position) {
-				if ($position !== 1 || sizeof($values) !== 1)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
+					$script->listScripts();
+				},
+				array('-ls', '--list-scripts'),
+				null,
+				$this->locale->_('List available scripts')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				unset($_SERVER['argv'][1]);
-				unset($_SERVER['argv'][2]);
+					$script->update();
+				},
+				array('--update'),
+				null,
+				$this->locale->_('Update atoum')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) > 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-				$script->useScript($values[0]);
+					$script->listAvailableVersions();
+				},
+				array('-lav', '--list-available-versions'),
+				null,
+				$this->locale->_('List available versions in the PHAR')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-			},
-			array('-u', '--use'),
-			'<script> <args>',
-			$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
-		);
+					$script->enableVersion($values[0]);
+				},
+				array('-ev', '--enable-version'),
+				'<version>',
+				$this->locale->_('Enable version <version>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $values) {
+					if (sizeof($values) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
 
-		$this->addArgumentHandler(
-	      function($script, $argument, $values) {
-				if (sizeof($values) > 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->listScripts();
-			},
-			array('-ls', '--list-scripts'),
-			null,
-			$this->locale->_('List available scripts')
-		);
-
-		$this->addArgumentHandler(
-	      function($script, $argument, $values) {
-				if (sizeof($values) > 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->update();
-			},
-			array('--update'),
-			null,
-			$this->locale->_('Update atoum')
-		);
-
-		$this->addArgumentHandler(
-	      function($script, $argument, $values) {
-				if (sizeof($values) > 0)
-				{
-					throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-				}
-
-				$script->listAvailableVersions();
-			},
-			array('-lav', '--list-available-versions'),
-			null,
-			$this->locale->_('List available versions in the PHAR')
-		);
+					$script->deleteVersion($values[0]);
+				},
+				array('-dv', '--delete-version'),
+				'<version>',
+				$this->locale->_('Delete version <version>')
+			)
+		;
 
 
 		return $this;
+	}
+
+	protected function getVersions(\phar $phar)
+	{
+		if (isset($phar['versions']) === false)
+		{
+			throw new exceptions\runtime('The versions\'s file does not exist');
+		}
+
+		$versions = unserialize($this->adapter->file_get_contents($phar['versions']));
+
+		return ((is_array($versions) === false || isset($versions['current']) === false || isset($versions[$versions['current']]) === false) ? null : $versions);
 	}
 
 	protected static function getScriptFile($scriptName)
