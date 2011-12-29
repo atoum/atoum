@@ -237,6 +237,11 @@ class stub extends scripts\runner
 
 	public function enableVersion($versionName, \phar $phar = null)
 	{
+		if ($this->adapter->ini_get('phar.readonly') == true)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
+		}
+
 		if ($phar === null)
 		{
 			$phar = $this->factory->build('phar', array($this->getName()));
@@ -258,11 +263,20 @@ class stub extends scripts\runner
 
 		$phar['versions'] = serialize($versions);
 
+		$this->runTests = false;
+
+		var_dump($this->runTests);
+
 		return $this;
 	}
 
 	public function deleteVersion($versionName, \phar $phar = null)
 	{
+		if ($this->adapter->ini_get('phar.readonly') == true)
+		{
+			throw new exceptions\runtime('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'');
+		}
+
 		if ($phar === null)
 		{
 			$phar = $this->factory->build('phar', array($this->getName()));
@@ -290,6 +304,8 @@ class stub extends scripts\runner
 		unset($phar[$versionDirectory]);
 
 		$phar['versions'] = serialize($versions);
+
+		$this->runTests = false;
 
 		return $this;
 	}
