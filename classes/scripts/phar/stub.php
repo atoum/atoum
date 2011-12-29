@@ -171,7 +171,7 @@ class stub extends scripts\runner
 				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
 			}
 
-			$this->outputWriter->write(sprintf($this->locale->_('Update atoum to version \'%s\'...'), $data['version']));
+			$this->outputWriter->write(sprintf($this->locale->_('Update to version \'%s\'...'), $data['version']));
 
 			$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
 
@@ -182,7 +182,7 @@ class stub extends scripts\runner
 				$currentPhar[$newCurrentDirectory . '/' . substr((string) $newFile, $pharPathLength)] = $this->adapter->file_get_contents($newFile);
 			}
 
-			$this->writeMessage("\r" . sprintf($this->locale->_('Update atoum to version \'%s\'... Done !'), $data['version']));
+			$this->writeMessage("\r" . sprintf($this->locale->_('Update to version \'%s\'... Done !'), $data['version']));
 
 			@$this->adapter->unlink($tmpFile);
 
@@ -254,7 +254,7 @@ class stub extends scripts\runner
 
 		$versionDirectory = array_search($versionName, $versions);
 
-		if ($versionDirectory === null)
+		if ($versionDirectory === false)
 		{
 			throw new exceptions\runtime('Unable to enable version \'' . $versionName . '\' because it does not exist');
 		}
@@ -287,7 +287,7 @@ class stub extends scripts\runner
 
 		$versionDirectory = array_search($versionName, $versions);
 
-		if ($versionDirectory === null)
+		if ($versionDirectory === false)
 		{
 			throw new exceptions\runtime('Unable to delete version \'' . $versionName . '\' because it does not exist');
 		}
