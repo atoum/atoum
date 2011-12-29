@@ -154,7 +154,7 @@ class stub extends scripts\runner
 
 		$this->outputWriter->write($this->locale->_('Checking if a new version is available...'));
 
-		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, atoum\version)), true);
+		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, json_encode(array_values($versions)))), true);
 
 		$this->writeMessage("\r" . $this->locale->_('Checking if a new version is available... Done !'));
 
