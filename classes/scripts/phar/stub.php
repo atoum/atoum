@@ -152,6 +152,8 @@ class stub extends scripts\runner
 			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file is invalid');
 		}
 
+		unset($versions['current']);
+
 		$this->writeMessage($this->locale->_('Checking if a new version is available...'), false);
 
 		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, json_encode(array_values($versions)))), true);
@@ -178,12 +180,16 @@ class stub extends scripts\runner
 
 			$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
 
-			$newCurrentDirectory = sizeof($versions);
+			$newCurrentDirectory = sizeof($versions) + 1;
+
+			$newFiles = new \arrayIterator();
 
 			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($pharPath)) as $newFile)
 			{
-				$currentPhar[$newCurrentDirectory . '/' . substr((string) $newFile, $pharPathLength)] = $this->adapter->file_get_contents($newFile);
+				$newFiles[$newCurrentDirectory . '/' . substr($newFile, $pharPathLength)] = ($newFile = (string) $newFile);
 			}
+
+			$currentPhar->buildFromIterator($newFiles);
 
 			$this
 				->clearMessage()

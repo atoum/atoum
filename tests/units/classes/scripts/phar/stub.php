@@ -63,27 +63,35 @@ class stub extends atoum\test
 						}
 					)
 				)
-				->and($adapter->file_get_contents = function($path) {
+				->and($adapter->file_get_contents = function($path) use (& $currentVersion) {
 						switch ($path)
 						{
 							case 'versions':
-								return serialize(array('1' => uniqid(), 'current' => '1'));
+								return serialize(array('1' => $currentVersion = uniqid(), 'current' => '1'));
 
 							case phar\stub::updateUrl:
 								return json_encode(array());
 
 							default:
-								return '';
+								return false;
 						}
 					}
 				)
 				->then
 					->object($stub->update())->isIdenticalTo($stub)
+					->adapter($adapter)
+						->call('file_get_contents')->withArguments(sprintf(phar\stub::updateUrl, json_encode(array($currentVersion))))->once()
+					->mock($phar)
+						->call('offsetGet')->withArguments('versions')->once()
 					->mock($locale)
 						->call('_')
 							->withArguments('Checking if a new version is available...')->once()
 							->withArguments('Checking if a new version is available... Done !')->once()
 							->withArguments('There is no new version available !')->once()
+					->mock($stdOut)
+						->call('clear')->once()
+						->call('write')->withArguments('Checking if a new version is available...')->once()
+						->call('write')->withArguments('Checking if a new version is available... Done !' . PHP_EOL)->once()
 		;
 	}
 }
