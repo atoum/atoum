@@ -152,11 +152,14 @@ class stub extends scripts\runner
 			throw new exceptions\runtime('Unable to update the PHAR, the versions\'s file is invalid');
 		}
 
-		$this->outputWriter->write($this->locale->_('Checking if a new version is available...'));
+		$this->writeMessage($this->locale->_('Checking if a new version is available...'), false);
 
 		$data = json_decode($this->adapter->file_get_contents(sprintf(self::updateUrl, json_encode(array_values($versions)))), true);
 
-		$this->writeMessage("\r" . $this->locale->_('Checking if a new version is available... Done !'));
+		$this
+			->clearMessage()
+			->writeMessage($this->locale->_('Checking if a new version is available... Done !'))
+		;
 
 		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)
 		{
@@ -171,7 +174,7 @@ class stub extends scripts\runner
 				throw new exceptions\runtime('Unable to create temporary file to update to version \'' . $data['version']);
 			}
 
-			$this->outputWriter->write(sprintf($this->locale->_('Update to version \'%s\'...'), $data['version']));
+			$this->writeMessage(sprintf($this->locale->_('Update to version \'%s\'...'), $data['version']), false);
 
 			$pharPathLength = strlen($pharPath = 'phar://' . $tmpFile . '/1/');
 
@@ -182,18 +185,24 @@ class stub extends scripts\runner
 				$currentPhar[$newCurrentDirectory . '/' . substr((string) $newFile, $pharPathLength)] = $this->adapter->file_get_contents($newFile);
 			}
 
-			$this->writeMessage("\r" . sprintf($this->locale->_('Update to version \'%s\'... Done !'), $data['version']));
+			$this
+				->clearMessage()
+				->writeMessage(sprintf($this->locale->_('Update to version \'%s\'... Done !'), $data['version']))
+			;
 
 			@$this->adapter->unlink($tmpFile);
 
-			$this->outputWriter->write(sprintf($this->locale->_('Enable version \'%s\'...'), $data['version']));
+			$this->writeMessage(sprintf($this->locale->_('Enable version \'%s\'...'), $data['version']), false);
 
 			$versions[$newCurrentDirectory] = $data['version'];
 			$versions['current'] = $newCurrentDirectory;
 
 			$currentPhar['versions'] = serialize($versions);
 
-			$this->writeMessage("\r" . sprintf($this->locale->_('Enable version \'%s\'... Done !'), $data['version']));
+			$this
+				->clearMessage()
+				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done !'), $data['version']))
+			;
 
 			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully !'), $data['version']));
 		}
