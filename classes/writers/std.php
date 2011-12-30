@@ -28,6 +28,11 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		return $this;
 	}
 
+	public function clear()
+	{
+		return $this->write("\r");
+	}
+
 	public function writeRealtimeReport(reports\realtime $report, $event)
 	{
 		return $this->write((string) $report);

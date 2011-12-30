@@ -48,6 +48,13 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this;
 	}
 
+	public function clear()
+	{
+		$this->adapter->ftruncate($this->handler, 0);
+
+		return $this;
+	}
+
 	public function writeRealtimeReport(reports\realtime $report, $event)
 	{
 		return $this->write((string) $report);
