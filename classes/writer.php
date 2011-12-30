@@ -24,6 +24,7 @@ abstract class writer implements adapter\aggregator
 	}
 
 	public abstract function write($string);
+	public abstract function clear();
 }
 
 ?>

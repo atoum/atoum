@@ -54,6 +54,11 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		return $this;
 	}
 
+	public function clear()
+	{
+		return $this;
+	}
+
 	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
 		$mailerSubject = $this->mailer->getSubject();
