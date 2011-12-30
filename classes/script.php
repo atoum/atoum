@@ -191,9 +191,16 @@ abstract class script implements atoum\adapter\aggregator
 		return trim($this->adapter->fgets(STDIN));
 	}
 
-	public function writeMessage($message)
+	public function writeMessage($message, $eol = true)
 	{
-		$this->outputWriter->write(rtrim($message) . PHP_EOL);
+		$message = rtrim($message);
+
+		if ($eol == true)
+		{
+			$message .= PHP_EOL;
+		}
+
+		$this->outputWriter->write($message);
 
 		return $this;
 	}
@@ -201,6 +208,13 @@ abstract class script implements atoum\adapter\aggregator
 	public function writeError($message)
 	{
 		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
+
+		return $this;
+	}
+
+	public function clearMessage()
+	{
+		$this->outputWriter->clear();
 
 		return $this;
 	}

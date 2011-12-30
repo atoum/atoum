@@ -258,6 +258,14 @@ class script extends atoum\test
 					->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
 					->object($script->writeMessage(($message = PHP_EOL . $message) . ' ' . PHP_EOL))->isIdenticalTo($script)
 					->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
+					->object($script->writeMessage($message = uniqid(), false))->isIdenticalTo($script)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->object($script->writeMessage(($message = uniqid()) . PHP_EOL, false))->isIdenticalTo($script)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->object($script->writeMessage(($message = uniqid()) . ' ' . PHP_EOL, false))->isIdenticalTo($script)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
+					->object($script->writeMessage(($message = PHP_EOL . $message) . ' ' . PHP_EOL, false))->isIdenticalTo($script)
+					->mock($stdOut)->call('write')->withArguments($message)->once()
 		;
 	}
 
@@ -286,6 +294,21 @@ class script extends atoum\test
 					->object($script->writeError((' ' . $message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
 					->mock($stderr)->call('write')->withArguments('Error: ' . $message . PHP_EOL)->once()
 					->mock($locale)->call('_')->withArguments('Error: %s')->exactly(4)
+		;
+	}
+
+	public function testClearMessage()
+	{
+		$this
+			->mock('mageekguy\atoum\writers\std\out')
+			->assert
+				->if($stdOut = new mock\writers\std\out())
+				->and($stdOut->getMockCOntroller()->write = function() {})
+				->and($script = new mock\script(uniqid()))
+				->and($script->setOutputWriter($stdOut))
+				->then
+					->object($script->clearMessage($message = uniqid()))->isIdenticalTo($script)
+					->mock($stdOut)->call('clear')->once()
 		;
 	}
 
