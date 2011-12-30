@@ -13,6 +13,7 @@ class AtoumTask extends Task
     private $codecoverage = false;
     private $codecoveragereportpath = null;
     private $codecoveragereporturl = null;
+    private $codecoveragexunitpath = null;
     private $atoumpharpath = null;
     private $atoumautoloaderpath = null;
     private $phppath = null;
@@ -138,6 +139,12 @@ class AtoumTask extends Task
             if ($this->maxchildren !== false) {
                 $this->runner->setMaxChildrenNumber($this->maxchildren);
             }
+            if ($this->codecoveragexunitpath !== false) {
+                $xUnit = new \mageekguy\atoum\reports\asynchronous\xunit();
+                $this->runner->addReport($xUnit);
+                $file = new \mageekguy\atoum\writers\file($this->codecoveragexunitpath);
+                $xUnit->addWriter($file);
+            }
         }
 
         $this->runner->run();
@@ -236,5 +243,16 @@ class AtoumTask extends Task
     public function setMaxchildren($maxchildren)
     {
         $this->maxchildren = (int)$maxchildren;
+    }
+
+    public function setCodecoveragexunitpath($codecoveragexunitpath)
+    {
+        $this->codecoveragexunitpath = $codecoveragexunitpath;
+        return $this;
+    }
+
+    public function getCodecoveragexunitpath()
+    {
+        return $this->codecoveragexunitpath;
     }
 }
