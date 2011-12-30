@@ -8,12 +8,15 @@ use
 
 class filter extends atoum\src\iterator\filter
 {
-	function accept()
+	function accept(\splFileInfo $file = null)
 	{
-		$file = $this->getInnerIterator()->current();
+		if ($fille === null)
+		{
+			$file = $this->getInnerIterator()->current();
+		}
 
 		return (
-				parent::accept()
+				parent::accept($file)
 				&&
 				basename(dirname($file->getPathname())) != 'tmp'
 				&&
