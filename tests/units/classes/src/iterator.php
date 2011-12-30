@@ -43,14 +43,6 @@ class iterator extends atoum\test
 	{
 		$fileController = mock\stream::get('sourceDirectory/file');
 		$dotFileController = mock\stream::get('sourceDirectory/.file');
-		$tmpDirectoryController = mock\stream::get('sourceDirectory/tmp');
-		$tmpDirectoryController->opendir = true;
-		$tmpDirectoryController->rewinddir = true;
-		$tmpDirectoryController->readdir[1] = 'file';
-		$tmpDirectoryController->readdir[2] = false;
-		$tmpDirectoryController->closedir = true;
-
-		$tmpFileController = mock\stream::get('sourceDirectory/tmp/file');
 
 		$sourceDirectoryController = mock\stream::get('sourceDirectory');
 		$sourceDirectoryController->opendir = true;
@@ -72,11 +64,6 @@ class iterator extends atoum\test
 			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
 				->variable($iterator->current())->isNull()
-			->if($sourceDirectoryController->readdir[1] = 'tmp')
-			->and($sourceDirectoryController->readdir[2] = false)
-			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory'))
-			->then
-				->variable($iterator->current())->isNull()
 		;
 	}
 
@@ -84,14 +71,6 @@ class iterator extends atoum\test
 	{
 		$fileController = mock\stream::get('sourceDirectory/file');
 		$dotFileController = mock\stream::get('sourceDirectory/.file');
-		$tmpDirectoryController = mock\stream::get('sourceDirectory/tmp');
-		$tmpDirectoryController->opendir = true;
-		$tmpDirectoryController->rewinddir = true;
-		$tmpDirectoryController->readdir[1] = 'file';
-		$tmpDirectoryController->readdir[2] = false;
-		$tmpDirectoryController->closedir = true;
-
-		$tmpFileController = mock\stream::get('sourceDirectory/tmp/file');
 
 		$sourceDirectoryController = mock\stream::get('sourceDirectory');
 		$sourceDirectoryController->opendir = true;
@@ -113,11 +92,6 @@ class iterator extends atoum\test
 			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
 				->integer($iterator->key())->isZero()
-			->if($sourceDirectoryController->readdir[1] = 'tmp')
-			->and($sourceDirectoryController->readdir[2] = false)
-			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory'))
-			->then
-				->integer($iterator->key())->isZero()
 			->if($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory', $pharDirectory = uniqid()))
 			->then
 				->string($iterator->key())->isEmpty()
@@ -127,11 +101,6 @@ class iterator extends atoum\test
 			->then
 				->string($iterator->key())->isEqualTo($pharDirectory . '/file')
 			->if($sourceDirectoryController->readdir[1] = '.file')
-			->and($sourceDirectoryController->readdir[2] = false)
-			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory', $pharDirectory = uniqid()))
-			->then
-				->string($iterator->key())->isEmpty()
-			->if($sourceDirectoryController->readdir[1] = 'tmp')
 			->and($sourceDirectoryController->readdir[2] = false)
 			->and($iterator = new src\iterator($sourceDirectory = 'atoum://sourceDirectory', $pharDirectory = uniqid()))
 			->then
