@@ -52,7 +52,7 @@ class factory
 				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
 			}
 
-			if ($arguments === null)
+			if (sizeof($arguments) <= 0)
 			{
 				$instance = new $class();
 			}
