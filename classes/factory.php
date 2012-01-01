@@ -63,7 +63,14 @@ class factory
 					self::$classes[$class] = new \reflectionClass($class);
 				}
 
-				$instance = self::$classes[$class]->newInstanceArgs($arguments);
+                try
+                {
+                    $instance = self::$classes[$class]->newInstanceArgs($arguments);
+                }
+                catch(\ReflectionException $e)
+                {
+                    $instance = self::$classes[$class]->newInstance();
+                }
 			}
 		}
 
