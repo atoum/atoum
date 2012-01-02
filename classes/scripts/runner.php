@@ -88,9 +88,7 @@ class runner extends atoum\script
 	{
 		try
 		{
-			parent::run($arguments ?: $this->arguments);
-
-			if ($this->runTests === true)
+			if (parent::run($arguments ?: $this->arguments)->runTests === true)
 			{
 				$this->useDefaultConfigFile();
 
@@ -255,9 +253,7 @@ class runner extends atoum\script
 
 	protected function setArgumentHandlers()
 	{
-		parent::setArgumentHandlers();
-
-		if ($this->runner !== null)
+		if (parent::setArgumentHandlers()->runner !== null)
 		{
 			$this->getArgumentsParser()->resetHandlers();
 
