@@ -255,6 +255,8 @@ class runner extends atoum\script
 
 	protected function setArgumentHandlers()
 	{
+		parent::setArgumentHandlers();
+
 		if ($this->runner !== null)
 		{
 			$this->getArgumentsParser()->resetHandlers();

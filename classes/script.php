@@ -256,7 +256,12 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	protected abstract function setArgumentHandlers();
+	protected function setArgumentHandlers()
+	{
+		$this->help = array();
+
+		return $this;
+	}
 }
 
 ?>
