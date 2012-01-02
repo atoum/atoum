@@ -210,7 +210,7 @@ class stub extends scripts\runner
 				->writeMessage(sprintf($this->locale->_('Enable version \'%s\'... Done !'), $data['version']))
 			;
 
-			$this->writeMessage(sprintf($this->locale->_('Atoum was updated to version \'%s\' successfully !'), $data['version']));
+			$this->writeMessage(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully !'), atoum\version, $data['version']));
 		}
 
 		$this->runTests = false;
@@ -325,9 +325,8 @@ class stub extends scripts\runner
 
 	protected function setArgumentHandlers()
 	{
-		parent::setArgumentHandlers();
-
-		$this
+		return
+			parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $values) {
 					if (sizeof($values) !== 0)
@@ -463,7 +462,6 @@ class stub extends scripts\runner
 				$this->locale->_('Delete version <version>')
 			)
 		;
-
 
 		return $this;
 	}
