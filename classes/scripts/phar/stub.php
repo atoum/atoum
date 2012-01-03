@@ -313,8 +313,13 @@ class stub extends scripts\runner
 		}
 
 		unset($versions[$versionDirectory]);
-
 		unset($phar[$versionDirectory]);
+
+		$currentVersion = $versions['current'];
+		unset($versions['current']);
+
+		$versions = array_values($versions);
+		$versions['current'] = array_search($currentVersion, $versions);
 
 		$phar['versions'] = serialize($versions);
 
