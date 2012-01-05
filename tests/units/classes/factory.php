@@ -17,7 +17,7 @@ class factory extends atoum\test
 			->then
 				->array($factory->getBuilders())->isEmpty()
 				->array($factory->getImportations())->isEmpty()
-				->variable($factory->getCurrentClass())->isNull()
+				->variable($factory->getClient())->isNull()
 		;
 	}
 
@@ -48,7 +48,7 @@ class factory extends atoum\test
 			->then
 				->object($test = $factory->build('foo\tests\units\factory'))->isInstanceOf(__CLASS__)
 			->if($factory = new atoum\factory())
-			->and($factory->setCurrentClass(__CLASS__))
+			->and($factory->setClient(__CLASS__))
 			->then
 				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
 				->object($arrayIterator = $factory->build('arrayIterator', array()))->isInstanceOf('arrayIterator')
@@ -113,40 +113,29 @@ class factory extends atoum\test
 		;
 	}
 
-	public function testSetCurrentClass()
+	public function testSetClient()
 	{
 		$this->assert
 			->if($factory = new atoum\factory())
 			->then
-				->object($factory->setCurrentClass(__CLASS__))->isIdenticalTo($factory)
-				->string($factory->getCurrentClass())->isEqualTo(__CLASS__)
-				->object($factory->setCurrentClass(($class = uniqid())))->isIdenticalTo($factory)
-				->string($factory->getCurrentClass())->isEqualTo($class)
+				->object($factory->setClient(__CLASS__))->isIdenticalTo($factory)
+				->string($factory->getClient())->isEqualTo(__CLASS__)
+				->object($factory->setClient(($class = uniqid())))->isIdenticalTo($factory)
+				->string($factory->getClient())->isEqualTo($class)
 		;
 	}
 
-	public function testUnsetCurrentClass()
+	public function testUnsetClient()
 	{
 		$this->assert
 			->if($factory = new atoum\factory())
 			->then
-				->object($factory->unsetCurrentClass())->isIdenticalTo($factory)
-				->variable($factory->getCurrentClass())->isNull()
-			->if($factory->setCurrentClass(__CLASS__))
+				->object($factory->unsetClient())->isIdenticalTo($factory)
+				->variable($factory->getClient())->isNull()
+			->if($factory->setClient(__CLASS__))
 			->then
-				->object($factory->unsetCurrentClass())->isIdenticalTo($factory)
-				->variable($factory->getCurrentClass())->isNull()
-		;
-	}
-
-	public function unsetCurrentClass()
-	{
-		$this->assert
-			->if($factory = new atoum\factory())
-			->and($factory->setCurrentClass(__CLASS__))
-			->then
-				->object($factory->unsetCurrentClass())->isIdenticalTo($factory)
-				->variable($factory->getCurrentClass())->isNull()
+				->object($factory->unsetClient())->isIdenticalTo($factory)
+				->variable($factory->getClient())->isNull()
 		;
 	}
 
@@ -168,7 +157,7 @@ class factory extends atoum\test
 				->exception(function() use ($factory) { $factory->import('foo\bar\tutu'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to use \'foo\bar\tutu\' as \'tutu\' because the name is already in use')
-			->if($factory->setCurrentClass(__CLASS__))
+			->if($factory->setClient(__CLASS__))
 			->then
 				->array($factory->getImportations())->isEmpty()
 				->object($factory->import('foo'))->isIdenticalTo($factory)
@@ -184,6 +173,24 @@ class factory extends atoum\test
 				->exception(function() use ($factory) { $factory->import('foo\bar\tutu'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to use \'foo\bar\tutu\' as \'tutu\' because the name is already in use')
+		;
+	}
+
+	public function testResetImportations()
+	{
+		$this->assert
+			->if($factory = new atoum\factory())
+			->then
+				->object($factory->resetImportations())->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEmpty()
+			->if($factory->import(uniqid()))
+			->then
+				->object($factory->resetImportations())->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEmpty()
+			->if($factory->import(uniqid(), uniqid()))
+			->then
+				->object($factory->resetImportations())->isIdenticalTo($factory)
+				->array($factory->getImportations())->isEmpty()
 		;
 	}
 }

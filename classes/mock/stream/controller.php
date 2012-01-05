@@ -73,7 +73,7 @@ class controller extends test\adapter
 			$this->resetCalls('dir_readdir');
 		}
 
-		return (isset($this->{$method = self::mapMethod($method)}) === false ? null : parent::invoke($method, $arguments));
+		return (isset($this->{$method}) === false ? null : parent::invoke($method, $arguments));
 	}
 
 	protected static function mapMethod($method)

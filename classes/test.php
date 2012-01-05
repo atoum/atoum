@@ -489,16 +489,6 @@ abstract class test implements observable, adapter\aggregator, \countable
      */
 	public function getPhpPath()
 	{
-		if ($this->phpPath === null)
-		{
-			if (isset($this->superglobals->_SERVER['_']) === false)
-			{
-				throw new exceptions\runtime('Unable to find PHP executable');
-			}
-
-			$this->setPhpPath($this->superglobals->_SERVER['_']);
-		}
-
 		return $this->phpPath;
 	}
 

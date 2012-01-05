@@ -10,19 +10,17 @@ use
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class cli extends atoum\test
+class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\event')
-		;
+	  $this->assert->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\event\cli');
 	}
 
 	public function test__construct()
 	{
 		$this->assert
-			->if($field = new test\event\cli())
+			->if($field = new test\event\phing())
 			->then
 				->variable($field->getObservable())->isNull()
 				->variable($field->getEvent())->isNull()
@@ -40,7 +38,7 @@ class cli extends atoum\test
 				->and($testController = new mock\controller())
 				->and($testController->getTestedClassName = uniqid())
 				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
-				->and($field = new test\event\cli())
+				->and($field = new test\event\phing())
 				->then
 					->boolean($field->handleEvent(atoum\runner::runStart, $test))->isFalse()
 					->variable($field->getEvent())->isNull()
@@ -97,51 +95,50 @@ class cli extends atoum\test
 				->and($testController = new atoum\mock\controller())
 				->and($testController->getTestedClassName = uniqid())
 				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
-				->and($field = new test\event\cli())
+				->and($field = new test\event\phing())
 				->and($count = rand(1, PHP_INT_MAX))
 				->and($test->getMockController()->count = function() use ($count) { return $count; })
-				->and($progressBar = new atoum\cli\progressBar(sizeof($test)))
 				->then
 					->castToString($field)->isEmpty()
 				->if($field->handleEvent(atoum\test::runStart, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('[')
 				->if($field->handleEvent(atoum\test::beforeSetUp, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::afterSetUp, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::beforeTestMethod, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::fail, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('F'))
+					->castToString($field)->isEqualTo('F')
 				->if($field->handleEvent(atoum\test::error, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('e'))
+					->castToString($field)->isEqualTo('e')
 				->if($field->handleEvent(atoum\test::exception, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('E'))
+					->castToString($field)->isEqualTo('E')
 				->if($field->handleEvent(atoum\test::success, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('S'))
+					->castToString($field)->isEqualTo('S')
 				->if($field->handleEvent(atoum\test::uncompleted, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('U'))
+					->castToString($field)->isEqualTo('U')
 				->if($field->handleEvent(atoum\test::afterTestMethod, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::beforeTearDown, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::afterTearDown, $test))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar)
+					->castToString($field)->isEqualTo('')
 				->if($field->handleEvent(atoum\test::runStop, $test))
 				->then
-					->castToString($field)->isEqualTo(PHP_EOL)
+					->castToString($field)->isEqualTo('] ')
 		;
 	}
 }

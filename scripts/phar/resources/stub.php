@@ -16,7 +16,9 @@ define(__NAMESPACE__ . '\phar\name', 'mageekguy.atoum.phar');
 
 \phar::mapPhar(atoum\phar\name);
 
-require_once 'phar://' . atoum\phar\name . '/classes/autoloader.php';
+$versions = unserialize(file_get_contents('phar://' . atoum\phar\name . '/versions'));
+
+require_once 'phar://' . atoum\phar\name . '/' . $versions['current'] . '/classes/autoloader.php';
 
 if (defined(__NAMESPACE__ . '\autorun') === false)
 {

@@ -9,38 +9,38 @@ use
 class factory
 {
 	protected $builders = array();
-	protected $currentClass = null;
+	protected $client = null;
 	protected $importations = array();
-	protected $importationsByClass = array();
+	protected $importationsByClient = array();
 
 	private static $classes = array();
 
-	public function setCurrentClass($class)
+	public function setClient($class)
 	{
-		$this->currentClass = trim($class, '\\');
+		$this->client = trim($class, '\\');
 
 		return $this;
 	}
 
-	public function unsetCurrentClass()
+	public function unsetClient()
 	{
-		$this->currentClass = null;
+		$this->client = null;
 
 		return $this;
 	}
 
-	public function getCurrentClass()
+	public function getClient()
 	{
-		return $this->currentClass;
+		return $this->client;
 	}
 
-	public function build($class, array $arguments = null)
+	public function build($class, array $arguments = array())
 	{
 		$instance = null;
 
 		if ($this->builderIsSet($class = $this->resolveClassName($class)) === true)
 		{
-			if (($instance = $this->builders[$class]->__invoke($arguments)) instanceof $class === false)
+			if (($instance = call_user_func_array($this->builders[$class], $arguments)) instanceof $class === false && is_subclass_of($instance, $class) === false)
 			{
 				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' with current builder');
 			}
@@ -52,7 +52,7 @@ class factory
 				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
 			}
 
-			if ($arguments === null)
+			if (sizeof($arguments) <= 0)
 			{
 				$instance = new $class();
 			}
@@ -119,13 +119,13 @@ class factory
 			throw new factory\exception('Unable to use \'' . $string . '\' as \'' . $alias . '\' because the name is already in use');
 		}
 
-		if ($this->currentClass === null)
+		if ($this->client === null)
 		{
 			$this->importations[$alias] = $string;
 		}
 		else
 		{
-			$this->importationsByClass[$this->currentClass][$alias] = $string;
+			$this->importationsByClient[$this->client][$alias] = $string;
 		}
 
 		return $this;
@@ -133,7 +133,14 @@ class factory
 
 	public function getImportations()
 	{
-		return ($this->currentClass === null ? $this->importations : (isset($this->importationsByClass[$this->currentClass]) === false ? array() : $this->importationsByClass[$this->currentClass]));
+		return ($this->client === null ? $this->importations : (isset($this->importationsByClient[$this->client]) === false ? array() : $this->importationsByClient[$this->client]));
+	}
+
+	public function resetImportations()
+	{
+		$this->importations = $this->importationsByClient = array();
+
+		return $this;
 	}
 
 	protected function resolveClassName($class)
@@ -149,15 +156,15 @@ class factory
 				$topLevelNamespace = substr($class, 0, $firstOccurrence);
 			}
 
-			if ($this->currentClass !== null && isset($this->importationsByClass[$this->currentClass][$topLevelNamespace]) === true)
+			if ($this->client !== null && isset($this->importationsByClient[$this->client][$topLevelNamespace]) === true)
 			{
 				if ($firstOccurrence === false)
 				{
-					$class = $this->importationsByClass[$this->currentClass][$topLevelNamespace];
+					$class = $this->importationsByClient[$this->client][$topLevelNamespace];
 				}
 				else
 				{
-					$class = $this->importationsByClass[$this->currentClass][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
+					$class = $this->importationsByClient[$this->client][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
 				}
 			}
 			else if (isset($this->importations[$topLevelNamespace]) === true)

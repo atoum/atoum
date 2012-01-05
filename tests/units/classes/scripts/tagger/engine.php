@@ -145,7 +145,7 @@ class engine extends atoum\test
 
 		$this->assert
 			->object($tagger->getSrcIterator())->isInstanceOf('recursiveIteratorIterator')
-			->object($tagger->getSrcIterator()->getInnerIterator())->isInstanceOf('mageekguy\atoum\src\iterator\filter')
+			->object($tagger->getSrcIterator()->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
 		;
 	}
 

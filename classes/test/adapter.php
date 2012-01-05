@@ -91,7 +91,10 @@ class adapter extends atoum\adapter
 					}
 					else
 					{
-						$calls = array_filter($callArguments, function($callArguments) use ($arguments) { return $arguments == $callArguments; });
+						$calls = array_filter($callArguments, function($callArguments) use ($arguments) {
+								return ($arguments  == array_slice($callArguments, 0, sizeof($arguments)));
+							}
+						);
 					}
 
 					break;
