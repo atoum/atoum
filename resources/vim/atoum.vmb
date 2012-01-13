@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-137
+147
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -55,14 +55,14 @@ function atoum#run(file, bang)
 		au!
 		execute 'autocmd BufUnload <buffer> execute bufwinnr(' . bufnr . ') . ''wincmd w'''
 		execute 'autocmd BufEnter <buffer> execute ''resize '' .  line(''$'')'
-		autocmd BufEnter <buffer> let g:atoum#cursorline = &cursorline | set nocursorline
+		autocmd BufEnter <buffer> let g:atoum#cursorline = &cursorline | set nocursorline | call atoum#highlightStatusLine()
 		autocmd BufLeave <buffer> if (g:atoum#cursorline) | set cursorline | endif
 		augroup end
 
-		let success = search('^Success ', 'w')
+		let g:atoum#success = search('^Success ', 'w')
 
-		if (success > 0)
-			execute success
+		if (g:atoum#success > 0)
+			execute g:atoum#success
 		else
 			let result = getline(1, '$')
 
@@ -80,6 +80,8 @@ function atoum#run(file, bang)
 				execute failure
 			endif
 		endif
+
+		call atoum#highlightStatusLine()
 	endif
 endfunction
 "defineConfiguration {{{1
@@ -138,6 +140,14 @@ function atoum#makeVimball()
 		echomsg v:exception
 		echohl None
 	endtry
+endfunction
+"highlightStatusLine {{{1
+function atoum#highlightStatusLine()
+	if g:atoum#success
+		hi statusline guibg=DarkGreen guifg=White
+	else
+		hi statusline guibg=DarkRed guifg=White
+	endif
 endfunction
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 doc/atoum.txt	[[[1
@@ -257,6 +267,16 @@ endif
 finish
 
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
+ftplugin/php/atoumdev.vim	[[[1
+8
+"=============================================================================
+" Author:					Frédéric Hardy - http://blog.mageekbox.net
+" Licence:					GPL version 2.0 license
+"=============================================================================
+augroup atoumdev
+	au!
+	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository
+augroup end
 syntax/atoum.vim	[[[1
 166
 "=============================================================================
