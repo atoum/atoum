@@ -68,15 +68,38 @@ class stub extends scripts\runner
 
 	public function extractTo($directory)
 	{
-		$phar = new \phar($this->getName());
-
-		try
+		if (($versions = $this->getVersions($phar = $this->factory->build('phar', array($this->getName())))) === null)
 		{
-			$phar->extractTo($directory);
+			throw new exceptions\runtime('Unable to extract the PHAR to \'' . $directory . '\', the versions\'s file is invalid');
 		}
-		catch (\exception $exception)
+
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
+		$pharName = \phar::running();
+
+		foreach (new \recursiveIteratorIterator($phar) as $pharFile)
 		{
-			throw new exceptions\logic('Unable to extract in \'' . $directory . '\'');
+			$pharFilePath = ltrim(str_replace($pharName, '', $pharFile), DIRECTORY_SEPARATOR);
+
+			if (strpos($pharFilePath, $versions['current']) === 0)
+			{
+				$path = $directory . '/' . ltrim(substr($pharFilePath, strlen($versions['current'])), DIRECTORY_SEPARATOR);
+
+				$pathDirectory = dirname($path);
+
+				@mkdir($pathDirectory, 0777, true);
+
+				if (is_dir($pathDirectory) === false)
+				{
+					throw new exceptions\runtime('Unable to create directory \'' . $pathDirectory . '\'');
+				}
+
+				$data = file_get_contents($pharFile);
+
+				if (file_put_contents($path, $data) != strlen($data))
+				{
+					throw new exceptions\runtime('Unable to extract file \'' . $pharFilePath . '\' in directory \'' . $pathDirectory . '\'');
+				}
+			}
 		}
 
 		$this->runTests = false;
@@ -86,26 +109,38 @@ class stub extends scripts\runner
 
 	public function extractResourcesTo($directory)
 	{
-		$phar = new \phar($this->getName());
+		if (($versions = $this->getVersions($phar = $this->factory->build('phar', array($this->getName())))) === null)
+		{
+			throw new exceptions\runtime('Unable to extract resources from PHAR in \'' . $directory . '\', the versions\'s file is invalid');
+		}
 
-		if (isset($phar['resources']) === false)
+		if (isset($phar[$versions['current'] . '/resources']) === false)
 		{
 			throw new exceptions\logic('Resources directory does not exist in PHAR \'' . $this->getName() . '\'');
 		}
 
-		try
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
+		$resourcesDirectory = 'phar://' . $this->getName() . '/' . $versions['current'] . '/resources';
+
+		foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($resourcesDirectory)) as $resourceFile)
 		{
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($phar['resources'], \filesystemIterator::CURRENT_AS_SELF)) as $resources)
+			$resourceFilePath = ltrim(str_replace($resourcesDirectory, '', $resourceFile), DIRECTORY_SEPARATOR);
+
+			$resourceFileDirectory = $directory . '/' . dirname($resourceFilePath);
+
+			@mkdir($resourceFileDirectory, 0777, true);
+
+			if (is_dir($resourceFileDirectory) === false)
 			{
-				if ($resources->current()->isFile() === true)
-				{
-					$phar->extractTo($directory, 'resources/' . $resources->getSubpathname());
-				}
+				throw new exceptions\runtime('Unable to create directory \'' . $resourceFileDirectory . '\'');
 			}
-		}
-		catch (\exception $exception)
-		{
-			throw new exceptions\logic('Unable to extract resources in \'' . $directory . '\'');
+
+			$data = file_get_contents($resourceFile);
+
+			if (file_put_contents($directory . '/' . $resourceFilePath, $data) != strlen($data))
+			{
+				throw new exceptions\runtime('Unable to extract resource file \'' . $resourceFilePath . '\' in directory \'' . $directory . '\'');
+			}
 		}
 
 		$this->runTests = false;
@@ -481,6 +516,40 @@ class stub extends scripts\runner
 		$versions = unserialize($this->adapter->file_get_contents($phar['versions']));
 
 		return ((is_array($versions) === false || isset($versions['current']) === false || isset($versions[$versions['current']]) === false) ? null : $versions);
+	}
+
+	protected static function extractFilesTo(\recursiveDirectoryIterator $fromPharDirectory, $toDirectory)
+	{
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
+		$pharName = \phar::running();
+
+		foreach (new \recursiveIteratorIterator($fromPharDirectory) as $pharFile)
+		{
+			$pharFilePath = ltrim(str_replace($pharName, '', $pharFile), DIRECTORY_SEPARATOR);
+
+			if (strpos($pharFilePath, $versions['current']) === 0)
+			{
+				$path = $directory . '/' . ltrim(substr($pharFilePath, strlen($versions['current'])), DIRECTORY_SEPARATOR);
+
+				$pathDirectory = dirname($path);
+
+				@mkdir($pathDirectory, 0777, true);
+
+				if (is_dir($pathDirectory) === false)
+				{
+					throw new exceptions\runtime('Unable to create directory \'' . $pathDirectory . '\'');
+				}
+
+				$data = file_get_contents($pharFile);
+
+				if (file_put_contents($path, $data) != strlen($data))
+				{
+					throw new exceptions\runtime('Unable to extract file \'' . $pharFilePath . '\' in directory \'' . $pathDirectory . '\'');
+				}
+			}
+		}
+
+		return $this;
 	}
 
 	protected static function getScriptFile($scriptName)
