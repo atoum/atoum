@@ -284,21 +284,7 @@ class generator implements atoum\adapter\aggregator
 
 		if ($hasConstructor === false)
 		{
-			$mockedMethods .= "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL;
-			$mockedMethods .= "\t" . '{' . PHP_EOL;
-			$mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-			$mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-			$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-			$mockedMethods .= "\t\t\t" . '$this->mockController->invoke(\'__construct\', array());' . PHP_EOL;
-			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			$mockedMethods .= "\t" . '}' . PHP_EOL;
+			$mockedMethods .= self::generateDefaultConstructor();
 		}
 
 		return $mockedMethods;
@@ -446,12 +432,19 @@ class generator implements atoum\adapter\aggregator
 	{
 		$mockedMethods = '';
 
+		$hasConstructor = false;
+
 		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
 		{
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
 				$methodName = $method->getName();
 				$isConstructor = $method->isConstructor();
+
+				if ($isConstructor === true)
+				{
+					$hasConstructor = true;
+				}
 
 				$parameters = array();
 
@@ -485,6 +478,11 @@ class generator implements atoum\adapter\aggregator
 			}
 		}
 
+		if ($hasConstructor === false)
+		{
+			$mockedMethods .= self::generateDefaultConstructor();
+		}
+
 		return $mockedMethods;
 	}
 
@@ -497,6 +495,27 @@ class generator implements atoum\adapter\aggregator
 			self::generateInterfaceMethodCode($class) .
 			'}' . PHP_EOL .
 			'}'
+		;
+	}
+
+	protected static function generateDefaultConstructor()
+	{
+		return
+			  "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL
+			. "\t" . '{' . PHP_EOL
+			. "\t\t" . 'if ($mockController === null)' . PHP_EOL
+			. "\t\t" . '{' . PHP_EOL
+			. "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL
+			. "\t\t" . '}' . PHP_EOL
+			. "\t\t" . 'if ($mockController !== null)' . PHP_EOL
+			. "\t\t" . '{' . PHP_EOL
+			. "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL
+			. "\t\t" . '}' . PHP_EOL
+			. "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL
+			. "\t\t" . '{' . PHP_EOL
+			. "\t\t\t" . '$this->mockController->invoke(\'__construct\', array());' . PHP_EOL
+			. "\t\t" . '}' . PHP_EOL
+			. "\t" . '}' . PHP_EOL
 		;
 	}
 }
