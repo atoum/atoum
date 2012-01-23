@@ -676,7 +676,10 @@ class generator extends atoum\test
 				"\t\t" . '{' . PHP_EOL .
 				"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
 				"\t\t" . '}' . PHP_EOL .
-				"\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+				"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+				"\t\t" . '{' . PHP_EOL .
+				"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+				"\t\t" . '}' . PHP_EOL .
 				"\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL .
 				"\t\t" . '{' . PHP_EOL .
 				"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .

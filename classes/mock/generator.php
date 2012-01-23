@@ -464,7 +464,10 @@ class generator implements atoum\adapter\aggregator
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
 					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
-					$methodCode .= "\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+					$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+					$methodCode .= "\t\t" . '{' . PHP_EOL;
+					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+					$methodCode .= "\t\t" . '}' . PHP_EOL;
 				}
 
 				$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
