@@ -9,6 +9,21 @@ use
 
 class boolean extends asserters\variable
 {
+	public function __get($property)
+	{
+		switch (true)
+		{
+			case strtolower($property) == 'isfalse':
+				return $this->isFalse();
+
+			case strtolower($property) == 'istrue':
+				return $this->isTrue();
+
+			default:
+				return parent::__get($property);
+		}
+	}
+
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
