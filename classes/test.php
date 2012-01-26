@@ -10,7 +10,7 @@ use
 ;
 
 /**
- * @property    \mageekguy\atoum\asserter           assert
+ * @property    \mageekguy\atoum\asserter\generator assert
  *
  * @method      \mageekguy\atoum\asserter\generator assert()
  */

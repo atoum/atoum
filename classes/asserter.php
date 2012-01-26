@@ -19,8 +19,10 @@ use
  *
  * @method      \mageekguy\atoum\asserters\adapter              adapter()
  * @method      \mageekguy\atoum\asserters\afterDestructionOf   afterDestructionOf()
+ * @method      \mageekguy\atoum\asserters\phpArray             array()
  * @method      \mageekguy\atoum\asserters\boolean              boolean()
  * @method      \mageekguy\atoum\asserters\castToString         castToString()
+ * @method      \mageekguy\atoum\asserters\phpClass             class()
  * @method      \mageekguy\atoum\asserters\dateTime             dateTime()
  * @method      \mageekguy\atoum\asserters\error                error()
  * @method      \mageekguy\atoum\asserters\exception            exception()
