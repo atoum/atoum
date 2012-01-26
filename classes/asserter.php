@@ -63,10 +63,10 @@ abstract class asserter
 		return $this;
 	}
 
-//	public function getScore()
-//	{
-//		return $this->generator->getScore();
-//	}
+	public function getScore()
+	{
+		return $this->generator->getScore();
+	}
 
 	public function getLocale()
 	{
@@ -106,6 +106,13 @@ abstract class asserter
 			case is_array($mixed):
 				return sprintf($this->getLocale()->_('array(%s)'), sizeof($mixed));
 		}
+	}
+
+	public function must(\closure $closure)
+	{
+		$closure($this);
+
+		return $this;
 	}
 
 	public abstract function setWith($mixed);
