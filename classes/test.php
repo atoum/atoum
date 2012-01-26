@@ -10,9 +10,9 @@ use
 ;
 
 /**
- * @property    \mageekguy\atoum\asserter\generator assert
+ * @property    mageekguy\atoum\asserter\generator assert
  *
- * @method      \mageekguy\atoum\asserter\generator assert()
+ * @method      mageekguy\atoum\asserter\generator assert()
  */
 abstract class test implements observable, adapter\aggregator, \countable
 {

@@ -8,37 +8,37 @@ use
 ;
 
 /**
- * @property    \mageekguy\atoum\asserter                       if
- * @property    \mageekguy\atoum\asserter                       and
- * @property    \mageekguy\atoum\asserter                       then
+ * @property    mageekguyatoum\asserter                       if
+ * @property    mageekguyatoum\asserter                       and
+ * @property    mageekguyatoum\asserter                       then
  *
- * @method      \mageekguy\atoum\asserter                       if()
- * @method      \mageekguy\atoum\asserter                       and()
- * @method      \mageekguy\atoum\asserter                       then()
+ * @method      mageekguyatoum\asserter                       if()
+ * @method      mageekguyatoum\asserter                       and()
+ * @method      mageekguyatoum\asserter                       then()
  *
- * @method      \mageekguy\atoum\asserters\adapter              adapter()
- * @method      \mageekguy\atoum\asserters\afterDestructionOf   afterDestructionOf()
- * @method      \mageekguy\atoum\asserters\phpArray             array()
- * @method      \mageekguy\atoum\asserters\boolean              boolean()
- * @method      \mageekguy\atoum\asserters\castToString         castToString()
- * @method      \mageekguy\atoum\asserters\phpClass             class()
- * @method      \mageekguy\atoum\asserters\dateTime             dateTime()
- * @method      \mageekguy\atoum\asserters\error                error()
- * @method      \mageekguy\atoum\asserters\exception            exception()
- * @method      \mageekguy\atoum\asserters\float                float()
- * @method      \mageekguy\atoum\asserters\hash                 hash()
- * @method      \mageekguy\atoum\asserters\integer              integer()
- * @method      \mageekguy\atoum\asserters\mock                 mock()
- * @method      \mageekguy\atoum\asserters\mysqlDateTime        mysqlDateTime()
- * @method      \mageekguy\atoum\asserters\object               object()
- * @method      \mageekguy\atoum\asserters\output               output()
- * @method      \mageekguy\atoum\asserters\phpArray             phpArray()
- * @method      \mageekguy\atoum\asserters\phpClass             phpClass()
- * @method      \mageekguy\atoum\asserters\sizeOf               sizeOf()
- * @method      \mageekguy\atoum\asserters\stream               stream()
- * @method      \mageekguy\atoum\asserters\string               string()
- * @method      \mageekguy\atoum\asserters\testedClass          testedClass()
- * @method      \mageekguy\atoum\asserters\variable             variable()
+ * @method      mageekguyatoum\asserters\adapter              adapter()
+ * @method      mageekguyatoum\asserters\afterDestructionOf   afterDestructionOf()
+ * @method      mageekguyatoum\asserters\phpArray             array()
+ * @method      mageekguyatoum\asserters\boolean              boolean()
+ * @method      mageekguyatoum\asserters\castToString         castToString()
+ * @method      mageekguyatoum\asserters\phpClass             class()
+ * @method      mageekguyatoum\asserters\dateTime             dateTime()
+ * @method      mageekguyatoum\asserters\error                error()
+ * @method      mageekguyatoum\asserters\exception            exception()
+ * @method      mageekguyatoum\asserters\float                float()
+ * @method      mageekguyatoum\asserters\hash                 hash()
+ * @method      mageekguyatoum\asserters\integer              integer()
+ * @method      mageekguyatoum\asserters\mock                 mock()
+ * @method      mageekguyatoum\asserters\mysqlDateTime        mysqlDateTime()
+ * @method      mageekguyatoum\asserters\object               object()
+ * @method      mageekguyatoum\asserters\output               output()
+ * @method      mageekguyatoum\asserters\phpArray             phpArray()
+ * @method      mageekguyatoum\asserters\phpClass             phpClass()
+ * @method      mageekguyatoum\asserters\sizeOf               sizeOf()
+ * @method      mageekguyatoum\asserters\stream               stream()
+ * @method      mageekguyatoum\asserters\string               string()
+ * @method      mageekguyatoum\asserters\testedClass          testedClass()
+ * @method      mageekguyatoum\asserters\variable             variable()
  */
 class testedClass extends phpClass
 {
