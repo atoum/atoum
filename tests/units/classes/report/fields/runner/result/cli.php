@@ -227,6 +227,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStart, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
@@ -234,6 +235,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
@@ -265,6 +267,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStart, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
@@ -272,6 +275,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStop, $runner))
 				->castToString($field)->isEqualTo($promptString . $colorizedSuccessString . PHP_EOL)
 				->mock($locale)
@@ -303,6 +307,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStart, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
@@ -310,6 +315,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
@@ -343,6 +349,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStart, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $noTestRunningString . PHP_EOL)
@@ -350,6 +357,7 @@ class cli extends atoum\test
 				->mock($successColorizer)->call('colorize')->withArguments($noTestRunningString)->never()
 				->mock($failureColorizer)->call('colorize')->never()
 				->mock($prompt)->call('__toString')->once()
+            ->assert
 			->if($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEqualTo($promptString . $colorizedFailureString . PHP_EOL)
