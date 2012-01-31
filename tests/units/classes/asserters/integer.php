@@ -254,6 +254,77 @@ class integer extends atoum\test
 		;
 	}
 
+	public function testIsLessThan()
+	{
+		$asserter = new asserters\integer(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$asserter->setWith($value = - rand(1, PHP_INT_MAX - 1));
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isLessThan(0))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$diff = new diffs\variable();
+
+		$diff->setReference(- PHP_INT_MAX)->setData($value);
+
+		$this->assert
+			->exception(function() use ($asserter, $value, & $line) {
+				$line = __LINE__; $asserter->isLessThan(- PHP_INT_MAX);
+			})
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
+			->integer($score->getPassNumber())->isEqualTo(1)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+				array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => __CLASS__,
+					'method' => $test->getCurrentMethod(),
+					'file' => __FILE__,
+					'line' => $line,
+					'asserter' => get_class($asserter) . '::isLessThan()',
+					'fail' => sprintf($test->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX))
+				)
+			))
+		;
+
+		$score->reset();
+
+		$diff = new diffs\variable();
+
+		$diff->setReference($value)->setData($value);
+
+		$this->assert
+			->exception(function() use ($asserter, $value, & $line) {
+				$line = __LINE__; $asserter->isLessThan($value);
+			})
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf($value)))
+			->integer($score->getPassNumber())->isZero()
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+				array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => __CLASS__,
+					'method' => $test->getCurrentMethod(),
+					'file' => __FILE__,
+					'line' => $line,
+					'asserter' => get_class($asserter) . '::isLessThan()',
+					'fail' => sprintf($test->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf($value))
+				)
+			))
+		;
+	}
+
 	public function testIsGreaterThanOrEqualTo()
 	{
 		$asserter = new asserters\integer(new asserter\generator($test = new self($score = new atoum\score())));
@@ -339,6 +410,49 @@ class integer extends atoum\test
 			))
 		;
 	}
+	
+	public function testisLessThanOrEqualTo()
+	{
+		$asserter = new asserters\integer(new asserter\generator($test = new self($score = new atoum\score())));
+
+		$asserter->setWith($value = - rand(1, PHP_INT_MAX - 1));
+
+		$score->reset();
+
+		$this->assert
+			->object($asserter->isLessThanOrEqualTo(0))->isIdenticalTo($asserter)
+			->object($asserter->isLessThanOrEqualTo($value))->isIdenticalTo($asserter)
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isZero()
+		;
+
+		$diff = new diffs\variable();
+
+		$diff->setReference(- PHP_INT_MAX)->setData($value);
+
+		$this->assert
+			->exception(function() use ($asserter, $value, & $line) {
+				$line = __LINE__; $asserter->isLessThanOrEqualTo(- PHP_INT_MAX);
+			})
+				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->hasMessage(sprintf($test->getLocale()->_('%s is not lower than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
+			->integer($score->getPassNumber())->isEqualTo(2)
+			->integer($score->getFailNumber())->isEqualTo(1)
+			->array($score->getFailAssertions())->isEqualTo(array(
+				array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => __CLASS__,
+					'method' => $test->getCurrentMethod(),
+					'file' => __FILE__,
+					'line' => $line,
+					'asserter' => get_class($asserter) . '::isLessThanOrEqualTo()',
+					'fail' => sprintf($test->getLocale()->_('%s is not lower than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX))
+				)
+			))
+		;
+	}	
 }
 
 ?>
