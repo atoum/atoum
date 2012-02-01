@@ -230,12 +230,11 @@ class generator implements atoum\adapter\aggregator
 
 							foreach ($method->getParameters() as $parameter)
 							{
-								$parameters[] = '$' . $parameter->getName();
+								$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
 							}
 						}
 
-						$parameters = join(', ', $parameters);
-						$mockControllerParameters = ($parameters == '' ? 'func_get_args()' : 'array(' . $parameters . ')');
+						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
 
 						if ($isConstructor === true)
 						{
@@ -255,32 +254,23 @@ class generator implements atoum\adapter\aggregator
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 							$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
-							$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', ' . $mockControllerParameters . ');' . PHP_EOL;
+							$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 						}
 						else
 						{
 							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
-							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', ' . $mockControllerParameters . ');' . PHP_EOL;
+							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 
 							if ($isConstructor === false)
 							{
-								$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', ' . $mockControllerParameters . ');' . PHP_EOL;
+								$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							}
 
-							if ($parameters == '')
-							{
-								$parentMethodCall = 'call_user_func_array(\'parent::' . $methodName . '\', func_get_args())';
-							}
-							else
-							{
-								$parentMethodCall = 'parent::' . $methodName . '(' . $parameters . ')';
-							}
-
-							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . $parentMethodCall . ';' . PHP_EOL;
+							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
 
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 						}
