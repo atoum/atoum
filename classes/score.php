@@ -173,9 +173,6 @@ class score
 		if ($output != '')
 		{
 			$this->outputs[] = array(
-				'case' => $this->case,
-				'dataSetKey' => $this->dataSetKey,
-				'dataSetProvider' => $this->dataSetProvider,
 				'class' => $class,
 				'method' => $method,
 				'value' => $output

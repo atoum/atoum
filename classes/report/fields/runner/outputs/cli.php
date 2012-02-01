@@ -128,16 +128,7 @@ class cli extends outputs
 
 				foreach ($outputs as $output)
 				{
-					if ($output['case'] === null)
-					{
-						$method = sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']);
-					}
-					else
-					{
-						$method = sprintf($this->locale->_('In %s::%s() in case \'%s\''), $output['class'], $output['method'], $output['case']);
-					}
-
-					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize($method)) .  PHP_EOL;
+					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize(sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']))) .  PHP_EOL;
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{

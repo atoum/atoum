@@ -86,7 +86,7 @@ class integer extends asserters\variable
 		return $this;
 	}
 
-	public function isLowerThan($value, $failMessage = null)
+	public function isLessThan($value, $failMessage = null)
 	{
 		self::check($value, __METHOD__);
 
@@ -100,6 +100,14 @@ class integer extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	/**
+	 * @obsolete use isLessThan instead
+	 */
+	public function isLowerThan($value, $failMessage = null)
+	{
+		return $this->isLessThan($value, $failMessage);
 	}
 
 	public function isGreaterThanOrEqualTo($value, $failMessage = null)
@@ -118,7 +126,15 @@ class integer extends asserters\variable
 		return $this;
 	}
 
+	/**
+	 * @obsolete use isLessThanOrEqualTo instead
+	 */
 	public function isLowerThanOrEqualTo($value, $failMessage = null)
+	{
+		return $this->isLessThanOrEqualTo($value, $failMessage);
+	}
+
+	public function isLessThanOrEqualTo($value, $failMessage = null)
 	{
 		self::check($value, __METHOD__);
 
