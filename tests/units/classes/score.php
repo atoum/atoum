@@ -359,9 +359,6 @@ class score extends atoum\test
 			->object($score->addOutput($class, $method, $output))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
@@ -379,17 +376,11 @@ class score extends atoum\test
 			->object($score->addOutput($otherClass, $otherMethod, $otherOutput))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
@@ -405,25 +396,16 @@ class score extends atoum\test
 			->object($score->addOutput($class, $method, $moreOutput))->isIdenticalTo($score)
 			->array($score->getOutputs())->isEqualTo(array(
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $output
 					),
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $otherClass,
 						'method' => $otherMethod,
 						'value' => $otherOutput
 					),
 					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
 						'class' => $class,
 						'method' => $method,
 						'value' => $moreOutput

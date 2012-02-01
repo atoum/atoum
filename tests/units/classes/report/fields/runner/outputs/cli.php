@@ -181,13 +181,11 @@ class cli extends atoum\test
 					->castToString($customField)->isEmpty()
 				->if($score->getMockController()->getOutputs = $fields = array(
 							array(
-								'case' => null,
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
 								'value' => $value = uniqid()
 							),
 							array(
-								'case' => null,
 								'class' => $otherClass = uniqid(),
 								'method' => $otherMethod = uniqid(),
 								'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
@@ -240,13 +238,11 @@ class cli extends atoum\test
 						)
 				->if($score->getMockController()->getOutputs = $fields = array(
 							array(
-								'case' => $case = uniqid(),
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
 								'value' => $value = uniqid()
 							),
 							array(
-								'case' => $otherCase = uniqid(),
 								'class' => $otherClass = uniqid(),
 								'method' => $otherMethod = uniqid(),
 								'value' => ($firstOtherValue = uniqid()) . PHP_EOL . ($secondOtherValue = uniqid())
@@ -266,9 +262,9 @@ class cli extends atoum\test
 				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
 				->and($customField->handleEvent(atoum\runner::runStop, $runner))
 					->castToString($defaultField)->isEqualTo(sprintf('There are %d outputs:', sizeof($fields)) . PHP_EOL .
-							'In ' . $class . '::' . $method . '() in case \'' . $case . '\':' . PHP_EOL .
+							'In ' . $class . '::' . $method . '():' . PHP_EOL .
 							$value . PHP_EOL .
-							'In ' . $otherClass . '::' . $otherMethod . '() in case \'' . $otherCase . '\':' . PHP_EOL .
+							'In ' . $otherClass . '::' . $otherMethod . '():' . PHP_EOL .
 							$firstOtherValue . PHP_EOL .
 							$secondOtherValue . PHP_EOL
 						)
@@ -283,7 +279,7 @@ class cli extends atoum\test
 							$methodPrompt .
 							sprintf(
 								$locale->_('%s:'),
-								$methodColorizer->colorize('In ' . $class . '::' . $method . '() in case \'' . $case . '\'')
+								$methodColorizer->colorize('In ' . $class . '::' . $method . '()')
 							) .
 							PHP_EOL .
 							$outputPrompt .
@@ -291,7 +287,7 @@ class cli extends atoum\test
 							$methodPrompt .
 							sprintf(
 								$locale->_('%s:'),
-								$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '() in case \'' . $otherCase . '\'')
+								$methodColorizer->colorize('In ' . $otherClass . '::' . $otherMethod . '()')
 							) .
 							PHP_EOL .
 							$outputPrompt . $outputColorizer->colorize($firstOtherValue) . PHP_EOL .
