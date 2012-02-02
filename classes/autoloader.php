@@ -17,7 +17,7 @@ class autoloader
 
 	public function register($prepend = false)
 	{
-		if (spl_autoload_register(array($this, 'getClass'), true, $prepend) === false)
+		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
 		{
 			throw new \runtimeException('Unable to register');
 		}
@@ -89,7 +89,7 @@ class autoloader
 		return static::$autoloader;
 	}
 
-	protected function getClass($class)
+	public function requireClass($class)
 	{
 		if (($path = $this->getPath($class)) !== null)
 		{
