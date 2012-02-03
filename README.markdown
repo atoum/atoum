@@ -230,6 +230,12 @@ To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest
 
 	# pecl update-channels
 	# pecl upgrade xdebug
- 
-To be sure that [XDebug](http://xdebug.org/) has been succefully updated, you can run `php -v` and check the new version number.
-When you are done updating [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that atoum is working.                        
+
+If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults :
+
+	# FILE=/etc/php5/cli/conf.d/xdebug.ini #Change this to the path of your configuration file
+	# cat $FILE | sed 's/^/; / w $FILE'
+
+To be sure that [XDebug](http://xdebug.org/) has been succefully updated, or disabled, you can run `php -v` and check the new version number.
+
+When you are done updating [XDebug](http://xdebug.org/) (or disabling it), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that atoum is working.                        
