@@ -34,7 +34,7 @@ On UNIX, in order to check whether you have this module or not, you just need to
 
 	# php -m | grep -i xml
 
-If `Xml` or equivalent gets displayed, then the module is properly installed.--
+If `Xml` or equivalent gets displayed, then the module is properly installed.  
 Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
