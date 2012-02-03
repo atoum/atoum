@@ -219,3 +219,23 @@ As all PHP extension, APC has some configuration options to enable it :
 * `apc.enable_cli`, whether to enable or disable APC for PHP CLI ;
 
 In order to use [APC](http://fr.php.net/manual/en/apc.configuration.php) with *atoum*, you have to set `apc.enabled` and `apc.enable_cli` to `1`, otherwise, it won't be enabled for the PHP CLI version, which is used by *atoum*.
+
+### Getting segfault when mocking objects
+When using *atoum* and mocking objects, you will sometime get segfaults coming from PHP.
+
+**This is not an atoum bug** : these segfaults are caused by [XDebug](http://xdebug.org/) (< 2.1.0) which has problem handling reflection in some cases.
+To check the current version of [XDebug](http://xdebug.org/), you can run `php -v`.
+
+To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest stable version (which is currently 2.1.3) :
+
+	# pecl update-channels
+	# pecl upgrade xdebug
+
+If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults :
+
+	# FILE=/etc/php5/cli/conf.d/xdebug.ini #Change this to the path of your configuration file
+	# cat $FILE | sed 's/^/; / w $FILE'
+
+To be sure that [XDebug](http://xdebug.org/) has been succefully updated, or disabled, you can run `php -v` and check the new version number.
+
+When you are done updating [XDebug](http://xdebug.org/) (or disabling it), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that atoum is working.                        
