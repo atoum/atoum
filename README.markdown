@@ -227,4 +227,4 @@ To check the current version of [XDebug](http://xdebug.org/), you can run `php -
 To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest [stable version](http://xdebug.org/download.php).  
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  
 To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.  
-When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that atoum is working.
+When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
