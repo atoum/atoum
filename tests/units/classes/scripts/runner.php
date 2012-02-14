@@ -293,7 +293,7 @@ class runner extends atoum\test
 
 		$this->assert
 			->object($runner->useDefaultConfigFile())->isIdenticalTo($runner)
-			->mock($runner)->call('useConfigFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
+			->mock($runner)->call('useConfigFile')->withAnyArguments()->exactly(substr_count(atoum\directory, '/') + 1)
 		;
 	}
 }
