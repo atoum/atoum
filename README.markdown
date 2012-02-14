@@ -34,8 +34,8 @@ On UNIX, in order to check whether you have this module or not, you just need to
 
 	# php -m | grep -i xml
 
-If `Xml` or equivalent gets displayed, then the module is properly installed.--
-Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.
+If `Xml` or equivalent gets displayed, then the module is properly installed.  
+Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
 	# php -m | grep -i xdebug
@@ -220,3 +220,12 @@ As all PHP extension, APC has some configuration options to enable it :
 * `apc.enable_cli`, whether to enable or disable APC for PHP CLI ;
 
 In order to use [APC](http://fr.php.net/manual/en/apc.configuration.php) with *atoum*, you have to set `apc.enabled` and `apc.enable_cli` to `1`, otherwise, it won't be enabled for the PHP CLI version, which is used by *atoum*.
+
+### Getting segfault when mocking objects
+When using *atoum* and mocking objects, you will sometime get segfaults coming from [PHP](http://www.php.net).  
+These segfaults are caused by [XDebug](http://xdebug.org/) in version less than 2.1.0 which has problem handling reflection in some cases.--
+To check the current version of [XDebug](http://xdebug.org/), you can run `php -v`.  
+To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest [stable version](http://xdebug.org/download.php).  
+If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  
+To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.  
+When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
