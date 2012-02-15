@@ -183,11 +183,22 @@ class runner extends atoum\script
 
 	public function useDefaultConfigFile()
 	{
-		try
+		$searchPath = realpath(atoum\directory);
+
+		do
 		{
-			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
+			try
+			{
+				$this->useConfigFile(realpath($searchPath . '/' . self::defaultConfigFile));
+			}
+			catch (atoum\includer\exception $exception) {};
+
+			if ($searchPath == '/')
+			{
+				break;
+			}
 		}
-		catch (atoum\includer\exception $exception) {};
+		while ($searchPath = dirname($searchPath));
 
 		return $this;
 	}
