@@ -183,11 +183,14 @@ class runner extends atoum\script
 
 	public function useDefaultConfigFile()
 	{
-		try
+		foreach (self::getSubDirectoryPath(atoum\directory) as $directory)
 		{
-			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
+			try
+			{
+				$this->useConfigFile($directory . self::defaultConfigFile);
+			}
+			catch (atoum\includer\exception $exception) {};
 		}
-		catch (atoum\includer\exception $exception) {};
 
 		return $this;
 	}
@@ -249,6 +252,36 @@ class runner extends atoum\script
 		);
 
 		return $autorunner;
+	}
+
+	public static function getSubDirectoryPath($directory, $directorySeparator = null)
+	{
+		$directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
+
+		$paths = array();
+
+		if ($directory != '')
+		{
+			if ($directory == $directorySeparator)
+			{
+				$paths[] = $directory;
+			}
+			else
+			{
+				$directory = rtrim($directory, $directorySeparator);
+
+				$path = '';
+
+				foreach (explode($directorySeparator, $directory) as $subDirectory)
+				{
+					$path .= $subDirectory . $directorySeparator;
+
+					$paths[] = $path;
+				}
+			}
+		}
+
+		return $paths;
 	}
 
 	protected function setArgumentHandlers()

@@ -24,7 +24,28 @@ abstract class asserter
 
 	public function __call($method, $arguments)
 	{
-		return call_user_func_array(array($this->generator, $method), $arguments);
+		switch ($method)
+		{
+			case 'foreach':
+				if (isset($arguments[0]) === false || (is_array($arguments[0]) === false && $arguments[0] instanceof \traversable === false))
+				{
+					throw new exceptions\logic\invalidArgument('First argument of ' . get_class($this) . '::' . $method . '() must be an array or a \traversable instance');
+				}
+				else if (isset($arguments[1]) === false || $arguments[1] instanceof \closure === false)
+				{
+					throw new exceptions\logic\invalidArgument('Second argument of ' . get_class($this) . '::' . $method . '() must be a closure');
+				}
+
+				foreach ($arguments[0] as $key => $value)
+				{
+					call_user_func_array($arguments[1], array($this, $value, $key));
+				}
+
+				return $this;
+
+			default:
+				return call_user_func_array(array($this->generator, $method), $arguments);
+		}
 	}
 
 	public function reset()
