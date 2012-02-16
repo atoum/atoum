@@ -88,10 +88,10 @@ class runner extends atoum\script
 	{
 		try
 		{
+			$this->useDefaultConfigFile();
+
 			if (parent::run($arguments ?: $this->arguments)->runTests === true)
 			{
-				$this->useDefaultConfigFile();
-
 				if ($this->loop === true)
 				{
 					$this->loop();
