@@ -284,7 +284,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testUseDefaultConfigFile()
+	public function testUseDefaultConfigFiles()
 	{
 		$this
 			->mock('mageekguy\atoum\scripts\runner')
@@ -292,7 +292,7 @@ class runner extends atoum\test
 				->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
 				->and($runner->getMockController()->useConfigFile = function() {})
 				->then
-					->object($runner->useDefaultConfigFile())->isIdenticalTo($runner)
+					->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
 					->mock($runner)
 						->foreach(scripts\runner::getSubDirectoryPath(atoum\directory), function($mock, $path) {
 								$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
