@@ -88,7 +88,7 @@ class runner extends atoum\script
 	{
 		try
 		{
-			$this->useDefaultConfigFile();
+			$this->useDefaultConfigFiles();
 
 			if (parent::run($arguments ?: $this->arguments)->runTests === true)
 			{
@@ -181,7 +181,7 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function useDefaultConfigFile()
+	public function useDefaultConfigFiles()
 	{
 		foreach (self::getSubDirectoryPath(atoum\directory) as $directory)
 		{
