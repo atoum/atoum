@@ -119,6 +119,15 @@ class runner implements observable, adapter\aggregator
 
 	public function setBootstrapFile($path)
 	{
+		try
+		{
+			$this->includer->includePath($path, function($path) { include_once($path); });
+		}
+		catch (atoum\includer\exception $exception)
+		{
+			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to use bootstrap file \'%s\''), $path));
+		}
+
 		$this->bootstrapFile = $path;
 
 		return $this;

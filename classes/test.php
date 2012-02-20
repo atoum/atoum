@@ -527,11 +527,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					ob_start();
 
-					if ($this->bootstrapFile != null)
-					{
-						$this->includer->includePath($this->bootstrapFile);
-					}
-
 					if ($this->adapter->class_exists($testedClassName = $this->getTestedClassName()) === false)
 					{
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
@@ -651,23 +646,35 @@ abstract class test implements observable, adapter\aggregator, \countable
 				$this->phpCode =
 					'<?php ' .
 					'define(\'mageekguy\atoum\autorun\', false);' .
-					'require_once \'' . directory . '/scripts/runner.php\';' .
+					'require \'' . directory . '/scripts/runner.php\';'
+				;
+
+				if ($this->bootstrapFile !== null)
+				{
+					$this->phpCode .=
+						'require \'' . directory . '/classes/includer.php\';' .
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $this->getBootstrapFile() . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include bootstrap file \\\'' . $this->bootstrapFile . '\\\'\'); }'
+					;
+				}
+
+				$this->phpCode .=
 					'require \'' . $this->path . '\';' .
 					'$test = new ' . $this->class . '();' .
 					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
 					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');'
 				;
 
-				if ($this->bootstrapFile !== null)
+				if ($this->codeCoverageIsEnabled() === false)
 				{
-					$this->phpCode .= '$test->setBootstrapFile(\'' . $this->getBootstrapFile() . '\');';
+					$this->phpCode .= '$test->disableCodeCoverage();';
 				}
 
 				$this->phpCode .=
-					($this->codeCoverageIsEnabled() === true ? '' : '$test->disableCodeCoverage();') .
 					'$test->runTestMethod(\'%s\');' .
-					'echo serialize($test->getScore());' .
-					'?>'
+					'echo serialize($test->getScore());'
 				;
 
 				$null = null;

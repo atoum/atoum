@@ -24,12 +24,14 @@ class parser extends atoum\test
 				->object($parser->getSuperGlobals())->isEqualTo(new atoum\superglobals())
 				->array($parser->getValues())->isEmpty()
 				->array($parser->getHandlers())->isEmpty()
+				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
 			->if($parser = new script\arguments\parser($superglobals = new atoum\superglobals()))
 			->then
 				->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
 				->array($parser->getValues())->isEmpty()
 				->array($parser->getHandlers())->isEmpty()
+				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
 		;
 	}
@@ -207,6 +209,15 @@ class parser extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 						->hasMessage('First argument \'b\' is invalid')
+				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'))
+				->and($parser->addHandler(function($script, $argument, $value) {}, array('-d'), PHP_INT_MAX))
+				->then
+					->object($parser->parse($script))->isIdenticalTo($parser)
+					->array($parser->getValues())->isEqualTo(array('-d' => array('d1', 'd2'), '-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+				->if($superglobals->_SERVER['argv'] = array('scriptName', '-d', 'd1', 'd2', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c'))
+				->then
+					->object($parser->parse($script))->isIdenticalTo($parser)
+					->array($parser->getValues())->isEqualTo(array('-d' => array('d1', 'd2'), '-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
 		;
 	}
 
@@ -241,32 +252,37 @@ class parser extends atoum\test
 			->then
 				->object($parser->addHandler($handler = function($script, $argument, $values) {}, $arguments = array($argument = '-a')))->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEqualTo(array($argument => array($handler)))
+				->array($parser->getPriorities())->isEqualTo(array($argument => 0))
 				->object($parser->addHandler($handler, $arguments))->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler)))
-				->exception(function() use ($parser, & $argument) {
+				->array($parser->getPriorities())->isEqualTo(array($argument => 0))
+				->exception(function() use ($parser) {
 							$parser->addHandler(function() {}, $argument = array('-b'));
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
-				->exception(function() use ($parser, & $argument) {
+				->exception(function() use ($parser) {
 							$parser->addHandler(function($script) {}, array('-b'));
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
-				->exception(function() use ($parser, & $argument) {
+				->exception(function() use ($parser) {
 							$parser->addHandler(function($script, $argument) {}, array('-b'));
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
-				->exception(function() use ($parser, & $argument) {
-							$parser->addHandler(function($script, $argument, $values) {}, array($argument = 'b'));
+				->exception(function() use ($parser, & $badArgument) {
+							$parser->addHandler(function($script, $argument, $values) {}, array($badArgument = 'b'));
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Argument \'' . $argument . '\' is invalid')
+						->hasMessage('Argument \'' . $badArgument . '\' is invalid')
+				->object($parser->addHandler($otherHandler = function($script, $argument, $values) {}, array($otherArgument = '-b'), $priority = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($parser)
+				->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler), $otherArgument => array($otherHandler)))
+				->array($parser->getPriorities())->isEqualTo(array($argument => 0, $otherArgument => $priority))
 		;
 	}
 
@@ -277,10 +293,12 @@ class parser extends atoum\test
 			->then
 				->object($parser->resetHandlers())->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEmpty()
+				->array($parser->getPriorities())->isEmpty()
 			->if($parser->addHandler(function($script, $argument, $values) {}, array('-a')))
 			->then
 				->object($parser->resetHandlers())->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEmpty()
+				->array($parser->getPriorities())->isEmpty()
 		;
 	}
 }

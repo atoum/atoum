@@ -534,18 +534,12 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$bootstrapFile = realpath($values[0]);
-
-							if ($bootstrapFile === false || is_file($bootstrapFile) === false || is_readable($bootstrapFile) === false)
-							{
-								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bootstrap file \'%s\' does not exist'), $values[0]));
-							}
-
-							$runner->setBootstrapFile($bootstrapFile);
+							$runner->setBootstrapFile($values[0]);
 						},
 						array('-bf', '--bootstrap-file'),
 						'<file>',
-						$this->locale->_('Include <file> before executing each test method')
+						$this->locale->_('Include <file> before executing each test method'),
+						PHP_INT_MAX
 					)
 				->addArgumentHandler(
 						function($script, $argument, $values) use ($runner) {
