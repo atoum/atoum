@@ -577,14 +577,36 @@ class runner extends atoum\script
 
 		while ($this->runTests === true)
 		{
-			$command = $this->runner->getPhpPath() . ' ' . join(' ', array_filter($_SERVER['argv'], function($value) { return ($value != '-l' && $value != '--loop'); })) . ' --score-file ' . $this->scoreFile;
+			$arguments = '';
+
+			foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
+			{
+				switch ($argument)
+				{
+					case '-l':
+					case '--loop':
+					case '-sf':
+					case '--score-file':
+						break;
+
+					default:
+						$arguments .= ' ' . $argument;
+
+						if (sizeof($values) > 0)
+						{
+							$arguments .= ' ' . join(' ', $values);
+						}
+				}
+			}
 
 			$cli = new atoum\cli();
 
 			if ($cli->isTerminal() === true)
 			{
-				$command .= ' --force-terminal';
+				$arguments .= ' --force-terminal';
 			}
+
+			$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments . ' --score-file ' . $this->scoreFile;
 
 			$php = proc_open(
 				escapeshellcmd($command),
