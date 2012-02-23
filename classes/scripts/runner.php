@@ -167,7 +167,7 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$runner = $this->runner;
+		$runner = new atoum\configurator($this);
 
 		try
 		{
@@ -290,8 +290,6 @@ class runner extends atoum\script
 		{
 			$this->getArgumentsParser()->resetHandlers();
 
-			$runner = $this->runner;
-
 			$this
 				->addArgumentHandler(
 						function($script, $argument, $values) {
@@ -320,33 +318,33 @@ class runner extends atoum\script
 						$this->locale->_('Display version')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $path) use ($runner) {
+						function($script, $argument, $path) {
 							if (sizeof($path) != 1)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$runner->setPhpPath(current($path));
+							$script->getRunner()->setPhpPath(current($path));
 						},
 						array('-p', '--php'),
 						'<path/to/php/binary>',
 						$this->locale->_('Path to PHP binary which must be used to run tests')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $defaultReportTitle) use ($runner) {
+						function($script, $argument, $defaultReportTitle) {
 							if (sizeof($defaultReportTitle) != 1)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$runner->setDefaultReportTitle(current($defaultReportTitle));
+							$script->getRunner()->setDefaultReportTitle(current($defaultReportTitle));
 						},
 						array('-drt', '--default-report-title'),
 						'<string>',
 						$this->locale->_('Define default report title with <string>')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $files) use ($runner) {
+						function($script, $argument, $files) {
 							if (sizeof($files) <= 0)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -366,7 +364,8 @@ class runner extends atoum\script
 						},
 						array('-c', '--configuration-files'),
 						'<file>...',
-						$this->locale->_('Use all configuration files <file>')
+						$this->locale->_('Use all configuration files <file>'),
+						PHP_INT_MAX - 1
 					)
 				->addArgumentHandler(
 						function($script, $argument, $file) {
@@ -382,37 +381,39 @@ class runner extends atoum\script
 						$this->locale->_('Save score in file <file>')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $maxChildrenNumber) use ($runner) {
+						function($script, $argument, $maxChildrenNumber) {
 							if (sizeof($maxChildrenNumber) != 1)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$runner->setMaxChildrenNumber(current($maxChildrenNumber));
+							$script->getRunner()->setMaxChildrenNumber(current($maxChildrenNumber));
 						},
 						array('-mcn', '--max-children-number'),
 						'<integer>',
 						$this->locale->_('Maximum number of sub-processus which will be run simultaneously')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $empty) use ($runner) {
+						function($script, $argument, $empty) {
 							if ($empty)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$runner->disableCodeCoverage();
+							$script->getRunner()->disableCodeCoverage();
 						},
 						array('-ncc', '--no-code-coverage'),
 						null,
 						$this->locale->_('Disable code coverage')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $files) use ($runner) {
+						function($script, $argument, $files) {
 							if (sizeof($files) <= 0)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
+
+							$runner = $script->getRunner();
 
 							foreach ($files as $path)
 							{
@@ -424,11 +425,13 @@ class runner extends atoum\script
 						$this->locale->_('Execute all unit test files <file>')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $directories) use ($runner) {
+						function($script, $argument, $directories) {
 							if (sizeof($directories) <= 0)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
+
+							$runner = $script->getRunner();
 
 							foreach ($directories as $directory)
 							{
@@ -440,7 +443,7 @@ class runner extends atoum\script
 						$this->locale->_('Execute unit test files in all <directory>')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $tags) use ($runner) {
+						function($script, $argument, $tags) {
 							if (sizeof($tags) <= 0)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -528,13 +531,13 @@ class runner extends atoum\script
 						$this->locale->_('Force output as in terminal')
 					)
 				->addArgumentHandler(
-						function($script, $argument, $values) use ($runner) {
+						function($script, $argument, $values) {
 							if (sizeof($values) != 1)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$runner->setBootstrapFile($values[0]);
+							$script->getRunner()->setBootstrapFile($values[0]);
 						},
 						array('-bf', '--bootstrap-file'),
 						'<file>',
@@ -542,7 +545,7 @@ class runner extends atoum\script
 						PHP_INT_MAX
 					)
 				->addArgumentHandler(
-						function($script, $argument, $values) use ($runner) {
+						function($script, $argument, $values) {
 							if (sizeof($values) != 0)
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -550,7 +553,8 @@ class runner extends atoum\script
 
 							$report = new atoum\reports\realtime\cli\light();
 							$report->addWriter(new atoum\writers\std\out());
-							$runner->addReport($report);
+
+							$script->getRunner()->addReport($report);
 						},
 						array('-ulr', '--use-light-report'),
 						null,
@@ -668,11 +672,6 @@ class runner extends atoum\script
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
-	}
-
-	protected static function includeForRunner(atoum\runner $runner, $path)
-	{
-		include_once $path;
 	}
 
 	private static function getFailMethods(atoum\score $score)
