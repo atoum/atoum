@@ -366,7 +366,8 @@ class runner extends atoum\script
 						},
 						array('-c', '--configuration-files'),
 						'<file>...',
-						$this->locale->_('Use all configuration files <file>')
+						$this->locale->_('Use all configuration files <file>'),
+						PHP_INT_MAX - 1
 					)
 				->addArgumentHandler(
 						function($script, $argument, $file) {
