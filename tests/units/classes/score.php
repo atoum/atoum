@@ -421,17 +421,19 @@ class score extends atoum\test
 		$score = new atoum\score();
 
 		$class = uniqid();
+		$path = uniqid();
 		$method = uniqid();
 		$duration = rand(1, PHP_INT_MAX);
 
 		$this->assert
 			->array($score->getDurations())->isEmpty()
 			->integer($score->getDurationNumber())->isZero()
-			->object($score->addDuration($class, $method, $duration))->isIdenticalTo($score)
+			->object($score->addDuration($class, $path, $method, $duration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $duration
 					)
@@ -441,21 +443,24 @@ class score extends atoum\test
 		;
 
 		$otherClass = uniqid();
+		$otherPath = uniqid();
 		$otherMethod = uniqid();
 		$otherDuration = rand(1, PHP_INT_MAX);
 
 		$this->assert
-			->object($score->addDuration($otherClass, $otherMethod, $otherDuration))->isIdenticalTo($score)
+			->object($score->addDuration($otherClass, $otherPath, $otherMethod, $otherDuration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
 						'case' => null,
 						'class' => $otherClass,
+						'path' => $otherPath,
 						'method' => $otherMethod,
 						'value' => $otherDuration
 					)
@@ -465,17 +470,19 @@ class score extends atoum\test
 		;
 
 		$this->assert
-			->object($score->addDuration(uniqid(), uniqid(), 0))->isIdenticalTo($score)
+			->object($score->addDuration(uniqid(), uniqid(), uniqid(), 0))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
 						'case' => null,
 						'class' => $otherClass,
+						'path' => $otherPath,
 						'method' => $otherMethod,
 						'value' => $otherDuration
 					)
@@ -485,17 +492,19 @@ class score extends atoum\test
 		;
 
 		$this->assert
-			->object($score->addDuration(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+			->object($score->addDuration(uniqid(), uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
 						'case' => null,
 						'class' => $otherClass,
+						'path' => $otherPath,
 						'method' => $otherMethod,
 						'value' => $otherDuration
 					)
@@ -507,23 +516,26 @@ class score extends atoum\test
 		$moreDuration = rand(1, PHP_INT_MAX);
 
 		$this->assert
-			->object($score->addDuration($class, $method, $moreDuration))->isIdenticalTo($score)
+			->object($score->addDuration($class, $path, $method, $moreDuration))->isIdenticalTo($score)
 			->array($score->getDurations())->isEqualTo(array(
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $duration
 					),
 					array(
 						'case' => null,
 						'class' => $otherClass,
+						'path' => $otherPath,
 						'method' => $otherMethod,
 						'value' => $otherDuration
 					),
 					array(
 						'case' => null,
 						'class' => $class,
+						'path' => $path,
 						'method' => $method,
 						'value' => $moreDuration
 					)
@@ -811,7 +823,7 @@ class score extends atoum\test
 			->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception())
 			->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX))
 			->addOutput(uniqid(), uniqid(), uniqid())
-			->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX))
+			->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX))
 			->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX))
 		;
 
@@ -873,7 +885,7 @@ class score extends atoum\test
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addOutput(uniqid(), uniqid(), uniqid());
-		$score->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+		$score->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addUncompletedTest(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid());
 
@@ -901,7 +913,7 @@ class score extends atoum\test
 		$otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addOutput(uniqid(), uniqid(), uniqid());
-		$otherScore->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
+		$otherScore->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addUncompletedTest(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid());
 

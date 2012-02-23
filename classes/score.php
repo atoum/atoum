@@ -182,13 +182,14 @@ class score
 		return $this;
 	}
 
-	public function addDuration($class, $method, $duration)
+	public function addDuration($class, $path, $method, $duration)
 	{
 		if ($duration > 0)
 		{
 			$this->durations[] = array(
 				'case' => $this->case,
 				'class' => $class,
+				'path' => $path,
 				'method' => $method,
 				'value' => $duration
 			);
