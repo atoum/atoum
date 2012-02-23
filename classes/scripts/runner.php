@@ -670,11 +670,6 @@ class runner extends atoum\script
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
 	}
 
-	protected static function includeForRunner(atoum\runner $runner, $path)
-	{
-		include_once $path;
-	}
-
 	private static function getFailMethods(atoum\score $score)
 	{
 		return self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException());
