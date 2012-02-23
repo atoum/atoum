@@ -587,8 +587,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
-					$this->afterTestMethod($this->currentMethod);
-
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
 						->addDuration($this->class, $this->currentMethod, $duration)
@@ -617,6 +615,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->addExceptionToScore($exception);
 			}
+
+			$this->afterTestMethod($this->currentMethod);
 
 			$this->currentMethod = null;
 
@@ -1013,6 +1013,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			stream_set_blocking($pipes[2], 0);
 
 			$currentMethod = array_shift($this->runTestMethods);
+
+			$this->callObservers(self::beforeTestMethod);
 
 			fwrite($pipes[0], sprintf($this->phpCode, $currentMethod));
 			fclose($pipes[0]);
