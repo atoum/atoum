@@ -284,16 +284,39 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testUseDefaultConfigFile()
+	public function testUseDefaultConfigFiles()
 	{
-		$this->mock('mageekguy\atoum\scripts\runner');
+		$this
+			->mock('mageekguy\atoum\scripts\runner')
+			->assert
+				->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
+				->and($runner->getMockController()->useConfigFile = function() {})
+				->then
+					->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
+					->mock($runner)
+						->foreach(scripts\runner::getSubDirectoryPath(atoum\directory), function($mock, $path) {
+								$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
+							}
+						)
+		;
+	}
 
-		$runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid());
-		$runner->getMockController()->useConfigFile = function() {};
-
+	public function testGetSubDirectoryPath()
+	{
 		$this->assert
-			->object($runner->useDefaultConfigFile())->isIdenticalTo($runner)
-			->mock($runner)->call('useConfigFile')->withArguments(atoum\directory . '/' . scripts\runner::defaultConfigFile)->once()
+			->array(scripts\runner::getSubDirectoryPath(''))->isEmpty()
+			->array(scripts\runner::getSubDirectoryPath('', '/'))->isEmpty()
+			->array(scripts\runner::getSubDirectoryPath('', '\\'))->isEmpty()
+			->array(scripts\runner::getSubDirectoryPath('/', '/'))->isEqualTo(array('/'))
+			->array(scripts\runner::getSubDirectoryPath('/toto', '/'))->isEqualTo(array('/', '/toto/'))
+			->array(scripts\runner::getSubDirectoryPath('/toto/', '/'))->isEqualTo(array('/', '/toto/'))
+			->array(scripts\runner::getSubDirectoryPath('/toto/tutu', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
+			->array(scripts\runner::getSubDirectoryPath('/toto/tutu/', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
+			->array(scripts\runner::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(array('c:\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\toto', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\toto\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
 		;
 	}
 }

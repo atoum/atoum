@@ -161,14 +161,14 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null)
+	public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null, $priority = 0)
 	{
 		if ($help !== null)
 		{
 			$this->help[] = array($arguments, $values, $help);
 		}
 
-		$this->argumentsParser->addHandler($handler, $arguments);
+		$this->argumentsParser->addHandler($handler, $arguments, $priority);
 
 		return $this;
 	}

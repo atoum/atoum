@@ -88,10 +88,10 @@ class runner extends atoum\script
 	{
 		try
 		{
+			$this->useDefaultConfigFiles();
+
 			if (parent::run($arguments ?: $this->arguments)->runTests === true)
 			{
-				$this->useDefaultConfigFile();
-
 				if ($this->loop === true)
 				{
 					$this->loop();
@@ -181,13 +181,16 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function useDefaultConfigFile()
+	public function useDefaultConfigFiles()
 	{
-		try
+		foreach (self::getSubDirectoryPath(atoum\directory) as $directory)
 		{
-			$this->useConfigFile(atoum\directory . '/' . self::defaultConfigFile);
+			try
+			{
+				$this->useConfigFile($directory . self::defaultConfigFile);
+			}
+			catch (atoum\includer\exception $exception) {};
 		}
-		catch (atoum\includer\exception $exception) {};
 
 		return $this;
 	}
@@ -249,6 +252,36 @@ class runner extends atoum\script
 		);
 
 		return $autorunner;
+	}
+
+	public static function getSubDirectoryPath($directory, $directorySeparator = null)
+	{
+		$directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
+
+		$paths = array();
+
+		if ($directory != '')
+		{
+			if ($directory == $directorySeparator)
+			{
+				$paths[] = $directory;
+			}
+			else
+			{
+				$directory = rtrim($directory, $directorySeparator);
+
+				$path = '';
+
+				foreach (explode($directorySeparator, $directory) as $subDirectory)
+				{
+					$path .= $subDirectory . $directorySeparator;
+
+					$paths[] = $path;
+				}
+			}
+		}
+
+		return $paths;
 	}
 
 	protected function setArgumentHandlers()
@@ -501,18 +534,12 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$bootstrapFile = realpath($values[0]);
-
-							if ($bootstrapFile === false || is_file($bootstrapFile) === false || is_readable($bootstrapFile) === false)
-							{
-								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bootstrap file \'%s\' does not exist'), $values[0]));
-							}
-
-							$runner->setBootstrapFile($bootstrapFile);
+							$runner->setBootstrapFile($values[0]);
 						},
 						array('-bf', '--bootstrap-file'),
 						'<file>',
-						$this->locale->_('Include <file> before executing each test method')
+						$this->locale->_('Include <file> before executing each test method'),
+						PHP_INT_MAX
 					)
 				->addArgumentHandler(
 						function($script, $argument, $values) use ($runner) {
@@ -550,14 +577,36 @@ class runner extends atoum\script
 
 		while ($this->runTests === true)
 		{
-			$command = $this->runner->getPhpPath() . ' ' . join(' ', array_filter($_SERVER['argv'], function($value) { return ($value != '-l' && $value != '--loop'); })) . ' --score-file ' . $this->scoreFile;
+			$arguments = '';
+
+			foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
+			{
+				switch ($argument)
+				{
+					case '-l':
+					case '--loop':
+					case '-sf':
+					case '--score-file':
+						break;
+
+					default:
+						$arguments .= ' ' . $argument;
+
+						if (sizeof($values) > 0)
+						{
+							$arguments .= ' ' . join(' ', $values);
+						}
+				}
+			}
 
 			$cli = new atoum\cli();
 
 			if ($cli->isTerminal() === true)
 			{
-				$command .= ' --force-terminal';
+				$arguments .= ' --force-terminal';
 			}
+
+			$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments . ' --score-file ' . $this->scoreFile;
 
 			$php = proc_open(
 				escapeshellcmd($command),

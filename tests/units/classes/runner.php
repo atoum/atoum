@@ -276,11 +276,17 @@ class runner extends atoum\test
 
 	public function testGetBootstrapFile()
 	{
-		$this->assert
-			->if($runner = new atoum\runner())
-			->then
-				->object($runner->setBootstrapFile($path = uniqid()))->isIdenticalTo($runner)
-				->string($runner->getBootstrapFile())->isEqualTo($path)
+		$this
+			->mock('mageekguy\atoum\includer')
+			->assert
+				->if($runner = new atoum\runner())
+				->and($includer = new \mock\mageekguy\atoum\includer())
+				->and($includer->getMockController()->includePath = function() {})
+				->and($runner->setIncluder($includer))
+				->then
+					->object($runner->setBootstrapFile($path = uniqid()))->isIdenticalTo($runner)
+					->string($runner->getBootstrapFile())->isEqualTo($path)
+					->mock($includer)->call('includePath')->withArguments($path)->once()
 		;
 	}
 

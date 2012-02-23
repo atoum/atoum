@@ -11,6 +11,7 @@ class parser implements \iteratorAggregate
 {
 	protected $values = array();
 	protected $handlers = array();
+	protected $priorities = array();
 
 	public function __construct(atoum\superglobals $superglobals = null)
 	{
@@ -41,12 +42,90 @@ class parser implements \iteratorAggregate
 		return $this->handlers;
 	}
 
+	public function getPriorities()
+	{
+		return $this->priorities;
+	}
+
 	public function getIterator()
 	{
 		return new \arrayIterator($this->getValues());
 	}
 
 	public function parse(atoum\script $script, array $array = array())
+	{
+		$this->init($array);
+
+		$priorities = $this->priorities;
+
+		uksort($this->values, function($arg1, $arg2) use ($priorities) {
+				switch (true)
+				{
+					case isset($priorities[$arg1]) === false:
+					case isset($priorities[$arg2]) === false:
+						return - PHP_INT_MAX;
+
+					default:
+						return ($priorities[$arg1] > $priorities[$arg2] ? -1 : ($priorities[$arg1] == $priorities[$arg2] ? 0 : 1));
+				}
+			}
+		);
+
+		foreach ($this->values as $argument => $values)
+		{
+			$this->triggerHandlers($argument, $values, $script);
+		}
+
+		return $this;
+	}
+
+	public function getValues($argument = null)
+	{
+		return ($argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]));
+	}
+
+	public function addHandler(\closure $handler, array $arguments, $priority = 0)
+	{
+		$invoke = new \reflectionMethod($handler, '__invoke');
+
+		if ($invoke->getNumberOfParameters() < 3)
+		{
+			throw new exceptions\runtime('Handler must take three arguments');
+		}
+
+		foreach ($arguments as $argument)
+		{
+			if (self::isArgument($argument) === false)
+			{
+				throw new exceptions\runtime('Argument \'' . $argument . '\' is invalid');
+			}
+
+			$this->handlers[$argument][] = $handler;
+			$this->priorities[$argument] = (int) $priority;
+		}
+
+		return $this;
+	}
+
+	public function resetHandlers()
+	{
+		$this->handlers = array();
+		$this->priorities = array();
+
+		return $this;
+	}
+
+	public function argumentIsHandled($argument)
+	{
+		return (isset($this->values[$argument]) === true);
+	}
+
+	public function argumentsAreHandled(array $arguments)
+	{
+		return (sizeof(array_intersect(array_keys($this->values), $arguments)) > 0);
+	}
+
+	public function init(array $array = array())
 	{
 		if (sizeof($array) <= 0)
 		{
@@ -82,8 +161,6 @@ class parser implements \iteratorAggregate
 				}
 				else
 				{
-					$this->triggerHandlers($script);
-
 					$argument = $value;
 
 					$this->values[$argument] = array();
@@ -91,55 +168,9 @@ class parser implements \iteratorAggregate
 
 				$arguments->next();
 			}
-
-			$this->triggerHandlers($script);
 		}
 
 		return $this;
-	}
-
-	public function getValues($argument = null)
-	{
-		return ($argument === null ? $this->values : (isset($this->values[$argument]) === false ? null : $this->values[$argument]));
-	}
-
-	public function addHandler(\closure $handler, array $arguments)
-	{
-		$invoke = new \reflectionMethod($handler, '__invoke');
-
-		if ($invoke->getNumberOfParameters() < 3)
-		{
-			throw new exceptions\runtime('Handler must take three arguments');
-		}
-
-		foreach ($arguments as $argument)
-		{
-			if (self::isArgument($argument) === false)
-			{
-				throw new exceptions\runtime('Argument \'' . $argument . '\' is invalid');
-			}
-
-			$this->handlers[$argument][] = $handler;
-		}
-
-		return $this;
-	}
-
-	public function resetHandlers()
-	{
-		$this->handlers = array();
-
-		return $this;
-	}
-
-	public function argumentIsHandled($argument)
-	{
-		return (isset($this->values[$argument]) === true);
-	}
-
-	public function argumentsAreHandled(array $arguments)
-	{
-		return (sizeof(array_intersect(array_keys($this->values), $arguments)) > 0);
 	}
 
 	public static function isArgument($value)
@@ -147,12 +178,8 @@ class parser implements \iteratorAggregate
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 
-	protected function triggerHandlers(atoum\script $script)
+	protected function triggerHandlers($argument, array $values, atoum\script $script)
 	{
-		$lastArgument = array_slice($this->values, -1);
-
-		list($argument, $values) = each($lastArgument);
-
 		if (isset($this->handlers[$argument]) === true)
 		{
 			$this->invokeHandlers($script, $argument, $values);
