@@ -34,9 +34,9 @@ class configurator extends atoum\test
 				->and($script->setRunner($runner))
 				->and($configurator = new atoum\configurator($script))
 				->then
-					->object($configurator->setScoreFile($scoreFile = uniqid()))->isIdenticalTo($script)
+					->object($configurator->setScoreFile($scoreFile = uniqid()))->isIdenticalTo($configurator)
 					->mock($script)->call('setScoreFile')->withArguments($scoreFile)->once()
-					->object($configurator->setPhpPath($phpPath = uniqid()))->isIdenticalTo($runner)
+					->object($configurator->setPhpPath($phpPath = uniqid()))->isIdenticalTo($configurator)
 					->mock($runner)->call('setPhpPath')->withArguments($phpPath)->once()
 				->exception(function() use ($configurator, & $method) { $configurator->{$method = uniqid()}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')

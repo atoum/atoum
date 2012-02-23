@@ -14,10 +14,12 @@ class configurator
 		switch (true)
 		{
 			case method_exists($this->script->getRunner(), $method):
-				return call_user_func_array(array($this->script->getRunner(), $method), $arguments);
+				call_user_func_array(array($this->script->getRunner(), $method), $arguments);
+				return $this;
 
 			case method_exists($this->script, $method):
-				return call_user_func_array(array($this->script, $method), $arguments);
+				call_user_func_array(array($this->script, $method), $arguments);
+				return $this;
 
 			default:
 				throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
