@@ -93,22 +93,6 @@ class xunit extends atoum\reports\asynchronous
 					$testCase->setAttribute('time', $duration['value']);
 					$testCase->setAttribute('file', $duration['path']);
 					$testCase->setAttribute('classname', $name);
-
-					foreach (array_filter($class['fails'], $filterMethod) as $fail)
-					{
-						$testCase->appendChild($xFail = $document->createElement('failure', $fail['fail']));
-
-						$xFail->setAttribute('type','Assertion Fail');
-						$xFail->setAttribute('message', $fail['asserter']);
-					}
-
-					foreach (array_filter($class['excepts'], $filterMethod) as $except)
-					{
-						$testCase->appendChild($xError = $document->createElement('error'));
-
-						$xError->setAttribute('type','Exception');
-						$xError->appendChild($document->createCDATASection($except['value']));
-					}
 				}
 
 				$testSuite->setAttribute('time', $time);
@@ -117,7 +101,6 @@ class xunit extends atoum\reports\asynchronous
 				{
 					if( ($testCase = $document->getElementById($error['method'])) === null)
 					{
-						echo '1'.PHP_EOL;
 						$testSuite->appendChild($testCase = $document->createElement('testcase'));
 						$testCase->setAttribute('name', $error['method']);
 						$testCase->setIdAttribute('name', true);
@@ -132,11 +115,29 @@ class xunit extends atoum\reports\asynchronous
 					$xError->appendChild($document->createCDATASection($error['message']));
 				}
 				
+				foreach ($class['fails'] as $fail)
+				{
+					if( ($testCase = $document->getElementById($fail['method'])) === null)
+					{
+						$testSuite->appendChild($testCase = $document->createElement('testcase'));
+						$testCase->setAttribute('name', $fail['method']);
+						$testCase->setIdAttribute('name', true);
+						$testCase->setAttribute('time', '0');
+						$testCase->setAttribute('classname', $name);
+						$testCase->setAttribute('file', $fail['file']);
+					}
+					
+					$testCase->appendChild($xFail = $document->createElement('failure'));
+
+					$xFail->setAttribute('type', 'Failure');
+					$xFail->setAttribute('message', $fail['asserter']);
+					$xFail->appendChild($document->createCDATASection($fail['fail']));
+				}
+				
 				foreach ($class['excepts'] as $exc)
 				{
 					if( ($testCase = $document->getElementById($exc['method'])) === null)
 					{
-						
 						$testSuite->appendChild($testCase = $document->createElement('testcase'));
 						$testCase->setAttribute('name', $exc['method']);
 						$testCase->setIdAttribute('name', true);
