@@ -204,7 +204,17 @@ class runner extends atoum\script
 
 	public function enableLoop()
 	{
-		$this->loop = true;
+		if ($this->loop !== null)
+		{
+			$this->loop = true;
+		}
+
+		return $this;
+	}
+
+	public function disableLoopMode()
+	{
+		$this->loop = null;
 
 		return $this;
 	}
@@ -365,7 +375,7 @@ class runner extends atoum\script
 						array('-c', '--configuration-files'),
 						'<file>...',
 						$this->locale->_('Use all configuration files <file>'),
-						PHP_INT_MAX - 1
+						PHP_INT_MAX - 2
 					)
 				->addArgumentHandler(
 						function($script, $argument, $file) {
@@ -511,6 +521,20 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
+							$script->disableLoopMode();
+						},
+						array('--disable-loop-mode'),
+						null,
+						null,
+						PHP_INT_MAX
+					)
+				->addArgumentHandler(
+						function($script, $argument, $values) {
+							if (sizeof($values) !== 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
 							$script->testIt();
 						},
 						array('--test-it'),
@@ -542,7 +566,7 @@ class runner extends atoum\script
 						array('-bf', '--bootstrap-file'),
 						'<file>',
 						$this->locale->_('Include <file> before executing each test method'),
-						PHP_INT_MAX
+						PHP_INT_MAX - 1
 					)
 				->addArgumentHandler(
 						function($script, $argument, $values) {
@@ -573,45 +597,59 @@ class runner extends atoum\script
 
 	protected function loop()
 	{
+		$arguments = ' --disable-loop-mode';
+
+		$cli = new atoum\cli();
+
+		if ($cli->isTerminal() === true)
+		{
+			$arguments .= ' --force-terminal';
+		}
+
+		$addScoreFile = false;
+
+		foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
+		{
+			switch ($argument)
+			{
+				case '-l':
+				case '--loop':
+				case '--disable-loop-mode':
+					break;
+
+				case '-sf':
+				case '--score-file':
+					$addScoreFile = true;
+					break;
+
+				default:
+					$arguments .= ' ' . $argument;
+
+					if (sizeof($values) > 0)
+					{
+						$arguments .= ' ' . join(' ', $values);
+					}
+			}
+		}
+
 		if ($this->scoreFile === null)
 		{
 			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
+
 			@unlink($this->scoreFile);
+
+			$addScoreFile = true;
 		}
+
+		if ($addScoreFile === true)
+		{
+			$arguments .= ' --score-file ' . $this->scoreFile;
+		}
+
+		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
 
 		while ($this->runTests === true)
 		{
-			$arguments = '';
-
-			foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
-			{
-				switch ($argument)
-				{
-					case '-l':
-					case '--loop':
-					case '-sf':
-					case '--score-file':
-						break;
-
-					default:
-						$arguments .= ' ' . $argument;
-
-						if (sizeof($values) > 0)
-						{
-							$arguments .= ' ' . join(' ', $values);
-						}
-				}
-			}
-
-			$cli = new atoum\cli();
-
-			if ($cli->isTerminal() === true)
-			{
-				$arguments .= ' --force-terminal';
-			}
-
-			$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments . ' --score-file ' . $this->scoreFile;
-
 			$php = proc_open(
 				escapeshellcmd($command),
 				array(
