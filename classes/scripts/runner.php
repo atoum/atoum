@@ -597,13 +597,16 @@ class runner extends atoum\script
 
 	protected function loop()
 	{
-		if ($this->scoreFile === null)
+		$arguments = ' --disable-loop-mode';
+
+		$cli = new atoum\cli();
+
+		if ($cli->isTerminal() === true)
 		{
-			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
-			@unlink($this->scoreFile);
+			$arguments .= ' --force-terminal';
 		}
 
-		$arguments = ' --disable-loop-mode';
+		$addScoreFile = false;
 
 		foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
 		{
@@ -611,9 +614,12 @@ class runner extends atoum\script
 			{
 				case '-l':
 				case '--loop':
+				case '--disable-loop-mode':
+					break;
+
 				case '-sf':
 				case '--score-file':
-				case '--disable-loop-mode':
+					$addScoreFile = true;
 					break;
 
 				default:
@@ -626,14 +632,21 @@ class runner extends atoum\script
 			}
 		}
 
-		$cli = new atoum\cli();
-
-		if ($cli->isTerminal() === true)
+		if ($this->scoreFile === null)
 		{
-			$arguments .= ' --force-terminal';
+			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
+
+			@unlink($this->scoreFile);
+
+			$addScoreFile = true;
 		}
 
-		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments . ' --score-file ' . $this->scoreFile;
+		if ($addScoreFile === true)
+		{
+			$arguments .= ' --score-file ' . $this->scoreFile;
+		}
+
+		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
 
 		while ($this->runTests === true)
 		{
