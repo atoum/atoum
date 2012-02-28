@@ -30,6 +30,7 @@ class configurator extends atoum\test
 			->mock('mageekguy\atoum\scripts\runner')
 			->assert
 				->if($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->getMockController()->setBootstrapFile = function() {})
 				->and($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 				->and($script->setRunner($runner))
 				->and($configurator = new atoum\configurator($script))
@@ -38,6 +39,8 @@ class configurator extends atoum\test
 					->mock($script)->call('setScoreFile')->withArguments($scoreFile)->once()
 					->object($configurator->setPhpPath($phpPath = uniqid()))->isIdenticalTo($configurator)
 					->mock($runner)->call('setPhpPath')->withArguments($phpPath)->once()
+					->object($configurator->setBf($bootstrapFile = uniqid()))->isIdenticalTo($configurator)
+					->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
 				->exception(function() use ($configurator, & $method) { $configurator->{$method = uniqid()}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Method \'' . $method . '\' is unavailable')

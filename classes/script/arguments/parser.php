@@ -173,12 +173,7 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
-	public static function isArgument($value)
-	{
-		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
-	}
-
-	protected function triggerHandlers($argument, array $values, atoum\script $script)
+	public function triggerHandlers($argument, array $values, atoum\script $script)
 	{
 		if (isset($this->handlers[$argument]) === true)
 		{
@@ -222,7 +217,7 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
-	protected function invokeHandlers(atoum\script $script, $argument, array $values)
+	public function invokeHandlers(atoum\script $script, $argument, array $values)
 	{
 		foreach ($this->handlers[$argument] as $handler)
 		{
@@ -230,6 +225,11 @@ class parser implements \iteratorAggregate
 		}
 
 		return $this;
+	}
+
+	public static function isArgument($value)
+	{
+		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 }
 
