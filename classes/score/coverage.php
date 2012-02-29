@@ -118,7 +118,6 @@ class coverage implements \countable
 						}
 					}
 				}
-
 			}
 			catch (\exception $exception) {}
 		}
