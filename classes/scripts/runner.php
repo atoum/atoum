@@ -167,11 +167,12 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$runner = new atoum\configurator($this);
+		$script = $this->factory->build('atoum\configurator', array($this));
+		$runner = $this->runner;
 
 		try
 		{
-			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
+			$this->includer->includePath($path, function($path) use ($script, $runner) { include_once($path); });
 		}
 		catch (atoum\includer\exception $exception)
 		{
