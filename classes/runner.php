@@ -397,9 +397,17 @@ class runner implements observable, adapter\aggregator
 				{
 					$test->disableCodeCoverage();
 				}
-				else foreach ($this->score->getCoverage()->getExcludedClasses() as $excludedClass)
+				else
 				{
-					$test->getScore()->getCoverage->excludeClass($excludedClass);
+					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
+					{
+						$test->getCoverage->excludeClass($excludedClass);
+					}
+
+					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
+					{
+						$test->getCoverage->excludeDirectory($excludedDirectory);
+					}
 				}
 
 				foreach ($this->observers as $observer)
