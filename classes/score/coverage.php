@@ -13,6 +13,8 @@ class coverage implements \countable
 	protected $classes = array();
 	protected $lines = array();
 	protected $methods = array();
+	protected $excludedClasses = array();
+	protected $excludedDirectories = array();
 	protected $reflectionClassInjector = null;
 
 	public function __construct() {}
@@ -83,35 +85,42 @@ class coverage implements \countable
 				$reflectedClass = $this->getReflectionClass($class);
 
 				$reflectedClassName = $reflectedClass->getName();
-				$reflectedClassFile = $reflectedClass->getFileName();
 
-				$this->classes[$reflectedClassName] = $reflectedClassFile;
-				$this->methods[$reflectedClassName] = array();
-
-				foreach ($reflectedClass->getMethods() as $method)
+				if (in_array($reflectedClassName, $this->excludedClasses) === false)
 				{
-					if ($method->isAbstract() === false)
+					$reflectedClassFile = $reflectedClass->getFileName();
+
+					if ($this->isInExcludedDirectories($reflectedClassFile) === false)
 					{
-						$declaringClass = $method->getDeclaringClass();
+						$this->classes[$reflectedClassName] = $reflectedClassFile;
+						$this->methods[$reflectedClassName] = array();
 
-						$declaringClassName = $declaringClass->getName();
-						$declaringClassFile = $declaringClass->getFilename();
-
-						if ($declaringClassFile !== false)
+						foreach ($reflectedClass->getMethods() as $method)
 						{
-							if (isset($this->classes[$declaringClassName]) === false)
+							if ($method->isAbstract() === false)
 							{
-								$this->classes[$declaringClassName] = $declaringClassFile;
-								$this->methods[$declaringClassName] = array();
-							}
+								$declaringClass = $method->getDeclaringClass();
 
- 							if (isset($data[$declaringClassFile]) === true)
-							{
-								for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+								$declaringClassName = $declaringClass->getName();
+								$declaringClassFile = $declaringClass->getFilename();
+
+								if ($declaringClassFile !== false)
 								{
-									if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
+									if (isset($this->classes[$declaringClassName]) === false)
 									{
-										$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
+										$this->classes[$declaringClassName] = $declaringClassFile;
+										$this->methods[$declaringClassName] = array();
+									}
+
+									if (isset($data[$declaringClassFile]) === true)
+									{
+										for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+										{
+											if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
+											{
+												$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
+											}
+										}
 									}
 								}
 							}
@@ -251,9 +260,58 @@ class coverage implements \countable
 		return $value;
 	}
 
+	public function excludeClass($class)
+	{
+		$class = (string) $class;
+
+		if (in_array($class, $this->excludedClasses) === false)
+		{
+			$this->excludedClasses[] = $class;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedClasses()
+	{
+		return $this->excludedClasses;
+	}
+
+	public function excludeDirectory($directory)
+	{
+		$directory = (string) $directory;
+
+		if (in_array($directory, $this->excludedDirectories) === false)
+		{
+			$this->excludedDirectories[] = $directory;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedDirectories()
+	{
+		return $this->excludedDirectories;
+	}
+
 	public function count()
 	{
 		return sizeof($this->methods);
+	}
+
+	public function isInExcludedDirectories($file)
+	{
+		foreach ($this->excludedDirectories as $excludedDirectory)
+		{
+			$excludedDirectory .= DIRECTORY_SEPARATOR;
+
+			if (substr($file, 0, strlen($excludedDirectory)) === $excludedDirectory)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

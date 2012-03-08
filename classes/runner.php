@@ -213,6 +213,11 @@ class runner implements observable, adapter\aggregator
 		return $classes;
 	}
 
+	public function getCoverage()
+	{
+		return $this->score->getCoverage();
+	}
+
 	public function setPhpPath($path)
 	{
 		$this->phpPath = (string) $path;
@@ -391,6 +396,10 @@ class runner implements observable, adapter\aggregator
 				if ($this->codeCoverageIsEnabled() === false)
 				{
 					$test->disableCodeCoverage();
+				}
+				else foreach ($this->score->getCoverage()->getExcludedClasses() as $excludedClass)
+				{
+					$test->getScore()->getCoverage->excludeClass($excludedClass);
 				}
 
 				foreach ($this->observers as $observer)

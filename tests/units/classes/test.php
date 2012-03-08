@@ -474,6 +474,15 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testGetCoverage()
+		{
+			$this->assert
+				->if($test = new emptyTest())
+				->then
+					->object($test->getCoverage())->isIdenticalTo($test->getScore()->getCoverage())
+			;
+		}
+
 		public function testIgnore()
 		{
 			$test = new emptyTest();
