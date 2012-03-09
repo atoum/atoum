@@ -97,7 +97,8 @@ class coverage extends atoum\test
 				->and($methodController->getEndLine = 8)
 				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
 				->and($coverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
-				->and($classFile = uniqid())
+				->and($classDirectory = uniqid())
+				->and($classFile = $classDirectory . DIRECTORY_SEPARATOR . uniqid())
 				->and($className = uniqid())
 				->and($methodName = uniqid())
 				->and($xdebugData = array(
@@ -154,6 +155,16 @@ class coverage extends atoum\test
 					)
 				->if($coverage = new score\coverage())
 				->and($coverage->excludeClass($this->getTestedClassName()))
+				->then
+					->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+					->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+				->if($coverage = new score\coverage())
+				->and($coverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
+				->and($coverage->excludeDirectory($classDirectory))
 				->then
 					->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 					->array($coverage->getClasses())->isEmpty()
@@ -1001,6 +1012,19 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
 				->object($coverage->excludeDirectory($directory))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
+		;
+	}
+
+	public function testIsInExcludedClasses()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
+			->if($coverage->excludeClass($class = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedClasses($class))->isTrue()
 		;
 	}
 

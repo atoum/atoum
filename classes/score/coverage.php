@@ -84,42 +84,37 @@ class coverage implements \countable
 			{
 				$reflectedClass = $this->getReflectionClass($class);
 
-				$reflectedClassName = $reflectedClass->getName();
-
-				if (in_array($reflectedClassName, $this->excludedClasses) === false)
+				if ($this->isExcluded($reflectedClass) === false)
 				{
-					$reflectedClassFile = $reflectedClass->getFileName();
+					$reflectedClassName = $reflectedClass->getName();
 
-					if ($this->isInExcludedDirectories($reflectedClassFile) === false)
+					$this->classes[$reflectedClassName] = $reflectedClass->getFileName();
+					$this->methods[$reflectedClassName] = array();
+
+					foreach ($reflectedClass->getMethods() as $method)
 					{
-						$this->classes[$reflectedClassName] = $reflectedClassFile;
-						$this->methods[$reflectedClassName] = array();
-
-						foreach ($reflectedClass->getMethods() as $method)
+						if ($method->isAbstract() === false)
 						{
-							if ($method->isAbstract() === false)
-							{
-								$declaringClass = $method->getDeclaringClass();
+							$declaringClass = $method->getDeclaringClass();
 
+							if ($this->isExcluded($declaringClass) === false)
+							{
 								$declaringClassName = $declaringClass->getName();
 								$declaringClassFile = $declaringClass->getFilename();
 
-								if ($declaringClassFile !== false)
+								if (isset($this->classes[$declaringClassName]) === false)
 								{
-									if (isset($this->classes[$declaringClassName]) === false)
-									{
-										$this->classes[$declaringClassName] = $declaringClassFile;
-										$this->methods[$declaringClassName] = array();
-									}
+									$this->classes[$declaringClassName] = $declaringClassFile;
+									$this->methods[$declaringClassName] = array();
+								}
 
-									if (isset($data[$declaringClassFile]) === true)
+								if (isset($data[$declaringClassFile]) === true)
+								{
+									for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 									{
-										for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+										if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
 										{
-											if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
-											{
-												$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
-											}
+											$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
 										}
 									}
 								}
@@ -279,7 +274,7 @@ class coverage implements \countable
 
 	public function excludeDirectory($directory)
 	{
-		$directory = (string) $directory;
+		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
 
 		if (in_array($directory, $this->excludedDirectories) === false)
 		{
@@ -299,6 +294,11 @@ class coverage implements \countable
 		return sizeof($this->methods);
 	}
 
+	public function isInExcludedClasses($class)
+	{
+		return (in_array($class, $this->excludedClasses) === true);
+	}
+
 	public function isInExcludedDirectories($file)
 	{
 		foreach ($this->excludedDirectories as $excludedDirectory)
@@ -312,6 +312,20 @@ class coverage implements \countable
 		}
 
 		return false;
+	}
+
+	protected function isExcluded(\reflectionClass $class)
+	{
+		if ($this->isInExcludedClasses($class->getName()) === true)
+		{
+			return true;
+		}
+		else
+		{
+			$fileName = $class->getFileName();
+
+			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
+		}
 	}
 }
 
