@@ -448,7 +448,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->maxChildrenNumber;
 	}
 
-	public function getCoverage()
+public function getCoverage()
 	{
 		return $this->score->getCoverage();
 	}
@@ -676,9 +676,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					$this->phpCode .= '$test->disableCodeCoverage();';
 				}
-				else foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
+				else
 				{
-					$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludeClass . '\');';
+					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
+					{
+						$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludeClass . '\');';
+					}
+
+					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
+					{
+						$this->phpCode .= '$test->getCoverage()->excludeDirectory(\'' . $excludedDirectory . '\');';
+					}
 				}
 
 				$this->phpCode .=

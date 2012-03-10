@@ -401,12 +401,12 @@ class runner implements observable, adapter\aggregator
 				{
 					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
 					{
-						$test->getCoverage->excludeClass($excludedClass);
+						$test->getCoverage()->excludeClass($excludedClass);
 					}
 
 					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
 					{
-						$test->getCoverage->excludeDirectory($excludedDirectory);
+						$test->getCoverage()->excludeDirectory($excludedDirectory);
 					}
 				}
 
