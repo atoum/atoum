@@ -404,6 +404,11 @@ class runner implements observable, adapter\aggregator
 						$test->getCoverage()->excludeClass($excludedClass);
 					}
 
+					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
+					{
+						$test->getCoverage()->excludeNamespace($excludedNamespace);
+					}
+
 					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
 					{
 						$test->getCoverage()->excludeDirectory($excludedDirectory);

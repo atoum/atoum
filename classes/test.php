@@ -683,6 +683,11 @@ public function getCoverage()
 						$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludedClass . '\');';
 					}
 
+					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
+					{
+						$this->phpCode .= '$test->getCoverage()->excludeNamespace(\'' . $excludedNamespace . '\');';
+					}
+
 					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
 					{
 						$this->phpCode .= '$test->getCoverage()->excludeDirectory(\'' . $excludedDirectory . '\');';

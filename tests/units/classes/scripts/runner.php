@@ -86,6 +86,11 @@ class runner extends atoum\test
 							'Disable code coverage in directories <directory>'
 						),
 						array(
+							array('-nccfns', '--no-code-coverage-for-namespaces'),
+							'<namespace>...',
+							'Disable code coverage for namespaces <namespace>'
+						),
+						array(
 							array('-nccfc', '--no-code-coverage-for-classes'),
 							'<class>...',
 							'Disable code coverage for classes <class>'
@@ -202,6 +207,11 @@ class runner extends atoum\test
 							array('-nccid', '--no-code-coverage-in-directories'),
 							'<directory>...',
 							'Disable code coverage in directories <directory>'
+						),
+						array(
+							array('-nccfns', '--no-code-coverage-for-namespaces'),
+							'<namespace>...',
+							'Disable code coverage for namespaces <namespace>'
 						),
 						array(
 							array('-nccfc', '--no-code-coverage-for-classes'),

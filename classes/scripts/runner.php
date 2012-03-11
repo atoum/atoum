@@ -434,6 +434,22 @@ class runner extends atoum\script
 						$this->locale->_('Disable code coverage in directories <directory>')
 					)
 				->addArgumentHandler(
+						function($script, $argument, $namespaces) {
+							if (sizeof($namespaces) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($namespaces as $namespace)
+							{
+								$script->getRunner()->getCoverage()->excludeNamespace($namespace);
+							}
+						},
+						array('-nccfns', '--no-code-coverage-for-namespaces'),
+						'<namespace>...',
+						$this->locale->_('Disable code coverage for namespaces <namespace>')
+					)
+				->addArgumentHandler(
 						function($script, $argument, $classes) {
 							if (sizeof($classes) <= 0)
 							{
