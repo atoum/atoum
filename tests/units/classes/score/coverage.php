@@ -1001,6 +1001,22 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testExcludeNamespace()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->excludeNamespace($namespace = uniqid()))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace))
+				->object($coverage->excludeNamespace($otherNamespace = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
+				->object($coverage->excludeNamespace($namespace))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
+				->object($coverage->excludeNamespace('\\' . ($anotherNamespace = uniqid()) . '\\'))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace, $anotherNamespace))
+		;
+	}
+
 	public function testExcludeDirectory()
 	{
 		$this->assert
@@ -1012,6 +1028,8 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
 				->object($coverage->excludeDirectory($directory))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
+				->object($coverage->excludeDirectory(($anotherDirectory = (DIRECTORY_SEPARATOR . uniqid())) . DIRECTORY_SEPARATOR))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory, $anotherDirectory))
 		;
 	}
 
@@ -1025,6 +1043,19 @@ class coverage extends atoum\test
 			->then
 				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
 				->boolean($coverage->isInExcludedClasses($class))->isTrue()
+		;
+	}
+
+	public function testIsInExcludedNamespaces()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
+			->if($coverage->excludeNamespace($namespace = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedNamespaces($namespace . '\\' . uniqid()))->isTrue()
 		;
 	}
 

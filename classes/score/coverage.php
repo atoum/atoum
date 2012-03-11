@@ -14,6 +14,7 @@ class coverage implements \countable
 	protected $lines = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
+	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
 	protected $reflectionClassInjector = null;
 
@@ -272,6 +273,23 @@ class coverage implements \countable
 		return $this->excludedClasses;
 	}
 
+	public function excludeNamespace($namespace)
+	{
+		$namespace = trim((string) $namespace, '\\');
+
+		if (in_array($namespace, $this->excludedNamespaces) === false)
+		{
+			$this->excludedNamespaces[] = $namespace;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedNamespaces()
+	{
+		return $this->excludedNamespaces;
+	}
+
 	public function excludeDirectory($directory)
 	{
 		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
@@ -299,24 +317,21 @@ class coverage implements \countable
 		return (in_array($class, $this->excludedClasses) === true);
 	}
 
+	public function isInExcludedNamespaces($class)
+	{
+		return self::itemIsExcluded($this->excludedNamespaces, $class, '\\');
+	}
+
 	public function isInExcludedDirectories($file)
 	{
-		foreach ($this->excludedDirectories as $excludedDirectory)
-		{
-			$excludedDirectory .= DIRECTORY_SEPARATOR;
-
-			if (substr($file, 0, strlen($excludedDirectory)) === $excludedDirectory)
-			{
-				return true;
-			}
-		}
-
-		return false;
+		return self::itemIsExcluded($this->excludedDirectories, $file, DIRECTORY_SEPARATOR);
 	}
 
 	protected function isExcluded(\reflectionClass $class)
 	{
-		if ($this->isInExcludedClasses($class->getName()) === true)
+		$className = $class->getName();
+
+		if ($this->isInExcludedClasses($className) === true || $this->isInExcludedNamespaces($className) === true)
 		{
 			return true;
 		}
@@ -326,6 +341,21 @@ class coverage implements \countable
 
 			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
 		}
+	}
+
+	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)
+	{
+		foreach ($excludedItems as $excludedItem)
+		{
+			$excludedItem .= $delimiter;
+
+			if (substr($item, 0, strlen($excludedItem)) === $excludedItem)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
