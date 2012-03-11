@@ -81,6 +81,16 @@ class runner extends atoum\test
 							'Disable code coverage'
 						),
 						array(
+							array('-nccid', '--no-code-coverage-in-directories'),
+							'<directory>...',
+							'Disable code coverage in directories <directory>'
+						),
+						array(
+							array('-nccfc', '--no-code-coverage-for-classes'),
+							'<class>...',
+							'Disable code coverage for classes <class>'
+						),
+						array(
 							array('-f', '--test-files'),
 							'<file>...',
 							'Execute all unit test files <file>'
@@ -187,6 +197,16 @@ class runner extends atoum\test
 							array('-ncc', '--no-code-coverage'),
 							null,
 							'Disable code coverage'
+						),
+						array(
+							array('-nccid', '--no-code-coverage-in-directories'),
+							'<directory>...',
+							'Disable code coverage in directories <directory>'
+						),
+						array(
+							array('-nccfc', '--no-code-coverage-for-classes'),
+							'<class>...',
+							'Disable code coverage for classes <class>'
 						),
 						array(
 							array('-f', '--test-files'),

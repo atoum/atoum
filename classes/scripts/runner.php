@@ -418,6 +418,38 @@ class runner extends atoum\script
 						$this->locale->_('Disable code coverage')
 					)
 				->addArgumentHandler(
+						function($script, $argument, $directories) {
+							if (sizeof($directories) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($directories as $directory)
+							{
+								$script->getRunner()->getCoverage()->excludeDirectory($directory);
+							}
+						},
+						array('-nccid', '--no-code-coverage-in-directories'),
+						'<directory>...',
+						$this->locale->_('Disable code coverage in directories <directory>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $classes) {
+							if (sizeof($classes) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($classes as $class)
+							{
+								$script->getRunner()->getCoverage()->excludeClass($class);
+							}
+						},
+						array('-nccfc', '--no-code-coverage-for-classes'),
+						'<class>...',
+						$this->locale->_('Disable code coverage for classes <class>')
+					)
+				->addArgumentHandler(
 						function($script, $argument, $files) {
 							if (sizeof($files) <= 0)
 							{

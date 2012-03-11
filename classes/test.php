@@ -680,7 +680,7 @@ public function getCoverage()
 				{
 					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
 					{
-						$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludeClass . '\');';
+						$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludedClass . '\');';
 					}
 
 					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
