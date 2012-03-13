@@ -33,7 +33,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $path = '';
 	private $class = '';
 	private $testedClass = null;
-	private $classNamespace = '';
 	private $adapter = null;
 	private $asserterGenerator = null;
 	private $score = null;
@@ -71,7 +70,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
-		$this->classNamespace = $class->getNamespaceName();
 
 		$annotationExtractor = new test\annotations\extractor();
 
@@ -408,11 +406,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->class;
 	}
 
-	public function getClassNamespace()
-	{
-		return $this->classNamespace;
-	}
-
 	public function getPath()
 	{
 		return $this->path;
@@ -448,7 +441,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->maxChildrenNumber;
 	}
 
-public function getCoverage()
+	public function getCoverage()
 	{
 		return $this->score->getCoverage();
 	}

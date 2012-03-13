@@ -50,6 +50,8 @@ class extractor extends atoum\test
 			->array($extractor->getAnnotations())->isIdenticalTo(array('dataProvider' => 'aDataProvider'))
 			->object($extractor->extract('/** @DATApROVIDER aDataProvider */'))->isIdenticalTo($extractor)
 			->array($extractor->getAnnotations())->isIdenticalTo(array('dataProvider' => 'aDataProvider'))
+			->object($extractor->extract('/** @namespace bar */'))->isIdenticalTo($extractor)
+			->array($extractor->getAnnotations())->isEqualTo(array('namespace' => 'bar'))
 			->object($extractor->extract('/** @foo bar */'))->isIdenticalTo($extractor)
 			->array($extractor->getAnnotations())->isEmpty()
 		;
@@ -69,6 +71,10 @@ class extractor extends atoum\test
 			->object($extractor->setTest($test = new self(), '/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
 			->boolean($test->isIgnored())->isFalse()
 			->array($test->getTags())->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
+			->object($extractor->setTest($test = new self(), '/** @namespace bar */'))->isIdenticalTo($extractor)
+			->string($test->getTestNamespace())->isEqualTo('bar')
+			->object($extractor->setTest($test = new self(), '/** @namespace \bar\ */'))->isIdenticalTo($extractor)
+			->string($test->getTestNamespace())->isEqualTo('bar')
 		;
 	}
 
@@ -89,7 +95,7 @@ class extractor extends atoum\test
 			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
 			->boolean($test->methodIsIgnored(__FUNCTION__))->isFalse()
 			->array($test->getMethodTags(__FUNCTION__))->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
-			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @tags aTag otherTag anotherTag' . "\n" . '@ignore on */'))->isIdenticalTo($extractor)
+			->object($extractor->setTestMethod($test = new self(), __FUNCTION__, '/** @tags aTag otherTag anotherTag' . PHP_EOL . '@ignore on */'))->isIdenticalTo($extractor)
 			->boolean($test->methodIsIgnored(__FUNCTION__))->isTrue()
 			->array($test->getMethodTags(__FUNCTION__))->isEqualTo(array('aTag', 'otherTag', 'anotherTag'))
 		;

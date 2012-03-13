@@ -28,6 +28,11 @@ class extractor extends atoum\annotations\extractor
 
 				case 'dataprovider':
 					$this->annotations['dataProvider'] = $value;
+					break;
+
+				case 'namespace':
+					$this->annotations['namespace'] = $value;
+					break;
 			}
 		}
 
@@ -46,6 +51,10 @@ class extractor extends atoum\annotations\extractor
 
 				case 'tags':
 					$test->setTags($value);
+					break;
+
+				case 'namespace':
+					$test->setTestNamespace($value);
 					break;
 			}
 		}
