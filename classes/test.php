@@ -12,7 +12,7 @@ use
 abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
-	const defaultNamespace = 'tests\units';
+	const defaultNamespace = '#(?:^|\\\)tests?\\\unit?s\\\#i';
 
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -374,15 +374,29 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$testClass = $this->getClass();
 			$testNamespace = $this->getTestNamespace();
 
-			$position = strpos($testClass, $testNamespace);
-
-			if ($position === false)
+			if (self::isRegex($testNamespace) === true)
 			{
-				throw new exceptions\runtime('Test class \'' . $this->getClass() . '\' is not in a namespace which contains \'' . $this->getTestNamespace() . '\'');
+				if (preg_match($testNamespace, $testClass) === 0)
+				{
+					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
+				}
+				else
+				{
+					$this->setTestedClassName(trim(preg_replace($testNamespace, '\\', $testClass), '\\'));
+				}
 			}
 			else
 			{
-				$this->setTestedClassName(trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\'));
+				$position = strpos($testClass, $testNamespace);
+
+				if ($position === false)
+				{
+					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which contains \'' . $testNamespace . '\'');
+				}
+				else
+				{
+					$this->setTestedClassName(trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\'));
+				}
 			}
 		}
 
@@ -1054,6 +1068,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private static function cleanNamespace($namespace)
 	{
 		return trim((string) $namespace, '\\');
+	}
+
+	private static function isRegex($namespace)
+	{
+		$isRegex = strrpos($namespace, substr($namespace, 0, 1));
+
+		return ($isRegex !== false && $isRegex !== 1);
 	}
 }
 
