@@ -1072,9 +1072,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private static function isRegex($namespace)
 	{
-		$isRegex = strrpos($namespace, substr($namespace, 0, 1));
-
-		return ($isRegex !== false && $isRegex !== 1);
+		return preg_match('/^([^\\\[:alnum:][:space:]]).*\1.*$/', $namespace) === 1;
 	}
 }
 
