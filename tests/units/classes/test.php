@@ -83,7 +83,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::beforeTearDown)->isEqualTo('beforeTestTearDown')
 				->string(atoum\test::afterTearDown)->isEqualTo('afterTestTearDown')
 				->string(atoum\test::runStop)->isEqualTo('testRunStop')
-				->string(atoum\test::defaultNamespace)->isEqualTo('#(?:^|\\\\)tests?\\\\unit?s\\\\#i')
+				->string(atoum\test::defaultNamespace)->isEqualTo('#(?:^|\\\\)tests?\\\\units?\\\\#i')
 			;
 		}
 

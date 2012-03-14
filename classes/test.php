@@ -12,7 +12,7 @@ use
 abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
-	const defaultNamespace = '#(?:^|\\\)tests?\\\unit?s\\\#i';
+	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
