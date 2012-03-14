@@ -887,18 +887,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function setTestsSubNamespace($testsSubNamespace)
-	{
-		#DEPRECATED
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::setTestNamespace() instead');
-	}
-
-	public function getTestsSubNamespace()
-	{
-		#DEPRECATED
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::getTestNamespace() instead');
-	}
-
 	public function getOutput()
 	{
 		return ob_get_clean() ?: '';
