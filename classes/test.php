@@ -72,13 +72,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
 
+		$annotationExtractor = new annotations\extractor();
+
 		$test = $this;
 
-		$annotationExtractor = new annotations\extractor();
 		$annotationExtractor
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
-			->setHandler('namespace', function($value) use ($test, & $namespaceIsSet) { $test->setTestNamespace($value); })
+			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
 			->extract($class->getDocComment())
 		;
 
@@ -91,7 +92,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			$parentClass = $class;
 
-			while ($namespaceIsSet === false && ($parentClass = $parentClass->getParentClass()) !== false)
+			while ($this->testNamespace === null && ($parentClass = $parentClass->getParentClass()) !== false)
 			{
 				$annotationExtractor->extract($parentClass->getDocComment());
 			}

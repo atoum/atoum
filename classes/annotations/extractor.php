@@ -6,8 +6,6 @@ class extractor
 {
 	protected $handlers = array();
 
-	public function __construct() {}
-
 	public function extract($comments)
 	{
 		$comments = trim((string) $comments);
