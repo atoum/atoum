@@ -115,11 +115,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
-		$this->runTestMethods($this->getTestMethods());
-
-		$this->getAsserterGenerator()
-			->setAlias('array', 'phpArray')
-			->setAlias('class', 'phpClass')
+		$this
+			->runTestMethods($this->getTestMethods())
+			->getAsserterGenerator()
+				->setAlias('array', 'phpArray')
+				->setAlias('class', 'phpClass')
 		;
 	}
 
