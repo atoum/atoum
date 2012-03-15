@@ -31,6 +31,16 @@ class extractor extends atoum\annotations\extractor
 		return $this;
 	}
 
+	public function unsetHandler($annotation)
+	{
+		if (isset($this->handlers[$annotation]) === true)
+		{
+			unset($this->handlers[$annotation]);
+		}
+
+		return $this;
+	}
+
 	public function getHandlers()
 	{
 		return $this->handlers;

@@ -43,6 +43,22 @@ class extractor extends atoum\test
 		;
 	}
 
+	public function testUnsetHandler()
+	{
+		$this->assert
+			->if($extractor = new annotations\extractor())
+			->then
+				->object($extractor->unsetHandler(uniqid()))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
+			->if($extractor->setHandler($annotation = uniqid(), function() {}))
+			->then
+				->object($extractor->unsetHandler(uniqid()))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isNotEmpty()
+				->object($extractor->unsetHandler($annotation))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
+		;
+	}
+
 	public function testExtract()
 	{
 		$this->assert

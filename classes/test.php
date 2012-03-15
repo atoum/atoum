@@ -78,8 +78,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$annotationExtractor
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
-			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('namespace', function($value) use ($test, & $namespaceIsSet) { $test->setTestNamespace($value); })
 			->extract($class->getDocComment())
+		;
+
+		if ($this->testNamespace === null)
+		{
+			$annotationExtractor
+				->unsetHandler('ignore')
+				->unsetHandler('tags')
+			;
+
+			$parentClass = $class;
+
+			while ($namespaceIsSet === false && ($parentClass = $parentClass->getParentClass()) !== false)
+			{
+				$annotationExtractor->extract($parentClass->getDocComment());
+			}
+		}
+
+		$annotationExtractor
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
