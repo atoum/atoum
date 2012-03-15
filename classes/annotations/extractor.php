@@ -6,15 +6,9 @@ class extractor implements \iteratorAggregate
 {
 	protected $annotations = array();
 
-	public function __construct($comments = null)
-	{
-		if ($comments !== null)
-		{
-			$this->extract($comments);
-		}
-	}
+	public function __construct() {}
 
-	public function reset()
+	public function resetAnnotations()
 	{
 		$this->annotations = array();
 
@@ -23,6 +17,8 @@ class extractor implements \iteratorAggregate
 
 	public function extract($comments)
 	{
+		$this->resetAnnotations();
+
 		$comments = trim((string) $comments);
 
 		if (substr($comments, 0, 3) == '/**' && substr($comments, -2) == '*/')

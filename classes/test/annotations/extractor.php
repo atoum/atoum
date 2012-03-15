@@ -6,83 +6,51 @@ use mageekguy\atoum;
 
 class extractor extends atoum\annotations\extractor
 {
+	protected $handlers = array();
+
 	public function extract($comments)
 	{
-		$this->reset();
-
-		$annotations = parent::extract($comments)->getAnnotations();
-
-		$this->reset();
-
-		foreach ($annotations as $annotation => $value)
+		foreach (parent::extract($comments) as $annotation => $value)
 		{
-			switch (strtolower($annotation))
+			foreach ($this->handlers as $handlerAnnotation => $handlerValue)
 			{
-				case 'ignore':
-					$this->annotations['ignore'] = strcasecmp($value, 'on') == 0;
-					break;
-
-				case 'tags':
-					$this->annotations['tags'] = array_values(array_unique(preg_split('/\s+/', $value)));
-					break;
-
-				case 'dataprovider':
-					$this->annotations['dataProvider'] = $value;
-					break;
-
-				case 'namespace':
-					$this->annotations['namespace'] = $value;
-					break;
+				if (strtolower($annotation) == strtolower($handlerAnnotation))
+				{
+					call_user_func_array($handlerValue, array($value));
+				}
 			}
 		}
 
 		return $this;
 	}
 
-	public function setTest(atoum\test $test, $comments)
+	public function setHandler($annotation, \closure $handler)
 	{
-		foreach ($this->extract($comments) as $annotation => $value)
-		{
-			switch ($annotation)
-			{
-				case 'ignore':
-					$test->ignore($value);
-					break;
-
-				case 'tags':
-					$test->setTags($value);
-					break;
-
-				case 'namespace':
-					$test->setTestNamespace($value);
-					break;
-			}
-		}
+		$this->handlers[$annotation] = $handler;
 
 		return $this;
 	}
 
-	public function setTestMethod(atoum\test $test, $method, $comments)
+	public function getHandlers()
 	{
-		foreach ($this->extract($comments) as $annotation => $value)
-		{
-			switch ($annotation)
-			{
-				case 'ignore':
-					$test->ignoreMethod($method, $value);
-					break;
+		return $this->handlers;
+	}
 
-				case 'tags':
-					$test->setMethodTags($method, $value);
-					break;
-
-				case 'dataProvider':
-					$test->setDataProvider($method, $value);
-					break;
-			}
-		}
+	public function resetHandlers()
+	{
+		$this->handlers = array();
 
 		return $this;
+	}
+
+	public static function toBoolean($value)
+	{
+		return strcasecmp($value, 'on') == 0;
+	}
+
+	public static function toArray($value)
+	{
+		return array_values(array_unique(preg_split('/\s+/', $value)));
 	}
 }
 

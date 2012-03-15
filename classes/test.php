@@ -6,7 +6,8 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\annotations
 ;
 
 abstract class test implements observable, adapter\aggregator, \countable
@@ -71,9 +72,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
 
-		$annotationExtractor = new test\annotations\extractor();
+		$test = $this;
 
-		$annotationExtractor->setTest($this, $class->getDocComment());
+		$annotationExtractor = new annotations\extractor();
+		$annotationExtractor
+			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
+			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->extract($class->getDocComment())
+			->resetHandlers()
+			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
+			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
+		;
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
@@ -81,7 +92,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			{
 				$this->testMethods[$methodName] = array();
 
-				$annotationExtractor->setTestMethod($this, $methodName, $publicMethod->getDocComment());
+				$annotationExtractor->extract($publicMethod->getDocComment());
 			}
 		}
 
@@ -369,8 +380,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->testedClass === null)
 		{
-			$class = null;
-
 			$testClass = $this->getClass();
 			$testNamespace = $this->getTestNamespace();
 
@@ -685,19 +694,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 				}
 				else
 				{
+					$this->phpCode .= '$coverage = $test->getCoverage();';
+
 					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
 					{
-						$this->phpCode .= '$test->getCoverage()->excludeClass(\'' . $excludedClass . '\');';
+						$this->phpCode .= '$coverage->excludeClass(\'' . $excludedClass . '\');';
 					}
 
 					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
 					{
-						$this->phpCode .= '$test->getCoverage()->excludeNamespace(\'' . $excludedNamespace . '\');';
+						$this->phpCode .= '$coverage->excludeNamespace(\'' . $excludedNamespace . '\');';
 					}
 
 					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
 					{
-						$this->phpCode .= '$test->getCoverage()->excludeDirectory(\'' . $excludedDirectory . '\');';
+						$this->phpCode .= '$coverage->excludeDirectory(\'' . $excludedDirectory . '\');';
 					}
 				}
 
