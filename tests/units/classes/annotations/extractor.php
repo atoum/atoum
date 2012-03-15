@@ -29,122 +29,154 @@ class extractor extends atoum\test
 		;
 	}
 
+	public function test__construct()
+	{
+		$this->assert
+			->if($extractor = new annotations\extractor())
+			->then
+				->array($extractor->getHandlers())->isEmpty()
+		;
+	}
+
 	public function testExtract()
 	{
 		$this->assert
 			->if($extractor = new annotations\extractor())
-			->and($annotation = uniqid())
-			->and($value = uniqid())
+			->and($extractor->setHandler('ignore', function($value) use (& $ignore) { $ignore = $value; }))
+			->and($extractor->setHandler('tags', function($value) use (& $tags) { $tags = $value; }))
+			->and($extractor->setHandler('dataProvider', function($value) use (& $dataProvider) { $dataProvider = $value; }))
+			->and($extractor->setHandler('namespace', function($value) use (& $namespace) { $namespace = $value; }))
 			->then
-				->array($extractor->getAnnotations())->isEmpty()
 				->object($extractor->extract(''))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract('#'))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract('//'))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract('/**/'))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract('/***/'))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract('/**' . self::space() . '*/'))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract(
-						'/*' .
-						self::space() .
-						'@' .
-						$annotation .
-						self::space() .
-						$value .
-						self::space() .
-						'*/'
-					))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->extract(
-						self::space() .
-						'/' .
-						self::star() .
-						'@' .
-						$annotation .
-						self::space() .
-						$value .
-						self::space() .
-						self::star(10, 1) .
-						'/' .
-						self::space()
-					))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEqualTo(array(
-						$annotation => $value
-					)
-				)
-				->object($extractor->extract(
-						self::space() .
-						'/' .
-						self::star() .
-						'@' .
-						$annotation .
-						self::space() .
-						$value .
-						($firstSpace = self::space()) .
-						($otherValue = uniqid()) .
-						($secondSpace = self::space()) .
-						($anotherValue = uniqid()) .
-						self::space() .
-						self::star(10, 1) .
-						'/' .
-						self::space()
-					))->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEqualTo(array(
-						$annotation => $value . ' ' . $otherValue . ' ' . $anotherValue
-					)
-				)
+					->variable($ignore)->isNull()
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract(uniqid()))->isIdenticalTo($extractor)
+					->variable($ignore)->isNull()
+					->variable($tags)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** */'))->isIdenticalTo($extractor)
+					->variable($ignore)->isNull()
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore on */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('on')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore ON */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('ON')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore On */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('On')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore oN */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('oN')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore oNo */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('oNo')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @ignore Off */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('Off')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @IGNORE off */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->variable($tags)->isNull()
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @tags aTag */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag')
+					->variable($dataProvider)->isNull()
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @tags aTag otherTag anotherTag */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag otherTag anotherTag')
+					->variable($dataProvider)->isNull()
+				->object($extractor->extract('/** @dataProvider aDataProvider */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag otherTag anotherTag')
+					->string($dataProvider)->isEqualTo('aDataProvider')
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @DATApROVIDER aDataProvider */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag otherTag anotherTag')
+					->string($dataProvider)->isEqualTo('aDataProvider')
+					->variable($namespace)->isNull()
+				->object($extractor->extract('/** @namespace bar */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag otherTag anotherTag')
+					->string($dataProvider)->isEqualTo('aDataProvider')
+					->string($namespace)->isEqualTo('bar')
+				->object($extractor->extract('/** @foo bar */'))->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+					->string($tags)->isEqualTo('aTag otherTag anotherTag')
+					->string($dataProvider)->isEqualTo('aDataProvider')
+					->string($namespace)->isEqualTo('bar')
 		;
 	}
 
-	public function testResetAnnotations()
+	public function testResetHandlers()
 	{
 		$this->assert
 			->if($extractor = new annotations\extractor())
 			->then
-				->array($extractor->getAnnotations())->isEmpty()
-				->object($extractor->resetAnnotations())->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
-			->if($extractor->extract('/** @foo bar */'))
+				->object($extractor->resetHandlers())->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
+			->if($extractor->setHandler(uniqid(), function() {}))
 			->then
-				->array($extractor->getAnnotations())->isNotEmpty()
-				->object($extractor->resetAnnotations())->isIdenticalTo($extractor)
-				->array($extractor->getAnnotations())->isEmpty()
+				->object($extractor->resetHandlers())->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
 		;
 	}
 
-	public function testGetIterator()
+	public function testUnsetHandler()
 	{
 		$this->assert
 			->if($extractor = new annotations\extractor())
-			->object($extractor->getIterator())
-				->isInstanceOf('arrayIterator')
-				->isEmpty()
-			->if($extractor = new annotations\extractor())
-			->and($annotation = uniqid())
-			->and($value = uniqid())
-			->and($extractor->extract(
-					self::space() .
-					'/' .
-					self::star() .
-					'@' .
-					$annotation .
-					self::space() .
-					$value .
-					self::space() .
-					self::star(10, 1) .
-					'/' .
-					self::space()
-				)
-			)
 			->then
-				->object($extractor->getIterator())
-					->isInstanceOf('arrayIterator')
-					->hasSize(1)
+				->object($extractor->unsetHandler(uniqid()))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
+			->if($extractor->setHandler($annotation = uniqid(), function() {}))
+			->then
+				->object($extractor->unsetHandler(uniqid()))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isNotEmpty()
+				->object($extractor->unsetHandler($annotation))->isIdenticalTo($extractor)
+				->array($extractor->getHandlers())->isEmpty()
+		;
+	}
+
+	public function testToBoolean()
+	{
+		$this->assert
+			->boolean(annotations\extractor::toBoolean('on'))->isTrue()
+			->boolean(annotations\extractor::toBoolean('On'))->isTrue()
+			->boolean(annotations\extractor::toBoolean('ON'))->isTrue()
+			->boolean(annotations\extractor::toBoolean('oN'))->isTrue()
+			->boolean(annotations\extractor::toBoolean('off'))->isFalse()
+			->boolean(annotations\extractor::toBoolean('Off'))->isFalse()
+			->boolean(annotations\extractor::toBoolean('OFF'))->isFalse()
+		;
+	}
+
+	public function testToArray()
+	{
+		$this->assert
+			->array(annotations\extractor::toArray(''))->isEqualTo(array(''))
+			->array(annotations\extractor::toArray($value = uniqid()))->isEqualTo(array($value))
+			->array(annotations\extractor::toArray(($value = uniqid()) . ' ' . ($otherValue = uniqid())))->isEqualTo(array($value, $otherValue))
 		;
 	}
 

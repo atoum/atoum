@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\test\annotations
+	mageekguy\atoum\annotations
 ;
 
 abstract class test implements observable, adapter\aggregator, \countable
