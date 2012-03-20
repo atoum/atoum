@@ -50,6 +50,11 @@ class runner implements observable, adapter\aggregator
 		$this->class = $runnerClass->getName();
 	}
 
+	public function setFactory(atoum\factory $factory)
+	{
+		return $this;
+	}
+
 	public function setScore(score $score)
 	{
 		$this->score = $score;

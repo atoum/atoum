@@ -66,7 +66,7 @@ class builder extends atoum\test
 			->and($factory->returnWhenBuild('atoum\writers\std\err', $stdErr = new atoum\writers\std\err()))
 			->and($factory->returnWhenBuild('atoum\superglobals', $superglobals = new atoum\superglobals()))
 			->and($factory->returnWhenBuild('atoum\scripts\builder\vcs\svn', $vcs = new atoum\scripts\builder\vcs\svn()))
-			->and( $builder = new scripts\builder($name = uniqid(), $factory))
+			->and($builder = new scripts\builder($name = uniqid(), $factory))
 			->then
 				->string($builder->getName())->isEqualTo($name)
 				->object($builder->getLocale())->isIdenticalTo($locale)

@@ -8,86 +8,90 @@ use
 
 class factory
 {
-	protected $client = null;
 	protected $builders = array();
 	protected $importations = array();
 
 	private static $classes = array();
 
-	public function setClient($class)
-	{
-		$this->client = trim($class, '\\');
-
-		return $this;
-	}
-
-	public function unsetClient()
-	{
-		$this->client = null;
-
-		return $this;
-	}
-
-	public function getClient()
-	{
-		return $this->client;
-	}
-
-	public function build($class, array $arguments = array())
+	public function build($class, array $arguments = array(), $client = null)
 	{
 		$instance = null;
 
-		if ($this->builderIsSet($class = $this->resolveClassName($class)) === true)
+		if (($builder = $this->getBuilder($class, $client)) !== null)
 		{
-			if (($instance = call_user_func_array($this->builders[$class], $arguments)) instanceof $class === false && is_subclass_of($instance, $class) === false)
+			$class = $this->resolveClass($class);
+
+			if (($instance = call_user_func_array($builder, $arguments)) instanceof $class === false && is_subclass_of($instance, $class) === false)
 			{
 				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' with current builder');
 			}
 		}
-		else if (class_exists($class, true) === false)
-		{
-			throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
-		}
-		else if (sizeof($arguments) <= 0)
-		{
-			$instance = new $class();
-		}
 		else
 		{
-			if (isset(self::$classes[$class]) === false)
-			{
-				self::$classes[$class] = new \reflectionClass($class);
-			}
+			$class = $this->resolveClass($class);
 
-			$instance = self::$classes[$class]->newInstanceArgs($arguments);
+			if (class_exists($class, true) === false)
+			{
+				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
+			}
+			else if (sizeof($arguments) <= 0)
+			{
+				$instance = new $class();
+			}
+			else
+			{
+				if (isset(self::$classes[$class]) === false)
+				{
+					self::$classes[$class] = new \reflectionClass($class);
+				}
+
+				$instance = self::$classes[$class]->newInstanceArgs($arguments);
+			}
 		}
 
 		return $instance;
 	}
 
-	public function setBuilder($class, \closure $builder)
+	public function setBuilder($class, \closure $builder, $client = null)
 	{
-		$this->builders[$this->resolveClassName($class)] = $builder;
+		$this->builders[self::resolveClient($client)][$this->resolveClass($class)] = $builder;
 
 		return $this;
 	}
 
-	public function returnWhenBuild($class, $value)
+	public function returnWhenBuild($class, $value, $client = null)
 	{
-		return $this->setBuilder($class, function() use ($value) { return $value; });
+		return $this->setBuilder($class, function() use ($value) { return $value; }, $client);
 	}
 
-	public function builderIsSet($class)
+	public function builderIsSet($class, $client = null)
 	{
-		return (isset($this->builders[$this->resolveClassName($class)]) === true);
+		return ($this->getBuilder($class, $client) !== null);
 	}
 
-	public function getBuilder($class)
+	public function getBuilder($class, $client = null)
 	{
-		return ($this->builderIsSet($class) === false ? null : $this->builders[$class]);
+		$builder = null;
+
+		if (sizeof($this->builders) > 0)
+		{
+			$client = self::resolveClient($client);
+			$class = $this->resolveClass($class);
+
+			if (isset($this->builders[$client][$class]) === true)
+			{
+				$builder = $this->builders[$client][$class];
+			}
+			else if ($client !== null && isset($this->builders[null][$class]) === true)
+			{
+				$builder = $this->builders[null][$class];
+			}
+		}
+
+		return $builder;
 	}
 
-	public function getBuilders()
+	public function getBuilders($client = null)
 	{
 		return $this->builders;
 	}
@@ -109,13 +113,13 @@ class factory
 			$alias = substr($string, $lastOccurence + 1);
 		}
 
-		if (isset($this->importations[$this->client][$alias]) === true && $this->importations[$this->client][$alias] != $string)
+		if (isset($this->importations[$alias]) === true && $this->importations[$alias] != $string)
 		{
 			throw new factory\exception('Unable to use \'' . $string . '\' as \'' . $alias . '\' because the name is already in use');
 		}
 		else
 		{
-			$this->importations[$this->client][$alias] = $string;
+			$this->importations[$alias] = $string;
 
 			return $this;
 		}
@@ -123,7 +127,7 @@ class factory
 
 	public function getImportations()
 	{
-		return ($this->client === null ? $this->importations : (isset($this->importations[$this->client]) === false ? array() : $this->importations[$this->client]));
+		return $this->importations;
 	}
 
 	public function resetImportations()
@@ -133,7 +137,7 @@ class factory
 		return $this;
 	}
 
-	protected function resolveClassName($class)
+	protected function resolveClass($class)
 	{
 		if (($firstOccurrence = strpos($class, '\\')) === false || $firstOccurrence > 0)
 		{
@@ -146,20 +150,26 @@ class factory
 				$topLevelNamespace = substr($class, 0, $firstOccurrence);
 			}
 
-			if (isset($this->importations[$this->client][$topLevelNamespace]) === true)
+
+			if (isset($this->importations[$topLevelNamespace]) === true)
 			{
 				if ($firstOccurrence === false)
 				{
-					$class = $this->importations[$this->client][$topLevelNamespace];
+					$class = $this->importations[$topLevelNamespace];
 				}
 				else
 				{
-					$class = $this->importations[$this->client][$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
+					$class = $this->importations[$topLevelNamespace] . '\\' . substr($class, $firstOccurrence + 1);
 				}
 			}
 		}
 
 		return $class;
+	}
+
+	protected static function resolveClient($client)
+	{
+		return ($client === null ? null : is_object($client) === true ? get_class($client) : trim($client, '\\'));
 	}
 }
 

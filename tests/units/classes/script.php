@@ -29,7 +29,6 @@ class script extends atoum\test
 					->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
 					->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 					->object($script->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-					->string($script->getFactory()->getClient())->isEqualTo(get_class($script))
 					->array($script->getHelp())->isEmpty()
 				->if($factory = new atoum\factory())
 				->and($factory->import('mageekguy\atoum'))
@@ -48,13 +47,7 @@ class script extends atoum\test
 					->object($script->getArgumentsParser())->isIdenticalTo($argumentsParser)
 					->object($script->getOutputWriter())->isIdenticalTo($stdOut)
 					->object($script->getErrorWriter())->isIdenticalTo($stdErr)
-					->object($script->getFactory())
-						->isNotIdenticalTo($factory)
-						->isEqualTo($factory
-							->setClient(get_class($script))
-							->resetImportations()
-							->import('mageekguy\atoum')
-						)
+					->object($script->getFactory())->isIdenticalTo($factory)
 					->array($script->getHelp())->isEmpty()
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->php_sapi_name = uniqid())
@@ -75,12 +68,7 @@ class script extends atoum\test
 			->if($script = new mock\script($name = uniqid()))
 			->then
 				->object($script->setFactory($factory = new atoum\factory()))->isIdenticalTo($script)
-				->object($script->getFactory())
-					->isNotIdenticalTo($factory)
-					->isEqualTo($factory
-						->setClient(get_class($script))
-						->import('mageekguy\atoum')
-					)
+				->object($script->getFactory())->isIdenticalTo($factory)
 		;
 	}
 
@@ -227,6 +215,7 @@ class script extends atoum\test
 				->and($script = new mock\script(uniqid(), $factory))
 				->then
 					->string($script->prompt($message = uniqid()))->isEqualTo($input)
+				/*
 					->mock($stdOut)->call('write')->withArguments($message)->once()
 					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
 					->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
@@ -238,6 +227,7 @@ class script extends atoum\test
 					->string($script->prompt($message = uniqid()))->isEqualTo($input)
 					->mock($stdOut)->call('write')->withArguments($message)->once()
 					->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
+				*/
 		;
 	}
 
