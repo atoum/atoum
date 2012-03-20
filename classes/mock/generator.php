@@ -440,7 +440,7 @@ class generator implements atoum\adapter\aggregator
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
 				$methodName = $method->getName();
-				$isConstructor = $method->isConstructor();
+				$isConstructor = $methodName === '__construct';
 
 				if ($isConstructor === true)
 				{
