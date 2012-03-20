@@ -10,7 +10,7 @@ However, it has been designed from the start with the following ideas in mind :
 * Allow for writing *reliable, readable, and clear* unit tests ;
 
 To accomplish that, it massively uses capabilities provided by *PHP 5.3*, to give the developer *a whole new way* of writing unit tests.  
-Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developper.  
+Therefore, it can be installed and integrated inside an existing project extremely easily, since it is only a *single PHAR archive*, which is the one and only entry point for the developer.  
 Also, thanks to its *fluid interface*, it allows for writing unit tests in a fashion close to natural language.  
 It also makes it easier to implement stubbing within tests, thanks to intelligent uses of *anonymous functions and closures*.  
 *atoum* natively, and by default, performs the execution of each unit test within a separate [PHP](http://www.php.net) process, to warrant *isolation*.  
@@ -26,19 +26,25 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net) to be able to access the `phar` module, which is normally available by default.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
-	# php -m | grep -i phar
+``` bash
+php -m | grep -i phar
+```
 
 If `Phar` or equivalent gets displayed, then the module is properly installed.  
 Generating reports in the Xunit format requires the `xml` module.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
-	# php -m | grep -i xml
+``` bash
+php -m | grep -i xml
+```
 
 If `Xml` or equivalent gets displayed, then the module is properly installed.  
 Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
-	# php -m | grep -i xdebug
+``` bash
+php -m | grep -i xdebug
+```
 
 If `Xdebug` or equivalent gets displayed, then the module is properly installed.
 
@@ -52,7 +58,9 @@ This PHAR archive contains the latest development version to pass the totality o
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
 To do that, you just need to run the following command in your terminal :
 
-	# php mageekguy.atoum.phar --testIt
+``` bash
+php mageekguy.atoum.phar --testIt
+```
 
 ### Step 2 : Write your tests
 
@@ -89,7 +97,9 @@ class helloWorld extends atoum\test
 
 Launch your terminal and run the following command :
 
-	# php path/to/test/file[enter]
+``` bash
+php path/to/test/file[enter]
+```
 
 You should get the following result, or something equivalent :
 
@@ -120,7 +130,9 @@ class helloWorld
 
 In the same terminal, run the following command once again :
 
-	# php path/to/test/file[enter]
+``` bash
+php path/to/test/file[enter]
+```
 
 You should get the following result, or something equivalent :
 
@@ -185,7 +197,9 @@ In this case, the first thing you will want to do is confirm whether you have th
 You just need to [download](http://downloads.atoum.org/nightly/mageekguy.atoum.phar) it again.  
 If it still doesn't work, run the following command in a terminal window :
 
-	# php -n mageekguy.atoum.phar -v
+``` bash
+php -n mageekguy.atoum.phar -v
+```
 
 If you get *atoum*'s version number, then the problem is coming from your PHP configuration.  
 In most cases, the cause would be within extensions, that might be incompatible with the PHAR format, or that would prevent executing PHAR archives as a security measure.  
@@ -200,7 +214,9 @@ The `suhosin` extension prevents executing PHAR archives, therefore its default 
 Finally, if running *atoum* causes the screen to display characters looking like `???%`, this would be because the `detect_unicode` directive inside your `php.ini` file is set to 1.  
 To fix the problem, you just need to set it to 0 by editing your `php.ini` file or by running *atoum* with the following command :
 
-	# php -d detect_unicode=0 mageekguy.atoum.phar [options]
+``` bash
+php -d detect_unicode=0 mageekguy.atoum.phar [options]
+```
 
 If these three operations do not allow *atoum* to work, we suggest you send an e-mail to the address *support[AT]atoum(DOT)org*, describing in detail your configuration and your problem.  
 You can also ask for help from the *atoum* development staff on the IRC channel *##atoum* on the *freenode* network.
@@ -211,6 +227,7 @@ This error comes from the fact the *atoum* PHAR archive is included in more than
 To fix this problem, you just need to include the archive by using only `include_once` or `require_once`, in order to ensure it is not included several times.
 
 ### APC seems not work with *atoum*
+
 [APC](http://fr.php.net/manual/en/apc.configuration.php)  is a free, open, and robust framework for caching and optimizing PHP intermediate code distributed under the form of a PHP extension.  
 When testing classes that use APC, you may get some failure message showing that `apc_fetch` function is unable to retrieve a value.  
 As all PHP extension, APC has some configuration options to enable it :
@@ -221,6 +238,7 @@ As all PHP extension, APC has some configuration options to enable it :
 In order to use [APC](http://fr.php.net/manual/en/apc.configuration.php) with *atoum*, you have to set `apc.enabled` and `apc.enable_cli` to `1`, otherwise, it won't be enabled for the PHP CLI version, which is used by *atoum*.
 
 ### Getting segfault when mocking objects
+
 When using *atoum* and mocking objects, you will sometime get segfaults coming from [PHP](http://www.php.net).  
 These segfaults are caused by [XDebug](http://xdebug.org/) in version less than 2.1.0 which has problem handling reflection in some cases.--
 To check the current version of [XDebug](http://xdebug.org/), you can run `php -v`.  
@@ -228,3 +246,4 @@ To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  
 To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.  
 When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
+
