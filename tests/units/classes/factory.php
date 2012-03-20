@@ -50,6 +50,18 @@ class factory extends atoum\test
 				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
 					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
+			->if($factory->import('mageekguy\atoum'))
+			->then
+				->object($factory->build('atoum\adapter'))->isEqualTo(new atoum\adapter())
+			->if($factory->import('mageekguy\atoum', 'foo'))
+			->then
+				->object($factory->build('foo\adapter'))->isEqualTo(new atoum\adapter())
+			->if($factory->import('mageekguy\atoum\adapter'))
+			->then
+				->object($factory->build('adapter'))->isEqualTo(new atoum\adapter())
+			->if($factory->import('mageekguy\atoum\adapter', 'bar'))
+			->then
+				->object($factory->build('bar'))->isEqualTo(new atoum\adapter())
 		;
 	}
 
