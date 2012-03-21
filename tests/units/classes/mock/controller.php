@@ -21,12 +21,12 @@ class controller extends atoum\test
 
 	public function test__construct()
 	{
-		$mockController = new mock\controller();
-
 		$this->assert
-			->variable($mockController->getMockClass())->isNull()
-			->array($mockController->getInvokers())->isEmpty()
-			->array($mockController->getCalls())->isEmpty()
+			->if($mockController = new mock\controller())
+			->then
+				->variable($mockController->getMockClass())->isNull()
+				->array($mockController->getInvokers())->isEmpty()
+				->array($mockController->getCalls())->isEmpty()
 		;
 	}
 

@@ -28,87 +28,78 @@ class afterDestructionOf extends atoum\test
 
 	public function test__construct()
 	{
-		$asserter = new asserters\afterDestructionOf($generator = new asserter\generator($this));
-
 		$this->assert
-			->object($asserter->getScore())->isIdenticalTo($this->getScore())
-			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
-			->object($asserter->getGenerator())->isIdenticalTo($generator)
+			->if($asserter = new asserters\afterDestructionOf($generator = new asserter\generator($this)))
+			->then
+				->object($asserter->getScore())->isIdenticalTo($this->getScore())
+				->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
 		;
 	}
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\afterDestructionOf(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$value = uniqid();
-
-		$this->assert
-			->exception(function() use (& $line, $asserter, $value) { $line = __LINE__; $asserter->setWith($value); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
+		$this
+			->mock('mageekguy\atoum\tests\units\asserters\classWithDestructor')
+			->assert
+				->if($asserter = new asserters\afterDestructionOf(new asserter\generator($test = new self($score = new atoum\score()))))
+				->and($value = uniqid())
+				->then
+					->exception(function() use (& $line, $asserter, $value) { $line = __LINE__; $asserter->setWith($value); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
+					->integer($score->getFailNumber())->isEqualTo(1)
+					->array($score->getFailAssertions())->isEqualTo(array(
+							array(
+								'case' => null,
+								'dataSetKey' => null,
+								'dataSetProvider' => null,
+								'class' => __CLASS__,
+								'method' => $test->getCurrentMethod(),
+								'file' => __FILE__,
+								'line' => $line,
+								'asserter' => get_class($asserter) . '::setWith()',
+								'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
+							)
+						)
 					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\classWithDestructor');
-		;
-
-		$this->assert
-			->object($asserter->setWith($objectWithDestructor = new \mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
-			->mock($objectWithDestructor)
-				->call('__destruct')->once()
-			->integer($score->getPassNumber())->isEqualTo(1)
-		;
-
-		$objectWithoutDestructor = new classWithoutDestructor();
-
-		$this->assert
-			->exception(function() use (& $otherLine, $asserter, $objectWithoutDestructor) { $otherLine = __LINE__; $asserter->setWith($objectWithoutDestructor); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('Destructor of class %s is undefined'), get_class($objectWithoutDestructor)))
-			->integer($score->getFailNumber())->isEqualTo(2)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
-					),
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $otherLine,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('Destructor of class %s is undefined'), get_class($objectWithoutDestructor))
+					->integer($score->getPassNumber())->isZero()
+					->object($asserter->setWith($objectWithDestructor = new \mock\mageekguy\atoum\tests\units\asserters\classWithDestructor()))->isIdenticalTo($asserter)
+					->mock($objectWithDestructor)
+						->call('__destruct')->once()
+					->integer($score->getPassNumber())->isEqualTo(1)
+				->if($objectWithoutDestructor = new classWithoutDestructor())
+				->then
+					->exception(function() use (& $otherLine, $asserter, $objectWithoutDestructor) { $otherLine = __LINE__; $asserter->setWith($objectWithoutDestructor); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage(sprintf($test->getLocale()->_('Destructor of class %s is undefined'), get_class($objectWithoutDestructor)))
+					->integer($score->getFailNumber())->isEqualTo(2)
+					->array($score->getFailAssertions())->isEqualTo(array(
+							array(
+								'case' => null,
+								'dataSetKey' => null,
+								'dataSetProvider' => null,
+								'class' => __CLASS__,
+								'method' => $test->getCurrentMethod(),
+								'file' => __FILE__,
+								'line' => $line,
+								'asserter' => get_class($asserter) . '::setWith()',
+								'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
+							),
+							array(
+								'case' => null,
+								'dataSetKey' => null,
+								'dataSetProvider' => null,
+								'class' => __CLASS__,
+								'method' => $test->getCurrentMethod(),
+								'file' => __FILE__,
+								'line' => $otherLine,
+								'asserter' => get_class($asserter) . '::setWith()',
+								'fail' => sprintf($test->getLocale()->_('Destructor of class %s is undefined'), get_class($objectWithoutDestructor))
+							)
+						)
 					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(1)
+					->integer($score->getPassNumber())->isEqualTo(1)
 		;
 	}
 }
