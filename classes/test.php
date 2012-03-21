@@ -136,7 +136,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this->getAsserterGenerator();
 
 			case 'assert':
-				return $this->stopCase()->getAsserterGenerator();
+				return $this->getAsserterGenerator()->assert;
 
 			case 'mockGenerator':
 				return $this->getMockGenerator();
@@ -151,16 +151,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		switch ($method)
 		{
 			case 'assert':
-				$this->stopCase();
-
-				$case = isset($arguments[0]) === false ? null : $arguments[0];
-
-				if ($case !== null)
-				{
-					$this->startCase($case);
-				}
-
-				return $this->getAsserterGenerator();
+				return $this->getAsserterGenerator()->assert(isset($arguments[0]) === false ? null : $arguments[0]);
 
 			default:
 				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');
