@@ -28,27 +28,20 @@ class generator
 		$this->setLocale($locale ?: new atoum\locale());
 	}
 
-	public function __get($asserterName)
+	public function __get($property)
 	{
-		switch ($asserterName)
+		switch ($property)
 		{
 			case 'if':
-			case 'then':
 			case 'and':
+			case 'then':
 				return $this;
 
 			case 'assert':
 				return $this->assert();
 
 			default:
-				$class = $this->getAsserterClass($asserterName);
-
-				if (class_exists($class, true) === false)
-				{
-					throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
-				}
-
-				return new $class($this);
+				return $this->getAsserterInstance($property);
 		}
 	}
 
@@ -61,34 +54,12 @@ class generator
 	{
 		switch ($method)
 		{
-			case 'assert':
-				if ($this->test !== null)
-				{
-					$this->test->stopCase();
-
-					$case = isset($arguments[0]) === false ? null : $arguments[0];
-
-					if ($case !== null)
-					{
-						$this->test->startCase($case);
-					}
-				}
-
-				return $this;
-
-			case 'and':
 			case 'if':
+			case 'and':
 				return $this;
 
 			default:
-				$asserter = $this->{$method};
-
-				if (sizeof($arguments) > 0)
-				{
-					call_user_func_array(array($asserter, 'setWith'), $arguments);
-				}
-
-				return $asserter;
+				return $this->getAsserterInstance($method, $arguments);
 		}
 	}
 
@@ -155,11 +126,40 @@ class generator
 		return $this;
 	}
 
+	public function assert($case = null)
+	{
+		if ($this->test !== null)
+		{
+			$this->test->assert($case);
+		}
+
+		return $this;
+	}
+
 	public function when(\closure $closure)
 	{
 		$closure();
 
 		return $this;
+	}
+
+	protected function getAsserterInstance($asserterName, array $arguments = null)
+	{
+		$class = $this->getAsserterClass($asserterName);
+
+		if (class_exists($class, true) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+		}
+
+		$asserter = new $class($this);
+
+		if ($arguments !== null && sizeof($arguments) > 0)
+		{
+			call_user_func_array(array($asserter, 'setWith'), $arguments);
+		}
+
+		return $asserter;
 	}
 }
 

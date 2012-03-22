@@ -136,25 +136,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 				return $this->getAsserterGenerator();
 
 			case 'assert':
-				return $this->getAsserterGenerator()->assert;
+				return $this->assert();
 
 			case 'mockGenerator':
 				return $this->getMockGenerator();
 
 			default:
 				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
-		}
-	}
-
-	public function __call($method, $arguments)
-	{
-		switch ($method)
-		{
-			case 'assert':
-				return $this->getAsserterGenerator()->assert(isset($arguments[0]) === false ? null : $arguments[0]);
-
-			default:
-				throw new exceptions\logic\invalidArgument('Method ' . get_class($this) . '::' . $method . '() is undefined');
 		}
 	}
 
@@ -925,6 +913,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return self::$namespace ?: self::defaultNamespace;
 	}
 
+	public function assert($case = null)
+	{
+		$this->stopCase();
+
+		if ($case !== null)
+		{
+			$this->startCase($case);
+		}
+
+		return $this->getAsserterGenerator();
+	}
+
 	public function startCase($case)
 	{
 		test\adapter::resetCallsForAllInstances();
@@ -962,22 +962,25 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function registerMockAutoloader()
 	{
-		if (spl_autoload_register(array($this, 'mockAutoloader'), true, false) === false)
+		$mockGenerator = $this->getMockGenerator();
+		$mockNamespacePattern = '/^' . $mockGenerator->getDefaultNamespace() . '\\\/';
+
+		if (spl_autoload_register(function($class) use ($mockGenerator, $mockNamespacePattern) {
+				$mockedClass = preg_replace($mockNamespacePattern, '', $class);
+
+				if ($mockedClass !== $class)
+				{
+					$mockGenerator->generate($mockedClass);
+				}
+			},
+			true,
+			true
+		) === false)
 		{
 			throw new \runtimeException('Unable to register test autoloader');
 		}
 
 		return $this;
-	}
-
-	protected function mockAutoloader($class)
-	{
-		$mockNamespace = $this->getMockGenerator()->getDefaultNamespace() . '\\';
-
-		if (strpos($class, $mockNamespace) === 0)
-		{
-			$this->mockGenerator->generate(substr($class, strlen($mockNamespace)));
-		}
 	}
 
 	protected function setUp()
