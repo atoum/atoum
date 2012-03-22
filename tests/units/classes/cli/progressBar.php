@@ -61,10 +61,6 @@ class progressBar extends atoum\test
 
 	public function testRefresh()
 	{
-		$this
-			->mock('mageekguy\atoum\cli')
-		;
-
 		$cli = new \mock\mageekguy\atoum\cli();
 		$cli->getMockController()->isTerminal = true;
 

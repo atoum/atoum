@@ -65,7 +65,6 @@ class report extends atoum\test
 	public function testAddField()
 	{
 		$this
-			->mock('mageekguy\atoum\report\field')
 			->assert
 				->if($report = new atoum\report())
 				->then

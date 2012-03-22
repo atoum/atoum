@@ -13,11 +13,6 @@ use
 
 class mock extends atoum\test
 {
-	public function beforeTestMethod($testMethod)
-	{
-		$this->mock('dummy');
-	}
-
 	public function test__construct()
 	{
 		$this->assert
@@ -39,7 +34,6 @@ class mock extends atoum\test
 	public function test__call()
 	{
 		$this
-			->mock('mageekguy\atoum\asserters\adapter')
 			->assert
 				->if($call = new call\mock($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))), new \mock\dummy(), uniqid()))
 				->and($adapterAsserter->getMockController()->call = $adapterAsserter)

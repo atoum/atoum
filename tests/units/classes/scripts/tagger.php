@@ -40,12 +40,6 @@ class tagger extends atoum\test
 
 	public function testRun()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\tagger')
-			->generate('mageekguy\atoum\scripts\tagger\engine')
-		;
-
-
 		$tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid());
 
 		$tagger

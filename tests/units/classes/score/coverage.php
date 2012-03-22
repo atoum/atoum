@@ -26,10 +26,6 @@ class coverage extends atoum\test
 	{
 		$coverage = new score\coverage();
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 
@@ -74,8 +70,6 @@ class coverage extends atoum\test
 	{
 
 		$this
-			->mock('reflectionClass')
-			->mock('reflectionMethod')
 			->assert
 				->if($coverage = new score\coverage())
 				->then
@@ -185,11 +179,6 @@ class coverage extends atoum\test
 			->array($coverage->getMethods())->isEmpty()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -244,11 +233,6 @@ class coverage extends atoum\test
 
 	public function testMerge()
 	{
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -420,11 +404,6 @@ class coverage extends atoum\test
 			->sizeOf($coverage)->isZero()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -483,11 +462,6 @@ class coverage extends atoum\test
 			->array($coverage->getClasses())->isEmpty()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -539,11 +513,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->variable($coverage->getValue())->isNull()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();
@@ -686,11 +655,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();
@@ -837,11 +801,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();

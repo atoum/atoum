@@ -144,9 +144,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('reflectionClass')
-			->mock('reflectionMethod')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($scoreCoverage = new score\coverage())
 				->and($score = new \mock\mageekguy\atoum\score())

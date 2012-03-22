@@ -33,7 +33,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
 			->assert
 				->if($testController = new atoum\mock\controller())
 				->and($testController->__construct = function() {})
@@ -90,7 +89,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($testMethodNumber = rand(5, PHP_INT_MAX))
 				->and($runnerController = new atoum\mock\controller())

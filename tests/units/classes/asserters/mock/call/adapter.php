@@ -34,7 +34,6 @@ class adapter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->mock('mageekguy\atoum\asserters\mock')
 			->assert
 				->if($call = new call\adapter(
 						$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),

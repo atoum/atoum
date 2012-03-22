@@ -13,8 +13,6 @@ class configurator extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\scripts\runner')
 			->assert
 				->if($script = new atoum\scripts\runner(uniqid()))
 				->and($configurator = new atoum\configurator($script))
@@ -26,8 +24,6 @@ class configurator extends atoum\test
 	public function test__call()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\scripts\runner')
 			->assert
 				->if($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->getMockController()->setBootstrapFile = function() {})

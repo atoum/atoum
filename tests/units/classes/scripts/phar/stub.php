@@ -30,9 +30,6 @@ class stub extends atoum\test
 	public function testUpdate()
 	{
 		$this
-			->mock('phar')
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stub = new phar\stub(uniqid()))
 				->and($stub->setAdapter($adapter = new atoum\test\adapter()))

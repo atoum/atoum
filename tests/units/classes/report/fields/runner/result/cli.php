@@ -110,8 +110,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
@@ -142,14 +140,6 @@ class cli extends atoum\test
 
 	public function test__toString()
 	{
-		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\cli\prompt')
-			->mock('mageekguy\atoum\cli\colorizer')
-		;
-
 		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getAssertionNumber = 1;

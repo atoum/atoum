@@ -86,7 +86,6 @@ class xunit extends atoum\test
 			->isEqualTo($title);
 
 		$report = new reports\xunit();
-		$this->mock('\mageekguy\atoum\writers\file');
 
 		$writer = new \mock\mageekguy\atoum\writers\file();
 		$writer->getMockController()->write = function($something) use ($writer) { return $writer; };

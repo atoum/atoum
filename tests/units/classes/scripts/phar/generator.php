@@ -205,7 +205,6 @@ class generator extends atoum\test
 	public function testWriteMessage()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($generator = new phar\generator(uniqid()))
 				->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
@@ -220,7 +219,6 @@ class generator extends atoum\test
 	public function testWriteError()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\err')
 			->assert
 				->if($generator = new phar\generator(uniqid()))
 				->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
@@ -236,9 +234,6 @@ class generator extends atoum\test
 	public function testRun()
 	{
 		$this
-			->mock('phar')
-			->mock('mageekguy\atoum\writers\std\out')
-			->mock('mageekguy\atoum\writers\std\err')
 			->assert
 				->if($originDirectoryController = mock\stream::get('originDirectory'))
 				->and($originDirectoryController->opendir = true)

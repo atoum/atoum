@@ -125,7 +125,6 @@ class runner extends atoum\test
 	public function testAddObserver()
 	{
 		$this
-			->mock('mageekguy\atoum\observers\runner')
 			->assert
 				->if($runner = new atoum\runner())
 				->then
@@ -138,7 +137,6 @@ class runner extends atoum\test
 	public function testRemoveObserver()
 	{
 		$this
-			->mock('mageekguy\atoum\observers\runner')
 			->assert
 				->if($runner = new atoum\runner())
 				->then
@@ -162,7 +160,6 @@ class runner extends atoum\test
 	public function testCallObservers()
 	{
 		$this
-			->mock('mageekguy\atoum\observers\runner')
 			->assert
 				->if($runner = new atoum\runner())
 				->then
@@ -253,7 +250,6 @@ class runner extends atoum\test
 	public function testGetBootstrapFile()
 	{
 		$this
-			->mock('mageekguy\atoum\includer')
 			->assert
 				->if($runner = new atoum\runner())
 				->and($includer = new \mock\mageekguy\atoum\includer())
@@ -294,7 +290,6 @@ class runner extends atoum\test
 	public function testRemoveReport()
 	{
 		$this
-			->mock('mageekguy\atoum\report')
 			->assert
 				->if($runner = new atoum\runner())
 				->then
@@ -325,7 +320,6 @@ class runner extends atoum\test
 	public function testRemoveReports()
 	{
 		$this
-			->mock('mageekguy\atoum\report')
 			->assert
 				->if($runner = new atoum\runner())
 				->then
@@ -374,7 +368,6 @@ class runner extends atoum\test
 	public function testSetPathAndVersionInScore()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($scoreController = $score->getMockController())

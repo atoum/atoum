@@ -287,8 +287,6 @@ class runner extends atoum\test
 
 	public function testUseConfigFile()
 	{
-		$this->mock('mageekguy\atoum\locale');
-
 		$factory = new atoum\factory();
 		$factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new \mock\mageekguy\atoum\locale());
 
@@ -317,7 +315,6 @@ class runner extends atoum\test
 	public function testUseDefaultConfigFiles()
 	{
 		$this
-			->mock('mageekguy\atoum\scripts\runner')
 			->assert
 				->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
 				->and($runner->getMockController()->useConfigFile = function() {})

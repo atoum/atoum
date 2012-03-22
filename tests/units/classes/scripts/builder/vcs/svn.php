@@ -206,10 +206,6 @@ class svn extends atoum\test
 
 	public function testSetExportDirectory()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-		;
-
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
@@ -225,10 +221,6 @@ class svn extends atoum\test
 
 	public function testExportRepository()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-		;
-
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
@@ -344,11 +336,6 @@ class svn extends atoum\test
 		$adapter->extension_loaded = true;
 		$adapter->unlink = function() {};
 		$adapter->rmdir = function() {};
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-			->generate('splFileInfo')
-		;
 
 		$firstFile = atoum\mock\stream::get('workingDirectory/aDirectory/firstFile');
 		$firstFile->unlink = true;

@@ -182,7 +182,6 @@ class adapter extends atoum\test
 	public function testBeforeMethodCall()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($mock = new \mock\dummy())
 				->and($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))
@@ -205,7 +204,6 @@ class adapter extends atoum\test
 	public function testWithAnyMethodCallsBefore()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -232,7 +230,6 @@ class adapter extends atoum\test
 	public function testAfterMethodCall()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($mock = new \mock\dummy())
 				->and($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))
@@ -255,7 +252,6 @@ class adapter extends atoum\test
 	public function testWithAnyMethodCallsAfter()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -282,7 +278,6 @@ class adapter extends atoum\test
 	public function testBeforeFunctionCall()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($mock = new \mock\dummy())
 				->and($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))
@@ -331,7 +326,6 @@ class adapter extends atoum\test
 	public function testAfterFunctionCall()
 	{
 		$this
-			->mock('dummy')
 			->assert
 				->if($mock = new \mock\dummy())
 				->and($asserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))))

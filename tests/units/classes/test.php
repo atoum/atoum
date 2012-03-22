@@ -626,7 +626,6 @@ namespace mageekguy\atoum\tests\units
 		public function testRun()
 		{
 			$this
-				->mock('test', 'mock')
 				->mockTestedClass('mock\tests\units')
 			;
 

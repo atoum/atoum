@@ -202,8 +202,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeForRealClass()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -291,8 +289,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeWithOverloadMethod()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -385,8 +381,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeWithAbstractMethod()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -471,8 +465,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeWithShuntedMethod()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -559,8 +551,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeForInterface()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -640,8 +630,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeForRealClassWithoutConstructor()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($reflectionMethodController = new mock\controller())
 				->and($reflectionMethodController->__construct = function() {})
@@ -737,8 +725,6 @@ class generator extends atoum\test
 	public function testGetMockedClassCodeWithProtectedAbstractMethod()
 	{
 		$this
-			->mock('reflectionMethod')
-			->mock('reflectionClass')
 			->assert
 				->if($publicMethodController = new mock\controller())
 				->and($publicMethodController->__construct = function() {})
@@ -844,7 +830,6 @@ class generator extends atoum\test
 	public function testGenerate()
 	{
 		$this
-			->mock('reflectionClass')
 			->assert
 				->if($adapter = new atoum\test\adapter())
 				->and($generator = new mock\generator($adapter))

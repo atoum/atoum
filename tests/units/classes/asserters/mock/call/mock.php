@@ -21,7 +21,6 @@ class mock extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
@@ -40,8 +39,6 @@ class mock extends atoum\test
 	public function test__call()
 	{
 		$this
-			->mock('mageekguy\atoum\asserters\mock')
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
@@ -68,7 +65,6 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
@@ -87,7 +83,6 @@ class mock extends atoum\test
 	public function testOn()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
@@ -105,7 +100,6 @@ class mock extends atoum\test
 	public function testGetFirstCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
@@ -129,7 +123,6 @@ class mock extends atoum\test
 	public function testGetLastCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\mock\call\dummy')
 			->assert
 				->if($call = new call\mock(
 						new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),

@@ -40,7 +40,6 @@ class afterDestructionOf extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\classWithDestructor')
 			->assert
 				->if($asserter = new asserters\afterDestructionOf(new asserter\generator($test = new self($score = new atoum\score()))))
 				->and($value = uniqid())

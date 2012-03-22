@@ -111,10 +111,6 @@ class controller extends atoum\test
 				->boolean(isset($mockController->{strtoupper($method)}))->isFalse()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
-
 		$reflectionClass = new \mock\reflectionClass($this);
 
 		$mockController = new mock\controller();
@@ -190,11 +186,6 @@ class controller extends atoum\test
 	public function testControl()
 	{
 		$mockController = new mock\controller();
-
-		$this->mockGenerator
-			->generate('reflectionMethod')
-			->generate('reflectionClass')
-		;
 
 		$mockAggregatorController = new mock\controller();
 		$mockAggregatorController->__construct = function() {};
@@ -486,10 +477,6 @@ class controller extends atoum\test
 			->variable($mockController->getMockClass())->isNull()
 			->array($mockController->getInvokers())->isEmpty()
 			->array($mockController->getCalls())->isEmpty()
-		;
-
-		$this->mockGenerator
-			->generate(__CLASS__)
 		;
 
 		$adapter = new atoum\test\adapter();

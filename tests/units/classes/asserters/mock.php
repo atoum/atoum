@@ -45,8 +45,6 @@ class mock extends atoum\test
 	public function testReset()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\mock\controller')
 			->assert
 				->if($mockController = new \mock\mageekguy\atoum\mock\controller())
 				->and($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
@@ -68,7 +66,6 @@ class mock extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->mock(__CLASS__)
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->and($adapter = new atoum\test\adapter())
@@ -90,7 +87,6 @@ class mock extends atoum\test
 	public function testWasCalled()
 	{
 		$this
-			->mock(__CLASS__)
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -160,7 +156,6 @@ class mock extends atoum\test
 	public function testWasNotCalled()
 	{
 		$this
-			->mock(__CLASS__)
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -207,7 +202,6 @@ class mock extends atoum\test
 	public function testBeforeMethodCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -229,7 +223,6 @@ class mock extends atoum\test
 	public function testWithAnyMethodCallsBefore()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -256,7 +249,6 @@ class mock extends atoum\test
 	public function testAfterMethodCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -278,7 +270,6 @@ class mock extends atoum\test
 	public function testWithAnyMethodCallsAfter()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -305,7 +296,6 @@ class mock extends atoum\test
 	public function testBeforeFunctionCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -328,7 +318,6 @@ class mock extends atoum\test
 	public function testWithAnyFunctionCallsBefore()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -356,7 +345,6 @@ class mock extends atoum\test
 	public function testAfterFunctionCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -379,7 +367,6 @@ class mock extends atoum\test
 	public function testWithAnyFunctionCallsAfter()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -407,7 +394,6 @@ class mock extends atoum\test
 	public function testCall()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -432,7 +418,6 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -464,7 +449,6 @@ class mock extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -499,7 +483,6 @@ class mock extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\tests\units\asserters\dummy')
 			->assert
 				->if($asserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))))
 				->then
@@ -857,10 +840,6 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 		;
 
-		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\dummy')
-		;
-
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
 
 		$this->assert
@@ -990,10 +969,6 @@ class mock extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
-		;
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\dummy')
 		;
 
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
@@ -1289,10 +1264,6 @@ class mock extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
-		;
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\tests\units\asserters\dummy')
 		;
 
 		$asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy());
