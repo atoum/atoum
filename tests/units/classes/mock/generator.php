@@ -37,13 +37,13 @@ class generator extends atoum\test
 			->if($generator = new mock\generator())
 			->then
 				->object($generator->setDefaultNamespace($namespace = uniqid()))->isIdenticalTo($generator)
-				->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 				->object($generator->setDefaultNamespace('\\' . $namespace))->isIdenticalTo($generator)
-				->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 				->object($generator->setDefaultNamespace('\\' . $namespace . '\\'))->isIdenticalTo($generator)
-				->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 				->object($generator->setDefaultNamespace($namespace . '\\'))->isIdenticalTo($generator)
-				->string($generator->getDefaulNamespace())->isEqualTo('\\' . $namespace)
+				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 		;
 	}
 

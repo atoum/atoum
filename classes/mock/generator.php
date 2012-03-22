@@ -42,7 +42,7 @@ class generator implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	public function getDefaulNamespace()
+	public function getDefaultNamespace()
 	{
 		return ($this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace);
 	}
@@ -297,7 +297,7 @@ class generator implements atoum\adapter\aggregator
 
 		$lastAntiSlash = strrpos($class, '\\');
 
-		return '\\' . $this->getDefaulNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected static function getClassName($class)

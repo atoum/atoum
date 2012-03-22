@@ -722,10 +722,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					}
 				}
 
-				$this->phpCode .=
-					'$test->runTestMethod(\'%s\');' .
-					'echo serialize($test->getScore());'
-				;
+				$this->phpCode .= 'echo serialize($test->registerMockAutoloader()->runTestMethod(\'%s\')->getScore());';
 
 				$null = null;
 
@@ -961,6 +958,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->dataProviders[$testMethodName] = $dataProvider;
 
 		return $this;
+	}
+
+	public function registerMockAutoloader()
+	{
+		if (spl_autoload_register(array($this, 'mockAutoloader'), true, false) === false)
+		{
+			throw new \runtimeException('Unable to register test autoloader');
+		}
+
+		return $this;
+	}
+
+	protected function mockAutoloader($class)
+	{
+		$mockNamespace = $this->getMockGenerator()->getDefaultNamespace() . '\\';
+
+		if (strpos($class, $mockNamespace) === 0)
+		{
+			$this->mockGenerator->generate(substr($class, strlen($mockNamespace)));
+		}
 	}
 
 	protected function setUp()
