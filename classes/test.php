@@ -977,7 +977,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			true
 		) === false)
 		{
-			throw new \runtimeException('Unable to register test autoloader');
+			throw new \runtimeException('Unable to register mock autoloader');
 		}
 
 		return $this;
