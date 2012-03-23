@@ -16,7 +16,6 @@ class phpClass extends atoum\test
 	{
 		$this->mockGenerator
 			->shunt('__construct')
-			->generate('reflectionClass')
 		;
 	}
 

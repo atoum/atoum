@@ -135,7 +135,6 @@ class controller extends atoum\test
 
 		$this->mockGenerator
 			->shunt('__construct')
-			->generate('reflectionClass')
 		;
 
 		$this->assert
@@ -161,7 +160,6 @@ class controller extends atoum\test
 
 		$this->mockGenerator
 			->shunt('__construct')
-			->generate('reflectionClass')
 		;
 
 		$mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); });
