@@ -454,9 +454,16 @@ class runner implements observable, adapter\aggregator
 
 	public function addTestsFromDirectory($directory)
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+		try
 		{
-			$this->addTest($path);
+			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			{
+				$this->addTest($path);
+			}
+		}
+		catch (\UnexpectedValueException $exception)
+		{
+			throw new exceptions\runtime('Unable to read test directory \'' . $directory . '\'');
 		}
 
 		return $this;
