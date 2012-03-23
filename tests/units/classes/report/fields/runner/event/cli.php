@@ -36,7 +36,7 @@ class cli extends atoum\test
 			->assert
 				->if($testController = new atoum\mock\controller())
 				->and($testController->__construct = function() {})
-				->and($testController->injectInNextMockInstance())
+				->and($testController->controlNextNewMock())
 				->and($test = new \mock\mageekguy\atoum\test())
 				->and($runner = new atoum\runner())
 				->and($field = new runner\event\cli())
@@ -94,7 +94,7 @@ class cli extends atoum\test
 				->and($runnerController = new atoum\mock\controller())
 				->and($runnerController->__construct = function() {})
 				->and($runnerController->getTestMethodNumber = function() use ($testMethodNumber) { return $testMethodNumber; })
-				->and($runnerController->injectInNextMockInstance())
+				->and($runnerController->controlNextNewMock())
 				->and($runner = new \mock\mageekguy\atoum\runner())
 				->and($field = new runner\event\cli())
 				->and($progressBar = new atoum\cli\progressBar($runner->getTestMethodNumber()))

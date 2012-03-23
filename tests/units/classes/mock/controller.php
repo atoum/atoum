@@ -202,7 +202,7 @@ class controller extends atoum\test
 		$setMockController->__construct = function() {};
 		$setMockController->getName = function() { return 'setMockController'; };
 		$setMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$setMockController->injectInNextMockInstance();
+		$setMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('setMockController');
 
@@ -210,7 +210,7 @@ class controller extends atoum\test
 		$getMockController->__construct = function() {};
 		$getMockController->getName = function() { return 'getMockController'; };
 		$getMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$getMockController->injectInNextMockInstance();
+		$getMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('getMockController');
 
@@ -218,7 +218,7 @@ class controller extends atoum\test
 		$resetMockController->__construct = function() {};
 		$resetMockController->getName = function() { return 'resetMockController'; };
 		$resetMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$resetMockController->injectInNextMockInstance();
+		$resetMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('resetMockController');
 
@@ -226,7 +226,7 @@ class controller extends atoum\test
 		$protectedMethodController->__construct = function() {};
 		$protectedMethodController->getName = function() { return 'protected'; };
 		$protectedMethodController->getPrototype = function() { throw new \exception(); };
-		$protectedMethodController->injectInNextMockInstance();
+		$protectedMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PROTECTED][] = new \mock\reflectionMethod('protectedMethod');
 
@@ -234,7 +234,7 @@ class controller extends atoum\test
 		$privateMethodController->__construct = function() {};
 		$privateMethodController->getName = function() { return 'private'; };
 		$privateMethodController->getPrototype = function() { throw new \exception(); };
-		$privateMethodController->injectInNextMockInstance();
+		$privateMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PRIVATE][] = new \mock\reflectionMethod('privateMethod');
 
@@ -242,7 +242,7 @@ class controller extends atoum\test
 		$aMethodController->__construct = function() {};
 		$aMethodController->getName = function() { return 'a'; };
 		$aMethodController->getPrototype = function() { throw new \exception(); };
-		$aMethodController->injectInNextMockInstance();
+		$aMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('a');
 
@@ -250,7 +250,7 @@ class controller extends atoum\test
 		$bMethodController->__construct = function() {};
 		$bMethodController->getName = function() { return 'b'; };
 		$bMethodController->getPrototype = function() { throw new \exception(); };
-		$bMethodController->injectInNextMockInstance();
+		$bMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('b');
 
@@ -459,7 +459,7 @@ class controller extends atoum\test
 		$mockController = new mock\controller();
 
 		$this->assert
-			->object($mockController->injectInNextMockInstance())->isIdenticalTo($mockController)
+			->object($mockController->controlNextNewMock())->isIdenticalTo($mockController)
 			->object(mock\controller::get())->isIdenticalTo($mockController)
 			->variable(mock\controller::get())->isNull()
 		;

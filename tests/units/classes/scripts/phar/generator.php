@@ -306,7 +306,7 @@ class generator extends atoum\test
 								$pharController->setSignatureAlgorithm = function() {};
 								$pharController->offsetGet = function() {};
 								$pharController->offsetSet = function() {};
-								$pharController->injectInNextMockInstance();
+								$pharController->controlNextNewMock();
 
 								return ($phar = new \mock\phar($name));
 							}
@@ -396,7 +396,7 @@ class generator extends atoum\test
 						->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
 				->if($generator->getFactory()->setBuilder('phar', function($name) use (& $phar) {
 							$pharController = new mock\controller();
-							$pharController->injectInNextMockInstance();
+							$pharController->controlNextNewMock();
 							$pharController->__construct = function() {};
 							$pharController->setStub = function() {};
 							$pharController->setMetadata = function() {};
@@ -404,7 +404,7 @@ class generator extends atoum\test
 							$pharController->setSignatureAlgorithm = function() {};
 							$pharController->offsetGet = function() {};
 							$pharController->offsetSet = function() {};
-							$pharController->injectInNextMockInstance();
+							$pharController->controlNextNewMock();
 
 							return ($phar = new \mock\phar($name));
 						}

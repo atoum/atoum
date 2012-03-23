@@ -12,7 +12,7 @@ class controller extends test\adapter
 {
 	protected $mockClass = null;
 
-	protected static $injectInNextInstance = null;
+	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 	private $reflectionClassInjector = null;
@@ -159,7 +159,13 @@ class controller extends test\adapter
 
 	public function injectInNextMockInstance()
 	{
-		self::$injectInNextInstance = $this;
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
+	}
+
+	public function controlNextNewMock()
+	{
+		self::$controlNextNewMock = $this;
 
 		return $this;
 	}
@@ -185,11 +191,11 @@ class controller extends test\adapter
 
 	public static function get()
 	{
-		$instance = self::$injectInNextInstance;
+		$instance = self::$controlNextNewMock;
 
 		if ($instance !== null)
 		{
-			self::$injectInNextInstance = null;
+			self::$controlNextNewMock = null;
 		}
 
 		return $instance;
