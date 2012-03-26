@@ -48,7 +48,7 @@ class object extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
+					->hasMessage('Asserter \'' . $property . '\' does not exist')
 		;
 
 		$asserter->setWith($this);

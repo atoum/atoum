@@ -43,7 +43,7 @@ class variable extends atoum\test
 					}
 				)
 				->isInstanceOf('logicException')
-				->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
+				->hasMessage('Asserter \'' . $property . '\' does not exist')
 			->variable($asserter->getValue())->isNull()
 		;
 

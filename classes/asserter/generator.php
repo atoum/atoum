@@ -30,19 +30,7 @@ class generator
 
 	public function __get($property)
 	{
-		switch ($property)
-		{
-			case 'if':
-			case 'and':
-			case 'then':
-				return $this;
-
-			case 'assert':
-				return $this->assert();
-
-			default:
-				return $this->getAsserterInstance($property);
-		}
+		return ($this->test === null ? $this->getAsserterInstance($property) : $this->test->getInterpreter()->invoke($property));
 	}
 
 	public function __set($asserter, $class)
@@ -52,25 +40,19 @@ class generator
 
 	public function __call($method, $arguments)
 	{
-		switch ($method)
-		{
-			case 'if':
-			case 'and':
-				return $this;
+		return ($this->test === null ? $this->getAsserterInstance($method, $arguments) : $this->test->getInterpreter()->invoke($method, $arguments));
+	}
 
-			default:
-				return $this->getAsserterInstance($method, $arguments);
-		}
+	public function setTest(atoum\test $test)
+	{
+		$this->test = $test;
+
+		return $this->setLocale($test->getLocale());
 	}
 
 	public function getTest()
 	{
 		return $this->test;
-	}
-
-	public function getScore()
-	{
-		return $this->test === null ? null : $this->test->getScore();
 	}
 
 	public function setLocale(atoum\locale $locale)
@@ -83,28 +65,6 @@ class generator
 	public function getLocale()
 	{
 		return $this->locale;
-	}
-
-	public function getAsserterClass($asserter)
-	{
-		if (isset($this->aliases[$asserter]) === true)
-		{
-			$asserter = $this->aliases[$asserter];
-		}
-
-		if (substr($asserter, 0, 1) != '\\')
-		{
-			$asserter = __NAMESPACE__ . 's\\' . $asserter;
-		}
-
-		return $asserter;
-	}
-
-	public function setTest(atoum\test $test)
-	{
-		$this->test = $test;
-
-		return $this->setLocale($test->getLocale());
 	}
 
 	public function setAlias($alias, $asserterClass)
@@ -126,40 +86,45 @@ class generator
 		return $this;
 	}
 
-	public function assert($case = null)
+	public function getScore()
 	{
-		if ($this->test !== null)
+		return $this->test === null ? null : $this->test->getScore();
+	}
+
+	public function getAsserterClass($asserter)
+	{
+		$class = (isset($this->aliases[$asserter]) === false ? $asserter : $this->aliases[$asserter]);
+
+		if (substr($class, 0, 1) != '\\')
 		{
-			$this->test->assert($case);
+			$class = __NAMESPACE__ . 's\\' . $class;
 		}
-
-		return $this;
-	}
-
-	public function when(\closure $closure)
-	{
-		$closure();
-
-		return $this;
-	}
-
-	protected function getAsserterInstance($asserterName, array $arguments = null)
-	{
-		$class = $this->getAsserterClass($asserterName);
 
 		if (class_exists($class, true) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Asserter \'' . $class . '\' does not exist');
+			$class = null;
 		}
 
-		$asserter = new $class($this);
+		return $class;
+	}
 
-		if ($arguments !== null && sizeof($arguments) > 0)
+	public function getAsserterInstance($asserter, array $arguments = array())
+	{
+		if (($asserterClass = $this->getAsserterClass($asserter)) === null)
 		{
-			call_user_func_array(array($asserter, 'setWith'), $arguments);
+			throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');
 		}
+		else
+		{
+			$asserterInstance = new $asserterClass($this);
 
-		return $asserter;
+			if (sizeof($arguments) > 0)
+			{
+				call_user_func_array(array($asserterInstance, 'setWith'), $arguments);
+			}
+
+			return $asserterInstance;
+		}
 	}
 }
 

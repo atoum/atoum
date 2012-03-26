@@ -35,6 +35,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $class = '';
 	private $testedClass = null;
 	private $adapter = null;
+	private $interpreter = null;
 	private $asserterGenerator = null;
 	private $score = null;
 	private $observers = array();
@@ -121,6 +122,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 				->setAlias('array', 'phpArray')
 				->setAlias('class', 'phpClass')
 		;
+
+		$this->setInterpreter(new test\interpreter());
 	}
 
 	public function __toString()
@@ -130,20 +133,36 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function __get($property)
 	{
-		switch ($property)
-		{
-			case 'define':
-				return $this->getAsserterGenerator();
+		return $this->interpreter->invoke($property);
+	}
 
-			case 'assert':
-				return $this->assert();
+	public function setInterpreter(test\interpreter $interpreter)
+	{
+		$this->interpreter = $interpreter;
 
-			case 'mockGenerator':
-				return $this->getMockGenerator();
+		$this->interpreter->setHandler('when', function($mixed) use ($interpreter) { if (is_callable($mixed) === true) { call_user_func($mixed); } return $interpreter; });
 
-			default:
-				throw new exceptions\logic\invalidArgument('Property \'' . $property . '\' is undefined in class \'' . get_class($this) . '\'');
-		}
+		$returnInterpreter = function() use ($interpreter) { return $interpreter; };
+		$this->interpreter->setHandler('if', $returnInterpreter);
+		$this->interpreter->setHandler('and', $returnInterpreter);
+		$this->interpreter->setHandler('then', $returnInterpreter);
+		$this->interpreter->setHandler('given', $returnInterpreter);
+
+		$test = $this;
+		$this->interpreter->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getInterpreter(); });
+		$this->interpreter->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); });
+
+		$asserterGenerator = $this->asserterGenerator;
+		$this->interpreter->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; });
+
+		$this->interpreter->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
+
+		return $this;
+	}
+
+	public function getInterpreter()
+	{
+		return $this->interpreter;
 	}
 
 	public function codeCoverageIsEnabled()

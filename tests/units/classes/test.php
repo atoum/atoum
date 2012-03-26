@@ -176,7 +176,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->assert)->isInstanceOf('mageekguy\atoum\asserter\generator')
+				->object($test->assert)->isInstanceOf('mageekguy\atoum\test\interpreter')
 				->object($test->define)->isInstanceOf('mageekguy\atoum\asserter\generator')
 				->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
@@ -190,7 +190,7 @@ namespace mageekguy\atoum\tests\units
 			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest()));
 
 			$this->assert
-				->object($test->assert)->isIdenticalTo($asserterGenerator)
+				->object($test->assert)->isIdenticalTo($test->getInterpreter())
 			;
 
 			$this->assert
@@ -199,7 +199,7 @@ namespace mageekguy\atoum\tests\units
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Property \'' . $property . '\' is undefined in class \'' . get_class($test) . '\'')
+					->hasMessage('Asserter \'' . $property . '\' does not exist')
 			;
 		}
 

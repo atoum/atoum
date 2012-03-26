@@ -39,9 +39,8 @@ class generator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
+					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 				->object($generator->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
-				->object($generator->assert)->isEqualTo($generator)
 				->variable($this->getScore()->getCase())->isNull()
 			->if($generator = new asserter\generator($this))
 			->then
@@ -50,9 +49,8 @@ class generator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
+					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 				->object($generator->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
-				->object($generator->assert)->isEqualTo($generator)
 				->variable($this->getScore()->getCase())->isNull()
 		;
 	}
@@ -67,10 +65,8 @@ class generator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
+					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 				->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
-				->object($generator->assert())->isEqualTo($generator)
-				->object($generator->assert($case = uniqid()))->isEqualTo($generator)
 				->variable($this->getScore()->getCase())->isNull()
 			->if($generator = new asserter\generator($this))
 			->then
@@ -79,11 +75,8 @@ class generator extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $asserter . '\' does not exist')
+					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
 				->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
-				->object($generator->assert())->isEqualTo($generator)
-				->object($generator->assert($case = uniqid()))->isEqualTo($generator)
-				->string($this->getScore()->getCase())->isEqualTo($case)
 		;
 	}
 
@@ -96,22 +89,6 @@ class generator extends atoum\test
 			->if($generator = new asserter\generator($this))
 			->then
 				->object($generator->getScore())->isIdenticalTo($this->getScore())
-		;
-	}
-
-	public function testWhen()
-	{
-		$this->assert
-			->if($generator = new asserter\generator())
-			->then
-				->variable($value = null)->isNull()
-				->object($generator->when(function() use (& $value) { $value = uniqid(); }))->isIdenticalTo($generator)
-				->variable($value)->isNotNull()
-			->if($generator = new asserter\generator($this))
-			->then
-				->variable($value = null)->isNull()
-				->object($generator->when(function() use (& $value) { $value = uniqid(); }))->isIdenticalTo($generator)
-				->variable($value)->isNotNull()
 		;
 	}
 

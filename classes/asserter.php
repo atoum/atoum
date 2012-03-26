@@ -44,7 +44,7 @@ abstract class asserter
 				return $this;
 
 			default:
-				return call_user_func_array(array($this->generator, $method), $arguments);
+				return $this->generator->__call($method, $arguments);
 		}
 	}
 
@@ -127,11 +127,11 @@ abstract class asserter
 
 		if ($test !== null)
 		{
-			$line = null;
-			$function = null;
-			$class = $test->getClass();
-			$method = $test->getCurrentMethod();
 			$file = $test->getPath();
+			$line = null;
+			$class = $test->getClass();
+			$function = null;
+			$method = $test->getCurrentMethod();
 
 			foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
 			{
