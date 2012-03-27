@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\test\interpreter;
+namespace mageekguy\atoum\test\assertion\manager;
 
 use
 	mageekguy\atoum\exceptions

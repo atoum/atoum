@@ -35,7 +35,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $class = '';
 	private $testedClass = null;
 	private $adapter = null;
-	private $interpreter = null;
+	private $assertionManager = null;
 	private $asserterGenerator = null;
 	private $score = null;
 	private $observers = array();
@@ -123,7 +123,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				->setAlias('class', 'phpClass')
 		;
 
-		$this->setInterpreter(new test\interpreter());
+		$this->setAssertionManager(new test\assertion\manager());
 	}
 
 	public function __toString()
@@ -133,41 +133,41 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function __get($property)
 	{
-		return $this->interpreter->invoke($property);
+		return $this->assertionManager->invoke($property);
 	}
 
 	public function __call($method, array $arguments)
 	{
-		return $this->interpreter->invoke($method, $arguments);
+		return $this->assertionManager->invoke($method, $arguments);
 	}
 
-	public function setInterpreter(test\interpreter $interpreter)
+	public function setAssertionManager(test\assertion\manager $assertionManager)
 	{
-		$this->interpreter = $interpreter;
+		$this->assertionManager = $assertionManager;
 
-		$this->interpreter->setHandler('when', function($mixed) use ($interpreter) { if (is_callable($mixed) === true) { call_user_func($mixed); } return $interpreter; });
+		$this->assertionManager->setHandler('when', function($mixed) use ($assertionManager) { if (is_callable($mixed) === true) { call_user_func($mixed); } return $assertionManager; });
 
-		$returnInterpreter = function() use ($interpreter) { return $interpreter; };
-		$this->interpreter->setHandler('if', $returnInterpreter);
-		$this->interpreter->setHandler('and', $returnInterpreter);
-		$this->interpreter->setHandler('then', $returnInterpreter);
-		$this->interpreter->setHandler('given', $returnInterpreter);
+		$returnAssertionManager = function() use ($assertionManager) { return $assertionManager; };
+		$this->assertionManager->setHandler('if', $returnAssertionManager);
+		$this->assertionManager->setHandler('and', $returnAssertionManager);
+		$this->assertionManager->setHandler('then', $returnAssertionManager);
+		$this->assertionManager->setHandler('given', $returnAssertionManager);
 
 		$test = $this;
-		$this->interpreter->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getInterpreter(); });
-		$this->interpreter->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); });
+		$this->assertionManager->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getAssertionManager(); });
+		$this->assertionManager->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); });
 
 		$asserterGenerator = $this->asserterGenerator;
-		$this->interpreter->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; });
+		$this->assertionManager->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; });
 
-		$this->interpreter->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
+		$this->assertionManager->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
 
 		return $this;
 	}
 
-	public function getInterpreter()
+	public function getAssertionManager()
 	{
-		return $this->interpreter;
+		return $this->assertionManager;
 	}
 
 	public function codeCoverageIsEnabled()

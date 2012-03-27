@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace mageekguy\atoum\test\assertion;
 
 use
-	mageekguy\atoum\test\interpreter
+	mageekguy\atoum\test\assertion
 ;
 
-class interpreter
+class manager
 {
 	protected $handlers = array();
 	protected $defaultHandler = null;
@@ -52,7 +52,7 @@ class interpreter
 		switch (true)
 		{
 			case $handlerExists === false && $this->defaultHandler === null:
-				throw new interpreter\exception('There is no handler defined for event \'' . $event . '\'');
+				throw new assertion\manager\exception('There is no handler defined for event \'' . $event . '\'');
 
 			case $handlerExists === true:
 				return call_user_func_array($this->handlers[$event], $arguments);
@@ -62,3 +62,5 @@ class interpreter
 		}
 	}
 }
+
+?>

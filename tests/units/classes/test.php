@@ -176,7 +176,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->assert)->isInstanceOf('mageekguy\atoum\test\interpreter')
+				->object($test->assert)->isInstanceOf('mageekguy\atoum\test\assertion\manager')
 				->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
 				->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
@@ -190,7 +190,7 @@ namespace mageekguy\atoum\tests\units
 			$test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest()));
 
 			$this->assert
-				->object($test->assert)->isIdenticalTo($test->getInterpreter())
+				->object($test->assert)->isIdenticalTo($test->getAssertionManager())
 			;
 
 			$this->assert

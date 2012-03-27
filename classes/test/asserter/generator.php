@@ -20,12 +20,12 @@ class generator extends asserter\generator
 
 	public function __get($property)
 	{
-		return $this->test->getInterpreter()->invoke($property);
+		return $this->test->getAssertionManager()->invoke($property);
 	}
 
 	public function __call($method, $arguments)
 	{
-		return $this->test->getInterpreter()->invoke($method, $arguments);
+		return $this->test->getAssertionManager()->invoke($method, $arguments);
 	}
 
 	public function setTest(atoum\test $test)
