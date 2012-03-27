@@ -9,28 +9,12 @@ use
 
 class generator
 {
-	protected $test = null;
 	protected $locale = null;
 	protected $aliases = array();
 
-	public function __construct(atoum\test $test = null, atoum\locale $locale = null)
+	public function __construct(atoum\locale $locale = null)
 	{
-		if ($test !== null)
-		{
-			$this->setTest($test);
-
-			if ($locale === null)
-			{
-				$locale = $test->getLocale();
-			}
-		}
-
 		$this->setLocale($locale ?: new atoum\locale());
-	}
-
-	public function __get($property)
-	{
-		return ($this->test === null ? $this->getAsserterInstance($property) : $this->test->getInterpreter()->invoke($property));
 	}
 
 	public function __set($asserter, $class)
@@ -38,21 +22,14 @@ class generator
 		$this->setAlias($asserter, $class);
 	}
 
+	public function __get($property)
+	{
+		return $this->getAsserterInstance($property);
+	}
+
 	public function __call($method, $arguments)
 	{
-		return ($this->test === null ? $this->getAsserterInstance($method, $arguments) : $this->test->getInterpreter()->invoke($method, $arguments));
-	}
-
-	public function setTest(atoum\test $test)
-	{
-		$this->test = $test;
-
-		return $this->setLocale($test->getLocale());
-	}
-
-	public function getTest()
-	{
-		return $this->test;
+		return $this->getAsserterInstance($method, $arguments);
 	}
 
 	public function setLocale(atoum\locale $locale)
@@ -86,9 +63,14 @@ class generator
 		return $this;
 	}
 
-	public function getScore()
+	public function asserterPass(atoum\asserter $asserter)
 	{
-		return $this->test === null ? null : $this->test->getScore();
+		return $this;
+	}
+
+	public function asserterFail(atoum\asserter $asserter, $reason)
+	{
+		throw new exception($reason);
 	}
 
 	public function getAsserterClass($asserter)

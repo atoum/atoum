@@ -15,7 +15,6 @@ class string extends variable
 		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
 	}
 
-
 	public function getCharlist()
 	{
 		return $this->charlist;

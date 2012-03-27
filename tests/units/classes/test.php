@@ -177,7 +177,7 @@ namespace mageekguy\atoum\tests\units
 
 			$this->assert
 				->object($test->assert)->isInstanceOf('mageekguy\atoum\test\interpreter')
-				->object($test->define)->isInstanceOf('mageekguy\atoum\asserter\generator')
+				->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
 				->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 			;
 
@@ -187,7 +187,7 @@ namespace mageekguy\atoum\tests\units
 				->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
 			;
 
-			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest()));
+			$test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest()));
 
 			$this->assert
 				->object($test->assert)->isIdenticalTo($test->getInterpreter())
@@ -287,10 +287,10 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\asserter\generator')
+				->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\test\asserter\generator')
 			;
 
-			$test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator(new emptyTest(), new atoum\locale()));
+			$test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest(), new atoum\locale()));
 
 			$this->assert
 				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
@@ -302,7 +302,7 @@ namespace mageekguy\atoum\tests\units
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->setAsserterGenerator($asserterGenerator = new atoum\asserter\generator()))->isIdenticalTo($test)
+				->object($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator($test)))->isIdenticalTo($test)
 				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
 				->object($asserterGenerator->getTest())->isIdenticalTo($test)
 				->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
@@ -666,18 +666,18 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testMock()
+		public function testMockClass()
 		{
 			$test = new emptyTest();
 
 			$this->assert
-				->object($test->mock(__CLASS__))->isIdenticalTo($test)
+				->object($test->mockClass(__CLASS__))->isIdenticalTo($test)
 				->class('mock\\' . __CLASS__)->isSubClassOf(__CLASS__)
-				->object($test->mock(__CLASS__, 'foo'))->isIdenticalTo($test)
+				->object($test->mockClass(__CLASS__, 'foo'))->isIdenticalTo($test)
 				->class('foo\test')->isSubClassOf(__CLASS__)
-				->object($test->mock(__CLASS__, 'foo\bar'))->isIdenticalTo($test)
+				->object($test->mockClass(__CLASS__, 'foo\bar'))->isIdenticalTo($test)
 				->class('foo\bar\test')->isSubClassOf(__CLASS__)
-				->object($test->mock(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
+				->object($test->mockClass(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
 				->class('foo\bar')->isSubClassOf(__CLASS__)
 			;
 		}

@@ -16,9 +16,9 @@ class adapter extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($call = new call\adapter(
-					$mockAsserter = new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
+					$mockAsserter = new asserters\mock(new asserter\generator()),
 					$adapter = new test\adapter(),
 					$function = uniqid()
 				)
@@ -34,34 +34,33 @@ class adapter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->assert
-				->if($call = new call\adapter(
-						$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-						new test\adapter(),
-						uniqid()
-					)
+			->if($call = new call\adapter(
+					$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()),
+					new test\adapter(),
+					uniqid()
 				)
-				->and($mockAsserter->getMockController()->call = $mockAsserter)
-				->then
-					->object($call->call($arg = uniqid()))->isIdenticalTo($mockAsserter)
-					->mock($mockAsserter)
-						->call('call')->withArguments($arg)->once()
-				->if($unknownFunction = uniqid())
-				->then
-					->exception(function() use ($call, $unknownFunction) {
-								$call->{$unknownFunction}();
-							}
-						)
-							->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-							->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownFunction . '() does not exist')
+			)
+			->and($mockAsserter->getMockController()->call = $mockAsserter)
+			->then
+				->object($call->call($arg = uniqid()))->isIdenticalTo($mockAsserter)
+				->mock($mockAsserter)
+					->call('call')->withArguments($arg)->once()
+			->if($unknownFunction = uniqid())
+			->then
+				->exception(function() use ($call, $unknownFunction) {
+							$call->{$unknownFunction}();
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownFunction . '() does not exist')
 		;
 	}
 
 	public function testWithArguments()
 	{
-		$this->assert
+		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
+					new asserters\mock(new asserter\generator()),
 					new test\adapter(),
 					uniqid()
 				)
@@ -76,9 +75,9 @@ class adapter extends atoum\test
 
 	public function testGetFirstCall()
 	{
-		$this->assert
+		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
+					new asserters\mock(new asserter\generator()),
 					$adapter = new test\adapter(),
 					'md5'
 				)
@@ -96,9 +95,9 @@ class adapter extends atoum\test
 
 	public function testGetLastCall()
 	{
-		$this->assert
+		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
+					new asserters\mock(new asserter\generator()),
 					$adapter = new test\adapter(),
 					'md5'
 				)

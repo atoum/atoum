@@ -98,10 +98,8 @@ abstract class asserter
 		}
 	}
 
-	public function must(\closure $closure)
+	public function initWithTest(test $test)
 	{
-		$closure($this);
-
 		return $this;
 	}
 
@@ -109,47 +107,16 @@ abstract class asserter
 
 	protected function pass()
 	{
-		$test = $this->generator->getTest();
-
-		if ($test !== null)
-		{
-			$test->getScore()->addPass();
-		}
+		$this->generator->asserterPass($this);
 
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
-		$failId = null;
+		$this->generator->asserterFail($this, $reason);
 
-		$test = $this->generator->getTest();
-
-		if ($test !== null)
-		{
-			$file = $test->getPath();
-			$line = null;
-			$class = $test->getClass();
-			$function = null;
-			$method = $test->getCurrentMethod();
-
-			foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
-			{
-				if ($line === null && isset($backtrace['line']) === true)
-				{
-					$line = $backtrace['line'];
-				}
-
-				if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
-				{
-					$function = $backtrace['function'];
-				}
-			}
-
-			$failId = $test->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason);
-		}
-
-		throw new asserter\exception($reason, $failId);
+		return $this;
 	}
 }
 
