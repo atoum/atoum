@@ -61,14 +61,12 @@ namespace mageekguy\atoum\tests\units
 	{
 		public function testClass()
 		{
-			$this->assert
-				->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator')
-			;
+			$this->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator');
 		}
 
 		public function testClassConstants()
 		{
-			$this->assert
+			$this
 				->string(atoum\test::testMethodPrefix)->isEqualTo('test')
 				->string(atoum\test::runStart)->isEqualTo('testRunStart')
 				->string(atoum\test::beforeSetUp)->isEqualTo('beforeTestSetUp')
@@ -89,117 +87,95 @@ namespace mageekguy\atoum\tests\units
 
 		public function test__construct()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->getScore())->isEqualTo(new atoum\score())
-				->object($test->getLocale())->isEqualTo(new atoum\locale())
-				->object($test->getAdapter())->isEqualTo(new atoum\adapter())
-				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
-				->boolean($test->isIgnored())->isTrue()
-				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getTags())->isEqualTo($tags)
-				->array($test->getMethodTags())->isEmpty()
-				->array($test->getDataProviders())->isEmpty()
-				->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
-				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->variable($test->getMaxChildrenNumber())->isNull()
-				->variable($test->getBootstrapFile())->isNull()
-			;
-
-			$adapter = new atoum\test\adapter();
-			$adapter->extension_loaded = true;
-
-			$test = new emptyTest(null, null, $adapter);
-
-			$this->assert
-				->object($test->getScore())->isEqualTo(new atoum\score())
-				->object($test->getLocale())->isEqualTo(new atoum\locale())
-				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
-				->boolean($test->isIgnored())->isTrue()
-				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getTags())->isEqualTo($tags)
-				->array($test->getMethodTags())->isEmpty()
-				->array($test->getDataProviders())->isEmpty()
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->variable($test->getMaxChildrenNumber())->isNull()
-			;
-
-			$test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals());
-
-			$this->assert
-				->object($test->getScore())->isIdenticalTo($score)
-				->object($test->getLocale())->isIdenticalTo($locale)
-				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isIdenticalTo($superglobals)
-				->boolean($test->isIgnored())->isTrue()
-				->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-				->array($test->getTags())->isEqualTo($tags)
-				->array($test->getMethodTags())->isEmpty()
-				->array($test->getDataProviders())->isEmpty()
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->variable($test->getMaxChildrenNumber())->isNull()
-			;
-
-			$test = new notEmptyTest($score, $locale, $adapter);
-
-			$this->assert
-				->object($test->getScore())->isIdenticalTo($score)
-				->object($test->getLocale())->isIdenticalTo($locale)
-				->object($test->getAdapter())->isIdenticalTo($adapter)
-				->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
-				->boolean($test->isIgnored())->isTrue()
-				->array($test->getAllTags())->isEqualTo(array('test', 'method', 'one', 'two'))
-				->array($test->getTags())->isEmpty()
-				->array($test->getMethodTags())->isEqualTo(array(
-						'testMethod1' => array('test', 'method', 'one'),
-						'testMethod2' => array('test', 'method', 'two')
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->getScore())->isEqualTo(new atoum\score())
+					->object($test->getLocale())->isEqualTo(new atoum\locale())
+					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
+					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
+					->boolean($test->isIgnored())->isTrue()
+					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+					->array($test->getTags())->isEqualTo($tags)
+					->array($test->getMethodTags())->isEmpty()
+					->array($test->getDataProviders())->isEmpty()
+					->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
+					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+					->variable($test->getMaxChildrenNumber())->isNull()
+					->variable($test->getBootstrapFile())->isNull()
+				->if($adapter = new atoum\test\adapter())
+				->and($adapter->extension_loaded = true)
+				->and($test = new emptyTest(null, null, $adapter))
+				->then
+					->object($test->getScore())->isEqualTo(new atoum\score())
+					->object($test->getLocale())->isEqualTo(new atoum\locale())
+					->object($test->getAdapter())->isIdenticalTo($adapter)
+					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
+					->boolean($test->isIgnored())->isTrue()
+					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+					->array($test->getTags())->isEqualTo($tags)
+					->array($test->getMethodTags())->isEmpty()
+					->array($test->getDataProviders())->isEmpty()
+					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+					->variable($test->getMaxChildrenNumber())->isNull()
+				->if($test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals()))
+				->then
+					->object($test->getScore())->isIdenticalTo($score)
+					->object($test->getLocale())->isIdenticalTo($locale)
+					->object($test->getAdapter())->isIdenticalTo($adapter)
+					->object($test->getSuperglobals())->isIdenticalTo($superglobals)
+					->boolean($test->isIgnored())->isTrue()
+					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
+					->array($test->getTags())->isEqualTo($tags)
+					->array($test->getMethodTags())->isEmpty()
+					->array($test->getDataProviders())->isEmpty()
+					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+					->variable($test->getMaxChildrenNumber())->isNull()
+				->if($test = new notEmptyTest($score, $locale, $adapter))
+				->then
+					->object($test->getScore())->isIdenticalTo($score)
+					->object($test->getLocale())->isIdenticalTo($locale)
+					->object($test->getAdapter())->isIdenticalTo($adapter)
+					->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
+					->boolean($test->isIgnored())->isTrue()
+					->array($test->getAllTags())->isEqualTo(array('test', 'method', 'one', 'two'))
+					->array($test->getTags())->isEmpty()
+					->array($test->getMethodTags())->isEqualTo(array(
+							'testMethod1' => array('test', 'method', 'one'),
+							'testMethod2' => array('test', 'method', 'two')
+						)
 					)
-				)
-				->array($test->getDataProviders())->isEmpty()
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->variable($test->getMaxChildrenNumber())->isNull()
+					->array($test->getDataProviders())->isEmpty()
+					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+					->variable($test->getMaxChildrenNumber())->isNull()
 			;
 		}
 
 		public function test__toString()
 		{
-			$this->assert->castToString($this)->isEqualTo(__CLASS__);
+			$this->castToString($this)->isEqualTo(__CLASS__);
 		}
 
 		public function test__get()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->assert)->isInstanceOf('mageekguy\atoum\test\assertion\manager')
-				->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
-				->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
-			;
-
-			$test->setMockGenerator($mockGenerator = new mock\generator());
-
-			$this->assert
-				->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
-			;
-
-			$test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest()));
-
-			$this->assert
-				->object($test->assert)->isIdenticalTo($test->getAssertionManager())
-			;
-
-			$this->assert
-				->exception(function() use ($test, & $property) {
-						$test->{$property = uniqid()};
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'' . $property . '\' does not exist')
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->assert)->isInstanceOf('mageekguy\atoum\test\assertion\manager')
+					->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
+					->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
+				->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
+				->then
+					->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
+				->if($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest())))
+				->then
+					->object($test->assert)->isIdenticalTo($test->getAssertionManager())
+					->exception(function() use ($test, & $property) { $test->{$property = uniqid()}; })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Asserter \'' . $property . '\' does not exist')
 			;
 		}
 
@@ -231,16 +207,16 @@ namespace mageekguy\atoum\tests\units
 
 		public function testDisableCodeCoverage()
 		{
-			$adapter = new atoum\test\adapter();
-			$adapter->extension_loaded = true;
-
-			$test = new emptyTest(null, null, $adapter);
-
-			$this->assert
-				->boolean($test->codeCoverageIsEnabled())->isTrue()
-				->object($test->disableCodeCoverage())->isIdenticalTo($test)
-				->boolean($test->codeCoverageIsEnabled())->isFalse()
-				->when(function() use ($test) { $test->enableCodeCoverage(); })
+			$this
+				->if($adapter = new atoum\test\adapter())
+				->and($adapter->extension_loaded = true)
+				->and($test = new emptyTest(null, null, $adapter))
+				->then
+					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->object($test->disableCodeCoverage())->isIdenticalTo($test)
+					->boolean($test->codeCoverageIsEnabled())->isFalse()
+				->if($test->enableCodeCoverage())
+				->then
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->object($test->disableCodeCoverage())->isIdenticalTo($test)
 					->boolean($test->codeCoverageIsEnabled())->isFalse()
@@ -249,157 +225,142 @@ namespace mageekguy\atoum\tests\units
 
 		public function testSetSuperglobals()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($test)
-				->object($test->getSuperglobals())->isIdenticalTo($superglobals);
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($test)
+					->object($test->getSuperglobals())->isIdenticalTo($superglobals);
 			;
 		}
 
 		public function testGetMockGenerator()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
-			;
-
-			$test->setMockGenerator($mockGenerator = new mock\generator());
-
-			$this->assert
-				->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->getMockGenerator())->isInstanceOf('mageekguy\atoum\mock\generator')
+				->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
+				->then
+					->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+					->object($mockGenerator->getTest())->isIdenticalTo($test)
 			;
 		}
 
 		public function testSetMockGenerator()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setMockGenerator($mockGenerator = new mock\generator()))->isIdenticalTo($test)
-				->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))->isIdenticalTo($test)
+					->object($test->getMockGenerator())->isIdenticalTo($mockGenerator)
+					->object($mockGenerator->getTest())->isIdenticalTo($test)
 			;
 		}
 
 		public function testGetAsserterGenerator()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\test\asserter\generator')
-			;
-
-			$test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest(), new atoum\locale()));
-
-			$this->assert
-				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->getAsserterGenerator())->isInstanceOf('mageekguy\atoum\test\asserter\generator')
+				->if($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator($this)))
+				->then
+					->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
+					->object($asserterGenerator->getTest())->isIdenticalTo($test)
 			;
 		}
 
 		public function testSetAsserterGenerator()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator($test)))->isIdenticalTo($test)
-				->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
-				->object($asserterGenerator->getTest())->isIdenticalTo($test)
-				->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator($test)))->isIdenticalTo($test)
+					->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
+					->object($asserterGenerator->getTest())->isIdenticalTo($test)
+					->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
 			;
 		}
 
 		public function testGetTestsSubNamespace()
 		{
-			$test = new self();
-
-			$this->assert
-				->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-			;
-
-			$test->setTestNamespace($testsSubNamespace = uniqid());
-
-			$this->assert
-				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+			$this
+				->if($test = new self())
+				->then
+					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+				->if($test->setTestNamespace($testsSubNamespace = uniqid()))
+				->then
+					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
 			;
 		}
 
 		public function testSetTestsSubNamespace()
 		{
-			$test = new self();
-
-			$this->assert
-				->object($test->setTestNamespace($testsSubNamespace = uniqid()))->isIdenticalTo($test)
-				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid())))->isIdenticalTo($test)
-				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestNamespace(($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
-				->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
-				->object($test->setTestNamespace($testsSubNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
-				->string($test->getTestNamespace())->isEqualTo((string) $testsSubNamespace)
-			;
-
-			$this->assert
-				->exception(function() use ($test) {
-							$test->setTestNamespace('');
-						}
-					)
-					->isInstanceOf('invalidArgumentException')
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Test namespace must not be empty')
+			$this
+				->if($test = new self())
+				->then
+					->object($test->setTestNamespace($testsSubNamespace = uniqid()))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+					->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid())))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+					->object($test->setTestNamespace('\\' . ($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+					->object($test->setTestNamespace(($testsSubNamespace = uniqid()) . '\\'))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+					->object($test->setTestNamespace($testsSubNamespace = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($test)
+					->string($test->getTestNamespace())->isEqualTo((string) $testsSubNamespace)
+					->exception(function() use ($test) {
+								$test->setTestNamespace('');
+							}
+						)
+						->isInstanceOf('invalidArgumentException')
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test namespace must not be empty')
 			;
 		}
 
 		public function testGetAdapter()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 			;
 		}
 
 		public function testSetAdapter()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($test)
-				->object($test->getAdapter())->isIdenticalTo($adapter)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($test)
+					->object($test->getAdapter())->isIdenticalTo($adapter)
 			;
 		}
 
 		public function testSetLocale()
 		{
-			$test = new emptyTest();
-
-			$locale = new atoum\locale();
-
-			$this->assert
-				->object($test->getLocale())->isNotIdenticalTo($locale)
-				->object($test->setLocale($locale))->isIdenticalTo($test)
-				->object($test->getLocale())->isIdenticalTo($locale)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setLocale($locale = new atoum\locale()))->isIdenticalTo($test)
+					->object($test->getLocale())->isIdenticalTo($locale)
 			;
 		}
 
 		public function testSetScore()
 		{
-			$test = new emptyTest();
-
-			$score = new atoum\score();
-
-			$this->assert
-				->object($test->getScore())->isNotIdenticalTo($score)
-				->object($test->setScore($score))->isIdenticalTo($test)
-				->object($test->getScore())->isIdenticalTo($score)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setScore($score = new atoum\score()))->isIdenticalTo($test)
+					->object($test->getScore())->isIdenticalTo($score)
 			;
 		}
 
 		public function testSetBootstrapFile()
 		{
-			$this->assert
+			$this
 				->if($test = new emptyTest())
 				->then
 					->object($test->setBootstrapFile($path = uniqid()))->isIdenticalTo($test)
@@ -409,41 +370,41 @@ namespace mageekguy\atoum\tests\units
 
 		public function testSetMaxChildrenNumber()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->exception(function() use ($test) { $test->setMaxChildrenNumber(- rand(1, PHP_INT_MAX)); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Maximum number of children must be greater or equal to 1')
-				->exception(function() use ($test) { $test->setMaxChildrenNumber(0); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Maximum number of children must be greater or equal to 1')
-				->object($test->setMaxChildrenNumber($maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
-				->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->exception(function() use ($test) { $test->setMaxChildrenNumber(- rand(1, PHP_INT_MAX)); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Maximum number of children must be greater or equal to 1')
+					->exception(function() use ($test) { $test->setMaxChildrenNumber(0); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Maximum number of children must be greater or equal to 1')
+					->object($test->setMaxChildrenNumber($maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+					->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
 			;
 		}
 
 		public function testGetClass()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->string($test->getClass())->isEqualTo(__NAMESPACE__ . '\emptyTest')
+			$this
+				->if($test = new emptyTest())
+				->then
+					->string($test->getClass())->isEqualTo(__NAMESPACE__ . '\emptyTest')
 			;
 		}
 
 		public function testGetPath()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->string($test->getPath())->isEqualTo(__FILE__)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->string($test->getPath())->isEqualTo(__FILE__)
 			;
 		}
 
 		public function testGetCoverage()
 		{
-			$this->assert
+			$this
 				->if($test = new emptyTest())
 				->then
 					->object($test->getCoverage())->isIdenticalTo($test->getScore()->getCoverage())
@@ -452,50 +413,41 @@ namespace mageekguy\atoum\tests\units
 
 		public function testIgnore()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->boolean($test->isIgnored())->isTrue()
-				->object($test->ignore(false))->isIdenticalTo($test)
-				->boolean($test->isIgnored())->isFalse()
-				->object($test->ignore(true))->isIdenticalTo($test)
-				->boolean($test->isIgnored())->isTrue()
-			;
-
-			$test = new notEmptyTest();
-
-			$this->assert
-				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
-				->object($test->ignore(false))->isIdenticalTo($test)
-				->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->object($test->ignore(true))->isIdenticalTo($test)
-				->boolean($test->methodIsIgnored('testMethod1'))->istrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+			$this
+				->if($test = new emptyTest())
+				->then
+					->boolean($test->isIgnored())->isTrue()
+					->object($test->ignore(false))->isIdenticalTo($test)
+					->boolean($test->isIgnored())->isFalse()
+					->object($test->ignore(true))->isIdenticalTo($test)
+					->boolean($test->isIgnored())->isTrue()
+				->if($test = new notEmptyTest())
+				->then
+					->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+					->object($test->ignore(false))->isIdenticalTo($test)
+					->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
+					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+					->object($test->ignore(true))->isIdenticalTo($test)
+					->boolean($test->methodIsIgnored('testMethod1'))->istrue()
+					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
 			;
 		}
 
 		public function testGetCurrentMethod()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->variable($test->getCurrentMethod())->isNull()
+			$this
+				->if($test = new emptyTest())
+				->then
+					->variable($test->getCurrentMethod())->isNull()
 			;
 		}
 
 		public function testCount()
 		{
-			$this->assert
+			$this
 				->sizeOf(new emptyTest())->isEqualTo(0)
-			;
-
-			$test = new notEmptyTest();
-
-			$this->assert
-				->if
-					->boolean($test->isIgnored())->isTrue()
+				->if($test = new notEmptyTest())
 				->then
 					->sizeOf($test)->isEqualTo(0)
 				->if($test->ignore(false))
@@ -516,110 +468,101 @@ namespace mageekguy\atoum\tests\units
 
 		public function testGetTestMethods()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->boolean($test->ignore(false)->isIgnored())->isFalse()
-				->sizeOf($test)->isZero()
-				->array($test->getTestMethods())->isEmpty()
-			;
-
-			$test = new notEmptyTest();
-
-			$this->assert
-				->boolean($test->isIgnored())->isTrue()
-				->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
-				->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
-				->sizeOf($test)->isEqualTo(0)
-				->array($test->getTestMethods())->isEmpty()
-				->boolean($test->ignore(false)->isIgnored())->isFalse()
-				->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
-				->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
-				->sizeOf($test)->isEqualTo(2)
-				->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
-				->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1', 'testMethod2'))
-				->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-				->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2'))
-				->array($test->getTestMethods(array(uniqid())))->isEmpty()
-				->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
-				->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
-				->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
+			$this
+				->if($test = new emptyTest())
+				->then
+					->boolean($test->ignore(false)->isIgnored())->isFalse()
+					->sizeOf($test)->isZero()
+					->array($test->getTestMethods())->isEmpty()
+				->if($test = new notEmptyTest())
+				->then
+					->boolean($test->isIgnored())->isTrue()
+					->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
+					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
+					->sizeOf($test)->isEqualTo(0)
+					->array($test->getTestMethods())->isEmpty()
+					->boolean($test->ignore(false)->isIgnored())->isFalse()
+					->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
+					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
+					->sizeOf($test)->isEqualTo(2)
+					->array($test->getTestMethods())->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('method')))->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('test')))->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('two')))->isEqualTo(array('testMethod2'))
+					->array($test->getTestMethods(array(uniqid())))->isEmpty()
+					->array($test->getTestMethods(array('test', 'method')))->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('test', 'method', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
+					->array($test->getTestMethods(array('test', 'method', 'two', uniqid())))->isEqualTo(array('testMethod1', 'testMethod2'))
 			;
 		}
 
 		public function testGetPhpPath()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->variable($test->getPhpPath())->isNull()
-			;
-
-			$test->setPhpPath($phpPath = uniqid());
-
-			$this->assert
-				->string($test->getPhpPath())->isEqualTo($phpPath)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->variable($test->getPhpPath())->isNull()
+				->if($test->setPhpPath($phpPath = uniqid()))
+				->then
+					->string($test->getPhpPath())->isEqualTo($phpPath)
 			;
 		}
 
 		public function testSetPhpPath()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setPhpPath($phpPath = uniqid()))->isIdenticalTo($test)
-				->string($test->getPhpPath())->isIdenticalTo($phpPath)
-			;
-
-			$this->assert
-				->object($test->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
-				->string($test->getPhpPath())->isIdenticalTo((string) $phpPath)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setPhpPath($phpPath = uniqid()))->isIdenticalTo($test)
+					->string($test->getPhpPath())->isIdenticalTo($phpPath)
+					->object($test->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+					->string($test->getPhpPath())->isIdenticalTo((string) $phpPath)
 			;
 		}
 
 		public function testMethodIsIgnored()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->exception(function() use ($test, & $method) { $test->methodIsIgnored($method = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			$this
+				->if($test = new emptyTest())
+				->then
+					->exception(function() use ($test, & $method) { $test->methodIsIgnored($method = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
 			;
 		}
 
 		public function testSetTags()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->setTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
-				->array($test->getTags())->isEqualTo($tags)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setTags($tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+					->array($test->getTags())->isEqualTo($tags)
 			;
 		}
 
 		public function testSetMethodTags()
 		{
-			$test = new notEmptyTest();
-
-			$this->assert
-				->object($test->setMethodTags('testMethod1', $tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
-				->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
-				->exception(function() use ($test, & $method) { $test->setMethodTags($method = uniqid(), array()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			$this
+				->if($test = new notEmptyTest())
+				->then
+					->object($test->setMethodTags('testMethod1', $tags = array(uniqid(), uniqid())))->isIdenticalTo($test)
+					->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
+					->exception(function() use ($test, & $method) { $test->setMethodTags($method = uniqid(), array()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
 			;
 		}
 
 		public function testGetMethodTags()
 		{
-			$test = new notemptyTest();
-
-			$this->assert
-				->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
-				->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+			$this
+				->if($test = new notemptyTest())
+				->then
+					->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
+					->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
 			;
 		}
 
@@ -627,94 +570,81 @@ namespace mageekguy\atoum\tests\units
 		{
 			$this
 				->mockTestedClass('mock\tests\units')
-			;
-
-			$test = new \mock\tests\units\test();
-
-			$this->assert
-				->object($test->run())->isIdenticalTo($test)
-				->mock($test)
-					->call('callObservers')
-						->withArguments(\mageekguy\atoum\test::runStart)->once()
-						->withArguments(\mageekguy\atoum\test::runStop)->once()
-						->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
-						->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
-						->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
-						->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
+				->if($test = new \mock\tests\units\test())
+				->then
+					->object($test->run())->isIdenticalTo($test)
+					->mock($test)
+						->call('callObservers')
+							->withArguments(\mageekguy\atoum\test::runStart)->once()
+							->withArguments(\mageekguy\atoum\test::runStop)->once()
+							->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
+							->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
+							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
+							->withArguments(\mageekguy\atoum\test::afterTestMethod)->never()
 			;
 		}
 
 		public function testSetTestedClassName()
 		{
-			$test = new foo();
-
-			$this->assert
-				->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
-				->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Tested class name is already defined')
-			;
-
-			$test = new self();
-
-			$this->assert
-				->object($test->setTestedClassName($class = uniqid()))->isIdenticalTo($test)
-				->string($test->getTestedClassName())->isEqualTo($class)
-				->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Tested class name is already defined')
+			$this
+				->if($test = new foo())
+				->then
+					->string($test->getTestedClassName())->isEqualTo('mageekguy\atoum\test')
+					->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Tested class name is already defined')
+				->if($test = new self())
+				->then
+					->object($test->setTestedClassName($class = uniqid()))->isIdenticalTo($test)
+					->string($test->getTestedClassName())->isEqualTo($class)
+					->exception(function() use ($test) { $test->setTestedClassName(uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Tested class name is already defined')
 			;
 		}
 
 		public function testMockClass()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->object($test->mockClass(__CLASS__))->isIdenticalTo($test)
-				->class('mock\\' . __CLASS__)->isSubClassOf(__CLASS__)
-				->object($test->mockClass(__CLASS__, 'foo'))->isIdenticalTo($test)
-				->class('foo\test')->isSubClassOf(__CLASS__)
-				->object($test->mockClass(__CLASS__, 'foo\bar'))->isIdenticalTo($test)
-				->class('foo\bar\test')->isSubClassOf(__CLASS__)
-				->object($test->mockClass(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
-				->class('foo\bar')->isSubClassOf(__CLASS__)
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->mockClass(__CLASS__))->isIdenticalTo($test)
+					->class('mock\\' . __CLASS__)->isSubClassOf(__CLASS__)
+					->object($test->mockClass(__CLASS__, 'foo'))->isIdenticalTo($test)
+					->class('foo\test')->isSubClassOf(__CLASS__)
+					->object($test->mockClass(__CLASS__, 'foo\bar'))->isIdenticalTo($test)
+					->class('foo\bar\test')->isSubClassOf(__CLASS__)
+					->object($test->mockClass(__CLASS__, 'foo', 'bar'))->isIdenticalTo($test)
+					->class('foo\bar')->isSubClassOf(__CLASS__)
 			;
 		}
 
 		public function testMockTestedClass()
 		{
-			$test = new emptyTest();
-
-			$testedClassName = $test->getTestedClassName();
-
-			$this->assert
-				->object($test->mockTestedClass())->isIdenticalTo($test)
-				->class('mock\\' . $testedClassName)->isSubClassOf($testedClassName)
-				->object($test->mockTestedClass('foo'))->isIdenticalTo($test)
-				->class('foo\emptyTest')->isSubClassOf($testedClassName)
-				->object($test->mockTestedClass('foo\bar'))->isIdenticalTo($test)
-				->class('foo\bar\emptyTest')->isSubClassOf($testedClassName)
-				->object($test->mockTestedClass('foo', 'bar'))->isIdenticalTo($test)
-				->class('foo\bar')->isSubClassOf($testedClassName)
+			$this
+				->if($test = new emptyTest())
+				->and($testedClassName = $test->getTestedClassName())
+				->then
+					->object($test->mockTestedClass())->isIdenticalTo($test)
+					->class('mock\\' . $testedClassName)->isSubClassOf($testedClassName)
+					->object($test->mockTestedClass('foo'))->isIdenticalTo($test)
+					->class('foo\emptyTest')->isSubClassOf($testedClassName)
+					->object($test->mockTestedClass('foo\bar'))->isIdenticalTo($test)
+					->class('foo\bar\emptyTest')->isSubClassOf($testedClassName)
+					->object($test->mockTestedClass('foo', 'bar'))->isIdenticalTo($test)
+					->class('foo\bar')->isSubClassOf($testedClassName)
 			;
 		}
 
 		public function testGetTaggedTestMethods()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->array($test->getTaggedTestMethods(array()))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
-				->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
-			;
-
-			$test = new notEmptyTest();
-
-			$this->assert
-				->if
-					->boolean($test->isIgnored())->isTrue()
+			$this
+				->if($test = new emptyTest())
+				->then
+					->array($test->getTaggedTestMethods(array()))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
+					->array($test->getTaggedTestMethods(array(uniqid(), uniqid())))->isEmpty()
+				->if($test = new notEmptyTest())
 				->then
 					->array($test->getTaggedTestMethods(array()))->isEmpty()
 					->array($test->getTaggedTestMethods(array(uniqid())))->isEmpty()
@@ -739,22 +669,19 @@ namespace mageekguy\atoum\tests\units
 
 		public function testSetDataProvider()
 		{
-			$test = new emptyTest();
-
-			$this->assert
-				->exception(function() use ($test, & $method) { $test->setDataProvider($method = uniqid(), uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
-			;
-
-			$test = new notEmptyTest();
-
-			$this->assert
-				->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod1', $dataProvider = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
-				->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
-				->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
+			$this
+				->if($test = new emptyTest())
+				->then
+					->exception(function() use ($test, & $method) { $test->setDataProvider($method = uniqid(), uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+				->if($test = new notEmptyTest())
+				->then
+					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod1', $dataProvider = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Data provider ' . get_class($test) . '::' . $dataProvider . '() is unknown')
+					->object($test->setDataProvider('testMethod1', 'aDataProvider'))->isIdenticalTo($test)
+					->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
 			;
 		}
 	}

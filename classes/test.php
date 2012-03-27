@@ -237,16 +237,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->bootstrapFile;
 	}
 
-	public function setMockGenerator(mock\generator $generator)
+	public function setMockGenerator(test\mock\generator $generator)
 	{
-		$this->mockGenerator = $generator;
+		$this->mockGenerator = $generator->setTest($this);
 
 		return $this;
 	}
 
 	public function getMockGenerator()
 	{
-		return $this->mockGenerator ?: $this->setMockGenerator(new mock\generator())->mockGenerator;
+		return $this->mockGenerator ?: $this->setMockGenerator(new test\mock\generator($this))->mockGenerator;
 	}
 
 	public function setAsserterGenerator(test\asserter\generator $generator)
