@@ -156,6 +156,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$test = $this;
 		$this->assertionManager->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getAssertionManager(); });
 		$this->assertionManager->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); });
+		$this->assertionManager->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; });
+		$this->assertionManager->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; });
 
 		$asserterGenerator = $this->asserterGenerator;
 		$this->assertionManager->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; });
@@ -906,20 +908,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function mock($class, $mockNamespace = null, $mockClass = null)
 	{
 		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::mockClass() instead');
-
-		return $this;
-	}
-
-	public function mockClass($class, $mockNamespace = null, $mockClass = null)
-	{
-		$this->getMockGenerator()->generate($class, $mockNamespace, $mockClass);
-
-		return $this;
-	}
-
-	public function mockTestedClass($mockNamespace = null, $mockClass = null)
-	{
-		$this->getMockGenerator()->generate($this->getTestedClassName(), $mockNamespace, $mockClass);
 
 		return $this;
 	}
