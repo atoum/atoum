@@ -46,6 +46,7 @@ class extractor extends atoum\test
 			->and($extractor->setHandler('tags', function($value) use (& $tags) { $tags = $value; }))
 			->and($extractor->setHandler('dataProvider', function($value) use (& $dataProvider) { $dataProvider = $value; }))
 			->and($extractor->setHandler('namespace', function($value) use (& $namespace) { $namespace = $value; }))
+			->and($extractor->setHandler('maxChildrenNumber', function($value) use (& $maxChildrenNumber) { $maxChildrenNumber = $value; }))
 			->then
 				->object($extractor->extract(''))->isIdenticalTo($extractor)
 					->variable($ignore)->isNull()
@@ -125,6 +126,10 @@ class extractor extends atoum\test
 					->string($tags)->isEqualTo('aTag otherTag anotherTag')
 					->string($dataProvider)->isEqualTo('aDataProvider')
 					->string($namespace)->isEqualTo('bar')
+				->object($extractor->extract('/** @maxChildrenNumber 1 */'))->isIdenticalTo($extractor)
+					->string($maxChildrenNumber)->isEqualTo('1')
+				->object($extractor->extract('/** @maxChildrenNumber ' . ($number = rand(1, PHP_INT_MAX)) . ' */'))->isIdenticalTo($extractor)
+					->string($maxChildrenNumber)->isEqualTo($number)
 		;
 	}
 

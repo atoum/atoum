@@ -14,7 +14,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 {
 	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
-
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -81,6 +80,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->extract($class->getDocComment())
 		;
 
@@ -89,6 +89,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			$annotationExtractor
 				->unsetHandler('ignore')
 				->unsetHandler('tags')
+				->unsetHandler('maxChildrenNumber')
 			;
 
 			$parentClass = $class;
@@ -193,6 +194,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function setMaxChildrenNumber($number)
 	{
+		$number = (int) $number;
+
 		if ($number < 1)
 		{
 			throw new exceptions\logic\invalidArgument('Maximum number of children must be greater or equal to 1');

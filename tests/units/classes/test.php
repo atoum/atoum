@@ -23,6 +23,7 @@ namespace mageekguy\atoum\tests\units
 	/**
 	@ignore on
 	@tags empty fake dummy
+	@maxChildrenNumber 666
 	*/
 	class emptyTest extends atoum\test {}
 
@@ -99,9 +100,10 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getTags())->isEqualTo($tags)
 					->array($test->getMethodTags())->isEmpty()
 					->array($test->getDataProviders())->isEmpty()
+					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-					->variable($test->getMaxChildrenNumber())->isNull()
+					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->variable($test->getBootstrapFile())->isNull()
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->extension_loaded = true)
@@ -116,9 +118,9 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getTags())->isEqualTo($tags)
 					->array($test->getMethodTags())->isEmpty()
 					->array($test->getDataProviders())->isEmpty()
+					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-					->variable($test->getMaxChildrenNumber())->isNull()
 				->if($test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals()))
 				->then
 					->object($test->getScore())->isIdenticalTo($score)
@@ -130,9 +132,9 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getTags())->isEqualTo($tags)
 					->array($test->getMethodTags())->isEmpty()
 					->array($test->getDataProviders())->isEmpty()
+					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-					->variable($test->getMaxChildrenNumber())->isNull()
 				->if($test = new notEmptyTest($score, $locale, $adapter))
 				->then
 					->object($test->getScore())->isIdenticalTo($score)
@@ -148,9 +150,9 @@ namespace mageekguy\atoum\tests\units
 						)
 					)
 					->array($test->getDataProviders())->isEmpty()
+					->variable($test->getMaxChildrenNumber())->isNull()
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-					->variable($test->getMaxChildrenNumber())->isNull()
 			;
 		}
 
@@ -380,6 +382,8 @@ namespace mageekguy\atoum\tests\units
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Maximum number of children must be greater or equal to 1')
 					->object($test->setMaxChildrenNumber($maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
+					->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
+					->object($test->setMaxChildrenNumber((string) $maxChildrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($test)
 					->integer($test->getMaxChildrenNumber())->isEqualTo($maxChildrenNumber)
 			;
 		}
