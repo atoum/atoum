@@ -13,15 +13,12 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass
-				->isSubclassOf('mageekguy\atoum\test\adapter')
-		;
+		$this->testedClass->isSubclassOf('mageekguy\atoum\test\adapter');
 	}
 
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->variable($mockController->getMockClass())->isNull()
@@ -32,7 +29,7 @@ class controller extends atoum\test
 
 	public function test__set()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->and($mockController->{$method = uniqid()} = function() use (& $return) { return $return = uniqid(); })
 			->then
@@ -47,7 +44,7 @@ class controller extends atoum\test
 
 	public function test__isset()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->boolean(isset($mockController->{uniqid()}))->isFalse()
@@ -63,7 +60,7 @@ class controller extends atoum\test
 
 	public function test__get()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
@@ -86,7 +83,7 @@ class controller extends atoum\test
 
 	public function test__unset()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->boolean(isset($mockController->{$method = uniqid()}))->isFalse()
@@ -98,7 +95,8 @@ class controller extends atoum\test
 			->then
 				->boolean(isset($mockController->{$method}))->isFalse()
 				->boolean(isset($mockController->{strtoupper($method)}))->isFalse()
-			->if($reflectionClass = new \mock\reflectionClass($this))
+			->if($mockController->notControlNextNewMock())
+			->and($reflectionClass = new \mock\reflectionClass($this))
 			->and($mockController = new mock\controller())
 			->and($mockController->control($reflectionClass))
 			->then
@@ -118,9 +116,10 @@ class controller extends atoum\test
 
 	public function testSetReflectionClassInjector()
 	{
-		$this->assert
+		$this
 			->if($this->mockGenerator->shunt('__construct'))
 			->and($mockController = new mock\controller())
+			->and($mockController->notControlNextNewMock())
 			->then
 				->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
 				->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
@@ -135,9 +134,10 @@ class controller extends atoum\test
 
 	public function testGetReflectionClass()
 	{
-		$this->assert
+		$this
 			->if($this->mockGenerator->shunt('__construct'))
 			->if($mockController = new mock\controller())
+			->and($mockController->notControlNextNewMock())
 			->then
 				->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 				->string($mockController->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
@@ -173,7 +173,6 @@ class controller extends atoum\test
 		$setMockController->__construct = function() {};
 		$setMockController->getName = function() { return 'setMockController'; };
 		$setMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$setMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('setMockController');
 
@@ -181,7 +180,6 @@ class controller extends atoum\test
 		$getMockController->__construct = function() {};
 		$getMockController->getName = function() { return 'getMockController'; };
 		$getMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$getMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('getMockController');
 
@@ -189,7 +187,6 @@ class controller extends atoum\test
 		$resetMockController->__construct = function() {};
 		$resetMockController->getName = function() { return 'resetMockController'; };
 		$resetMockController->getPrototype = function() use ($mockAggregator) { return $mockAggregator; };
-		$resetMockController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('resetMockController');
 
@@ -197,7 +194,6 @@ class controller extends atoum\test
 		$protectedMethodController->__construct = function() {};
 		$protectedMethodController->getName = function() { return 'protected'; };
 		$protectedMethodController->getPrototype = function() { throw new \exception(); };
-		$protectedMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PROTECTED][] = new \mock\reflectionMethod('protectedMethod');
 
@@ -205,7 +201,6 @@ class controller extends atoum\test
 		$privateMethodController->__construct = function() {};
 		$privateMethodController->getName = function() { return 'private'; };
 		$privateMethodController->getPrototype = function() { throw new \exception(); };
-		$privateMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PRIVATE][] = new \mock\reflectionMethod('privateMethod');
 
@@ -213,7 +208,6 @@ class controller extends atoum\test
 		$aMethodController->__construct = function() {};
 		$aMethodController->getName = function() { return 'a'; };
 		$aMethodController->getPrototype = function() { throw new \exception(); };
-		$aMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('a');
 
@@ -221,7 +215,6 @@ class controller extends atoum\test
 		$bMethodController->__construct = function() {};
 		$bMethodController->getName = function() { return 'b'; };
 		$bMethodController->getPrototype = function() { throw new \exception(); };
-		$bMethodController->controlNextNewMock();
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('b');
 
@@ -237,7 +230,7 @@ class controller extends atoum\test
 
 		$aMock = new \mock\reflectionClass(uniqid(), $aMockController);
 
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->and($mockController->setReflectionClassInjector(function ($class) use ($reflectionClassInjector) { return $reflectionClassInjector; }))
 			->then
@@ -252,12 +245,45 @@ class controller extends atoum\test
 					)
 				)
 				->array($mockController->getCalls())->isEmpty()
+			->if($mock = new \mock\foo())
+			->and($mockController = new mock\controller())
+			->and($mockController->controlNextNewMock())
+			->and($mockController->control($mock))
+			->then
+				->variable(mock\controller::get())->isNull()
+		;
+	}
+
+	public function testControlNextNewMock()
+	{
+		$this
+			->if($mockController = new mock\controller())
+			->then
+				->object($mockController->controlNextNewMock())->isIdenticalTo($mockController)
+				->object(mock\controller::get())->isIdenticalTo($mockController)
+		;
+	}
+
+	public function testNotControlNextNewMock()
+	{
+		$this
+			->if($mockController = new mock\controller())
+			->and($mockController->controlNextNewMock())
+			->then
+				->object($mockController->notControlNextNewMock())->isIdenticalTo($mockController)
+				->variable(mock\controller::get())->isNull()
+			->if($mockController = new mock\controller())
+			->and($otherMockController = new mock\controller())
+			->and($otherMockController->controlNextNewMock())
+			->then
+				->object($mockController->notControlNextNewMock())->isIdenticalTo($mockController)
+				->object(mock\controller::get())->isIdenticalTo($otherMockController)
 		;
 	}
 
 	public function testInvoke()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->and($method = uniqid())
 			->then
@@ -420,7 +446,7 @@ class controller extends atoum\test
 
 	public function testGet()
 	{
-		$this->assert
+		$this
 				->variable(mock\controller::get())->isNull()
 			->if($mockController = new mock\controller())
 			->then
@@ -432,7 +458,7 @@ class controller extends atoum\test
 
 	public function testReset()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->variable($mockController->getMockClass())->isNull()
@@ -461,7 +487,7 @@ class controller extends atoum\test
 
 	public function testGetCalls()
 	{
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->then
 				->array($mockController->getCalls())->isEmpty()
@@ -489,8 +515,7 @@ class controller extends atoum\test
 
 	public function testResetCalls()
 	{
-
-		$this->assert
+		$this
 			->if($mockController = new mock\controller())
 			->and($mockController->{$method = uniqid()} = function() {})
 			->then

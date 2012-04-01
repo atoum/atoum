@@ -20,6 +20,8 @@ class controller extends test\adapter
 	public function __construct()
 	{
 		parent::__construct();
+
+		$this->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -135,7 +137,7 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
-			foreach ($this->invokers as $method => $closure)
+			foreach (array_keys($this->invokers) as $method)
 			{
 				if (in_array($method, $methods) === false)
 				{
@@ -154,18 +156,27 @@ class controller extends test\adapter
 			$mock->setMockController($this);
 		}
 
-		return $this;
-	}
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
 
-	public function injectInNextMockInstance()
-	{
-		#DEPRECATED
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
+		return $this;
 	}
 
 	public function controlNextNewMock()
 	{
 		self::$controlNextNewMock = $this;
+
+		return $this;
+	}
+
+	public function notControlNextNewMock()
+	{
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
 
 		return $this;
 	}
@@ -199,6 +210,12 @@ class controller extends test\adapter
 		}
 
 		return $instance;
+	}
+
+	public function injectInNextMockInstance()
+	{
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
 	}
 
 	protected function checkMethod($method)

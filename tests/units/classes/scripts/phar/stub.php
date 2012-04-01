@@ -53,7 +53,6 @@ class stub extends atoum\test
 							$pharController->offsetExists = true;
 							$pharController->offsetGet = function($path) { return $path; };
 							$pharController->offsetSet = function() {};
-							$pharController->controlNextNewMock();
 							$phar = new \mock\phar($path);
 
 							return $phar;
