@@ -443,6 +443,25 @@ class runner extends atoum\script
 						$this->locale->_('Execute unit test files in all <directory>')
 					)
 				->addArgumentHandler(
+					function($script, $argument, $filters) {
+						if (sizeof($filters) <= 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$runner = $script->getRunner();
+
+						foreach ($filters as $filter)
+						{
+							$runner->addFilter($filter);
+						}
+					},
+					array('-g', '--glob-filter'),
+					'<pattern>...',
+					$this->locale->_('Execute unit test files matching <pattern>'),
+					1
+				)
+				->addArgumentHandler(
 						function($script, $argument, $tags) {
 							if (sizeof($tags) <= 0)
 							{

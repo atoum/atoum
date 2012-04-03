@@ -4,7 +4,8 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\tool;
 ;
 
 class runner implements observable, adapter\aggregator
@@ -31,6 +32,7 @@ class runner implements observable, adapter\aggregator
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
+	protected $filters = array();
 
 	private $start = null;
 	private $stop = null;
@@ -48,6 +50,16 @@ class runner implements observable, adapter\aggregator
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setFilters($filters)
+	{
+		$this->filters = $filters;
+	}
+
+	public function getFilters()
+	{
+		return $this->filters;
 	}
 
 	public function setScore(score $score)
@@ -409,6 +421,11 @@ class runner implements observable, adapter\aggregator
 		return $this->score;
 	}
 
+	public function addFilter($filter)
+	{
+		$this->filters[] = tools\glob::toRegex($filter, false, false);
+	}
+
 	public function addTest($path)
 	{
 		$runner = $this;
@@ -427,9 +444,23 @@ class runner implements observable, adapter\aggregator
 
 	public function addTestsFromDirectory($directory)
 	{
+		$filtered = !empty($this->filters);
 		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
 		{
-			$this->addTest($path);
+			if ($filtered)
+			{
+				foreach ($this->filters as $filter)
+				{
+					if (preg_match($filter, $path->getPathname()))
+					{
+						$this->addTest($path);
+					}
+				}
+			}
+			else
+			{
+				$this->addTest($path);
+			}
 		}
 
 		return $this;
