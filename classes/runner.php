@@ -454,9 +454,25 @@ class runner implements observable, adapter\aggregator
 
 	public function addTestsFromDirectory($directory)
 	{
+		$wildcard = strpos($directory, '*');
+		if ($wildcard > 0)
+		{
+			$directory = rtrim($directory, DIRECTORY_SEPARATOR.'*');
+		    while(substr($directory, --$wildcard, 1) != DIRECTORY_SEPARATOR);
+
+		    $basePathname = substr($directory, 0, $wildcard);
+		    $subPatterns = explode('/', ltrim(str_replace($basePathname, '', $directory), DIRECTORY_SEPARATOR));
+
+		    $filteredDirectoryIterator = new atoum\src\iterator\wildcardfilter(new \recursiveDirectoryIterator($basePathname), $basePathname, $subPatterns);
+		}
+		else
+		{
+			$filteredDirectoryIterator = new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory));
+		}
+
 		try
 		{
-			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			foreach (new \recursiveIteratorIterator($filteredDirectoryIterator) as $path)
 			{
 				$this->addTest($path);
 			}
