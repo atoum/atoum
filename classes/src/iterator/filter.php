@@ -12,7 +12,7 @@ class filter extends \recursiveFilterIterator
 	{
 		if ($file === null)
 		{
-			$file = $this->getInnerIterator()->current();
+			$file = $this->current();
 		}
 
 		return (substr($file->getFilename(), 0, 1) != '.');

@@ -489,6 +489,13 @@ class runner extends atoum\script
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
+							foreach (new \recursiveIteratorIterator(new atoum\tools\glob('tests/units/*/tools')) as $path => $file)
+							{
+								echo $path . PHP_EOL;
+							}
+
+							die();
+
 
 							$runner = $script->getRunner();
 
@@ -500,6 +507,24 @@ class runner extends atoum\script
 						array('-d', '--directories'),
 						'<directory>...',
 						$this->locale->_('Execute unit test files in all <directory>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $patterns) {
+							if (sizeof($patterns) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$runner = $script->getRunner();
+
+							foreach ($patterns as $pattern)
+							{
+								$runner->addTestsFromPattern($pattern);
+							}
+						},
+						array('-g', '--glob'),
+						'<pattern>...',
+						$this->locale->_('Execute unit test files which match <pattern>')
 					)
 				->addArgumentHandler(
 						function($script, $argument, $tags) {

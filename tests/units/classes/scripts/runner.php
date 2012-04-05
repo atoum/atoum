@@ -106,6 +106,11 @@ class runner extends atoum\test
 							'Execute unit test files in all <directory>'
 						),
 						array(
+							array('-g', '--glob'),
+							'<pattern>...',
+							'Execute unit test files which match <pattern>'
+						),
+						array(
 							array('-t', '--tags'),
 							'<tag>...',
 							'Execute only unit test with tags <tag>'
@@ -227,6 +232,11 @@ class runner extends atoum\test
 							array('-d', '--directories'),
 							'<directory>...',
 							'Execute unit test files in all <directory>'
+						),
+						array(
+							array('-g', '--glob'),
+							'<pattern>...',
+							'Execute unit test files which match <pattern>'
 						),
 						array(
 							array('-t', '--tags'),

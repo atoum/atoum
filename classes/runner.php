@@ -469,6 +469,30 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
+	public function addTestsFromPattern($pattern)
+	{
+		try
+		{
+			foreach (new \globIterator(rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
+			{
+				if ($path->isDir() === true)
+				{
+					$this->addTestsFromDirectory($path);
+				}
+				else
+				{
+					$this->addTest($path);
+				}
+			}
+		}
+		catch (\UnexpectedValueException $exception)
+		{
+			throw new exceptions\runtime('Unable to read test from pattern \'' . $pattern . '\'');
+		}
+
+		return $this;
+	}
+
 	public function getRunningDuration()
 	{
 		return ($this->start === null || $this->stop === null ? null : $this->stop - $this->start);
