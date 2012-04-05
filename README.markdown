@@ -76,8 +76,7 @@ class helloWorld extends atoum\test
 	{
 		$helloWorld = new project\helloWorld();
 
-		$this->assert
-			->string($helloWorld->say())->isEqualTo('Hello World!')
+		$this->string($helloWorld->say())->isEqualTo('Hello World!')
 		;
 	}
 }
@@ -155,7 +154,7 @@ class helloWorld extends atoum\test
 	{
 		$helloWorld = new project\helloWorld();
 
-		$this->assert
+		$this
 			->string($helloWorld->say())->isEqualTo('Hello!')
 			->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . '!')
 		;
