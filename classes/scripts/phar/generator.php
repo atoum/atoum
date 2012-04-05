@@ -174,7 +174,7 @@ class generator extends atoum\script
 			throw new exceptions\runtime(sprintf($this->locale->_('Unable to read stub file \'%s\''), $this->stubFile));
 		}
 
-		$phar = $this->factory->build('phar', array($pharFile));
+		$phar = $this->askToFactory('phar', array($pharFile));
 
 		$phar['versions'] = serialize(array('1' => atoum\version, 'current' => '1'));
 

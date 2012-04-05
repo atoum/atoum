@@ -31,8 +31,8 @@ class runner extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this
-			->setRunner($this->factory->build('atoum\runner'))
-			->setIncluder($this->factory->build('atoum\includer'))
+			->setRunner($this->askToFactory('atoum\runner'))
+			->setIncluder($this->askToFactory('atoum\includer'))
 		;
 	}
 
@@ -167,7 +167,7 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$script = $this->factory->build('atoum\configurator', array($this));
+		$script = $this->askToFactory('atoum\configurator', array($this));
 		$runner = $this->runner;
 
 		try
@@ -416,6 +416,54 @@ class runner extends atoum\script
 						array('-ncc', '--no-code-coverage'),
 						null,
 						$this->locale->_('Disable code coverage')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $directories) {
+							if (sizeof($directories) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($directories as $directory)
+							{
+								$script->getRunner()->getCoverage()->excludeDirectory($directory);
+							}
+						},
+						array('-nccid', '--no-code-coverage-in-directories'),
+						'<directory>...',
+						$this->locale->_('Disable code coverage in directories <directory>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $namespaces) {
+							if (sizeof($namespaces) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($namespaces as $namespace)
+							{
+								$script->getRunner()->getCoverage()->excludeNamespace($namespace);
+							}
+						},
+						array('-nccfns', '--no-code-coverage-for-namespaces'),
+						'<namespace>...',
+						$this->locale->_('Disable code coverage for namespaces <namespace>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $classes) {
+							if (sizeof($classes) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($classes as $class)
+							{
+								$script->getRunner()->getCoverage()->excludeClass($class);
+							}
+						},
+						array('-nccfc', '--no-code-coverage-for-classes'),
+						'<class>...',
+						$this->locale->_('Disable code coverage for classes <class>')
 					)
 				->addArgumentHandler(
 						function($script, $argument, $files) {

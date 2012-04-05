@@ -12,7 +12,7 @@ class controller extends test\adapter
 {
 	protected $mockClass = null;
 
-	protected static $injectInNextInstance = null;
+	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 	private $reflectionClassInjector = null;
@@ -20,6 +20,8 @@ class controller extends test\adapter
 	public function __construct()
 	{
 		parent::__construct();
+
+		$this->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -135,7 +137,7 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
-			foreach ($this->invokers as $method => $closure)
+			foreach (array_keys($this->invokers) as $method)
 			{
 				if (in_array($method, $methods) === false)
 				{
@@ -154,12 +156,27 @@ class controller extends test\adapter
 			$mock->setMockController($this);
 		}
 
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
+
 		return $this;
 	}
 
-	public function injectInNextMockInstance()
+	public function controlNextNewMock()
 	{
-		self::$injectInNextInstance = $this;
+		self::$controlNextNewMock = $this;
+
+		return $this;
+	}
+
+	public function notControlNextNewMock()
+	{
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
 
 		return $this;
 	}
@@ -185,14 +202,20 @@ class controller extends test\adapter
 
 	public static function get()
 	{
-		$instance = self::$injectInNextInstance;
+		$instance = self::$controlNextNewMock;
 
 		if ($instance !== null)
 		{
-			self::$injectInNextInstance = null;
+			self::$controlNextNewMock = null;
 		}
 
 		return $instance;
+	}
+
+	public function injectInNextMockInstance()
+	{
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
 	}
 
 	protected function checkMethod($method)

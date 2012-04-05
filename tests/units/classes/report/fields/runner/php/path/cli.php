@@ -91,7 +91,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($field = new runner\php\path\cli())
 				->and($score = new \mock\mageekguy\atoum\score())
@@ -107,7 +106,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())

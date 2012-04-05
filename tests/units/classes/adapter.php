@@ -12,9 +12,11 @@ class adapter extends atoum\test
 {
 	public function test__call()
 	{
-		$adapter = new atoum\adapter();
-
-		$this->assert->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash));
+		$this
+			->if($adapter = new atoum\adapter())
+			->then
+				->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash))
+		;
 	}
 }
 

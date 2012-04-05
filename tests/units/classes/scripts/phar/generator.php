@@ -205,7 +205,6 @@ class generator extends atoum\test
 	public function testWriteMessage()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($generator = new phar\generator(uniqid()))
 				->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
@@ -220,7 +219,6 @@ class generator extends atoum\test
 	public function testWriteError()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\err')
 			->assert
 				->if($generator = new phar\generator(uniqid()))
 				->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
@@ -236,9 +234,6 @@ class generator extends atoum\test
 	public function testRun()
 	{
 		$this
-			->mock('phar')
-			->mock('mageekguy\atoum\writers\std\out')
-			->mock('mageekguy\atoum\writers\std\err')
 			->assert
 				->if($originDirectoryController = mock\stream::get('originDirectory'))
 				->and($originDirectoryController->opendir = true)
@@ -311,7 +306,6 @@ class generator extends atoum\test
 								$pharController->setSignatureAlgorithm = function() {};
 								$pharController->offsetGet = function() {};
 								$pharController->offsetSet = function() {};
-								$pharController->injectInNextMockInstance();
 
 								return ($phar = new \mock\phar($name));
 							}
@@ -401,7 +395,6 @@ class generator extends atoum\test
 						->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
 				->if($generator->getFactory()->setBuilder('phar', function($name) use (& $phar) {
 							$pharController = new mock\controller();
-							$pharController->injectInNextMockInstance();
 							$pharController->__construct = function() {};
 							$pharController->setStub = function() {};
 							$pharController->setMetadata = function() {};
@@ -409,7 +402,6 @@ class generator extends atoum\test
 							$pharController->setSignatureAlgorithm = function() {};
 							$pharController->offsetGet = function() {};
 							$pharController->offsetSet = function() {};
-							$pharController->injectInNextMockInstance();
 
 							return ($phar = new \mock\phar($name));
 						}

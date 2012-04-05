@@ -38,8 +38,8 @@ class builder extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this
-			->setVcs($this->factory->build('atoum\scripts\builder\vcs\svn'))
-			->setSuperglobals($this->factory->build('atoum\superglobals'))
+			->setVcs($this->askToFactory('atoum\scripts\builder\vcs\svn'))
+			->setSuperglobals($this->askToFactory('atoum\superglobals'))
 			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
 			->setPharGeneratorScript(self::defaultPharGeneratorScript)
 		;

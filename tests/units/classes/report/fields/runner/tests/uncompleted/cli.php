@@ -164,7 +164,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($field = new tests\uncompleted\cli())
 				->then
@@ -178,7 +177,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getUncompletedTests = array())

@@ -81,6 +81,21 @@ class runner extends atoum\test
 							'Disable code coverage'
 						),
 						array(
+							array('-nccid', '--no-code-coverage-in-directories'),
+							'<directory>...',
+							'Disable code coverage in directories <directory>'
+						),
+						array(
+							array('-nccfns', '--no-code-coverage-for-namespaces'),
+							'<namespace>...',
+							'Disable code coverage for namespaces <namespace>'
+						),
+						array(
+							array('-nccfc', '--no-code-coverage-for-classes'),
+							'<class>...',
+							'Disable code coverage for classes <class>'
+						),
+						array(
 							array('-f', '--test-files'),
 							'<file>...',
 							'Execute all unit test files <file>'
@@ -189,6 +204,21 @@ class runner extends atoum\test
 							'Disable code coverage'
 						),
 						array(
+							array('-nccid', '--no-code-coverage-in-directories'),
+							'<directory>...',
+							'Disable code coverage in directories <directory>'
+						),
+						array(
+							array('-nccfns', '--no-code-coverage-for-namespaces'),
+							'<namespace>...',
+							'Disable code coverage for namespaces <namespace>'
+						),
+						array(
+							array('-nccfc', '--no-code-coverage-for-classes'),
+							'<class>...',
+							'Disable code coverage for classes <class>'
+						),
+						array(
 							array('-f', '--test-files'),
 							'<file>...',
 							'Execute all unit test files <file>'
@@ -257,8 +287,6 @@ class runner extends atoum\test
 
 	public function testUseConfigFile()
 	{
-		$this->mock('mageekguy\atoum\locale');
-
 		$factory = new atoum\factory();
 		$factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new \mock\mageekguy\atoum\locale());
 
@@ -287,7 +315,6 @@ class runner extends atoum\test
 	public function testUseDefaultConfigFiles()
 	{
 		$this
-			->mock('mageekguy\atoum\scripts\runner')
 			->assert
 				->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
 				->and($runner->getMockController()->useConfigFile = function() {})

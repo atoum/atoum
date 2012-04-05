@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\exceptions
 ;
 
@@ -41,9 +42,22 @@ use
  */
 class error extends \mageekguy\atoum\asserter
 {
+	protected $score = null;
 	protected $message = null;
 	protected $type = null;
 	protected $messageIsPattern = false;
+
+	public function __construct(atoum\asserter\generator $generator, atoum\score $score = null)
+	{
+		parent::__construct($generator);
+
+		$this->setScore($score ?: new atoum\score());
+	}
+
+	public function initWithTest(atoum\test $test)
+	{
+		return $this->setScore($test->getScore());
+	}
 
 	public function setWith($message = null, $type = null)
 	{
@@ -51,6 +65,18 @@ class error extends \mageekguy\atoum\asserter
 			->withType($type)
 			->withMessage($message)
 		;
+	}
+
+	public function setScore(atoum\score $score)
+	{
+		$this->score = $score;
+
+		return $this;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
 	}
 
 	public function getMessage()
@@ -65,13 +91,11 @@ class error extends \mageekguy\atoum\asserter
 
 	public function exists()
 	{
-		$score = $this->getScore();
-
-		$key = $score->errorExists($this->message, $this->type, $this->messageIsPattern);
+		$key = $this->score->errorExists($this->message, $this->type, $this->messageIsPattern);
 
 		if ($key !== null)
 		{
-			$score->deleteError($key);
+			$this->score->deleteError($key);
 			$this->pass();
 		}
 		else

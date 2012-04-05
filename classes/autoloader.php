@@ -19,7 +19,7 @@ class autoloader
 	{
 		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
 		{
-			throw new \runtimeException('Unable to register');
+			throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
 		}
 
 		return $this;

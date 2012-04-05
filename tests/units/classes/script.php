@@ -29,7 +29,6 @@ class script extends atoum\test
 					->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
 					->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 					->object($script->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-					->string($script->getFactory()->getClient())->isEqualTo(get_class($script))
 					->array($script->getHelp())->isEmpty()
 				->if($factory = new atoum\factory())
 				->and($factory->import('mageekguy\atoum'))
@@ -48,13 +47,7 @@ class script extends atoum\test
 					->object($script->getArgumentsParser())->isIdenticalTo($argumentsParser)
 					->object($script->getOutputWriter())->isIdenticalTo($stdOut)
 					->object($script->getErrorWriter())->isIdenticalTo($stdErr)
-					->object($script->getFactory())
-						->isNotIdenticalTo($factory)
-						->isEqualTo($factory
-							->setClient(get_class($script))
-							->resetImportations()
-							->import('mageekguy\atoum')
-						)
+					->object($script->getFactory())->isIdenticalTo($factory)
 					->array($script->getHelp())->isEmpty()
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->php_sapi_name = uniqid())
@@ -75,12 +68,7 @@ class script extends atoum\test
 			->if($script = new mock\script($name = uniqid()))
 			->then
 				->object($script->setFactory($factory = new atoum\factory()))->isIdenticalTo($script)
-				->object($script->getFactory())
-					->isNotIdenticalTo($factory)
-					->isEqualTo($factory
-						->setClient(get_class($script))
-						->import('mageekguy\atoum')
-					)
+				->object($script->getFactory())->isIdenticalTo($factory)
 		;
 	}
 
@@ -137,7 +125,6 @@ class script extends atoum\test
 	public function testAddArgumentHandler()
 	{
 		$this
-			->mock('mageekguy\atoum\script\arguments\parser')
 			->assert
 				->if($argumentsParser = new mock\script\arguments\parser())
 				->and($argumentsParser->getMockController()->addHandler = function() {})
@@ -159,8 +146,6 @@ class script extends atoum\test
 	public function testHelp()
 	{
 		$this
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\script\arguments\parser')
 			->assert
 				->if($argumentsParser = new mock\script\arguments\parser())
 				->and($argumentsParser->getMockController()->addHandler = function() {})
@@ -187,7 +172,6 @@ class script extends atoum\test
 	public function testRun()
 	{
 		$this
-			->mock('mageekguy\atoum\script\arguments\parser')
 			->assert
 				->if($argumentsParser = new mock\script\arguments\parser())
 				->and($argumentsParser->getMockController()->addHandler = function() {})
@@ -214,7 +198,6 @@ class script extends atoum\test
 		}
 
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stdOut = new mock\writers\std\out())
 				->and($stdOut->getMockCOntroller()->write = function() {})
@@ -244,7 +227,6 @@ class script extends atoum\test
 	public function testWriteMessage()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stdOut = new mock\writers\std\out())
 				->and($stdOut->getMockCOntroller()->write = function() {})
@@ -273,8 +255,6 @@ class script extends atoum\test
 	public function testWriteError()
 	{
 		$this
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\writers\std\err')
 			->assert
 				->if($locale = new mock\locale())
 				->and($stderr = new mock\writers\std\err())
@@ -301,7 +281,6 @@ class script extends atoum\test
 	public function testClearMessage()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stdOut = new mock\writers\std\out())
 				->and($stdOut->getMockCOntroller()->write = function() {})
@@ -316,7 +295,6 @@ class script extends atoum\test
 	public function testWriteLabel()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stdOut = new mock\writers\std\out())
 				->and($stdOut->getMockCOntroller()->write = function() {})
@@ -341,7 +319,6 @@ class script extends atoum\test
 	public function testWriteLabels()
 	{
 		$this
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stdOut = new mock\writers\std\out())
 				->and($stdOut->getMockCOntroller()->write = function() {})
@@ -402,11 +379,6 @@ class script extends atoum\test
 						->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '               ' . ': ' . $message22 . PHP_EOL)->once()
 						->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
 		;
-	}
-
-	protected function beforeTestMethod($method)
-	{
-		$this->mock('mageekguy\atoum\script');
 	}
 }
 

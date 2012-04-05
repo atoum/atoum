@@ -42,7 +42,7 @@ class generator implements atoum\adapter\aggregator
 		return $this;
 	}
 
-	public function getDefaulNamespace()
+	public function getDefaultNamespace()
 	{
 		return ($this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace);
 	}
@@ -106,47 +106,54 @@ class generator implements atoum\adapter\aggregator
 
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
 	{
-		$code = null;
-
-		$class = '\\' . ltrim($class, '\\');
-
-		if ($mockNamespace === null)
+		if (trim($class, '\\') == '' || rtrim($class, '\\') != $class)
 		{
-			$mockNamespace = $this->getNamespace($class);
-		}
-
-		if ($mockClass === null)
-		{
-			$mockClass = self::getClassName($class);
-		}
-
-		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
-		{
-			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
-		}
-
-		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
-		{
-			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
+			throw new exceptions\runtime('Class name \'' . $class . '\' is invalid');
 		}
 		else
 		{
-			$reflectionClass = $this->getReflectionClass($class);
+			$code = null;
 
-			if ($reflectionClass instanceof \reflectionClass === false)
+			$class = '\\' . ltrim($class, '\\');
+
+			if ($mockNamespace === null)
 			{
-				throw new exceptions\logic('Reflection class injector does not return a \reflectionClass instance');
+				$mockNamespace = $this->getNamespace($class);
 			}
 
-			if ($reflectionClass->isFinal() === true)
+			if ($mockClass === null)
 			{
-				throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
+				$mockClass = self::getClassName($class);
 			}
 
-			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : self::generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
+			if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
+			{
+				throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
+			}
+
+			if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
+			{
+				$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
+			}
+			else
+			{
+				$reflectionClass = $this->getReflectionClass($class);
+
+				if ($reflectionClass instanceof \reflectionClass === false)
+				{
+					throw new exceptions\logic('Reflection class injector does not return a \reflectionClass instance');
+				}
+
+				if ($reflectionClass->isFinal() === true)
+				{
+					throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
+				}
+
+				$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : self::generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
+			}
+
+			return $code;
 		}
-
-		return $code;
 	}
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
@@ -297,7 +304,7 @@ class generator implements atoum\adapter\aggregator
 
 		$lastAntiSlash = strrpos($class, '\\');
 
-		return '\\' . $this->getDefaulNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected static function getClassName($class)
@@ -440,7 +447,7 @@ class generator implements atoum\adapter\aggregator
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
 				$methodName = $method->getName();
-				$isConstructor = $method->isConstructor();
+				$isConstructor = $methodName === '__construct';
 
 				if ($isConstructor === true)
 				{

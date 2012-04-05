@@ -26,10 +26,6 @@ class coverage extends atoum\test
 	{
 		$coverage = new score\coverage();
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 
@@ -72,93 +68,104 @@ class coverage extends atoum\test
 
 	public function testAddXdebugDataForTest()
 	{
-		$coverage = new score\coverage();
 
-		$this->assert
-			->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
-		$classController = new mock\controller();
-		$classController->__construct = function() {};
-		$classController->getName = function() use (& $className) { return $className; };
-		$classController->getFileName = function() use (& $classFile) { return $classFile; };
-
-		$class = new \mock\reflectionClass(uniqid(), $classController);
-
-		$methodController = new mock\controller();
-		$methodController->__construct = function() {};
-		$methodController->isAbstract = false;
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getDeclaringClass = function() use ($class) { return $class; };
-		$methodController->getName = function() use (& $methodName) { return $methodName; };
-		$methodController->getStartLine = 6;
-		$methodController->getEndLine = 8;
-
-		$classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController));
-
-		$coverage->setReflectionClassInjector(function($className) use ($class) { return $class; });
-
-		$classFile = uniqid();
-		$className = uniqid();
-		$methodName = uniqid();
-
-		$xdebugData = array(
-		  $classFile =>
-			 array(
-				5 => -1,
-				6 => 1,
-				7 => -1,
-				8 => -2,
-				9 => -1
-			),
-		  uniqid() =>
-			 array(
-				5 => 2,
-				6 => 3,
-				7 => 4,
-				8 => 3,
-				9 => 2
-			)
-		);
-
-		$this->assert
-			->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getMethods())->isEqualTo(array(
-					$className => array(
-						$methodName => array(
-							6 => 1,
-							7 => -1,
-							8 => -2
+		$this
+			->assert
+				->if($coverage = new score\coverage())
+				->then
+					->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+				->if($classController = new mock\controller())
+				->and($classController->__construct = function() {})
+				->and($classController->getName = function() use (& $className) { return $className; })
+				->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+				->and($class = new \mock\reflectionClass(uniqid(), $classController))
+				->and($methodController = new mock\controller())
+				->and($methodController->__construct = function() {})
+				->and($methodController->isAbstract = false)
+				->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+				->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+				->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+				->and($methodController->getStartLine = 6)
+				->and($methodController->getEndLine = 8)
+				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+				->and($coverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
+				->and($classDirectory = uniqid())
+				->and($classFile = $classDirectory . DIRECTORY_SEPARATOR . uniqid())
+				->and($className = uniqid())
+				->and($methodName = uniqid())
+				->and($xdebugData = array(
+						  $classFile =>
+							 array(
+								5 => -1,
+								6 => 1,
+								7 => -1,
+								8 => -2,
+								9 => -1
+							),
+						  uniqid() =>
+							 array(
+								5 => 2,
+								6 => 3,
+								7 => 4,
+								8 => 3,
+								9 => 2
+							)
 						)
 					)
-				)
-			)
-			->array($coverage->getMethods())->isEqualTo(array(
-					$className => array(
-						$methodName => array(
-							6 => 1,
-							7 => -1,
-							8 => -2
+				->then
+					->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+					->array($coverage->getMethods())->isEqualTo(array(
+							$className => array(
+								$methodName => array(
+									6 => 1,
+									7 => -1,
+									8 => -2
+								)
+							)
 						)
 					)
-				)
-			)
-			->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
-			->array($coverage->getMethods())->isEqualTo(array(
-					$className => array(
-						$methodName => array(
-							6 => 1,
-							7 => -1,
-							8 => -2
+					->array($coverage->getMethods())->isEqualTo(array(
+							$className => array(
+								$methodName => array(
+									6 => 1,
+									7 => -1,
+									8 => -2
+								)
+							)
 						)
 					)
-				)
-			)
+					->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+					->array($coverage->getMethods())->isEqualTo(array(
+							$className => array(
+								$methodName => array(
+									6 => 1,
+									7 => -1,
+									8 => -2
+								)
+							)
+						)
+					)
+				->if($coverage = new score\coverage())
+				->and($coverage->excludeClass($this->getTestedClassName()))
+				->then
+					->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+					->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+				->if($coverage = new score\coverage())
+				->and($coverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
+				->and($coverage->excludeDirectory($classDirectory))
+				->then
+					->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
+					->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+					->array($coverage->getClasses())->isEmpty()
+					->array($coverage->getMethods())->isEmpty()
 		;
 	}
 
@@ -170,11 +177,6 @@ class coverage extends atoum\test
 			->array($coverage->getMethods())->isEmpty()
 			->object($coverage->reset())->isIdenticalTo($coverage)
 			->array($coverage->getMethods())->isEmpty()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();
@@ -231,11 +233,6 @@ class coverage extends atoum\test
 
 	public function testMerge()
 	{
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -407,11 +404,6 @@ class coverage extends atoum\test
 			->sizeOf($coverage)->isZero()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -470,11 +462,6 @@ class coverage extends atoum\test
 			->array($coverage->getClasses())->isEmpty()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -526,11 +513,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->variable($coverage->getValue())->isNull()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();
@@ -673,11 +655,6 @@ class coverage extends atoum\test
 
 		$this->assert
 			->variable($coverage->getValueForClass(uniqid()))->isNull()
-		;
-
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
 		;
 
 		$classController = new mock\controller();
@@ -826,11 +803,6 @@ class coverage extends atoum\test
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 		;
 
-		$this->mockGenerator
-			->generate('reflectionClass')
-			->generate('reflectionMethod')
-		;
-
 		$classController = new mock\controller();
 		$classController->__construct = function() {};
 		$classController->getName = function() use (& $className) { return $className; };
@@ -971,6 +943,92 @@ class coverage extends atoum\test
 			->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 			->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
 			->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1.0)
+		;
+	}
+
+	public function testExcludeClass()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->excludeClass($class = uniqid()))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedClasses())->isEqualTo(array($class))
+				->object($coverage->excludeClass($otherClass = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedClasses())->isEqualTo(array($class, (string) $otherClass))
+				->object($coverage->excludeClass($class))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedClasses())->isEqualTo(array($class, (string) $otherClass))
+		;
+	}
+
+	public function testExcludeNamespace()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->excludeNamespace($namespace = uniqid()))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace))
+				->object($coverage->excludeNamespace($otherNamespace = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
+				->object($coverage->excludeNamespace($namespace))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace))
+				->object($coverage->excludeNamespace('\\' . ($anotherNamespace = uniqid()) . '\\'))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, (string) $otherNamespace, $anotherNamespace))
+		;
+	}
+
+	public function testExcludeDirectory()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->excludeDirectory($directory = uniqid()))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory))
+				->object($coverage->excludeDirectory($otherDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
+				->object($coverage->excludeDirectory($directory))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory))
+				->object($coverage->excludeDirectory(($anotherDirectory = (DIRECTORY_SEPARATOR . uniqid())) . DIRECTORY_SEPARATOR))->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory, (string) $otherDirectory, $anotherDirectory))
+		;
+	}
+
+	public function testIsInExcludedClasses()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
+			->if($coverage->excludeClass($class = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedClasses($class))->isTrue()
+		;
+	}
+
+	public function testIsInExcludedNamespaces()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
+			->if($coverage->excludeNamespace($namespace = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedNamespaces($namespace . '\\' . uniqid()))->isTrue()
+		;
+	}
+
+	public function testIsInExcludedDirectories()
+	{
+		$this->assert
+			->if($coverage = new score\coverage())
+			->then
+				->boolean($coverage->isInExcludedDirectories(uniqid()))->isFalse()
+			->if($coverage->excludeDirectory($directory = uniqid()))
+			->then
+				->boolean($coverage->isInExcludedDirectories(uniqid()))->isFalse()
+				->boolean($coverage->isInExcludedDirectories($directory . DIRECTORY_SEPARATOR . uniqid()))->isTrue()
+				->boolean($coverage->isInExcludedDirectories($directory . uniqid() . DIRECTORY_SEPARATOR . uniqid()))->isFalse()
 		;
 	}
 }

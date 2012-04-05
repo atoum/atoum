@@ -13,6 +13,9 @@ class coverage implements \countable
 	protected $classes = array();
 	protected $lines = array();
 	protected $methods = array();
+	protected $excludedClasses = array();
+	protected $excludedNamespaces = array();
+	protected $excludedDirectories = array();
 	protected $reflectionClassInjector = null;
 
 	public function __construct() {}
@@ -82,43 +85,44 @@ class coverage implements \countable
 			{
 				$reflectedClass = $this->getReflectionClass($class);
 
-				$reflectedClassName = $reflectedClass->getName();
-				$reflectedClassFile = $reflectedClass->getFileName();
-
-				$this->classes[$reflectedClassName] = $reflectedClassFile;
-				$this->methods[$reflectedClassName] = array();
-
-				foreach ($reflectedClass->getMethods() as $method)
+				if ($this->isExcluded($reflectedClass) === false)
 				{
-					if ($method->isAbstract() === false)
+					$reflectedClassName = $reflectedClass->getName();
+
+					$this->classes[$reflectedClassName] = $reflectedClass->getFileName();
+					$this->methods[$reflectedClassName] = array();
+
+					foreach ($reflectedClass->getMethods() as $method)
 					{
-						$declaringClass = $method->getDeclaringClass();
-
-						$declaringClassName = $declaringClass->getName();
-						$declaringClassFile = $declaringClass->getFilename();
-
-						if ($declaringClassFile !== false)
+						if ($method->isAbstract() === false)
 						{
-							if (isset($this->classes[$declaringClassName]) === false)
-							{
-								$this->classes[$declaringClassName] = $declaringClassFile;
-								$this->methods[$declaringClassName] = array();
-							}
+							$declaringClass = $method->getDeclaringClass();
 
- 							if (isset($data[$declaringClassFile]) === true)
+							if ($this->isExcluded($declaringClass) === false)
 							{
-								for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
+								$declaringClassName = $declaringClass->getName();
+								$declaringClassFile = $declaringClass->getFilename();
+
+								if (isset($this->classes[$declaringClassName]) === false)
 								{
-									if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
+									$this->classes[$declaringClassName] = $declaringClassFile;
+									$this->methods[$declaringClassName] = array();
+								}
+
+								if (isset($data[$declaringClassFile]) === true)
+								{
+									for ($line = $method->getStartLine(), $endLine = $method->getEndLine(); $line <= $endLine; $line++)
 									{
-										$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
+										if (isset($data[$declaringClassFile][$line]) === true && (isset($this->methods[$declaringClassName][$method->getName()][$line]) === false || $this->methods[$declaringClassName][$method->getName()][$line] < $data[$declaringClassFile][$line]))
+										{
+											$this->methods[$declaringClassName][$method->getName()][$line] = $data[$declaringClassFile][$line];
+										}
 									}
 								}
 							}
 						}
 					}
 				}
-
 			}
 			catch (\exception $exception) {}
 		}
@@ -252,9 +256,106 @@ class coverage implements \countable
 		return $value;
 	}
 
+	public function excludeClass($class)
+	{
+		$class = (string) $class;
+
+		if (in_array($class, $this->excludedClasses) === false)
+		{
+			$this->excludedClasses[] = $class;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedClasses()
+	{
+		return $this->excludedClasses;
+	}
+
+	public function excludeNamespace($namespace)
+	{
+		$namespace = trim((string) $namespace, '\\');
+
+		if (in_array($namespace, $this->excludedNamespaces) === false)
+		{
+			$this->excludedNamespaces[] = $namespace;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedNamespaces()
+	{
+		return $this->excludedNamespaces;
+	}
+
+	public function excludeDirectory($directory)
+	{
+		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
+
+		if (in_array($directory, $this->excludedDirectories) === false)
+		{
+			$this->excludedDirectories[] = $directory;
+		}
+
+		return $this;
+	}
+
+	public function getExcludedDirectories()
+	{
+		return $this->excludedDirectories;
+	}
+
 	public function count()
 	{
 		return sizeof($this->methods);
+	}
+
+	public function isInExcludedClasses($class)
+	{
+		return (in_array($class, $this->excludedClasses) === true);
+	}
+
+	public function isInExcludedNamespaces($class)
+	{
+		return self::itemIsExcluded($this->excludedNamespaces, $class, '\\');
+	}
+
+	public function isInExcludedDirectories($file)
+	{
+		return self::itemIsExcluded($this->excludedDirectories, $file, DIRECTORY_SEPARATOR);
+	}
+
+	protected function isExcluded(\reflectionClass $class)
+	{
+		$className = $class->getName();
+
+		if ($this->isInExcludedClasses($className) === true || $this->isInExcludedNamespaces($className) === true)
+		{
+			return true;
+		}
+		else
+		{
+			$fileName = $class->getFileName();
+
+			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
+		}
+	}
+
+	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)
+	{
+		foreach ($excludedItems as $excludedItem)
+		{
+			$excludedItem .= $delimiter;
+
+			if (substr($item, 0, strlen($excludedItem)) === $excludedItem)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 

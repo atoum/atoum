@@ -154,7 +154,7 @@ class score extends atoum\test
 		$line = rand(1, PHP_INT_MAX);
 		$class = uniqid();
 		$method = uniqid();
-		$asserter = new atoum\asserters\integer(new asserter\generator(new self($score)));
+		$asserter = new atoum\asserters\integer(new asserter\generator());
 		$reason = uniqid();
 
 		$this->assert
@@ -182,7 +182,7 @@ class score extends atoum\test
 		$otherLine = rand(1, PHP_INT_MAX);
 		$otherClass = uniqid();
 		$otherMethod = uniqid();
-		$otherAsserter = new atoum\asserters\integer(new asserter\generator(new self($score)));
+		$otherAsserter = new atoum\asserters\integer(new asserter\generator());
 		$otherReason = uniqid();
 
 		$this->assert
@@ -815,7 +815,7 @@ class score extends atoum\test
 			->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX))
 		;
 
-		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator(new self($score))), uniqid());
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator()), uniqid());
 
 		$this->assert
 			->variable($score->getPhpPath())->isNotNull()
@@ -869,7 +869,7 @@ class score extends atoum\test
 		;
 
 		$score->addPass();
-		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator(new self($score))), uniqid());
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator()), uniqid());
 		$score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$score->addOutput(uniqid(), uniqid(), uniqid());
@@ -897,7 +897,7 @@ class score extends atoum\test
 		;
 
 		$otherScore->addPass();
-		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator(new self($score))), uniqid());
+		$otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator()), uniqid());
 		$otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception());
 		$otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
 		$otherScore->addOutput(uniqid(), uniqid(), uniqid());
@@ -1068,7 +1068,7 @@ class score extends atoum\test
 		$line = rand(1, PHP_INT_MAX);
 		$class = uniqid();
 		$method = uniqid();
-		$asserter = new atoum\asserters\integer(new asserter\generator(new self($score)));
+		$asserter = new atoum\asserters\integer(new asserter\generator());
 		$reason = uniqid();
 
 		$score->addFail($file, $line, $class, $method, $asserter, $reason);
@@ -1099,7 +1099,7 @@ class score extends atoum\test
 			->integer($score->getPassNumber())->isZero()
 		;
 
-		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator(new self($score))), uniqid());
+		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new asserter\generator()), uniqid());
 
 		$this->assert
 			->integer($score->getPassNumber())->isZero()
@@ -1183,7 +1183,7 @@ class score extends atoum\test
 			->array($score->getMethodsWithFail())->isEmpty()
 		;
 
-		$asserter = new atoum\asserters\integer(new asserter\generator(new self($score)));
+		$asserter = new atoum\asserters\integer(new asserter\generator());
 
 		$score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), $asserter, uniqid());
 

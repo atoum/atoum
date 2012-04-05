@@ -130,7 +130,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getErrors = array())

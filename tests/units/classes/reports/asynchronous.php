@@ -13,7 +13,6 @@ class asynchronous extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\reports\asynchronous')
 			->assert
 				->if($report = new \mock\mageekguy\atoum\reports\asynchronous(null, $adapter = new atoum\test\adapter()))
 				->then

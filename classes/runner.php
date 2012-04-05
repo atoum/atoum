@@ -50,6 +50,11 @@ class runner implements observable, adapter\aggregator
 		$this->class = $runnerClass->getName();
 	}
 
+	public function setFactory(atoum\factory $factory)
+	{
+		return $this;
+	}
+
 	public function setScore(score $score)
 	{
 		$this->score = $score;
@@ -211,6 +216,11 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $classes;
+	}
+
+	public function getCoverage()
+	{
+		return $this->score->getCoverage();
 	}
 
 	public function setPhpPath($path)
@@ -392,6 +402,23 @@ class runner implements observable, adapter\aggregator
 				{
 					$test->disableCodeCoverage();
 				}
+				else
+				{
+					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
+					{
+						$test->getCoverage()->excludeClass($excludedClass);
+					}
+
+					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
+					{
+						$test->getCoverage()->excludeNamespace($excludedNamespace);
+					}
+
+					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
+					{
+						$test->getCoverage()->excludeDirectory($excludedDirectory);
+					}
+				}
 
 				foreach ($this->observers as $observer)
 				{
@@ -427,9 +454,16 @@ class runner implements observable, adapter\aggregator
 
 	public function addTestsFromDirectory($directory)
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+		try
 		{
-			$this->addTest($path);
+			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			{
+				$this->addTest($path);
+			}
+		}
+		catch (\UnexpectedValueException $exception)
+		{
+			throw new exceptions\runtime('Unable to read test directory \'' . $directory . '\'');
 		}
 
 		return $this;

@@ -193,8 +193,6 @@ class html extends atoum\test
 	public function testCleanDestinationDirectory()
 	{
 		$this
-			->mock('mageekguy\atoum\report\fields\runner\coverage\html')
-			->mock('splFileInfo')
 			->assert
 				->if($firstFile = atoum\mock\stream::get('destinationDirectory/aDirectory/firstFile'))
 				->and($firstFile->unlink = true)
@@ -294,7 +292,6 @@ class html extends atoum\test
 	public function testSetReflectionClassInjector()
 	{
 		$this
-			->mock('reflectionClass')
 			->assert
 				->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
 				->and($reflectionClassController = new mock\controller())
@@ -333,15 +330,6 @@ class html extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\score\coverage')
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\template')
-			->mock('mageekguy\atoum\template\tag')
-			->mock('mageekguy\atoum\template\parser')
-			->mock('reflectionClass')
-			->mock('reflectionMethod')
-			->mock($this->getTestedClassName())
 			->assert
 				->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
 				->then
