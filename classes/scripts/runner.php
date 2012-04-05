@@ -489,13 +489,6 @@ class runner extends atoum\script
 							{
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
-							foreach (new \recursiveIteratorIterator(new atoum\tools\glob('tests/units/*/tools')) as $path => $file)
-							{
-								echo $path . PHP_EOL;
-							}
-
-							die();
-
 
 							$runner = $script->getRunner();
 
