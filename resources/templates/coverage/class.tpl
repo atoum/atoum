@@ -5,11 +5,11 @@
 		<meta http-equiv="Content-Language" content="en" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<title><tpl:projectName /> : code coverage of <tpl:className /></title>
-		<link rel="stylesheet" media="screen" type="text/css" href="<tpl:rootUrl />screen.css" title="Screen" />
+		<link rel="stylesheet" media="screen" type="text/css" href="<tpl:relativeRootUrl />screen.css" title="Screen" />
 	</head>
 	<body>
 		<div id="page">
-			<h1><a href="<tpl:rootUrl />"><tpl:projectName /></a> :  code coverage of <tpl:className /></h1>
+			<h1><a href="<tpl:relativeRootUrl />"><tpl:projectName /></a> :  code coverage of <tpl:className /></h1>
 			<div id="content">
 				<ul class="classSummary">
 					<li class="class">
