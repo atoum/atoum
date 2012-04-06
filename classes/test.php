@@ -16,6 +16,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
+	const setUpFail = 'setUpFail';
 	const afterSetUp = 'afterTestSetUp';
 	const beforeTestMethod = 'beforeTestMethod';
 	const fail = 'testAssertionFail';
@@ -746,148 +747,149 @@ abstract class test implements observable, adapter\aggregator, \countable
 				try
 				{
 					$this->callObservers(self::beforeSetUp);
-					$this->setUp();
-					$this->callObservers(self::afterSetUp);
 
-					while ($this->runChild()->children)
+					if ($this->setUp() === false)
 					{
-						$pipes = array();
+						$this->callObservers(self::setUpFail);
+					}
+					else
+					{
+						$this->callObservers(self::afterSetUp);
 
-						foreach ($this->children as $child)
+						while ($this->runChild()->children)
 						{
-							if (isset($child[1][1]) === true)
+							$pipes = array();
+
+							foreach ($this->children as $child)
 							{
-								$pipes[] = $child[1][1];
+								if (isset($child[1][1]) === true)
+								{
+									$pipes[] = $child[1][1];
+								}
+
+								if (isset($child[1][2]) === true)
+								{
+									$pipes[] = $child[1][2];
+								}
 							}
 
-							if (isset($child[1][2]) === true)
+							$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
+
+							if ($pipesUpdated)
 							{
-								$pipes[] = $child[1][2];
-							}
-						}
+								$children = $this->children;
+								$this->children = array();
 
-						$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
-
-						if ($pipesUpdated)
-						{
-							$children = $this->children;
-							$this->children = array();
-
-							foreach ($children as $this->currentMethod => $child)
-							{
-								if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
+								foreach ($children as $this->currentMethod => $child)
 								{
-									$child[3] .= stream_get_contents($child[1][2]);
-
-									if (feof($child[1][2]) === true)
+									if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
 									{
-										fclose($child[1][2]);
-										unset($child[1][2]);
-									}
-								}
+										$child[3] .= stream_get_contents($child[1][2]);
 
-								if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
-								{
-									$child[2] .= stream_get_contents($child[1][1]);
-
-									if (feof($child[1][1]) === true)
-									{
-										fclose($child[1][1]);
-										unset($child[1][1]);
-									}
-								}
-
-								if (isset($child[1][1]) === true || isset($child[1][2]) === true)
-								{
-									$this->children[$this->currentMethod] = $child;
-								}
-								else
-								{
-									$phpStatus = proc_get_status($child[0]);
-
-									while ($phpStatus['running'] == true)
-									{
-										$phpStatus = proc_get_status($child[0]);
+										if (feof($child[1][2]) === true)
+										{
+											fclose($child[1][2]);
+											unset($child[1][2]);
+										}
 									}
 
-									proc_close($child[0]);
-
-									$score = new score();
-
-									$testScore = @unserialize($child[2]);
-
-									if ($testScore instanceof score)
+									if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
 									{
-										$score = $testScore;
+										$child[2] .= stream_get_contents($child[1][1]);
+
+										if (feof($child[1][1]) === true)
+										{
+											fclose($child[1][1]);
+											unset($child[1][1]);
+										}
+									}
+
+									if (isset($child[1][1]) === true || isset($child[1][2]) === true)
+									{
+										$this->children[$this->currentMethod] = $child;
 									}
 									else
 									{
-										$score->addUncompletedTest($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
-									}
+										$phpStatus = proc_get_status($child[0]);
 
-									if ($child[3] !== '')
-									{
-										if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
+										while ($phpStatus['running'] == true)
 										{
-											$score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $child[3]);
+											$phpStatus = proc_get_status($child[0]);
 										}
-										else foreach ($errors as $error)
+
+										proc_close($child[0]);
+
+										$score = new score();
+
+										$testScore = @unserialize($child[2]);
+
+										if ($testScore instanceof score)
 										{
-											$score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
+											$score = $testScore;
 										}
+										else
+										{
+											$score->addUncompletedTest($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
+										}
+
+										if ($child[3] !== '')
+										{
+											if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
+											{
+												$score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $child[3]);
+											}
+											else foreach ($errors as $error)
+											{
+												$score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
+											}
+										}
+
+										$this->callObservers(self::afterTestMethod);
+
+										switch (true)
+										{
+											case $score->getRuntimeExceptionNumber() > 0:
+												$this->callObservers(self::runtimeException);
+												throw current($score->getRuntimeExceptions());
+
+											case $score->getUncompletedTestNumber():
+												$this->callObservers(self::uncompleted);
+												break;
+
+											case $score->getFailNumber():
+												$this->callObservers(self::fail);
+												break;
+
+											case $score->getErrorNumber():
+												$this->callObservers(self::error);
+												break;
+
+											case $score->getExceptionNumber():
+												$this->callObservers(self::exception);
+												break;
+
+											case $score->getPassNumber():
+												$this->callObservers(self::success);
+												break;
+										}
+
+										$this->score->merge($score);
 									}
-
-									$this->callObservers(self::afterTestMethod);
-
-									switch (true)
-									{
-										case $score->getRuntimeExceptionNumber() > 0:
-											$this->callObservers(self::runtimeException);
-											throw current($score->getRuntimeExceptions());
-
-										case $score->getUncompletedTestNumber():
-											$this->callObservers(self::uncompleted);
-											break;
-
-										case $score->getFailNumber():
-											$this->callObservers(self::fail);
-											break;
-
-										case $score->getErrorNumber():
-											$this->callObservers(self::error);
-											break;
-
-										case $score->getExceptionNumber():
-											$this->callObservers(self::exception);
-											break;
-
-										case $score->getPassNumber():
-											$this->callObservers(self::success);
-											break;
-									}
-
-									$this->score->merge($score);
 								}
-							}
 
-							$this->currentMethod = null;
+								$this->currentMethod = null;
+							}
 						}
 					}
-
-					$this->callObservers(self::beforeTearDown);
-					$this->tearDown();
-					$this->callObservers(self::afterTearDown);
 				}
 				catch (\exception $exception)
 				{
-					$this
-						->callObservers(self::beforeTearDown)
-						->tearDown()
-						->callObservers(self::afterTearDown)
-					;
+					$this->doTearDown();
 
 					throw $exception;
 				}
+
+				$this->doTearDown();
 			}
 
 			$this->callObservers(self::runStop);
@@ -1114,6 +1116,17 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private function canRunChild()
 	{
 		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+	}
+
+	private function doTearDown()
+	{
+		$this
+			->callObservers(self::beforeTearDown)
+			->tearDown()
+			->callObservers(self::afterTearDown)
+		;
+
+		return $this;
 	}
 
 	private static function cleanNamespace($namespace)
