@@ -287,7 +287,7 @@ class cli extends atoum\test
 		$scoreController->getFailNumber = 1;
 		$scoreController->getErrorNumber = 1;
 		$scoreController->getExceptionNumber = 1;
-		$scoreController->getUncompletedTestNumber = 1;
+		$scoreController->getUncompletedMethodNumber = 1;
 
 		$this->assert
 			->if($field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale))
@@ -328,7 +328,7 @@ class cli extends atoum\test
 		$scoreController->getFailNumber = $failNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX);
-		$scoreController->getUncompletedTestNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
+		$scoreController->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
 
 
 		$this->assert

@@ -203,7 +203,7 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function enableLoop()
+	public function enableLoopMode()
 	{
 		if ($this->loop !== null)
 		{
@@ -575,7 +575,7 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$script->enableLoop();
+							$script->enableLoopMode();
 						},
 						array('-l', '--loop'),
 						null,
@@ -713,6 +713,27 @@ class runner extends atoum\script
 			$arguments .= ' --score-file ' . $this->scoreFile;
 		}
 
+		$declaredTestClasses = $this->runner->getDeclaredTestClasses();
+
+		if (sizeof($declaredTestClasses) > 0)
+		{
+			$files = array();
+
+			foreach ($declaredTestClasses as $declaredTestClass)
+			{
+				$declaredTestClass = new \reflectionClass($declaredTestClass);
+
+				$file = $declaredTestClass->getFilename();
+
+				if (in_array($file, $files) === false)
+				{
+					$files[] = $file;
+				}
+			}
+
+			$arguments .= ' -f ' . join(' ', $files);
+		}
+
 		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
 
 		while ($this->runTests === true)
@@ -781,7 +802,7 @@ class runner extends atoum\script
 
 	private static function getFailMethods(atoum\score $score)
 	{
-		return self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException());
+		return self::mergeMethods(self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException()), $score->getMethodsNotCompleted());
 	}
 
 	private static function mergeMethods(array $methods, array $newMethods)

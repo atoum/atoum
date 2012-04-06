@@ -179,7 +179,7 @@ class cli extends atoum\test
 		$this
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
-				->and($score->getMockController()->getUncompletedTests = array())
+				->and($score->getMockController()->getUncompletedMethods = array())
 				->and($runner = new atoum\runner($score))
 				->and($defaultField = new tests\uncompleted\cli())
 				->then
@@ -199,7 +199,7 @@ class cli extends atoum\test
 				->if($customField->handleEvent(atoum\runner::runStop, $runner))
 				->then
 					->castToString($customField)->isEmpty()
-				->if($score->getMockController()->getUncompletedTests = $allUncompletedTests = array(
+				->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = array(
 							array(
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
@@ -234,7 +234,7 @@ class cli extends atoum\test
 					->castToString($customField)->isEmpty()
 				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
 				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedTests)) . PHP_EOL .
+					->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
 							'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
@@ -249,7 +249,7 @@ class cli extends atoum\test
 						$titlePrompt .
 						sprintf(
 							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedTests)), sizeof($allUncompletedTests)))
+							$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
 						) .
 						PHP_EOL .
 						$methodPrompt .

@@ -829,7 +829,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 										}
 										else
 										{
-											$score->addUncompletedTest($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
+											$score->addUncompletedMethod($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
 										}
 
 										if ($child[3] !== '')
@@ -852,7 +852,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 												$this->callObservers(self::runtimeException);
 												throw current($score->getRuntimeExceptions());
 
-											case $score->getUncompletedTestNumber():
+											case $score->getUncompletedMethodNumber():
 												$this->callObservers(self::uncompleted);
 												break;
 
