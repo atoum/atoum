@@ -170,6 +170,7 @@ class html extends report\fields\runner\coverage\cli
 				$classTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/class.tpl');
 
 				$classTemplate->rootUrl = $this->rootUrl;
+				$classTemplate->relativeRootUrl = str_repeat('../', substr_count($className, '\\'));
 				$classTemplate->projectName = $this->projectName;
 
 				$classCoverageAvailableTemplates = $classTemplate->classCoverageAvailable;
