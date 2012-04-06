@@ -36,6 +36,11 @@ class runner extends atoum\script
 		;
 	}
 
+	public function isRunningFromCli()
+	{
+		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
+	}
+
 	public function setRunner(atoum\runner $runner)
 	{
 		$this->runner = $runner;
@@ -713,25 +718,28 @@ class runner extends atoum\script
 			$arguments .= ' --score-file ' . $this->scoreFile;
 		}
 
-		$declaredTestClasses = $this->runner->getDeclaredTestClasses();
-
-		if (sizeof($declaredTestClasses) > 0)
+		if ($this->isRunningFromCli() === false)
 		{
-			$files = array();
+			$declaredTestClasses = $this->runner->getDeclaredTestClasses();
 
-			foreach ($declaredTestClasses as $declaredTestClass)
+			if (sizeof($declaredTestClasses) > 0)
 			{
-				$declaredTestClass = new \reflectionClass($declaredTestClass);
+				$files = array();
 
-				$file = $declaredTestClass->getFilename();
-
-				if (in_array($file, $files) === false)
+				foreach ($declaredTestClasses as $declaredTestClass)
 				{
-					$files[] = $file;
-				}
-			}
+					$declaredTestClass = new \reflectionClass($declaredTestClass);
 
-			$arguments .= ' -f ' . join(' ', $files);
+					$file = $declaredTestClass->getFilename();
+
+					if (in_array($file, $files) === false)
+					{
+						$files[] = $file;
+					}
+				}
+
+				$arguments .= ' -f ' . join(' ', $files);
+			}
 		}
 
 		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
