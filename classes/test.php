@@ -1120,11 +1120,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function doTearDown()
 	{
-		$this
-			->callObservers(self::beforeTearDown)
-			->tearDown()
-			->callObservers(self::afterTearDown)
-		;
+		$this->callObservers(self::beforeTearDown);
+		$this->tearDown();
+		$this->callObservers(self::afterTearDown);
 
 		return $this;
 	}
