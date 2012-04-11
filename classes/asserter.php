@@ -103,6 +103,16 @@ abstract class asserter
 		return $this;
 	}
 
+	public function setWithArguments(array $arguments)
+	{
+		if (sizeof($arguments) > 0)
+		{
+			call_user_func_array(array($this, 'setWith'), $arguments);
+		}
+
+		return $this;
+	}
+
 	public abstract function setWith($mixed);
 
 	protected function pass()
