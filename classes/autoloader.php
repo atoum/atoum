@@ -10,14 +10,9 @@ class autoloader
 
 	protected $directories = array(__NAMESPACE__ => array(__DIR__));
 
-	public function __construct()
-	{
-		$this->addDirectory(__NAMESPACE__, directory . '/' . basename(__DIR__));
-	}
-
 	public function register($prepend = false)
 	{
-		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
+		if (spl_autoload_register(array($this, 'includeClass'), true, $prepend) === false)
 		{
 			throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
 		}
@@ -37,6 +32,9 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
+		$namespace = trim($namespace, '\\');
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
+
 		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
 			$this->directories[$namespace][] = $directory;
@@ -52,19 +50,28 @@ class autoloader
 		return $this->directories;
 	}
 
-	public function getPath($class)
+	public function includeClass($class)
 	{
 		foreach ($this->directories as $namespace => $directories)
 		{
-			if ($class !== $namespace && strpos($class, $namespace) === 0)
+			if ($class !== $namespace)
 			{
-				foreach ($directories as $directory)
-				{
-					$path = $directory . str_replace('\\', DIRECTORY_SEPARATOR, str_replace($namespace, '', $class)) . '.php';
+				$namespaceLength = strlen($namespace);
 
-					if (is_file($path) === true)
+				if (strncmp($class, $namespace, $namespaceLength) === 0)
+				{
+					$classFile = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, $namespaceLength)) . '.php';
+
+					foreach ($directories as $directory)
 					{
-						return $path;
+						$path = $directory . $classFile;
+
+						@include($path);
+
+						if (class_exists($class, false) === true)
+						{
+							return $path;
+						}
 					}
 				}
 			}
@@ -87,14 +94,6 @@ class autoloader
 	public static function get()
 	{
 		return static::$autoloader;
-	}
-
-	public function requireClass($class)
-	{
-		if (($path = $this->getPath($class)) !== null)
-		{
-			require $path;
-		}
 	}
 }
 
