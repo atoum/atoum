@@ -15,11 +15,11 @@ class testedClass extends phpClass
 		throw new exceptions\logic\badMethodCall('Unable to call method ' . __METHOD__ . '()');
 	}
 
-	public function initWithTest(atoum\test $test)
+	public function setWithTest(atoum\test $test)
 	{
 		parent::setWith($test->getTestedClassName());
 
-		return parent::initWithTest($test);
+		return parent::setWithTest($test);
 	}
 }
 

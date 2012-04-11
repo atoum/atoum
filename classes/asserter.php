@@ -98,7 +98,7 @@ abstract class asserter
 		}
 	}
 
-	public function initWithTest(test $test)
+	public function setWithTest(test $test)
 	{
 		return $this;
 	}
