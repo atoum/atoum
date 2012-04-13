@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
@@ -456,7 +457,7 @@ class runner implements observable, adapter\aggregator
 	{
 		try
 		{
-			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			foreach (new \recursiveIteratorIterator(new iterators\filters\recursives\dot($directory)) as $path)
 			{
 				$this->addTest($path);
 			}

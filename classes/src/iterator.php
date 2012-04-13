@@ -3,7 +3,8 @@
 namespace mageekguy\atoum\src;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\iterators
 ;
 
 class iterator implements \outerIterator
@@ -16,7 +17,7 @@ class iterator implements \outerIterator
 	{
 		$this->sourceDirectory = (string) $sourceDirectory;
 		$this->pharDirectory = $pharDirectory === null ? null : (string) $pharDirectory;
-		$this->innerIterator = new \recursiveIteratorIterator(new iterator\filter(new \recursiveDirectoryIterator($this->sourceDirectory)));
+		$this->innerIterator = new \recursiveIteratorIterator(new iterators\filters\recursives\dot($this->sourceDirectory));
 
 		$this->innerIterator->rewind();
 	}
