@@ -272,6 +272,7 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall(\'__construct\', $arguments);' . PHP_EOL .
 					"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -361,6 +362,7 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'else' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall(\'__construct\', $arguments);' . PHP_EOL .
 					"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .

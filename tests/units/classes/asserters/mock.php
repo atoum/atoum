@@ -54,9 +54,7 @@ class mock extends atoum\test
 				->object($asserter->getMock())->isIdenticalTo($mock)
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->object($asserter->getMock())->isIdenticalTo($mock)
-				->mock($mockController)
-					->call('resetCalls')
-		;
+				->mock($mockController)->call('resetCalls')->once();
 	}
 
 	public function testSetWith()
@@ -298,7 +296,8 @@ class mock extends atoum\test
 	public function testCall()
 	{
 		$this
-			->if($asserter = new asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -318,7 +317,8 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($asserter = new asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -342,7 +342,8 @@ class mock extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->if($asserter = new asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -448,7 +449,7 @@ class mock extends atoum\test
 				->object($asserter->once())->isIdenticalTo($asserter)
 			->if($asserter = new asserters\mock($generator = new asserter\generator()))
 				->and($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
-				->and($asserter->beforeMethodCall('bar')->withArguments($arg = uniqid())->call('foo'))
+				->and($asserter->beforeMethodCall('bar')->withArguments($arg = 'toto')->call('foo'))
 				->and($mock->foo(uniqid()))
 				->then
 					->exception(function() use ($asserter) { $asserter->once(); })
