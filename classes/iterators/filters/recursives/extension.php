@@ -10,7 +10,7 @@ class extension extends \recursiveFilterIterator
 {
 	protected $acceptedExtensions = array();
 
-	public function __construct($mixed, array $acceptedExtensions, atoum\factory $factory = null)
+	public function __construct($mixed, array $acceptedExtensions)
 	{
 		if ($mixed instanceof \recursiveIterator)
 		{
@@ -35,27 +35,21 @@ class extension extends \recursiveFilterIterator
 
 	public function getAcceptedExtensions()
 	{
-		$acceptedExtensions = array();
-
-		foreach ($this->acceptedExtensions as $acceptedExtension)
-		{
-			$acceptedExtensions[] = substr($acceptedExtension, 1);
-		}
-
-		return $acceptedExtensions;
+		return $this->acceptedExtensions;
 	}
 
 	public function accept()
 	{
-		foreach ($this->acceptedExtensions as $acceptedExtension)
-		{
-			if (substr(basename((string) $this->getInnerIterator()->current()), - strlen($acceptedExtensions)) === $acceptedExtension)
-			{
-				return true;
-			}
-		}
+		$path = basename((string) $this->getInnerIterator()->current());
 
-		return false;
+		$extension = pathinfo($path, PATHINFO_EXTENSION);
+
+		return ($extension == '' || in_array($extension, $this->acceptedExtensions) === true);
+	}
+
+	public function getChildren()
+	{
+		return new self($this->getInnerIterator()->getChildren(), $this->acceptedExtensions);
 	}
 
 	public function createFactory()

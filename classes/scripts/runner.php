@@ -507,6 +507,19 @@ class runner extends atoum\script
 						$this->locale->_('Execute unit test files in all <directory>')
 					)
 				->addArgumentHandler(
+						function($script, $argument, $extensions) {
+							if (sizeof($extensions) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$script->getRunner()->getTestDirectoryIterator()->acceptExtensions($extensions);
+						},
+						array('-tfe', '--test-file-extensions'),
+						'<extension>...',
+						$this->locale->_('Execute unit test files with one of extensions <extension>')
+					)
+				->addArgumentHandler(
 						function($script, $argument, $patterns) {
 							if (sizeof($patterns) <= 0)
 							{

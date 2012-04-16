@@ -10,9 +10,14 @@ class autoloader
 
 	protected $directories = array(__NAMESPACE__ => array(__DIR__));
 
+	public function __construct()
+	{
+		$this->addDirectory(__NAMESPACE__, directory . '/' . basename(__DIR__));
+	}
+
 	public function register($prepend = false)
 	{
-		if (spl_autoload_register(array($this, 'includeClass'), true, $prepend) === false)
+		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
 		{
 			throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
 		}
@@ -32,9 +37,6 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
-		$namespace = trim($namespace, '\\');
-		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
-
 		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
 			$this->directories[$namespace][] = $directory;
@@ -50,7 +52,7 @@ class autoloader
 		return $this->directories;
 	}
 
-	public function includeClass($class)
+	public function getPath($class)
 	{
 		foreach ($this->directories as $namespace => $directories)
 		{
@@ -66,9 +68,7 @@ class autoloader
 					{
 						$path = $directory . $classFile;
 
-						@include($path);
-
-						if (class_exists($class, false) === true)
+						if (is_file($path) === true)
 						{
 							return $path;
 						}
@@ -94,6 +94,14 @@ class autoloader
 	public static function get()
 	{
 		return static::$autoloader;
+	}
+
+	public function requireClass($class)
+	{
+		if (($path = $this->getPath($class)) !== null)
+		{
+			require $path;
+		}
 	}
 }
 
