@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
@@ -31,6 +32,7 @@ class runner implements observable, adapter\aggregator
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
+	protected $testDirectoryIterator = null;
 
 	private $start = null;
 	private $stop = null;
@@ -42,6 +44,7 @@ class runner implements observable, adapter\aggregator
 			->setScore($score ?: new score())
 			->setLocale($locale ?: new locale())
 			->setIncluder($includer ?: new includer())
+			->setTestDirectoryIterator(new iterators\recursives\directory())
 		;
 
 		$runnerClass = new \reflectionClass($this);
@@ -50,9 +53,16 @@ class runner implements observable, adapter\aggregator
 		$this->class = $runnerClass->getName();
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function setTestDirectoryIterator(iterators\recursives\directory $iterator)
 	{
+		$this->testDirectoryIterator = $iterator;
+
 		return $this;
+	}
+
+	public function getTestDirectoryIterator()
+	{
+		return $this->testDirectoryIterator;
 	}
 
 	public function setScore(score $score)
@@ -456,7 +466,7 @@ class runner implements observable, adapter\aggregator
 	{
 		try
 		{
-			foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+			foreach (new \recursiveIteratorIterator($this->testDirectoryIterator->getIterator($directory)) as $path)
 			{
 				$this->addTest($path);
 			}
