@@ -11,7 +11,6 @@ use
 class directory implements \iteratorAggregate
 {
 	protected $path = null;
-	protected $innerIterator = null;
 	protected $acceptDots = false;
 	protected $acceptedExtensions = array('php');
 
@@ -63,18 +62,6 @@ class directory implements \iteratorAggregate
 		return $iterator;
 	}
 
-	public function setInnerIterator(\recursiveDirectoryIterator $innerIterator)
-	{
-		$this->innerIterator = $innerIterator;
-
-		return $this;
-	}
-
-	public function getInnerIterator()
-	{
-		return $this->innerIterator;
-	}
-
 	public function dotsAreAccepted()
 	{
 		return $this->acceptDots;
@@ -101,9 +88,12 @@ class directory implements \iteratorAggregate
 
 	public function acceptExtensions(array $extensions)
 	{
-		array_walk($extensions, function(& $extension) { $extension = self::cleanExtension($extension); });
+		$this->acceptedExtensions = array();
 
-		$this->acceptedExtensions = $extensions;
+		foreach ($extensions as $extension)
+		{
+			$this->acceptedExtensions[] = self::cleanExtension($extension);
+		}
 
 		return $this;
 	}
