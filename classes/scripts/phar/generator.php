@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../../constants.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
@@ -190,7 +191,7 @@ class generator extends atoum\script
 			)
 		);
 
-		$phar->buildFromIterator(new atoum\src\iterator($this->originDirectory, '1'));
+		$phar->buildFromIterator(new iterators\recursives\atoum\source($this->originDirectory, '1'));
 		$phar->setSignatureAlgorithm(\phar::SHA1);
 
 		return $this;

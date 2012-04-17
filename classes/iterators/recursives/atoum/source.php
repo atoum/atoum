@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\src;
+namespace mageekguy\atoum\iterators\recursives\atoum;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\iterators
 ;
 
-class iterator implements \outerIterator
+class source implements \outerIterator
 {
 	protected $pharDirectory = '';
 	protected $sourceDirectory = '';
