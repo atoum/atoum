@@ -20,10 +20,6 @@ class cli extends atoum\test
 			->if($report = new reports\realtime\cli())
 			->then
 				->array($report->getFields())->isEqualTo(array(
-						new fields\runner\atoum\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
 						new fields\runner\php\path\cli(
 							new prompt('> '),
 							new colorizer('1;36')
