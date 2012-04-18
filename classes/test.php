@@ -917,11 +917,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function getOutput()
-	{
-		return ob_get_clean() ?: '';
-	}
-
 	public static function setNamespace($namespace)
 	{
 		self::$namespace = self::cleanNamespace($namespace);
