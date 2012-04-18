@@ -4,7 +4,6 @@ namespace mageekguy\atoum\iterators\recursives;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
