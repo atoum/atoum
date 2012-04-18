@@ -47,11 +47,6 @@ class cli extends realtime
 		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
 
 		$this
-			->addField(new runner\atoum\cli(
-						$firstLevelPrompt,
-						$firstLevelColorizer
-					)
-				)
 			->addField(new runner\php\path\cli(
 						$firstLevelPrompt,
 						$firstLevelColorizer
