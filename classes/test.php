@@ -932,18 +932,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return self::$namespace ?: self::defaultNamespace;
 	}
 
-	public function assert($case = null)
-	{
-		$this->stopCase();
-
-		if ($case !== null)
-		{
-			$this->startCase($case);
-		}
-
-		return $this->getAsserterGenerator();
-	}
-
 	public function startCase($case)
 	{
 		test\adapter::resetCallsForAllInstances();
