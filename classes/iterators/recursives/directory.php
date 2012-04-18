@@ -58,16 +58,16 @@ class directory implements \iteratorAggregate
 			throw new exceptions\runtime('Path is undefined');
 		}
 
-		$iterator = $this->factory->build('recursiveDirectoryIterator', array($this->path));
+		$iterator = $this->askToFactory('recursiveDirectoryIterator', array($this->path));
 
 		if ($this->acceptDots === false)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\dot', array($iterator));
+			$iterator = $this->askToFactory('mageekguy\atoum\iterators\filters\recursives\dot', array($iterator));
 		}
 
 		if (sizeof($this->acceptedExtensions) > 0)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\extension', array($iterator, $this->acceptedExtensions));
+			$iterator = $this->askToFactory('mageekguy\atoum\iterators\filters\recursives\extension', array($iterator, $this->acceptedExtensions));
 		}
 
 		return $iterator;
@@ -126,6 +126,11 @@ class directory implements \iteratorAggregate
 		}
 
 		return $this;
+	}
+
+	protected function askToFactory($class, array $arguments = array())
+	{
+		return $this->factory->build($class, $arguments, $this);
 	}
 
 	protected static function cleanExtension($extension)
