@@ -29,28 +29,40 @@ class directory extends atoum\test
 				->variable($iterator->getPath())->isNull()
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
-			->if($iterator = new recursives\directory($path = uniqid()))
+				->object($iterator->getFactory())->isEqualTo(new atoum\factory())
+			->if($iterator = new recursives\directory($path = uniqid(), $factory = new atoum\factory()))
 			->then
 				->string($iterator->getPath())->isEqualTo($path)
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
+				->object($iterator->getFactory())->isIdenticalTo($factory)
 		;
 	}
 
 	public function testSetPath()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->setPath($path = uniqid()))->isIdenticalTo($iterator)
 				->string($iterator->getPath())->isEqualTo($path)
 		;
 	}
 
+	public function testSetFactory()
+	{
+		$this
+			->if($iterator = new recursives\directory())
+			->then
+				->object($iterator->setFactory($factory = new atoum\factory()))->isIdenticalTo($iterator)
+				->object($iterator->getFactory())->isIdenticalTo($factory)
+		;
+	}
+
 	public function testAcceptExtensions()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->acceptExtensions($extensions = array(uniqid())))->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEqualTo($extensions)
@@ -62,7 +74,7 @@ class directory extends atoum\test
 	public function testAcceptAllExtensions()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->acceptAllExtensions())->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEmpty()
@@ -72,7 +84,7 @@ class directory extends atoum\test
 	public function testRefuseExtension()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->refuseExtension('php'))->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEmpty()
@@ -86,7 +98,7 @@ class directory extends atoum\test
 	public function testAcceptDots()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->acceptDots())->isIdenticalTo($iterator)
 				->boolean($iterator->dotsAreAccepted())->isTrue()
@@ -96,7 +108,7 @@ class directory extends atoum\test
 	public function testRefuseDots()
 	{
 		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
+			->if($iterator = new recursives\directory(uniqid()))
 			->then
 				->object($iterator->refuseDots())->isIdenticalTo($iterator)
 				->boolean($iterator->dotsAreAccepted())->isFalse()
@@ -116,8 +128,7 @@ class directory extends atoum\test
 					->hasMessage('Path is undefined')
 			->if($factory = new atoum\factory())
 			->and($factory->setBuilder('recursiveDirectoryIterator', function($path) use (& $recursiveDirectoryIterator) { return ($recursiveDirectoryIterator = new \mock\recursiveDirectoryIterator($path)); }))
-			->and($iterator = new \mock\mageekguy\atoum\iterators\recursives\directory($path = uniqid()))
-			->and($iterator->getMockController()->createFactory = $factory)
+			->and($iterator = new recursives\directory($path = uniqid(), $factory))
 			->then
 				->object($filterIterator = $iterator->getIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
 				->object($filterIterator->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
@@ -139,8 +150,7 @@ class directory extends atoum\test
 			->then
 				->object($iterator->getIterator())->isIdenticalTo($recursiveDirectoryIterator)
 				->mock($recursiveDirectoryIterator)->call('__construct')->withArguments($path)->once()
-			->if($iterator = new \mock\mageekguy\atoum\iterators\recursives\directory())
-			->and($iterator->getMockController()->createFactory = $factory)
+			->if($iterator = new recursives\directory(null, $factory))
 			->then
 				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
 				->object($filterIterator->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
@@ -163,20 +173,6 @@ class directory extends atoum\test
 				->object($iterator->getIterator($path = uniqid()))->isIdenticalTo($recursiveDirectoryIterator)
 				->mock($recursiveDirectoryIterator)->call('__construct')->withArguments($path)->once()
 		;
-	}
-
-	public function testCreateFactory()
-	{
-		$this
-			->if($iterator = $this->getTestedClassInstance(uniqid()))
-			->then
-				->object($iterator->createFactory())->isEqualTo(new atoum\factory())
-		;
-	}
-
-	protected function getTestedClassInstance($directory)
-	{
-		return new recursives\directory($directory);
 	}
 }
 
