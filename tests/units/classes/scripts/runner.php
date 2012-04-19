@@ -35,7 +35,7 @@ class runner extends atoum\test
 				->string($scriptRunner->getName())->isEqualTo($name)
 				->object($scriptRunner->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($scriptRunner->getLocale())->isEqualTo(new atoum\locale())
-				->object($scriptRunner->getRunner())->isEqualTo(new atoum\runner())
+				->object($scriptRunner->getRunner())->isEqualTo(new atoum\runner($scriptRunner->getFactory()))
 				->object($scriptRunner->getIncluder())->isEqualTo(new atoum\includer())
 				->variable($scriptRunner->getScoreFile())->isNull()
 				->array($scriptRunner->getArguments())->isEmpty()

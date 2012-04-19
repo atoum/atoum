@@ -118,7 +118,8 @@ class phing extends atoum\test
 				->if($field = new memory\phing())
 				->and($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-				->and($runner = new \mock\mageekguy\atoum\runner($score))
+				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); })
 				->then
 					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
@@ -136,7 +137,8 @@ class phing extends atoum\test
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-				->and($runner = new \mock\mageekguy\atoum\runner($score))
+				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 				->and($defaultField = new memory\phing())
 				->then

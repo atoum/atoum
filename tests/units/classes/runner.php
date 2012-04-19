@@ -35,17 +35,19 @@ class runner extends atoum\test
 					->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 					->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
 					->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
+					->object($runner->getFactory())->isEqualTo(new atoum\factory())
 					->variable($runner->getRunningDuration())->isNull()
 					->boolean($runner->codeCoverageIsEnabled())->isTrue()
 					->variable($runner->getDefaultReportTitle())->isNull()
 					->array($runner->getObservers())->isEmpty()
-			->assert
-				->if($runner = new atoum\runner($score = new atoum\score(), $adapter = new atoum\test\adapter(), $locale = new atoum\locale(), $includer = new atoum\includer()))
+				->if($runner = new atoum\runner($factory = new atoum\factory()))
 				->then
-					->object($runner->getScore())->isIdenticalTo($score)
-					->object($runner->getAdapter())->isIdenticalTo($adapter)
-					->object($runner->getLocale())->isIdenticalTo($locale)
-					->object($runner->getIncluder())->isIdenticalTo($includer)
+					->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
+					->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+					->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+					->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+					->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
+					->object($runner->getFactory())->isIdenticalTo($factory)
 					->variable($runner->getRunningDuration())->isNull()
 					->boolean($runner->codeCoverageIsEnabled())->isTrue()
 					->variable($runner->getDefaultReportTitle())->isNull()
@@ -189,7 +191,8 @@ class runner extends atoum\test
 				->and($adapter->proc_terminate = function() {})
 				->and($adapter->microtime = function() { static $call = 0; return (++$call * 100); })
 				->and($adapter->get_declared_classes = function() { return array(); })
-				->and($runner = new atoum\runner(null, $adapter))
+				->and($runner = new atoum\runner())
+				->and($runner->setAdapter($adapter))
 				->then
 					->variable($runner->getRunningDuration())->isNull()
 			->assert
@@ -213,7 +216,8 @@ class runner extends atoum\test
 				->and($adapter->proc_get_status = array('exitcode' => 0, 'running' => false))
 				->and($adapter->proc_close = function() {})
 				->and($adapter->proc_terminate = function() {})
-				->and($runner = new atoum\runner(null, $adapter))
+				->and($runner = new atoum\runner())
+				->and($runner->setAdapter($adapter))
 				->then
 					->integer($runner->getTestNumber())->isZero()
 			->assert
@@ -238,7 +242,8 @@ class runner extends atoum\test
 				->and($adapter->proc_terminate = function() {})
 				->and($adapter->proc_close = function() {})
 				->and($adapter->get_declared_classes = array())
-				->and($runner = new atoum\runner(null, $adapter))
+				->and($runner = new atoum\runner())
+				->and($runner->setAdapter($adapter))
 				->then
 					->integer($runner->getTestMethodNumber())->isZero()
 			->assert
@@ -372,11 +377,14 @@ class runner extends atoum\test
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($scoreController = $score->getMockController())
-				->and($runner = new atoum\runner($score, $adapter = new atoum\test\adapter()))
+				->and($adapter = new atoum\test\adapter())
 				->and($adapter->defined = false)
 				->and($adapter->proc_open = false)
 				->and($adapter->getenv = function($variable) use (& $phpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $phpPath = uniqid()); })
 				->and($adapter->realpath = function($path) { return $path; })
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
+				->and($runner->setAdapter($adapter))
 				->then
 					->exception(function() use ($runner) {
 							$runner->setPathAndVersionInScore();

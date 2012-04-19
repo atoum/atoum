@@ -96,9 +96,10 @@ class cli extends atoum\test
 				->and($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
 				->then
-					->boolean($field->handleEvent(atoum\runner::runStop, new atoum\runner()))->isFalse()
+					->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isFalse()
 					->variable($field->getPath())->isNull()
-					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner($score)))->isTrue()
+				->if($runner->setScore($score))
+					->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isTrue()
 					->string($field->getPath())->isEqualTo($phpPath)
 		;
 	}
@@ -112,7 +113,9 @@ class cli extends atoum\test
 				->and($defaultField = new runner\php\path\cli())
 				->then
 					->castToString($defaultField)->isEqualTo('PHP path: ' . PHP_EOL)
-				->if($defaultField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->if($runner = new atoum\runner())
+				->and($runner->setScore($score))
+				->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($defaultField)->isEqualTo('PHP path:' . ' ' . $phpPath . PHP_EOL)
 				->if($customField = new runner\php\path\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $pathColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
@@ -126,7 +129,7 @@ class cli extends atoum\test
 						) .
 						PHP_EOL
 					)
-				->if($customField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->if($customField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($customField)->isEqualTo(
 						$prompt .

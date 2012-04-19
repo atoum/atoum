@@ -31,7 +31,7 @@ class runner extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this
-			->setRunner($this->askToFactory('atoum\runner'))
+			->setRunner($this->askToFactory('atoum\runner', array($this->factory)))
 			->setIncluder($this->askToFactory('atoum\includer'))
 		;
 	}

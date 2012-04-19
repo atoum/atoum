@@ -133,7 +133,8 @@ class cli extends atoum\test
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getErrors = array())
-				->and($runner = new atoum\runner($score))
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new runner\failures\cli())
 				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
 				->then

@@ -21,6 +21,7 @@ class runner implements observable, adapter\aggregator
 	protected $score = null;
 	protected $adapter = null;
 	protected $locale = null;
+	protected $factory = null;
 	protected $includer = null;
 	protected $observers = array();
 	protected $testObservers = array();
@@ -37,20 +38,33 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null, locale $locale = null, includer $includer = null)
+	public function __construct(factory $factory = null)
 	{
 		$this
-			->setAdapter($adapter ?: new adapter())
-			->setScore($score ?: new score())
-			->setLocale($locale ?: new locale())
-			->setIncluder($includer ?: new includer())
-			->setTestDirectoryIterator(new iterators\recursives\directory())
+			->setFactory($factory ?: new factory())
+			->setAdapter($this->askToFactory('mageekguy\atoum\adapter'))
+			->setScore($this->askToFactory('mageekguy\atoum\score'))
+			->setLocale($this->askToFactory('mageekguy\atoum\locale'))
+			->setIncluder($this->askToFactory('mageekguy\atoum\includer'))
+			->setTestDirectoryIterator($this->askToFactory('mageekguy\atoum\iterators\recursives\directory'))
 		;
 
-		$runnerClass = new \reflectionClass($this);
+		$runnerClass = $this->askToFactory('reflectionClass', array($this));
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
 	}
 
 	public function setTestDirectoryIterator(iterators\recursives\directory $iterator)
@@ -570,6 +584,11 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $isIgnored;
+	}
+
+	protected function askToFactory($class, array $arguments = array())
+	{
+		return $this->factory->build($class, $arguments, $this);
 	}
 
 	protected static function remove($needle, array $haystack)

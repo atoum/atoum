@@ -52,8 +52,13 @@ class factory
 		return $instance;
 	}
 
-	public function setBuilder($class, \closure $builder, $client = null)
+	public function setBuilder($class, $builder, $client = null)
 	{
+		if ($builder instanceof \closure === false)
+		{
+			$builder = function() use ($builder) { return $builder; };
+		}
+
 		$this->builders[self::resolveClient($client)][$this->resolveClass($class)] = $builder;
 
 		return $this;

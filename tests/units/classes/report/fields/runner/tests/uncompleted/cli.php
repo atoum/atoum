@@ -180,7 +180,8 @@ class cli extends atoum\test
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getUncompletedMethods = array())
-				->and($runner = new atoum\runner($score))
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new tests\uncompleted\cli())
 				->then
 					->castToString($defaultField)->isEmpty()
