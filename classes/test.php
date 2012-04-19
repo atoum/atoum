@@ -417,10 +417,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
 				}
-				else
-				{
-					$this->setTestedClassName(trim(preg_replace($testNamespace, '\\', $testClass), '\\'));
-				}
+
+				$this->testedClass = trim(preg_replace($testNamespace, '\\', $testClass), '\\');
 			}
 			else
 			{
@@ -430,10 +428,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 				{
 					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which contains \'' . $testNamespace . '\'');
 				}
-				else
-				{
-					$this->setTestedClassName(trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\'));
-				}
+
+				$this->testedClass = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
 			}
 		}
 

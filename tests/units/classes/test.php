@@ -296,6 +296,23 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testGetTestedClassName()
+		{
+			$mockClass = '\mock\\' . __CLASS__;
+
+			$this
+				->if($test = new $mockClass())
+				->and($test->getMockController()->getClass = $testClass = 'foo')
+				->then
+					->exception(function() use ($test) { $test->getTestedClassName(); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $test->getTestNamespace() . '\'')
+				->if($test->getMockController()->getClass = 'tests\units\foo')
+				->then
+					->string($test->getTestedClassName())->isEqualTo('foo')
+			;
+		}
+
 		public function testSetTestsSubNamespace()
 		{
 			$this
