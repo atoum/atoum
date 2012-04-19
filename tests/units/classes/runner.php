@@ -40,7 +40,7 @@ class runner extends atoum\test
 					->boolean($runner->codeCoverageIsEnabled())->isTrue()
 					->variable($runner->getDefaultReportTitle())->isNull()
 					->array($runner->getObservers())->isEmpty()
-				->if($runner = new atoum\runner($factory = new atoum\factory()))
+				->if($runner = new atoum\runner($factory = new \mock\mageekguy\atoum\factory()))
 				->then
 					->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
 					->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
@@ -52,6 +52,14 @@ class runner extends atoum\test
 					->boolean($runner->codeCoverageIsEnabled())->isTrue()
 					->variable($runner->getDefaultReportTitle())->isNull()
 					->array($runner->getObservers())->isEmpty()
+					->mock($factory)
+						->call('build')
+							->withArguments('mageekguy\atoum\score', array(), $runner)->once()
+							->withArguments('mageekguy\atoum\adapter', array(), $runner)->once()
+							->withArguments('mageekguy\atoum\locale', array(), $runner)->once()
+							->withArguments('mageekguy\atoum\includer', array(), $runner)->once()
+							->withArguments('mageekguy\atoum\iterators\recursives\directory', array(), $runner)->once()
+							->withArguments('reflectionClass', array($runner), $runner)->once()
 		;
 	}
 
