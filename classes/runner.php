@@ -42,14 +42,14 @@ class runner implements observable, adapter\aggregator
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setAdapter($this->askToFactory('mageekguy\atoum\adapter'))
-			->setScore($this->askToFactory('mageekguy\atoum\score'))
-			->setLocale($this->askToFactory('mageekguy\atoum\locale'))
-			->setIncluder($this->askToFactory('mageekguy\atoum\includer'))
-			->setTestDirectoryIterator($this->askToFactory('mageekguy\atoum\iterators\recursives\directory'))
+			->setAdapter($this->factory->build('mageekguy\atoum\adapter'))
+			->setScore($this->factory->build('mageekguy\atoum\score'))
+			->setLocale($this->factory->build('mageekguy\atoum\locale'))
+			->setIncluder($this->factory->build('mageekguy\atoum\includer'))
+			->setTestDirectoryIterator($this->factory->build('mageekguy\atoum\iterators\recursives\directory'))
 		;
 
-		$runnerClass = $this->askToFactory('reflectionClass', array($this));
+		$runnerClass = $this->factory->build('reflectionClass', array($this));
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
@@ -226,7 +226,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($testClasses as $testClass)
 		{
-			$test = new $testClass();
+			$test = new $testClass($this->factory);
 
 			if (self::isIgnored($test, $namespaces, $tags) === false)
 			{
@@ -390,7 +390,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($runTestClasses as $runTestClass)
 		{
-			$test = new $runTestClass();
+			$test = new $runTestClass($this->factory);
 
 			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
@@ -497,7 +497,7 @@ class runner implements observable, adapter\aggregator
 	{
 		try
 		{
-			foreach (new \globIterator(rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
+			foreach ($this->factory->build('globIterator', array(rtrim($pattern, DIRECTORY_SEPARATOR))) as $path)
 			{
 				if ($path->isDir() === true)
 				{
@@ -527,7 +527,7 @@ class runner implements observable, adapter\aggregator
 		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
 		return array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
-				$class = new \reflectionClass($class);
+				$class = $this->factory->build('reflectionClass', array($class));
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);
@@ -584,11 +584,6 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $isIgnored;
-	}
-
-	protected function askToFactory($class, array $arguments = array())
-	{
-		return $this->factory->build($class, $arguments, $this);
 	}
 
 	protected static function remove($needle, array $haystack)

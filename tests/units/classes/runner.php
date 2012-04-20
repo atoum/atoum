@@ -53,12 +53,12 @@ class runner extends atoum\test
 				->array($runner->getObservers())->isEmpty()
 				->mock($factory)
 					->call('build')
-						->withArguments('mageekguy\atoum\score', array(), $runner)->once()
-						->withArguments('mageekguy\atoum\adapter', array(), $runner)->once()
-						->withArguments('mageekguy\atoum\locale', array(), $runner)->once()
-						->withArguments('mageekguy\atoum\includer', array(), $runner)->once()
-						->withArguments('mageekguy\atoum\iterators\recursives\directory', array(), $runner)->once()
-						->withArguments('reflectionClass', array($runner), $runner)->once()
+						->withArguments('mageekguy\atoum\score', array())->once()
+						->withArguments('mageekguy\atoum\adapter', array())->once()
+						->withArguments('mageekguy\atoum\locale', array())->once()
+						->withArguments('mageekguy\atoum\includer', array())->once()
+						->withArguments('mageekguy\atoum\iterators\recursives\directory', array())->once()
+						->withArguments('reflectionClass', array($runner))->once()
 		;
 	}
 

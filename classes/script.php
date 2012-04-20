@@ -28,11 +28,11 @@ abstract class script implements atoum\adapter\aggregator
 
 		$this
 			->setFactory($factory ?: new atoum\factory())
-			->setLocale($this->askToFactory('atoum\locale'))
-			->setAdapter($this->askToFactory('atoum\adapter'))
-			->setArgumentsParser($this->askToFactory('atoum\script\arguments\parser'))
-			->setOutputWriter($this->askToFactory('atoum\writers\std\out'))
-			->setErrorWriter($this->askToFactory('atoum\writers\std\err'))
+			->setLocale($this->factory->build('atoum\locale'))
+			->setAdapter($this->factory->build('atoum\adapter'))
+			->setArgumentsParser($this->factory->build('atoum\script\arguments\parser'))
+			->setOutputWriter($this->factory->build('atoum\writers\std\out'))
+			->setErrorWriter($this->factory->build('atoum\writers\std\err'))
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -255,11 +255,6 @@ abstract class script implements atoum\adapter\aggregator
 		$this->help = array();
 
 		return $this;
-	}
-
-	protected function askToFactory($class, array $arguments = array())
-	{
-		return $this->factory->build($class, $arguments, $this);
 	}
 }
 

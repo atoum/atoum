@@ -34,6 +34,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $path = '';
 	private $class = '';
 	private $testedClass = null;
+	private $factory = null;
 	private $adapter = null;
 	private $assertionManager = null;
 	private $asserterGenerator = null;
@@ -57,23 +58,24 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private static $namespace = null;
 
-	public function __construct(score $score = null, locale $locale = null, adapter $adapter = null, superglobals $superglobals = null, includer $includer = null)
+	public function __construct(factory $factory = null)
 	{
 		$this
-			->setScore($score ?: new score())
-			->setLocale($locale ?: new locale())
-			->setAdapter($adapter ?: new adapter())
-			->setSuperglobals($superglobals ?: new superglobals())
-			->setIncluder($includer ?: new includer())
+			->setFactory($factory ?: new factory())
+			->setScore($this->factory->build('mageekguy\atoum\score'))
+			->setLocale($this->factory->build('mageekguy\atoum\locale'))
+			->setAdapter($this->factory->build('mageekguy\atoum\adapter'))
+			->setSuperglobals($this->factory->build('mageekguy\atoum\superglobals'))
+			->setIncluder($this->factory->build('mageekguy\atoum\includer'))
 			->enableCodeCoverage()
 		;
 
-		$class = new \reflectionClass($this);
+		$class = $this->factory->build('reflectionClass', array($this));
 
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
 
-		$annotationExtractor = new annotations\extractor();
+		$annotationExtractor = $this->factory->build('mageekguy\atoum\annotations\extractor');
 
 		$test = $this;
 
@@ -125,7 +127,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				->setAlias('class', 'phpClass')
 		;
 
-		$this->setAssertionManager(new test\assertion\manager());
+		$this->setAssertionManager($this->factory->build('mageekguy\atoum\test\assertion\manager'));
 	}
 
 	public function __toString()
@@ -141,6 +143,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function __call($method, array $arguments)
 	{
 		return $this->assertionManager->invoke($method, $arguments);
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
 	}
 
 	public function setAssertionManager(test\assertion\manager $assertionManager)
@@ -252,7 +266,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getMockGenerator()
 	{
-		return $this->mockGenerator ?: $this->setMockGenerator(new test\mock\generator($this))->mockGenerator;
+		return $this->mockGenerator ?: $this->setMockGenerator($this->factory->build('mageekguy\atoum\test\mock\generator', array($this)))->mockGenerator;
 	}
 
 	public function setAsserterGenerator(test\asserter\generator $generator)
@@ -266,7 +280,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		test\adapter::resetCallsForAllInstances();
 
-		return $this->asserterGenerator ?: $this->setAsserterGenerator(new test\asserter\generator($this))->asserterGenerator;
+		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory->build('mageekguy\atoum\test\asserter\generator', array($this)))->asserterGenerator;
 	}
 
 	public function setTestNamespace($testNamespace)
@@ -600,7 +614,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or an iterator');
 						}
 
-						$reflectedTestMethod = new \reflectionMethod($this, $testMethod);
+						$reflectedTestMethod = $this->factory->build('reflectionMethod', array($this, $testMethod));
 						$numberOfArguments = $reflectedTestMethod->getNumberOfRequiredParameters();
 
 						foreach ($data as $key => $arguments)
@@ -815,7 +829,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 										proc_close($child[0]);
 
-										$score = new score();
+										$score = $this->factory->build('mageekguy\atoum\score');
 
 										$testScore = @unserialize($child[2]);
 
