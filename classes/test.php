@@ -62,11 +62,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setScore($this->factory->build('mageekguy\atoum\score'))
-			->setLocale($this->factory->build('mageekguy\atoum\locale'))
-			->setAdapter($this->factory->build('mageekguy\atoum\adapter'))
-			->setSuperglobals($this->factory->build('mageekguy\atoum\superglobals'))
-			->setIncluder($this->factory->build('mageekguy\atoum\includer'))
+			->setScore($this->factory['mageekguy\atoum\score']())
+			->setLocale($this->factory['mageekguy\atoum\locale']())
+			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())
+			->setIncluder($this->factory['mageekguy\atoum\includer']())
 			->enableCodeCoverage()
 		;
 

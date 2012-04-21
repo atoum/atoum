@@ -15,7 +15,31 @@ class factory implements \arrayAccess
 
 	public function offsetGet($class)
 	{
-		return $this->getBuilder($class);
+		return $this->getBuilder($class) ?: function() use ($class) {
+			$instance = null;
+
+			$class = $this->resolveClass($class);
+
+			if (class_exists($class, true) === false)
+			{
+				throw new factory\exception('Class \'' . $class . '\' does not exist');
+			}
+
+			$arguments = func_get_args();
+
+			if (sizeof($arguments) <= 0)
+			{
+				$instance = new $class();
+			}
+			else
+			{
+				$class = new \reflectionClass($class);
+
+				$instance = $class->newInstanceArgs($arguments);
+			}
+
+			return $instance;
+		};
 	}
 
 	public function offsetSet($class, $builder)
@@ -34,41 +58,7 @@ class factory implements \arrayAccess
 
 	public function build($class, array $arguments = array())
 	{
-		$instance = null;
-
-		if (($builder = $this->getBuilder($class)) !== null)
-		{
-			$class = $this->resolveClass($class);
-
-			if (($instance = call_user_func_array($builder, $arguments)) instanceof $class === false && is_subclass_of($instance, $class) === false)
-			{
-				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' with current builder');
-			}
-		}
-		else
-		{
-			$class = $this->resolveClass($class);
-
-			if (class_exists($class, true) === false)
-			{
-				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
-			}
-			else if (sizeof($arguments) <= 0)
-			{
-				$instance = new $class();
-			}
-			else
-			{
-				if (isset(self::$classes[$class]) === false)
-				{
-					self::$classes[$class] = new \reflectionClass($class);
-				}
-
-				$instance = self::$classes[$class]->newInstanceArgs($arguments);
-			}
-		}
-
-		return $instance;
+		return call_user_func_array($this[$class], $arguments);
 	}
 
 	public function setBuilder($class, $builder)

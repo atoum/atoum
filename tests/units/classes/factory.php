@@ -36,17 +36,15 @@ class factory extends atoum\test
 				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isEqualTo(new \arrayIterator($data))
 				->exception(function() use ($factory, & $class) { $factory->build($class = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
-					->hasMessage('Unable to build an instance of class \'' . $class . '\' because class does not exist')
+					->hasMessage('Class \'' . $class . '\' does not exist')
 			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = new \arrayIterator); }))
 				->object($arrayIterator = $factory->build('arrayIterator'))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array()))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array(array())))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isIdenticalTo($return)
-			->if($factory->setBuilder('arrayIterator', function() { return uniqid(); }))
+			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = uniqid()); }))
 			->then
-				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
-					->isInstanceOf('mageekguy\atoum\factory\exception')
-					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
+				->string($factory->build('arrayIterator'))->isEqualTo($return)
 			->if($factory->import('mageekguy\atoum'))
 			->then
 				->object($factory->build('atoum\adapter'))->isEqualTo(new atoum\adapter())
@@ -167,7 +165,7 @@ class factory extends atoum\test
 		$this
 			->if($factory = new atoum\factory())
 			->then
-				->variable($factory['arrayIterator'])->isNull()
+				->object($factory['arrayIterator'])->isInstanceOf('closure')
 			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
 			->then
 				->object($factory['arrayIterator'])->isIdenticalTo($closure)
