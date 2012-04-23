@@ -42,14 +42,14 @@ class runner implements observable, adapter\aggregator
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setAdapter($this->factory->build('mageekguy\atoum\adapter'))
-			->setScore($this->factory->build('mageekguy\atoum\score'))
-			->setLocale($this->factory->build('mageekguy\atoum\locale'))
-			->setIncluder($this->factory->build('mageekguy\atoum\includer'))
-			->setTestDirectoryIterator($this->factory->build('mageekguy\atoum\iterators\recursives\directory'))
+			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setScore($this->factory['mageekguy\atoum\score']())
+			->setLocale($this->factory['mageekguy\atoum\locale']())
+			->setIncluder($this->factory['mageekguy\atoum\includer']())
+			->setTestDirectoryIterator($this->factory['mageekguy\atoum\iterators\recursives\directory']())
 		;
 
-		$runnerClass = $this->factory->build('reflectionClass', array($this));
+		$runnerClass = $this->factory['reflectionClass']($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
@@ -497,7 +497,7 @@ class runner implements observable, adapter\aggregator
 	{
 		try
 		{
-			foreach ($this->factory->build('globIterator', array(rtrim($pattern, DIRECTORY_SEPARATOR))) as $path)
+			foreach ($this->factory['globIterator'](rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
 			{
 				if ($path->isDir() === true)
 				{
@@ -527,7 +527,7 @@ class runner implements observable, adapter\aggregator
 		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
 		return array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
-				$class = $this->factory->build('reflectionClass', array($class));
+				$class = $this->factory['reflectionClass']($class);
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);

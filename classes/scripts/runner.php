@@ -31,8 +31,8 @@ class runner extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this
-			->setRunner($this->factory->build('atoum\runner', array($this->factory)))
-			->setIncluder($this->factory->build('atoum\includer'))
+			->setRunner($this->factory['atoum\runner']($this->factory))
+			->setIncluder($this->factory['atoum\includer']())
 		;
 	}
 
@@ -172,7 +172,8 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$script = $this->factory->build('atoum\configurator', array($this));
+		$script = $this->factory['atoum\configurator']($this);
+
 		$runner = $this->runner;
 
 		try

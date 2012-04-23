@@ -16,14 +16,14 @@ class factory implements \arrayAccess
 	public function offsetGet($class)
 	{
 		return $this->getBuilder($class) ?: function() use ($class) {
-			$instance = null;
-
 			$class = $this->resolveClass($class);
 
 			if (class_exists($class, true) === false)
 			{
 				throw new factory\exception('Class \'' . $class . '\' does not exist');
 			}
+
+			$instance = null;
 
 			$arguments = func_get_args();
 
@@ -44,6 +44,11 @@ class factory implements \arrayAccess
 
 	public function offsetSet($class, $builder)
 	{
+		if ($builder instanceof \closure === false)
+		{
+			$builder = function() use ($builder) { return $builder; };
+		}
+
 		$this->setBuilder($class, $builder);
 	}
 

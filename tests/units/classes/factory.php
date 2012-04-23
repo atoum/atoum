@@ -81,19 +81,22 @@ class factory extends atoum\test
 			->then
 				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
 				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
+			->if($factory['arrayIterator'] = $arrayIterator)
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
+				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
 		;
 	}
 
-	public function testBuilderIsSet()
+	public function testOffsetGet()
 	{
 		$this
 			->if($factory = new atoum\factory())
 			->then
-				->boolean($factory->builderIsSet(uniqid()))->isFalse()
-			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+				->object($factory['arrayIterator'])->isInstanceOf('closure')
+			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
 			->then
-				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
-				->boolean($factory->builderIsSet(uniqid()))->isFalse()
+				->object($factory['arrayIterator'])->isIdenticalTo($closure)
 		;
 	}
 
@@ -110,7 +113,7 @@ class factory extends atoum\test
 		;
 	}
 
-	public function testUnsetBuilder()
+	public function testOffsetUnset()
 	{
 		$this
 			->if($factory = new atoum\factory())
@@ -123,7 +126,20 @@ class factory extends atoum\test
 		;
 	}
 
-	public function testOffsetUnset()
+	public function testBuilderIsSet()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->boolean($factory->builderIsSet(uniqid()))->isFalse()
+			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
+				->boolean($factory->builderIsSet(uniqid()))->isFalse()
+		;
+	}
+
+	public function testUnsetBuilder()
 	{
 		$this
 			->if($factory = new atoum\factory())
@@ -157,18 +173,6 @@ class factory extends atoum\test
 			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
 			->then
 				->object($factory->getBuilder('arrayIterator'))->isIdenticalTo($closure)
-		;
-	}
-
-	public function testOffsetGet()
-	{
-		$this
-			->if($factory = new atoum\factory())
-			->then
-				->object($factory['arrayIterator'])->isInstanceOf('closure')
-			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
-			->then
-				->object($factory['arrayIterator'])->isIdenticalTo($closure)
 		;
 	}
 
