@@ -91,7 +91,7 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->getFactory())->isEqualTo(new atoum\factory())
+					->object($test->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 					->object($test->getScore())->isEqualTo(new atoum\score())
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())

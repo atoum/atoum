@@ -34,7 +34,7 @@ class runner extends atoum\test
 				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
 				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
-				->object($runner->getFactory())->isEqualTo(new atoum\factory())
+				->object($runner->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->variable($runner->getRunningDuration())->isNull()
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()

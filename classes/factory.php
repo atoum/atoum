@@ -15,7 +15,10 @@ class factory implements \arrayAccess
 
 	public function offsetGet($class)
 	{
-		return $this->getBuilder($class) ?: function() use ($class) {
+		$builder = $this->getBuilder($class);
+
+		if ($builder === null)
+		{
 			$class = $this->resolveClass($class);
 
 			if (class_exists($class, true) === false)
@@ -23,23 +26,22 @@ class factory implements \arrayAccess
 				throw new factory\exception('Class \'' . $class . '\' does not exist');
 			}
 
-			$instance = null;
+			$this->setBuilder($class, $builder = function() use ($class) {
+					if (func_num_args() <= 0)
+					{
+						return new $class();
+					}
+					else
+					{
+						$class = new \reflectionClass($class);
 
-			$arguments = func_get_args();
+						return $class->newInstanceArgs(func_get_args());
+					}
+				}
+			);
+		}
 
-			if (sizeof($arguments) <= 0)
-			{
-				$instance = new $class();
-			}
-			else
-			{
-				$class = new \reflectionClass($class);
-
-				$instance = $class->newInstanceArgs($arguments);
-			}
-
-			return $instance;
-		};
+		return $builder;
 	}
 
 	public function offsetSet($class, $builder)
