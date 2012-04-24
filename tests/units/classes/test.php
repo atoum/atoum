@@ -162,7 +162,9 @@ namespace mageekguy\atoum\tests\units
 				->assert('Code coverage must be enabled only if xdebug is available')
 					->if($adapter = new atoum\test\adapter())
 					->and($adapter->extension_loaded = function($extension) { return $extension == 'xdebug'; })
-					->and($test = new emptyTest(null, null, $adapter))
+					->and($factory = new atoum\factory())
+					->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter))
+					->and($test = new emptyTest($factory))
 					->then
 						->boolean($test->codeCoverageIsEnabled())->isTrue()
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
@@ -189,7 +191,9 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->extension_loaded = true)
-				->and($test = new emptyTest(null, null, $adapter))
+				->and($factory = new atoum\factory())
+				->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter))
+				->and($test = new emptyTest($factory))
 				->then
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->object($test->disableCodeCoverage())->isIdenticalTo($test)
