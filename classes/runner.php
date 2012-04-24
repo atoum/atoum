@@ -524,10 +524,11 @@ class runner implements observable, adapter\aggregator
 
 	public function getDeclaredTestClasses($testBaseClass = null)
 	{
+		$factory = $this->factory;
 		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
-		return array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
-				$class = $this->factory['reflectionClass']($class);
+		return array_filter($this->adapter->get_declared_classes(), function($class) use ($factory, $testBaseClass) {
+				$class = $factory['reflectionClass']($class);
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);
