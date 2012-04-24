@@ -702,58 +702,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			if (sizeof($this))
 			{
-				$this->phpCode =
-					'<?php ' .
-					'define(\'mageekguy\atoum\autorun\', false);' .
-					'require \'' . directory . '/scripts/runner.php\';'
-				;
-
-				if ($this->bootstrapFile !== null)
-				{
-					$this->phpCode .=
-						'require \'' . directory . '/classes/includer.php\';' .
-						'$includer = new mageekguy\atoum\includer();' .
-						'try { $includer->includePath(\'' . $this->getBootstrapFile() . '\'); }' .
-						'catch (mageekguy\atoum\includer\exception $exception)' .
-						'{ die(\'Unable to include bootstrap file \\\'' . $this->bootstrapFile . '\\\'\'); }'
-					;
-				}
-
-				$this->phpCode .=
-					'require \'' . $this->path . '\';' .
-					'$test = new ' . $this->class . '();' .
-					'$test->setLocale(new ' . get_class($this->locale) . '(' . $this->locale->get() . '));' .
-					'$test->setPhpPath(\'' . $this->getPhpPath() . '\');'
-				;
-
-				if ($this->codeCoverageIsEnabled() === false)
-				{
-					$this->phpCode .= '$test->disableCodeCoverage();';
-				}
-				else
-				{
-					$this->phpCode .= '$coverage = $test->getCoverage();';
-
-					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
-					{
-						$this->phpCode .= '$coverage->excludeClass(\'' . $excludedClass . '\');';
-					}
-
-					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
-					{
-						$this->phpCode .= '$coverage->excludeNamespace(\'' . $excludedNamespace . '\');';
-					}
-
-					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
-					{
-						$this->phpCode .= '$coverage->excludeDirectory(\'' . $excludedDirectory . '\');';
-					}
-				}
-
-				$this->phpCode .= 'echo serialize($test->registerMockAutoloader()->runTestMethod(\'%s\')->getScore());';
-
-				$null = null;
-
 				try
 				{
 					$this->callObservers(self::beforeSetUp);
@@ -768,127 +716,48 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						while ($this->runChild()->children)
 						{
-							$pipes = array();
-
-							foreach ($this->children as $child)
+							foreach ($this->children as $this->currentMethod => $engine)
 							{
-								if (isset($child[1][1]) === true)
-								{
-									$pipes[] = $child[1][1];
-								}
+								$score = $engine->getScore();
 
-								if (isset($child[1][2]) === true)
+								if ($score !== null)
 								{
-									$pipes[] = $child[1][2];
+									$this->callObservers(self::afterTestMethod);
+
+									switch (true)
+									{
+										case $score->getRuntimeExceptionNumber() > 0:
+											$this->callObservers(self::runtimeException);
+											throw current($score->getRuntimeExceptions());
+
+										case $score->getUncompletedMethodNumber():
+											$this->callObservers(self::uncompleted);
+											break;
+
+										case $score->getFailNumber():
+											$this->callObservers(self::fail);
+											break;
+
+										case $score->getErrorNumber():
+											$this->callObservers(self::error);
+											break;
+
+										case $score->getExceptionNumber():
+											$this->callObservers(self::exception);
+											break;
+
+										case $score->getPassNumber():
+											$this->callObservers(self::success);
+											break;
+									}
+
+									$this->score->merge($score);
+
+									unset($this->children[$this->currentMethod]);
 								}
 							}
 
-							$pipesUpdated = stream_select($pipes, $null, $null, $this->canRunChild() === true ? 0 : null);
-
-							if ($pipesUpdated)
-							{
-								$children = $this->children;
-								$this->children = array();
-
-								foreach ($children as $this->currentMethod => $child)
-								{
-									if (isset($child[1][2]) && in_array($child[1][2], $pipes) === true)
-									{
-										$child[3] .= stream_get_contents($child[1][2]);
-
-										if (feof($child[1][2]) === true)
-										{
-											fclose($child[1][2]);
-											unset($child[1][2]);
-										}
-									}
-
-									if (isset($child[1][1]) && in_array($child[1][1], $pipes) === true)
-									{
-										$child[2] .= stream_get_contents($child[1][1]);
-
-										if (feof($child[1][1]) === true)
-										{
-											fclose($child[1][1]);
-											unset($child[1][1]);
-										}
-									}
-
-									if (isset($child[1][1]) === true || isset($child[1][2]) === true)
-									{
-										$this->children[$this->currentMethod] = $child;
-									}
-									else
-									{
-										$phpStatus = proc_get_status($child[0]);
-
-										while ($phpStatus['running'] == true)
-										{
-											$phpStatus = proc_get_status($child[0]);
-										}
-
-										proc_close($child[0]);
-
-										$score = $this->factory->build('mageekguy\atoum\score');
-
-										$testScore = @unserialize($child[2]);
-
-										if ($testScore instanceof score)
-										{
-											$score = $testScore;
-										}
-										else
-										{
-											$score->addUncompletedMethod($this->class, $this->currentMethod, $phpStatus['exitcode'], $child[2]);
-										}
-
-										if ($child[3] !== '')
-										{
-											if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($child[3]), $errors, PREG_SET_ORDER) === 0)
-											{
-												$score->addError($this->path, null, $this->class, $this->currentMethod, 'UNKNOWN', $child[3]);
-											}
-											else foreach ($errors as $error)
-											{
-												$score->addError($this->path, null, $this->class, $this->currentMethod, $error[1], $error[2], $error[3], $error[4]);
-											}
-										}
-
-										$this->callObservers(self::afterTestMethod);
-
-										switch (true)
-										{
-											case $score->getRuntimeExceptionNumber() > 0:
-												$this->callObservers(self::runtimeException);
-												throw current($score->getRuntimeExceptions());
-
-											case $score->getUncompletedMethodNumber():
-												$this->callObservers(self::uncompleted);
-												break;
-
-											case $score->getFailNumber():
-												$this->callObservers(self::fail);
-												break;
-
-											case $score->getErrorNumber():
-												$this->callObservers(self::error);
-												break;
-
-											case $score->getExceptionNumber():
-												$this->callObservers(self::exception);
-												break;
-
-											case $score->getPassNumber():
-												$this->callObservers(self::success);
-												break;
-										}
-
-										$this->score->merge($score);
-									}
-								}
-
-								$this->currentMethod = null;
-							}
+							$this->currentMethod = null;
 						}
 					}
 				}
@@ -1074,33 +943,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->canRunChild() === true)
 		{
-			$php = @proc_open(
-				escapeshellarg($this->getPhpPath()),
-				array(
-					0 => array('pipe', 'r'),
-					1 => array('pipe', 'w'),
-					2 => array('pipe', 'w')
-				),
-				$pipes
-			);
-
-			stream_set_blocking($pipes[1], 0);
-			stream_set_blocking($pipes[2], 0);
-
-			$currentMethod = array_shift($this->runTestMethods);
+			$this->currentMethod = array_shift($this->runTestMethods);
 
 			$this->callObservers(self::beforeTestMethod);
 
-			fwrite($pipes[0], sprintf($this->phpCode, $currentMethod));
-			fclose($pipes[0]);
-			unset($pipes[0]);
+			$this->children[$this->currentMethod] = $this->factory['mageekguy\atoum\test\engines\forker']($this->factory);
+			$this->children[$this->currentMethod]->run($this, $this->currentMethod);
 
-			$this->children[$currentMethod] = array(
-				$php,
-				$pipes,
-				'',
-				''
-			);
+			$this->currentMethod = null;
 		}
 
 		return $this;
