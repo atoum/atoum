@@ -3,114 +3,108 @@
 namespace mageekguy\atoum\test\engines;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\test
 ;
 
-class forker
+class forker extends test\engine
 {
-	protected $testClass = '';
-	protected $testMethod = '';
-	protected $testPath = '';
+	protected $test = null;
+	protected $method = '';
+	protected $factory = null;
 	protected $stdOut = '';
 	protected $stdErr = '';
-	protected $factory = null;
 
 	private $php = null;
 	private $pipes = array();
 
-	public function __construct(atoum\factory $factory)
+	public function isAsynchronous()
 	{
-		$this->setFactory($factory);
+		return true;
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function run(atoum\test $test)
 	{
-		$this->factory = $factory;
+		$currentTestMethod = $test->getCurrentMethod();
 
-		return $this;
-	}
-
-	public function getFactory()
-	{
-		return $this->factory;
-	}
-
-	public function run(atoum\test $test, $method)
-	{
-		$this->testClass = $test->getClass();
-		$this->testMethod = (string) $method;
-		$this->testPath = $test->getPath();
-
-		$phpPath = $test->getPhpPath();
-
-		$phpCode =
-			'<?php ' .
-			'define(\'mageekguy\atoum\autorun\', false);' .
-			'require \'' . atoum\directory . '/scripts/runner.php\';'
-		;
-
-		$bootstrapFile = $test->getBootstrapFile();
-
-		if ($bootstrapFile !== null)
+		if ($currentTestMethod !== null)
 		{
-			$phpCode .=
-				'require \'' . atoum\directory . '/classes/includer.php\';' .
-				'$includer = new mageekguy\atoum\includer();' .
-				'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-				'catch (mageekguy\atoum\includer\exception $exception)' .
-				'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
+			$this->test = $test;
+			$this->method = $currentTestMethod;
+			$this->stdOut = '';
+			$this->stdErr = '';
+
+			$phpPath = $this->test->getPhpPath();
+
+			$phpCode =
+				'<?php ' .
+				'define(\'mageekguy\atoum\autorun\', false);' .
+				'require \'' . atoum\directory . '/scripts/runner.php\';'
 			;
-		}
 
-		$phpCode .=
-			'require \'' . $test->getPath() . '\';' .
-			'$test = new ' . $this->testClass . '();' .
-			'$test->setLocale(new ' . get_class($test->getLocale()) . '(' . $test->getLocale()->get() . '));' .
-			'$test->setPhpPath(\'' . $phpPath . '\');'
-		;
+			$bootstrapFile = $this->test->getBootstrapFile();
 
-		if ($test->codeCoverageIsEnabled() === false)
-		{
-			$phpCode .= '$test->disableCodeCoverage();';
-		}
-		else
-		{
-			$phpCode .= '$coverage = $test->getCoverage();';
-
-			foreach ($test->getCoverage()->getExcludedClasses() as $excludedClass)
+			if ($bootstrapFile !== null)
 			{
-				$phpCode .= '$coverage->excludeClass(\'' . $excludedClass . '\');';
+				$phpCode .=
+					'require \'' . atoum\directory . '/classes/includer.php\';' .
+					'$includer = new mageekguy\atoum\includer();' .
+					'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
+					'catch (mageekguy\atoum\includer\exception $exception)' .
+					'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
+				;
 			}
 
-			foreach ($test->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
+			$phpCode .=
+				'require \'' . $this->test->getPath() . '\';' .
+				'$test = new ' . $this->test->getClass() . '();' .
+				'$test->setLocale(new ' . get_class($this->test->getLocale()) . '(' . $this->test->getLocale()->get() . '));' .
+				'$test->setPhpPath(\'' . $phpPath . '\');'
+			;
+
+			if ($this->test->codeCoverageIsEnabled() === false)
 			{
-				$phpCode .= '$coverage->excludeNamespace(\'' . $excludedNamespace . '\');';
+				$phpCode .= '$test->disableCodeCoverage();';
+			}
+			else
+			{
+				$phpCode .= '$coverage = $test->getCoverage();';
+
+				foreach ($this->test->getCoverage()->getExcludedClasses() as $excludedClass)
+				{
+					$phpCode .= '$coverage->excludeClass(\'' . $excludedClass . '\');';
+				}
+
+				foreach ($this->test->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
+				{
+					$phpCode .= '$coverage->excludeNamespace(\'' . $excludedNamespace . '\');';
+				}
+
+				foreach ($this->test->getCoverage()->getExcludedDirectories() as $excludedDirectory)
+				{
+					$phpCode .= '$coverage->excludeDirectory(\'' . $excludedDirectory . '\');';
+				}
 			}
 
-			foreach ($test->getCoverage()->getExcludedDirectories() as $excludedDirectory)
-			{
-				$phpCode .= '$coverage->excludeDirectory(\'' . $excludedDirectory . '\');';
-			}
+			$phpCode .= 'echo serialize($test->registerMockAutoloader()->runTestMethod(\'' . $this->method . '\')->getScore());';
+
+			$this->php = @proc_open(
+				escapeshellarg($phpPath),
+				array(
+					0 => array('pipe', 'r'),
+					1 => array('pipe', 'w'),
+					2 => array('pipe', 'w')
+				),
+				$this->pipes
+			);
+
+			fwrite($this->pipes[0], $phpCode);
+			fclose($this->pipes[0]);
+			unset($this->pipes[0]);
+
+			stream_set_blocking($this->pipes[1], 0);
+			stream_set_blocking($this->pipes[2], 0);
 		}
-
-		$phpCode .= 'echo serialize($test->registerMockAutoloader()->runTestMethod(\'' . $this->testMethod . '\')->getScore());';
-
-		$this->php = @proc_open(
-			escapeshellarg($phpPath),
-			array(
-				0 => array('pipe', 'r'),
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w')
-			),
-			$this->pipes
-		);
-
-		fwrite($this->pipes[0], $phpCode);
-		fclose($this->pipes[0]);
-		unset($this->pipes[0]);
-
-		stream_set_blocking($this->pipes[1], 0);
-		stream_set_blocking($this->pipes[2], 0);
 
 		return $this;
 	}
@@ -134,31 +128,26 @@ class forker
 				$this->pipes = array();
 
 				proc_close($this->php);
-
 				$this->php = null;
 
-				$score = $this->factory->build('mageekguy\atoum\score');
+				$score = @unserialize($this->stdOut);
 
-				$testScore = @unserialize($this->stdOut);
+				if ($score instanceof atoum\score === false)
+				{
+					$score = $this->factory['mageekguy\atoum\score']();
 
-				if ($testScore instanceof atoum\score)
-				{
-					$score = $testScore;
-				}
-				else
-				{
-					$score->addUncompletedMethod($this->testClass, $this->testMethod, $phpStatus['exitcode'], $this->stdOut);
+					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
 				}
 
 				if ($this->stdErr !== '')
 				{
 					if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->stdErr), $errors, PREG_SET_ORDER) === 0)
 					{
-						$score->addError($this->testPath, null, $this->testClass, $this->testMethod, 'UNKNOWN', $this->stdErr);
+						$score->addError($this->test->getPath(), null, $this->test->getClass(), $this->method, 'UNKNOWN', $this->stdErr);
 					}
 					else foreach ($errors as $error)
 					{
-						$score->addError($this->testPath, null, $this->testClass, $this->testMethod, $error[1], $error[2], $error[3], $error[4]);
+						$score->addError($this->test->getPath(), null, $this->test->getClass(), $this->method, $error[1], $error[2], $error[3], $error[4]);
 					}
 				}
 

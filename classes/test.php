@@ -714,7 +714,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 					{
 						$this->callObservers(self::afterSetUp);
 
-						while ($this->runChild()->children)
+						while ($this->runEngine()->children)
 						{
 							foreach ($this->children as $this->currentMethod => $engine)
 							{
@@ -939,16 +939,20 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	private function runChild()
+	private function runEngine()
 	{
-		if ($this->canRunChild() === true)
+		$engine = $this->factory['mageekguy\atoum\test\engines\forker']($this->factory);
+
+		if ($this->canRunEngine($engine) === true)
 		{
 			$this->currentMethod = array_shift($this->runTestMethods);
 
-			$this->callObservers(self::beforeTestMethod);
+			$engine->run($this->callObservers(self::beforeTestMethod));
 
-			$this->children[$this->currentMethod] = $this->factory['mageekguy\atoum\test\engines\forker']($this->factory);
-			$this->children[$this->currentMethod]->run($this, $this->currentMethod);
+			if ($engine->isAsynchronous() === true)
+			{
+				$this->children[$this->currentMethod] = $engine;
+			}
 
 			$this->currentMethod = null;
 		}
@@ -956,9 +960,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	private function canRunChild()
+	private function canRunEngine(test\engine $engine)
 	{
-		return ($this->runTestMethods && ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber));
+		return ($this->runTestMethods && ($engine->isAsynchronous() === false || ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber)));
 	}
 
 	private function doTearDown()
