@@ -86,7 +86,7 @@ class forker extends test\engine
 				}
 			}
 
-			$phpCode .= 'echo serialize($test->registerMockAutoloader()->runTestMethod(\'' . $this->method . '\')->getScore());';
+			$phpCode .= 'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());';
 
 			$this->php = @proc_open(
 				escapeshellarg($phpPath),

@@ -49,9 +49,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $testNamespace = null;
 	private $mockGenerator = null;
 	private $size = 0;
-	private $phpCode = '';
-	private $children = array();
-	private $maxChildrenNumber = null;
+	private $engines = array();
+	private $classEngine = null;
+	private $methodEngines = array();
+	private $asynchronousEngines = 0;
+	private $maxAsynchronousEngines = null;
 	private $codeCoverage = false;
 	private $includer = null;
 	private $bootstrapFile = null;
@@ -84,6 +86,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
+			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->extract($class->getDocComment())
 		;
 
@@ -108,6 +111,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
 			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
+			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
 		;
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
@@ -155,6 +159,32 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getFactory()
 	{
 		return $this->factory;
+	}
+
+	public function setClassEngine($engine)
+	{
+		$this->classEngine = (string) $engine;
+
+		return $this;
+	}
+
+	public function getClassEngine()
+	{
+		return $this->classEngine;
+	}
+
+	public function setMethodEngine($method, $engine)
+	{
+		$this->methodEngines[(string) $method] = (string) $engine;
+
+		return $this;
+	}
+
+	public function getMethodEngine($method)
+	{
+		$method = (string) $method;
+
+		return (isset($this->methodEngines[$method]) === false ? null : $this->methodEngines[$method]);
 	}
 
 	public function setAssertionManager(test\assertion\manager $assertionManager)
@@ -216,7 +246,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			throw new exceptions\logic\invalidArgument('Maximum number of children must be greater or equal to 1');
 		}
 
-		$this->maxChildrenNumber = $number;
+		$this->maxAsynchronousEngines = $number;
 
 		return $this;
 	}
@@ -499,7 +529,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getMaxChildrenNumber()
 	{
-		return $this->maxChildrenNumber;
+		return $this->maxAsynchronousEngines;
 	}
 
 	public function getCoverage()
@@ -572,6 +602,24 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->methodIsIgnored($testMethod, $tags) === false)
 		{
+
+			$mockGenerator = $this->getMockGenerator();
+			$mockNamespacePattern = '/^' . $mockGenerator->getDefaultNamespace() . '\\\/';
+
+			$mockAutoloader = function($class) use ($mockGenerator, $mockNamespacePattern) {
+				$mockedClass = preg_replace($mockNamespacePattern, '', $class);
+
+				if ($mockedClass !== $class)
+				{
+					$mockGenerator->generate($mockedClass);
+				}
+			};
+
+			if (spl_autoload_register($mockAutoloader, true, true) === false)
+			{
+				throw new \runtimeException('Unable to register mock autoloader');
+			}
+
 			set_error_handler(array($this, 'errorHandler'));
 
 			ini_set('display_errors', 'stderr');
@@ -684,6 +732,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 			ini_restore('display_errors');
 			ini_restore('log_errors');
 			ini_restore('log_errors_max_len');
+
+			if (spl_autoload_unregister($mockAutoloader) === false)
+			{
+				throw new \runtimeException('Unable to unregister mock autoloader');
+			}
 		}
 
 		return $this;
@@ -714,13 +767,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 					{
 						$this->callObservers(self::afterSetUp);
 
-						while ($this->runEngine()->children)
+						while ($this->runEngine()->engines)
 						{
-							foreach ($this->children as $this->currentMethod => $engine)
+							$engines = array();
+
+							foreach ($this->engines as $this->currentMethod => $engine)
 							{
 								$score = $engine->getScore();
 
-								if ($score !== null)
+								if ($score === null)
+								{
+									$engines[$this->currentMethod] = $engine;
+								}
+								else
 								{
 									$this->callObservers(self::afterTestMethod);
 
@@ -753,10 +812,14 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 									$this->score->merge($score);
 
-									unset($this->children[$this->currentMethod]);
+									if ($engine->isAsynchronous() === true)
+									{
+										$this->asynchronousEngines--;
+									}
 								}
 							}
 
+							$this->engines = $engines;
 							$this->currentMethod = null;
 						}
 					}
@@ -846,29 +909,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function registerMockAutoloader()
-	{
-		$mockGenerator = $this->getMockGenerator();
-		$mockNamespacePattern = '/^' . $mockGenerator->getDefaultNamespace() . '\\\/';
-
-		if (spl_autoload_register(function($class) use ($mockGenerator, $mockNamespacePattern) {
-				$mockedClass = preg_replace($mockNamespacePattern, '', $class);
-
-				if ($mockedClass !== $class)
-				{
-					$mockGenerator->generate($mockedClass);
-				}
-			},
-			true,
-			true
-		) === false)
-		{
-			throw new \runtimeException('Unable to register mock autoloader');
-		}
-
-		return $this;
-	}
-
 	protected function setUp()
 	{
 		return $this;
@@ -941,28 +981,32 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function runEngine()
 	{
-		$engine = $this->factory['mageekguy\atoum\test\engines\forker']($this->factory);
+		$this->currentMethod = current($this->runTestMethods);
+
+		$engineClass = 'mageekguy\atoum\test\engines\\' . ($this->getMethodEngine($this->currentMethod) ?: ($this->getClassEngine() ?: 'forker'));
+
+		$engine = $this->factory[$engineClass]($this->factory);
 
 		if ($this->canRunEngine($engine) === true)
 		{
-			$this->currentMethod = array_shift($this->runTestMethods);
+			array_shift($this->runTestMethods);
 
-			$engine->run($this->callObservers(self::beforeTestMethod));
+			$this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
 
 			if ($engine->isAsynchronous() === true)
 			{
-				$this->children[$this->currentMethod] = $engine;
+				$this->asynchronousEngines++;
 			}
-
-			$this->currentMethod = null;
 		}
+
+		$this->currentMethod = null;
 
 		return $this;
 	}
 
 	private function canRunEngine(test\engine $engine)
 	{
-		return ($this->runTestMethods && ($engine->isAsynchronous() === false || ($this->maxChildrenNumber === null || sizeof($this->children) < $this->maxChildrenNumber)));
+		return ($this->runTestMethods && ($engine->isAsynchronous() === false || ($this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines)));
 	}
 
 	private function doTearDown()
