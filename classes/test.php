@@ -29,6 +29,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
+	const defaultEngine = 'forker';
+	const enginesNamespace = '\mageekguy\atoum\test\engines';
 
 	private $phpPath = null;
 	private $path = '';
@@ -59,6 +61,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $bootstrapFile = null;
 
 	private static $namespace = null;
+	private static $defaultEngine = self::defaultEngine;
 
 	public function __construct(factory $factory = null)
 	{
@@ -874,6 +877,16 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return self::$namespace ?: self::defaultNamespace;
 	}
 
+	public static function setDefaultEngine($defaultEngine)
+	{
+		self::$defaultEngine = (string) $defaultEngine;
+	}
+
+	public static function getDefaultEngine()
+	{
+		return self::$defaultEngine ?: self::defaultEngine;
+	}
+
 	public function startCase($case)
 	{
 		test\adapter::resetCallsForAllInstances();
@@ -983,9 +996,19 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->currentMethod = current($this->runTestMethods);
 
-		$engineClass = 'mageekguy\atoum\test\engines\\' . ($this->getMethodEngine($this->currentMethod) ?: ($this->getClassEngine() ?: 'forker'));
+		$engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
+
+		if (ltrim($engineClass, '\\') === $engineClass)
+		{
+			$engineClass = self::enginesNamespace . '\\' . $engineClass;
+		}
 
 		$engine = $this->factory[$engineClass]($this->factory);
+
+		if ($engine instanceof test\engine === false)
+		{
+			throw new exceptions\runtime('Engine \'' . $engineClass . '\' is invalid');
+		}
 
 		if ($this->canRunEngine($engine) === true)
 		{

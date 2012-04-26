@@ -4,7 +4,8 @@ namespace mageekguy\atoum\test\engines;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\test
+	mageekguy\atoum\test,
+	mageekguy\atoum\exceptions
 ;
 
 class forker extends test\engine
@@ -15,8 +16,21 @@ class forker extends test\engine
 	protected $stdOut = '';
 	protected $stdErr = '';
 
+	private $adapter = null;
 	private $php = null;
 	private $pipes = array();
+
+	public function __construct(atoum\factory $factory = null)
+	{
+		parent::__construct($factory);
+
+		$this->adapter = $this->factory['mageekguy\atoum\adapter']();
+	}
+
+	public function isRunning()
+	{
+		return ($this->php !== null);
+	}
 
 	public function isAsynchronous()
 	{
@@ -35,6 +49,13 @@ class forker extends test\engine
 			$this->stdErr = '';
 
 			$phpPath = $this->test->getPhpPath();
+
+			$this->php = @$this->adapter->invoke('proc_open', array(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), & $this->pipes));
+
+			if ($this->php === false)
+			{
+				throw new exceptions\runtime('Unable to use \'' . $phpPath . '\'');
+			}
 
 			$phpCode =
 				'<?php ' .
@@ -88,22 +109,9 @@ class forker extends test\engine
 
 			$phpCode .= 'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());';
 
-			$this->php = @proc_open(
-				escapeshellarg($phpPath),
-				array(
-					0 => array('pipe', 'r'),
-					1 => array('pipe', 'w'),
-					2 => array('pipe', 'w')
-				),
-				$this->pipes
-			);
-
-			fwrite($this->pipes[0], $phpCode);
-			fclose($this->pipes[0]);
+			$this->adapter->fwrite($this->pipes[0], $phpCode);
+			$this->adapter->fclose($this->pipes[0]);
 			unset($this->pipes[0]);
-
-			stream_set_blocking($this->pipes[1], 0);
-			stream_set_blocking($this->pipes[2], 0);
 		}
 
 		return $this;
@@ -115,19 +123,19 @@ class forker extends test\engine
 
 		if ($this->php !== null)
 		{
-			$phpStatus = proc_get_status($this->php);
+			$phpStatus = $this->adapter->proc_get_status($this->php);
 
 			if ($phpStatus['running'] == false)
 			{
-				$this->stdOut = stream_get_contents($this->pipes[1]);
-				fclose($this->pipes[1]);
+				$this->stdOut = $this->adapter->stream_get_contents($this->pipes[1]);
+				$this->adapter->fclose($this->pipes[1]);
 
-				$this->stdErr = stream_get_contents($this->pipes[2]);
-				fclose($this->pipes[2]);
+				$this->stdErr = $this->adapter->stream_get_contents($this->pipes[2]);
+				$this->adapter->fclose($this->pipes[2]);
 
 				$this->pipes = array();
 
-				proc_close($this->php);
+				$this->adapter->proc_close($this->php);
 				$this->php = null;
 
 				$score = @unserialize($this->stdOut);

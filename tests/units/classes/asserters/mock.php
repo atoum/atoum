@@ -296,7 +296,7 @@ class mock extends atoum\test
 	public function testCall()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
 			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
@@ -317,7 +317,7 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
 			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
@@ -342,7 +342,7 @@ class mock extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
 			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
