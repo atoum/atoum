@@ -197,6 +197,11 @@ class mock extends atoum\asserter
 		}
 		else
 		{
+			if ($this->callChecked === false)
+			{
+				$this->atLeastOnce();
+			}
+
 			$this->call
 				->setFunction($function)
 				->setObject($this->mock)

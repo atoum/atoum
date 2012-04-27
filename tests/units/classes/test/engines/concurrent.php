@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\test\engines
 ;
 
-class forker extends atoum\test
+class concurrent extends atoum\test
 {
 	public function testClass()
 	{
@@ -19,7 +19,7 @@ class forker extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($engine = new engines\forker())
+			->if($engine = new engines\concurrent())
 			->then
 				->boolean($engine->isRunning())->isFalse()
 		;
@@ -28,7 +28,7 @@ class forker extends atoum\test
 	public function testIsAsynchronous()
 	{
 		$this
-			->if($engine = new engines\forker())
+			->if($engine = new engines\concurrent())
 			->then
 				->boolean($engine->isAsynchronous())->isTrue()
 		;
@@ -39,7 +39,7 @@ class forker extends atoum\test
 		$this
 			->if($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->and($engine = new engines\forker($factory))
+			->and($engine = new engines\concurrent($factory))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
 				->boolean($engine->isRunning())->isFalse()
@@ -88,12 +88,12 @@ class forker extends atoum\test
 	public function testGetScore()
 	{
 		$this
-			->if($engine = new engines\forker())
+			->if($engine = new engines\concurrent())
 			->then
 				->variable($engine->getScore())->isNull()
 			->if($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->and($engine = new engines\forker($factory))
+			->and($engine = new engines\concurrent($factory))
 			->and($engine->run($test = new \mock\mageekguy\atoum\test()))
 			->then
 				->variable($engine->getScore())->isNull()

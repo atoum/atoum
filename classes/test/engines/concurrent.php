@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class forker extends test\engine
+class concurrent extends test\engine
 {
 	protected $test = null;
 	protected $method = '';

@@ -29,7 +29,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
-	const defaultEngine = 'forker';
+	const defaultEngine = 'concurrent';
 	const enginesNamespace = '\mageekguy\atoum\test\engines';
 
 	private $phpPath = null;

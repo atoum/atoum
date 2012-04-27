@@ -80,7 +80,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -101,7 +101,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -126,7 +126,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

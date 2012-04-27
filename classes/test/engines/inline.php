@@ -25,13 +25,18 @@ class inline extends test\engine
 
 	public function run(atoum\test $test)
 	{
-		$testScore = $test->getScore();
+		$currentTestMethod = $test->getCurrentMethod();
 
-		$test
-			->setScore($this->score->reset())
-			->runTestMethod($test->getCurrentMethod())
-			->setScore($testScore)
-		;
+		if ($currentTestMethod !== null)
+		{
+			$testScore = $test->getScore();
+
+			$test
+				->setScore($this->score->reset())
+				->runTestMethod($test->getCurrentMethod())
+				->setScore($testScore)
+			;
+		}
 
 		return $this;
 	}

@@ -297,11 +297,12 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
+			/*
 			->if($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
 			->then
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
@@ -311,6 +312,7 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array(), $mock))
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new php\call($function, null, $mock))
+			*/
 		;
 	}
 
@@ -318,7 +320,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -343,7 +345,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -386,17 +388,20 @@ class mock extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()))
 			->if($call = new php\call('foo', null, $mock))
 			->and($mock->foo($usedArg = uniqid()))
+			->then
 				->object($asserter->once())->isIdenticalTo($asserter)
 			->if($mock->foo($otherUsedArg = uniqid()))
-					->exception(function() use ($asserter) { $asserter->once(); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
-						->hasMessage(sprintf($generator->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)))
+			->then
+				->exception(function() use ($asserter) { $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherUsedArg)))
 			->if($mock->getMockController()->resetCalls())
 			->and($asserter->withArguments($usedArg = uniqid()))
 			->and($mock->foo($usedArg))
 			->then
 				->object($asserter->once())->isIdenticalTo($asserter)
 			->if($asserter->withArguments($arg = uniqid()))
+			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
@@ -407,6 +412,7 @@ class mock extends atoum\test
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()))
+			/*
 			->if($mock->foo(uniqid()))
 				->exception(function() use ($asserter) { $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -455,6 +461,7 @@ class mock extends atoum\test
 					->exception(function() use ($asserter) { $asserter->once(); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('method %s is not called'), current($asserter->getBeforeMethodCalls())))
+		*/
 		;
 	}
 
