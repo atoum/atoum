@@ -23,9 +23,8 @@ class runner implements observable, adapter\aggregator
 	protected $locale = null;
 	protected $factory = null;
 	protected $includer = null;
-	protected $observers = array();
-	protected $testObservers = array();
-	protected $reports = array();
+	protected $observers = null;
+	protected $reports = null;
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
@@ -53,6 +52,9 @@ class runner implements observable, adapter\aggregator
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+
+		$this->observers = new \splObjectStorage();
+		$this->reports = new \splObjectStorage();
 	}
 
 	public function setFactory(factory $factory)
@@ -210,7 +212,14 @@ class runner implements observable, adapter\aggregator
 
 	public function getObservers()
 	{
-		return $this->observers;
+		$observers = array();
+
+		foreach ($this->observers as $observer)
+		{
+			$observers[] = $observer;
+		}
+
+		return $observers;
 	}
 
 	public function getBootstrapFile()
@@ -275,14 +284,14 @@ class runner implements observable, adapter\aggregator
 
 	public function addObserver(atoum\observer $observer)
 	{
-		$this->observers[] = $observer;
+		$this->observers->attach($observer);
 
 		return $this;
 	}
 
 	public function removeObserver(atoum\observer $observer)
 	{
-		$this->observers = self::remove($observer, $this->observers);
+		$this->observers->detach($observer);
 
 		return $this;
 	}
@@ -536,14 +545,14 @@ class runner implements observable, adapter\aggregator
 
 	public function addReport(atoum\report $report)
 	{
-		$this->reports[] = $report;
+		$this->reports->attach($report);
 
 		return $this->addObserver($report);
 	}
 
 	public function removeReport(atoum\report $report)
 	{
-		$this->reports = self::remove($report, $this->reports);
+		$this->reports->detach($report);
 
 		return $this->removeObserver($report);
 	}
@@ -552,8 +561,10 @@ class runner implements observable, adapter\aggregator
 	{
 		foreach ($this->reports as $report)
 		{
-			$this->removeReport($report);
+			$this->removeObserver($report);
 		}
+
+		$this->reports = new \splObjectStorage();
 
 		return $this;
 	}
@@ -565,7 +576,14 @@ class runner implements observable, adapter\aggregator
 
 	public function getReports()
 	{
-		return $this->reports;
+		$reports = array();
+
+		foreach ($this->reports as $report)
+		{
+			$reports[] = $report;
+		}
+
+		return $reports;
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)
@@ -585,19 +603,6 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $isIgnored;
-	}
-
-	protected static function remove($needle, array $haystack)
-	{
-		$key = array_search($needle, $haystack, true);
-
-		if ($key !== false)
-		{
-			unset($haystack[$key]);
-			$haystack = array_values($haystack);
-		}
-
-		return $haystack;
 	}
 
 	private static function getMethods(test $test, array $runTestMethods, array $tags)

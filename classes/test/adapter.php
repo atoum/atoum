@@ -13,11 +13,16 @@ class adapter extends atoum\adapter
 	protected $invokers = array();
 
 	private static $callsNumber = 0;
-	private static $instances = array();
+	private static $instances = null;
 
 	public function __construct()
 	{
-		self::$instances[] = $this;
+		self::$instances->attach($this);
+	}
+
+	public function __destruct()
+	{
+		self::$instances->detach($this);
 	}
 
 	public function __set($functionName, $mixed)
@@ -159,6 +164,11 @@ class adapter extends atoum\adapter
 		return self::$callsNumber;
 	}
 
+	public static function init()
+	{
+		self::$instances = new \splObjectStorage();
+	}
+
 	public static function resetCallsForAllInstances()
 	{
 		foreach (self::$instances as $instance)
@@ -191,5 +201,7 @@ class adapter extends atoum\adapter
 		}
 	}
 }
+
+adapter::init();
 
 ?>
