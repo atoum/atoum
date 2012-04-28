@@ -79,7 +79,7 @@ class adapter extends atoum\adapter
 		return $this->invokers;
 	}
 
-	public function getCalls($functionName = null, array $arguments = null)
+	public function getCalls($functionName = null, array $arguments = null, $identical = false)
 	{
 		$calls = null;
 
@@ -101,10 +101,20 @@ class adapter extends atoum\adapter
 					}
 					else
 					{
-						$calls = array_filter($callArguments, function($callArguments) use ($arguments) {
+						if ($identical === false)
+						{
+							$filter = function($callArguments) use ($arguments) {
 								return ($arguments  == array_slice($callArguments, 0, sizeof($arguments)));
-							}
-						);
+							};
+						}
+						else
+						{
+							$filter = function($callArguments) use ($arguments) {
+								return ($arguments  === array_slice($callArguments, 0, sizeof($arguments)));
+							};
+						}
+
+						$calls = array_filter($callArguments, $filter);
 					}
 
 					break;

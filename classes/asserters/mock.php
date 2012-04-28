@@ -185,6 +185,13 @@ class mock extends atoum\asserter
 		return $this;
 	}
 
+	public function withIdenticalArguments()
+	{
+		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->identical();
+
+		return $this;
+	}
+
 	public function withAnyArguments()
 	{
 		$this->calledMethodNameIsSet()->call->unsetArguments();
@@ -199,7 +206,7 @@ class mock extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments(), $this->call->isIdentical()));
 
 		if (($callsNumber = sizeof($calls)) >= 1)
 		{
@@ -215,7 +222,7 @@ class mock extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments(), $this->call->isIdentical()));
 
 		if (($callsNumber = sizeof($calls)) == $number)
 		{
@@ -336,6 +343,11 @@ class mock extends atoum\asserter
 				$this->pass();
 			}
 		}
+
+		$this->beforeMethodCalls = array();
+		$this->afterMethodCalls = array();
+		$this->beforeFunctionCalls = array();
+		$this->afterFunctionCalls = array();
 
 		return $this;
 	}
