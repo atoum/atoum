@@ -180,7 +180,7 @@ class runner extends atoum\test
 			->if($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))
 			->then
 				->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
-				->mock($observer)->call('handleEvent')->withArguments(atoum\runner::runStart, $runner)
+				->mock($observer)->call('handleEvent')->withArguments(atoum\runner::runStart, $runner)->once()
 		;
 	}
 

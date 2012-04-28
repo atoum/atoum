@@ -15,39 +15,10 @@ class mock extends atoum\asserter
 {
 	protected $mock = null;
 	protected $call = null;
-	protected $callChecked = false;
 	protected $beforeFunctionCalls = array();
 	protected $afterFunctionCalls = array();
 	protected $beforeMethodCalls = array();
 	protected $afterMethodCalls = array();
-
-	public function __destruct()
-	{
-		if ($this->call !== null && $this->callChecked === false)
-		{
-			$this->atLeastOnce();
-		}
-	}
-
-	public function __get($asserter)
-	{
-		if ($this->call !== null && $this->callChecked === false)
-		{
-			$this->atLeastOnce();
-		}
-
-		return parent::__get($asserter);
-	}
-
-	public function __call($method, $arguments)
-	{
-		if ($this->call !== null && $this->callChecked === false)
-		{
-			$this->atLeastOnce();
-		}
-
-		return parent::__call($method, $arguments);
-	}
 
 	public function reset()
 	{
@@ -197,19 +168,12 @@ class mock extends atoum\asserter
 		}
 		else
 		{
-			if ($this->callChecked === false)
-			{
-				$this->atLeastOnce();
-			}
-
 			$this->call
 				->setFunction($function)
 				->setObject($this->mock)
 				->unsetArguments()
 			;
 		}
-
-		$this->callChecked = false;
 
 		return $this;
 	}
@@ -302,8 +266,6 @@ class mock extends atoum\asserter
 
 	protected function assertOnBeforeAndAfterCalls($calls)
 	{
-		$this->callChecked = true;
-
 		if (sizeof($calls) > 0)
 		{
 			foreach ($this->beforeMethodCalls as $beforeMethodCall)

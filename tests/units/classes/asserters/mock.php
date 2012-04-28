@@ -297,12 +297,10 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Mock is undefined')
-			/*
 			->if($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
 			->then
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
@@ -312,7 +310,6 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array(), $mock))
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new php\call($function, null, $mock))
-			*/
 		;
 	}
 
@@ -320,7 +317,6 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -345,7 +341,6 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

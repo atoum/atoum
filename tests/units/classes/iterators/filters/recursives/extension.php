@@ -33,7 +33,7 @@ class extension extends atoum\test
 			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\extension($path = uniqid(), $acceptedExtensions = array('php')))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
-				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)
+				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)->once()
 				->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
 		;
 	}
