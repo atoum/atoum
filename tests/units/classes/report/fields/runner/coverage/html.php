@@ -500,7 +500,7 @@ class html extends atoum\test
 					->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Details of code coverage are available at ' . $rootUrl . '/.' . PHP_EOL)
 					->mock($coverage)->call('count')->once()
 					->mock($field)
-						->call('cleanDestinationDirectory')
+						->call('cleanDestinationDirectory')->once()
 					->mock($coverage)
 						->call('count')->once()
 						->call('getClasses')->once()

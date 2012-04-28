@@ -297,7 +297,6 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -318,7 +317,6 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -343,7 +341,6 @@ class mock extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\mock($generator = new asserter\generator()))
-			->and($asserter->getMockController()->__destruct = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

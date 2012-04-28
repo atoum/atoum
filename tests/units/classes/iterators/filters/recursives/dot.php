@@ -32,7 +32,7 @@ class dot extends atoum\test
 			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid()))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
-				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)
+				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)->once()
 		;
 	}
 
