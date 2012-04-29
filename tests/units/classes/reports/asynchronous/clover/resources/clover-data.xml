@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="762476400" clover="foo">
+  <project timestamp="762476400" name="atoum code coverage">
+    <package name="atoumCodeCoverage">
+      <file name="foo.php" path="foo.php">
+        <line num="4" type="stmt" complexity="0" count="1" falsecount="0" truecount="0" signature="" testduration="0" testsuccess="0"/>
+        <line num="11" type="stmt" complexity="0" count="1" falsecount="0" truecount="0" signature="" testduration="0" testsuccess="0"/>
+        <line num="15" type="stmt" complexity="0" count="1" falsecount="0" truecount="0" signature="" testduration="0" testsuccess="0"/>
+        <class name="foo">
+          <metrics complexity="0" elements="9" coveredelements="3" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="3" methods="2" coveredmethods="2" testduration="0" testfailures="0" testpasses="0" testruns="0"/>
+        </class>
+        <metrics complexity="0" elements="9" coveredelements="3" conditionals="0" coveredconditionals="0" statements="9" coveredstatements="3" methods="2" coveredmethods="2" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="9" ncloc="9"/>
+      </file>
+      <file name="bar.php" path="bar.php">
+        <class name="bar">
+          <metrics complexity="0" elements="5" coveredelements="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" methods="1" coveredmethods="1" testduration="0" testfailures="0" testpasses="0" testruns="0"/>
+        </class>
+        <metrics complexity="0" elements="5" coveredelements="0" conditionals="0" coveredconditionals="0" statements="5" coveredstatements="0" methods="1" coveredmethods="1" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="2" loc="5" ncloc="5"/>
+      </file>
+      <metrics complexity="0" elements="14" coveredelements="3" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="3" methods="3" coveredmethods="3" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="14" ncloc="14" files="2"/>
+    </package>
+    <metrics complexity="0" elements="14" coveredelements="3" conditionals="0" coveredconditionals="0" statements="14" coveredstatements="3" methods="3" coveredmethods="3" testduration="0" testfailures="0" testpasses="0" testruns="0" classes="1" loc="14" ncloc="14" files="2" packages="1"/>
+  </project>
+</coverage>
