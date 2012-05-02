@@ -33,10 +33,11 @@ class runner extends atoum\test
 			->if($scriptRunner = new scripts\runner($name = uniqid()))
 			->then
 				->string($scriptRunner->getName())->isEqualTo($name)
-				->object($scriptRunner->getAdapter())->isEqualTo(new atoum\adapter())
-				->object($scriptRunner->getLocale())->isEqualTo(new atoum\locale())
-				->object($scriptRunner->getRunner())->isEqualTo(new atoum\runner($scriptRunner->getFactory()))
-				->object($scriptRunner->getIncluder())->isEqualTo(new atoum\includer())
+				->object($scriptRunner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($scriptRunner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($scriptRunner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->object($scriptRunner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+				->object($scriptRunner->getRunner()->getFactory())->isIdenticalTo($scriptRunner->getFactory())
 				->variable($scriptRunner->getScoreFile())->isNull()
 				->array($scriptRunner->getArguments())->isEmpty()
 				->array($scriptRunner->getHelp())->isEqualTo(array(
@@ -159,10 +160,10 @@ class runner extends atoum\test
 				)
 			->if($factory = new atoum\factory())
 			->and($factory->import('mageekguy\atoum'))
-			->and($factory->returnWhenBuild('atoum\locale', $locale = new atoum\locale()))
-			->and($factory->returnWhenBuild('atoum\adapter', $adapter = new atoum\adapter()))
-			->and($factory->returnWhenBuild('atoum\runner', $runner = new atoum\runner()))
-			->and($factory->returnWhenBuild('atoum\includer', $includer = new atoum\includer()))
+			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
+			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
+			->and($factory['mageekguy\atoum\runner'] = $runner = new atoum\runner())
+			->and($factory['mageekguy\atoum\includer'] = $includer = new atoum\includer())
 			->and($scriptRunner = new scripts\runner($name = uniqid(), $factory))
 			->then
 				->string($scriptRunner->getName())->isEqualTo($name)
@@ -308,7 +309,7 @@ class runner extends atoum\test
 	public function testUseConfigFile()
 	{
 		$factory = new atoum\factory();
-		$factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new \mock\mageekguy\atoum\locale());
+		$factory['mageekguy\atoum\locale'] = $locale = new \mock\mageekguy\atoum\locale();
 
 		$runner = new scripts\runner($name = uniqid(), $factory);
 

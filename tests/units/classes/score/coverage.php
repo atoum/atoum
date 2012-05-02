@@ -660,136 +660,136 @@ class coverage extends atoum\test
 		;
 	}
 
-		public function testGetValueForMethod()
-		{
-			$this
-				->if($coverage = new score\coverage($factory = new atoum\factory()))
-				->then
-					->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-				->if($classController = new mock\controller())
-				->and($classController->__construct = function() {})
-				->and($classController->getName = function() use (& $className) { return $className; })
-				->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
-				->and($class = new \mock\reflectionClass(uniqid(), $classController))
-				->and($methodController = new mock\controller())
-				->and($methodController->__construct = function() {})
-				->and($methodController->getName = function() use (& $methodName) { return $methodName; })
-				->and($methodController->isAbstract = false)
-				->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
-				->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
-				->and($methodController->getStartLine = 4)
-				->and($methodController->getEndLine = 8)
-				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-				->and($classFile = uniqid())
-				->and($className = uniqid())
-				->and($methodName = uniqid())
-				->and($xdebugData = array(
-					  $classFile =>
-						 array(
-							3 => -2,
-							4 => -1,
-							5 => -1,
-							6 => -1,
-							7 => -1,
-							8 => -2,
-							9 => -2
-						),
-					  uniqid() =>
-						 array(
-							5 => 2,
-							6 => 3,
-							7 => 4,
-							8 => 3,
-							9 => 2
-						)
+	public function testGetValueForMethod()
+	{
+		$this
+			->if($coverage = new score\coverage($factory = new atoum\factory()))
+			->then
+				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+			->if($classController = new mock\controller())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($class = new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 4)
+			->and($methodController->getEndLine = 8)
+			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				  $classFile =>
+					 array(
+						3 => -2,
+						4 => -1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -2
+					),
+				  uniqid() =>
+					 array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
 					)
 				)
-				->and($factory['reflectionClass'] = $class)
-				->and($coverage->addXdebugDataForTest($this, $xdebugData))
-				->then
-					->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-					->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
-					->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(0.0)
-				->if($xdebugData = array(
-					  $classFile =>
-						 array(
-							3 => -2,
-							4 => 1,
-							5 => -1,
-							6 => -1,
-							7 => -1,
-							8 => -2,
-							9 => -1
-						),
-					  uniqid() =>
-						 array(
-							5 => 2,
-							6 => 3,
-							7 => 4,
-							8 => 3,
-							9 => 2
-						)
+			)
+			->and($factory['reflectionClass'] = $class)
+			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+				->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+				->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(0.0)
+			->if($xdebugData = array(
+				  $classFile =>
+					 array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -1
+					),
+				  uniqid() =>
+					 array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
 					)
 				)
-				->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
-				->then
-					->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-					->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
-					->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1 / 4)
-				->if($xdebugData = array(
-					  $classFile =>
-						 array(
-							3 => -2,
-							4 => 1,
-							5 => -1,
-							6 => -1,
-							7 => 1,
-							8 => -2,
-							9 => -1
-						),
-					  uniqid() =>
-						 array(
-							5 => 2,
-							6 => 3,
-							7 => 4,
-							8 => 3,
-							9 => 2
-						)
+			)
+			->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+				->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+				->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1 / 4)
+			->if($xdebugData = array(
+				  $classFile =>
+					 array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => 1,
+						8 => -2,
+						9 => -1
+					),
+				  uniqid() =>
+					 array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
 					)
 				)
-				->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
-				->then
-					->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-					->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
-					->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(2 / 4)
-				->if($xdebugData = array(
-					  $classFile =>
-						 array(
-							3 => -2,
-							4 => 1,
-							5 => 1,
-							6 => 1,
-							7 => 1,
-							8 => -2,
-							9 => -1
-						),
-					  uniqid() =>
-						 array(
-							5 => 2,
-							6 => 3,
-							7 => 4,
-							8 => 3,
-							9 => 2
-						)
+			)
+			->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+				->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+				->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(2 / 4)
+			->if($xdebugData = array(
+				  $classFile =>
+					 array(
+						3 => -2,
+						4 => 1,
+						5 => 1,
+						6 => 1,
+						7 => 1,
+						8 => -2,
+						9 => -1
+					),
+				  uniqid() =>
+					 array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
 					)
 				)
-				->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
-				->then
-					->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
-					->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
-					->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1.0)
-			;
-		}
+			)
+			->and($coverage->reset()->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
+				->variable($coverage->getValueForMethod($className, uniqid()))->isNull()
+				->float($coverage->getValueForMethod($className, $methodName))->isEqualTo(1.0)
+		;
+	}
 
 	public function testExcludeClass()
 	{

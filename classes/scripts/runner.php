@@ -30,11 +30,10 @@ class runner extends atoum\script
 	{
 		parent::__construct($name, $factory);
 
-		$this->setIncluder($this->factory['atoum\includer']());
-
-		$this->factory['mageekguy\atoum\includer'] = $this->getIncluder();
-
-		$this->setRunner($this->factory['atoum\runner']($this->factory));
+		$this
+			->setIncluder($this->factory['atoum\includer']())
+			->setRunner($this->factory['atoum\runner']($this->factory))
+		;
 	}
 
 	public function isRunningFromCli()

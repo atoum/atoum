@@ -67,7 +67,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setScore($this->factory['mageekguy\atoum\score']())
+			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
 			->setLocale($this->factory['mageekguy\atoum\locale']())
 			->setAdapter($this->factory['mageekguy\atoum\adapter']())
 			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())
@@ -75,12 +75,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->enableCodeCoverage()
 		;
 
-		$class = $this->factory->build('reflectionClass', array($this));
+		$class = $this->factory['reflectionClass']($this);
 
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
 
-		$annotationExtractor = $this->factory->build('mageekguy\atoum\annotations\extractor');
+		$annotationExtractor = $this->factory['mageekguy\atoum\annotations\extractor']();
 
 		$test = $this;
 
@@ -134,7 +134,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				->setAlias('class', 'phpClass')
 		;
 
-		$this->setAssertionManager($this->factory->build('mageekguy\atoum\test\assertion\manager'));
+		$this->setAssertionManager($this->factory['mageekguy\atoum\test\assertion\manager']());
 	}
 
 	public function __toString()
@@ -299,7 +299,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getMockGenerator()
 	{
-		return $this->mockGenerator ?: $this->setMockGenerator($this->factory->build('mageekguy\atoum\test\mock\generator', array($this)))->mockGenerator;
+		return $this->mockGenerator ?: $this->setMockGenerator($this->factory['mageekguy\atoum\test\mock\generator']($this))->mockGenerator;
 	}
 
 	public function setAsserterGenerator(test\asserter\generator $generator)
@@ -313,7 +313,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		test\adapter::resetCallsForAllInstances();
 
-		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory->build('mageekguy\atoum\test\asserter\generator', array($this)))->asserterGenerator;
+		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory['mageekguy\atoum\test\asserter\generator']($this))->asserterGenerator;
 	}
 
 	public function setTestNamespace($testNamespace)
@@ -665,7 +665,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or an iterator');
 						}
 
-						$reflectedTestMethod = $this->factory->build('reflectionMethod', array($this, $testMethod));
+						$reflectedTestMethod = $this->factory['reflectionMethod']($this, $testMethod);
 						$numberOfArguments = $reflectedTestMethod->getNumberOfRequiredParameters();
 
 						foreach ($data as $key => $arguments)
