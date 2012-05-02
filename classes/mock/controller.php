@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\mock;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
@@ -10,18 +11,21 @@ use
 
 class controller extends test\adapter
 {
+	protected $factory = null;
 	protected $mockClass = null;
 
 	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
-	private $reflectionClassInjector = null;
 
-	public function __construct()
+	public function __construct(atoum\factory $factory = null)
 	{
 		parent::__construct();
 
-		$this->controlNextNewMock();
+		$this
+			->setFactory($factory ?: new atoum\factory())
+			->controlNextNewMock()
+		;
 	}
 
 	public function __set($method, $mixed)
@@ -56,6 +60,18 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function setFactory(atoum\factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
+	}
+
 	public function disableMethodChecking()
 	{
 		$this->disableMethodChecking = true;
@@ -78,41 +94,6 @@ class controller extends test\adapter
 		return parent::getCalls($method, $arguments, $identical);
 	}
 
-	public function getReflectionClass($class)
-	{
-		$reflectionClass = null;
-
-		if ($this->reflectionClassInjector === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
-
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
-
-		return $reflectionClass;
-	}
-
-	public function setReflectionClassInjector(\closure $reflectionClassInjector)
-	{
-		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
-		}
-
-		$this->reflectionClassInjector = $reflectionClassInjector;
-
-		return $this;
-	}
-
 	public function control(mock\aggregator $mock)
 	{
 		$mockClass = get_class($mock);
@@ -121,7 +102,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = $this->getReflectionClass($this->mockClass);
+			$class = $this->factory['reflectionClass']($this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try

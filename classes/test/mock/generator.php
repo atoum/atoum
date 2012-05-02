@@ -11,9 +11,9 @@ class generator extends mock\generator
 {
 	protected $test = null;
 
-	public function __construct(atoum\test $test, atoum\adapter $adapter = null)
+	public function __construct(atoum\test $test)
 	{
-		parent::__construct($adapter);
+		parent::__construct($test->getFactory());
 
 		$this->setTest($test);
 	}

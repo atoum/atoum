@@ -11,21 +11,16 @@ require_once __DIR__ . '/../../runner.php';
 
 class generator extends atoum\test
 {
-	public function testClass()
-	{
-		$this->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator');
-	}
-
 	public function test__construct()
 	{
 		$this
 			->if($generator = new mock\generator())
 			->then
-				->object($generator->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->if($adapter = new atoum\test\adapter())
-			->and($generator = new mock\generator($adapter))
+				->object($generator->getFactory())->isInstanceOf('mageekguy\atoum\factory')
+			->if($factory = new atoum\factory())
+			->and($generator = new mock\generator($factory))
 			->then
-				->object($generator->getAdapter())->isIdenticalTo($adapter)
+				->object($generator->getFactory())->isIdenticalTo($factory)
 		;
 	}
 
@@ -42,56 +37,6 @@ class generator extends atoum\test
 				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 				->object($generator->setDefaultNamespace($namespace . '\\'))->isIdenticalTo($generator)
 				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$this
-			->if($generator = new mock\generator())
-			->then
-				->object($generator->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($generator)
-				->object($generator->getAdapter())->isIdenticalTo($adapter)
-		;
-	}
-
-	public function testSetReflectionClassInjector()
-	{
-		$this
-			->if($mockGenerator = new mock\generator())
-			->and($mockGenerator->shunt('__construct')->generate('reflectionClass'))
-			->then
-				->object($mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($mockGenerator)
-				->object($mockGenerator->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-				->exception(function() use ($mockGenerator) {
-						$mockGenerator->setReflectionClassInjector(function() {});
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Reflection class injector must take one argument')
-		;
-	}
-
-	public function testGetReflectionClass()
-	{
-		$this
-			->if($mockGenerator = new mock\generator())
-			->and($mockGenerator->shunt('__construct')->generate('reflectionClass'))
-			->then
-				->object($mockGenerator->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
-				->string($mockGenerator->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
-			->if($mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))
-			->then
-				->object($mockGenerator->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-				->mock($reflectionClass)->call('__construct')->withArguments($class)->once()
-			->if($mockGenerator->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); }))
-			->then
-				->exception(function() use ($mockGenerator) {
-							$mockGenerator->getReflectionClass(uniqid());
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-						->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
 
@@ -122,7 +67,9 @@ class generator extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = false)
-			->and($generator = new mock\generator($adapter))
+			->and($factory = new atoum\factory())
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($unknownClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -221,8 +168,10 @@ class generator extends atoum\test
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -308,11 +257,11 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
 			->and($overloadedMethod = new mock\php\method('__construct'))
 			->and($overloadedMethod->addArgument($argument = new mock\php\method\argument(uniqid())))
-			->and($generator = new mock\generator($adapter))
-			->and($generator
-				->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
-				->overload($overloadedMethod)
-			)
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
+			->and($generator->overload($overloadedMethod))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -397,8 +346,10 @@ class generator extends atoum\test
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -478,11 +429,11 @@ class generator extends atoum\test
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator
-				->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; })
-				->shunt('__construct')
-			)
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
+			->and($generator->shunt('__construct'))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -558,8 +509,10 @@ class generator extends atoum\test
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -638,8 +591,10 @@ class generator extends atoum\test
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -742,8 +697,10 @@ class generator extends atoum\test
 			->and($class = new \mock\reflectionClass(null))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = function($class) use ($className) { return ($class == '\\' . $className); })
-			->and($generator = new mock\generator($adapter))
-			->and($generator->setReflectionClassInjector(function($class) use ($class) { return $class; }))
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $class)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($className))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -822,7 +779,9 @@ class generator extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Class name \'' . $class . '\' is invalid')
 			->if($adapter = new atoum\test\adapter())
-			->and($generator = new mock\generator($adapter))
+			->and($factory = new atoum\factory())
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
 			->and($adapter->class_exists = false)
 			->and($adapter->interface_exists = false)
 			->and($class = uniqid('unknownClass'))
@@ -861,7 +820,7 @@ class generator extends atoum\test
 			->and($reflectionClassController->isFinal = true)
 			->and($reflectionClassController->isInterface = false)
 			->and($reflectionClass = new \mock\reflectionClass(uniqid(), $reflectionClassController))
-			->and($generator->setReflectionClassInjector(function($class) use ($reflectionClass) { return $reflectionClass; }))
+			->and($factory['reflectionClass'] = $reflectionClass)
 			->then
 				->exception(function () use ($generator, $class) {
 						$generator->generate($class);

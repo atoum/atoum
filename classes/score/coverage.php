@@ -10,54 +10,34 @@ use
 
 class coverage implements \countable
 {
+	protected $factory = null;
 	protected $classes = array();
 	protected $lines = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
-	protected $reflectionClassInjector = null;
 
-	public function __construct() {}
-
-	public function reset()
+	public function __construct(atoum\factory $factory = null)
 	{
-		$this->classes = $this->methods = array();
+		$this->setFactory($factory ?: new atoum\factory());
+	}
+
+	public function setFactory(atoum\factory $factory)
+	{
+		$this->factory = $factory;
 
 		return $this;
 	}
 
-	public function getReflectionClass($class)
+	public function getFactory()
 	{
-		$reflectionClass = null;
-
-		if ($this->reflectionClassInjector === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
-
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
-
-		return $reflectionClass;
+		return $this->factory;
 	}
 
-	public function setReflectionClassInjector(\closure $reflectionClassInjector)
+	public function reset()
 	{
-		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() !== 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
-		}
-
-		$this->reflectionClassInjector = $reflectionClassInjector;
+		$this->classes = $this->methods = array();
 
 		return $this;
 	}
@@ -83,7 +63,7 @@ class coverage implements \countable
 		{
 			try
 			{
-				$reflectedClass = $this->getReflectionClass($class);
+				$reflectedClass = $this->factory['reflectionClass']($class);
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
