@@ -107,8 +107,8 @@ class runner extends atoum\script
 				{
 					if ($this->runner->hasReports() === false)
 					{
-						$report = new atoum\reports\realtime\cli();
-						$report->addWriter(new atoum\writers\std\out());
+						$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
+						$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
 
 						$this->runner->addReport($report);
 					}
@@ -663,8 +663,8 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$report = new atoum\reports\realtime\cli\light();
-							$report->addWriter(new atoum\writers\std\out());
+							$report = $script->getFactory()->build('mageekguy\atoum\reports\realtime\cli\light', array($script->getFactory()));
+							$report->addWriter($script->getFactory()->build('mageekguy\atoum\writers\std\out'));
 
 							$script->getRunner()->addReport($report);
 						},
@@ -687,7 +687,7 @@ class runner extends atoum\script
 	{
 		$arguments = ' --disable-loop-mode';
 
-		$cli = new atoum\cli();
+		$cli = $this->factory['mageekguy\atoum\cli']();
 
 		if ($cli->isTerminal() === true)
 		{
@@ -744,7 +744,7 @@ class runner extends atoum\script
 
 				foreach ($declaredTestClasses as $declaredTestClass)
 				{
-					$declaredTestClass = new \reflectionClass($declaredTestClass);
+					$declaredTestClass = $this->factory['reflectionClass']($declaredTestClass);
 
 					$file = $declaredTestClass->getFilename();
 

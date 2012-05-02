@@ -13,9 +13,9 @@ use
 
 class light extends realtime
 {
-	public function __construct()
+	public function __construct(atoum\factory $factory = null)
 	{
-		parent::__construct();
+		parent::__construct($factory);
 
 		$firstLevelPrompt = new prompt('> ');
 		$firstLevelColorizer = new colorizer('1;36');
