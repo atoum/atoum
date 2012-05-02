@@ -68,6 +68,7 @@ class factory implements \arrayAccess, \serializable
 
 	public function offsetUnset($class)
 	{
+		return $this->unsetBuilder($class);
 	}
 
 	public function offsetExists($class)
