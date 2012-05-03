@@ -30,10 +30,16 @@ class runner extends atoum\script
 	{
 		parent::__construct($name, $factory);
 
-		$this
-			->setRunner($this->askToFactory('atoum\runner'))
-			->setIncluder($this->askToFactory('atoum\includer'))
-		;
+		$this->setIncluder($this->factory['atoum\includer']());
+
+		$this->factory['mageekguy\atoum\includer'] = $this->getIncluder();
+
+		$this->setRunner($this->factory['atoum\runner']($this->factory));
+	}
+
+	public function isRunningFromCli()
+	{
+		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
 	}
 
 	public function setRunner(atoum\runner $runner)
@@ -167,7 +173,8 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$script = $this->askToFactory('atoum\configurator', array($this));
+		$script = $this->factory['atoum\configurator']($this);
+
 		$runner = $this->runner;
 
 		try
@@ -203,7 +210,7 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function enableLoop()
+	public function enableLoopMode()
 	{
 		if ($this->loop !== null)
 		{
@@ -502,6 +509,37 @@ class runner extends atoum\script
 						$this->locale->_('Execute unit test files in all <directory>')
 					)
 				->addArgumentHandler(
+						function($script, $argument, $extensions) {
+							if (sizeof($extensions) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$script->getRunner()->getTestDirectoryIterator()->acceptExtensions($extensions);
+						},
+						array('-tfe', '--test-file-extensions'),
+						'<extension>...',
+						$this->locale->_('Execute unit test files with one of extensions <extension>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $patterns) {
+							if (sizeof($patterns) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$runner = $script->getRunner();
+
+							foreach ($patterns as $pattern)
+							{
+								$runner->addTestsFromPattern($pattern);
+							}
+						},
+						array('-g', '--glob'),
+						'<pattern>...',
+						$this->locale->_('Execute unit test files which match <pattern>')
+					)
+				->addArgumentHandler(
 						function($script, $argument, $tags) {
 							if (sizeof($tags) <= 0)
 							{
@@ -557,7 +595,7 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$script->enableLoop();
+							$script->enableLoopMode();
 						},
 						array('-l', '--loop'),
 						null,
@@ -695,6 +733,30 @@ class runner extends atoum\script
 			$arguments .= ' --score-file ' . $this->scoreFile;
 		}
 
+		if ($this->isRunningFromCli() === false)
+		{
+			$declaredTestClasses = $this->runner->getDeclaredTestClasses();
+
+			if (sizeof($declaredTestClasses) > 0)
+			{
+				$files = array();
+
+				foreach ($declaredTestClasses as $declaredTestClass)
+				{
+					$declaredTestClass = new \reflectionClass($declaredTestClass);
+
+					$file = $declaredTestClass->getFilename();
+
+					if (in_array($file, $files) === false)
+					{
+						$files[] = $file;
+					}
+				}
+
+				$arguments .= ' -f ' . join(' ', $files);
+			}
+		}
+
 		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
 
 		while ($this->runTests === true)
@@ -763,7 +825,7 @@ class runner extends atoum\script
 
 	private static function getFailMethods(atoum\score $score)
 	{
-		return self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException());
+		return self::mergeMethods(self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException()), $score->getMethodsNotCompleted());
 	}
 
 	private static function mergeMethods(array $methods, array $newMethods)

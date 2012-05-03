@@ -19,7 +19,7 @@ class score
 	private $durations = array();
 	private $memoryUsages = array();
 	private $coverage = null;
-	private $uncompletedTests = array();
+	private $uncompletedMethods = array();
 	private $case = null;
 	private $dataSetKey = null;
 	private $dataSetProvider = null;
@@ -212,9 +212,9 @@ class score
 		return $this;
 	}
 
-	public function addUncompletedTest($class, $method, $exitCode, $output)
+	public function addUncompletedMethod($class, $method, $exitCode, $output)
 	{
-		$this->uncompletedTests[] = array(
+		$this->uncompletedMethods[] = array(
 			'class' => $class,
 			'method' => $method,
 			'exitCode' => $exitCode,
@@ -234,7 +234,7 @@ class score
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
 		$this->coverage->merge($score->coverage);
-		$this->uncompletedTests = array_merge($this->uncompletedTests, $score->uncompletedTests);
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
 
 		return $this;
 	}
@@ -363,9 +363,9 @@ class score
 		return sizeof($this->errors);
 	}
 
-	public function getUncompletedTestNumber()
+	public function getUncompletedMethodNumber()
 	{
-		return sizeof($this->uncompletedTests);
+		return sizeof($this->uncompletedMethods);
 	}
 
 	public function getCoverage()
@@ -373,9 +373,9 @@ class score
 		return $this->coverage;
 	}
 
-	public function getUncompletedTests()
+	public function getUncompletedMethods()
 	{
-		return $this->uncompletedTests;
+		return $this->uncompletedMethods;
 	}
 
 	public function getCase()
@@ -406,6 +406,11 @@ class score
 	public function getMethodsWithException()
 	{
 		return self::getMethods($this->getExceptions());
+	}
+
+	public function getMethodsNotCompleted()
+	{
+		return self::getMethods($this->getUncompletedMethods());
 	}
 
 	public function setCase($case)

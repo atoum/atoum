@@ -35,7 +35,7 @@ class runner extends atoum\test
 				->string($scriptRunner->getName())->isEqualTo($name)
 				->object($scriptRunner->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($scriptRunner->getLocale())->isEqualTo(new atoum\locale())
-				->object($scriptRunner->getRunner())->isEqualTo(new atoum\runner())
+				->object($scriptRunner->getRunner())->isEqualTo(new atoum\runner($scriptRunner->getFactory()))
 				->object($scriptRunner->getIncluder())->isEqualTo(new atoum\includer())
 				->variable($scriptRunner->getScoreFile())->isNull()
 				->array($scriptRunner->getArguments())->isEmpty()
@@ -104,6 +104,16 @@ class runner extends atoum\test
 							array('-d', '--directories'),
 							'<directory>...',
 							'Execute unit test files in all <directory>'
+						),
+						array(
+							array('-tfe', '--test-file-extensions'),
+							'<extension>...',
+							'Execute unit test files with one of extensions <extension>'
+						),
+						array(
+							array('-g', '--glob'),
+							'<pattern>...',
+							'Execute unit test files which match <pattern>'
 						),
 						array(
 							array('-t', '--tags'),
@@ -227,6 +237,16 @@ class runner extends atoum\test
 							array('-d', '--directories'),
 							'<directory>...',
 							'Execute unit test files in all <directory>'
+						),
+						array(
+							array('-tfe', '--test-file-extensions'),
+							'<extension>...',
+							'Execute unit test files with one of extensions <extension>'
+						),
+						array(
+							array('-g', '--glob'),
+							'<pattern>...',
+							'Execute unit test files which match <pattern>'
 						),
 						array(
 							array('-t', '--tags'),

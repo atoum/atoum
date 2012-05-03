@@ -131,8 +131,18 @@ abstract class asserter
 		}
 	}
 
-	public function initWithTest(test $test)
+	public function setWithTest(test $test)
 	{
+		return $this;
+	}
+
+	public function setWithArguments(array $arguments)
+	{
+		if (sizeof($arguments) > 0)
+		{
+			call_user_func_array(array($this, 'setWith'), $arguments);
+		}
+
 		return $this;
 	}
 

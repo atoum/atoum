@@ -10,9 +10,14 @@ require __DIR__ . '/../runner.php';
 
 class factory extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->hasInterface('arrayAccess');
+	}
+
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->then
 				->array($factory->getBuilders())->isEmpty()
@@ -22,7 +27,7 @@ class factory extends atoum\test
 
 	public function testBuild()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->then
 				->object($arrayIterator = $factory->build('arrayIterator'))->isEqualTo(new \arrayIterator())
@@ -31,25 +36,15 @@ class factory extends atoum\test
 				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isEqualTo(new \arrayIterator($data))
 				->exception(function() use ($factory, & $class) { $factory->build($class = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\factory\exception')
-					->hasMessage('Unable to build an instance of class \'' . $class . '\' because class does not exist')
+					->hasMessage('Class \'' . $class . '\' does not exist')
 			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = new \arrayIterator); }))
 				->object($arrayIterator = $factory->build('arrayIterator'))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array()))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array(array())))->isIdenticalTo($return)
 				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isIdenticalTo($return)
-			->if($factory->setBuilder('arrayIterator', function() use (& $otherReturn) { return ($otherReturn = new \arrayIterator); }, __CLASS__))
-				->object($arrayIterator = $factory->build('arrayIterator'))->isIdenticalTo($return)
-				->object($arrayIterator = $factory->build('arrayIterator', array()))->isIdenticalTo($return)
-				->object($arrayIterator = $factory->build('arrayIterator', array(array())))->isIdenticalTo($return)
-				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isIdenticalTo($return)
-				->object($arrayIterator = $factory->build('arrayIterator', array(), __CLASS__))->isIdenticalTo($otherReturn)
-				->object($arrayIterator = $factory->build('arrayIterator', array(array()), __CLASS__))->isIdenticalTo($otherReturn)
-				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid())), __CLASS__))->isIdenticalTo($otherReturn)
-			->if($factory->setBuilder('arrayIterator', function() { return uniqid(); }))
+			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = uniqid()); }))
 			->then
-				->exception(function() use ($factory) { $factory->build('arrayIterator'); })
-					->isInstanceOf('mageekguy\atoum\factory\exception')
-					->hasMessage('Unable to build an instance of class \'arrayIterator\' with current builder')
+				->string($factory->build('arrayIterator'))->isEqualTo($return)
 			->if($factory->import('mageekguy\atoum'))
 			->then
 				->object($factory->build('atoum\adapter'))->isEqualTo(new atoum\adapter())
@@ -67,7 +62,7 @@ class factory extends atoum\test
 
 	public function testSetBuilder()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->and($arrayIterator = new \arrayIterator())
 			->then
@@ -77,9 +72,89 @@ class factory extends atoum\test
 		;
 	}
 
+	public function testOffsetSet()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->and($arrayIterator = new \arrayIterator())
+			->and($factory['arrayIterator'] = function() use ($arrayIterator) { return $arrayIterator; })
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
+				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
+			->if($factory['arrayIterator'] = $arrayIterator)
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
+				->object($factory->build('arrayIterator'))->isIdenticalTo($arrayIterator)
+		;
+	}
+
+	public function testOffsetGet()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->object($factory['arrayIterator'])->isInstanceOf('closure')
+			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
+			->then
+				->object($factory['arrayIterator'])->isIdenticalTo($closure)
+		;
+	}
+
+	public function testOffsetExists()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->boolean(isset($factory[uniqid()]))->isFalse()
+			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+			->then
+				->boolean(isset($factory['arrayIterator']))->isTrue()
+				->boolean(isset($factory[uniqid()]))->isFalse()
+		;
+	}
+
+	public function testOffsetUnset()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->object($factory->unsetBuilder(uniqid()))->isIdenticalTo($factory)
+			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+			->then
+				->object($factory->unsetBuilder('arrayIterator'))->isIdenticalTo($factory)
+				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
+		;
+	}
+
+	public function testBuilderIsSet()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->boolean($factory->builderIsSet(uniqid()))->isFalse()
+			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+			->then
+				->boolean($factory->builderIsSet('arrayIterator'))->isTrue()
+				->boolean($factory->builderIsSet(uniqid()))->isFalse()
+		;
+	}
+
+	public function testUnsetBuilder()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->object($factory->unsetBuilder(uniqid()))->isIdenticalTo($factory)
+			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
+			->then
+				->object($factory->unsetBuilder('arrayIterator'))->isIdenticalTo($factory)
+				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
+		;
+	}
+
 	public function testReturnWhenBuild()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->and($arrayIterator = new \arrayIterator())
 			->then
@@ -91,26 +166,19 @@ class factory extends atoum\test
 
 	public function testGetBuilder()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->then
-				->variable($factory->getBuilder('arrayIterator', uniqid()))->isNull()
 				->variable($factory->getBuilder('arrayIterator'))->isNull()
 			->if($factory->setBuilder('arrayIterator', $closure = function() {}))
 			->then
-				->object($factory->getBuilder('arrayIterator', uniqid()))->isIdenticalTo($closure)
-				->object($factory->getBuilder('arrayIterator'))->isIdenticalTo($closure)
-			->if($factory->setBuilder('arrayIterator', $otherClosure = function() {}, $class = uniqid()))
-			->then
-				->object($factory->getBuilder('arrayIterator', $class))->isIdenticalTo($otherClosure)
-				->object($factory->getBuilder('arrayIterator', uniqid()))->isIdenticalTo($closure)
 				->object($factory->getBuilder('arrayIterator'))->isIdenticalTo($closure)
 		;
 	}
 
 	public function testImport()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->then
 				->object($factory->import('foo'))->isIdenticalTo($factory)
@@ -131,7 +199,7 @@ class factory extends atoum\test
 
 	public function testResetImportations()
 	{
-		$this->assert
+		$this
 			->if($factory = new atoum\factory())
 			->then
 				->object($factory->resetImportations())->isIdenticalTo($factory)

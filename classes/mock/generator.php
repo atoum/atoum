@@ -271,14 +271,8 @@ class generator implements atoum\adapter\aggregator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
-
-							if ($isConstructor === false)
-							{
-								$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-							}
-
+							$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
-
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 						}
 

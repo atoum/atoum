@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\scripts\phar;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\scripts\phar
 ;
 
@@ -372,7 +373,7 @@ class generator extends atoum\test
 							->once()
 						->call('setStub')->withArguments($stub, null)->once()
 						->call('buildFromIterator')
-							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), '1'), null)
+							->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
 							->once()
 						->call('setSignatureAlgorithm')
 							->withArguments(\phar::SHA1, null)
@@ -428,7 +429,7 @@ class generator extends atoum\test
 							->once()
 						->call('setStub')->withArguments($stub, null)->once()
 						->call('buildFromIterator')
-							->withArguments(new atoum\src\iterator($generator->getOriginDirectory(), '1'), null)
+							->withArguments(new iterators\recursives\atoum\source($generator->getOriginDirectory(), '1'), null)
 							->once()
 						->call('setSignatureAlgorithm')
 							->withArguments(\phar::SHA1, null)

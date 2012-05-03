@@ -117,10 +117,12 @@ class cli extends atoum\test
 				->if($field = new runner\php\version\cli())
 				->and($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getPhpVersion = $phpVersion = uniqid())
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->then
-					->boolean($field->handleEvent(atoum\runner::runStop, new atoum\runner($score)))->isFalse()
+					->boolean($field->handleEvent(atoum\runner::runStop, $runner))->isFalse()
 					->variable($field->getVersion())->isNull()
-					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner($score)))->isTrue()
+					->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isTrue()
 					->string($field->getVersion())->isEqualTo($phpVersion)
 		;
 	}
@@ -131,8 +133,10 @@ class cli extends atoum\test
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getPhpVersion = $phpVersion = uniqid())
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new runner\php\version\cli())
-				->and($defaultField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($defaultField)->isEqualTo(
 							$defaultField->getLocale()->_('PHP version:') .
@@ -141,7 +145,7 @@ class cli extends atoum\test
 							PHP_EOL
 						)
 				->if($customField = new runner\php\version\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $versionPrompt = new prompt(uniqid()), $versionColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
-				->and($customField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->and($customField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($customField)->isEqualTo(
 						$titlePrompt .
@@ -156,7 +160,7 @@ class cli extends atoum\test
 					)
 				->if($score->getMockController()->getPhpVersion = ($phpVersionLine1 = uniqid()) . PHP_EOL . ($phpVersionLine2 = uniqid()))
 				->and($defaultField = new runner\php\version\cli())
-				->and($defaultField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->and($defaultField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($defaultField)->isEqualTo(
 						'PHP version:' .
@@ -167,7 +171,7 @@ class cli extends atoum\test
 						PHP_EOL
 					)
 				->if($customField = new runner\php\version\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $versionPrompt = new prompt(uniqid()), $versionColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
-				->and($customField->handleEvent(atoum\runner::runStart, new atoum\runner($score)))
+				->and($customField->handleEvent(atoum\runner::runStart, $runner))
 				->then
 					->castToString($customField)->isEqualTo(
 						$titlePrompt .

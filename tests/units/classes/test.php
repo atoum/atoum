@@ -91,6 +91,7 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
+					->object($test->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 					->object($test->getScore())->isEqualTo(new atoum\score())
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
@@ -105,24 +106,14 @@ namespace mageekguy\atoum\tests\units
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->variable($test->getBootstrapFile())->isNull()
-				->if($adapter = new atoum\test\adapter())
-				->and($adapter->extension_loaded = true)
-				->and($test = new emptyTest(null, null, $adapter))
+				->if($factory = new atoum\factory())
+				->and($factory->returnWhenBuild('mageekguy\atoum\score', $score = new atoum\score()))
+				->and($factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new atoum\locale()))
+				->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter = new atoum\adapter()))
+				->and($factory->returnWhenBuild('mageekguy\atoum\superglobals', $superglobals = new atoum\superglobals()))
+				->and($test = new emptyTest($factory))
 				->then
-					->object($test->getScore())->isEqualTo(new atoum\score())
-					->object($test->getLocale())->isEqualTo(new atoum\locale())
-					->object($test->getAdapter())->isIdenticalTo($adapter)
-					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
-					->boolean($test->isIgnored())->isTrue()
-					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
-					->array($test->getTags())->isEqualTo($tags)
-					->array($test->getMethodTags())->isEmpty()
-					->array($test->getDataProviders())->isEmpty()
-					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
-					->boolean($test->codeCoverageIsEnabled())->isTrue()
-					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->if($test = new emptyTest($score = new atoum\score(), $locale = new atoum\locale(), $adapter, $superglobals = new atoum\superglobals()))
-				->then
+					->object($test->getFactory())->isIdenticalTo($factory)
 					->object($test->getScore())->isIdenticalTo($score)
 					->object($test->getLocale())->isIdenticalTo($locale)
 					->object($test->getAdapter())->isIdenticalTo($adapter)
@@ -133,26 +124,10 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMethodTags())->isEmpty()
 					->array($test->getDataProviders())->isEmpty()
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
-					->boolean($test->codeCoverageIsEnabled())->isTrue()
+					->boolean($test->codeCoverageIsEnabled())->isEqualTo(extension_loaded('xdebug'))
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
-				->if($test = new notEmptyTest($score, $locale, $adapter))
-				->then
-					->object($test->getScore())->isIdenticalTo($score)
-					->object($test->getLocale())->isIdenticalTo($locale)
-					->object($test->getAdapter())->isIdenticalTo($adapter)
-					->object($test->getSuperglobals())->isInstanceOf('mageekguy\atoum\superglobals')
-					->boolean($test->isIgnored())->isTrue()
-					->array($test->getAllTags())->isEqualTo(array('test', 'method', 'one', 'two'))
-					->array($test->getTags())->isEmpty()
-					->array($test->getMethodTags())->isEqualTo(array(
-							'testMethod1' => array('test', 'method', 'one'),
-							'testMethod2' => array('test', 'method', 'two')
-						)
-					)
-					->array($test->getDataProviders())->isEmpty()
-					->variable($test->getMaxChildrenNumber())->isNull()
-					->boolean($test->codeCoverageIsEnabled())->isTrue()
-					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
+					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
+					->variable($test->getBootstrapFile())->isNull()
 			;
 		}
 
@@ -187,7 +162,9 @@ namespace mageekguy\atoum\tests\units
 				->assert('Code coverage must be enabled only if xdebug is available')
 					->if($adapter = new atoum\test\adapter())
 					->and($adapter->extension_loaded = function($extension) { return $extension == 'xdebug'; })
-					->and($test = new emptyTest(null, null, $adapter))
+					->and($factory = new atoum\factory())
+					->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter))
+					->and($test = new emptyTest($factory))
 					->then
 						->boolean($test->codeCoverageIsEnabled())->isTrue()
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
@@ -198,8 +175,10 @@ namespace mageekguy\atoum\tests\units
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
 						->boolean($test->codeCoverageIsEnabled())->isTrue()
 				->assert('Code coverage must not be enabled if xdebug is not available')
-					->if($adapter->extension_loaded = function($extension) { return ($extension == 'xdebug' ? false : true); })
-					->and($test = new emptyTest(null, null, $adapter))
+					->if($adapter->extension_loaded = function($extension) { return $extension != 'xdebug'; })
+					->and($factory = new atoum\factory())
+					->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter))
+					->and($test = new emptyTest($factory))
 					->then
 						->boolean($test->codeCoverageIsEnabled())->isFalse()
 						->object($test->enableCodeCoverage())->isIdenticalTo($test)
@@ -212,7 +191,9 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->extension_loaded = true)
-				->and($test = new emptyTest(null, null, $adapter))
+				->and($factory = new atoum\factory())
+				->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter))
+				->and($test = new emptyTest($factory))
 				->then
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->object($test->disableCodeCoverage())->isIdenticalTo($test)
@@ -293,6 +274,23 @@ namespace mageekguy\atoum\tests\units
 				->if($test->setTestNamespace($testsSubNamespace = uniqid()))
 				->then
 					->string($test->getTestNamespace())->isEqualTo($testsSubNamespace)
+			;
+		}
+
+		public function testGetTestedClassName()
+		{
+			$mockClass = '\mock\\' . __CLASS__;
+
+			$this
+				->if($test = new $mockClass())
+				->and($test->getMockController()->getClass = $testClass = 'foo')
+				->then
+					->exception(function() use ($test) { $test->getTestedClassName(); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $test->getTestNamespace() . '\'')
+				->if($test->getMockController()->getClass = 'tests\units\foo')
+				->then
+					->string($test->getTestedClassName())->isEqualTo('foo')
 			;
 		}
 

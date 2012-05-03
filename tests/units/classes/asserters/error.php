@@ -22,7 +22,7 @@ class error extends atoum\test
 		$this
 			->if($asserter = new asserters\error($generator = new asserter\generator()))
 			->then
-				->object($asserter->initWithTest($this))->isIdenticalTo($asserter)
+				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
 				->object($asserter->getScore())->isIdenticalTo($this->getScore())
 		;
 	}

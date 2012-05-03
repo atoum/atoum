@@ -25,6 +25,7 @@ class string extends atoum\test
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
 		;
@@ -77,6 +78,34 @@ class string extends atoum\test
 				->exception(function() use ($asserter, & $secondString) { $asserter->isEqualTo($secondString = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
+			->object($asserter->isEqualTo($firstString))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testIsEqualToFileContents()
+	{
+		$this
+			->if($asserter = new asserters\string($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->isEqualToContentsOfFile(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($firstString = uniqid()))
+			->and($adapter->file_get_contents = false)
+			->then
+				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Unable to get contents of file %s'), $path))
+			->if($adapter->file_get_contents = $fileContents = uniqid())
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('string is not equals to contents of file %s'), $path) . PHP_EOL . $diff->setReference($fileContents)->setData($firstString))
+			->if($adapter->file_get_contents = $firstString)
+			->then
+				->object($asserter->isEqualToContentsOfFile(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
 

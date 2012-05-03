@@ -205,12 +205,7 @@ class generator
 		{
 			$asserterInstance = new $asserterClass($this);
 
-			if (sizeof($arguments) > 0)
-			{
-				call_user_func_array(array($asserterInstance, 'setWith'), $arguments);
-			}
-
-			return $asserterInstance;
+			return $asserterInstance->setWithArguments($arguments);
 		}
 	}
 }

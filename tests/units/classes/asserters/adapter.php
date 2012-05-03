@@ -79,7 +79,8 @@ class adapter extends atoum\test
 	public function testCall()
 	{
 		$this
-			->if($asserter = new asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -99,7 +100,8 @@ class adapter extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($asserter = new asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -123,7 +125,8 @@ class adapter extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->if($asserter = new asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

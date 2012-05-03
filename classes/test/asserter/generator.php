@@ -73,7 +73,7 @@ class generator extends asserter\generator
 
 	public function getAsserterInstance($asserter, array $arguments = array())
 	{
-		return parent::getAsserterInstance($asserter, $arguments)->initWithTest($this->test);
+		return parent::getAsserterInstance($asserter, $arguments)->setWithTest($this->test);
 	}
 }
 

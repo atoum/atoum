@@ -54,7 +54,7 @@ class error extends \mageekguy\atoum\asserter
 		$this->setScore($score ?: new atoum\score());
 	}
 
-	public function initWithTest(atoum\test $test)
+	public function setWithTest(atoum\test $test)
 	{
 		return $this->setScore($test->getScore());
 	}

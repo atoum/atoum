@@ -68,14 +68,14 @@ class controller extends test\adapter
 		return $this->mockClass;
 	}
 
-	public function getCalls($method = null, array $arguments = null)
+	public function getCalls($method = null, array $arguments = null, $identical = false)
 	{
 		if ($method !== null)
 		{
 			$this->checkMethod($method);
 		}
 
-		return parent::getCalls($method, $arguments);
+		return parent::getCalls($method, $arguments, $identical);
 	}
 
 	public function getReflectionClass($class)

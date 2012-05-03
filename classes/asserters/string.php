@@ -3,6 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
@@ -42,6 +44,18 @@ use
 class string extends variable
 {
 	protected $charlist = null;
+
+	public function __construct(asserter\generator $generator, atoum\adapter $adapter = null)
+	{
+		parent::__construct($generator);
+
+		$this->adapter = $adapter ?: new atoum\adapter();
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
 
 	public function __toString()
 	{
@@ -101,6 +115,20 @@ class string extends variable
 	public function isEqualTo($value, $failMessage = null)
 	{
 		return parent::isEqualTo($value, $failMessage !== null ? $failMessage : $this->getLocale()->_('strings are not equals'));
+	}
+
+	public function isEqualToContentsOfFile($path, $failMessage = null)
+	{
+		$fileContents = @$this->valueIsSet()->adapter->file_get_contents($path);
+
+		if ($fileContents === false)
+		{
+			$this->fail(sprintf($this->getLocale()->_('Unable to get contents of file %s'), $path));
+		}
+		else
+		{
+			return parent::isEqualTo($fileContents, $failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('string is not equals to contents of file %s'), $path));
+		}
 	}
 
 	public function hasLength($length, $failMessage = null)

@@ -6,92 +6,118 @@ use
 	mageekguy\atoum\factory
 ;
 
-class factory
+class factory implements \arrayAccess
 {
 	protected $builders = array();
 	protected $importations = array();
 
 	private static $classes = array();
 
-	public function build($class, array $arguments = array(), $client = null)
+	public function offsetGet($class)
 	{
-		$instance = null;
+		$builder = $this->getBuilder($class);
 
-		if (($builder = $this->getBuilder($class, $client)) !== null)
-		{
-			$class = $this->resolveClass($class);
-
-			if (($instance = call_user_func_array($builder, $arguments)) instanceof $class === false && is_subclass_of($instance, $class) === false)
-			{
-				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' with current builder');
-			}
-		}
-		else
+		if ($builder === null)
 		{
 			$class = $this->resolveClass($class);
 
 			if (class_exists($class, true) === false)
 			{
-				throw new factory\exception('Unable to build an instance of class \'' . $class . '\' because class does not exist');
+				throw new factory\exception('Class \'' . $class . '\' does not exist');
 			}
-			else if (sizeof($arguments) <= 0)
-			{
-				$instance = new $class();
-			}
-			else
-			{
-				if (isset(self::$classes[$class]) === false)
-				{
-					self::$classes[$class] = new \reflectionClass($class);
-				}
 
-				$instance = self::$classes[$class]->newInstanceArgs($arguments);
-			}
+			$this->setBuilder($class, $builder = function() use ($class) {
+					if (func_num_args() <= 0)
+					{
+						return new $class();
+					}
+					else
+					{
+						$class = new \reflectionClass($class);
+
+						return $class->newInstanceArgs(func_get_args());
+					}
+				}
+			);
 		}
 
-		return $instance;
+		return $builder;
 	}
 
-	public function setBuilder($class, \closure $builder, $client = null)
+	public function offsetSet($class, $builder)
 	{
-		$this->builders[self::resolveClient($client)][$this->resolveClass($class)] = $builder;
+		if ($builder instanceof \closure === false)
+		{
+			$builder = function() use ($builder) { return $builder; };
+		}
+
+		$this->setBuilder($class, $builder);
+	}
+
+	public function offsetUnset($class)
+	{
+	}
+
+	public function offsetExists($class)
+	{
+		return $this->builderIsSet($class);
+	}
+
+	public function build($class, array $arguments = array())
+	{
+		return call_user_func_array($this[$class], $arguments);
+	}
+
+	public function setBuilder($class, $builder)
+	{
+		$this->builders[$this->resolveClass($class)] = $builder;
 
 		return $this;
 	}
 
-	public function returnWhenBuild($class, $value, $client = null)
+	public function builderIsSet($class)
 	{
-		return $this->setBuilder($class, function() use ($value) { return $value; }, $client);
+		return ($this->getBuilder($class) !== null);
 	}
 
-	public function builderIsSet($class, $client = null)
-	{
-		return ($this->getBuilder($class, $client) !== null);
-	}
-
-	public function getBuilder($class, $client = null)
+	public function getBuilder($class)
 	{
 		$builder = null;
 
 		if (sizeof($this->builders) > 0)
 		{
-			$client = self::resolveClient($client);
 			$class = $this->resolveClass($class);
 
-			if (isset($this->builders[$client][$class]) === true)
+			if (isset($this->builders[$class]) === true)
 			{
-				$builder = $this->builders[$client][$class];
-			}
-			else if ($client !== null && isset($this->builders[null][$class]) === true)
-			{
-				$builder = $this->builders[null][$class];
+				$builder = $this->builders[$class];
 			}
 		}
 
 		return $builder;
 	}
 
-	public function getBuilders($client = null)
+	public function unsetBuilder($class)
+	{
+		if (sizeof($this->builders) > 0)
+		{
+			$class = $this->resolveClass($class);
+
+			if (isset($this->builders[$class]) === true)
+			{
+				unset($this->builders[$class]);
+			}
+		}
+
+		return $this;
+	}
+
+	public function returnWhenBuild($class, $value)
+	{
+		return $this->setBuilder($class, function() use ($value) { return $value; });
+	}
+
+	public function getBuilders()
 	{
 		return $this->builders;
 	}
@@ -165,11 +191,6 @@ class factory
 		}
 
 		return $class;
-	}
-
-	protected static function resolveClient($client)
-	{
-		return ($client === null ? null : is_object($client) === true ? get_class($client) : trim($client, '\\'));
 	}
 }
 

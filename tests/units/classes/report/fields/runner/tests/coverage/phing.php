@@ -161,7 +161,8 @@ class phing extends atoum\test
 				->if($scoreCoverage = new score\coverage())
 				->and($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
-				->and($runner = new atoum\runner($score))
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new tests\coverage\phing())
 				->and($customField = new tests\coverage\phing($titlePrompt = new prompt(uniqid()), $classPrompt = new prompt(uniqid()), $methodPrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $coverageColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
 				->then

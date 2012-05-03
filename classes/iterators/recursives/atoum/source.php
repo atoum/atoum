@@ -1,12 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\src;
+namespace mageekguy\atoum\iterators\recursives\atoum;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\iterators
 ;
 
-class iterator implements \outerIterator
+class source implements \outerIterator
 {
 	protected $pharDirectory = '';
 	protected $sourceDirectory = '';
@@ -16,7 +17,7 @@ class iterator implements \outerIterator
 	{
 		$this->sourceDirectory = (string) $sourceDirectory;
 		$this->pharDirectory = $pharDirectory === null ? null : (string) $pharDirectory;
-		$this->innerIterator = new \recursiveIteratorIterator(new iterator\filter(new \recursiveDirectoryIterator($this->sourceDirectory)));
+		$this->innerIterator = new \recursiveIteratorIterator(new iterators\filters\recursives\dot($this->sourceDirectory));
 
 		$this->innerIterator->rewind();
 	}
