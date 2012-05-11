@@ -10,6 +10,7 @@ use
 
 class score
 {
+	private $factory = null;
 	private $passAssertions = 0;
 	private $failAssertions = array();
 	private $exceptions = array();
@@ -31,9 +32,24 @@ class score
 
 	private static $failId = 0;
 
-	public function __construct(score\coverage $coverage = null)
+	public function __construct(factory $factory = null)
 	{
-		$this->coverage = $coverage ?: new score\coverage();
+		$this
+			->setFactory($factory ?: new factory())
+			->setCoverage($this->factory['mageekguy\atoum\score\coverage']($this->factory))
+		;
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
 	}
 
 	public function reset()
@@ -49,6 +65,13 @@ class score
 		$this->outputs = array();
 		$this->durations = array();
 		$this->memoryUsages = array();
+
+		return $this;
+	}
+
+	public function setCoverage(score\coverage $coverage)
+	{
+		$this->coverage = $coverage;
 
 		return $this;
 	}

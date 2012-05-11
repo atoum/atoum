@@ -15,6 +15,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
+				->object($score->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->variable($score->getPhpPath())->isNull()
 				->variable($score->getPhpVersion())->isNull()
 				->variable($score->getAtoumPath())->isNull()
@@ -29,9 +30,12 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
-				->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage())
-			->if($score = new atoum\score($coverage = new atoum\score\coverage()))
+				->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage($score->getFactory()))
+			->if($factory = new atoum\factory())
+			->and($factory['mageekguy\atoum\score\coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
+			->and($score = new atoum\score($factory))
 			->then
+				->object($score->getFactory())->isIdenticalTo($factory)
 				->variable($score->getPhpPath())->isNull()
 				->variable($score->getPhpVersion())->isNull()
 				->variable($score->getAtoumPath())->isNull()
@@ -96,21 +100,6 @@ class score extends atoum\test
 		;
 	}
 
-	public function testGetExceptionNumber()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->integer($score->getExceptionNumber())->isZero()
-			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
-			->then
-				->integer($score->getExceptionNumber())->isEqualTo(1)
-			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
-			->then
-				->integer($score->getExceptionNumber())->isEqualTo(2)
-		;
-	}
-
 	public function testAddPass()
 	{
 		$this
@@ -169,21 +158,6 @@ class score extends atoum\test
 						)
 					)
 				)
-		;
-	}
-
-	public function testGetFailNumber()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->integer($score->getFailNumber())->isZero()
-			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
-			->then
-				->integer($score->getFailNumber())->isEqualTo(1)
-			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
-			->then
-				->integer($score->getFailNumber())->isEqualTo(2)
 		;
 	}
 
@@ -657,6 +631,221 @@ class score extends atoum\test
 		;
 	}
 
+	public function testSetCase()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->setCase($case = uniqid()))->isIdenticalTo($score)
+				->string($score->getCase())->isEqualTo($case)
+				->object($score->setCase($case = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+				->string($score->getCase())->isEqualTo((string) $case)
+		;
+	}
+
+	public function testSetDataSet()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->setDataSet($key = rand(1, PHP_INT_MAX), $dataProvider = uniqid()))->isIdenticalTo($score)
+				->integer($score->getDataSetKey())->isEqualTo($key)
+				->string($score->getDataSetProvider())->isEqualTo($dataProvider)
+		;
+	}
+
+	public function testSetCoverage()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->setCoverage($coverage = new atoum\score\coverage()))->isIdenticalTo($score)
+				->object($score->getCoverage())->isIdenticalTo($coverage)
+		;
+	}
+
+	public function testGetExceptionNumber()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->integer($score->getExceptionNumber())->isZero()
+			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
+			->then
+				->integer($score->getExceptionNumber())->isEqualTo(1)
+			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
+			->then
+				->integer($score->getExceptionNumber())->isEqualTo(2)
+		;
+	}
+
+	public function testGetFailNumber()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->integer($score->getFailNumber())->isZero()
+			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
+			->then
+				->integer($score->getFailNumber())->isEqualTo(1)
+			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
+			->then
+				->integer($score->getFailNumber())->isEqualTo(2)
+		;
+	}
+
+	public function testGetFailAssertions()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->array($score->getFailAssertions())->isEmpty()
+			->if($score->addPass())
+			->then
+				->array($score->getFailAssertions())->isEmpty()
+			->if($score->addFail($file = uniqid(), $line = rand(1, PHP_INT_MAX), $class = uniqid(), $method = uniqid(), $asserter = new atoum\asserters\integer(new atoum\asserter\generator()), $reason = uniqid()))
+			->then
+				->array($score->getFailAssertions())->isEqualTo(array(
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => $class,
+							'method' => $method,
+							'file' => $file,
+							'line' => $line,
+							'asserter' => $asserter,
+							'fail' => $reason
+						)
+					)
+				)
+		;
+	}
+
+	public function testGetPassAssertions()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->integer($score->getPassNumber())->isZero()
+			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
+			->then
+				->integer($score->getPassNumber())->isZero()
+			->if($score->addPass())
+			->then
+				->integer($score->getPassNumber())->isEqualTo(1)
+		;
+	}
+
+	public function testGetCoverage()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+				->object($coverage->getFactory())->isIdenticalTo($score->getFactory())
+		;
+	}
+
+	public function testGetMethodsWithFail()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->array($score->getMethodsWithFail())->isEmpty()
+			->if($asserter = new atoum\asserters\integer(new atoum\asserter\generator()))
+			->and($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), $asserter, uniqid()))
+			->then
+				->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod)))
+			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), $asserter, uniqid()))
+			->then
+				->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), $asserter, uniqid()))
+			->then
+				->array($score->getMethodsWithFail())->isEqualTo(array(
+						$class => array($classMethod, $classOtherMethod),
+						$otherClass => array($otherClassMethod)
+					)
+				)
+		;
+	}
+
+	public function testGetMethodsWithError()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->array($score->getMethodsWithError())->isEmpty()
+			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod)))
+			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->array($score->getMethodsWithError())->isEqualTo(array(
+						$class => array($classMethod, $classOtherMethod),
+						$otherClass => array($otherClassMethod)
+					)
+				)
+		;
+	}
+
+	public function testGetMethodsWithException()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->array($score->getMethodsWithError())->isEmpty()
+			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), new \exception()))
+			->then
+				->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod)))
+			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), new \exception()))
+			->then
+				->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
+			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), new \exception()))
+			->then
+				->array($score->getMethodsWithException())->isEqualTo(array(
+						$class => array($classMethod, $classOtherMethod),
+						$otherClass => array($otherClassMethod)
+					)
+				)
+		;
+	}
+
+	public function testUnsetCase()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getCase())->isNull()
+				->object($score->unsetCase())->isIdenticalTo($score)
+				->variable($score->getCase())->isNull()
+			->if($score->setCase(uniqid()))
+			->then
+				->string($score->getCase())->isNotNull()
+				->object($score->unsetCase())->isIdenticalTo($score)
+				->variable($score->getCase())->isNull()
+		;
+	}
+
+	public function testUnsetDataSet()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->unsetDataSet())->isIdenticalTo($score)
+				->variable($score->getDataSetKey())->isNull()
+				->variable($score->getDataSetProvider())->isNull()
+			->if($score->setDataSet(rand(1, PHP_INT_MAX), uniqid()))
+			->then
+				->object($score->unsetDataSet())->isIdenticalTo($score)
+				->variable($score->getDataSetKey())->isNull()
+				->variable($score->getDataSetProvider())->isNull()
+		;
+	}
+
 	public function testReset()
 	{
 		$this
@@ -884,180 +1073,6 @@ class score extends atoum\test
 				->integer($score->errorExists($message, $type))->isEqualTo(0)
 				->object($score->deleteError(0))->isIdenticalTo($score)
 				->variable($score->errorExists($message, $type))->isNull()
-		;
-	}
-
-	public function testGetFailAssertions()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->array($score->getFailAssertions())->isEmpty()
-			->if($score->addPass())
-			->then
-				->array($score->getFailAssertions())->isEmpty()
-			->if($score->addFail($file = uniqid(), $line = rand(1, PHP_INT_MAX), $class = uniqid(), $method = uniqid(), $asserter = new atoum\asserters\integer(new atoum\asserter\generator()), $reason = uniqid()))
-			->then
-				->array($score->getFailAssertions())->isEqualTo(array(
-						array(
-							'case' => null,
-							'dataSetKey' => null,
-							'dataSetProvider' => null,
-							'class' => $class,
-							'method' => $method,
-							'file' => $file,
-							'line' => $line,
-							'asserter' => $asserter,
-							'fail' => $reason
-						)
-					)
-				)
-		;
-	}
-
-	public function testGetPassAssertions()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->integer($score->getPassNumber())->isZero()
-			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
-			->then
-				->integer($score->getPassNumber())->isZero()
-			->if($score->addPass())
-			->then
-				->integer($score->getPassNumber())->isEqualTo(1)
-		;
-	}
-
-	public function testGetCoverage()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
-		;
-	}
-
-	public function testSetCase()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setCase($case = uniqid()))->isIdenticalTo($score)
-				->string($score->getCase())->isEqualTo($case)
-				->object($score->setCase($case = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-				->string($score->getCase())->isEqualTo((string) $case)
-		;
-	}
-
-	public function testSetDataSet()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setDataSet($key = rand(1, PHP_INT_MAX), $dataProvider = uniqid()))->isIdenticalTo($score)
-				->integer($score->getDataSetKey())->isEqualTo($key)
-				->string($score->getDataSetProvider())->isEqualTo($dataProvider)
-		;
-	}
-
-	public function testUnsetCase()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->variable($score->getCase())->isNull()
-				->object($score->unsetCase())->isIdenticalTo($score)
-				->variable($score->getCase())->isNull()
-			->if($score->setCase(uniqid()))
-			->then
-				->string($score->getCase())->isNotNull()
-				->object($score->unsetCase())->isIdenticalTo($score)
-				->variable($score->getCase())->isNull()
-		;
-	}
-
-	public function testUnsetDataSet()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->unsetDataSet())->isIdenticalTo($score)
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
-			->if($score->setDataSet(rand(1, PHP_INT_MAX), uniqid()))
-			->then
-				->object($score->unsetDataSet())->isIdenticalTo($score)
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
-		;
-	}
-
-	public function testGetMethodsWithFail()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->array($score->getMethodsWithFail())->isEmpty()
-			->if($asserter = new atoum\asserters\integer(new atoum\asserter\generator()))
-			->and($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), $asserter, uniqid()))
-			->then
-				->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod)))
-			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), $asserter, uniqid()))
-			->then
-				->array($score->getMethodsWithFail())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
-			->if($score->addFail(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), $asserter, uniqid()))
-			->then
-				->array($score->getMethodsWithFail())->isEqualTo(array(
-						$class => array($classMethod, $classOtherMethod),
-						$otherClass => array($otherClassMethod)
-					)
-				)
-		;
-	}
-
-	public function testGetMethodsWithError()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->array($score->getMethodsWithError())->isEmpty()
-			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
-			->then
-				->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod)))
-			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
-			->then
-				->array($score->getMethodsWithError())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
-			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
-			->then
-				->array($score->getMethodsWithError())->isEqualTo(array(
-						$class => array($classMethod, $classOtherMethod),
-						$otherClass => array($otherClassMethod)
-					)
-				)
-		;
-	}
-
-	public function testGetMethodsWithException()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->array($score->getMethodsWithError())->isEmpty()
-			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $class = uniqid(), $classMethod = uniqid(), new \exception()))
-			->then
-				->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod)))
-			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $class, $classOtherMethod = uniqid(), new \exception()))
-			->then
-				->array($score->getMethodsWithException())->isEqualTo(array($class => array($classMethod, $classOtherMethod)))
-			->if($score->addException(uniqid(), rand(1, PHP_INT_MAX), $otherClass = uniqid(), $otherClassMethod = uniqid(), new \exception()))
-			->then
-				->array($score->getMethodsWithException())->isEqualTo(array(
-						$class => array($classMethod, $classOtherMethod),
-						$otherClass => array($otherClassMethod)
-					)
-				)
 		;
 	}
 }

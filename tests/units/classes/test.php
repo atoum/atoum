@@ -92,7 +92,7 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new emptyTest())
 				->then
 					->object($test->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-					->object($test->getScore())->isEqualTo(new atoum\score())
+					->object($test->getScore())->isEqualTo(new atoum\score($test->getFactory()))
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
 					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())

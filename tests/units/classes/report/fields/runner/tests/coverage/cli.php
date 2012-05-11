@@ -145,7 +145,7 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($scoreCoverage = new score\coverage())
+				->if($scoreCoverage = new score\coverage($factory = new atoum\factory()))
 				->and($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 				->and($runner = new atoum\runner())
@@ -179,7 +179,7 @@ class cli extends atoum\test
 				->and($methodController->getStartLine = 6)
 				->and($methodController->getEndLine = 8)
 				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-				->and($scoreCoverage->setReflectionClassInjector(function($className) use ($class) { return $class; }))
+				->and($factory['reflectionClass'] = $class)
 				->and($className = uniqid())
 				->and($methodName = uniqid())
 				->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(

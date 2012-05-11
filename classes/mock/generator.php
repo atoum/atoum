@@ -7,32 +7,31 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class generator implements atoum\adapter\aggregator
+class generator
 {
 	const defaultNamespace = 'mock';
 
-	protected $adapter = null;
+	protected $factory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
 
 	private $defaultNamespace = null;
-	private $reflectionClassInjector = null;
 
-	public function __construct(atoum\adapter $adapter = null)
+	public function __construct(atoum\factory $factory = null)
 	{
-		$this->setAdapter($adapter ?: new atoum\adapter());
+		$this->setFactory($factory ?: new atoum\factory());
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setFactory(atoum\factory $factory)
 	{
-		$this->adapter = $adapter;
+		$this->factory = $factory;
 
 		return $this;
 	}
 
-	public function getAdapter()
+	public function getFactory()
 	{
-		return $this->adapter;
+		return $this->factory;
 	}
 
 	public function setDefaultNamespace($namespace)
@@ -45,41 +44,6 @@ class generator implements atoum\adapter\aggregator
 	public function getDefaultNamespace()
 	{
 		return ($this->defaultNamespace === null ? self::defaultNamespace : $this->defaultNamespace);
-	}
-
-	public function getReflectionClass($class)
-	{
-		$reflectionClass = null;
-
-		if ($this->reflectionClassInjector === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
-
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
-
-		return $reflectionClass;
-	}
-
-	public function setReflectionClassInjector(\closure $reflectionClassInjector)
-	{
-		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
-		}
-
-		$this->reflectionClassInjector = $reflectionClassInjector;
-
-		return $this;
 	}
 
 	public function overload(php\method $method)
@@ -126,23 +90,20 @@ class generator implements atoum\adapter\aggregator
 				$mockClass = self::getClassName($class);
 			}
 
-			if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
+			$adapter = $this->factory['mageekguy\atoum\adapter']();
+
+			if ($adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
 			{
 				throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 			}
 
-			if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
+			if ($adapter->class_exists($class, true) === false && $adapter->interface_exists($class, true) === false)
 			{
 				$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
 			}
 			else
 			{
-				$reflectionClass = $this->getReflectionClass($class);
-
-				if ($reflectionClass instanceof \reflectionClass === false)
-				{
-					throw new exceptions\logic('Reflection class injector does not return a \reflectionClass instance');
-				}
+				$reflectionClass = $this->factory['reflectionClass']($class);
 
 				if ($reflectionClass->isFinal() === true)
 				{

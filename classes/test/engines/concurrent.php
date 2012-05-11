@@ -142,7 +142,7 @@ class concurrent extends test\engine
 
 				if ($score instanceof atoum\score === false)
 				{
-					$score = $this->factory['mageekguy\atoum\score']();
+					$score = $this->factory['mageekguy\atoum\score']($this->factory);
 
 					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
 				}

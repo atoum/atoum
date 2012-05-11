@@ -48,13 +48,13 @@ class inline extends atoum\test
 		$this
 			->if($engine = new engines\inline())
 			->then
-				->object($engine->getScore())->isEqualTo(new atoum\score())
+				->object($engine->getScore())->isInstanceof('mageekguy\atoum\score')
 			->if($test = new \mock\mageekguy\atoum\test())
 			->and($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->runTestMethod = $test)
 			->and($engine->run($test))
 			->then
-				->object($engine->getScore())->isEqualTo(new atoum\score())
+				->object($engine->getScore())->isInstanceOf('mageekguy\atoum\score')
 		;
 	}
 }

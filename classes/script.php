@@ -35,6 +35,9 @@ abstract class script implements atoum\adapter\aggregator
 			->setErrorWriter($this->factory['atoum\writers\std\err']())
 		;
 
+		$this->factory['atoum\locale'] = $this->locale;
+		$this->factory['atoum\adapter'] = $this->adapter;
+
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
 			throw new exceptions\logic('\'' . $this->getName() . '\' must be used in CLI only');

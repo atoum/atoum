@@ -42,11 +42,15 @@ class runner implements observable, adapter\aggregator
 		$this
 			->setFactory($factory ?: new factory())
 			->setAdapter($this->factory['mageekguy\atoum\adapter']())
-			->setScore($this->factory['mageekguy\atoum\score']())
 			->setLocale($this->factory['mageekguy\atoum\locale']())
 			->setIncluder($this->factory['mageekguy\atoum\includer']())
+			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
 			->setTestDirectoryIterator($this->factory['mageekguy\atoum\iterators\recursives\directory']())
 		;
+
+		$this->factory['mageekguy\atoum\adapter'] = $this->adapter;
+		$this->factory['mageekguy\atoum\locale'] = $this->locale;
+		$this->factory['mageekguy\atoum\includer'] = $this->includer;
 
 		$runnerClass = $this->factory['reflectionClass']($this);
 
@@ -437,20 +441,7 @@ class runner implements observable, adapter\aggregator
 				}
 				else
 				{
-					foreach ($this->getCoverage()->getExcludedClasses() as $excludedClass)
-					{
-						$test->getCoverage()->excludeClass($excludedClass);
-					}
-
-					foreach ($this->getCoverage()->getExcludedNamespaces() as $excludedNamespace)
-					{
-						$test->getCoverage()->excludeNamespace($excludedNamespace);
-					}
-
-					foreach ($this->getCoverage()->getExcludedDirectories() as $excludedDirectory)
-					{
-						$test->getCoverage()->excludeDirectory($excludedDirectory);
-					}
+					$test->getScore()->setCoverage($this->getCoverage());
 				}
 
 				foreach ($this->observers as $observer)

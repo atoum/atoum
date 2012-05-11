@@ -21,9 +21,11 @@ class controller extends atoum\test
 		$this
 			->if($mockController = new mock\controller())
 			->then
+				->object($mockController->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->variable($mockController->getMockClass())->isNull()
 				->array($mockController->getInvokers())->isEmpty()
 				->array($mockController->getCalls())->isEmpty()
+				->object($mockController->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 		;
 	}
 
@@ -114,48 +116,6 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testSetReflectionClassInjector()
-	{
-		$this
-			->if($this->mockGenerator->shunt('__construct'))
-			->and($mockController = new mock\controller())
-			->and($mockController->notControlNextNewMock())
-			->then
-				->object($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($mockController)
-				->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-				->exception(function() use ($mockController) {
-						$mockController->setReflectionClassInjector(function() {});
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Reflection class injector must take one argument')
-		;
-	}
-
-	public function testGetReflectionClass()
-	{
-		$this
-			->if($this->mockGenerator->shunt('__construct'))
-			->if($mockController = new mock\controller())
-			->and($mockController->notControlNextNewMock())
-			->then
-				->object($mockController->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
-				->string($mockController->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
-			->if($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))
-			->then
-				->object($mockController->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
-				->mock($reflectionClass)->call('__construct')->withArguments($class)->once()
-			->if($mockController->setReflectionClassInjector(function($class) use (& $reflectionClass) { return uniqid(); }))
-			->then
-				->exception(function() use ($mockController) {
-							$mockController->getReflectionClass(uniqid());
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-						->hasMessage('Reflection class injector must return a \reflectionClass instance')
-		;
-	}
-
 	public function testControl()
 	{
 		$mockAggregatorController = new mock\controller();
@@ -218,11 +178,11 @@ class controller extends atoum\test
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('b');
 
-		$reflectionClassInjectorController = new mock\controller();
-		$reflectionClassInjectorController->__construct = function() {};
-		$reflectionClassInjectorController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
+		$reflectionClassController = new mock\controller();
+		$reflectionClassController->__construct = function() {};
+		$reflectionClassController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
 
-		$reflectionClassInjector = new \mock\reflectionClass(uniqid(), $reflectionClassInjectorController);
+		$reflectionClass = new \mock\reflectionClass(uniqid(), $reflectionClassController);
 
 
 		$aMockController = new mock\controller();
@@ -231,8 +191,9 @@ class controller extends atoum\test
 		$aMock = new \mock\reflectionClass(uniqid(), $aMockController);
 
 		$this
-			->if($mockController = new mock\controller())
-			->and($mockController->setReflectionClassInjector(function ($class) use ($reflectionClassInjector) { return $reflectionClassInjector; }))
+			->if($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $reflectionClass)
+			->and($mockController = new mock\controller($factory))
 			->then
 				->variable($mockController->getMockClass())->isNull()
 				->array($mockController->getInvokers())->isEmpty()

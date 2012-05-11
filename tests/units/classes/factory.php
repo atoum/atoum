@@ -12,7 +12,11 @@ class factory extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->hasInterface('arrayAccess');
+		$this
+			->testedClass
+				->hasInterface('arrayAccess')
+				->hasInterface('serializable')
+		;
 	}
 
 	public function test__construct()
@@ -22,6 +26,35 @@ class factory extends atoum\test
 			->then
 				->array($factory->getBuilders())->isEmpty()
 				->array($factory->getImportations())->isEmpty()
+		;
+	}
+
+	public function testSerialize()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->string($factory->serialize())->isEqualTo(serialize($factory->getImportations()))
+			->if($factory->import(uniqid(), uniqid()))
+			->then
+				->string($factory->serialize())->isEqualTo(serialize($factory->getImportations()))
+		;
+	}
+
+	public function testUnserialize()
+	{
+		$this
+			->if($factory = new atoum\factory())
+			->then
+				->object(unserialize(serialize($factory)))->isEqualTo($factory)
+			->if($factory->import($namespace = uniqid(), $alias = uniqid()))
+			->then
+				->object(unserialize(serialize($factory)))->isEqualTo($factory)
+			->if($factoryWithBuilder = new atoum\Factory())
+			->and($factoryWithBuilder[uniqid()] = function() {})
+			->and($factoryWithBuilder->import($namespace, $alias))
+			->then
+				->object(unserialize(serialize($factoryWithBuilder)))->isEqualTo($factory)
 		;
 	}
 
@@ -118,10 +151,10 @@ class factory extends atoum\test
 		$this
 			->if($factory = new atoum\factory())
 			->then
-				->object($factory->unsetBuilder(uniqid()))->isIdenticalTo($factory)
+				->object($factory->offsetUnset(uniqid()))->isIdenticalTo($factory)
 			->if($factory->setBuilder('arrayIterator', function() { return new \arrayIterator(array()); }))
 			->then
-				->object($factory->unsetBuilder('arrayIterator'))->isIdenticalTo($factory)
+				->object($factory->offsetUnset('arrayIterator'))->isIdenticalTo($factory)
 				->boolean($factory->builderIsSet('arrayIterator'))->isFalse()
 		;
 	}

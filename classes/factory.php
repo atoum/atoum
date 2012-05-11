@@ -6,12 +6,24 @@ use
 	mageekguy\atoum\factory
 ;
 
-class factory implements \arrayAccess
+class factory implements \arrayAccess, \serializable
 {
 	protected $builders = array();
 	protected $importations = array();
 
 	private static $classes = array();
+
+	public function serialize()
+	{
+		return serialize($this->importations);
+	}
+
+	public function unserialize($string)
+	{
+		$this->importations = unserialize($string);
+
+		return $this;
+	}
 
 	public function offsetGet($class)
 	{
@@ -56,6 +68,7 @@ class factory implements \arrayAccess
 
 	public function offsetUnset($class)
 	{
+		return $this->unsetBuilder($class);
 	}
 
 	public function offsetExists($class)
