@@ -62,13 +62,13 @@ class generator extends asserter\generator
 				$line = $backtrace['line'];
 			}
 
-			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
+			if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $asserter && $backtrace['function'] !== '__call')
 			{
 				$function = $backtrace['function'];
 			}
 		}
 
-		throw new asserter\exception($reason, $this->test->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason));
+		throw new asserter\exception($reason, $this->test->getScore()->addFail($file, $line, $class, $method, get_class($asserter) . ($function ? '::' . $function : '') . '()', $reason));
 	}
 
 	public function getAsserterInstance($asserter, array $arguments = array())
