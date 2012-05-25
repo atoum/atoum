@@ -434,7 +434,8 @@ class stub extends scripts\runner
 				},
 				array('-u', '--use'),
 				'<script> <args>',
-				$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
+				$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
+				4
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {

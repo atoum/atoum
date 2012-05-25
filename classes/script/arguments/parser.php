@@ -219,9 +219,11 @@ class parser implements \iteratorAggregate
 
 	public function invokeHandlers(atoum\script $script, $argument, array $values)
 	{
+		$position = array_search($argument, array_keys($this->values)) + 1;
+
 		foreach ($this->handlers[$argument] as $handler)
 		{
-			$handler->__invoke($script, $argument, $values, sizeof($this->values));
+			$handler->__invoke($script, $argument, $values, $position);
 		}
 
 		return $this;
