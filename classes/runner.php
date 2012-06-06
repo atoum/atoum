@@ -605,7 +605,7 @@ class runner implements observable, adapter\aggregator
 			$methods = $runTestMethods['*'];
 		}
 
-		$testClass = get_class($test);
+		$testClass = $test->getClass();
 
 		if (isset($runTestMethods[$testClass]) === true)
 		{

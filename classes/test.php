@@ -35,6 +35,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $phpPath = null;
 	private $path = '';
 	private $class = '';
+	private $classNamespace = '';
 	private $testedClass = null;
 	private $factory = null;
 	private $adapter = null;
@@ -79,6 +80,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
+		$this->classNamespace = $class->getNamespaceName();
 
 		$annotationExtractor = $this->factory['mageekguy\atoum\annotations\extractor']();
 
@@ -498,6 +500,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getClass()
 	{
 		return $this->class;
+	}
+
+	public function getClassNamespace()
+	{
+		return $this->classNamespace;
 	}
 
 	public function getPath()
