@@ -148,15 +148,14 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function useDefaultConfigFile()
+	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		try
+		if ($startDirectory === null)
 		{
-			$this->useConfigFile(dirname($this->getName()) . '/' . self::defaultConfigFile);
+			$startDirectory = dirname($this->getName());
 		}
-		catch (\exception $exception) {};
 
-		return $this;
+		return parent::useDefaultConfigFiles($startDirectory);
 	}
 
 	public function version()

@@ -190,15 +190,20 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function useDefaultConfigFiles()
+	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		foreach (self::getSubDirectoryPath(atoum\directory) as $directory)
+		if ($startDirectory === null)
+		{
+			$startDirectory = atoum\directory;
+		}
+
+		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
 		{
 			try
 			{
 				$this->useConfigFile($directory . self::defaultConfigFile);
 			}
-			catch (atoum\includer\exception $exception) {};
+			catch (atoum\includer\exception $exception) {}
 		}
 
 		return $this;
