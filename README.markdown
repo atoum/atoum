@@ -166,8 +166,8 @@ class helloWorld extends atoum\test
 
 ## To go further
 
-[*atoum*'s documentation](https://github.com/geraldcroes/atoum-s-documentation) is still being written.
-It's a github repository, so some pull requests are welcome to improve it.
+[*atoum*'s documentation](https://github.com/geraldcroes/atoum-s-documentation) is still being written.  
+It's a github repository, so some pull requests are welcome to improve it.  
 However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
 
 * Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
