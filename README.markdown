@@ -166,7 +166,8 @@ class helloWorld extends atoum\test
 
 ## To go further
 
-*atoum*'s documentation is still being written, and the only available resource right now is the current document.  
+[*atoum*'s documentation](https://github.com/geraldcroes/atoum-s-documentation) is still being written.
+It's a github repository, so some pull requests are welcome to improve it.
 However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
 
 * Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;
@@ -175,11 +176,6 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Read the [conference supports](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
 * Read the (french) [wiki](https://github.com/mageekguy/atoum/wiki) ;
 * Join the IRC channel *##atoum* on the *freenode* network ; * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
-
-## Documentation
-
-A "Work In Progress" [documentation](https://github.com/geraldcroes/atoum-s-documentation) is available.
-It's a github repository, so some pull requests are welcome to improve it.
 
 ## Troubleshooting
 
