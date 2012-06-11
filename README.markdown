@@ -176,6 +176,11 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Read the (french) [wiki](https://github.com/mageekguy/atoum/wiki) ;
 * Join the IRC channel *##atoum* on the *freenode* network ; * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
 
+## Documentation
+
+A "Work In Progress" [documentation](https://github.com/geraldcroes/atoum-s-documentation) is available.
+It's a github repository, so some pull requests are welcome to improve it.
+
 ## Troubleshooting
 
 ### *atoum*'s PHAR archive seems to not be working
