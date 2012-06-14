@@ -59,6 +59,7 @@ class concurrent extends test\engine
 
 			$phpCode =
 				'<?php ' .
+				'ob_start();' .
 				'define(\'mageekguy\atoum\autorun\', false);' .
 				'require \'' . atoum\directory . '/scripts/runner.php\';'
 			;
@@ -107,11 +108,17 @@ class concurrent extends test\engine
 				}
 			}
 
-			$phpCode .= 'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());';
+			$phpCode .=
+				'ob_end_clean();' .
+				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
+			;
 
 			$this->adapter->fwrite($this->pipes[0], $phpCode);
 			$this->adapter->fclose($this->pipes[0]);
 			unset($this->pipes[0]);
+
+			$this->adapter->stream_set_blocking($this->pipes[1], 0);
+			$this->adapter->stream_set_blocking($this->pipes[2], 0);
 		}
 
 		return $this;
@@ -125,12 +132,17 @@ class concurrent extends test\engine
 		{
 			$phpStatus = $this->adapter->proc_get_status($this->php);
 
-			if ($phpStatus['running'] == false)
+			if ($phpStatus['running'] == true)
 			{
-				$this->stdOut = $this->adapter->stream_get_contents($this->pipes[1]);
+				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
+				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
+			}
+			else
+			{
+				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
 				$this->adapter->fclose($this->pipes[1]);
 
-				$this->stdErr = $this->adapter->stream_get_contents($this->pipes[2]);
+				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
 				$this->adapter->fclose($this->pipes[2]);
 
 				$this->pipes = array();
@@ -143,7 +155,6 @@ class concurrent extends test\engine
 				if ($score instanceof atoum\score === false)
 				{
 					$score = $this->factory['mageekguy\atoum\score']($this->factory);
-
 					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
 				}
 
