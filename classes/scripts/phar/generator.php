@@ -205,7 +205,7 @@ class generator extends atoum\script
 		{
 			$path = '';
 		}
-		else if (DIRECTORY_SEPARATOR == '/' && $path != '/')
+		else if (DIRECTORY_SEPARATOR != '/' || $path != '/')
 		{
 			$path = rtrim($path, DIRECTORY_SEPARATOR);
 		}

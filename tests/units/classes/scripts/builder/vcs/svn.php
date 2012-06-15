@@ -382,16 +382,21 @@ class svn extends atoum\test
 			->when(function() use ($svn) { $svn->setWorkingDirectory('atoum://workingDirectory'); })
 			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/firstFile')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/secondFile')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/aDirectory')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/emptyDirectory')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/anOtherDirectory')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/aFile')->once()
+				->call('unlink')->withArguments(self::cleanPath('atoum://workingDirectory/aDirectory/firstFile'))->once()
+				->call('unlink')->withArguments(self::cleanPath('atoum://workingDirectory/aDirectory/secondFile'))->once()
+				->call('rmdir')->withArguments(self::cleanPath('atoum://workingDirectory/aDirectory'))->once()
+				->call('rmdir')->withArguments(self::cleanPath('atoum://workingDirectory/emptyDirectory'))->once()
+				->call('unlink')->withArguments(self::cleanPath('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile'))->once()
+				->call('unlink')->withArguments(self::cleanPath('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile'))->once()
+				->call('rmdir')->withArguments(self::cleanPath('atoum://workingDirectory/anOtherDirectory'))->once()
+				->call('unlink')->withArguments(self::cleanPath('atoum://workingDirectory/aFile'))->once()
 				->call('rmdir')->withArguments('atoum://workingDirectory')->never()
 		;
+	}
+
+	protected static function cleanPath($path)
+	{
+		return (DIRECTORY_SEPARATOR == '/' ? $path : str_replace('/', '\\', $path));
 	}
 }
 

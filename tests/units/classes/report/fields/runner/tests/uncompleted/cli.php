@@ -239,7 +239,7 @@ class cli extends atoum\test
 							sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
 							'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
-							'output(' . (strlen($otherOutputLine1) + strlen($otherOutputLine2) + 1) . ') "' . $otherOutputLine1 . PHP_EOL .
+							'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
 							$otherOutputLine2 . '"' . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
 							'output(0) ""' . PHP_EOL
@@ -269,7 +269,7 @@ class cli extends atoum\test
 						) .
 						PHP_EOL .
 						$outputPrompt .
-						'output(' . (strlen($otherOutputLine1) + strlen($otherOutputLine2) + 1) . ') "' . $otherOutputLine1 .
+						'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 .
 						PHP_EOL .
 						$outputPrompt .
 						$otherOutputLine2 . '"' .

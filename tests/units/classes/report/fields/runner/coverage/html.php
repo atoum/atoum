@@ -230,15 +230,15 @@ class html extends atoum\test
 				->then
 					->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
 					->adapter($adapter)
-						->call('unlink')->withArguments('atoum://destinationDirectory/aDirectory/firstFile')->once()
-						->call('unlink')->withArguments('atoum://destinationDirectory/aDirectory/secondFile')->once()
-						->call('rmdir')->withArguments('atoum://destinationDirectory/aDirectory')->once()
-						->call('unlink')->withArguments('atoum://destinationDirectory/anOtherDirectory/anOtherFirstFile')->once()
-						->call('unlink')->withArguments('atoum://destinationDirectory/anOtherDirectory/anOtherSecondFile')->once()
-						->call('rmdir')->withArguments('atoum://destinationDirectory/anOtherDirectory')->once()
-						->call('unlink')->withArguments('atoum://destinationDirectory/aFile')->once()
-						->call('rmdir')->withArguments('atoum://destinationDirectory/emptyDirectory')->once()
-						->call('rmdir')->withArguments($destinationDirectoryPath)->never()
+						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory/firstFile'))->once()
+						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory/secondFile'))->once()
+						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory'))->once()
+						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory/anOtherFirstFile'))->once()
+						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory/anOtherSecondFile'))->once()
+						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory'))->once()
+						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aFile'))->once()
+						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/emptyDirectory'))->once()
+						->call('rmdir')->withArguments(self::cleanPath($destinationDirectoryPath))->never()
 				->if($field->getMockController()->getDestinationDirectoryIterator->throw = new \exception())
 				->then
 					->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
@@ -571,6 +571,11 @@ class html extends atoum\test
 			->then
 				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . '/: ' . $errorMessage . '.' . PHP_EOL)
 		;
+	}
+
+	protected static function cleanPath($path)
+	{
+		return (DIRECTORY_SEPARATOR == '/' ? $path : str_replace('/', '\\', $path));
 	}
 }
 
