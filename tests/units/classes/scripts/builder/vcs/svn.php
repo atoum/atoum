@@ -382,21 +382,21 @@ class svn extends atoum\test
 			->when(function() use ($svn) { $svn->setWorkingDirectory('atoum://workingDirectory'); })
 			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
 			->adapter($adapter)
-				->call('unlink')->withArguments(self::toUnixStream('atoum://workingDirectory/aDirectory/firstFile'))->once()
-				->call('unlink')->withArguments(self::toUnixStream('atoum://workingDirectory/aDirectory/secondFile'))->once()
-				->call('rmdir')->withArguments(self::toUnixStream('atoum://workingDirectory/aDirectory'))->once()
-				->call('rmdir')->withArguments(self::toUnixStream('atoum://workingDirectory/emptyDirectory'))->once()
-				->call('unlink')->withArguments(self::toUnixStream('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile'))->once()
-				->call('unlink')->withArguments(self::toUnixStream('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile'))->once()
-				->call('rmdir')->withArguments(self::toUnixStream('atoum://workingDirectory/anOtherDirectory'))->once()
-				->call('unlink')->withArguments(self::toUnixStream('atoum://workingDirectory/aFile'))->once()
+				->call('unlink')->withArguments(self::toOsStream('atoum://workingDirectory/aDirectory/firstFile'))->once()
+				->call('unlink')->withArguments(self::toOsStream('atoum://workingDirectory/aDirectory/secondFile'))->once()
+				->call('rmdir')->withArguments(self::toOsStream('atoum://workingDirectory/aDirectory'))->once()
+				->call('rmdir')->withArguments(self::toOsStream('atoum://workingDirectory/emptyDirectory'))->once()
+				->call('unlink')->withArguments(self::toOsStream('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile'))->once()
+				->call('unlink')->withArguments(self::toOsStream('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile'))->once()
+				->call('rmdir')->withArguments(self::toOsStream('atoum://workingDirectory/anOtherDirectory'))->once()
+				->call('unlink')->withArguments(self::toOsStream('atoum://workingDirectory/aFile'))->once()
 				->call('rmdir')->withArguments('atoum://workingDirectory')->never()
 		;
 	}
 
-	protected static function toUnixStream($stream)
+	protected static function toOsStream($stream)
 	{
-		return atoum\mock\stream::setDirectorySeparator($stream, '/');
+		return atoum\mock\stream::setDirectorySeparator($stream, DIRECTORY_SEPARATOR);
 	}
 }
 
