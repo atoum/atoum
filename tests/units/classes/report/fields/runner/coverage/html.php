@@ -578,7 +578,7 @@ class html extends atoum\test
 		if (DIRECTORY_SEPARATOR != '/')
 		{
 			$path =  preg_replace('#^[^:]+://#', '', $stream);
-			$stream = substr($stream, 0, strlen($stream) - strlen($path)) . str_replace('/', '\\', $path);
+			$stream = substr($stream, 0, strlen($stream) - strlen($path)) . str_replace('/', DIRECTORY_SEPARATOR, $path);
 		}
 
 		return $stream;

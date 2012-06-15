@@ -79,16 +79,8 @@ class stream extends test
 	public function testCleanStream()
 	{
 		$this
-			->if($adapter = new test\adapter())
-			->and($adapter->constant = '/')
-			->and(mock\stream::setAdapter($adapter))
-			->then
-				->string(mock\stream::cleanStreamName('foo/bar'))->isEqualTo('foo/bar')
-				->string(mock\stream::cleanStreamName('foo\bar'))->isEqualTo('foo\bar')
-			->if($adapter->constant = '\\')
-			->then
-				->string(mock\stream::cleanStreamName('foo/bar'))->isEqualTo('foo/bar')
-				->string(mock\stream::cleanStreamName('foo\bar'))->isEqualTo('foo/bar')
+			->string(mock\stream::slashize('foo/bar'))->isEqualTo('foo/bar')
+			->string(mock\stream::slashize('foo\bar'))->isEqualTo('foo/bar')
 		;
 	}
 }
