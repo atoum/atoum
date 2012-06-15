@@ -575,13 +575,7 @@ class html extends atoum\test
 
 	protected static function uniformizeStream($stream)
 	{
-		if (DIRECTORY_SEPARATOR != '/')
-		{
-			$path =  preg_replace('#^[^:]+://#', '', $stream);
-			$stream = substr($stream, 0, strlen($stream) - strlen($path)) . str_replace('/', DIRECTORY_SEPARATOR, $path);
-		}
-
-		return $stream;
+		return atoum\mock\stream::setDirectorySeparator($stream, '/');
 	}
 }
 

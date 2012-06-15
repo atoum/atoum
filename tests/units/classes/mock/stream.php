@@ -76,11 +76,15 @@ class stream extends test
 		;
 	}
 
-	public function testCleanStream()
+	public function testSetDirectorySeparator()
 	{
 		$this
-			->string(mock\stream::slashize('foo/bar'))->isEqualTo('foo/bar')
-			->string(mock\stream::slashize('foo\bar'))->isEqualTo('foo/bar')
+			->string(mock\stream::setDirectorySeparator('foo/bar', '/'))->isEqualTo('foo/bar')
+			->string(mock\stream::setDirectorySeparator('foo\bar', '/'))->isEqualTo('foo/bar')
+			->string(mock\stream::setDirectorySeparator('foo/bar', '\\'))->isEqualTo('foo\bar')
+			->string(mock\stream::setDirectorySeparator('foo\bar', '\\'))->isEqualTo('foo\bar')
+			->string(mock\stream::setDirectorySeparator('foo' . DIRECTORY_SEPARATOR . 'bar'))->isEqualTo('foo' . DIRECTORY_SEPARATOR . 'bar')
+			->string(mock\stream::setDirectorySeparator('foo' . (DIRECTORY_SEPARATOR == '/' ? '\\' : '/') . 'bar'))->isEqualTo('foo' . DIRECTORY_SEPARATOR . 'bar')
 		;
 	}
 }

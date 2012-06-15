@@ -38,7 +38,7 @@ class stream
 					throw new logic('Argument 0 is not set for function ' . $method . '()');
 				}
 
-				$stream = self::slashize($arguments[0]);
+				$stream = self::setDirectorySeparator($arguments[0]);
 
 				if (isset(self::$streams[$stream]) === false)
 				{
@@ -64,7 +64,7 @@ class stream
 
 	public static function get($stream)
 	{
-		$stream = self::slashize($stream);
+		$stream = self::setDirectorySeparator($stream);
 
 		$adapter = self::getAdapter();
 
@@ -112,11 +112,20 @@ class stream
 		return $scheme;
 	}
 
-	public static function slashize($stream)
+	public static function setDirectorySeparator($stream, $directorySeparator = DIRECTORY_SEPARATOR)
 	{
 		$path =  preg_replace('#^[^:]+://#', '', $stream);
 
-		return substr($stream, 0, strlen($stream) - strlen($path)) . str_replace('\\', '/', $path);
+		if ($directorySeparator == '/')
+		{
+			$path = str_replace('\\', '/', $path);
+		}
+		else
+		{
+			$path = str_replace('/', '\\', $path);
+		}
+
+		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
 	}
 }
 
