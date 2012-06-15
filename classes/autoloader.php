@@ -10,11 +10,6 @@ class autoloader
 
 	protected $directories = array(__NAMESPACE__ => array(__DIR__));
 
-	public function __construct()
-	{
-		$this->addDirectory(__NAMESPACE__, directory . '/' . basename(__DIR__));
-	}
-
 	public function register($prepend = false)
 	{
 		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)

@@ -86,7 +86,7 @@ class source extends atoum\test
 			->and($sourceDirectoryController->readdir[2] = false)
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
-				->string($iterator->key())->isEqualTo('atoum://sourceDirectory/file')
+				->string($iterator->key())->isEqualTo('atoum://sourceDirectory' . DIRECTORY_SEPARATOR . 'file')
 			->if($sourceDirectoryController->readdir[1] = '.file')
 			->and($sourceDirectoryController->readdir[2] = false)
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory'))
@@ -99,7 +99,7 @@ class source extends atoum\test
 			->and($sourceDirectoryController->readdir[2] = false)
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory', $pharDirectory = uniqid()))
 			->then
-				->string($iterator->key())->isEqualTo($pharDirectory . '/file')
+				->string($iterator->key())->isEqualTo($pharDirectory . DIRECTORY_SEPARATOR . 'file')
 			->if($sourceDirectoryController->readdir[1] = '.file')
 			->and($sourceDirectoryController->readdir[2] = false)
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory', $pharDirectory = uniqid()))

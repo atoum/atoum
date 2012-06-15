@@ -230,15 +230,15 @@ class html extends atoum\test
 				->then
 					->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
 					->adapter($adapter)
-						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory/firstFile'))->once()
-						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory/secondFile'))->once()
-						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/aDirectory'))->once()
-						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory/anOtherFirstFile'))->once()
-						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory/anOtherSecondFile'))->once()
-						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/anOtherDirectory'))->once()
-						->call('unlink')->withArguments(self::cleanPath('atoum://destinationDirectory/aFile'))->once()
-						->call('rmdir')->withArguments(self::cleanPath('atoum://destinationDirectory/emptyDirectory'))->once()
-						->call('rmdir')->withArguments(self::cleanPath($destinationDirectoryPath))->never()
+						->call('unlink')->withArguments(self::uniformizeStream('atoum://destinationDirectory/aDirectory/firstFile'))->once()
+						->call('unlink')->withArguments(self::uniformizeStream('atoum://destinationDirectory/aDirectory/secondFile'))->once()
+						->call('rmdir')->withArguments(self::uniformizeStream('atoum://destinationDirectory/aDirectory'))->once()
+						->call('unlink')->withArguments(self::uniformizeStream('atoum://destinationDirectory/anOtherDirectory/anOtherFirstFile'))->once()
+						->call('unlink')->withArguments(self::uniformizeStream('atoum://destinationDirectory/anOtherDirectory/anOtherSecondFile'))->once()
+						->call('rmdir')->withArguments(self::uniformizeStream('atoum://destinationDirectory/anOtherDirectory'))->once()
+						->call('unlink')->withArguments(self::uniformizeStream('atoum://destinationDirectory/aFile'))->once()
+						->call('rmdir')->withArguments(self::uniformizeStream('atoum://destinationDirectory/emptyDirectory'))->once()
+						->call('rmdir')->withArguments(self::uniformizeStream($destinationDirectoryPath))->never()
 				->if($field->getMockController()->getDestinationDirectoryIterator->throw = new \exception())
 				->then
 					->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
@@ -573,9 +573,15 @@ class html extends atoum\test
 		;
 	}
 
-	protected static function cleanPath($path)
+	protected static function uniformizeStream($stream)
 	{
-		return (DIRECTORY_SEPARATOR == '/' ? $path : str_replace('/', '\\', $path));
+		if (DIRECTORY_SEPARATOR != '/')
+		{
+			$path =  preg_replace('#^[^:]+://#', '', $stream);
+			$stream = substr($stream, 0, strlen($stream) - strlen($path)) . str_replace('/', '\\', $path);
+		}
+
+		return $stream;
 	}
 }
 

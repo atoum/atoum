@@ -88,7 +88,7 @@ class generator extends atoum\test
 			->then
 				->object($generator->setOriginDirectory('/'))->isIdenticalTo($generator)
 				->string($generator->getOriginDirectory())->isEqualTo('/')
-				->object($generator->setOriginDirectory(($directory = uniqid()) . '/'))->isIdenticalTo($generator)
+				->object($generator->setOriginDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($generator)
 				->string($generator->getOriginDirectory())->isEqualTo($directory)
 			->if($generator->setDestinationDirectory(uniqid()))
 			->then
@@ -137,7 +137,7 @@ class generator extends atoum\test
 				->string($generator->getDestinationDirectory())->isEqualTo('/')
 				->object($generator->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($generator)
 				->string($generator->getDestinationDirectory())->isEqualTo($directory)
-				->object($generator->setDestinationDirectory(($directory = uniqid()) . '/'))->isIdenticalTo($generator)
+				->object($generator->setDestinationDirectory(($directory = uniqid()) . DIRECTORY_SEPARATOR))->isIdenticalTo($generator)
 				->string($generator->getDestinationDirectory())->isEqualTo($directory)
 			->if ($generator->setOriginDirectory(uniqid()))
 			->then

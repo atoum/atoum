@@ -114,7 +114,15 @@ class stream
 
 	public static function cleanStreamName($stream)
 	{
-		return (self::getAdapter()->constant('DIRECTORY_SEPARATOR') != '\\' ? $stream : str_replace('\\', '/', $stream));
+		$directorySeparator = self::getAdapter()->constant('DIRECTORY_SEPARATOR');
+
+		if ($directorySeparator != '/')
+		{
+			$path =  preg_replace('#^[^:]+://#', '', $stream);
+			$stream = substr($stream, 0, strlen($stream) - strlen($path)) . str_replace($directorySeparator, '/', $path);
+		}
+
+		return $stream;
 	}
 }
 
