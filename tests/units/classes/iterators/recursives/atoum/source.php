@@ -14,7 +14,7 @@ class source extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->hasInterface('outerIterator');
+		$this->testedClass->hasInterface('outerIterator');
 	}
 
 	public function test__construct()
@@ -25,7 +25,7 @@ class source extends atoum\test
 		$sourceDirectoryController->dir_rewinddir = true;
 		$sourceDirectoryController->dir_readdir = false;
 
-		$this->assert
+		$this
 			->if($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
 				->string($iterator->getSourceDirectory())->isEqualTo($sourceDirectory)
@@ -50,7 +50,7 @@ class source extends atoum\test
 		$sourceDirectoryController->readdir = false;
 		$sourceDirectoryController->closedir = true;
 
-		$this->assert
+		$this
 			->if($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
 				->variable($iterator->current())->isNull()
@@ -78,7 +78,7 @@ class source extends atoum\test
 		$sourceDirectoryController->readdir = false;
 		$sourceDirectoryController->closedir = true;
 
-		$this->assert
+		$this
 			->if($iterator = new iterators\recursives\atoum\source($sourceDirectory = 'atoum://sourceDirectory'))
 			->then
 				->integer($iterator->key())->isZero()

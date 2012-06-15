@@ -3,8 +3,9 @@
 namespace mageekguy\atoum\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\adapter,
+	mageekguy\atoum\exceptions\logic,
+	mageekguy\atoum\exceptions\runtime
 ;
 
 class stream
@@ -34,15 +35,17 @@ class stream
 			case 'url_stat':
 				if (isset($arguments[0]) === false)
 				{
-					throw new exceptions\logic('Argument 0 is not set for function ' . $method . '()');
+					throw new logic('Argument 0 is not set for function ' . $method . '()');
 				}
 
-				if (isset(self::$streams[$arguments[0]]) === false)
+				$stream = self::cleanStreamName($arguments[0]);
+
+				if (isset(self::$streams[$stream]) === false)
 				{
-					throw new exceptions\logic('Stream \'' . $arguments[0] . '\' is undefined');
+					throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
 				}
 
-				$this->streamController = self::$streams[$arguments[0]];
+				$this->streamController = self::$streams[$stream];
 				break;
 		}
 
@@ -51,18 +54,18 @@ class stream
 
 	public static function getAdapter()
 	{
-		self::$adapter = self::$adapter ?: new atoum\adapter();
-
-		return self::$adapter;
+		return (self::$adapter = self::$adapter ?: new adapter());
 	}
 
-	public static function setAdapter(atoum\adapter $adapter)
+	public static function setAdapter(adapter $adapter)
 	{
 		self::$adapter = $adapter;
 	}
 
 	public static function get($stream)
 	{
+		$stream = self::cleanStreamName($stream);
+
 		$adapter = self::getAdapter();
 
 		$protocol = self::getProtocol($stream);
@@ -77,11 +80,11 @@ class stream
 		{
 			if (in_array($protocol, $adapter->stream_get_wrappers()) === true)
 			{
-				throw new exceptions\runtime('Stream ' . $protocol . ' is already registered');
+				throw new runtime('Stream ' . $protocol . ' is already registered');
 			}
 			else if ($adapter->stream_wrapper_register($protocol, __CLASS__) === false)
 			{
-				throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
+				throw new runtime('Unable to register ' . $protocol . ' stream');
 			}
 
 			self::$protocols[] = $protocol;
@@ -107,6 +110,11 @@ class stream
 		}
 
 		return $scheme;
+	}
+
+	public static function cleanStreamName($stream)
+	{
+		return (self::getAdapter()->constant('DIRECTORY_SEPARATOR') != '\\' ? $stream : str_replace('\\', '/', $stream));
 	}
 }
 

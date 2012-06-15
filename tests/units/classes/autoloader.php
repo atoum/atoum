@@ -16,7 +16,7 @@ class autoloader extends atoum\test
 
 		$this->assert
             ->array($directories = $autoloader->getDirectories())->hasKey('mageekguy\atoum')
-            ->array($directories['mageekguy\atoum'])->isEqualTo(array(atoum\directory . DIRECTORY_SEPARATOR . 'classes'));
+            ->array($directories['mageekguy\atoum'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes'));
 	}
 }
 
