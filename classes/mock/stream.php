@@ -92,7 +92,7 @@ class stream
 
 		if (isset(self::$streams[$stream]) === false)
 		{
-			self::$streams[$stream] = new stream\controller();
+			self::$streams[$stream] = new stream\controller($stream);
 		}
 
 		return self::$streams[$stream];

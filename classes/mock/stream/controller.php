@@ -9,7 +9,19 @@ use
 
 class controller extends test\adapter
 {
-	protected $from = null;
+	protected $stream = '';
+
+	public function __construct($stream)
+	{
+		parent::__construct();
+
+		$this->stream = (string) $stream;
+	}
+
+	public function __toString()
+	{
+		return $this->getStream();
+	}
 
 	public function __get($method)
 	{
@@ -62,6 +74,11 @@ class controller extends test\adapter
 	public function __isset($method)
 	{
 		return parent::__isset(self::mapMethod($method));
+	}
+
+	public function getStream()
+	{
+		return $this->stream;
 	}
 
 	public function invoke($method, array $arguments = array())
