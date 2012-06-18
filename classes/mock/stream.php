@@ -13,8 +13,6 @@ class stream
 	const defaultProtocol = 'atoum';
 	const protocolSeparator = '://';
 
-	public $context = null;
-
 	protected $streamController = null;
 
 	protected static $adapter = null;
@@ -68,26 +66,15 @@ class stream
 
 		$adapter = self::getAdapter();
 
-		$protocol = self::getProtocol($stream);
-
-		if ($protocol === null)
+		if (($protocol = self::getProtocol($stream)) === null)
 		{
 			$protocol = self::defaultProtocol;
 			$stream = $protocol . self::protocolSeparator . $stream;
 		}
 
-		if (in_array($protocol, self::$protocols) === false)
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
 		{
-			if (in_array($protocol, $adapter->stream_get_wrappers()) === true)
-			{
-				throw new runtime('Stream ' . $protocol . ' is already registered');
-			}
-			else if ($adapter->stream_wrapper_register($protocol, __CLASS__) === false)
-			{
-				throw new runtime('Unable to register ' . $protocol . ' stream');
-			}
-
-			self::$protocols[] = $protocol;
+			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
 		if (isset(self::$streams[$stream]) === false)

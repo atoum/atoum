@@ -39,32 +39,27 @@ class stream extends test
 			->then
 				->object(mock\stream::get($stream = uniqid()))->isEqualTo(new mock\stream\controller(mock\stream::defaultProtocol . '://' . mock\stream::setDirectorySeparator($stream)))
 				->adapter($adapter)
-					->call('stream_get_wrappers')->once()
 					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+			->if($adapter->stream_get_wrappers = array(mock\stream::defaultProtocol))
+			->then
 				->object(mock\stream::get($stream))->isIdenticalTo($streamController = mock\stream::get($stream))
 				->adapter($adapter)
-					->call('stream_get_wrappers')->once()
 					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
 				->object(mock\stream::get($otherStream = ($protocol = uniqid()) . '://' . uniqid()))->isNotIdenticalTo($streamController)
 				->adapter($adapter)
-					->call('stream_get_wrappers')->exactly(2)
 					->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
+			->if($adapter->stream_get_wrappers = array(mock\stream::defaultProtocol, $protocol))
+			->then
 				->object(mock\stream::get($otherStream))->isIdenticalTo(mock\stream::get($otherStream))
 				->object(mock\stream::get($otherStream))->isIdenticalTo(mock\stream::get($otherStream))
 				->adapter($adapter)
-					->call('stream_get_wrappers')->exactly(2)
 					->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
-			->if($adapter->stream_get_wrappers = array($alreadyRegisteredProtocol = uniqid()))
-			->then
-				->exception(function() use ($alreadyRegisteredProtocol) { mock\stream::get($alreadyRegisteredProtocol . '://' . uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Stream ' . $alreadyRegisteredProtocol . ' is already registered')
 			->if($adapter->stream_get_wrappers = array())
 			->and($adapter->stream_wrapper_register = false)
 			->then
-				->exception(function() use ($alreadyRegisteredProtocol) { mock\stream::get($alreadyRegisteredProtocol . '://' . uniqid()); })
+				->exception(function() use ($protocol) { mock\stream::get($protocol . '://' . uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to register ' . $alreadyRegisteredProtocol . ' stream')
+					->hasMessage('Unable to register ' . $protocol . ' stream')
 		;
 	}
 
