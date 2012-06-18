@@ -37,7 +37,7 @@ class stream extends test
 			->and($adapter->stream_get_wrappers = array())
 			->and($adapter->stream_wrapper_register = true)
 			->then
-				->object(mock\stream::get($stream = uniqid()))->isEqualTo(new mock\stream\controller())
+				->object(mock\stream::get($stream = uniqid()))->isEqualTo(new mock\stream\controller(mock\stream::defaultProtocol . '://' . mock\stream::setDirectorySeparator($stream)))
 				->adapter($adapter)
 					->call('stream_get_wrappers')->once()
 					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
