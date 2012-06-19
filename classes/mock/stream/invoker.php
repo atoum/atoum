@@ -22,14 +22,9 @@ class invoker extends adapter\invoker
 
 	public function offsetSet($call, $mixed)
 	{
-		switch ($this->methodName)
+		if ($this->methodName == 'dir_readdir' && $mixed instanceof \mageekguy\atoum\mock\stream\controller)
 		{
-			case 'dir_readdir':
-				if ($mixed instanceof \mageekguy\atoum\mock\stream\controller)
-				{
-					$mixed = $mixed->getBasename();
-				}
-				break;
+			$mixed = $mixed->getBasename();
 		}
 
 		return parent::offsetSet($call, $mixed);
