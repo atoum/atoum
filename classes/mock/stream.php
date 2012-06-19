@@ -60,9 +60,9 @@ class stream
 		self::$adapter = $adapter;
 	}
 
-	public static function get($stream)
+	public static function get($stream = null)
 	{
-		$stream = self::setDirectorySeparator($stream);
+		$stream = self::setDirectorySeparator($stream ?: uniqid());
 
 		$adapter = self::getAdapter();
 
@@ -83,6 +83,11 @@ class stream
 		}
 
 		return self::$streams[$stream];
+	}
+
+	public static function getSubStream(stream\controller $controller, $stream = null)
+	{
+		return static::get($controller . DIRECTORY_SEPARATOR . self::setDirectorySeparator($stream ?: uniqid()));
 	}
 
 	public static function getProtocol($stream)

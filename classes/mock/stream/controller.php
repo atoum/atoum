@@ -25,7 +25,14 @@ class controller extends test\adapter
 
 	public function __get($method)
 	{
-		return parent::__get(self::mapMethod($method));
+		$method = strtolower(self::mapMethod($method));
+
+		if (isset($this->invokers[$method]) === false)
+		{
+			$this->invokers[$method] = new invoker($method);
+		}
+
+		return $this->invokers[$method];
 	}
 
 	public function __set($method, $value)
@@ -65,6 +72,13 @@ class controller extends test\adapter
 						$this->dir_readdir = false;
 						$this->url_stat = array('mode' => 16877);
 						break;
+
+					case 'dir_readdir':
+						if ($value instanceof self)
+						{
+							$value = $value->getBasename();
+						}
+						break;
 				}
 
 				return parent::__set($method, $value);
@@ -79,6 +93,11 @@ class controller extends test\adapter
 	public function getStream()
 	{
 		return $this->stream;
+	}
+
+	public function getBasename()
+	{
+		return basename($this->stream);
 	}
 
 	public function invoke($method, array $arguments = array())
