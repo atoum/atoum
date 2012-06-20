@@ -5,10 +5,11 @@ namespace mageekguy\atoum\tests\units;
 require_once __DIR__ . '/../runner.php';
 
 use
-	mageekguy\atoum
+	mageekguy\atoum\test,
+	mageekguy\atoum\dependencies as testedClass
 ;
 
-class dependencies extends atoum\test
+class dependencies extends test
 {
 	public function testClass()
 	{
@@ -18,7 +19,7 @@ class dependencies extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->then
 				->array($dependencies->getInjectors())->isEmpty()
 		;
@@ -27,7 +28,7 @@ class dependencies extends atoum\test
 	public function testGet()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->then
 				->variable($dependencies->get(uniqid()))->isNull()
 			->if($dependencies[$key = uniqid()] = $injector = function() {})
@@ -40,7 +41,7 @@ class dependencies extends atoum\test
 	public function testOffsetSet()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->then
 				->object($dependencies->offsetSet($key = uniqid(), $injector = function() {}))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
@@ -49,23 +50,23 @@ class dependencies extends atoum\test
 					->boolean(isset($dependencies[$key]))->isTrue()
 					->object($dependencies[$key])->isIdenticalTo($injector)
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
-					->object($dependencies[$otherKey])->isInstanceOf('closure')
+					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
 				->object($dependencies->offsetSet($this, $otherInjectorValue = uniqid()))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
 					->object($dependencies[$key])->isIdenticalTo($injector)
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
-					->object($dependencies[$otherKey])->isInstanceOf('closure')
+					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
 					->boolean(isset($dependencies[$key]))->isTrue()
 					->object($dependencies[$key])->isIdenticalTo($injector)
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
-					->object($dependencies[$otherKey])->isInstanceOf('closure')
+					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
 					->boolean(isset($dependencies[$this]))->isTrue()
-					->object($dependencies[$this])->isInstanceOf('closure')
+					->object($dependencies[$this])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$this]())->isEqualTo($otherInjectorValue)
-				->object($dependencies->offsetSet($otherKey, $otherDependencies = new atoum\dependencies()))->isIdenticalTo($dependencies)
+				->object($dependencies->offsetSet($otherKey, $otherDependencies = new testedClass()))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
 					->object($dependencies[$key])->isIdenticalTo($injector)
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
@@ -76,11 +77,11 @@ class dependencies extends atoum\test
 	public function testOffsetGet()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->then
 				->object($dependencies[$class = uniqid()])->isInstanceOf($dependencies)
 				->boolean(isset($dependencies[$class]))->isTrue()
-			->if($dependencies['mageekguy\atoum\test'] = $testDependencies = new atoum\dependencies())
+			->if($dependencies['mageekguy\atoum\test'] = $testDependencies = new testedClass())
 			->then
 				->object($dependencies[$this])->isIdenticalTo($testDependencies)
 		;
@@ -89,7 +90,7 @@ class dependencies extends atoum\test
 	public function testLock()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->and($dependencies[$key = uniqid()] = $injector = function() {})
 			->then
 				->object($dependencies->lock())->isIdenticalTo($dependencies)
@@ -103,7 +104,7 @@ class dependencies extends atoum\test
 	public function testUnlock()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->and($dependencies[$key = uniqid()] = $injector = function() {})
 			->and($dependencies->lock())
 			->then
@@ -118,7 +119,7 @@ class dependencies extends atoum\test
 	public function testIsLocked()
 	{
 		$this
-			->if($dependencies = new atoum\dependencies())
+			->if($dependencies = new testedClass())
 			->then
 				->boolean($dependencies->isLocked())->isFalse()
 			->if($dependencies->lock())

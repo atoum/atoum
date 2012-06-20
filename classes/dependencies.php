@@ -105,7 +105,7 @@ class dependencies implements \arrayAccess, \serializable
 	{
 		if ($injector instanceof \closure === false && $injector instanceof self === false)
 		{
-			$injector = function() use ($injector) { return $injector; };
+			$injector = new dependencies\injector(function() use ($injector) { return $injector; });
 		}
 
 		return $injector;
