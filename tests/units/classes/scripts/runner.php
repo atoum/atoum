@@ -321,11 +321,11 @@ class runner extends atoum\test
 					->isInstanceOf('mageekguy\atoum\includer\exception')
 					->hasMessage('Unable to find configuration file \'' . $file . '\'')
 				->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
-			->if($stream = stream::get())
-			->and($stream->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>')
+			->if($configFile = stream::get())
+			->and($configFile->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>')
 			->then
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
-				->object($runner->useConfigFile((string) $stream))->isIdenticalTo($runner)
+				->object($runner->useConfigFile((string) $configFile))->isIdenticalTo($runner)
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
 		;
 	}
