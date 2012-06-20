@@ -49,7 +49,7 @@ class controller extends test\adapter
 					$this->stat = array('mode' => 33188);
 					$this->fopen = true;
 					$this->fread[1] = $value;
-					$this->fread[2] = '';
+					$this->fread[2] = false;
 					$this->fclose = true;
 				}
 				return $this;
