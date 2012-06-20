@@ -4,7 +4,8 @@ namespace mageekguy\atoum\tests\units\test;
 
 use
 	mageekguy\atoum\test,
-	mageekguy\atoum\test\adapter as testedClass
+	mageekguy\atoum\test\adapter as testedClass,
+	mageekguy\atoum\dependencies
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -18,6 +19,23 @@ class adapter extends test
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
+				->object($dependencies = $adapter->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
+				->boolean(isset($dependencies['invoker']))->isTrue()
+			->if($adapter = new testedClass($dependencies = new dependencies()))
+			->then
+				->array($adapter->getInvokers())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
+				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
+				->boolean(isset($dependencies['invoker']))->isTrue()
+			->if($dependencies = new dependencies())
+			->and($dependencies['invoker'] = function() {})
+			->and($invokerInjector = $dependencies['invoker'])
+			->and($adapter = new testedClass($dependencies))
+			->then
+				->array($adapter->getInvokers())->isEmpty()
+				->array($adapter->getCalls())->isEmpty()
+				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker'])->isIdenticalTo($invokerInjector)
 		;
 	}
 

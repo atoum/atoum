@@ -34,7 +34,7 @@ class dependencies extends test
 			->if($dependencies[$key = uniqid()] = $injector = function() {})
 			->then
 				->variable($dependencies->get(uniqid()))->isNull()
-				->object($dependencies->get($key))->isIdenticalTo($injector)
+				->object($dependencies->get($key))->isInstanceOf('mageekguy\atoum\dependencies\injector')
 		;
 	}
 
@@ -45,21 +45,21 @@ class dependencies extends test
 			->then
 				->object($dependencies->offsetSet($key = uniqid(), $injector = function() {}))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
-					->object($dependencies[$key])->isIdenticalTo($injector)
+					->object($dependencies[$key])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 				->object($dependencies->offsetSet($otherKey = uniqid(), $injectorValue = uniqid()))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
-					->object($dependencies[$key])->isIdenticalTo($injector)
+					->object($dependencies[$key])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
 					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
 				->object($dependencies->offsetSet($this, $otherInjectorValue = uniqid()))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
-					->object($dependencies[$key])->isIdenticalTo($injector)
+					->object($dependencies[$key])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
 					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
 					->boolean(isset($dependencies[$key]))->isTrue()
-					->object($dependencies[$key])->isIdenticalTo($injector)
+					->object($dependencies[$key])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
 					->object($dependencies[$otherKey])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->string($dependencies[$otherKey]())->isEqualTo($injectorValue)
@@ -68,7 +68,7 @@ class dependencies extends test
 					->string($dependencies[$this]())->isEqualTo($otherInjectorValue)
 				->object($dependencies->offsetSet($otherKey, $otherDependencies = new testedClass()))->isIdenticalTo($dependencies)
 					->boolean(isset($dependencies[$key]))->isTrue()
-					->object($dependencies[$key])->isIdenticalTo($injector)
+					->object($dependencies[$key])->isInstanceOf('mageekguy\atoum\dependencies\injector')
 					->boolean(isset($dependencies[$otherKey]))->isTrue()
 					->object($dependencies[$otherKey])->isIdenticalTo($otherDependencies)
 		;
@@ -84,50 +84,6 @@ class dependencies extends test
 			->if($dependencies['mageekguy\atoum\test'] = $testDependencies = new testedClass())
 			->then
 				->object($dependencies[$this])->isIdenticalTo($testDependencies)
-		;
-	}
-
-	public function testLock()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->and($dependencies[$key = uniqid()] = $injector = function() {})
-			->then
-				->object($dependencies->lock())->isIdenticalTo($dependencies)
-			->if($dependencies[$key] = $otherInjector = function() {})
-			->then
-				->object($dependencies[$key])->isIdenticalTo($injector)
-				->object($dependencies[$key])->isNotIdenticalTo($otherInjector)
-		;
-	}
-
-	public function testUnlock()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->and($dependencies[$key = uniqid()] = $injector = function() {})
-			->and($dependencies->lock())
-			->then
-				->object($dependencies->unlock())->isIdenticalTo($dependencies)
-			->if($dependencies[$key] = $otherInjector = function() {})
-			->then
-				->object($dependencies[$key])->isNotIdenticalTo($injector)
-				->object($dependencies[$key])->isIdenticalTo($otherInjector)
-		;
-	}
-
-	public function testIsLocked()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->boolean($dependencies->isLocked())->isFalse()
-			->if($dependencies->lock())
-			->then
-				->boolean($dependencies->isLocked())->isTrue()
-			->if($dependencies->unlock())
-			->then
-				->boolean($dependencies->isLocked())->isFalse()
 		;
 	}
 }

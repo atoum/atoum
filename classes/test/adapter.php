@@ -4,19 +4,24 @@ namespace mageekguy\atoum\test;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\dependencies,
+	mageekguy\atoum\test\adapter\invoker
 ;
 
 class adapter extends atoum\adapter
 {
 	protected $calls = array();
 	protected $invokers = array();
+	protected $dependencies = null;
 
 	private static $callsNumber = 0;
 	private static $instances = null;
 
-	public function __construct()
+	public function __construct(dependencies $dependencies = null)
 	{
+		$this->setDependencies($dependencies ?: new dependencies());
+
 		if (self::$instances === null)
 		{
 			self::$instances = new \splObjectStorage();
@@ -43,7 +48,7 @@ class adapter extends atoum\adapter
 
 		if (isset($this->invokers[$functionName]) === false)
 		{
-			$this->invokers[$functionName] = new adapter\invoker();
+			$this->invokers[$functionName] = $this->dependencies['invoker']();
 		}
 
 		return $this->invokers[$functionName];
@@ -72,6 +77,23 @@ class adapter extends atoum\adapter
 		}
 
 		return $this;
+	}
+
+	public function setDependencies(dependencies $dependencies)
+	{
+		$this->dependencies = $dependencies;
+
+		if (isset($this->dependencies['invoker']) === false)
+		{
+			$this->dependencies['invoker'] = function() { return new invoker(); };
+		}
+
+		return $this;
+	}
+
+	public function getDependencies()
+	{
+		return $this->dependencies;
 	}
 
 	public function getInvokers()

@@ -27,25 +27,6 @@ class dependencies implements \arrayAccess, \serializable
 		return $this->injectors;
 	}
 
-	public function lock()
-	{
-		$this->lock = true;
-
-		return $this;
-	}
-
-	public function unlock()
-	{
-		$this->lock = false;
-
-		return $this;
-	}
-
-	public function isLocked()
-	{
-		return $this->lock;
-	}
-
 	public function offsetSet($mixed, $injector)
 	{
 		$key = self::getKey($mixed);
@@ -103,12 +84,17 @@ class dependencies implements \arrayAccess, \serializable
 
 	protected static function buildInjector($injector)
 	{
-		if ($injector instanceof \closure === false && $injector instanceof self === false)
+		switch (true)
 		{
-			$injector = new dependencies\injector(function() use ($injector) { return $injector; });
-		}
+			case $injector instanceof \closure === false && $injector instanceof self === false:
+				return new dependencies\injector(function() use ($injector) { return $injector; });
 
-		return $injector;
+			case $injector instanceof \closure:
+				return new dependencies\injector($injector);
+
+			default:
+				return $injector;
+		}
 	}
 }
 
