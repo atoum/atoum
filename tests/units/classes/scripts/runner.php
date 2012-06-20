@@ -4,8 +4,8 @@ namespace mageekguy\atoum\tests\units\scripts;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock,
 	mageekguy\atoum\scripts,
+	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\scripts\builder\vcs
 ;
 
@@ -321,11 +321,11 @@ class runner extends atoum\test
 					->isInstanceOf('mageekguy\atoum\includer\exception')
 					->hasMessage('Unable to find configuration file \'' . $file . '\'')
 				->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
-			->if($streamController = atoum\mock\stream::get('includeWithoutOutput'))
-			->and($streamController->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>')
+			->if($stream = stream::get())
+			->and($stream->file_get_contents = '<?php $runner->disableCodeCoverage(); ?>')
 			->then
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isTrue()
-				->object($runner->useConfigFile('atoum://includeWithoutOutput'))->isIdenticalTo($runner)
+				->object($runner->useConfigFile((string) $stream))->isIdenticalTo($runner)
 				->boolean($runner->getRunner()->codeCoverageIsEnabled())->isFalse()
 		;
 	}

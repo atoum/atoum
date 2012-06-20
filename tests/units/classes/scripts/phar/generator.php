@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\scripts\phar;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\iterators,
 	mageekguy\atoum\scripts\phar
 ;
@@ -236,8 +237,8 @@ class generator extends atoum\test
 	{
 		$this
 			->assert
-				->if($originDirectoryController = mock\stream::get('originDirectory'))
-				->and($originDirectoryController->opendir = true)
+				->if($originDirectory = stream::get())
+				->and($originDirectory->opendir = true)
 				->and($adapter = new atoum\test\adapter())
 				->and($adapter->php_sapi_name = function() { return 'cli'; })
 				->and($adapter->realpath = function($path) { return $path; })
@@ -255,7 +256,7 @@ class generator extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Origin directory must be defined')
-				->if($generator->setOriginDirectory($originDirectory = 'atoum://originDirectory'))
+				->if($generator->setOriginDirectory((string) $originDirectory))
 				->then
 					->exception(function () use ($generator) {
 							$generator->run();
@@ -280,7 +281,7 @@ class generator extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Origin directory \'' . $generator->getOriginDirectory() . '\' is not readable')
-				->if($adapter->is_readable = function($path) use ($originDirectory) { return ($path === $originDirectory); })
+				->if($adapter->is_readable = function($path) use ($originDirectory) { return ($path === (string) $originDirectory); })
 				->and($adapter->is_writable = function() { return false; })
 				->then
 					->exception(function () use ($generator) {
@@ -297,7 +298,7 @@ class generator extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 						->hasMessage('Stub file \'' . $generator->getStubFile() . '\' is not readable')
-				->if($adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === $originDirectory || $path === $stubFile); })
+				->if($adapter->is_readable = function($path) use ($originDirectory, $stubFile) { return ($path === (string) $originDirectory || $path === $stubFile); })
 				->and($generator->setFactory($factory->setBuilder('phar', function($name) use (& $phar) {
 								$pharController = new mock\controller();
 								$pharController->__construct = function() {};
