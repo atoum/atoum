@@ -560,11 +560,6 @@ class html extends atoum\test
 				->castToString($field)->isIdenticalTo(sprintf($field->getLocale()->_('Code coverage: %3.2f%%.'),  round($coverageValue * 100, 2)) . PHP_EOL . 'Unable to generate code coverage at ' . $rootUrl . '/: ' . $errorMessage . '.' . PHP_EOL)
 		;
 	}
-
-	protected static function toOsStream($stream)
-	{
-		return stream::setDirectorySeparator($stream, DIRECTORY_SEPARATOR);
-	}
 }
 
 ?>
