@@ -5,7 +5,9 @@ namespace mageekguy\atoum\tests\units\mock\stream;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test,
-	mageekguy\atoum\mock\stream
+	mageekguy\atoum\dependencies,
+	mageekguy\atoum\mock\stream\invoker,
+	mageekguy\atoum\mock\stream\controller as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -22,7 +24,7 @@ class controller extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($streamController = new stream\controller($stream = uniqid()))
+			->if($streamController = new testedClass($stream = uniqid()))
 			->then
 				->string($streamController->getStream())->isEqualTo($stream)
 				->variable($streamController->invoke('__construct'))->isNull()
@@ -48,19 +50,31 @@ class controller extends atoum\test
 				->variable($streamController->invoke('stream_write'))->isNull()
 				->variable($streamController->invoke('unlink'))->isNull()
 				->variable($streamController->invoke('url_stat'))->isNull()
+				->object($dependencies = $streamController->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
+				->object($dependencies['invoker']($method = uniqid()))->isEqualTo(new invoker($method))
+			->if($streamController = new testedClass($stream = uniqid(), $dependencies = new dependencies()))
+			->then
+				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']($method = uniqid()))->isEqualTo(new invoker($method))
+			->if($dependencies = new dependencies())
+			->and($dependencies['invoker'] = $invoker = new invoker(uniqid()))
+			->and($streamController = new testedClass($stream = uniqid(), $dependencies))
+			->then
+				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']())->isIdenticalTo($invoker)
 		;
 	}
 
 	public function testGetBasename()
 	{
 		$this
-			->if($streamController = new stream\controller($basename = uniqid()))
+			->if($streamController = new testedClass($basename = uniqid()))
 			->then
 				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new stream\controller(uniqid() . '://' . ($basename = uniqid())))
+			->if($streamController = new testedClass(uniqid() . '://' . ($basename = uniqid())))
 			->then
 				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new stream\controller(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
+			->if($streamController = new testedClass(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
 			->then
 				->string($streamController->getBasename())->isEqualTo($basename)
 		;
@@ -69,7 +83,7 @@ class controller extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($streamController = new stream\controller($stream = uniqid()))
+			->if($streamController = new testedClass($stream = uniqid()))
 			->then
 				->castToString($streamController)->isEqualTo($stream)
 		;
@@ -78,51 +92,51 @@ class controller extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($streamController = new stream\controller(uniqid()))
+			->if($streamController = new testedClass(uniqid()))
 			->then
-				->object($streamController->__construct)->isEqualTo(new stream\invoker('__construct'))
-				->object($streamController->dir_closedir)->isEqualTo(new stream\invoker('dir_closedir'))
-				->object($streamController->closedir)->isEqualTo(new stream\invoker('dir_closedir'))
-				->object($streamController->dir_opendir)->isEqualTo(new stream\invoker('dir_opendir'))
-				->object($streamController->opendir)->isEqualTo(new stream\invoker('dir_opendir'))
-				->object($streamController->dir_readdir)->isEqualTo(new stream\invoker('dir_readdir'))
-				->object($streamController->readdir)->isEqualTo(new stream\invoker('dir_readdir'))
-				->object($streamController->dir_rewinddir)->isEqualTo(new stream\invoker('dir_rewinddir'))
-				->object($streamController->rewinddir)->isEqualTo(new stream\invoker('dir_rewinddir'))
-				->object($streamController->mkdir)->isEqualTo(new stream\invoker('mkdir'))
-				->object($streamController->rename)->isEqualTo(new stream\invoker('rename'))
-				->object($streamController->rmdir)->isEqualTo(new stream\invoker('rmdir'))
-				->object($streamController->stream_cast)->isEqualTo(new stream\invoker('stream_cast'))
-				->object($streamController->select)->isEqualTo(new stream\invoker('stream_cast'))
-				->object($streamController->stream_close)->isEqualTo(new stream\invoker('stream_close'))
-				->object($streamController->fclose)->isEqualTo(new stream\invoker('stream_close'))
-				->object($streamController->stream_eof)->isEqualTo(new stream\invoker('stream_eof'))
-				->object($streamController->feof)->isEqualTo(new stream\invoker('stream_eof'))
-				->object($streamController->stream_flush)->isEqualTo(new stream\invoker('stream_flush'))
-				->object($streamController->fflush)->isEqualTo(new stream\invoker('stream_flush'))
-				->object($streamController->stream_lock)->isEqualTo(new stream\invoker('stream_lock'))
-				->object($streamController->flock)->isEqualTo(new stream\invoker('stream_lock'))
-				->object($streamController->stream_metadata)->isEqualTo(new stream\invoker('stream_metadata'))
-				->object($streamController->touch)->isEqualTo(new stream\invoker('stream_metadata'))
-				->object($streamController->chmod)->isEqualTo(new stream\invoker('stream_metadata'))
-				->object($streamController->chown)->isEqualTo(new stream\invoker('stream_metadata'))
-				->object($streamController->chgrp)->isEqualTo(new stream\invoker('stream_metadata'))
-				->object($streamController->stream_open)->isEqualTo(new stream\invoker('stream_open'))
-				->object($streamController->fopen)->isEqualTo(new stream\invoker('stream_open'))
-				->object($streamController->stream_read)->isEqualTo(new stream\invoker('stream_read'))
-				->object($streamController->fread)->isEqualTo(new stream\invoker('stream_read'))
-				->object($streamController->stream_seek)->isEqualTo(new stream\invoker('stream_seek'))
-				->object($streamController->fseek)->isEqualTo(new stream\invoker('stream_seek'))
-				->object($streamController->stream_set_option)->isEqualTo(new stream\invoker('stream_set_option'))
-				->object($streamController->stream_stat)->isEqualTo(new stream\invoker('stream_stat'))
-				->object($streamController->fstat)->isEqualTo(new stream\invoker('stream_stat'))
-				->object($streamController->stream_tell)->isEqualTo(new stream\invoker('stream_tell'))
-				->object($streamController->ftell)->isEqualTo(new stream\invoker('stream_tell'))
-				->object($streamController->stream_write)->isEqualTo(new stream\invoker('stream_write'))
-				->object($streamController->fwrite)->isEqualTo(new stream\invoker('stream_write'))
-				->object($streamController->unlink)->isEqualTo(new stream\invoker('unlink'))
-				->object($streamController->url_stat)->isEqualTo(new stream\invoker('url_stat'))
-				->object($streamController->stat)->isEqualTo(new stream\invoker('url_stat'))
+				->object($streamController->__construct)->isEqualTo(new invoker('__construct'))
+				->object($streamController->dir_closedir)->isEqualTo(new invoker('dir_closedir'))
+				->object($streamController->closedir)->isEqualTo(new invoker('dir_closedir'))
+				->object($streamController->dir_opendir)->isEqualTo(new invoker('dir_opendir'))
+				->object($streamController->opendir)->isEqualTo(new invoker('dir_opendir'))
+				->object($streamController->dir_readdir)->isEqualTo(new invoker('dir_readdir'))
+				->object($streamController->readdir)->isEqualTo(new invoker('dir_readdir'))
+				->object($streamController->dir_rewinddir)->isEqualTo(new invoker('dir_rewinddir'))
+				->object($streamController->rewinddir)->isEqualTo(new invoker('dir_rewinddir'))
+				->object($streamController->mkdir)->isEqualTo(new invoker('mkdir'))
+				->object($streamController->rename)->isEqualTo(new invoker('rename'))
+				->object($streamController->rmdir)->isEqualTo(new invoker('rmdir'))
+				->object($streamController->stream_cast)->isEqualTo(new invoker('stream_cast'))
+				->object($streamController->select)->isEqualTo(new invoker('stream_cast'))
+				->object($streamController->stream_close)->isEqualTo(new invoker('stream_close'))
+				->object($streamController->fclose)->isEqualTo(new invoker('stream_close'))
+				->object($streamController->stream_eof)->isEqualTo(new invoker('stream_eof'))
+				->object($streamController->feof)->isEqualTo(new invoker('stream_eof'))
+				->object($streamController->stream_flush)->isEqualTo(new invoker('stream_flush'))
+				->object($streamController->fflush)->isEqualTo(new invoker('stream_flush'))
+				->object($streamController->stream_lock)->isEqualTo(new invoker('stream_lock'))
+				->object($streamController->flock)->isEqualTo(new invoker('stream_lock'))
+				->object($streamController->stream_metadata)->isEqualTo(new invoker('stream_metadata'))
+				->object($streamController->touch)->isEqualTo(new invoker('stream_metadata'))
+				->object($streamController->chmod)->isEqualTo(new invoker('stream_metadata'))
+				->object($streamController->chown)->isEqualTo(new invoker('stream_metadata'))
+				->object($streamController->chgrp)->isEqualTo(new invoker('stream_metadata'))
+				->object($streamController->stream_open)->isEqualTo(new invoker('stream_open'))
+				->object($streamController->fopen)->isEqualTo(new invoker('stream_open'))
+				->object($streamController->stream_read)->isEqualTo(new invoker('stream_read'))
+				->object($streamController->fread)->isEqualTo(new invoker('stream_read'))
+				->object($streamController->stream_seek)->isEqualTo(new invoker('stream_seek'))
+				->object($streamController->fseek)->isEqualTo(new invoker('stream_seek'))
+				->object($streamController->stream_set_option)->isEqualTo(new invoker('stream_set_option'))
+				->object($streamController->stream_stat)->isEqualTo(new invoker('stream_stat'))
+				->object($streamController->fstat)->isEqualTo(new invoker('stream_stat'))
+				->object($streamController->stream_tell)->isEqualTo(new invoker('stream_tell'))
+				->object($streamController->ftell)->isEqualTo(new invoker('stream_tell'))
+				->object($streamController->stream_write)->isEqualTo(new invoker('stream_write'))
+				->object($streamController->fwrite)->isEqualTo(new invoker('stream_write'))
+				->object($streamController->unlink)->isEqualTo(new invoker('unlink'))
+				->object($streamController->url_stat)->isEqualTo(new invoker('url_stat'))
+				->object($streamController->stat)->isEqualTo(new invoker('url_stat'))
 			->if($method = uniqid())
 			->then
 				->exception(function() use ($streamController, $method) {
@@ -137,7 +151,7 @@ class controller extends atoum\test
 	public function test__set()
 	{
 		$this
-			->if($streamController = new stream\controller(uniqid()))
+			->if($streamController = new testedClass(uniqid()))
 			->and($streamController->__construct = $__construct = uniqid())
 			->then
 				->string($streamController->invoke('__construct'))->isEqualTo($__construct)
@@ -297,7 +311,7 @@ class controller extends atoum\test
 	public function test__isset()
 	{
 		$this
-			->if($streamController = new stream\controller(uniqid()))
+			->if($streamController = new testedClass(uniqid()))
 			->then
 				->boolean(isset($streamController->__construct))->isFalse()
 				->boolean(isset($streamController->dir_closedir))->isFalse()
@@ -443,7 +457,7 @@ class controller extends atoum\test
 	public function test__unset()
 	{
 		$this
-			->if($streamController = new stream\controller(uniqid()))
+			->if($streamController = new testedClass(uniqid()))
 			->then
 				->boolean(isset($streamController->__construct))->isFalse()
 			->when(function() use ($streamController) { unset($streamController->__construct); })
@@ -699,7 +713,7 @@ class controller extends atoum\test
 	public function testInvoke()
 	{
 		$this
-			->if($streamController = new stream\controller(uniqid()))
+			->if($streamController = new testedClass(uniqid()))
 			->then
 				->variable($streamController->invoke('__construct'))->isNull()
 				->variable($streamController->invoke('dir_closedir'))->isNull()
@@ -752,6 +766,23 @@ class controller extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
+		;
+	}
+
+	public function testSetDependencies()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($streamController->setDependencies($dependencies = new dependencies()))->isIdenticalTo($streamController)
+				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']($method = uniqid()))->isEqualTo(new invoker($method))
+			->if($dependencies = new dependencies())
+			->and($dependencies['invoker'] = $invoker = new invoker(uniqid()))
+			->then
+				->object($streamController->setDependencies($dependencies))->isIdenticalTo($streamController)
+				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']())->isEqualTo($invoker)
 		;
 	}
 }

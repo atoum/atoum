@@ -836,6 +836,21 @@ abstract class test implements observable, adapter\aggregator, \countable
 				}
 				catch (\exception $exception)
 				{
+					while ($this->engines)
+					{
+						$engines = $this->engines;
+
+						$this->engines = array();
+
+						foreach ($engines as $engine)
+						{
+							if ($engine->getScore() === null)
+							{
+								$this->engines[] = $engine;
+							}
+						}
+					}
+
 					$this->doTearDown();
 
 					throw $exception;
@@ -1003,18 +1018,23 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->currentMethod = current($this->runTestMethods);
 
-		$engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
+		$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
 
 		if (ltrim($engineClass, '\\') === $engineClass)
 		{
 			$engineClass = self::enginesNamespace . '\\' . $engineClass;
 		}
 
+		if (class_exists($engineClass) === false)
+		{
+			throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
+		}
+
 		$engine = $this->factory[$engineClass]($this->factory);
 
 		if ($engine instanceof test\engine === false)
 		{
-			throw new exceptions\runtime('Engine \'' . $engineClass . '\' is invalid');
+			throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
 		}
 
 		if ($this->canRunEngine($engine) === true)

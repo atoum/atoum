@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\test;
 use
 	mageekguy\atoum\test,
 	mageekguy\atoum\test\adapter as testedClass,
+	mageekguy\atoum\test\adapter\invoker,
 	mageekguy\atoum\dependencies
 ;
 
@@ -20,22 +21,21 @@ class adapter extends test
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($dependencies = $adapter->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
-				->boolean(isset($dependencies['invoker']))->isTrue()
+				->object($dependencies['invoker']())->isEqualTo(new invoker())
 			->if($adapter = new testedClass($dependencies = new dependencies()))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->boolean(isset($dependencies['invoker']))->isTrue()
+				->object($dependencies['invoker']())->isEqualTo(new invoker())
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = function() {})
-			->and($invokerInjector = $dependencies['invoker'])
+			->and($dependencies['invoker'] = $invoker = new invoker())
 			->and($adapter = new testedClass($dependencies))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker'])->isIdenticalTo($invokerInjector)
+				->object($dependencies['invoker']())->isIdenticalTo($invoker)
 		;
 	}
 
@@ -188,6 +188,23 @@ class adapter extends test
 				->integer($adapter->MD5())->isEqualTo(1)
 				->integer($adapter->MD5())->isEqualTo(2)
 				->integer($adapter->MD5())->isEqualTo(0)
+		;
+	}
+
+	public function testSetDependencies()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->object($adapter->setDependencies($dependencies = new dependencies()))->isIdenticalTo($adapter)
+				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']())->isEqualTo(new invoker())
+			->if($dependencies = new dependencies())
+			->and($dependencies['invoker'] = $invoker = new invoker())
+			->then
+				->object($adapter->setDependencies($dependencies))->isIdenticalTo($adapter)
+				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['invoker']())->isEqualTo($invoker)
 		;
 	}
 

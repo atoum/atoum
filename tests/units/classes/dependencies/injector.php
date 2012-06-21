@@ -42,10 +42,11 @@ class injector extends test
 			->then
 				->string($injector())->isEqualTo($argument1 . $argument2)
 			->if($injector = new testedClass(function($a, $b) { return $a . $b; }))
-			->and($injector->setArgument('b', $bValue = uniqid()))
-			->and($injector->setArgument('a', $aValue = uniqid()))
+			->and($injector->setArgument('b', $valueB = uniqid()))
+			->and($injector->setArgument('a', $valueA = uniqid()))
 			->then
-				->string($injector())->isEqualTo($aValue . $bValue)
+				->string($injector())->isEqualTo($valueA . $valueB)
+				->string($injector($otherValueA = uniqid(), $otherValueB = uniqid()))->isEqualTo($otherValueA . $otherValueB)
 		;
 	}
 

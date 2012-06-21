@@ -14,7 +14,7 @@ class injector implements \arrayAccess
 
 	public function __invoke()
 	{
-		return call_user_func_array($this->closure, $this->arguments);
+		return call_user_func_array($this->closure, func_get_args() ?: $this->arguments);
 	}
 
 	public function offsetSet($argument, $value)
