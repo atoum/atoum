@@ -88,8 +88,6 @@ class controller extends test\adapter
 
 	public function setDependencies(dependencies $dependencies)
 	{
-		$this->dependencies = $dependencies ?: new dependencies();
-
 		if (isset($dependencies['invoker']) === false)
 		{
 			$dependencies['invoker'] = function($method) { return new invoker($method); };
