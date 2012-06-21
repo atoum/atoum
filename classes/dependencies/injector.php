@@ -3,23 +3,48 @@
 namespace mageekguy\atoum\dependencies;
 
 use
-	mageekguy\atoum\exceptions\logic\invalidArgument
+	mageekguy\atoum\dependencies\injector\exception
 ;
 
 class injector implements \arrayAccess
 {
 	protected $closure = null;
+	protected $availableArguments = array();
 
 	protected $arguments = array();
 
 	public function __construct(\closure $closure)
 	{
 		$this->closure = $closure;
+
+		$reflectedClosure = new \reflectionFunction($this->closure);
+
+		foreach ($reflectedClosure->getParameters() as $argument)
+		{
+			$this->availableArguments[$argument->getName()] = $argument->isDefaultValueAvailable();
+		}
 	}
 
 	public function __invoke()
 	{
-		return call_user_func_array($this->closure, func_get_args() ?: $this->arguments);
+		$arguments = func_get_args();
+
+		if (sizeof($arguments) <= 0)
+		{
+			foreach ($this->availableArguments as $name => $hasDefaultValue)
+			{
+				if (isset($this->arguments[$name]) === true)
+				{
+					$arguments[] = $this->arguments[$name];
+				}
+				else if ($hasDefaultValue === false)
+				{
+					throw new exception('Argument \'' . $name . '\' is missing');
+				}
+			}
+		}
+
+		return call_user_func_array($this->closure, $arguments);
 	}
 
 	public function __set($argument, $value)
@@ -72,11 +97,16 @@ class injector implements \arrayAccess
 		return $this->arguments;
 	}
 
+	public function getAvailableArguments()
+	{
+		return array_keys($this->availableArguments);
+	}
+
 	public function getArgument($name)
 	{
 		if ($this->argumentExists($name) === false)
 		{
-			throw new invalidArgument('Argument \'' . $name . '\' is undefined');
+			throw new exception('Argument \'' . $name . '\' is undefined');
 		}
 
 		return $this->arguments[$name];
@@ -84,7 +114,10 @@ class injector implements \arrayAccess
 
 	public function setArgument($name, $value)
 	{
-		$this->arguments[$name] = $value;
+		if (isset($this->availableArguments[$name]) === true)
+		{
+			$this->arguments[$name] = $value;
+		}
 
 		return $this;
 	}
@@ -98,7 +131,7 @@ class injector implements \arrayAccess
 	{
 		if ($this->argumentExists($name) === false)
 		{
-			throw new invalidArgument('Argument \'' . $name . '\' is undefined');
+			throw new exception('Argument \'' . $name . '\' is undefined');
 		}
 
 		unset($this->arguments[$name]);
