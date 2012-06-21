@@ -45,8 +45,69 @@ class injector extends test
 			->and($injector->setArgument('b', $valueB = uniqid()))
 			->and($injector->setArgument('a', $valueA = uniqid()))
 			->then
-				->string($injector())->isEqualTo($valueA . $valueB)
+				->string($injector())->isEqualTo($valueB . $valueA)
 				->string($injector($otherValueA = uniqid(), $otherValueB = uniqid()))->isEqualTo($otherValueA . $otherValueB)
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->exception(function() use ($injector, & $argument) { $injector->{$argument}; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->then
+				->string($injector->{$argument})->isEqualTo($value)
+		;
+	}
+
+	public function test__set()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->and($injector->a = $argument1 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1))
+			->if($injector->b = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1, 'b' => $argument2))
+			->if($injector = new testedClass(function() {}))
+			->and($injector->b = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2))
+			->if($injector->a = $argument1 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2, 'a' => $argument1))
+		;
+	}
+
+	public function test__isset()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->boolean(isset($injector->{uniqid()}))->isFalse()
+			->if($injector->setArgument($argument = uniqid(), uniqid()))
+			->then
+				->boolean(isset($injector->{$argument}))->isTrue()
+		;
+	}
+
+	public function test__unset()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->exception(function() use ($injector, & $argument) { unset($injector->{$argument = uniqid()}); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->when(function() use ($injector, $argument) { unset($injector->{$argument}); })
+			->then
+				->boolean(isset($injector[$argument]))->isFalse()
 		;
 	}
 
@@ -56,27 +117,68 @@ class injector extends test
 			->if($injector = new testedClass(function() {}))
 			->then
 				->object($injector->setArgument(1, $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1))
+				->array($injector->getArguments())->isIdenticalTo(array(1 => $argument1))
 				->object($injector->setArgument(2, $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1, 2 => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array(1 => $argument1, 2 => $argument2))
 			->if($injector = new testedClass(function() {}))
 			->then
 				->object($injector->setArgument(2, $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(2 => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array(2 => $argument2))
 				->object($injector->setArgument(1, $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1, 2 => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array(2 => $argument2, 1 => $argument1))
 			->if($injector = new testedClass(function() {}))
 			->then
 				->object($injector->setArgument('a', $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1))
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1))
 				->object($injector->setArgument('b', $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1, 'b' => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1, 'b' => $argument2))
 			->if($injector = new testedClass(function() {}))
 			->then
 				->object($injector->setArgument('b', $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('b' => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2))
 				->object($injector->setArgument('a', $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1, 'b' => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2, 'a' => $argument1))
+		;
+	}
+
+	public function testGetArgument()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->exception(function() use ($injector, & $argument) { $injector->getArgument($argument = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->then
+				->string($injector->getArgument($argument))->isEqualTo($value)
+		;
+	}
+
+	public function testArgumentExists()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->boolean($injector->argumentExists(uniqid()))->isFalse()
+			->if($injector->setArgument($argument = uniqid(), uniqid()))
+			->then
+				->boolean($injector->argumentExists($argument))->isTrue()
+		;
+	}
+
+	public function testUnsetArgument()
+	{
+		$this
+			->if($injector = new testedClass(function() {}))
+			->then
+				->exception(function() use ($injector, & $argument) { $injector->unsetArgument($argument = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->then
+				->object($injector->unsetArgument($argument))->isIdenticalTo($injector)
+				->boolean($injector->argumentExists($argument))->isFalse()
 		;
 	}
 
@@ -84,29 +186,76 @@ class injector extends test
 	{
 		$this
 			->if($injector = new testedClass(function() {}))
+			->and($injector[1] = $argument1 = uniqid())
 			->then
-				->object($injector->offsetSet(1, $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1))
-				->object($injector->offsetSet(2, $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1, 2 => $argument2))
+				->array($injector->getArguments())->isIdenticalTo(array(1 => $argument1))
+			->if($injector[2] = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array(1 => $argument1, 2 => $argument2))
+			->if($injector = new testedClass(function() {}))
+			->if($injector[2] = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array(2 => $argument2))
+			->if($injector[1] = $argument1 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array(2 => $argument2, 1 => $argument1))
+			->if($injector = new testedClass(function() {}))
+			->and($injector['a'] = $argument1 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1))
+			->if($injector['b'] = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('a' => $argument1, 'b' => $argument2))
+			->if($injector = new testedClass(function() {}))
+			->and($injector['b'] = $argument2 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2))
+			->if($injector['a'] = $argument1 = uniqid())
+			->then
+				->array($injector->getArguments())->isIdenticalTo(array('b' => $argument2, 'a' => $argument1))
+		;
+	}
+
+	public function testOffsetGet()
+	{
+		$this
 			->if($injector = new testedClass(function() {}))
 			->then
-				->object($injector->offsetSet(2, $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(2 => $argument2))
-				->object($injector->offsetSet(1, $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array(1 => $argument1, 2 => $argument2))
+				->exception(function() use ($injector, & $argument) { $injector[$argument = uniqid()]; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->then
+				->string($injector[$argument])->isEqualTo($value)
+		;
+	}
+
+	public function testOffsetExists()
+	{
+		$this
 			->if($injector = new testedClass(function() {}))
 			->then
-				->object($injector->offsetSet('a', $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1))
-				->object($injector->offsetSet('b', $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1, 'b' => $argument2))
+				->boolean(isset($injector[uniqid()]))->isFalse()
+			->if($injector->setArgument($argument = uniqid(), uniqid()))
+			->then
+				->boolean(isset($injector[$argument]))->isTrue()
+		;
+	}
+
+	public function testOffsetUnset()
+	{
+		$this
 			->if($injector = new testedClass(function() {}))
 			->then
-				->object($injector->offsetSet('b', $argument2 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('b' => $argument2))
-				->object($injector->offsetSet('a', $argument1 = uniqid()))->isIdenticalTo($injector)
-				->array($injector->getArguments())->isEqualTo(array('a' => $argument1, 'b' => $argument2))
+				->exception(function() use ($injector, & $argument) { unset($injector[$argument = uniqid()]); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument \'' . $argument . '\' is undefined')
+			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
+			->when(function() use ($injector, $argument) { unset($injector[$argument]); })
+			->then
+				->boolean(isset($injector[$argument]))->isFalse()
 		;
 	}
 }
+
+?>
