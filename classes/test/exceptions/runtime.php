@@ -7,5 +7,3 @@ use
 ;
 
 class runtime extends exceptions\runtime {}
-
-?>

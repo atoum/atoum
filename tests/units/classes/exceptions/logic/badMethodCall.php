@@ -21,5 +21,3 @@ class badMethodCall extends atoum\test
 		;
 	}
 }
-
-?>

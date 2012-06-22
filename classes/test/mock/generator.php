@@ -40,5 +40,3 @@ class generator extends mock\generator
 		return $this->test;
 	}
 }
-
-?>

@@ -76,5 +76,3 @@ class generator extends asserter\generator
 		return parent::getAsserterInstance($asserter, $arguments)->setWithTest($this->test);
 	}
 }
-
-?>

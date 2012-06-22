@@ -19,5 +19,3 @@ class autoloader extends atoum\test
             ->array($directories['mageekguy\atoum'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes'));
 	}
 }
-
-?>

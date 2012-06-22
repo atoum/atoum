@@ -51,5 +51,3 @@ class err extends atoum\test
 		;
 	}
 }
-
-?>

@@ -131,5 +131,3 @@ class exception extends atoum\test
 		;
 	}
 }
-
-?>

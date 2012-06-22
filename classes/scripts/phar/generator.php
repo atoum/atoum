@@ -245,5 +245,3 @@ class generator extends atoum\script
 		;
 	}
 }
-
-?>

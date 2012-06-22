@@ -31,5 +31,3 @@ class asserter extends atoum\test
 		;
 	}
 }
-
-?>

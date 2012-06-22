@@ -63,5 +63,3 @@ class cli extends report\fields\test\run
 		;
 	}
 }
-
-?>

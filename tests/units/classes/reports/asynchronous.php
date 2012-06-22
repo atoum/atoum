@@ -59,5 +59,3 @@ class asynchronous extends atoum\test
 		;
 	}
 }
-
-?>

@@ -354,5 +354,3 @@ class adapter extends atoum\asserter
 		return $string;
 	}
 }
-
-?>

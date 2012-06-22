@@ -51,5 +51,3 @@ abstract class atoum extends report\field
 		}
 	}
 }
-
-?>

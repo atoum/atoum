@@ -120,5 +120,3 @@ class report implements observer, adapter\aggregator
 		return $this;
 	}
 }
-
-?>

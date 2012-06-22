@@ -64,5 +64,3 @@ class source implements \outerIterator
 		return $this->innerIterator->valid();
 	}
 }
-
-?>

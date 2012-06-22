@@ -764,5 +764,3 @@ class builder extends atoum\script
 		return rtrim($path, DIRECTORY_SEPARATOR);
 	}
 }
-
-?>

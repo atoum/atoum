@@ -186,5 +186,3 @@ class phing extends atoum\test
 		;
 	}
 }
-
-?>

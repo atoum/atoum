@@ -119,5 +119,3 @@ class phing extends \mageekguy\atoum\test
 		;
 	}
 }
-
-?>

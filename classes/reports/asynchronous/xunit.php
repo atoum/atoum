@@ -133,5 +133,3 @@ class xunit extends atoum\reports\asynchronous
 		return $this;
 	}
 }
-
-?>

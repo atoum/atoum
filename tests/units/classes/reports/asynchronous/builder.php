@@ -137,5 +137,3 @@ class builder extends atoum\test
 		;
 	}
 }
-
-?>

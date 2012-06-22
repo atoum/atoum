@@ -193,5 +193,3 @@ class error extends atoum\test
 		;
 	}
 }
-
-?>

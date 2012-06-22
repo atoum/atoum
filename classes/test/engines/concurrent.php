@@ -178,5 +178,3 @@ class concurrent extends test\engine
 		return $score;
 	}
 }
-
-?>

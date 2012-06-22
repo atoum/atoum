@@ -103,5 +103,3 @@ class cli extends fields\runner\result
 		return $string . PHP_EOL;
 	}
 }
-
-?>

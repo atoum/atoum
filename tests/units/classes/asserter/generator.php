@@ -93,5 +93,3 @@ class generator extends atoum\test
 		;
 	}
 }
-
-?>

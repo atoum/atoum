@@ -364,5 +364,3 @@ class runner extends atoum\test
 		;
 	}
 }
-
-?>

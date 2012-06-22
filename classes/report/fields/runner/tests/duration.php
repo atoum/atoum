@@ -43,5 +43,3 @@ abstract class duration extends report\field
 		}
 	}
 }
-
-?>

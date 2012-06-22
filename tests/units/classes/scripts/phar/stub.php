@@ -91,5 +91,3 @@ class stub extends atoum\test
 		;
 	}
 }
-
-?>

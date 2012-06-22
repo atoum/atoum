@@ -58,5 +58,3 @@ class inline extends atoum\test
 		;
 	}
 }
-
-?>

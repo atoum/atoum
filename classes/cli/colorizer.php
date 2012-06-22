@@ -83,5 +83,3 @@ class colorizer
 		return $string;
 	}
 }
-
-?>

@@ -22,5 +22,3 @@ class runtime extends atoum\test
 		;
 	}
 }
-
-?>

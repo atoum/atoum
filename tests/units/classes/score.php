@@ -1076,5 +1076,3 @@ class score extends atoum\test
 		;
 	}
 }
-
-?>

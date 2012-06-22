@@ -561,5 +561,3 @@ class html extends atoum\test
 		;
 	}
 }
-
-?>

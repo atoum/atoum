@@ -20,5 +20,3 @@ class phpProperty extends atoum\test
 		;
 	}
 }
-
-?>

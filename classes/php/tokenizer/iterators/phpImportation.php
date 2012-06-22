@@ -9,5 +9,3 @@ use
 ;
 
 class phpImportation extends tokenizer\iterator {}
-
-?>

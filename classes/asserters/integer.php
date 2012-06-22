@@ -130,5 +130,3 @@ class integer extends asserters\variable
 		return (is_integer($value) === true);
 	}
 }
-
-?>

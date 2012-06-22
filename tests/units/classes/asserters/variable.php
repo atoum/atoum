@@ -290,5 +290,3 @@ class variable extends atoum\test
 		;
 	}
 }
-
-?>

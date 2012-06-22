@@ -368,5 +368,3 @@ class svn extends atoum\test
 		;
 	}
 }
-
-?>

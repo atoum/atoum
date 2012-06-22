@@ -133,5 +133,3 @@ class directory implements \iteratorAggregate
 		return trim($extension, '.');
 	}
 }
-
-?>

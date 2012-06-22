@@ -212,5 +212,3 @@ class controller extends test\adapter
 		return $this;
 	}
 }
-
-?>

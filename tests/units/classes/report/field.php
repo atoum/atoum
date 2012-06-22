@@ -26,5 +26,3 @@ class field extends atoum\test
 		;
 	}
 }
-
-?>

@@ -35,5 +35,3 @@ class vim extends atoum\test
 		;
 	}
 }
-
-?>

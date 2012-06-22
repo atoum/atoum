@@ -44,5 +44,3 @@ class sizeOf extends atoum\test
 		;
 	}
 }
-
-?>

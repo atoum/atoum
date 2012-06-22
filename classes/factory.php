@@ -206,5 +206,3 @@ class factory implements \arrayAccess, \serializable
 		return $class;
 	}
 }
-
-?>

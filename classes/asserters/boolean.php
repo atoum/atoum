@@ -63,5 +63,3 @@ class boolean extends asserters\variable
 		return (is_bool($value) === true);
 	}
 }
-
-?>

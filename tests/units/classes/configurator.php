@@ -46,5 +46,3 @@ class configurator extends atoum\test
 		;
 	}
 }
-
-?>

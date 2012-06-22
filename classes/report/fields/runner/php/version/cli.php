@@ -105,5 +105,3 @@ class cli extends report\fields\runner\php\version
 		return ($this->versionColorizer === null ? $version : $this->versionColorizer->colorize($version));
 	}
 }
-
-?>

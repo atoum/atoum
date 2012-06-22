@@ -22,5 +22,3 @@ class phing extends report\fields\runner\atoum\cli
 		);
     }
 }
-
-?>

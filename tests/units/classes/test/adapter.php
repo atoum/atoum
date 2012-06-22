@@ -328,5 +328,3 @@ class adapter extends test
 		;
 	}
 }
-
-?>

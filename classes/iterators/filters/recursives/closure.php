@@ -41,5 +41,3 @@ class closure extends \recursiveFilterIterator
 		return true;
 	}
 }
-
-?>

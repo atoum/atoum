@@ -66,5 +66,3 @@ class tagger extends atoum\test
 		;
 	}
 }
-
-?>

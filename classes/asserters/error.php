@@ -231,5 +231,3 @@ class error extends \mageekguy\atoum\asserter
 		}
 	}
 }
-
-?>

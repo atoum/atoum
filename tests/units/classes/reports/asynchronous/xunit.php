@@ -85,5 +85,3 @@ class xunit extends atoum\test
 		;
 	}
 }
-
-?>

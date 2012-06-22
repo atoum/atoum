@@ -7,5 +7,3 @@ use
 ;
 
 class invalidArgument extends \invalidArgumentException implements atoum\exception {}
-
-?>

@@ -36,5 +36,3 @@ class includer extends atoum\test
 		;
 	}
 }
-
-?>

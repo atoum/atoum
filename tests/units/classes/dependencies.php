@@ -257,5 +257,3 @@ class dependencies extends atoum\test
 		;
 	}
 }
-
-?>

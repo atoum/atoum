@@ -43,5 +43,3 @@ class output extends atoum\test
 		;
 	}
 }
-
-?>

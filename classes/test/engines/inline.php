@@ -46,5 +46,3 @@ class inline extends test\engine
 		return $this->score;
 	}
 }
-
-?>

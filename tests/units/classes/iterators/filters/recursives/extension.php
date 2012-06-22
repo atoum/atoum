@@ -54,5 +54,3 @@ class extension extends atoum\test
 		;
 	}
 }
-
-?>

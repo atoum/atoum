@@ -234,5 +234,3 @@ class parser implements \iteratorAggregate
 		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 }
-
-?>

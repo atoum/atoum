@@ -51,5 +51,3 @@ class out extends atoum\test
 		;
 	}
 }
-
-?>

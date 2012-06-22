@@ -40,5 +40,3 @@ class phing extends report\fields\test\event\cli
 		}
 	}
 }
-
-?>

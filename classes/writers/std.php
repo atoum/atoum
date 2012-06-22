@@ -45,5 +45,3 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 
 	protected abstract function getResource();
 }
-
-?>

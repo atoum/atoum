@@ -145,5 +145,3 @@ class data
 		return array();
 	}
 }
-
-?>
