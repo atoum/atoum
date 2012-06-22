@@ -169,6 +169,32 @@ class string extends atoum\test
 				->object($asserter->hasLength(strlen($string)))->isIdenticalTo($asserter)
 		;
 	}
+
+	public function testContains()
+	{
+		$this
+			->if($asserter = new asserters\string($generator = new asserter\generator()))
+			->then
+			->exception(function() use ($asserter)
+		{
+			$asserter->contains('fragment');
+		})
+			->isInstanceOf('mageekguy\atoum\exceptions\logic')
+			->hasMessage('Value is undefined')
+			->if($asserter->setWith('string'))
+			->and($diff = new diffs\variable())
+			->then
+			->exception(function() use ($asserter, & $fragment)
+		{
+			$asserter->contains($fragment = 'fragment');
+		})
+			->isInstanceOf('mageekguy\atoum\asserter\exception')
+			->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+			->object($asserter->contains('string'))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = 'string'))
+			->then
+			->object($asserter->contains('string'))->isIdenticalTo($asserter);
+	}
 }
 
 ?>
