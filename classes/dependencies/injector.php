@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\dependencies\injector\exception
 ;
 
-class injector implements \arrayAccess
+class injector
 {
 	protected $closure = null;
 	protected $availableArguments = array();
@@ -63,26 +63,6 @@ class injector implements \arrayAccess
 	}
 
 	public function __unset($argument)
-	{
-		return $this->unsetArgument($argument);
-	}
-
-	public function offsetSet($argument, $value)
-	{
-		return $this->setArgument($argument, $value);
-	}
-
-	public function offsetGet($argument)
-	{
-		return $this->getArgument($argument);
-	}
-
-	public function offsetExists($argument)
-	{
-		return $this->argumentExists($argument);
-	}
-
-	public function offsetUnset($argument)
 	{
 		return $this->unsetArgument($argument);
 	}

@@ -11,11 +11,6 @@ require_once __DIR__ . '/../../runner.php';
 
 class injector extends test
 {
-	public function testClass()
-	{
-		$this->testedClass->hasInterface('arrayAccess');
-	}
-
 	public function test__construct()
 	{
 		$this
@@ -206,80 +201,6 @@ class injector extends test
 			->and($injector->a = uniqid())
 			->then
 				->object($injector->unsetArgument('a'))->isIdenticalTo($injector)
-				->boolean(isset($injector->a))->isFalse()
-		;
-	}
-
-	public function testOffsetSet()
-	{
-		$this
-			->if($injector = new testedClass(function() {}))
-			->and($injector[uniqid()] = uniqid())
-			->then
-				->array($injector->getArguments())->isEmpty()
-			->if($injector = new testedClass(function($a) {}))
-			->and($injector['a'] = $value = uniqid())
-			->then
-				->string($injector->getArgument('a'))->isEqualTo($value)
-			->if($injector['b'] = uniqid())
-			->then
-				->boolean(isset($injector->b))->isFalse()
-		;
-	}
-
-	public function testOffetGet()
-	{
-		$this
-			->if($injector = new testedClass(function() {}))
-			->then
-				->exception(function() use ($injector, & $argument) { $injector[$argument = uniqid()]; })
-					->isInstanceOf('mageekguy\atoum\dependencies\injector\exception')
-					->hasMessage('Argument \'' . $argument . '\' is undefined')
-			->if($injector = new testedClass(function($a) {}))
-			->then
-				->exception(function() use ($injector) { $injector['a']; })
-					->isInstanceOf('mageekguy\atoum\dependencies\injector\exception')
-					->hasMessage('Argument \'a\' is undefined')
-			->if($injector->setArgument('a', $value = uniqid()))
-			->then
-				->string($injector['a'])->isEqualTo($value)
-		;
-	}
-
-	public function testOffsetExists()
-	{
-		$this
-			->if($injector = new testedClass(function() {}))
-			->then
-				->boolean(isset($injector[uniqid()]))->isFalse()
-			->if($injector->setArgument($argument = uniqid(), uniqid()))
-			->then
-				->boolean(isset($injector[$argument]))->isFalse()
-			->if($injector = new testedClass(function($a) {}))
-			->then
-				->boolean(isset($injector['a']))->isFalse()
-			->if($injector->setArgument('a', uniqid()))
-			->then
-				->boolean(isset($injector['a']))->isTrue()
-		;
-	}
-
-	public function testOffsetUnset()
-	{
-		$this
-			->if($injector = new testedClass(function() {}))
-			->then
-				->exception(function() use ($injector, & $argument) { unset($injector[$argument = uniqid()]); })
-					->isInstanceOf('mageekguy\atoum\dependencies\injector\exception')
-					->hasMessage('Argument \'' . $argument . '\' is undefined')
-			->if($injector->setArgument($argument = uniqid(), $value = uniqid()))
-				->exception(function() use ($injector, & $argument) { unset($injector[$argument = uniqid()]); })
-					->isInstanceOf('mageekguy\atoum\dependencies\injector\exception')
-					->hasMessage('Argument \'' . $argument . '\' is undefined')
-			->if($injector = new testedClass(function($a) {}))
-			->and($injector->a = uniqid())
-			->when(function() use ($injector) { unset($injector['a']); })
-			->then
 				->boolean(isset($injector->a))->isFalse()
 		;
 	}
