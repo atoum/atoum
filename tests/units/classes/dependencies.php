@@ -24,16 +24,16 @@ class dependencies extends test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->sizeof($dependencies)->isZero()
+				->sizeOf($dependencies)->isZero()
 				->variable($dependencies())->isNull()
 			->if($return = uniqid())
 			->and($dependencies = new testedClass($injector = function() use ($return) { return $return; }))
 			->then
-				->sizeof($dependencies)->isZero()
+				->sizeOf($dependencies)->isZero()
 				->string($dependencies())->isEqualTo($return)
 			->if($dependencies = new testedClass($return = uniqid()))
 			->then
-				->sizeof($dependencies)->isZero()
+				->sizeOf($dependencies)->isZero()
 				->string($dependencies())->isEqualTo($return)
 		;
 	}
@@ -105,10 +105,10 @@ class dependencies extends test
 			->if($dependencies = new testedClass())
 			->then
 				->object($dependencies->setDependence($name = uniqid(), $dependence = new testedClass(uniqid())))->isIdenticalTo($dependencies)
-				->sizeof($dependencies)->isEqualTo(1)
+				->sizeOf($dependencies)->isEqualTo(1)
 				->string($dependencies[$name]())->isEqualTo($dependence())
 				->object($dependencies->setDependence($otherName = uniqid(), $otherDependence = new testedClass(uniqid())))->isIdenticalTo($dependencies)
-				->sizeof($dependencies)->isEqualTo(2)
+				->sizeOf($dependencies)->isEqualTo(2)
 				->string($dependencies[$name]())->isEqualTo($dependence())
 				->string($dependencies[$otherName]())->isEqualTo($otherDependence())
 		;
@@ -120,11 +120,11 @@ class dependencies extends test
 			->if($dependencies = new testedClass())
 			->and($dependencies[$name = uniqid()] = $dependence = new testedClass(uniqid()))
 			->then
-				->sizeof($dependencies)->isEqualTo(1)
+				->sizeOf($dependencies)->isEqualTo(1)
 				->string($dependencies[$name]())->isEqualTo($dependence())
 			->if($dependencies[$otherName = uniqid()] = $otherDependence = new testedClass(uniqid()))
 			->then
-				->sizeof($dependencies)->isEqualTo(2)
+				->sizeOf($dependencies)->isEqualTo(2)
 				->string($dependencies[$name]())->isEqualTo($dependence())
 				->string($dependencies[$otherName]())->isEqualTo($otherDependence())
 		;
