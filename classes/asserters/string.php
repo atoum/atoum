@@ -112,6 +112,19 @@ class string extends variable
 		return $this;
 	}
 
+	public function contains($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) !== false)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not contain %s'), $fragment));
+		}
+		return $this;
+	}
+
 	protected static function check($value, $method)
 	{
 		if (self::isString($value) === false)
