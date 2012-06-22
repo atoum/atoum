@@ -122,6 +122,7 @@ class string extends variable
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not contain %s'), $fragment));
 		}
+
 		return $this;
 	}
 

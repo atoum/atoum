@@ -175,25 +175,23 @@ class string extends atoum\test
 		$this
 			->if($asserter = new asserters\string($generator = new asserter\generator()))
 			->then
-			->exception(function() use ($asserter)
-		{
-			$asserter->contains('fragment');
-		})
-			->isInstanceOf('mageekguy\atoum\exceptions\logic')
-			->hasMessage('Value is undefined')
-			->if($asserter->setWith('string'))
+				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = uniqid()))
 			->and($diff = new diffs\variable())
 			->then
-			->exception(function() use ($asserter, & $fragment)
-		{
-			$asserter->contains($fragment = 'fragment');
-		})
-			->isInstanceOf('mageekguy\atoum\asserter\exception')
-			->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
-			->object($asserter->contains('string'))->isIdenticalTo($asserter)
-			->if($asserter->setWith($string = 'string'))
+				->exception(function() use ($asserter, & $fragment) { $asserter->contains($fragment = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+				->object($asserter->contains($string))->isIdenticalTo($asserter)
+			->if($asserter->setWith(uniqid() . $string . uniqid()))
 			->then
-			->object($asserter->contains('string'))->isIdenticalTo($asserter);
+				->object($asserter->contains($string))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $string, & $fragment) { $asserter->contains($fragment = strtoupper($string)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+		;
 	}
 }
 
