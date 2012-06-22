@@ -612,7 +612,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		if ($this->methodIsIgnored($testMethod, $tags) === false)
 		{
-
 			$mockGenerator = $this->getMockGenerator();
 			$mockNamespacePattern = '/^' . $mockGenerator->getDefaultNamespace() . '\\\/';
 

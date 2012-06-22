@@ -6,8 +6,6 @@ use
 	mageekguy\atoum\dependencies
 ;
 
-class_alias(__NAMESPACE__ . '\dependencies', __NAMESPACE__ . '\dependence');
-
 class dependencies implements \arrayAccess, \countable
 {
 	protected $injector = null;
@@ -128,5 +126,7 @@ class dependencies implements \arrayAccess, \countable
 		return $this;
 	}
 }
+
+class_alias(__NAMESPACE__ . '\dependencies', __NAMESPACE__ . '\dependence');
 
 ?>
