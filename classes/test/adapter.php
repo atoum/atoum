@@ -5,6 +5,7 @@ namespace mageekguy\atoum\test;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
+	mageekguy\atoum\dependence,
 	mageekguy\atoum\dependencies,
 	mageekguy\atoum\test\adapter\invoker
 ;
@@ -83,10 +84,7 @@ class adapter extends atoum\adapter
 	{
 		$this->dependencies = $dependencies;
 
-		if (isset($this->dependencies['invoker']) === false)
-		{
-			$this->dependencies['invoker'] = function() { return new invoker(); };
-		}
+		$this->dependencies['invoker'] = $this->dependencies['invoker'] ?: new dependence(function() { return new invoker(); });
 
 		return $this;
 	}

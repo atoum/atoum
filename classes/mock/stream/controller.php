@@ -5,6 +5,7 @@ namespace mageekguy\atoum\mock\stream;
 use
 	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions,
+	mageekguy\atoum\dependence,
 	mageekguy\atoum\dependencies
 ;
 
@@ -88,10 +89,7 @@ class controller extends test\adapter
 
 	public function setDependencies(dependencies $dependencies)
 	{
-		if (isset($dependencies['invoker']) === false)
-		{
-			$dependencies['invoker'] = function($method) { return new invoker($method); };
-		}
+		$dependencies['invoker'] = $dependencies['invoker'] ?: new dependence(function($dependence) { return new invoker($dependence->method); });
 
 		return parent::setDependencies($dependencies);
 	}

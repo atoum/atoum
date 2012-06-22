@@ -2,99 +2,130 @@
 
 namespace mageekguy\atoum;
 
-class dependencies implements \arrayAccess, \serializable
+use
+	mageekguy\atoum\dependencies
+;
+
+class_alias(__NAMESPACE__ . '\dependencies', __NAMESPACE__ . '\dependence');
+
+class dependencies implements \arrayAccess, \countable
 {
-	protected $lock = false;
-	protected $injectors = array();
+	protected $injector = null;
+	protected $arguments = array();
+	protected $dependencies = array();
 
-	public function get($mixed)
+	public function __construct($injector = null)
 	{
-		return (isset($this[$mixed]) === false ? null : $this[$mixed]);
+		if ($injector !== null && $injector instanceof \closure === false)
+		{
+			$injector = function() use ($injector) { return $injector; };
+		}
+
+		$this->injector = $injector;
 	}
 
-	public function serialize()
+	public function __invoke()
 	{
-		return null;
+		return (($injector = $this->injector) === null ? null : $injector($this));
 	}
 
-	public function unserialize($string)
+	public function __set($argument, $value)
 	{
+		return $this->setArgument($argument, $value);
+	}
+
+	public function __get($argument)
+	{
+		return $this->getArgument($argument);
+	}
+
+	public function __isset($argument)
+	{
+		return $this->argumentExists($argument);
+	}
+
+	public function count()
+	{
+		return sizeof($this->dependencies);
+	}
+
+	public function offsetGet($name)
+	{
+		return $this->getDependence($name);
+	}
+
+	public function offsetSet($name, $dependence)
+	{
+		return $this->setDependence($name, $dependence);
+	}
+
+	public function offsetUnset($name)
+	{
+		return $this->unsetDependence($name);
+	}
+
+	public function offsetExists($name)
+	{
+		return $this->dependenceExists($name);
+	}
+
+	public function getDependence($name)
+	{
+		return (isset($this->dependencies[$name]) === false ? null : $this->dependencies[$name]);
+	}
+
+	public function setDependence($name, dependencies $dependence)
+	{
+		$this->dependencies[$name] = $dependence;
+
 		return $this;
 	}
 
-	public function getInjectors()
+	public function dependenceExists($name)
 	{
-		return $this->injectors;
+		return (isset($this->dependencies[$name]) === true);
 	}
 
-	public function offsetSet($mixed, $injector)
+	public function unsetDependence($name)
 	{
-		$key = self::getKey($mixed);
-
-		if ($this->lock === false || isset($this->injectors[$key]) === false)
+		if ($this->dependenceExists($name) === true)
 		{
-			$this->injectors[$key] = self::buildInjector($injector);
+			unset($this->dependencies[$name]);
 		}
 
 		return $this;
 	}
 
-	public function offsetGet($mixed)
+	public function setArgument($name, $value)
 	{
-		$parent = $key = self::getKey($mixed);
-
-		while ($parent !== false)
-		{
-			if (isset($this->injectors[$parent]) === true)
-			{
-				return $this->injectors[$parent];
-			}
-			else
-			{
-				$parent = get_parent_class($parent);
-			}
-		}
-
-		$this->injectors[$key] = new static();
-
-		return $this->injectors[$key];
-	}
-
-	public function offsetUnset($mixed)
-	{
-		$key = self::getKey($mixed);
-
-		if (isset($this->injectors[$key]) === true)
-		{
-			unset($this->injectors[$key]);
-		}
+		$this->arguments[$name] = $value;
 
 		return $this;
 	}
 
-	public function offsetExists($mixed)
+	public function getArgument($name)
 	{
-		return isset($this->injectors[self::getKey($mixed)]);
-	}
-
-	protected static function getKey($value)
-	{
-		return is_object($value) ? get_class($value) : (string) $value;
-	}
-
-	protected static function buildInjector($injector)
-	{
-		switch (true)
+		if ($this->argumentExists($name) === false)
 		{
-			case $injector instanceof \closure === false && $injector instanceof self === false:
-				return new dependencies\injector(function() use ($injector) { return $injector; });
-
-			case $injector instanceof \closure:
-				return new dependencies\injector($injector);
-
-			default:
-				return $injector;
+			throw new dependencies\exception('Argument \'' . $name . '\' is undefined');
 		}
+
+		return $this->arguments[$name];
+	}
+
+	public function argumentExists($name)
+	{
+		return array_key_exists($name, $this->arguments);
+	}
+
+	public function unsetArgument($name)
+	{
+		if ($this->argumentExists($name) === true)
+		{
+			unset($this->arguments[$name]);
+		}
+
+		return $this;
 	}
 }
 

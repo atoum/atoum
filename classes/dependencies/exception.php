@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\dependencies\injector;
+namespace mageekguy\atoum\dependencies;
 
 use
 	mageekguy\atoum
