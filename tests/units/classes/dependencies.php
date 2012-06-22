@@ -5,11 +5,11 @@ namespace mageekguy\atoum\tests\units;
 require_once __DIR__ . '/../runner.php';
 
 use
-	mageekguy\atoum\test,
+	mageekguy\atoum,
 	mageekguy\atoum\dependencies as testedClass
 ;
 
-class dependencies extends test
+class dependencies extends atoum\test
 {
 	public function testClass()
 	{
