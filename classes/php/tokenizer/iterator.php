@@ -314,5 +314,3 @@ class iterator extends iterator\value
 		return $this;
 	}
 }
-
-?>

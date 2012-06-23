@@ -29,5 +29,3 @@ class afterDestructionOf extends atoum\asserter
 		return $this;
 	}
 }
-
-?>

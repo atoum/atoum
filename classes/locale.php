@@ -36,5 +36,3 @@ class locale
 		return ($quantity <= 1 ? $singular : $plural);
 	}
 }
-
-?>

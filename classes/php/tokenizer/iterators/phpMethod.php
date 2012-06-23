@@ -9,5 +9,3 @@ use
 ;
 
 class phpMethod extends tokenizer\iterators\phpFunction {}
-
-?>

@@ -97,5 +97,3 @@ class source extends atoum\test
 		;
 	}
 }
-
-?>

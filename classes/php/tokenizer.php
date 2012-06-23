@@ -300,5 +300,3 @@ class tokenizer implements \iteratorAggregate
 		return (isset($this->tokens[$key]) === true && $this->tokens[$key][0] === $tokenName);
 	}
 }
-
-?>

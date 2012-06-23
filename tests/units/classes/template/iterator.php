@@ -268,5 +268,3 @@ class iterator extends atoum\test
 		;
 	}
 }
-
-?>

@@ -131,5 +131,3 @@ class tagger extends atoum\script
 		return $this;
 	}
 }
-
-?>

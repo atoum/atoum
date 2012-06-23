@@ -21,5 +21,3 @@ class invalidArgument extends atoum\test
 		;
 	}
 }
-
-?>

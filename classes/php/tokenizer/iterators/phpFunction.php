@@ -57,5 +57,3 @@ class phpFunction extends tokenizer\iterator
 		return (isset($this->arguments[$index]) === false ? null : $this->arguments[$index]);
 	}
 }
-
-?>

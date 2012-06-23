@@ -544,5 +544,3 @@ class score
 		return $array;
 	}
 }
-
-?>

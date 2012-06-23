@@ -34,5 +34,3 @@ catch (\exception $exception)
 }
 
 exit(0);
-
-?>

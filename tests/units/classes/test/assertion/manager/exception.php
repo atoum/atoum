@@ -15,5 +15,3 @@ class exception extends atoum\test
 		$this->testedClass->isSubClassOf('mageekguy\atoum\exceptions\runtime');
 	}
 }
-
-?>

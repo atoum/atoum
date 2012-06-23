@@ -128,5 +128,3 @@ class dependencies implements \arrayAccess, \countable
 }
 
 class_alias(__NAMESPACE__ . '\dependencies', __NAMESPACE__ . '\dependence');
-
-?>

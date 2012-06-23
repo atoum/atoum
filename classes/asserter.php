@@ -129,5 +129,3 @@ abstract class asserter
 		return $this;
 	}
 }
-
-?>

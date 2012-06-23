@@ -98,5 +98,3 @@ class phpFunction extends atoum\test
 		;
 	}
 }
-
-?>

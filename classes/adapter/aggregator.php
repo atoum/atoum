@@ -12,5 +12,3 @@ interface aggregator
 
 	public function getAdapter();
 }
-
-?>

@@ -189,5 +189,3 @@ class directory extends atoum\test
 		;
 	}
 }
-
-?>

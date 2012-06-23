@@ -45,5 +45,3 @@ class cli
 		self::$isTerminal = true;
 	}
 }
-
-?>

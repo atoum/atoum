@@ -36,5 +36,3 @@ class writer extends atoum\test
 		;
 	}
 }
-
-?>

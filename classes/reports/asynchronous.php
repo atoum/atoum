@@ -61,5 +61,3 @@ abstract class asynchronous extends atoum\report
 		return $this;
 	}
 }
-
-?>

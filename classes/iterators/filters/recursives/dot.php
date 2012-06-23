@@ -30,5 +30,3 @@ class dot extends \recursiveFilterIterator
 		return new atoum\factory();
 	}
 }
-
-?>

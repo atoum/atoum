@@ -489,5 +489,3 @@ class controller extends atoum\test
 		;
 	}
 }
-
-?>

@@ -90,5 +90,3 @@ class builder extends atoum\reports\asynchronous
 		;
 	}
 }
-
-?>

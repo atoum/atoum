@@ -40,5 +40,3 @@ class configurator
 		return $this->script;
 	}
 }
-
-?>

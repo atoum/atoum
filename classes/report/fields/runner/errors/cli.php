@@ -281,5 +281,3 @@ class cli extends report\fields\runner\errors
 		return $string;
 	}
 }
-
-?>

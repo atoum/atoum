@@ -85,5 +85,3 @@ class stream extends atoum\test
 		;
 	}
 }
-
-?>

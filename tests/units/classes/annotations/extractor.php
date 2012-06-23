@@ -200,5 +200,3 @@ class extractor extends atoum\test
 		return self::repeat('*', $max, $min);
 	}
 }
-
-?>

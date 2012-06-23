@@ -243,5 +243,3 @@ class variable extends atoum\asserter
 
 	protected static function check($value, $method) {}
 }
-
-?>

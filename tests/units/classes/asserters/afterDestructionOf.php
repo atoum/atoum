@@ -54,5 +54,3 @@ class afterDestructionOf extends atoum\test
 		;
 	}
 }
-
-?>

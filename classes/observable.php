@@ -6,5 +6,3 @@ interface observable
 {
 	public function callObservers($event);
 }
-
-?>

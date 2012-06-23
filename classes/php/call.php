@@ -98,5 +98,3 @@ class call
 		return $this->decorator;
 	}
 }
-
-?>

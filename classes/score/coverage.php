@@ -338,5 +338,3 @@ class coverage implements \countable
 		return false;
 	}
 }
-
-?>

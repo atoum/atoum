@@ -39,5 +39,3 @@ class mysqlDateTime extends asserters\dateTime
 		return ($value instanceof \dateTime === false ? $value : $value->format(self::mysqlDateTimeFormat));
 	}
 }
-
-?>

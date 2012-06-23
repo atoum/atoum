@@ -22,5 +22,3 @@ class logic extends atoum\test
 		;
 	}
 }
-
-?>

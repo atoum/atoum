@@ -260,5 +260,3 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 }
-
-?>

@@ -141,5 +141,3 @@ class colorizer extends atoum\test
 		;
 	}
 }
-
-?>

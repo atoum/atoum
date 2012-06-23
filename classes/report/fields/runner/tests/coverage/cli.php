@@ -145,5 +145,3 @@ class cli extends report\fields\runner\tests\coverage
 		return $string;
 	}
 }
-
-?>

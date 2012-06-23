@@ -37,5 +37,3 @@ abstract class uncompleted extends report\field
 		}
 	}
 }
-
-?>

@@ -89,5 +89,3 @@ class variable extends atoum\test
 		return trim(ob_get_clean());
 	}
 }
-
-?>

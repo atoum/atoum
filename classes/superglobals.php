@@ -133,5 +133,3 @@ class superglobals
 		}
 	}
 }
-
-?>

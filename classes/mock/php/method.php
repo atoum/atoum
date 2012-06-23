@@ -83,5 +83,3 @@ class method
 		return new static($name);
 	}
 }
-
-?>

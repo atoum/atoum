@@ -82,5 +82,3 @@ class cli extends report\fields\runner\coverage
 		;
 	}
 }
-
-?>

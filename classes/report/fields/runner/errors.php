@@ -73,5 +73,3 @@ abstract class errors extends report\field
 		}
 	}
 }
-
-?>

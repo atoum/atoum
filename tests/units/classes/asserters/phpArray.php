@@ -365,5 +365,3 @@ class phpArray extends atoum\test
 		;
 	}
 }
-
-?>

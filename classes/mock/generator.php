@@ -486,5 +486,3 @@ class generator
 		;
 	}
 }
-
-?>

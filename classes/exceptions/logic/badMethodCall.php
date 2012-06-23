@@ -7,5 +7,3 @@ use
 ;
 
 class badMethodCall extends \badMethodCallException implements atoum\exception {}
-
-?>

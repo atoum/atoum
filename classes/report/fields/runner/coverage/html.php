@@ -488,5 +488,3 @@ class html extends report\fields\runner\coverage\cli
 		return $this;
 	}
 }
-
-?>

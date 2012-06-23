@@ -29,5 +29,3 @@ class exception extends exceptions\runtime
 		return $this->errorOffset;
 	}
 }
-
-?>

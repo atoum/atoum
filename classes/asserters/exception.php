@@ -139,5 +139,3 @@ class exception extends asserters\object
 		return (parent::isObject($value) === true && $value instanceof \exception === true);
 	}
 }
-
-?>

@@ -248,5 +248,3 @@ class factory extends atoum\test
 		;
 	}
 }
-
-?>

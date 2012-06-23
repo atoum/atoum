@@ -37,5 +37,3 @@ abstract class exceptions extends report\field
 		}
 	}
 }
-
-?>

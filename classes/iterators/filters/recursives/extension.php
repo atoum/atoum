@@ -57,5 +57,3 @@ class extension extends \recursiveFilterIterator
 		return new atoum\factory();
 	}
 }
-
-?>

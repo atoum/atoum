@@ -84,5 +84,3 @@ class cli extends report\fields\test\duration
 		;
 	}
 }
-
-?>

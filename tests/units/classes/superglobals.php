@@ -95,5 +95,3 @@ class superglobals extends atoum\test
 		;
 	}
 }
-
-?>

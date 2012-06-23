@@ -101,5 +101,3 @@ class autoloader
 }
 
 autoloader::set();
-
-?>

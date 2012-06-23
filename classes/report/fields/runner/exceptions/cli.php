@@ -181,5 +181,3 @@ class cli extends report\fields\runner\exceptions
 		return $this->exceptionColorizer === null ? $exception : $this->exceptionColorizer->colorize($exception);
 	}
 }
-
-?>

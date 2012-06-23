@@ -287,5 +287,3 @@ class invoker extends atoum\test
 		;
 	}
 }
-
-?>

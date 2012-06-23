@@ -7,5 +7,3 @@ use
 ;
 
 class exception extends \exception implements atoum\exception {}
-
-?>

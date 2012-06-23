@@ -41,5 +41,3 @@ class decorator
 		return $string;
 	}
 }
-
-?>

@@ -12,5 +12,3 @@ interface aggregator
 	public function setMockController(mock\controller $mockController);
 	public function resetMockController();
 }
-
-?>

@@ -20,5 +20,3 @@ if (defined(__NAMESPACE__ . '\autorun') === false)
 
 	scripts\runner::autorun(constant(__NAMESPACE__ . '\scripts\runner'));
 }
-
-?>

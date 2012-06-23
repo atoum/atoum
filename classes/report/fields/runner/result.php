@@ -81,5 +81,3 @@ abstract class result extends report\field
 		}
 	}
 }
-
-?>

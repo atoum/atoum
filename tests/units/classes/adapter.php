@@ -28,5 +28,3 @@ class adapter extends atoum\test
 		;
 	}
 }
-
-?>

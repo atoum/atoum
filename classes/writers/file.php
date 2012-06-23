@@ -80,5 +80,3 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this->filename;
 	}
 }
-
-?>

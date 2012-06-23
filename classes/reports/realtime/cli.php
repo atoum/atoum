@@ -140,5 +140,3 @@ class cli extends realtime
 		;
 	}
 }
-
-?>

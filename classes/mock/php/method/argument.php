@@ -92,5 +92,3 @@ class argument
 		return new static($name);
 	}
 }
-
-?>

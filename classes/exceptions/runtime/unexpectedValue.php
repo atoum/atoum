@@ -7,5 +7,3 @@ use
 ;
 
 class unexpectedValue extends \unexpectedValueException implements atoum\exception {}
-
-?>
