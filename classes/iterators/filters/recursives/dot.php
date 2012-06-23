@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\iterators\filters\recursives;
+namespace atoum\iterators\filters\recursives;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class dot extends \recursiveFilterIterator

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	atoum,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\tools\diffs
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class float extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\integer');
+		$this->testedClass->isSubclassOf('atoum\asserters\integer');
 	}
 
 	public function test__construct()
@@ -35,7 +35,7 @@ class float extends atoum\test
 		$this
 			->if($asserter = new asserters\float($generator = new asserter\generator()))
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->isInstanceOf('atoum\asserter\exception')
 				->hasMessage(sprintf($generator->getLocale()->_('%s is not a float'), $asserter->getTypeOf($value)))
 			->string($asserter->getValue())->isEqualTo($value)
 			->object($asserter->setWith($value = (float) rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
@@ -54,7 +54,7 @@ class float extends atoum\test
 			->and($diff->setReference(- $value)->setData($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isEqualTo(- $value); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value)) . PHP_EOL . $diff)
 		;
 	}

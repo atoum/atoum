@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\tests\units\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\reports\asynchronous as reports
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\test,
+	atoum\report\fields\runner,
+	atoum\reports\asynchronous as reports
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -17,7 +17,7 @@ class builder extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->isSubClassOf('atoum\reports\asynchronous');
 	}
 
 	public function test__construct()
@@ -25,9 +25,9 @@ class builder extends atoum\test
 		$this
 			->if($report = new reports\builder())
 			->then
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getFactory())->isInstanceOf('atoum\factory')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEqualTo(array(
 						new runner\atoum\cli(),
 						new runner\php\path\cli(),
@@ -78,8 +78,8 @@ class builder extends atoum\test
 					)
 				)
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
+			->and($factory['atoum\locale'] = $locale = new atoum\locale())
+			->and($factory['atoum\adapter'] = $adapter = new atoum\adapter())
 			->and($report = new reports\builder($factory))
 			->then
 				->object($report->getFactory())->isIdenticalTo($factory)

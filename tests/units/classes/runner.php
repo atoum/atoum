@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock
+	atoum,
+	atoum\mock
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -15,10 +15,10 @@ class runner extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->hasInterface('mageekguy\atoum\observable')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
-			->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')
-			->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('mageekguy\atoum\directory')
+				->hasInterface('atoum\observable')
+				->hasInterface('atoum\adapter\aggregator')
+			->string(atoum\runner::atoumVersionConstant)->isEqualTo('atoum\version')
+			->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('atoum\directory')
 			->string(atoum\runner::runStart)->isEqualTo('runnerStart')
 			->string(atoum\runner::runStop)->isEqualTo('runnerStop')
 		;
@@ -29,39 +29,39 @@ class runner extends atoum\test
 		$this
 			->if($runner = new atoum\runner())
 			->then
-				->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
-				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
-				->object($runner->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-				->object($runner->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($runner->getAdapter())
-				->object($runner->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($runner->getLocale())
-				->object($runner->getFactory()->build('mageekguy\atoum\includer'))->isIdenticalTo($runner->getIncluder())
+				->object($runner->getScore())->isInstanceOf('atoum\score')
+				->object($runner->getAdapter())->isInstanceOf('atoum\adapter')
+				->object($runner->getLocale())->isInstanceOf('atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('atoum\includer')
+				->object($runner->getTestDirectoryIterator())->isInstanceOf('atoum\iterators\recursives\directory')
+				->object($runner->getFactory())->isInstanceOf('atoum\factory')
+				->object($runner->getFactory()->build('atoum\adapter'))->isIdenticalTo($runner->getAdapter())
+				->object($runner->getFactory()->build('atoum\locale'))->isIdenticalTo($runner->getLocale())
+				->object($runner->getFactory()->build('atoum\includer'))->isIdenticalTo($runner->getIncluder())
 				->variable($runner->getRunningDuration())->isNull()
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
 				->array($runner->getObservers())->isEmpty()
-			->if($runner = new atoum\runner($factory = new \mock\mageekguy\atoum\factory()))
+			->if($runner = new atoum\runner($factory = new \mock\atoum\factory()))
 			->then
-				->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
-				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
+				->object($runner->getScore())->isInstanceOf('atoum\score')
+				->object($runner->getAdapter())->isInstanceOf('atoum\adapter')
+				->object($runner->getLocale())->isInstanceOf('atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('atoum\includer')
+				->object($runner->getTestDirectoryIterator())->isInstanceOf('atoum\iterators\recursives\directory')
 				->object($runner->getFactory())->isIdenticalTo($factory)
-				->object($runner->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($runner->getAdapter())
-				->object($runner->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($runner->getLocale())
-				->object($runner->getFactory()->build('mageekguy\atoum\includer'))->isIdenticalTo($runner->getIncluder())
+				->object($runner->getFactory()->build('atoum\adapter'))->isIdenticalTo($runner->getAdapter())
+				->object($runner->getFactory()->build('atoum\locale'))->isIdenticalTo($runner->getLocale())
+				->object($runner->getFactory()->build('atoum\includer'))->isIdenticalTo($runner->getIncluder())
 				->variable($runner->getRunningDuration())->isNull()
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
 				->array($runner->getObservers())->isEmpty()
-			->if($factory['mageekguy\atoum\score'] = $score = new atoum\score())
-			->if($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
-			->if($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->if($factory['mageekguy\atoum\includer'] = $includer = new atoum\includer())
-			->if($factory['mageekguy\atoum\iterators\recursives\directory'] = $testDirectoryIterator = new atoum\iterators\recursives\directory())
+			->if($factory['atoum\score'] = $score = new atoum\score())
+			->if($factory['atoum\adapter'] = $adapter = new atoum\adapter())
+			->if($factory['atoum\locale'] = $locale = new atoum\locale())
+			->if($factory['atoum\includer'] = $includer = new atoum\includer())
+			->if($factory['atoum\iterators\recursives\directory'] = $testDirectoryIterator = new atoum\iterators\recursives\directory())
 			->and($runner = new atoum\runner($factory))
 			->then
 				->object($runner->getScore())->isIdenticalTo($score)
@@ -70,9 +70,9 @@ class runner extends atoum\test
 				->object($runner->getIncluder())->isIdenticalTo($includer)
 				->object($runner->getTestDirectoryIterator())->isIdenticalTo($testDirectoryIterator)
 				->object($runner->getFactory())->isIdenticalTo($factory)
-				->object($runner->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($runner->getAdapter())
-				->object($runner->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($runner->getLocale())
-				->object($runner->getFactory()->build('mageekguy\atoum\includer'))->isIdenticalTo($runner->getIncluder())
+				->object($runner->getFactory()->build('atoum\adapter'))->isIdenticalTo($runner->getAdapter())
+				->object($runner->getFactory()->build('atoum\locale'))->isIdenticalTo($runner->getLocale())
+				->object($runner->getFactory()->build('atoum\includer'))->isIdenticalTo($runner->getIncluder())
 				->variable($runner->getRunningDuration())->isNull()
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
@@ -154,7 +154,7 @@ class runner extends atoum\test
 			->if($runner = new atoum\runner())
 			->then
 				->array($runner->getObservers())->isEmpty()
-				->object($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+				->object($runner->addObserver($observer = new \mock\atoum\observers\runner()))->isIdenticalTo($runner)
 				->array($runner->getObservers())->isEqualTo(array($observer))
 		;
 	}
@@ -165,13 +165,13 @@ class runner extends atoum\test
 			->if($runner = new atoum\runner())
 			->then
 				->array($runner->getObservers())->isEmpty()
-				->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+				->object($runner->removeObserver(new \mock\atoum\observers\runner()))->isIdenticalTo($runner)
 				->array($runner->getObservers())->isEmpty()
-			->if($runner->addObserver($observer1 = new \mock\mageekguy\atoum\observers\runner()))
-			->and($runner->addObserver($observer2 = new \mock\mageekguy\atoum\observers\runner()))
+			->if($runner->addObserver($observer1 = new \mock\atoum\observers\runner()))
+			->and($runner->addObserver($observer2 = new \mock\atoum\observers\runner()))
 			->then
 				->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
-				->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
+				->object($runner->removeObserver(new \mock\atoum\observers\runner()))->isIdenticalTo($runner)
 				->array($runner->getObservers())->isEqualTo(array($observer1, $observer2))
 				->object($runner->removeObserver($observer1))->isIdenticalTo($runner)
 				->array($runner->getObservers())->isEqualTo(array($observer2))
@@ -186,7 +186,7 @@ class runner extends atoum\test
 			->if($runner = new atoum\runner())
 			->then
 				->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
-			->if($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))
+			->if($runner->addObserver($observer = new \mock\atoum\observers\runner()))
 			->then
 				->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
 				->mock($observer)->call('handleEvent')->withArguments(atoum\runner::runStart, $runner)->once()
@@ -269,7 +269,7 @@ class runner extends atoum\test
 	{
 		$this
 			->if($runner = new atoum\runner())
-			->and($includer = new \mock\mageekguy\atoum\includer())
+			->and($includer = new \mock\atoum\includer())
 			->and($includer->getMockController()->includePath = function() {})
 			->and($runner->setIncluder($includer))
 			->then
@@ -312,8 +312,8 @@ class runner extends atoum\test
 				->object($runner->removeReport(new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
-			->if($report1 = new \mock\mageekguy\atoum\report())
-			->and($report2 = new \mock\mageekguy\atoum\report())
+			->if($report1 = new \mock\atoum\report())
+			->and($report2 = new \mock\atoum\report())
 			->and($runner->addReport($report1)->addReport($report2))
 			->then
 				->array($runner->getReports())->isEqualTo(array($report1, $report2))
@@ -340,8 +340,8 @@ class runner extends atoum\test
 				->object($runner->removeReports())->isIdenticalTo($runner)
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
-			->if($report1 = new \mock\mageekguy\atoum\report())
-			->and($report2 = new \mock\mageekguy\atoum\report())
+			->if($report1 = new \mock\atoum\report())
+			->and($report2 = new \mock\atoum\report())
 			->and($runner->addReport($report1)->addReport($report2))
 			->then
 				->array($runner->getReports())->isEqualTo(array($report1, $report2))
@@ -379,7 +379,7 @@ class runner extends atoum\test
 	public function testSetPathAndVersionInScore()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\score())
+			->if($score = new \mock\atoum\score())
 			->and($scoreController = $score->getMockController())
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->defined = false)
@@ -394,7 +394,7 @@ class runner extends atoum\test
 						$runner->setPathAndVersionInScore();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to open \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('realpath')->withArguments($phpPath)->once()
@@ -414,7 +414,7 @@ class runner extends atoum\test
 						$runner->setPathAndVersionInScore();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to find \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('realpath')->withArguments($phpPath)->once()
@@ -447,7 +447,7 @@ class runner extends atoum\test
 						$runner->setPathAndVersionInScore();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('realpath')->withArguments($phpPath)->once()
@@ -468,7 +468,7 @@ class runner extends atoum\test
 						$runner->setPathAndVersionInScore();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('realpath')->withArguments($phpPath)->once()

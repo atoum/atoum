@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
-class error extends \mageekguy\atoum\asserter
+class error extends \atoum\asserter
 {
 	protected $score = null;
 	protected $message = null;

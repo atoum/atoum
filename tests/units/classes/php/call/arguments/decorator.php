@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\call\arguments;
+namespace atoum\tests\units\php\call\arguments;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\php\call\arguments
+	atoum,
+	atoum\mock\stream,
+	atoum\php\call\arguments
 ;
 
 require_once __DIR__ . '/../../../runner.php';

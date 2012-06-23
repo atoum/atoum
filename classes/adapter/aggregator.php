@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\adapter;
+namespace atoum\adapter;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 interface aggregator

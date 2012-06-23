@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	atoum,
+	atoum\asserter,
+	atoum\asserters
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class exception extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->isSubclassOf('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -36,7 +36,7 @@ class exception extends atoum\test
 			->then
 				->assert('It is impossible to set asserter with something else than an exception')
 					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->isInstanceOf('atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s is not an exception'), $asserter->getTypeOf($value)))
 					->string($asserter->getValue())->isEqualTo($value)
 				->assert('The asserter was returned when it set with an exception')
@@ -51,7 +51,7 @@ class exception extends atoum\test
 			->if($asserter = new asserters\exception($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Exception is undefined')
 			->if($asserter->setWith(new \exception()))
 			->then
@@ -60,11 +60,11 @@ class exception extends atoum\test
 				->object($asserter->isInstanceOf('\exception'))->isIdenticalTo($asserter)
 				->object($asserter->isInstanceOf('exception'))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter) { $asserter->isInstanceOf(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Argument of mageekguy\atoum\asserters\exception::isInstanceOf() must be a \exception instance or an exception class name')
-				->exception(function() use ($asserter) { $asserter->isInstanceOf('mageekguy\atoum\exceptions\runtime'); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of mageekguy\atoum\exceptions\runtime'), $asserter))
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of atoum\asserters\exception::isInstanceOf() must be a \exception instance or an exception class name')
+				->exception(function() use ($asserter) { $asserter->isInstanceOf('atoum\exceptions\runtime'); })
+					->isInstanceOf('atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of atoum\exceptions\runtime'), $asserter))
 		;
 	}
 
@@ -80,7 +80,7 @@ class exception extends atoum\test
 			->if($asserter->setWith(new atoum\exceptions\runtime(uniqid(), $code = rand(2, PHP_INT_MAX))))
 			->then
 				->exception(function() use ($asserter, & $otherCode) { $asserter->hasCode($otherCode = 1); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('code is %d instead of %d'), $code, $otherCode))
 			->object($asserter->hasCode($code))->isIdenticalTo($asserter)
 		;
@@ -98,7 +98,7 @@ class exception extends atoum\test
 			->if($asserter->setWith(new atoum\exceptions\runtime($message = uniqid())))
 			->then
 				->exception(function() use ($asserter, & $otherMessage) { $asserter->hasMessage($otherMessage = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('message \'%s\' is not identical to \'%s\''), $message, $otherMessage))
 				->object($asserter->hasMessage($message))->isIdenticalTo($asserter)
 		;
@@ -116,17 +116,17 @@ class exception extends atoum\test
 			->if($asserter->setWith(new atoum\exceptions\runtime('', 0)))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasNestedException(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('exception does not contain any nested exception'))
 				->exception(function() use ($asserter) { $asserter->hasNestedException(new \exception()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('exception does not contain this nested exception'))
 			->if($asserter->setWith(new atoum\exceptions\runtime('', 0, $nestedException = new \exception())))
 			->then
 				->object($asserter->hasNestedException())->isIdenticalTo($asserter)
 				->object($asserter->hasNestedException($nestedException))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter) { $asserter->hasNestedException(new \exception()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('exception does not contain this nested exception'))
 		;
 	}

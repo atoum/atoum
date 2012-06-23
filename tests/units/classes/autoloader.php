@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -15,7 +15,7 @@ class autoloader extends atoum\test
 		$autoloader = new atoum\autoloader();
 
 		$this->assert
-            ->array($directories = $autoloader->getDirectories())->hasKey('mageekguy\atoum')
-            ->array($directories['mageekguy\atoum'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes'));
+            ->array($directories = $autoloader->getDirectories())->hasKey('atoum')
+            ->array($directories['atoum'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes'));
 	}
 }

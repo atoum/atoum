@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime\cli;
+namespace atoum\reports\realtime\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\reports\realtime,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\reports\realtime,
+	atoum\report\fields\test,
+	atoum\report\fields\runner
 ;
 
 class light extends realtime

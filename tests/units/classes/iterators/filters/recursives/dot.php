@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\filters\recursives;
+namespace atoum\tests\units\iterators\filters\recursives;
 
 require __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\iterators\filters\recursives
+	atoum,
+	atoum\mock,
+	atoum\iterators\filters\recursives
 ;
 
 class dot extends atoum\test
@@ -29,7 +29,7 @@ class dot extends atoum\test
 			->and($factory->setBuilder('recursiveDirectoryIterator', function($path) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($path)); }))
 			->and($filterController = new mock\controller())
 			->and($filterController->createFactory = $factory)
-			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid()))
+			->and($filter = new \mock\atoum\iterators\filters\recursives\dot($path = uniqid()))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
 				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)->once()
@@ -60,7 +60,7 @@ class dot extends atoum\test
 		$this
 			->if($filter = new recursives\dot(new \mock\recursiveIterator()))
 			->then
-				->object($filter->createFactory())->isInstanceOf('mageekguy\atoum\factory')
+				->object($filter->createFactory())->isInstanceOf('atoum\factory')
 		;
 	}
 }

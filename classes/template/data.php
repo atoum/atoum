@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\template;
+namespace atoum\template;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class data

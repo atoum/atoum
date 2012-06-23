@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\php\path;
+namespace atoum\tests\units\report\fields\runner\php\path;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\php\path')
+			->testedClass->isSubclassOf('atoum\report\fields\runner\php\path')
 		;
 	}
 
@@ -93,7 +93,7 @@ class cli extends atoum\test
 		$this
 			->assert
 				->if($field = new runner\php\path\cli())
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\atoum\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
 				->then
 					->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isFalse()
@@ -108,7 +108,7 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
 				->and($defaultField = new runner\php\path\cli())
 				->then

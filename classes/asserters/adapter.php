@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\arguments
+	atoum,
+	atoum\php,
+	atoum\asserter,
+	atoum\exceptions,
+	atoum\tools\arguments
 ;
 
 class adapter extends atoum\asserter
@@ -23,7 +23,7 @@ class adapter extends atoum\asserter
 	{
 		$this->adapter = $adapter;
 
-		if ($this->adapter instanceof \mageekguy\atoum\test\adapter === false)
+		if ($this->adapter instanceof \atoum\test\adapter === false)
 		{
 			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->getTypeOf($this->adapter)));
 		}

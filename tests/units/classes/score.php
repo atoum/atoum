@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -15,7 +15,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
-				->object($score->getFactory())->isInstanceOf('mageekguy\atoum\factory')
+				->object($score->getFactory())->isInstanceOf('atoum\factory')
 				->variable($score->getPhpPath())->isNull()
 				->variable($score->getPhpVersion())->isNull()
 				->variable($score->getAtoumPath())->isNull()
@@ -30,9 +30,9 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
-				->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage($score->getFactory()))
+				->object($score->getCoverage())->isEqualTo(new \atoum\score\coverage($score->getFactory()))
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\score\coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
+			->and($factory['atoum\score\coverage'] = $coverage = new \atoum\score\coverage())
 			->and($score = new atoum\score($factory))
 			->then
 				->object($score->getFactory())->isIdenticalTo($factory)
@@ -572,7 +572,7 @@ class score extends atoum\test
 							$score->setAtoumPath(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Path of atoum is already set')
 				->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getAtoumPath())->isEqualTo((string) $path)
@@ -590,7 +590,7 @@ class score extends atoum\test
 							$score->setAtoumVersion(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Version of atoum is already set')
 				->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getAtoumVersion())->isEqualTo((string) $version)
@@ -608,7 +608,7 @@ class score extends atoum\test
 							$score->setPhpPath(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('PHP path is already set')
 				->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getPhpPath())->isEqualTo((string) $path)
@@ -626,7 +626,7 @@ class score extends atoum\test
 						$score->setPhpVersion(uniqid());
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('PHP version is already set')
 		;
 	}
@@ -742,7 +742,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
-				->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+				->object($coverage = $score->getCoverage())->isInstanceOf('atoum\score\coverage')
 				->object($coverage->getFactory())->isIdenticalTo($score->getFactory())
 		;
 	}
@@ -1066,7 +1066,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->exception(function() use ($score, & $key) { $score->deleteError($key = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Error key \'' . $key . '\' does not exist')
 			->if($score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type = rand(1, PHP_INT_MAX), $message = uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then

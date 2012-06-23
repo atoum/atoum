@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives\atoum;
+namespace atoum\iterators\recursives\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators
+	atoum,
+	atoum\iterators
 ;
 
 class source implements \outerIterator

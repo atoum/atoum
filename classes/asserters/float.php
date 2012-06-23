@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	atoum\asserters,
+	atoum\exceptions
 ;
 
-class float extends \mageekguy\atoum\asserters\integer
+class float extends \atoum\asserters\integer
 {
 	public function setWith($value, $label = null)
 	{

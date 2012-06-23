@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\duration;
+namespace atoum\tests\units\report\fields\runner\tests\duration;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner\tests
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner\tests
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\runner\tests\duration')
+			->testedClass->isSubClassOf('atoum\report\fields\runner\tests\duration')
 		;
 	}
 
@@ -111,9 +111,9 @@ class cli extends atoum\test
 					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
 					->variable($field->getValue())->isNull()
 					->variable($field->getTestNumber())->isNull()
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (float) rand(1, PHP_INT_MAX))
-				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner = new \mock\atoum\runner())
 				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testsNumber = rand(1, PHP_INT_MAX))
 				->then
@@ -127,9 +127,9 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (rand(1, 100) / 1000))
-				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner = new \mock\atoum\runner())
 				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = 1)
 				->and($defaultField = new tests\duration\cli())

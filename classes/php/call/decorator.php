@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\call;
+namespace atoum\php\call;
 
 use
-	mageekguy\atoum\php
+	atoum\php
 ;
 
 class decorator

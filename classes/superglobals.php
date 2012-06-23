@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class superglobals

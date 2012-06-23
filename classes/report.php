@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 class report implements observer, adapter\aggregator
 {
@@ -16,8 +16,8 @@ class report implements observer, adapter\aggregator
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setLocale($this->factory['atoum\locale']())
+			->setAdapter($this->factory['atoum\adapter']())
 		;
 	}
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\mailers;
+namespace atoum\mailers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class mail extends atoum\mailer

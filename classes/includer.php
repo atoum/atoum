@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\includer
+	atoum\includer
 ;
 
 class includer

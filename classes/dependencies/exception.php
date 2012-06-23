@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\dependencies;
+namespace atoum\dependencies;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class exception extends \exception implements atoum\exception {}

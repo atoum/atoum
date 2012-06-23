@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	atoum,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\tools\diffs
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class sizeOf extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\integer');
+		$this->testedClass->isSubclassOf('atoum\asserters\integer');
 	}
 
 	public function test__construct()

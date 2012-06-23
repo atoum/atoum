@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -13,8 +13,8 @@ class report extends atoum\test
 	public function testTestedClass()
 	{
 		$this->testedClass
-			->isSubclassOf('mageekguy\atoum\observer')
-			->isSubclassOf('mageekguy\atoum\adapter\aggregator')
+			->isSubclassOf('atoum\observer')
+			->isSubclassOf('atoum\adapter\aggregator')
 		;
 	}
 
@@ -24,21 +24,21 @@ class report extends atoum\test
 			->if($report = new atoum\report())
 			->then
 				->variable($report->getTitle())->isNull()
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getFactory())->isInstanceOf('atoum\factory')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->array($report->getWriters())->isEmpty()
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
+			->and($factory['atoum\locale'] = $locale = new atoum\locale())
+			->and($factory['atoum\adapter'] = $adapter = new atoum\adapter())
 			->and($report = new atoum\report($factory))
 			->then
 				->variable($report->getTitle())->isNull()
 				->object($report->getLocale())->isIdenticalTo($locale)
 				->object($report->getAdapter())->isIdenticalTo($adapter)
-				->object($report->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($locale)
-				->object($report->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($adapter)
+				->object($report->getFactory()->build('atoum\locale'))->isIdenticalTo($locale)
+				->object($report->getFactory()->build('atoum\adapter'))->isIdenticalTo($adapter)
 				->array($report->getFields())->isEmpty()
 				->array($report->getWriters())->isEmpty()
 		;
@@ -72,9 +72,9 @@ class report extends atoum\test
 		$this
 			->if($report = new atoum\report())
 			->then
-				->object($report->addField($field = new \mock\mageekguy\atoum\report\field))->isIdenticalTo($report)
+				->object($report->addField($field = new \mock\atoum\report\field))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field))
-				->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
+				->object($report->addField($otherField = new \mock\atoum\report\field()))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field, $otherField))
 		;
 	}

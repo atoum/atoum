@@ -1,5 +1,5 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 interface exception {}

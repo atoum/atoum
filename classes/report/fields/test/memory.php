@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test;
+namespace atoum\report\fields\test;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\report
+	atoum,
+	atoum\test,
+	atoum\report
 ;
 
 abstract class memory extends report\field

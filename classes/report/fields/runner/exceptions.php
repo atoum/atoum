@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\report\fields\runner;
 
 use
-	mageekguy\atoum\locale,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\observable
+	atoum\locale,
+	atoum\runner,
+	atoum\report,
+	atoum\observable
 ;
 
 abstract class exceptions extends report\field

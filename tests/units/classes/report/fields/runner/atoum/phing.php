@@ -1,24 +1,24 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
+namespace atoum\tests\units\report\fields\runner\atoum;
 
 use
-	mageekguy\atoum\score,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner\atoum
+	atoum\score,
+	atoum\runner,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner\atoum
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class phing extends \mageekguy\atoum\test
+class phing extends \atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\field')
+		$this->assert->testedClass->isSubclassOf('atoum\report\field')
 		;
 	}
 
@@ -84,7 +84,7 @@ class phing extends \mageekguy\atoum\test
 			->variable($field->getPath())->isNull()
 			->variable($field->getVersion())->isNull()
 			->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-			->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+			->string($field->getAuthor())->isEqualTo(\atoum\author)
 			->string($field->getPath())->isEqualTo($atoumPath)
 			->string($field->getVersion())->isEqualTo($atoumVersion)
 		;
@@ -108,14 +108,14 @@ class phing extends \mageekguy\atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(runner::runStart, $runner))
 			->then
-				->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \mageekguy\atoum\author)))
+				->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \atoum\author)))
 			->if($field = new atoum\phing($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), null, $locale = new locale()))
 			->and($field->handleEvent(runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(runner::runStart, $runner))
 			->then
-				->castToString($field)->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \mageekguy\atoum\author)))
+				->castToString($field)->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \atoum\author)))
 		;
 	}
 }

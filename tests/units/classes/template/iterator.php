@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\template;
+namespace atoum\tests\units\template;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\template
+	atoum,
+	atoum\template
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -25,7 +25,7 @@ class iterator extends atoum\test
 		$iterator = new template\iterator();
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
 		;
 
@@ -37,20 +37,20 @@ class iterator extends atoum\test
 		$tag->addChild($childTag = new template\tag($tag->getTag()));
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
-			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
 		;
 
 		$childTag->addChild($littleChildTag = new template\tag(uniqid()));
 
 		$this->assert
-			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{uniqid()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isZero()
-			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
-			->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+			->object($innerIterator = $iterator->{$childTag->getTag()}->{$littleChildTag->getTag()})->isInstanceOf('atoum\template\iterator')
 			->sizeOf($innerIterator)->isEqualTo(1)
 		;
 	}
@@ -110,7 +110,7 @@ class iterator extends atoum\test
 		$iterator = new template\iterator();
 
 		$template = new atoum\template();
-		$template->addChild($tag = new \mock\mageekguy\atoum\template\tag(uniqid()));
+		$template->addChild($tag = new \mock\atoum\template\tag(uniqid()));
 		$tag->getMockController()->build = function() {};
 
 		$iterator->addTag($tag->getTag(), $template);

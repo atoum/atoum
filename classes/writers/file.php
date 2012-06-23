@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\writers;
+namespace atoum\writers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\report\writers
+	atoum,
+	atoum\reports,
+	atoum\report\writers
 ;
 
 class file extends atoum\writer implements writers\realtime, writers\asynchronous

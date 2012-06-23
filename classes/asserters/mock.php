@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\arguments
+	atoum,
+	atoum\php,
+	atoum\test,
+	atoum\asserter,
+	atoum\exceptions,
+	atoum\tools\arguments
 ;
 
 class mock extends atoum\asserter
@@ -39,7 +39,7 @@ class mock extends atoum\asserter
 	{
 		$this->mock = $mock;
 
-		if ($this->mock instanceof \mageekguy\atoum\mock\aggregator === false)
+		if ($this->mock instanceof \atoum\mock\aggregator === false)
 		{
 			$this->fail(sprintf($this->getLocale()->_('%s is not a mock'), $this->getTypeOf($this->mock)));
 		}

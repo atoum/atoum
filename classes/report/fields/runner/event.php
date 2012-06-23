@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\report\fields\runner;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\report,
-	mageekguy\atoum\observable
+	atoum\test,
+	atoum\runner,
+	atoum\locale,
+	atoum\report,
+	atoum\observable
 ;
 
 abstract class event extends report\fields\event

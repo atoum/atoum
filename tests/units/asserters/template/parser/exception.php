@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\template\parser;
+namespace atoum\tests\units\asserters\template\parser;
 
 use
-	mageekguy\atoum\asserters
+	atoum\asserters
 ;
 
 class exception extends asserters\exception

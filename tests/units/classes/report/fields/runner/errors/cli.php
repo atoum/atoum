@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\errors;
+namespace atoum\tests\units\report\fields\runner\errors;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner,
-	mock\mageekguy\atoum as mock
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner,
+	mock\atoum as mock
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\errors')
+			->testedClass->isSubclassOf('atoum\report\fields\runner\errors')
 		;
 	}
 

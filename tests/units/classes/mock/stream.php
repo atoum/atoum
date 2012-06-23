@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock;
+namespace atoum\tests\units\mock;
 
 use
-	mageekguy\atoum\mock,
-	mageekguy\atoum\test,
-	mageekguy\atoum\adapter
+	atoum\mock,
+	atoum\test,
+	atoum\adapter
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -37,33 +37,33 @@ class stream extends test
 			->and($adapter->stream_get_wrappers = array())
 			->and($adapter->stream_wrapper_register = true)
 			->then
-				->object($streamController = mock\stream::get($stream = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+				->object($streamController = mock\stream::get($stream = uniqid()))->isInstanceOf('atoum\mock\stream\controller')
 				->string($streamController->getStream())->isEqualTo(mock\stream::defaultProtocol . '://' . mock\stream::setDirectorySeparator($stream))
 				->adapter($adapter)
-					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'atoum\mock\stream')->once()
 			->if($adapter->stream_get_wrappers = array(mock\stream::defaultProtocol))
 			->then
-				->object($streamController = mock\stream::get())->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+				->object($streamController = mock\stream::get())->isInstanceOf('atoum\mock\stream\controller')
 				->string($streamController->getStream())->match('#^' . mock\stream::defaultProtocol . '://\w+$#')
 				->adapter($adapter)
-					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'atoum\mock\stream')->once()
 				->object(mock\stream::get($stream))->isIdenticalTo($streamController = mock\stream::get($stream))
 				->adapter($adapter)
-					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
+					->call('stream_wrapper_register')->withArguments(mock\stream::defaultProtocol, 'atoum\mock\stream')->once()
 				->object(mock\stream::get($otherStream = ($protocol = uniqid()) . '://' . uniqid()))->isNotIdenticalTo($streamController)
 				->adapter($adapter)
-					->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
+					->call('stream_wrapper_register')->withArguments($protocol, 'atoum\mock\stream')->once()
 			->if($adapter->stream_get_wrappers = array(mock\stream::defaultProtocol, $protocol))
 			->then
 				->object(mock\stream::get($otherStream))->isIdenticalTo(mock\stream::get($otherStream))
 				->object(mock\stream::get($otherStream))->isIdenticalTo(mock\stream::get($otherStream))
 				->adapter($adapter)
-					->call('stream_wrapper_register')->withArguments($protocol, 'mageekguy\atoum\mock\stream')->once()
+					->call('stream_wrapper_register')->withArguments($protocol, 'atoum\mock\stream')->once()
 			->if($adapter->stream_get_wrappers = array())
 			->and($adapter->stream_wrapper_register = false)
 			->then
 				->exception(function() use ($protocol) { mock\stream::get($protocol . '://' . uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to register ' . $protocol . ' stream')
 		;
 	}
@@ -76,9 +76,9 @@ class stream extends test
 			->and($adapter->stream_wrapper_register = true)
 			->and($stream = mock\stream::get())
 			->then
-				->object($subStream = mock\stream::getSubStream($stream))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+				->object($subStream = mock\stream::getSubStream($stream))->isInstanceOf('atoum\mock\stream\controller')
 				->castToString($subStream)->match('#^' . $stream . DIRECTORY_SEPARATOR . '[^' . DIRECTORY_SEPARATOR . ']+$#')
-				->object($subStream = mock\stream::getSubStream($stream, $basename = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
+				->object($subStream = mock\stream::getSubStream($stream, $basename = uniqid()))->isInstanceOf('atoum\mock\stream\controller')
 				->castToString($subStream)->match('#^' . $stream . DIRECTORY_SEPARATOR . $basename . '$#')
 		;
 	}

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -25,9 +25,9 @@ class configurator extends atoum\test
 	{
 		$this
 			->assert
-				->if($runner = new \mock\mageekguy\atoum\runner())
+				->if($runner = new \mock\atoum\runner())
 				->and($runner->getMockController()->setBootstrapFile = function() {})
-				->and($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+				->and($script = new \mock\atoum\scripts\runner(uniqid()))
 				->and($script->setRunner($runner))
 				->and($configurator = new atoum\configurator($script))
 				->then
@@ -38,10 +38,10 @@ class configurator extends atoum\test
 					->object($configurator->bootstrapFile($bootstrapFile = uniqid()))->isIdenticalTo($configurator)
 					->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
 				->exception(function() use ($configurator, & $method) { $configurator->{$method = uniqid()}(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Method \'' . $method . '\' is unavailable')
 				->exception(function() use ($configurator) { $configurator->setPhpPath(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Method \'setPhpPath\' is unavailable')
 		;
 	}

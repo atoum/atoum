@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\test\engines;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\test,
+	atoum\exceptions
 ;
 
 class concurrent extends test\engine
@@ -24,7 +24,7 @@ class concurrent extends test\engine
 	{
 		parent::__construct($factory);
 
-		$this->adapter = $this->factory['mageekguy\atoum\adapter']();
+		$this->adapter = $this->factory['atoum\adapter']();
 	}
 
 	public function isRunning()
@@ -60,7 +60,7 @@ class concurrent extends test\engine
 			$phpCode =
 				'<?php ' .
 				'ob_start();' .
-				'define(\'mageekguy\atoum\autorun\', false);' .
+				'define(\'atoum\autorun\', false);' .
 				'require \'' . atoum\directory . '/scripts/runner.php\';'
 			;
 
@@ -70,9 +70,9 @@ class concurrent extends test\engine
 			{
 				$phpCode .=
 					'require \'' . atoum\directory . '/classes/includer.php\';' .
-					'$includer = new mageekguy\atoum\includer();' .
+					'$includer = new atoum\includer();' .
 					'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-					'catch (mageekguy\atoum\includer\exception $exception)' .
+					'catch (atoum\includer\exception $exception)' .
 					'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
 				;
 			}
@@ -154,7 +154,7 @@ class concurrent extends test\engine
 
 				if ($score instanceof atoum\score === false)
 				{
-					$score = $this->factory['mageekguy\atoum\score']($this->factory);
+					$score = $this->factory['atoum\score']($this->factory);
 					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
 				}
 

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserter;
+namespace atoum\tests\units\asserter;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter
+	atoum,
+	atoum\asserter
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -29,9 +29,9 @@ class generator extends atoum\test
 			->if($generator = new asserter\generator())
 			->then
 				->exception(function() use ($generator, & $asserter) { $generator->{$asserter = uniqid()}; })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
-				->object($generator->variable)->isInstanceOf('mageekguy\atoum\asserters\variable')
+				->object($generator->variable)->isInstanceOf('atoum\asserters\variable')
 		;
 	}
 
@@ -53,9 +53,9 @@ class generator extends atoum\test
 			->if($generator = new asserter\generator())
 			->then
 				->exception(function() use ($generator, & $asserter) { $generator->{$asserter = uniqid()}(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $asserter . '\' does not exist')
-				->object($generator->variable(uniqid()))->isInstanceOf('mageekguy\atoum\asserters\variable')
+				->object($generator->variable(uniqid()))->isInstanceOf('atoum\asserters\variable')
 		;
 	}
 

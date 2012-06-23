@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\score;
+namespace atoum\tests\units\score;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\score
+	atoum,
+	atoum\mock,
+	atoum\score
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -24,7 +24,7 @@ class coverage extends atoum\test
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getFactory())->isInstanceOf('mageekguy\atoum\factory')
+				->object($coverage->getFactory())->isInstanceOf('atoum\factory')
 			->if($coverage = new score\coverage($factory = new atoum\factory()))
 			->then
 				->variable($coverage->getValue())->isNull()

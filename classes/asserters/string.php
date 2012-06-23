@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\asserter,
+	atoum\exceptions
 ;
 
 class string extends variable

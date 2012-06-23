@@ -217,8 +217,8 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 */
 
 use
-  \mageekguy\atoum,
-  \mageekguy\atoum\cli\prompt
+  \atoum,
+  \atoum\cli\prompt
 ;
 
 /*

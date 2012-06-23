@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\test;
+namespace atoum\test;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\dependence,
-	mageekguy\atoum\dependencies,
-	mageekguy\atoum\test\adapter\invoker
+	atoum,
+	atoum\exceptions,
+	atoum\dependence,
+	atoum\dependencies,
+	atoum\test\adapter\invoker
 ;
 
 class adapter extends atoum\adapter

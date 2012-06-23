@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime;
+namespace atoum\tests\units\reports\realtime;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields
+	atoum,
+	atoum\reports,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -26,7 +26,7 @@ class phing extends atoum\test
 				->boolean($report->codeCoverageIsShowed())->isTrue()
 				->boolean($report->missingCodeCoverageIsShowed())->isTrue()
 				->boolean($report->progressIsShowed())->isTrue()
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
+				->object($report->getFactory())->isInstanceOf('atoum\factory')
 		  ;
 	}
 }

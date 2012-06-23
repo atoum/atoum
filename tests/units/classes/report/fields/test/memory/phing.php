@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\memory;
+namespace atoum\tests\units\report\fields\test\memory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\tests\units
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\test,
+	atoum\tests\units
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -17,7 +17,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\memory\cli');
+		$this->assert->testedClass->isSubClassOf('atoum\report\fields\test\memory\cli');
 	}
 
 	public function test__construct()
@@ -97,13 +97,13 @@ class phing extends atoum\test
 		$this
 			->assert
 				->if($field = new test\memory\phing())
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = $totalMemoryUsage = rand(0, PHP_INT_MAX))
 				->and($adapter = new atoum\test\adapter())
 				->and($adapter->class_exists = true)
 				->and($testController = new atoum\mock\controller())
 				->and($testController->getTestedClassName = uniqid())
-				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->and($test = new \mock\atoum\test(null, null, $adapter, null, null, $testController))
 				->and($test->getMockController()->getScore = $score)
 				->then
 					->boolean($field->handleEvent(atoum\test::runStart, $test))->isFalse()
@@ -117,13 +117,13 @@ class phing extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = $totalMemoryUsage = rand(0, PHP_INT_MAX))
 				->and($adapter = new atoum\test\adapter())
 				->and($adapter->class_exists = true)
 				->and($testController = new atoum\mock\controller())
 				->and($testController->getTestedClassName = uniqid())
-				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
+				->and($test = new \mock\atoum\test(null, null, $adapter, null, null, $testController))
 				->and($test->getMockController()->getScore = $score)
 				->and($defaultField = new test\memory\phing())
 				->and($customField = new test\memory\phing($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $memoryColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))

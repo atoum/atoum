@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	atoum\asserters,
+	atoum\exceptions
 ;
 
 class boolean extends asserters\variable

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\annotations
+	atoum\test,
+	atoum\mock,
+	atoum\asserter,
+	atoum\exceptions,
+	atoum\annotations
 ;
 
 abstract class test implements observable, adapter\aggregator, \countable
@@ -30,7 +30,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
 	const defaultEngine = 'concurrent';
-	const enginesNamespace = '\mageekguy\atoum\test\engines';
+	const enginesNamespace = '\atoum\test\engines';
 
 	private $phpPath = null;
 	private $path = '';
@@ -68,11 +68,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
-			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())
-			->setIncluder($this->factory['mageekguy\atoum\includer']())
+			->setScore($this->factory['atoum\score']($this->factory))
+			->setLocale($this->factory['atoum\locale']())
+			->setAdapter($this->factory['atoum\adapter']())
+			->setSuperglobals($this->factory['atoum\superglobals']())
+			->setIncluder($this->factory['atoum\includer']())
 			->enableCodeCoverage()
 		;
 
@@ -82,7 +82,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$annotationExtractor = $this->factory['mageekguy\atoum\annotations\extractor']();
+		$annotationExtractor = $this->factory['atoum\annotations\extractor']();
 
 		$test = $this;
 
@@ -136,7 +136,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				->setAlias('class', 'phpClass')
 		;
 
-		$this->setAssertionManager($this->factory['mageekguy\atoum\test\assertion\manager']());
+		$this->setAssertionManager($this->factory['atoum\test\assertion\manager']());
 	}
 
 	public function __toString()
@@ -301,7 +301,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	public function getMockGenerator()
 	{
-		return $this->mockGenerator ?: $this->setMockGenerator($this->factory['mageekguy\atoum\test\mock\generator']($this))->mockGenerator;
+		return $this->mockGenerator ?: $this->setMockGenerator($this->factory['atoum\test\mock\generator']($this))->mockGenerator;
 	}
 
 	public function setAsserterGenerator(test\asserter\generator $generator)
@@ -315,7 +315,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		test\adapter::resetCallsForAllInstances();
 
-		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory['mageekguy\atoum\test\asserter\generator']($this))->asserterGenerator;
+		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory['atoum\test\asserter\generator']($this))->asserterGenerator;
 	}
 
 	public function setTestNamespace($testNamespace)

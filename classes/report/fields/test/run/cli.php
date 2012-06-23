@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\run;
+namespace atoum\report\fields\test\run;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report
 ;
 
 class cli extends report\fields\test\run

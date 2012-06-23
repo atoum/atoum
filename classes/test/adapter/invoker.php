@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter;
+namespace atoum\test\adapter;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class invoker implements \arrayAccess

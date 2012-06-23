@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\scripts\builder;
+namespace atoum\scripts\builder;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 abstract class vcs implements atoum\adapter\aggregator

@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\coverage;
+namespace atoum\report\fields\runner\coverage;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\report,
+	atoum\runner,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\coverage

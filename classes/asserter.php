@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\asserter,
+	atoum\exceptions
 ;
 
 abstract class asserter

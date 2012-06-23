@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\phar;
+namespace atoum\tests\units\scripts\phar;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts\phar,
-	mock\mageekguy\atoum as mock
+	atoum,
+	atoum\scripts\phar,
+	mock\atoum as mock
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -15,7 +15,7 @@ class stub extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\scripts\runner')
+			->testedClass->isSubclassOf('atoum\scripts\runner')
 		;
 	}
 
@@ -39,12 +39,12 @@ class stub extends atoum\test
 				->and($stdOut->getMockController()->write = function() {})
 				->then
 					->exception(function() use ($stub) { $stub->update(); })
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Unable to update the PHAR, phar.readonly is set, use \'-d phar.readonly=0\'')
 				->if($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 0 : $name = 'allow_url_fopen' ? 0 : ini_get($name); })
 				->then
 					->exception(function() use ($stub) { $stub->update(); })
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Unable to update the PHAR, allow_url_fopen is not set, use \'-d allow_url_fopen=1\'')
 				->if($adapter->ini_get = function($name) { return $name === 'phar.readonly' ? 0 : $name = 'allow_url_fopen' ? 1 : ini_get($name); })
 				->and($stub->getFactory()->setBuilder('phar', function($path) use (& $phar) {

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\atoum;
+namespace atoum\report\fields\runner\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\report,
+	atoum\cli\prompt,
+	atoum\cli\colorizer
 ;
 
 class phing extends report\fields\runner\atoum\cli

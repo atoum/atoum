@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\iterators,
+	atoum\exceptions
 ;
 
 class runner implements observable, adapter\aggregator
 {
-	const atoumVersionConstant = 'mageekguy\atoum\version';
-	const atoumDirectoryConstant = 'mageekguy\atoum\directory';
+	const atoumVersionConstant = 'atoum\version';
+	const atoumDirectoryConstant = 'atoum\directory';
 
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
@@ -41,16 +41,16 @@ class runner implements observable, adapter\aggregator
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setIncluder($this->factory['mageekguy\atoum\includer']())
-			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
-			->setTestDirectoryIterator($this->factory['mageekguy\atoum\iterators\recursives\directory']())
+			->setAdapter($this->factory['atoum\adapter']())
+			->setLocale($this->factory['atoum\locale']())
+			->setIncluder($this->factory['atoum\includer']())
+			->setScore($this->factory['atoum\score']($this->factory))
+			->setTestDirectoryIterator($this->factory['atoum\iterators\recursives\directory']())
 		;
 
-		$this->factory['mageekguy\atoum\adapter'] = $this->adapter;
-		$this->factory['mageekguy\atoum\locale'] = $this->locale;
-		$this->factory['mageekguy\atoum\includer'] = $this->includer;
+		$this->factory['atoum\adapter'] = $this->adapter;
+		$this->factory['atoum\locale'] = $this->locale;
+		$this->factory['atoum\includer'] = $this->includer;
 
 		$runnerClass = $this->factory['reflectionClass']($this);
 

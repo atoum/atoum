@@ -92,14 +92,14 @@ class AtoumTask extends Task
             require_once $this->bootstrap;
         }
 
-        define('mageekguy\\atoum\\autorun', false);
+        define('\atoum\\autorun', false);
         if (!empty($this->atoumpharpath)) {
             require_once($this->atoumpharpath);
         } elseif (!empty($this->atoumautoloaderpath)) {
             require_once($this->atoumautoloaderpath);
         } else {
-            if (!class_exists('mageekguy\atoum\scripts\runner', false)) {
-                throw new Exception("Unknown class mageekguy\\atoum\\scripts\\runner.\n\rConsider setting atoumpharpath parameter");
+            if (!class_exists('atoum\scripts\runner', false)) {
+                throw new Exception("Unknown class \atoum\\scripts\\runner.\n\rConsider setting atoumpharpath parameter");
             }
         }
 
@@ -113,8 +113,8 @@ class AtoumTask extends Task
     public function execute()
     {
         if ($this->runner === false) {
-            $this->runner = new \mageekguy\atoum\runner();
-            $report = new \mageekguy\atoum\reports\realtime\phing(
+            $this->runner = new \atoum\runner();
+            $report = new \atoum\reports\realtime\phing(
                 $this->showprogress,
                 $this->showcodecoverage,
                 $this->showmissingcodecoverage,
@@ -123,7 +123,7 @@ class AtoumTask extends Task
                 $this->codecoveragereportpath,
                 $this->codecoveragereporturl
             );
-            $writer = new \mageekguy\atoum\writers\std\out();
+            $writer = new \atoum\writers\std\out();
 
             $report->addWriter($writer);
             $this->runner->addReport($report);
@@ -140,9 +140,9 @@ class AtoumTask extends Task
                 $this->runner->setMaxChildrenNumber($this->maxchildren);
             }
             if ($this->codecoveragexunitpath !== false) {
-                $xUnit = new \mageekguy\atoum\reports\asynchronous\xunit();
+                $xUnit = new \atoum\reports\asynchronous\xunit();
                 $this->runner->addReport($xUnit);
-                $file = new \mageekguy\atoum\writers\file($this->codecoveragexunitpath);
+                $file = new \atoum\writers\file($this->codecoveragexunitpath);
                 $xUnit->addWriter($file);
             }
         }
