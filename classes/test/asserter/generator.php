@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\asserter;
+namespace atoum\test\asserter;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter
+	atoum,
+	atoum\asserter
 ;
 
 class generator extends asserter\generator

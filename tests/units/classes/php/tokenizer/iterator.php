@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\tokenizer;
+namespace atoum\tests\units\php\tokenizer;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php\tokenizer
+	atoum,
+	atoum\php\tokenizer
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -702,7 +702,7 @@ class iterator extends atoum\test
 					$iterator->append($innerIterator);
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to append value because it has already a parent')
 		;
 

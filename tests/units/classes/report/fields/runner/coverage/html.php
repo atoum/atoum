@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\coverage;
+namespace atoum\tests\units\report\fields\runner\coverage;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\template,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\coverage
+	atoum,
+	atoum\test,
+	atoum\locale,
+	atoum\template,
+	atoum\mock,
+	atoum\mock\stream,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\coverage
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -20,7 +20,7 @@ class html extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\coverage\cli');
+		$this->testedClass->isSubclassOf('atoum\report\fields\runner\coverage\cli');
 	}
 
 	public function test__construct()
@@ -36,9 +36,9 @@ class html extends atoum\test
 				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
 				->object($field->getUrlPrompt())->isEqualTo(new prompt())
 				->object($field->getUrlColorizer())->isEqualTo(new colorizer())
-				->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($field->getAdapter())->isInstanceOf('atoum\adapter')
 				->object($field->getLocale())->isEqualTo(new locale())
-				->object($field->getTemplateParser())->isInstanceOf('mageekguy\atoum\template\parser')
+				->object($field->getTemplateParser())->isInstanceOf('atoum\template\parser')
 				->variable($field->getCoverage())->isNull()
 				->array($field->getSrcDirectories())->isEmpty()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
@@ -214,7 +214,7 @@ class html extends atoum\test
 			->and($destinationDirectory->readdir[4] = $file = stream::getSubStream($destinationDirectory))
 			->and($file->unlink = true)
 			->and($destinationDirectory->readdir[5] = false)
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), (string) $destinationDirectory, uniqid(), null, null, null, null, null, null, $adapter = new test\adapter()))
+			->and($field = new \mock\atoum\report\fields\runner\coverage\html(uniqid(), (string) $destinationDirectory, uniqid(), null, null, null, null, null, null, $adapter = new test\adapter()))
 			->and($adapter->rmdir = function() {})
 			->and($adapter->unlink = function() {})
 			->then
@@ -293,7 +293,7 @@ class html extends atoum\test
 							$field->setReflectionClassInjector(function() {});
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Reflection class injector must take one argument')
 		;
 	}
@@ -311,7 +311,7 @@ class html extends atoum\test
 							$field->getReflectionClass(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Reflection class injector must return a \reflectionClass instance')
 		;
 	}
@@ -322,7 +322,7 @@ class html extends atoum\test
 			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
 			->then
 				->castToString($field)->isEqualTo('Code coverage: unknown.' . PHP_EOL)
-			->if($coverage = new \mock\mageekguy\atoum\score\coverage())
+			->if($coverage = new \mock\atoum\score\coverage())
 			->and($coverageController = $coverage->getMockController())
 			->and($coverageController->count = rand(1, PHP_INT_MAX))
 			->and($coverageController->getClasses = array(
@@ -355,31 +355,31 @@ class html extends atoum\test
 			->and($coverageController->getValue = $coverageValue = rand(1, 10) / 10)
 			->and($coverageController->getValueForClass = $classCoverageValue = rand(1, 10) / 10)
 			->and($coverageController->getValueForMethod = $methodCoverageValue = rand(1, 10) / 10)
-			->and($score = new \mock\mageekguy\atoum\score())
+			->and($score = new \mock\atoum\score())
 			->and($score->getMockController()->getCoverage = $coverage)
-			->if($classCoverageTemplate = new \mock\mageekguy\atoum\template\tag('classCoverage'))
-			->and($classCoverageTemplate->addChild($classCoverageAvailableTemplate = new \mock\mageekguy\atoum\template\tag('classCoverageAvailable')))
-			->and($indexTemplate = new \mock\mageekguy\atoum\template())
+			->if($classCoverageTemplate = new \mock\atoum\template\tag('classCoverage'))
+			->and($classCoverageTemplate->addChild($classCoverageAvailableTemplate = new \mock\atoum\template\tag('classCoverageAvailable')))
+			->and($indexTemplate = new \mock\atoum\template())
 			->and($indexTemplate
-					->addChild($coverageAvailableTemplate = new \mock\mageekguy\atoum\template\tag('coverageAvailable'))
+					->addChild($coverageAvailableTemplate = new \mock\atoum\template\tag('coverageAvailable'))
 					->addChild($classCoverageTemplate)
 				)
 			->and($indexTemplateController = $indexTemplate->getMockController())
 			->and($indexTemplateController->__set = function() {})
 			->and($indexTemplateController->build = $buildOfIndexTemplate = uniqid())
-			->and($methodTemplate = new \mock\mageekguy\atoum\template())
+			->and($methodTemplate = new \mock\atoum\template())
 			->and($methodTemplateController = $methodTemplate->getMockController())
 			->and($methodTemplateController->__set = function() {})
-			->and($lineTemplate = new \mock\mageekguy\atoum\template\tag('line'))
+			->and($lineTemplate = new \mock\atoum\template\tag('line'))
 			->and($lineTemplateController = $lineTemplate->getMockController())
 			->and($lineTemplateController->__set = function() {})
-			->and($coveredLineTemplate = new \mock\mageekguy\atoum\template\tag('coveredLine'))
+			->and($coveredLineTemplate = new \mock\atoum\template\tag('coveredLine'))
 			->and($coveredLineTemplateController = $coveredLineTemplate->getMockController())
 			->and($coveredLineTemplateController->__set = function() {})
-			->and($notCoveredLineTemplate = new \mock\mageekguy\atoum\template\tag('notCoveredLine'))
+			->and($notCoveredLineTemplate = new \mock\atoum\template\tag('notCoveredLine'))
 			->and($notCoveredLineTemplateController = $notCoveredLineTemplate->getMockController())
 			->and($notCoveredLineTemplateController->__set = function() {})
-			->and($sourceFileTemplate = new \mock\mageekguy\atoum\template\tag('sourceFile'))
+			->and($sourceFileTemplate = new \mock\atoum\template\tag('sourceFile'))
 			->and($sourceFileTemplateController = $sourceFileTemplate->getMockController())
 			->and($sourceFileTemplateController->__set = function() {})
 			->and($sourceFileTemplate
@@ -387,12 +387,12 @@ class html extends atoum\test
 					->addChild($coveredLineTemplate)
 					->addChild($notCoveredLineTemplate)
 				)
-			->and($methodCoverageAvailableTemplate = new \mock\mageekguy\atoum\template\tag('methodCoverageAvailable'))
-			->and($methodTemplate = new \mock\mageekguy\atoum\template\tag('method'))
+			->and($methodCoverageAvailableTemplate = new \mock\atoum\template\tag('methodCoverageAvailable'))
+			->and($methodTemplate = new \mock\atoum\template\tag('method'))
 			->and($methodTemplate->addChild($methodCoverageAvailableTemplate))
-			->and($methodsTemplate = new \mock\mageekguy\atoum\template\tag('methods'))
+			->and($methodsTemplate = new \mock\atoum\template\tag('methods'))
 			->and($methodsTemplate->addChild($methodTemplate))
-			->and($classTemplate = new \mock\mageekguy\atoum\template())
+			->and($classTemplate = new \mock\atoum\template())
 			->and($classTemplateController = $classTemplate->getMockController())
 			->and($classTemplateController->__set = function() {})
 			->and($classTemplate
@@ -436,8 +436,8 @@ class html extends atoum\test
 			->and($reflectedMethod4Controller->getStartLine = 11)
 			->and($reflectedMethod4 = new \mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod4Controller))
 			->and($reflectedClassController->getMethods = array($reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4))
-			->and($templateParser = new \mock\mageekguy\atoum\template\parser())
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid(), $templatesDirectory = uniqid()))
+			->and($templateParser = new \mock\atoum\template\parser())
+			->and($field = new \mock\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid(), $templatesDirectory = uniqid()))
 			->and($field
 					->setTemplateParser($templateParser)
 					->setAdapter($adapter = new test\adapter())
@@ -445,7 +445,7 @@ class html extends atoum\test
 			->and($fieldController = $field->getMockController())
 			->and($fieldController->cleanDestinationDirectory = function() {})
 			->and($fieldController->getReflectionClass = $reflectedClass)
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner = new \mock\atoum\runner())
 			->and($runner->getMockController()->getScore = $score)
 			->and($field->setRootUrl($rootUrl = uniqid()))
 			->and($templateParserController = $templateParser->getMockController())

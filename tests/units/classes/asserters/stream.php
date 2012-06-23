@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	atoum,
+	atoum\asserter,
+	atoum\asserters
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class stream extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->isSubclassOf('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -51,14 +51,14 @@ class stream extends atoum\test
 			->if($asserter = new asserters\stream($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isRead(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Stream is undefined')
 			->if($streamController = atoum\mock\stream::get($streamName = uniqid()))
 			->and($streamController->file_get_contents = uniqid())
 			->and($asserter->setWith($streamName))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isRead(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($failMessage = sprintf($generator->getLocale()->_('stream %s is not read'), $streamName))
 				->when(function() use ($streamName) { file_get_contents('atoum://' . $streamName); })
 					->object($asserter->isRead())->isIdenticalTo($asserter)
@@ -71,14 +71,14 @@ class stream extends atoum\test
 			->if($asserter = new asserters\stream($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isWrited(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Stream is undefined')
 			->if($streamController = atoum\mock\stream::get($streamName = uniqid()))
 			->and($streamController->file_put_contents = strlen($contents = uniqid()))
 			->and($asserter->setWith($streamName))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isWrited(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($failMessage = sprintf($generator->getLocale()->_('stream %s is not writed'), $streamName))
 				->when(function() use ($streamName, $contents) { file_put_contents('atoum://' . $streamName, $contents); })
 					->object($asserter->isWrited())->isIdenticalTo($asserter)

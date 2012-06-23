@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\factory
+	atoum\factory
 ;
 
 class factory implements \arrayAccess, \serializable

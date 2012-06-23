@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer;
+namespace atoum\php\tokenizer;
 
 use
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\tokenizer\iterator
+	atoum\exceptions,
+	atoum\php\tokenizer\iterator
 ;
 
 class iterator extends iterator\value

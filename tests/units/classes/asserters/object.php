@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	atoum,
+	atoum\asserter,
+	atoum\asserters
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class object extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+		$this->testedClass->isSubclassOf('atoum\asserters\variable');
 	}
 
 	public function test__construct()
@@ -35,14 +35,14 @@ class object extends atoum\test
 			->if($asserter = new asserters\object($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->toString; })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 				->exception(function() use ($asserter, & $property) { $asserter->{$property = uniqid()}; })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Asserter \'' . $property . '\' does not exist')
 			->if($asserter->setWith($this))
 			->then
-				->object($asserter->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
+				->object($asserter->toString)->isInstanceOf('atoum\asserters\castToString')
 		;
 	}
 
@@ -52,7 +52,7 @@ class object extends atoum\test
 			->if($asserter = new asserters\object($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 				->string($asserter->getValue())->isEqualTo($value)
 				->object($asserter->setWith($value = $this))->isIdenticalTo($asserter)
@@ -68,12 +68,12 @@ class object extends atoum\test
 			->if($asserter = new asserters\object($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 			->if($asserter->setWith($this))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(0); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has not size %d'), $asserter, 0))
 				->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
 		;
@@ -85,12 +85,12 @@ class object extends atoum\test
 			->if($asserter = new asserters\object($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 			->if($asserter->setWith($this))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
 			->if($asserter->setWith(new \arrayIterator()))
 			->then
@@ -104,11 +104,11 @@ class object extends atoum\test
 			->if($asserter = new asserters\object($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->toString(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
 			->if($asserter->setWith($this))
 			->then
-				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
+				->object($asserter->toString())->isInstanceOf('atoum\asserters\castToString')
 		;
 	}
 }

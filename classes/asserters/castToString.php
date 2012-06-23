@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum\asserters
+	atoum\asserters
 ;
 
 class castToString extends asserters\string

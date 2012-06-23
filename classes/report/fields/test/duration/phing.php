@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\duration;
+namespace atoum\report\fields\test\duration;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report
 ;
 
 class phing extends report\fields\test\duration\cli

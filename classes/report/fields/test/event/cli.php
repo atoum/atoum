@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\event;
+namespace atoum\report\fields\test\event;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\report,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\progressBar
+	atoum\test,
+	atoum\report,
+	atoum\exceptions,
+	atoum\cli\progressBar
 ;
 
 class cli extends report\fields\test\event

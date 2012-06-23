@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\reports;
+namespace atoum\reports;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report
+	atoum,
+	atoum\report
 ;
 
 abstract class asynchronous extends atoum\report

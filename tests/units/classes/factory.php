@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require __DIR__ . '/../runner.php';
@@ -68,7 +68,7 @@ class factory extends atoum\test
 				->object($arrayIterator = $factory->build('arrayIterator', array(array())))->isEqualTo(new \arrayIterator())
 				->object($arrayIterator = $factory->build('arrayIterator', array($data = array(uniqid(), uniqid(), uniqid()))))->isEqualTo(new \arrayIterator($data))
 				->exception(function() use ($factory, & $class) { $factory->build($class = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\factory\exception')
+					->isInstanceOf('atoum\factory\exception')
 					->hasMessage('Class \'' . $class . '\' does not exist')
 			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = new \arrayIterator); }))
 				->object($arrayIterator = $factory->build('arrayIterator'))->isIdenticalTo($return)
@@ -78,16 +78,16 @@ class factory extends atoum\test
 			->if($factory->setBuilder('arrayIterator', function() use (& $return) { return ($return = uniqid()); }))
 			->then
 				->string($factory->build('arrayIterator'))->isEqualTo($return)
-			->if($factory->import('mageekguy\atoum'))
+			->if($factory->import('atoum'))
 			->then
 				->object($factory->build('atoum\adapter'))->isEqualTo(new atoum\adapter())
-			->if($factory->import('mageekguy\atoum', 'foo'))
+			->if($factory->import('atoum', 'foo'))
 			->then
 				->object($factory->build('foo\adapter'))->isEqualTo(new atoum\adapter())
-			->if($factory->import('mageekguy\atoum\adapter'))
+			->if($factory->import('atoum\adapter'))
 			->then
 				->object($factory->build('adapter'))->isEqualTo(new atoum\adapter())
-			->if($factory->import('mageekguy\atoum\adapter', 'bar'))
+			->if($factory->import('atoum\adapter', 'bar'))
 			->then
 				->object($factory->build('bar'))->isEqualTo(new atoum\adapter())
 		;
@@ -225,7 +225,7 @@ class factory extends atoum\test
 				->object($factory->import('foo\bar\toto', 'tutu'))->isIdenticalTo($factory)
 				->array($factory->getImportations())->isEqualTo(array('foo' => 'foo', 'bar' => 'foo', 'truc' => 'foo\bar', 'tutu' => 'foo\bar\toto'))
 				->exception(function() use ($factory) { $factory->import('foo\bar\tutu'); })
-					->isInstanceOf('mageekguy\atoum\factory\exception')
+					->isInstanceOf('atoum\factory\exception')
 					->hasMessage('Unable to use \'foo\bar\tutu\' as \'tutu\' because the name is already in use')
 		;
 	}

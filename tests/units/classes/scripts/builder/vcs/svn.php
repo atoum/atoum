@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
+namespace atoum\tests\units\scripts\builder\vcs;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\scripts\builder\vcs
+	atoum,
+	atoum\mock,
+	atoum\mock\stream,
+	atoum\scripts\builder\vcs
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -26,7 +26,7 @@ class svn extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\adapter\aggregator');
+		$this->testedClass->isSubclassOf('atoum\adapter\aggregator');
 	}
 
 	public function test__construct()
@@ -34,7 +34,7 @@ class svn extends atoum\test
 		$this
 			->if($svn = new vcs\svn())
 			->then
-				->object($svn->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($svn->getAdapter())->isInstanceOf('atoum\adapter')
 				->variable($svn->getRepositoryUrl())->isNull()
 			->if($svn = new vcs\svn($adapter = new atoum\adapter()))
 			->then
@@ -142,7 +142,7 @@ class svn extends atoum\test
 						$svn->getNextRevisions();
 					}
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to get logs, repository url is undefined')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
@@ -201,7 +201,7 @@ class svn extends atoum\test
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
-		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+		$svn = new \mock\atoum\scripts\builder\vcs\svn($adapter);
 
 		$this->assert
 			->object($svn->setWorkingDirectory($workingDirectory = uniqid()))->isIdenticalTo($svn)
@@ -216,7 +216,7 @@ class svn extends atoum\test
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
-		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter);
+		$svn = new \mock\atoum\scripts\builder\vcs\svn($adapter);
 
 		$svn->getMockController()->cleanWorkingDirectory = $svn;
 
@@ -225,7 +225,7 @@ class svn extends atoum\test
 						$svn->exportRepository(uniqid());
 					}
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to export repository, repository url is undefined')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->never()
@@ -248,7 +248,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
@@ -271,7 +271,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
@@ -294,7 +294,7 @@ class svn extends atoum\test
 						$svn->exportRepository();
 					}
 				)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to checkout repository \'' . $repositoryUrl . '\' in directory \'' . $workingDirectory . '\'')
 			->adapter($adapter)
 				->call('svn_auth_set_parameter')->withArguments(PHP_SVN_AUTH_PARAM_IGNORE_SSL_VERIFY_ERRORS, true)->once()
@@ -351,7 +351,7 @@ class svn extends atoum\test
 			->and($workingDirectory->readdir[4] = $aFile = stream::getSubStream($workingDirectory))
 			->and($aFile->unlink = true)
 			->and($workingDirectory->readdir[5] = false)
-			->and($svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller()))
+			->and($svn = new \mock\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller()))
 			->and($svn->setWorkingDirectory('atoum://workingDirectory'))
 			->then
 				->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)

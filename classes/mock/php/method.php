@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\mock\php;
+namespace atoum\mock\php;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class method

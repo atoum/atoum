@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result;
+namespace atoum\tests\units\report\fields\runner\result;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\tests\units
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner,
+	atoum\tests\units
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\field')
+			->testedClass->isSubClassOf('atoum\report\field')
 		;
 	}
 
@@ -111,12 +111,12 @@ class cli extends atoum\test
 
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
-				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner = new \mock\atoum\runner())
 				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 				->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
@@ -141,20 +141,20 @@ class cli extends atoum\test
 
 	public function test__toString()
 	{
-		$score = new \mock\mageekguy\atoum\score();
+		$score = new \mock\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getAssertionNumber = 1;
 		$scoreController->getFailNumber = 0;
 		$scoreController->getErrorNumber = 0;
 		$scoreController->getExceptionNumber = 0;
 
-		$runner = new \mock\mageekguy\atoum\runner();
+		$runner = new \mock\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 		$runnerController->getTestNumber = 1;
 		$runnerController->getTestMethodNumber = 1;
 
-		$locale = new \mock\mageekguy\atoum\locale();
+		$locale = new \mock\atoum\locale();
 		$localeController = $locale->getMockController();
 		$localeController->_ = function ($string) use (& $noTestRunningString, & $successString, & $failureString) {
 			switch ($string)
@@ -195,15 +195,15 @@ class cli extends atoum\test
 			}
 		};
 
-		$prompt = new \mock\mageekguy\atoum\cli\prompt();
+		$prompt = new \mock\atoum\cli\prompt();
 		$promptController = $prompt->getMockController();
 		$promptController->__toString = $promptString = uniqid();
 
-		$successColorizer = new \mock\mageekguy\atoum\cli\colorizer();
+		$successColorizer = new \mock\atoum\cli\colorizer();
 		$successColorizerController = $successColorizer->getMockController();
 		$successColorizerController->colorize = $colorizedSuccessString = uniqid();
 
-		$failureColorizer = new \mock\mageekguy\atoum\cli\colorizer();
+		$failureColorizer = new \mock\atoum\cli\colorizer();
 		$failureColorizerController = $failureColorizer->getMockController();
 		$failureColorizerController->colorize = $colorizedFailureString = uniqid();
 

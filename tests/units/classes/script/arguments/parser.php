@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script\arguments;
+namespace atoum\tests\units\script\arguments;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\script
+	atoum,
+	atoum\script
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -50,7 +50,7 @@ class parser extends atoum\test
 	{
 		$this
 			->assert
-				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+				->if($script = new \mock\atoum\script(uniqid()))
 				->and($parser = new script\arguments\parser())
 				->then
 					->array($parser->getValues())->isEmpty()
@@ -78,7 +78,7 @@ class parser extends atoum\test
 	{
 		$this
 			->assert
-				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+				->if($script = new \mock\atoum\script(uniqid()))
 				->and($parser = new script\arguments\parser())
 				->and($parser->parse($script, array()))
 				->then
@@ -101,7 +101,7 @@ class parser extends atoum\test
 	{
 		$this
 			->assert('when using $_SERVER')
-				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+				->if($script = new \mock\atoum\script(uniqid()))
 				->and($superglobals = new atoum\superglobals())
 				->and($superglobals->_SERVER['argv'] = array())
 				->and($parser = new script\arguments\parser($superglobals))
@@ -204,7 +204,7 @@ class parser extends atoum\test
 							$parser->parse($script, array('b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 						->hasMessage('First argument \'b\' is invalid')
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'))
 				->and($parser->addHandler(function($script, $argument, $value) {}, array('-d'), PHP_INT_MAX))
@@ -257,25 +257,25 @@ class parser extends atoum\test
 							$parser->addHandler(function() {}, $argument = array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser) {
 							$parser->addHandler(function($script) {}, array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser) {
 							$parser->addHandler(function($script, $argument) {}, array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser, & $badArgument) {
 							$parser->addHandler(function($script, $argument, $values) {}, array($badArgument = 'b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Argument \'' . $badArgument . '\' is invalid')
 				->object($parser->addHandler($otherHandler = function($script, $argument, $values) {}, array($otherArgument = '-b'), $priority = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler), $otherArgument => array($otherHandler)))

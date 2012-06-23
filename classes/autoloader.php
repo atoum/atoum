@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 require_once __DIR__ . '/../constants.php';
 

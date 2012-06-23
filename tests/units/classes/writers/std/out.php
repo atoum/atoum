@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers\std;
+namespace atoum\tests\units\writers\std;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers\std
+	atoum,
+	atoum\writers\std
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -15,10 +15,10 @@ class out extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->isSubClassOf('mageekguy\atoum\writers\std')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
-				->hasInterface('mageekguy\atoum\report\writers\realtime')
-				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
+				->isSubClassOf('atoum\writers\std')
+				->hasInterface('atoum\adapter\aggregator')
+				->hasInterface('atoum\report\writers\realtime')
+				->hasInterface('atoum\report\writers\asynchronous')
 		;
 	}
 

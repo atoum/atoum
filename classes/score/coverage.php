@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\score;
+namespace atoum\score;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\score,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\score,
+	atoum\exceptions
 ;
 
 class coverage implements \countable

@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\coverage;
+namespace atoum\tests\units\report\fields\runner\tests\coverage;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\score,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests
+	atoum,
+	atoum\mock,
+	atoum\score,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\tests
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\coverage\cli');
+		$this->assert->testedClass->isSubclassOf('atoum\report\fields\runner\tests\coverage\cli');
 	}
 
 	public function test__construct()
@@ -159,7 +159,7 @@ class phing extends atoum\test
 		$this
 			->assert
 				->if($scoreCoverage = new score\coverage($factory = new atoum\factory()))
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\atoum\score())
 				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 				->and($runner = new atoum\runner())
 				->and($runner->setScore($score))

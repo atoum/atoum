@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 require_once __DIR__ . '/../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\dependencies as testedClass
+	atoum,
+	atoum\dependencies as testedClass
 ;
 
 class dependencies extends atoum\test
@@ -69,7 +69,7 @@ class dependencies extends atoum\test
 			->if($dependencies = new testedClass())
 			->then
 				->exception(function() use ($dependencies, & $argument) { $dependencies->{$argument = uniqid()}; })
-					->isInstanceOf('mageekguy\atoum\dependencies\exception')
+					->isInstanceOf('atoum\dependencies\exception')
 					->hasMessage('Argument \'' . $argument . '\' is undefined')
 			->if($dependencies->setArgument($name = uniqid(), $value = uniqid()))
 			->then
@@ -218,7 +218,7 @@ class dependencies extends atoum\test
 			->if($dependencies = new testedClass())
 			->then
 				->exception(function() use ($dependencies, & $argument) { $dependencies->getArgument($argument = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\dependencies\exception')
+					->isInstanceOf('atoum\dependencies\exception')
 					->hasMessage('Argument \'' . $argument . '\' is undefined')
 			->if($dependencies->setArgument($name = uniqid(), $value = uniqid()))
 			->then

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\script,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\script,
+	atoum\exceptions
 ;
 
 abstract class script implements atoum\adapter\aggregator
@@ -46,7 +46,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function setFactory(atoum\factory $factory)
 	{
-		$this->factory = $factory->import('mageekguy\atoum');
+		$this->factory = $factory->import('atoum');
 
 		return $this;
 	}

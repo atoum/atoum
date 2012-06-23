@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\exceptions\runtime;
+namespace atoum\tests\units\exceptions\runtime;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions\runtime
+	atoum,
+	atoum\exceptions\runtime
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -19,7 +19,7 @@ class unexpectedValue extends atoum\test
 			->object($unexpectedValueException)
 				->isInstanceOf('runtimeException')
 				->isInstanceOf('unexpectedValueException')
-				->isInstanceOf('mageekguy\atoum\exception')
+				->isInstanceOf('atoum\exception')
 		;
 	}
 }

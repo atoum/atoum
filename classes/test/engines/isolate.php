@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\test\engines;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines
+	atoum,
+	atoum\test\engines
 ;
 
 class isolate extends engines\concurrent
@@ -15,7 +15,7 @@ class isolate extends engines\concurrent
 	{
 		parent::__construct($factory);
 
-		$this->score = $this->factory['mageekguy\atoum\score']();
+		$this->score = $this->factory['atoum\score']();
 	}
 
 	public function run(atoum\test $test)

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts\builder\vcs;
+namespace atoum\scripts\builder\vcs;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\scripts\builder
+	atoum,
+	atoum\exceptions,
+	atoum\scripts\builder
 ;
 
 class svn extends builder\vcs implements atoum\adapter\aggregator

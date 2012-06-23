@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\tests\units\writers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers
+	atoum,
+	atoum\writers
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,9 +15,9 @@ class file extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
-				->hasInterface('mageekguy\atoum\report\writers\realtime')
-				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
+				->hasInterface('atoum\adapter\aggregator')
+				->hasInterface('atoum\report\writers\realtime')
+				->hasInterface('atoum\report\writers\asynchronous')
 		;
 	}
 
@@ -26,7 +26,7 @@ class file extends atoum\test
 		$file = new writers\file();
 
 		$this->assert
-			->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			->object($file->getAdapter())->isInstanceOf('atoum\adapter')
 			->string($file->getFilename())->isEqualTo('atoum.log')
 		;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\cli;
+namespace atoum\cli;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class colorizer

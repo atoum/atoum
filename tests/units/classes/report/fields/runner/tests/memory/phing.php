@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\memory;
+namespace atoum\tests\units\report\fields\runner\tests\memory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests\memory
+	atoum,
+	atoum\runner,
+	atoum\locale,
+	atoum\tests\units,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\tests\memory
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-	  $this->assert->testedClass->isSubClassOf('mageekguy\atoum\report\fields\runner\tests\memory\cli');
+	  $this->assert->testedClass->isSubClassOf('atoum\report\fields\runner\tests\memory\cli');
 	}
 
 	public function test__construct()
@@ -116,9 +116,9 @@ class phing extends atoum\test
 		$this
 			->assert
 				->if($field = new memory\phing())
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner = new \mock\atoum\runner())
 				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); })
 				->then
@@ -135,9 +135,9 @@ class phing extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner = new \mock\atoum\runner())
 				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 				->and($defaultField = new memory\phing())

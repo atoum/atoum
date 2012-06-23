@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\test\engines;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test
+	atoum,
+	atoum\test
 ;
 
 class inline extends test\engine
@@ -20,7 +20,7 @@ class inline extends test\engine
 	{
 		parent::__construct($factory);
 
-		$this->score = $this->factory['mageekguy\atoum\score']();
+		$this->score = $this->factory['atoum\score']();
 	}
 
 	public function run(atoum\test $test)

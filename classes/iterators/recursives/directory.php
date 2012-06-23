@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives;
+namespace atoum\iterators\recursives;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class directory implements \iteratorAggregate
@@ -62,12 +62,12 @@ class directory implements \iteratorAggregate
 
 		if ($this->acceptDots === false)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\dot', array($iterator));
+			$iterator = $this->factory->build('atoum\iterators\filters\recursives\dot', array($iterator));
 		}
 
 		if (sizeof($this->acceptedExtensions) > 0)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\extension', array($iterator, $this->acceptedExtensions));
+			$iterator = $this->factory->build('atoum\iterators\filters\recursives\extension', array($iterator, $this->acceptedExtensions));
 		}
 
 		return $iterator;

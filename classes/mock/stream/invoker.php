@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock\stream;
+namespace atoum\mock\stream;
 
 use
-	mageekguy\atoum\test\adapter
+	atoum\test\adapter
 ;
 
 class invoker extends adapter\invoker
@@ -22,7 +22,7 @@ class invoker extends adapter\invoker
 
 	public function offsetSet($call, $mixed)
 	{
-		if ($this->methodName == 'dir_readdir' && $mixed instanceof \mageekguy\atoum\mock\stream\controller)
+		if ($this->methodName == 'dir_readdir' && $mixed instanceof \atoum\mock\stream\controller)
 		{
 			$mixed = $mixed->getBasename();
 		}

@@ -1,19 +1,19 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\engines;
+namespace atoum\tests\units\test\engines;
 
 require_once __DIR__ . '/../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines
+	atoum,
+	atoum\test\engines
 ;
 
 class concurrent extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\test\engine');
+		$this->testedClass->isSubclassOf('atoum\test\engine');
 	}
 
 	public function test__construct()
@@ -38,10 +38,10 @@ class concurrent extends atoum\test
 	{
 		$this
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
+			->and($factory['atoum\adapter'] = $adapter = new atoum\test\adapter())
 			->and($engine = new engines\concurrent($factory))
 			->then
-				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
+				->object($engine->run($test = new \mock\atoum\test()))->isIdenticalTo($engine)
 				->boolean($engine->isRunning())->isFalse()
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->getPath = $testPath = uniqid())
@@ -51,7 +51,7 @@ class concurrent extends atoum\test
 			->and($adapter->proc_open = false)
 			->then
 				->exception(function() use ($engine, $test) { $engine->run($test); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to use \'' . $phpPath . '\'')
 			->if($adapter->proc_open = function($command, array $descriptors, array & $pipes) use (& $resource, & $stdIn, & $stdOut, & $stdErr) {
 					$pipes = array(
@@ -73,7 +73,7 @@ class concurrent extends atoum\test
 					->call('fwrite')->withArguments(
 						$stdIn,
 						'<?php ' .
-						'define(\'mageekguy\atoum\autorun\', false);' .
+						'define(\'atoum\autorun\', false);' .
 						'require \'' . atoum\directory . '/scripts/runner.php\';' .
 						'require \'' . $testPath . '\';' .
 						'$test = new ' . get_class($test) . '();' .
@@ -93,9 +93,9 @@ class concurrent extends atoum\test
 			->then
 				->variable($engine->getScore())->isNull()
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
+			->and($factory['atoum\adapter'] = $adapter = new atoum\test\adapter())
 			->and($engine = new engines\concurrent($factory))
-			->and($engine->run($test = new \mock\mageekguy\atoum\test()))
+			->and($engine->run($test = new \mock\atoum\test()))
 			->then
 				->variable($engine->getScore())->isNull()
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
@@ -124,7 +124,7 @@ class concurrent extends atoum\test
 				->variable($engine->getScore())->isNull()
 			->if($adapter->proc_get_status = array('running' => false, 'exitcode' => $exitCode = rand(1, PHP_INT_MAX)))
 			->then
-				->object($score = $engine->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($score = $engine->getScore())->isInstanceOf('atoum\score')
 				->array($score->getUncompletedMethods())->isEqualTo(array(array('class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output . $output)))
 			->if($adapter->stream_get_contents = serialize($score))
 			->and($engine->run($test))

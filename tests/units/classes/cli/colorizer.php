@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli;
+namespace atoum\tests\units\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli
+	atoum,
+	atoum\cli
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -106,7 +106,7 @@ class colorizer extends atoum\test
 
 	public function testColorize()
 	{
-		$colorizer = new cli\colorizer(null, null, $cli = new \mock\mageekguy\atoum\cli());
+		$colorizer = new cli\colorizer(null, null, $cli = new \mock\atoum\cli());
 
 		$cli->getMockController()->isTerminal = true;
 

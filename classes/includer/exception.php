@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\includer;
+namespace atoum\includer;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class exception extends exceptions\runtime {}

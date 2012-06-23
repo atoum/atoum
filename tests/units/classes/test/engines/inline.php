@@ -1,19 +1,19 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\engines;
+namespace atoum\tests\units\test\engines;
 
 require_once __DIR__ . '/../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines
+	atoum,
+	atoum\test\engines
 ;
 
 class inline extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\test\engine');
+		$this->testedClass->isSubclassOf('atoum\test\engine');
 	}
 
 	public function testIsAsynchronous()
@@ -30,7 +30,7 @@ class inline extends atoum\test
 		$this
 			->if($engine = new engines\inline())
 			->then
-				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
+				->object($engine->run($test = new \mock\atoum\test()))->isIdenticalTo($engine)
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->runTestMethod = $test)
 			->then
@@ -48,13 +48,13 @@ class inline extends atoum\test
 		$this
 			->if($engine = new engines\inline())
 			->then
-				->object($engine->getScore())->isInstanceof('mageekguy\atoum\score')
-			->if($test = new \mock\mageekguy\atoum\test())
+				->object($engine->getScore())->isInstanceof('atoum\score')
+			->if($test = new \mock\atoum\test())
 			->and($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->runTestMethod = $test)
 			->and($engine->run($test))
 			->then
-				->object($engine->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($engine->getScore())->isInstanceOf('atoum\score')
 		;
 	}
 }

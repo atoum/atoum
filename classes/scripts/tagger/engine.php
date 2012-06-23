@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts\tagger;
+namespace atoum\scripts\tagger;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\adapter,
+	atoum\exceptions
 ;
 
 class engine implements adapter\aggregator

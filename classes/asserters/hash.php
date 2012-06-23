@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class hash extends string

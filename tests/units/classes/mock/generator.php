@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock;
+namespace atoum\tests\units\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock
+	atoum,
+	atoum\mock
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -16,7 +16,7 @@ class generator extends atoum\test
 		$this
 			->if($generator = new mock\generator())
 			->then
-				->object($generator->getFactory())->isInstanceOf('mageekguy\atoum\factory')
+				->object($generator->getFactory())->isInstanceOf('atoum\factory')
 			->if($factory = new atoum\factory())
 			->and($generator = new mock\generator($factory))
 			->then
@@ -68,23 +68,23 @@ class generator extends atoum\test
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = false)
 			->and($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($unknownClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $unknownClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $unknownClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -102,11 +102,11 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -170,23 +170,23 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -204,12 +204,12 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -259,24 +259,24 @@ class generator extends atoum\test
 			->and($overloadedMethod->addArgument($argument = new mock\php\method\argument(uniqid())))
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->and($generator->overload($overloadedMethod))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -299,7 +299,7 @@ class generator extends atoum\test
 					"\t\t" . '$arguments = array_merge(array(' . $argument . '), array_slice(func_get_args(), 1, -1));' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -348,23 +348,23 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -382,12 +382,12 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -431,24 +431,24 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use ($realClass) { return ($class == '\\' . $realClass); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->and($generator->shunt('__construct'))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -466,12 +466,12 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -511,23 +511,23 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' implements \\' . $realClass . ', \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' implements \\' . $realClass . ', \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -545,11 +545,11 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -593,23 +593,23 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -640,11 +640,11 @@ class generator extends atoum\test
 					"\t\t\t" . 'return call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -699,23 +699,23 @@ class generator extends atoum\test
 			->and($adapter->class_exists = function($class) use ($className) { return ($class == '\\' . $className); })
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $class)
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->then
 				->string($generator->getMockedClassCode($className))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $className . ' extends \\' . $className . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $className . ' extends \\' . $className . ' implements \atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \atoum\mock\controller());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . 'public function setMockController(\atoum\mock\controller $controller)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -743,11 +743,11 @@ class generator extends atoum\test
 					"\t\t" . 'return $this->mockController->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'protected function ' . $protectedMethodName . '() {}' . PHP_EOL .
-					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . 'public function __construct(\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t\t" . '$mockController = \atoum\mock\controller::get();' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
@@ -770,17 +770,17 @@ class generator extends atoum\test
 			->if($generator = new mock\generator())
 			->then
 				->exception(function() use ($generator) { $generator->generate(''); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Class name \'\' is invalid')
 				->exception(function() use ($generator) { $generator->generate('\\'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Class name \'\\\' is invalid')
 				->exception(function() use ($generator, & $class) { $generator->generate($class = ('\\' . uniqid() . '\\')); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Class name \'' . $class . '\' is invalid')
 			->if($adapter = new atoum\test\adapter())
 			->and($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($factory['atoum\adapter'] = $adapter)
 			->and($generator = new mock\generator($factory))
 			->and($adapter->class_exists = false)
 			->and($adapter->interface_exists = false)
@@ -789,13 +789,13 @@ class generator extends atoum\test
 				->object($generator->generate($class))->isIdenticalTo($generator)
 				->class('\mock\\' . $class)
 					->hasNoParent()
-					->hasInterface('mageekguy\atoum\mock\aggregator')
+					->hasInterface('atoum\mock\aggregator')
 			->if($class = '\\' . uniqid('unknownClass'))
 			->then
 				->object($generator->generate($class))->isIdenticalTo($generator)
 				->class('\mock' . $class)
 					->hasNoParent()
-					->hasInterface('mageekguy\atoum\mock\aggregator')
+					->hasInterface('atoum\mock\aggregator')
 			->if($adapter->class_exists = true)
 			->and($class = uniqid())
 			->then
@@ -803,7 +803,7 @@ class generator extends atoum\test
 						$generator->generate($class);
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Class \'\mock\\' . $class . '\' already exists')
 			->if($class = '\\' . uniqid())
 			->then
@@ -811,7 +811,7 @@ class generator extends atoum\test
 						$generator->generate($class);
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Class \'\mock' . $class . '\' already exists')
 			->if($class = uniqid())
 			->and($adapter->class_exists = function($arg) use ($class) { return $arg === '\\' . $class; })
@@ -826,7 +826,7 @@ class generator extends atoum\test
 						$generator->generate($class);
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Class \'\\' . $class . '\' is final, unable to mock it')
 			->if($class = '\\' . uniqid())
 			->and($adapter->class_exists = function($arg) use ($class) { return $arg === $class; })
@@ -835,7 +835,7 @@ class generator extends atoum\test
 						$generator->generate($class);
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
 			->if($reflectionClassController->isFinal = false)
 			->and($generator = new mock\generator())
@@ -843,7 +843,7 @@ class generator extends atoum\test
 				->object($generator->generate(__CLASS__))->isIdenticalTo($generator)
 				->class('\mock\\' . __CLASS__)
 					->hasParent(__CLASS__)
-					->hasInterface('mageekguy\atoum\mock\aggregator')
+					->hasInterface('atoum\mock\aggregator')
 			->if($generator = new mock\generator())
 			->and($generator->shunt('__construct'))
 			->then

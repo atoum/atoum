@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\mock;
+namespace atoum\mock;
 
 use
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\exceptions\logic,
-	mageekguy\atoum\exceptions\runtime
+	atoum\adapter,
+	atoum\exceptions\logic,
+	atoum\exceptions\runtime
 ;
 
 class stream

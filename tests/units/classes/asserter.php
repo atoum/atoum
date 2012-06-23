@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 require __DIR__ . '/../runner.php';
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class asserter extends atoum\test
@@ -13,7 +13,7 @@ class asserter extends atoum\test
 	public function testSetWithTest()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserter(new atoum\asserter\generator()))
+			->if($asserter = new \mock\atoum\asserter(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
 		;
@@ -22,7 +22,7 @@ class asserter extends atoum\test
 	public function testSetWithArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserter(new atoum\asserter\generator()))
+			->if($asserter = new \mock\atoum\asserter(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setWithArguments(array()))->isIdenticalTo($asserter)
 				->mock($asserter)->call('setWith')->never()

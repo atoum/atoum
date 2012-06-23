@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime\cli;
+namespace atoum\tests\units\reports\realtime\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields
+	atoum,
+	atoum\reports,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -19,9 +19,9 @@ class light extends atoum\test
 		$this
 			->if($report = new reports\realtime\cli\light())
 			->then
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getFactory())->isInstanceOf('atoum\factory')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEqualTo(array(
 						new fields\runner\event\cli(),
 						new fields\runner\result\cli(
@@ -63,8 +63,8 @@ class light extends atoum\test
 					)
 				)
 			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
+			->and($factory['atoum\locale'] = $locale = new atoum\locale())
+			->and($factory['atoum\adapter'] = $adapter = new atoum\adapter())
 			->and($report = new reports\realtime\cli\light($factory))
 			->then
 				->object($report->getFactory())->isIdenticalTo($factory)

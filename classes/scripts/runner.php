@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\scripts;
 
 require_once __DIR__ . '/../../constants.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\system,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\system,
+	atoum\exceptions
 ;
 
 class runner extends atoum\script
@@ -107,8 +107,8 @@ class runner extends atoum\script
 				{
 					if ($this->runner->hasReports() === false)
 					{
-						$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
-						$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
+						$report = $this->factory['atoum\reports\realtime\cli']($this->factory);
+						$report->addWriter($this->factory['atoum\writers\std\out']());
 
 						$this->runner->addReport($report);
 					}
@@ -641,7 +641,7 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							\mageekguy\atoum\cli::forceTerminal();
+							\atoum\cli::forceTerminal();
 						},
 						array('-ft', '--force-terminal'),
 						null,
@@ -668,8 +668,8 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$report = $script->getFactory()->build('mageekguy\atoum\reports\realtime\cli\light', array($script->getFactory()));
-							$report->addWriter($script->getFactory()->build('mageekguy\atoum\writers\std\out'));
+							$report = $script->getFactory()->build('atoum\reports\realtime\cli\light', array($script->getFactory()));
+							$report->addWriter($script->getFactory()->build('atoum\writers\std\out'));
 
 							$script->getRunner()->addReport($report);
 						},
@@ -692,7 +692,7 @@ class runner extends atoum\script
 	{
 		$arguments = ' --disable-loop-mode';
 
-		$cli = $this->factory['mageekguy\atoum\cli']();
+		$cli = $this->factory['atoum\cli']();
 
 		if ($cli->isTerminal() === true)
 		{

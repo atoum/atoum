@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\call;
+namespace atoum\tests\units\php\call;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php\call
+	atoum,
+	atoum\php\call
 ;
 
 require_once __DIR__ . '/../../../runner.php';

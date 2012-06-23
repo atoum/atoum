@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -82,7 +82,7 @@ class cli extends atoum\test
 			->boolean($otherCli->isTerminal())->isFalse()
 		;
 
-		\mageekguy\atoum\cli::forceTerminal();
+		\atoum\cli::forceTerminal();
 
 		$this->assert
 			->boolean($cli->isTerminal())->isTrue()
@@ -92,7 +92,7 @@ class cli extends atoum\test
 
 	public function testIsTerminalWhenForceTerminalWasUsedBeforeFirstCallToConstructor()
 	{
-		\mageekguy\atoum\cli::forceTerminal();
+		\atoum\cli::forceTerminal();
 
 		$adapter = new atoum\test\adapter();
 		$adapter->defined = false;

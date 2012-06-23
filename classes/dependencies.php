@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\dependencies
+	atoum\dependencies
 ;
 
 class dependencies implements \arrayAccess, \countable

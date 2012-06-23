@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock
+	atoum,
+	atoum\mock
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -13,13 +13,13 @@ class writer extends atoum\test
 {
 	public function test__construct()
 	{
-		$writer = new \mock\mageekguy\atoum\writer();
+		$writer = new \mock\atoum\writer();
 
 		$this->assert
-			->object($writer->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			->object($writer->getAdapter())->isInstanceOf('atoum\adapter')
 		;
 
-		$writer = new \mock\mageekguy\atoum\writer($adapter = new atoum\test\adapter());
+		$writer = new \mock\atoum\writer($adapter = new atoum\test\adapter());
 
 		$this->assert
 			->object($writer->getAdapter())->isIdenticalTo($adapter)
@@ -28,7 +28,7 @@ class writer extends atoum\test
 
 	public function testSetAdapter()
 	{
-		$writer = new \mock\mageekguy\atoum\writer();
+		$writer = new \mock\atoum\writer();
 
 		$this->assert
 			->object($writer->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($writer)

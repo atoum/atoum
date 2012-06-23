@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\test,
+	atoum\exceptions
 ;
 
 class score
@@ -36,7 +36,7 @@ class score
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setCoverage($this->factory['mageekguy\atoum\score\coverage']($this->factory))
+			->setCoverage($this->factory['atoum\score\coverage']($this->factory))
 		;
 	}
 

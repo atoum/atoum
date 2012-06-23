@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\asserter;
+namespace atoum\asserter;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class exception extends \runtimeException {}

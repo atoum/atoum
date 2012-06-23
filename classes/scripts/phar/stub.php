@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts\phar;
+namespace atoum\scripts\phar;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\scripts,
+	atoum\exceptions
 ;
 
 class stub extends scripts\runner

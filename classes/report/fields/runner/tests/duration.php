@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests;
+namespace atoum\report\fields\runner\tests;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\runner
+	atoum,
+	atoum\report,
+	atoum\runner
 ;
 
 abstract class duration extends report\field

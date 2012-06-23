@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer\iterators;
+namespace atoum\php\tokenizer\iterators;
 
 use
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\php\tokenizer,
-	mageekguy\atoum\php\tokenizer\iterators
+	atoum\exceptions,
+	atoum\php\tokenizer,
+	atoum\php\tokenizer\iterators
 ;
 
 class phpScript extends tokenizer\iterators\phpNamespace

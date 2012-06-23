@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\scripts\tagger;
+namespace atoum\scripts\tagger;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts
+	atoum,
+	atoum\scripts
 ;
 
 require_once __DIR__ . '/../classes/autoloader.php';

@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\stream;
+namespace atoum\tests\units\mock\stream;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\dependence,
-	mageekguy\atoum\dependencies,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\mock\stream\controller as testedClass
+	atoum,
+	atoum\test,
+	atoum\dependence,
+	atoum\dependencies,
+	atoum\mock\stream,
+	atoum\mock\stream\controller as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -18,7 +18,7 @@ class controller extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\test\adapter')
+			->testedClass->isSubclassOf('atoum\test\adapter')
 		;
 	}
 
@@ -51,7 +51,7 @@ class controller extends atoum\test
 				->variable($streamController->invoke('stream_write'))->isNull()
 				->variable($streamController->invoke('unlink'))->isNull()
 				->variable($streamController->invoke('url_stat'))->isNull()
-				->object($dependencies = $streamController->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
+				->object($dependencies = $streamController->getDependencies())->isInstanceOf('atoum\dependencies')
 				->object($dependencies['invoker']->setArgument('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
 			->if($streamController = new testedClass($stream = uniqid(), $dependencies = new dependencies()))
 			->then
@@ -144,7 +144,7 @@ class controller extends atoum\test
 							$streamController->{$method};
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
@@ -304,7 +304,7 @@ class controller extends atoum\test
 							$streamController->{$method} = uniqid();
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
@@ -450,7 +450,7 @@ class controller extends atoum\test
 							isset($streamController->{$method});
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
@@ -706,7 +706,7 @@ class controller extends atoum\test
 						unset($streamController->{$method});
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
@@ -765,7 +765,7 @@ class controller extends atoum\test
 							$streamController->invoke($method);
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}

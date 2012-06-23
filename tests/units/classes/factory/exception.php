@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\factory;
+namespace atoum\tests\units\factory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 require __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class exception extends atoum\test
 	public function testClass()
 	{
 		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\exceptions\runtime')
+			->testedClass->isSubclassOf('atoum\exceptions\runtime')
 		;
 	}
 }
