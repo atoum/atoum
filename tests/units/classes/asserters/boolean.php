@@ -104,5 +104,3 @@ class boolean extends atoum\test
 		;
 	}
 }
-
-?>

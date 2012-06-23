@@ -22,5 +22,3 @@ class testedClass extends phpClass
 		return parent::setWithTest($test);
 	}
 }
-
-?>

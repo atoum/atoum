@@ -106,5 +106,3 @@ class manager extends atoum\test
 		;
 	}
 }
-
-?>

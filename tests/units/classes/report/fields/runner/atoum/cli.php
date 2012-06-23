@@ -120,5 +120,3 @@ class cli extends \mageekguy\atoum\test
 		;
 	}
 }
-
-?>

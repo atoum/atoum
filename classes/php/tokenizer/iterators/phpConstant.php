@@ -9,5 +9,3 @@ use
 class phpConstant extends tokenizer\iterator
 {
 }
-
-?>

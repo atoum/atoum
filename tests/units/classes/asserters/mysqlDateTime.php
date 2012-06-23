@@ -33,5 +33,3 @@ class mysqlDateTime extends atoum\test
 		;
 	}
 }
-
-?>

@@ -64,5 +64,3 @@ class dot extends atoum\test
 		;
 	}
 }
-
-?>

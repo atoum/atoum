@@ -194,5 +194,3 @@ class string extends atoum\test
 		;
 	}
 }
-
-?>

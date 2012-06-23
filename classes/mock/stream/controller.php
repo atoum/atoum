@@ -205,5 +205,3 @@ class controller extends test\adapter
 		}
 	}
 }
-
-?>

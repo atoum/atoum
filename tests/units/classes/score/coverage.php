@@ -877,5 +877,3 @@ class coverage extends atoum\test
 		;
 	}
 }
-
-?>

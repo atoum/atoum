@@ -375,5 +375,3 @@ class mock extends atoum\asserter
 		return $string;
 	}
 }
-
-?>

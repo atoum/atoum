@@ -265,5 +265,3 @@ class phpClass extends atoum\test
 		;
 	}
 }
-
-?>

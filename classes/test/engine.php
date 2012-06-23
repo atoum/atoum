@@ -29,5 +29,3 @@ abstract class engine
 	public abstract function run(atoum\test $test);
 	public abstract function getScore();
 }
-
-?>

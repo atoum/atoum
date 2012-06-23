@@ -557,5 +557,3 @@ class stub extends scripts\runner
 		return atoum\directory . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
 	}
 }
-
-?>

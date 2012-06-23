@@ -609,5 +609,3 @@ class mock extends atoum\test
 		;
 	}
 }
-
-?>

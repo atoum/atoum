@@ -73,5 +73,3 @@ class mock
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}
 }
-
-?>

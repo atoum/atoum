@@ -114,5 +114,3 @@ class hash extends atoum\test
 		;
 	}
 }
-
-?>

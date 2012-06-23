@@ -79,5 +79,3 @@ class report extends atoum\test
 		;
 	}
 }
-
-?>

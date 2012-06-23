@@ -28,5 +28,3 @@ class testedClass extends atoum\test
 		;
 	}
 }
-
-?>

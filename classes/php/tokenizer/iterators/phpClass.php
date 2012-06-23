@@ -74,5 +74,3 @@ class phpClass extends tokenizer\iterator
 		return $this->append($phpProperty);
 	}
 }
-
-?>

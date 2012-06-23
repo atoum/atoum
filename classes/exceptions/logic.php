@@ -7,5 +7,3 @@ use
 ;
 
 class logic extends \logicException implements atoum\exception {}
-
-?>

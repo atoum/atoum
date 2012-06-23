@@ -6,5 +6,3 @@ interface observer
 {
 	public function handleEvent($event, observable $observable);
 }
-
-?>

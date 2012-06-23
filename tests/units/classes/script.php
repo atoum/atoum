@@ -374,5 +374,3 @@ class script extends atoum\test
 		;
 	}
 }
-
-?>

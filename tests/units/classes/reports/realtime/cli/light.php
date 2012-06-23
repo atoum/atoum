@@ -113,5 +113,3 @@ class light extends atoum\test
 		;
 	}
 }
-
-?>

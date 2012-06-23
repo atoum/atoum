@@ -186,5 +186,3 @@ class parser implements atoum\adapter\aggregator
 		return $fileContents;
 	}
 }
-
-?>

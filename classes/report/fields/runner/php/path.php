@@ -36,5 +36,3 @@ abstract class path extends report\field
 		}
 	}
 }
-
-?>

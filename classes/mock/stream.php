@@ -120,5 +120,3 @@ class stream
 		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
 	}
 }
-
-?>

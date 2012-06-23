@@ -139,5 +139,3 @@ class string extends variable
 		return (is_string($value) === true);
 	}
 }
-
-?>

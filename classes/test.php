@@ -1077,5 +1077,3 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return preg_match('/^([^\\\[:alnum:][:space:]]).*\1.*$/', $namespace) === 1;
 	}
 }
-
-?>

@@ -688,5 +688,3 @@ namespace mageekguy\atoum\tests\units
 		}
 	}
 }
-
-?>

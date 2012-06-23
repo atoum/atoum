@@ -74,5 +74,3 @@ class prompt extends atoum\test
 		;
 	}
 }
-
-?>

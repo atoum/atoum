@@ -851,5 +851,3 @@ class runner extends atoum\script
 		return $methods;
 	}
 }
-
-?>

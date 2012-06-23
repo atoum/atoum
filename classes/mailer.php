@@ -134,5 +134,3 @@ abstract class mailer implements atoum\adapter\aggregator
 
 	public abstract function send($something);
 }
-
-?>

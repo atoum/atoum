@@ -629,5 +629,3 @@ class runner implements observable, adapter\aggregator
 		return $methods;
 	}
 }
-
-?>

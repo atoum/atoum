@@ -30,5 +30,3 @@ class invoker extends adapter\invoker
 		return parent::offsetSet($call, $mixed);
 	}
 }
-
-?>

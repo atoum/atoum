@@ -119,5 +119,3 @@ class progressBar
 		return $this;
 	}
 }
-
-?>

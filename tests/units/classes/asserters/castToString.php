@@ -61,5 +61,3 @@ class castToString extends atoum\test
 		;
 	}
 }
-
-?>

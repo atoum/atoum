@@ -79,5 +79,3 @@ class cli extends report\fields\runner\tests\memory
 		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory)) . PHP_EOL;
 	}
 }
-
-?>

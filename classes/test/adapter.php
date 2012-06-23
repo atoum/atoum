@@ -234,5 +234,3 @@ class adapter extends atoum\adapter
 		}
 	}
 }
-
-?>

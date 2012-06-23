@@ -145,5 +145,3 @@ class dateTime extends atoum\test
 		;
 	}
 }
-
-?>

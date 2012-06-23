@@ -115,5 +115,3 @@ class mail extends atoum\test
 		;
 	}
 }
-
-?>

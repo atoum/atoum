@@ -42,5 +42,3 @@ class hash extends string
 		return $this;
 	}
 }
-
-?>

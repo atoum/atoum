@@ -112,5 +112,3 @@ class object extends atoum\test
 		;
 	}
 }
-
-?>

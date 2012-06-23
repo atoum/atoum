@@ -133,5 +133,3 @@ class concurrent extends atoum\test
 		;
 	}
 }
-
-?>

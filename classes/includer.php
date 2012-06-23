@@ -45,5 +45,3 @@ class includer
 		return $this;
 	}
 }
-
-?>

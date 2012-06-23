@@ -109,5 +109,3 @@ class vim extends reports\asynchronous
 		;
 	}
 }
-
-?>

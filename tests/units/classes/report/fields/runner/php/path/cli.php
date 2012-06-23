@@ -143,5 +143,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

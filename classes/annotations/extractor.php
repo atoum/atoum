@@ -81,5 +81,3 @@ class extractor
 		return array_values(array_unique(preg_split('/\s+/', $value)));
 	}
 }
-
-?>

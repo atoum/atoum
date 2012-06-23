@@ -27,5 +27,3 @@ abstract class event extends report\fields\event
 		);
 	}
 }
-
-?>

@@ -76,5 +76,3 @@ class cli extends report\fields\runner\event
 		return $string;
 	}
 }
-
-?>

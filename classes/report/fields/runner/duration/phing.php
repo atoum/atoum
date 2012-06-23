@@ -24,5 +24,3 @@ class phing extends duration\cli
 		);
 	}
 }
-
-?>

@@ -8,5 +8,3 @@ interface definition
 
 	public function invoke($functionName, array $arguments = array());
 }
-
-?>

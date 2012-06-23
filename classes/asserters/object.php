@@ -120,5 +120,3 @@ class object extends asserters\variable
 		return (class_exists($value) === true || interface_exists($value) === true);
 	}
 }
-
-?>

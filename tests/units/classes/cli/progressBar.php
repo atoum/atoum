@@ -374,5 +374,3 @@ class progressBar extends atoum\test
 		}
 	}
 }
-
-?>

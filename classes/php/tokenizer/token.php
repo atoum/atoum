@@ -129,5 +129,3 @@ class token extends iterator\value
 		return $this->getString();
 	}
 }
-
-?>

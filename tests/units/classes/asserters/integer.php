@@ -177,5 +177,3 @@ class integer extends atoum\test
 		;
 	}
 }
-
-?>
