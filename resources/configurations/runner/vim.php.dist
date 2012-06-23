@@ -18,5 +18,3 @@ $vimReport = new atoum\reports\asynchronous\vim();
 $vimReport->addWriter($stdOutWriter);
 
 $runner->addReport($vimReport);
-
-?>
