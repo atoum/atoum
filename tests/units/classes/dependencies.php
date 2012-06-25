@@ -51,6 +51,14 @@ class dependencies extends atoum\test
 			->if($dependencies = new testedClass(function($dependencies) { return $dependencies; }))
 			->then
 				->object($dependencies())->isIdenticalTo($dependencies)
+			->if($dependencies = new testedClass(function($dependencies) { return $dependencies->arg1 . $dependencies->arg2 . $dependencies->arg3; }))
+			->then
+				->string($dependencies(array('arg1' => $arg1 = uniqid(), 'arg2' => $arg2 = uniqid(), 'arg3' => $arg3 = uniqid())))->isIdenticalTo($arg1 . $arg2 . $arg3)
+			->if($dependencies->arg1 = $arg1 = uniqid())
+			->and($dependencies->arg2 = $arg2 = uniqid())
+			->and($dependencies->arg3 = $arg3 = uniqid())
+			->then
+				->string($dependencies())->isIdenticalTo($arg1 . $arg2 . $arg3)
 		;
 	}
 

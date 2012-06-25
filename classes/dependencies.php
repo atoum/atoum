@@ -22,8 +22,13 @@ class dependencies implements \arrayAccess, \countable, \serializable
 		$this->injector = $injector;
 	}
 
-	public function __invoke()
+	public function __invoke(array $arguments = array())
 	{
+		foreach ($arguments as $name => $value)
+		{
+			$this->{$name} = $value;
+		}
+
 		return (($injector = $this->injector) === null ? null : $injector($this));
 	}
 
