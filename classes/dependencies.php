@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\dependencies
 ;
 
-class dependencies implements \arrayAccess, \countable
+class dependencies implements \arrayAccess, \countable, \serializable
 {
 	protected $injector = null;
 	protected $arguments = array();
@@ -42,19 +42,14 @@ class dependencies implements \arrayAccess, \countable
 		return $this->argumentExists($argument);
 	}
 
-	public function count()
-	{
-		return sizeof($this->dependencies);
-	}
-
 	public function offsetGet($name)
 	{
 		return $this->getDependence($name);
 	}
 
-	public function offsetSet($name, $dependence)
+	public function offsetSet($name, $mixed)
 	{
-		return $this->setDependence($name, $dependence);
+		return $this->setDependence($name, $mixed instanceof self ? $mixed : new self($mixed));
 	}
 
 	public function offsetUnset($name)
@@ -66,6 +61,15 @@ class dependencies implements \arrayAccess, \countable
 	{
 		return $this->dependenceExists($name);
 	}
+
+	public function count()
+	{
+		return sizeof($this->dependencies);
+	}
+
+	public function serialize() {}
+
+	public function unserialize($string) {}
 
 	public function getDependence($name)
 	{

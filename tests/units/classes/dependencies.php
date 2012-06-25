@@ -16,6 +16,7 @@ class dependencies extends atoum\test
 		$this->testedClass
 			->hasInterface('arrayAccess')
 			->hasInterface('countable')
+			->hasInterface('serializable')
 		;
 	}
 
@@ -118,15 +119,28 @@ class dependencies extends atoum\test
 	{
 		$this
 			->if($dependencies = new testedClass())
-			->and($dependencies[$name = uniqid()] = $dependence = new testedClass(uniqid()))
+			->and($dependencies[$name1 = uniqid()] = $dependence1 = new testedClass($return1 = uniqid()))
 			->then
 				->sizeOf($dependencies)->isEqualTo(1)
-				->string($dependencies[$name]())->isEqualTo($dependence())
-			->if($dependencies[$otherName = uniqid()] = $otherDependence = new testedClass(uniqid()))
+				->string($dependencies[$name1]())->isEqualTo($return1)
+			->if($dependencies[$name2 = uniqid()] = $dependence2 = new testedClass($return2 = uniqid()))
 			->then
 				->sizeOf($dependencies)->isEqualTo(2)
-				->string($dependencies[$name]())->isEqualTo($dependence())
-				->string($dependencies[$otherName]())->isEqualTo($otherDependence())
+				->string($dependencies[$name1]())->isEqualTo($return1)
+				->string($dependencies[$name2]())->isEqualTo($return2)
+			->if($dependencies[$name3 = uniqid()] = function() use (& $return3) { return $return3 = uniqid(); })
+			->then
+				->sizeOf($dependencies)->isEqualTo(3)
+				->string($dependencies[$name1]())->isEqualTo($return1)
+				->string($dependencies[$name2]())->isEqualTo($return2)
+				->string($dependencies[$name3]())->isEqualTo($return3)
+			->if($dependencies[$name4 = uniqid()] = $return4 = uniqid())
+			->then
+				->sizeOf($dependencies)->isEqualTo(4)
+				->string($dependencies[$name1]())->isEqualTo($return1)
+				->string($dependencies[$name2]())->isEqualTo($return2)
+				->string($dependencies[$name3]())->isEqualTo($return3)
+				->string($dependencies[$name4]())->isEqualTo($return4)
 		;
 	}
 
