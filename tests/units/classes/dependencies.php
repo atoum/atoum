@@ -2,22 +2,18 @@
 
 namespace mageekguy\atoum\tests\units;
 
-require_once __DIR__ . '/../runner.php';
-
 use
 	mageekguy\atoum,
 	mageekguy\atoum\dependencies as testedClass
 ;
 
+require_once __DIR__ . '/../runner.php';
+
 class dependencies extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass
-			->hasInterface('arrayAccess')
-			->hasInterface('countable')
-			->hasInterface('serializable')
-		;
+		$this->testedClass->hasInterface('arrayAccess');
 	}
 
 	public function test__construct()
@@ -25,17 +21,7 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->sizeOf($dependencies)->isZero()
-				->variable($dependencies())->isNull()
-			->if($return = uniqid())
-			->and($dependencies = new testedClass($injector = function() use ($return) { return $return; }))
-			->then
-				->sizeOf($dependencies)->isZero()
-				->string($dependencies())->isEqualTo($return)
-			->if($dependencies = new testedClass($return = uniqid()))
-			->then
-				->sizeOf($dependencies)->isZero()
-				->string($dependencies())->isEqualTo($return)
+				->variable($dependencies->getInjector())->isNull()
 		;
 	}
 
@@ -44,68 +30,53 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->variable($dependencies())->isNull()
-			->if($dependencies = new testedClass(function() { return true; }))
+				->exception(function() use ($dependencies) { $dependencies(); })
+					->isInstanceOf('mageekguy\atoum\dependencies\exception')
+					->hasMessage('Injector is undefined')
+			->if($dependencies->setInjector($value = uniqid()))
 			->then
-				->boolean($dependencies())->isTrue()
-			->if($dependencies = new testedClass(function($dependencies) { return $dependencies; }))
+				->string($dependencies())->isEqualTo($value)
+			->if($dependencies->setInjector(function() use (& $value) { return ($value = uniqid()); }))
+			->then
+				->string($dependencies())->isEqualTo($value)
+			->if($dependencies->setInjector(function($dependencies) { return $dependencies; }))
 			->then
 				->object($dependencies())->isIdenticalTo($dependencies)
-			->if($dependencies = new testedClass(function($dependencies) { return $dependencies->arg1 . $dependencies->arg2 . $dependencies->arg3; }))
+			->if($dependencies->setInjector(function($dependencies) { return $dependencies['argument'](); }))
 			->then
-				->string($dependencies(array('arg1' => $arg1 = uniqid(), 'arg2' => $arg2 = uniqid(), 'arg3' => $arg3 = uniqid())))->isIdenticalTo($arg1 . $arg2 . $arg3)
-			->if($dependencies->arg1 = $arg1 = uniqid())
-			->and($dependencies->arg2 = $arg2 = uniqid())
-			->and($dependencies->arg3 = $arg3 = uniqid())
-			->then
-				->string($dependencies())->isIdenticalTo($arg1 . $arg2 . $arg3)
+				->string($dependencies(array('argument' => $argument = uniqid())))->isEqualTo($argument)
 		;
 	}
 
-	public function test__set()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->and($dependencies->{$name = uniqid()} = $value = uniqid())
-			->then
-				->string($dependencies->getArgument($name))->isEqualTo($value)
-		;
-	}
-
-	public function test__get()
+	public function testSetInjector()
 	{
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->exception(function() use ($dependencies, & $argument) { $dependencies->{$argument = uniqid()}; })
-					->isInstanceOf('mageekguy\atoum\dependencies\exception')
-					->hasMessage('Argument \'' . $argument . '\' is undefined')
-			->if($dependencies->setArgument($name = uniqid(), $value = uniqid()))
-			->then
-				->string($dependencies->{$name})->isEqualTo($value)
+				->object($dependencies->setInjector($injector = function() {}))->isIdenticalTo($dependencies)
+				->object($dependencies->getInjector())->isIdenticalTo($injector)
+				->object($dependencies->setInjector($injector = uniqid()))->isIdenticalTo($dependencies)
+				->string($dependencies->getInjector())->isIdenticalTo($injector)
 		;
 	}
 
-	public function test__isset()
+	public function testGetInjector()
 	{
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->boolean(isset($dependencies->{uniqid()}))->isFalse()
-			->if($dependencies->setArgument($name = uniqid(), uniqid()))
+				->variable($dependencies->getInjector())->isNull()
+				->variable($dependencies->getInjector(uniqid()))->isNull()
+			->if($dependencies->setInjector($injector = uniqid()))
 			->then
-				->boolean(isset($dependencies->{uniqid()}))->isFalse()
-				->boolean(isset($dependencies->{$name}))->isTrue()
-			->if($dependencies->setArgument($otherName = uniqid(), null))
+				->string($dependencies->getInjector())->isEqualTo($injector)
+				->variable($dependencies->getInjector(uniqid()))->isNull()
+			->if($dependencies->setDependence($name = uniqid(), $otherInjector = uniqid()))
 			->then
-				->boolean(isset($dependencies->{uniqid()}))->isFalse()
-				->boolean(isset($dependencies->{$name}))->isTrue()
-				->boolean(isset($dependencies->{$otherName}))->isTrue()
+				->string($dependencies->getInjector())->isEqualTo($injector)
+				->variable($dependencies->getInjector(uniqid()))->isNull()
+				->string($dependencies->getInjector($name))->isEqualTo($otherInjector)
 		;
-	}
-
-	public function test__unset()
-	{
 	}
 
 	public function testSetDependence()
@@ -113,42 +84,13 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->object($dependencies->setDependence($name = uniqid(), $dependence = new testedClass(uniqid())))->isIdenticalTo($dependencies)
-				->sizeOf($dependencies)->isEqualTo(1)
-				->string($dependencies[$name]())->isEqualTo($dependence())
-				->object($dependencies->setDependence($otherName = uniqid(), $otherDependence = new testedClass(uniqid())))->isIdenticalTo($dependencies)
-				->sizeOf($dependencies)->isEqualTo(2)
-				->string($dependencies[$name]())->isEqualTo($dependence())
-				->string($dependencies[$otherName]())->isEqualTo($otherDependence())
-		;
-	}
-
-	public function testOffsetSet()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->and($dependencies[$name1 = uniqid()] = $dependence1 = new testedClass($return1 = uniqid()))
-			->then
-				->sizeOf($dependencies)->isEqualTo(1)
-				->string($dependencies[$name1]())->isEqualTo($return1)
-			->if($dependencies[$name2 = uniqid()] = $dependence2 = new testedClass($return2 = uniqid()))
-			->then
-				->sizeOf($dependencies)->isEqualTo(2)
-				->string($dependencies[$name1]())->isEqualTo($return1)
-				->string($dependencies[$name2]())->isEqualTo($return2)
-			->if($dependencies[$name3 = uniqid()] = function() use (& $return3) { return $return3 = uniqid(); })
-			->then
-				->sizeOf($dependencies)->isEqualTo(3)
-				->string($dependencies[$name1]())->isEqualTo($return1)
-				->string($dependencies[$name2]())->isEqualTo($return2)
-				->string($dependencies[$name3]())->isEqualTo($return3)
-			->if($dependencies[$name4 = uniqid()] = $return4 = uniqid())
-			->then
-				->sizeOf($dependencies)->isEqualTo(4)
-				->string($dependencies[$name1]())->isEqualTo($return1)
-				->string($dependencies[$name2]())->isEqualTo($return2)
-				->string($dependencies[$name3]())->isEqualTo($return3)
-				->string($dependencies[$name4]())->isEqualTo($return4)
+				->object($dependencies->setDependence($name = uniqid(), $value = uniqid()))->isIdenticalTo($dependencies)
+				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
+				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->object($dependencies->setDependence($otherName = uniqid(), $subDependence = new testedClass()))->isIdenticalTo($dependencies)
+				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
+				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->object($dependencies->getDependence($otherName))->isIdenticalTo($subDependence)
 		;
 	}
 
@@ -158,19 +100,10 @@ class dependencies extends atoum\test
 			->if($dependencies = new testedClass())
 			->then
 				->variable($dependencies->getDependence(uniqid()))->isNull()
-			->if($dependencies->setDependence($name = uniqid(), $dependence = new testedClass()))
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
 			->then
 				->variable($dependencies->getDependence(uniqid()))->isNull()
-				->object($dependencies->getDependence($name))->isIdenticalTo($dependence)
-		;
-	}
-
-	public function testOffsetGet()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->variable($dependencies[uniqid()])->isNull()
+				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
 		;
 	}
 
@@ -180,10 +113,52 @@ class dependencies extends atoum\test
 			->if($dependencies = new testedClass())
 			->then
 				->boolean($dependencies->dependenceExists(uniqid()))->isFalse()
-			->if($dependencies->setDependence($name = uniqid(), new testedClass()))
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
 			->then
 				->boolean($dependencies->dependenceExists(uniqid()))->isFalse()
 				->boolean($dependencies->dependenceExists($name))->isTrue()
+		;
+	}
+
+	public function testUnsetDependencies()
+	{
+		$this
+			->if($dependencies = new testedClass())
+			->then
+				->object($dependencies->unsetDependence(uniqid()))->isIdenticalTo($dependencies)
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
+			->then
+				->object($dependencies->unsetDependence(uniqid()))->isIdenticalTo($dependencies)
+				->object($dependencies->unsetDependence($name))->isIdenticalTo($dependencies)
+				->boolean($dependencies->dependenceExists($name))->isFalse()
+		;
+	}
+
+	public function testOffsetSet()
+	{
+		$this
+			->if($dependencies = new testedClass())
+			->then
+				->object($dependencies->offsetSet($name = uniqid(), $value = uniqid()))->isIdenticalTo($dependencies)
+				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
+				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->object($dependencies->offsetSet($otherName = uniqid(), $subDependence = new testedClass()))->isIdenticalTo($dependencies)
+				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
+				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->object($dependencies->getDependence($otherName))->isIdenticalTo($subDependence)
+		;
+	}
+
+	public function testOffsetGet()
+	{
+		$this
+			->if($dependencies = new testedClass())
+			->then
+				->variable($dependencies->offsetGet(uniqid()))->isNull()
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
+			->then
+				->variable($dependencies->offsetGet(uniqid()))->isNull()
+				->object($dependencies->offsetGet($name))->isInstanceOf($dependencies)
 		;
 	}
 
@@ -192,24 +167,11 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->boolean(isset($dependencies[uniqid()]))->isFalse()
-			->if($dependencies->setDependence($name = uniqid(), new testedClass()))
+				->boolean($dependencies->offsetExists(uniqid()))->isFalse()
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
 			->then
-				->boolean(isset($dependencies[uniqid()]))->isFalse()
-				->boolean(isset($dependencies[$name]))->isTrue()
-		;
-	}
-
-	public function testUnsetDependence()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->object($dependencies->unsetDependence(uniqid()))->isIdenticalTo($dependencies)
-			->if($dependencies->setDependence($name = uniqid(), new testedClass()))
-			->then
-				->object($dependencies->unsetDependence($name))->isIdenticalTo($dependencies)
-				->boolean($dependencies->dependenceExists($name))->isFalse()
+				->boolean($dependencies->offsetExists(uniqid()))->isFalse()
+				->boolean($dependencies->offsetExists($name))->isTrue()
 		;
 	}
 
@@ -217,65 +179,13 @@ class dependencies extends atoum\test
 	{
 		$this
 			->if($dependencies = new testedClass())
-			->and($dependencies->setDependence($name = uniqid(), new testedClass()))
-			->when(function() use ($dependencies, $name) { unset($dependencies[$name]); })
 			->then
+				->object($dependencies->offsetUnset(uniqid()))->isIdenticalTo($dependencies)
+			->if($dependencies->setDependence($name = uniqid(), uniqid()))
+			->then
+				->object($dependencies->offsetUnset(uniqid()))->isIdenticalTo($dependencies)
+				->object($dependencies->offsetUnset($name))->isIdenticalTo($dependencies)
 				->boolean($dependencies->dependenceExists($name))->isFalse()
-		;
-	}
-
-	public function testSetArgument()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->object($dependencies->setArgument($name = uniqid(), $value = uniqid()))->isIdenticalTo($dependencies)
-				->string($dependencies->getArgument($name))->isEqualTo($value)
-		;
-	}
-
-	public function testGetArgument()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->exception(function() use ($dependencies, & $argument) { $dependencies->getArgument($argument = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\dependencies\exception')
-					->hasMessage('Argument \'' . $argument . '\' is undefined')
-			->if($dependencies->setArgument($name = uniqid(), $value = uniqid()))
-			->then
-				->string($dependencies->getArgument($name))->isEqualTo($value)
-		;
-	}
-
-	public function testArgumentExists()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->boolean($dependencies->argumentExists(uniqid()))->isFalse()
-			->if($dependencies->setArgument($name = uniqid(), uniqid()))
-			->then
-				->boolean($dependencies->argumentExists(uniqid()))->isFalse()
-				->boolean($dependencies->argumentExists($name))->isTrue()
-			->if($dependencies->setArgument($otherName = uniqid(), null))
-			->then
-				->boolean($dependencies->argumentExists(uniqid()))->isFalse()
-				->boolean($dependencies->argumentExists($name))->isTrue()
-				->boolean($dependencies->argumentExists($otherName))->isTrue()
-		;
-	}
-
-	public function testUnsetArgument()
-	{
-		$this
-			->if($dependencies = new testedClass())
-			->then
-				->object($dependencies->unsetArgument(uniqid()))->isIdenticalTo($dependencies)
-			->if($dependencies->setArgument($name = uniqid(), uniqid()))
-			->then
-				->object($dependencies->unsetArgument($name))->isIdenticalTo($dependencies)
-				->boolean($dependencies->argumentExists($name))->isFalse()
 		;
 	}
 }

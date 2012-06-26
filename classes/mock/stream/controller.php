@@ -27,7 +27,7 @@ class controller extends test\adapter
 
 	public function __get($method)
 	{
-		$this->dependencies['invoker']->method = $method = strtolower(self::mapMethod($method));
+		$this->dependencies['invoker']['method'] = $method = strtolower(self::mapMethod($method));
 
 		return parent::__get($method);
 	}
@@ -89,7 +89,7 @@ class controller extends test\adapter
 
 	public function setDependencies(dependencies $dependencies)
 	{
-		$dependencies['invoker'] = $dependencies['invoker'] ?: new dependence(function($dependencies) { return new invoker($dependencies->method); });
+		$dependencies['invoker'] = $dependencies['invoker'] ?: function($dependencies) { return new invoker($dependencies['method']()); };
 
 		return parent::setDependencies($dependencies);
 	}

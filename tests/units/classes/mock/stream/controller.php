@@ -52,13 +52,13 @@ class controller extends atoum\test
 				->variable($streamController->invoke('unlink'))->isNull()
 				->variable($streamController->invoke('url_stat'))->isNull()
 				->object($dependencies = $streamController->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
-				->object($dependencies['invoker']->setArgument('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
+				->object($dependencies['invoker']->setDependence('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
 			->if($streamController = new testedClass($stream = uniqid(), $dependencies = new dependencies()))
 			->then
 				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker']->setArgument('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
+				->object($dependencies['invoker']->setDependence('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = new dependence($invoker = new stream\invoker(uniqid())))
+			->and($dependencies['invoker'] = $invoker = new stream\invoker(uniqid()))
 			->and($streamController = new testedClass($stream = uniqid(), $dependencies))
 			->then
 				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
@@ -777,9 +777,9 @@ class controller extends atoum\test
 			->then
 				->object($streamController->setDependencies($dependencies = new dependencies()))->isIdenticalTo($streamController)
 				->object($streamController->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker']->setArgument('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
+				->object($dependencies['invoker']->setDependence('method', $method = uniqid())->__invoke())->isEqualTo(new stream\invoker($method))
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = new dependence($invoker = new stream\invoker(uniqid())))
+			->and($dependencies['invoker'] = $invoker = new stream\invoker(uniqid()))
 			->then
 				->object($streamController->setDependencies($dependencies))->isIdenticalTo($streamController)
 				->object($streamController->getDependencies())->isIdenticalTo($dependencies)

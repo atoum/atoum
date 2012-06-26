@@ -30,13 +30,13 @@ class adapter extends test
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
 				->object($dependencies['invoker']())->isEqualTo(new invoker())
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = $dependence = new dependence())
+			->and($dependencies['invoker'] = $dependence = function() {})
 			->and($adapter = new testedClass($dependencies))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker'])->isIdenticalTo($dependence)
+				->object($dependencies->getInjector('invoker'))->isIdenticalTo($dependence)
 		;
 	}
 
@@ -201,7 +201,7 @@ class adapter extends test
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
 				->object($dependencies['invoker']())->isEqualTo(new invoker())
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = new dependence($invoker = new invoker()))
+			->and($dependencies['invoker'] = $invoker = new invoker())
 			->then
 				->object($adapter->setDependencies($dependencies))->isIdenticalTo($adapter)
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)

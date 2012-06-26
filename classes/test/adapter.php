@@ -84,7 +84,7 @@ class adapter extends atoum\adapter
 	{
 		$this->dependencies = $dependencies;
 
-		$this->dependencies['invoker'] = $this->dependencies['invoker'] ?: new dependence(function() { return new invoker(); });
+		$this->dependencies['invoker'] = $this->dependencies['invoker'] ?: function() { return new invoker(); };
 
 		return $this;
 	}
