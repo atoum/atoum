@@ -3,8 +3,7 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
@@ -165,7 +164,7 @@ class score
 		return $this;
 	}
 
-	public function addRuntimeException(test\exceptions\runtime $exception)
+	public function addRuntimeException(exceptions\runtime $exception)
 	{
 		$this->runtimeExceptions[] = $exception;
 
@@ -497,7 +496,7 @@ class score
 		return $this;
 	}
 
-	public function failExists(atoum\asserter\exception $exception)
+	public function failExists(asserter\exception $exception)
 	{
 		$id = $exception->getCode();
 

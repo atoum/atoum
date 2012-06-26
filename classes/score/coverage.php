@@ -12,7 +12,6 @@ class coverage implements \countable
 {
 	protected $factory = null;
 	protected $classes = array();
-	protected $lines = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
@@ -37,7 +36,11 @@ class coverage implements \countable
 
 	public function reset()
 	{
-		$this->classes = $this->methods = array();
+		$this->classes = array();
+		$this->methods = array();
+		$this->excludedClasses = array();
+		$this->excludedNamespaces = array();
+		$this->excludedDirectories = array();
 
 		return $this;
 	}
