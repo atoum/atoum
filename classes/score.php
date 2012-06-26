@@ -20,14 +20,13 @@ class score
 	private $memoryUsages = array();
 	private $coverage = null;
 	private $uncompletedMethods = array();
-	private $case = null;
-	private $dataSetKey = null;
-	private $dataSetProvider = null;
 	private $phpPath = null;
 	private $phpVersion = null;
 	private $atoumPath = null;
 	private $atoumVersion = null;
-	private $incomptedTests = array();
+	private $case = null;
+	private $dataSetKey = null;
+	private $dataSetProvider = null;
 
 	private static $failId = 0;
 
@@ -60,10 +59,13 @@ class score
 		$this->passAssertions = 0;
 		$this->failAssertions = array();
 		$this->exceptions = array();
+		$this->runtimeExceptions = array();
 		$this->errors = array();
 		$this->outputs = array();
 		$this->durations = array();
 		$this->memoryUsages = array();
+		$this->coverage->reset();
+		$this->uncompletedMethods = array();
 
 		return $this;
 	}
