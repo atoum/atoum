@@ -4,20 +4,36 @@ namespace mageekguy\atoum\test;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\dependence,
+	mageekguy\atoum\dependencies,
+	mageekguy\atoum\test\adapter\invoker
 ;
 
 class adapter extends atoum\adapter
 {
 	protected $calls = array();
 	protected $invokers = array();
+	protected $dependencies = null;
 
 	private static $callsNumber = 0;
-	private static $instances = array();
+	private static $instances = null;
 
-	public function __construct()
+	public function __construct(dependencies $dependencies = null)
 	{
-		self::$instances[] = $this;
+		$this->setDependencies($dependencies ?: new dependencies());
+
+		if (self::$instances === null)
+		{
+			self::$instances = new \splObjectStorage();
+		}
+
+		self::$instances->attach($this);
+	}
+
+	public function __destruct()
+	{
+		self::$instances->detach($this);
 	}
 
 	public function __set($functionName, $mixed)
@@ -33,7 +49,7 @@ class adapter extends atoum\adapter
 
 		if (isset($this->invokers[$functionName]) === false)
 		{
-			$this->invokers[$functionName] = new adapter\invoker();
+			$this->invokers[$functionName] = $this->dependencies['invoker']();
 		}
 
 		return $this->invokers[$functionName];
@@ -64,12 +80,26 @@ class adapter extends atoum\adapter
 		return $this;
 	}
 
+	public function setDependencies(dependencies $dependencies)
+	{
+		$this->dependencies = $dependencies;
+
+		$this->dependencies['invoker'] = $this->dependencies['invoker'] ?: function() { return new invoker(); };
+
+		return $this;
+	}
+
+	public function getDependencies()
+	{
+		return $this->dependencies;
+	}
+
 	public function getInvokers()
 	{
 		return $this->invokers;
 	}
 
-	public function getCalls($functionName = null, array $arguments = null)
+	public function getCalls($functionName = null, array $arguments = null, $identical = false)
 	{
 		$calls = null;
 
@@ -91,10 +121,20 @@ class adapter extends atoum\adapter
 					}
 					else
 					{
-						$calls = array_filter($callArguments, function($callArguments) use ($arguments) {
+						if ($identical === false)
+						{
+							$filter = function($callArguments) use ($arguments) {
 								return ($arguments  == array_slice($callArguments, 0, sizeof($arguments)));
-							}
-						);
+							};
+						}
+						else
+						{
+							$filter = function($callArguments) use ($arguments) {
+								return ($arguments  === array_slice($callArguments, 0, sizeof($arguments)));
+							};
+						}
+
+						$calls = array_filter($callArguments, $filter);
 					}
 
 					break;
@@ -161,9 +201,12 @@ class adapter extends atoum\adapter
 
 	public static function resetCallsForAllInstances()
 	{
-		foreach (self::$instances as $instance)
+		if (self::$instances !== null)
 		{
-			$instance->resetCalls();
+			foreach (self::$instances as $instance)
+			{
+				$instance->resetCalls();
+			}
 		}
 	}
 
@@ -191,5 +234,3 @@ class adapter extends atoum\adapter
 		}
 	}
 }
-
-?>

@@ -164,7 +164,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($field = new tests\uncompleted\cli())
 				->then
@@ -178,11 +177,11 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
-				->and($score->getMockController()->getUncompletedTests = array())
-				->and($runner = new atoum\runner($score))
+				->and($score->getMockController()->getUncompletedMethods = array())
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new tests\uncompleted\cli())
 				->then
 					->castToString($defaultField)->isEmpty()
@@ -201,7 +200,7 @@ class cli extends atoum\test
 				->if($customField->handleEvent(atoum\runner::runStop, $runner))
 				->then
 					->castToString($customField)->isEmpty()
-				->if($score->getMockController()->getUncompletedTests = $allUncompletedTests = array(
+				->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = array(
 							array(
 								'class' => $class = uniqid(),
 								'method' => $method = uniqid(),
@@ -236,11 +235,11 @@ class cli extends atoum\test
 					->castToString($customField)->isEmpty()
 				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
 				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedTests)) . PHP_EOL .
+					->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
 							'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
-							'output(' . (strlen($otherOutputLine1) + strlen($otherOutputLine2) + 1) . ') "' . $otherOutputLine1 . PHP_EOL .
+							'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
 							$otherOutputLine2 . '"' . PHP_EOL .
 							sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
 							'output(0) ""' . PHP_EOL
@@ -251,7 +250,7 @@ class cli extends atoum\test
 						$titlePrompt .
 						sprintf(
 							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedTests)), sizeof($allUncompletedTests)))
+							$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
 						) .
 						PHP_EOL .
 						$methodPrompt .
@@ -270,7 +269,7 @@ class cli extends atoum\test
 						) .
 						PHP_EOL .
 						$outputPrompt .
-						'output(' . (strlen($otherOutputLine1) + strlen($otherOutputLine2) + 1) . ') "' . $otherOutputLine1 .
+						'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 .
 						PHP_EOL .
 						$outputPrompt .
 						$otherOutputLine2 . '"' .
@@ -288,5 +287,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

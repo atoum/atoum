@@ -22,7 +22,12 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 
 ## Prerequisites to use *atoum*
 
-*atoum* absolutely requires *PHP 5.3* or later to work.  
+*atoum* absolutely requires *PHP 5.3.3* or later to work.
+On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal :
+
+	# php -v | grep -oi 'php 5.3.\([3-9]\|1[0-9]\{1,\}\)'
+
+If `PHP 5.3.x` or equivalent gets displayed, then you have the right PHP version installed.
 Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net) to be able to access the `phar` module, which is normally available by default.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
@@ -35,12 +40,12 @@ On UNIX, in order to check whether you have this module or not, you just need to
 	# php -m | grep -i xml
 
 If `Xml` or equivalent gets displayed, then the module is properly installed.  
-Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) will be required.  
+Should you wish to monitor the coverage rate of your code by the unit tests, the [Xdebug](http://xdebug.org/) 2.2 module will be required.  
 On UNIX, in order to check whether you have this module or not, you just need to run the following command in your terminal :
 
-	# php -m | grep -i xdebug
+	# php -v | grep -oi 'xdebug v2.2.[0-9]*'
 
-If `Xdebug` or equivalent gets displayed, then the module is properly installed.
+If `Xdebug v2.2.x` or equivalent gets displayed, then the module is properly installed.
 
 ## A unit testing framework that can be made operational in 5 minutes!
 
@@ -76,8 +81,7 @@ class helloWorld extends atoum\test
 	{
 		$helloWorld = new project\helloWorld();
 
-		$this->assert
-			->string($helloWorld->say())->isEqualTo('Hello World!')
+		$this->string($helloWorld->say())->isEqualTo('Hello World!')
 		;
 	}
 }
@@ -155,7 +159,7 @@ class helloWorld extends atoum\test
 	{
 		$helloWorld = new project\helloWorld();
 
-		$this->assert
+		$this
 			->string($helloWorld->say())->isEqualTo('Hello!')
 			->string($helloWorld->say($name = 'Frédéric Hardy'))->isEqualTo('Hello ' . $name . '!')
 		;
@@ -167,7 +171,8 @@ class helloWorld extends atoum\test
 
 ## To go further
 
-*atoum*'s documentation is still being written, and the only available resource right now is the current document.  
+[*atoum*'s documentation](https://github.com/geraldcroes/atoum-s-documentation) is still being written.  
+It's a github repository, so some pull requests are welcome to improve it.  
 However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
 
 * Running in your terminal, either the command `php mageekguy.atoum.phar -h`, or the command `php scripts/runner.php -h` ;

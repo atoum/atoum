@@ -36,5 +36,3 @@ abstract class version extends report\field
 		}
 	}
 }
-
-?>

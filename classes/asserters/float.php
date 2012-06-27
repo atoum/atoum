@@ -38,5 +38,3 @@ class float extends \mageekguy\atoum\asserters\integer
 		return (is_float($value) === true);
 	}
 }
-
-?>

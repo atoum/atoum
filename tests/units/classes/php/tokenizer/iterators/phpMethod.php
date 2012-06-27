@@ -20,5 +20,3 @@ class phpMethod extends atoum\test
 		;
 	}
 }
-
-?>

@@ -26,5 +26,3 @@ class err extends writers\std
 		return $this;
 	}
 }
-
-?>

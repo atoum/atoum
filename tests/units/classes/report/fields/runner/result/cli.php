@@ -110,15 +110,14 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
 				->and($score->getMockController()->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
-				->and($runner = new \mock\mageekguy\atoum\runner($score))
+				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 				->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
 				->and($field = new runner\result\cli())
@@ -142,14 +141,6 @@ class cli extends atoum\test
 
 	public function test__toString()
 	{
-		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\cli\prompt')
-			->mock('mageekguy\atoum\cli\colorizer')
-		;
-
 		$score = new \mock\mageekguy\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getAssertionNumber = 1;
@@ -297,7 +288,7 @@ class cli extends atoum\test
 		$scoreController->getFailNumber = 1;
 		$scoreController->getErrorNumber = 1;
 		$scoreController->getExceptionNumber = 1;
-		$scoreController->getUncompletedTestNumber = 1;
+		$scoreController->getUncompletedMethodNumber = 1;
 
 		$this->assert
 			->if($field = new runner\result\cli($prompt, $successColorizer, $failureColorizer, $locale))
@@ -338,7 +329,7 @@ class cli extends atoum\test
 		$scoreController->getFailNumber = $failNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX);
 		$scoreController->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX);
-		$scoreController->getUncompletedTestNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
+		$scoreController->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
 
 
 		$this->assert
@@ -376,5 +367,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

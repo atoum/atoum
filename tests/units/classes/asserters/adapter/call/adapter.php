@@ -16,61 +16,34 @@ class adapter extends atoum\test
 {
 	public function test__construct()
 	{
-		$call = new call\adapter(
-				$adapterAsserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$adapter = new test\adapter(),
-				$functionName = uniqid()
-		);
-
-		$this->assert
-			->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
-			->object($call->getAdapter())->isIdenticalTo($adapter)
-			->string($call->getFunctionName())->isEqualTo($functionName)
-			->variable($call->getArguments())->isNull()
-		;
-
-		$call = new call\adapter(
-				$adapterAsserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$adapter = new test\adapter,
-				$functionName = rand(1, PHP_INT_MAX)
-		);
-
-		$this->assert
-			->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
-			->object($call->getAdapter())->isIdenticalTo($adapter)
-			->string($call->getFunctionName())->isEqualTo((string) $functionName)
-			->variable($call->getArguments())->isNull()
+		$this
+			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), $functionName = uniqid()))
+			->then
+				->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getAdapter())->isIdenticalTo($adapter)
+				->string($call->getFunctionName())->isEqualTo($functionName)
+				->variable($call->getArguments())->isNull()
+			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter, $functionName = rand(1, PHP_INT_MAX)))
+			->then
+				->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getAdapter())->isIdenticalTo($adapter)
+				->string($call->getFunctionName())->isEqualTo((string) $functionName)
+				->variable($call->getArguments())->isNull()
 		;
 	}
 
-	/*
 	public function test__call()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\asserters\mock')
-		;
-
-		$call = new call\adapter(
-				$adapterAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				new test\adapter(),
-				uniqid()
-		);
-
-		$adapterAsserter->getMockController()->call = $adapterAsserter;
-
-		$this->assert
-			->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
-			->mock($adapterAsserter)
-				->call('call')->withArguments($arg)->once()
-		;
-
-		$unknownFunction = uniqid();
-
-		$this->assert
-			->exception(function() use ($call, $unknownFunction) {
-						$call->{$unknownFunction}();
-					}
-				)
+		$this
+			->if($call = new call\adapter($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
+			->and($adapterAsserter->getMockController()->call = $adapterAsserter)
+			->then
+				->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
+				->mock($adapterAsserter)
+					->call('call')->withArguments($arg)->once()
+			->if($unknownFunction = uniqid())
+			->then
+				->exception(function() use ($call, $unknownFunction) { $call->{$unknownFunction}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownFunction . '() does not exist')
 		;
@@ -78,84 +51,51 @@ class adapter extends atoum\test
 
 	public function testWithArguments()
 	{
-		$call = new call\adapter(
-				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				new test\adapter(),
-				uniqid()
-		);
-
-		$this->assert
-			->object($call->withArguments($arg = uniqid()))->isIdenticalTo($call)
-			->array($call->getArguments())->isEqualTo(array($arg))
-			->object($call->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($call)
-			->array($call->getArguments())->isEqualTo(array($arg1, $arg2))
+		$this
+			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
+			->then
+				->object($call->withArguments($arg = uniqid()))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($arg))
+				->object($call->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($arg1, $arg2))
 		;
 	}
 
 	public function testGetFirstCall()
 	{
-		$call = new call\adapter(
-				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$adapter = new test\adapter(),
-				'md5'
-		);
-
-		$this->assert
-			->variable($call->getFirstCall())->isNull()
-		;
-
-		$otherAdapter = new test\adapter();
-		$otherAdapter->md5(uniqid());
-
-		$this->assert
-			->variable($call->getFirstCall())->isNull()
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getFirstCall())->isEqualTo(2)
+		$this
+			->if($call = new call\adapter( new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
+			->then
+				->variable($call->getFirstCall())->isNull()
+			->if($otherAdapter = new test\adapter())
+			->and($otherAdapter->md5(uniqid()))
+			->then
+				->variable($call->getFirstCall())->isNull()
+			->if($adapter->md5(uniqid()))
+			->then
+				->integer($call->getFirstCall())->isEqualTo(2)
+			->if($adapter->md5(uniqid()))
+			->then
+				->integer($call->getFirstCall())->isEqualTo(2)
 		;
 	}
 
 	public function testGetLastCall()
 	{
-		$call = new call\adapter(
-				new asserters\mock(new asserter\generator($test = new self($score = new atoum\score()))),
-				$adapter = new test\adapter(),
-				'md5'
-		);
-
-		$this->assert
-			->variable($call->getLastCall())->isNull()
-		;
-
-		$otherAdapter = new test\adapter();
-		$otherAdapter->md5(uniqid());
-
-		$this->assert
-			->variable($call->getLastCall())->isNull()
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(2)
-		;
-
-		$adapter->md5(uniqid());
-
-		$this->assert
-			->integer($call->getLastCall())->isEqualTo(3)
+		$this
+			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
+			->then
+				->variable($call->getLastCall())->isNull()
+			->if($otherAdapter = new test\adapter())
+			->and($otherAdapter->md5(uniqid()))
+			->then
+				->variable($call->getLastCall())->isNull()
+			->if($adapter->md5(uniqid()))
+			->then
+				->integer($call->getLastCall())->isEqualTo(2)
+			->if($adapter->md5(uniqid()))
+			->then
+				->integer($call->getLastCall())->isEqualTo(3)
 		;
 	}
-	*/
 }
-
-?>

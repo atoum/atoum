@@ -272,5 +272,3 @@ class phpArray extends asserters\variable
 		return (is_array($value) === true);
 	}
 }
-
-?>

@@ -3,13 +3,13 @@
 namespace mageekguy\atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
 class score
 {
+	private $factory = null;
 	private $passAssertions = 0;
 	private $failAssertions = array();
 	private $exceptions = array();
@@ -19,21 +19,35 @@ class score
 	private $durations = array();
 	private $memoryUsages = array();
 	private $coverage = null;
-	private $uncompletedTests = array();
-	private $case = null;
-	private $dataSetKey = null;
-	private $dataSetProvider = null;
+	private $uncompletedMethods = array();
 	private $phpPath = null;
 	private $phpVersion = null;
 	private $atoumPath = null;
 	private $atoumVersion = null;
-	private $incomptedTests = array();
+	private $case = null;
+	private $dataSetKey = null;
+	private $dataSetProvider = null;
 
 	private static $failId = 0;
 
-	public function __construct(score\coverage $coverage = null)
+	public function __construct(factory $factory = null)
 	{
-		$this->coverage = $coverage ?: new score\coverage();
+		$this
+			->setFactory($factory ?: new factory())
+			->setCoverage($this->factory['mageekguy\atoum\score\coverage']($this->factory))
+		;
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
 	}
 
 	public function reset()
@@ -45,10 +59,20 @@ class score
 		$this->passAssertions = 0;
 		$this->failAssertions = array();
 		$this->exceptions = array();
+		$this->runtimeExceptions = array();
 		$this->errors = array();
 		$this->outputs = array();
 		$this->durations = array();
 		$this->memoryUsages = array();
+		$this->coverage->reset();
+		$this->uncompletedMethods = array();
+
+		return $this;
+	}
+
+	public function setCoverage(score\coverage $coverage)
+	{
+		$this->coverage = $coverage;
 
 		return $this;
 	}
@@ -142,7 +166,7 @@ class score
 		return $this;
 	}
 
-	public function addRuntimeException(test\exceptions\runtime $exception)
+	public function addRuntimeException(exceptions\runtime $exception)
 	{
 		$this->runtimeExceptions[] = $exception;
 
@@ -213,9 +237,9 @@ class score
 		return $this;
 	}
 
-	public function addUncompletedTest($class, $method, $exitCode, $output)
+	public function addUncompletedMethod($class, $method, $exitCode, $output)
 	{
-		$this->uncompletedTests[] = array(
+		$this->uncompletedMethods[] = array(
 			'class' => $class,
 			'method' => $method,
 			'exitCode' => $exitCode,
@@ -235,7 +259,7 @@ class score
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
 		$this->coverage->merge($score->coverage);
-		$this->uncompletedTests = array_merge($this->uncompletedTests, $score->uncompletedTests);
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
 
 		return $this;
 	}
@@ -364,9 +388,9 @@ class score
 		return sizeof($this->errors);
 	}
 
-	public function getUncompletedTestNumber()
+	public function getUncompletedMethodNumber()
 	{
-		return sizeof($this->uncompletedTests);
+		return sizeof($this->uncompletedMethods);
 	}
 
 	public function getCoverage()
@@ -374,9 +398,9 @@ class score
 		return $this->coverage;
 	}
 
-	public function getUncompletedTests()
+	public function getUncompletedMethods()
 	{
-		return $this->uncompletedTests;
+		return $this->uncompletedMethods;
 	}
 
 	public function getCase()
@@ -407,6 +431,11 @@ class score
 	public function getMethodsWithException()
 	{
 		return self::getMethods($this->getExceptions());
+	}
+
+	public function getMethodsNotCompleted()
+	{
+		return self::getMethods($this->getUncompletedMethods());
 	}
 
 	public function setCase($case)
@@ -470,7 +499,7 @@ class score
 		return $this;
 	}
 
-	public function failExists(atoum\asserter\exception $exception)
+	public function failExists(asserter\exception $exception)
 	{
 		$id = $exception->getCode();
 
@@ -517,5 +546,3 @@ class score
 		return $array;
 	}
 }
-
-?>

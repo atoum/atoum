@@ -65,5 +65,3 @@ class argument extends atoum\test
 		;
 	}
 }
-
-?>

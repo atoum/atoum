@@ -4,16 +4,32 @@ namespace mageekguy\atoum\mock\stream;
 
 use
 	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\dependence,
+	mageekguy\atoum\dependencies
 ;
 
 class controller extends test\adapter
 {
-	protected $from = null;
+	protected $stream = '';
+
+	public function __construct($stream, dependencies $dependencies = null)
+	{
+		parent::__construct($dependencies);
+
+		$this->stream = (string) $stream;
+	}
+
+	public function __toString()
+	{
+		return $this->getStream();
+	}
 
 	public function __get($method)
 	{
-		return parent::__get(self::mapMethod($method));
+		$this->dependencies['invoker']['method'] = $method = strtolower(self::mapMethod($method));
+
+		return parent::__get($method);
 	}
 
 	public function __set($method, $value)
@@ -30,7 +46,7 @@ class controller extends test\adapter
 					$this->stat = array('mode' => 33188);
 					$this->fopen = true;
 					$this->fread[1] = $value;
-					$this->fread[2] = '';
+					$this->fread[2] = false;
 					$this->fclose = true;
 				}
 				return $this;
@@ -53,6 +69,13 @@ class controller extends test\adapter
 						$this->dir_readdir = false;
 						$this->url_stat = array('mode' => 16877);
 						break;
+
+					case 'dir_readdir':
+						if ($value instanceof self)
+						{
+							$value = $value->getBasename();
+						}
+						break;
 				}
 
 				return parent::__set($method, $value);
@@ -62,6 +85,23 @@ class controller extends test\adapter
 	public function __isset($method)
 	{
 		return parent::__isset(self::mapMethod($method));
+	}
+
+	public function setDependencies(dependencies $dependencies)
+	{
+		$dependencies['invoker'] = $dependencies['invoker'] ?: function($dependencies) { return new invoker($dependencies['method']()); };
+
+		return parent::setDependencies($dependencies);
+	}
+
+	public function getStream()
+	{
+		return $this->stream;
+	}
+
+	public function getBasename()
+	{
+		return basename($this->stream);
 	}
 
 	public function invoke($method, array $arguments = array())
@@ -165,5 +205,3 @@ class controller extends test\adapter
 		}
 	}
 }
-
-?>

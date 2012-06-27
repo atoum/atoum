@@ -106,8 +106,6 @@ class colorizer extends atoum\test
 
 	public function testColorize()
 	{
-		$this->mock('mageekguy\atoum\cli');
-
 		$colorizer = new cli\colorizer(null, null, $cli = new \mock\mageekguy\atoum\cli());
 
 		$cli->getMockController()->isTerminal = true;
@@ -143,5 +141,3 @@ class colorizer extends atoum\test
 		;
 	}
 }
-
-?>

@@ -12,5 +12,3 @@ $builder
 	->setTaggerEngine(new atoum\scripts\tagger\engine())
 	->setReportTitle('[%3$s] Nightly build of revision %4$s the %1$s at %2$s')
 ;
-
-?>

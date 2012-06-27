@@ -1,0 +1,7 @@
+script: php ./scripts/runner.php --test-it
+language: php
+php:
+  - 5.3
+  - 5.4
+notifications:
+  irc: "irc.freenode.org##atoum"

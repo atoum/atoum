@@ -37,5 +37,3 @@ abstract class outputs extends field
 		}
 	}
 }
-
-?>

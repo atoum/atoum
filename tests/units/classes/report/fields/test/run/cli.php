@@ -71,7 +71,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\test')
 			->assert
 				->if($field = new test\run\cli())
 				->and($adapter = new adapter())
@@ -110,7 +109,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
 			->assert
 				->if($adapter = new adapter())
 				->and($adapter->class_exists = true)
@@ -198,5 +196,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

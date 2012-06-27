@@ -72,5 +72,3 @@ class stream extends atoum\asserter
 		return $this;
 	}
 }
-
-?>

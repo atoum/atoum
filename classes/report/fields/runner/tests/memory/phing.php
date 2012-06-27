@@ -20,5 +20,3 @@ class phing extends report\fields\runner\tests\memory\cli
 		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory));
 	}
 }
-
-?>

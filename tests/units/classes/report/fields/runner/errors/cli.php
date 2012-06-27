@@ -148,7 +148,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($field = new runner\errors\cli())
 				->then
@@ -164,8 +163,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($runner = new mock\runner())
 				->and($runner->getMockController()->getScore = $score = new mock\score())
@@ -714,5 +711,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

@@ -3,16 +3,15 @@
 namespace mageekguy\atoum\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\adapter,
+	mageekguy\atoum\exceptions\logic,
+	mageekguy\atoum\exceptions\runtime
 ;
 
 class stream
 {
 	const defaultProtocol = 'atoum';
 	const protocolSeparator = '://';
-
-	public $context = null;
 
 	protected $streamController = null;
 
@@ -34,15 +33,17 @@ class stream
 			case 'url_stat':
 				if (isset($arguments[0]) === false)
 				{
-					throw new exceptions\logic('Argument 0 is not set for function ' . $method . '()');
+					throw new logic('Argument 0 is not set for function ' . $method . '()');
 				}
 
-				if (isset(self::$streams[$arguments[0]]) === false)
+				$stream = self::setDirectorySeparator($arguments[0]);
+
+				if (isset(self::$streams[$stream]) === false)
 				{
-					throw new exceptions\logic('Stream \'' . $arguments[0] . '\' is undefined');
+					throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
 				}
 
-				$this->streamController = self::$streams[$arguments[0]];
+				$this->streamController = self::$streams[$stream];
 				break;
 		}
 
@@ -51,48 +52,42 @@ class stream
 
 	public static function getAdapter()
 	{
-		self::$adapter = self::$adapter ?: new atoum\adapter();
-
-		return self::$adapter;
+		return (self::$adapter = self::$adapter ?: new adapter());
 	}
 
-	public static function setAdapter(atoum\adapter $adapter)
+	public static function setAdapter(adapter $adapter)
 	{
 		self::$adapter = $adapter;
 	}
 
-	public static function get($stream)
+	public static function get($stream = null)
 	{
+		$stream = self::setDirectorySeparator($stream ?: uniqid());
+
 		$adapter = self::getAdapter();
 
-		$protocol = self::getProtocol($stream);
-
-		if ($protocol === null)
+		if (($protocol = self::getProtocol($stream)) === null)
 		{
 			$protocol = self::defaultProtocol;
 			$stream = $protocol . self::protocolSeparator . $stream;
 		}
 
-		if (in_array($protocol, self::$protocols) === false)
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
 		{
-			if (in_array($protocol, $adapter->stream_get_wrappers()) === true)
-			{
-				throw new exceptions\runtime('Stream ' . $protocol . ' is already registered');
-			}
-			else if ($adapter->stream_wrapper_register($protocol, __CLASS__) === false)
-			{
-				throw new exceptions\runtime('Unable to register ' . $protocol . ' stream');
-			}
-
-			self::$protocols[] = $protocol;
+			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
 		if (isset(self::$streams[$stream]) === false)
 		{
-			self::$streams[$stream] = new stream\controller();
+			self::$streams[$stream] = new stream\controller($stream);
 		}
 
 		return self::$streams[$stream];
+	}
+
+	public static function getSubStream(stream\controller $controller, $stream = null)
+	{
+		return static::get($controller . DIRECTORY_SEPARATOR . self::setDirectorySeparator($stream ?: uniqid()));
 	}
 
 	public static function getProtocol($stream)
@@ -108,6 +103,20 @@ class stream
 
 		return $scheme;
 	}
-}
 
-?>
+	public static function setDirectorySeparator($stream, $directorySeparator = DIRECTORY_SEPARATOR)
+	{
+		$path =  preg_replace('#^[^:]+://#', '', $stream);
+
+		if ($directorySeparator == '/')
+		{
+			$path = str_replace('\\', '/', $path);
+		}
+		else
+		{
+			$path = str_replace('/', '\\', $path);
+		}
+
+		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
+	}
+}

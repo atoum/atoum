@@ -26,5 +26,3 @@ $cliReport
 ;
 
 $runner->addReport($cliReport);
-
-?>

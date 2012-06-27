@@ -105,8 +105,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($field = new tests\duration\cli())
 				->then
@@ -115,7 +113,8 @@ class cli extends atoum\test
 					->variable($field->getTestNumber())->isNull()
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (float) rand(1, PHP_INT_MAX))
-				->and($runner = new \mock\mageekguy\atoum\runner($score))
+				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testsNumber = rand(1, PHP_INT_MAX))
 				->then
 					->boolean($field->handleEvent(atoum\runner::runStop, $runner))->isTrue()
@@ -127,12 +126,11 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (rand(1, 100) / 1000))
-				->and($runner = new \mock\mageekguy\atoum\runner($score))
+				->and($runner = new \mock\mageekguy\atoum\runner())
+				->and($runner->setScore($score))
 				->and($runner->getMockController()->getTestNumber = $testNumber = 1)
 				->and($defaultField = new tests\duration\cli())
 				->and($customField = new tests\duration\cli($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $durationColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
@@ -186,5 +184,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

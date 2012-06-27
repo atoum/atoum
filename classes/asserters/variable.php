@@ -203,6 +203,34 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
+	public function isCallable($failMessage = null)
+	{
+		if (is_callable($this->valueIsSet()->value) === true)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not callable'), $this));
+		}
+
+		return $this;
+	}
+
+	public function isNotCallable($failMessage = null)
+	{
+		if (is_callable($this->valueIsSet()->value) === false)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is callable'), $this));
+		}
+
+		return $this;
+	}
+
 	protected function valueIsSet($message = 'Value is undefined')
 	{
 		if ($this->isSet === false)
@@ -215,5 +243,3 @@ class variable extends atoum\asserter
 
 	protected static function check($value, $method) {}
 }
-
-?>

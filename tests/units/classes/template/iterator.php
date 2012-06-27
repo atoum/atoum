@@ -109,10 +109,6 @@ class iterator extends atoum\test
 	{
 		$iterator = new template\iterator();
 
-		$this->mockGenerator
-			->generate('mageekguy\atoum\template\tag')
-		;
-
 		$template = new atoum\template();
 		$template->addChild($tag = new \mock\mageekguy\atoum\template\tag(uniqid()));
 		$tag->getMockController()->build = function() {};
@@ -272,5 +268,3 @@ class iterator extends atoum\test
 		;
 	}
 }
-
-?>

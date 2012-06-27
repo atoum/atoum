@@ -9,5 +9,3 @@ class sizeOf extends \mageekguy\atoum\asserters\integer
 		return parent::setWith(sizeof($value), $label);
 	}
 }
-
-?>

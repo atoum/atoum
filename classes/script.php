@@ -28,12 +28,15 @@ abstract class script implements atoum\adapter\aggregator
 
 		$this
 			->setFactory($factory ?: new atoum\factory())
-			->setLocale($this->factory->build('atoum\locale'))
-			->setAdapter($this->factory->build('atoum\adapter'))
-			->setArgumentsParser($this->factory->build('atoum\script\arguments\parser'))
-			->setOutputWriter($this->factory->build('atoum\writers\std\out'))
-			->setErrorWriter($this->factory->build('atoum\writers\std\err'))
+			->setLocale($this->factory['atoum\locale']())
+			->setAdapter($this->factory['atoum\adapter']())
+			->setArgumentsParser($this->factory['atoum\script\arguments\parser']())
+			->setOutputWriter($this->factory['atoum\writers\std\out']())
+			->setErrorWriter($this->factory['atoum\writers\std\err']())
 		;
+
+		$this->factory['atoum\locale'] = $this->locale;
+		$this->factory['atoum\adapter'] = $this->adapter;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
@@ -43,13 +46,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function setFactory(atoum\factory $factory)
 	{
-		$this->factory = clone $factory;
-
-		$this->factory
-			->setClient(get_class($this))
-			->resetImportations()
-			->import('mageekguy\atoum')
-		;
+		$this->factory = $factory->import('mageekguy\atoum');
 
 		return $this;
 	}
@@ -263,5 +260,3 @@ abstract class script implements atoum\adapter\aggregator
 		return $this;
 	}
 }
-
-?>

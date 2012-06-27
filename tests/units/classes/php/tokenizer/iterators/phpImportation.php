@@ -20,5 +20,3 @@ class phpImportation extends atoum\test
 		;
 	}
 }
-
-?>

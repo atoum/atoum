@@ -53,5 +53,3 @@ class cli extends report\fields\runner\atoum
 		return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize(sprintf($this->locale->_('atoum version %s by %s (%s)'), $this->version, $this->author, $this->path)) . PHP_EOL);
 	}
 }
-
-?>

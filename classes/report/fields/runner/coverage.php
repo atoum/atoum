@@ -35,5 +35,3 @@ abstract class coverage extends report\field
 		}
 	}
 }
-
-?>

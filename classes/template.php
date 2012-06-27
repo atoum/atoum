@@ -179,5 +179,3 @@ class template extends template\data
 
 	public function unsetAttribute($name) {}
 }
-
-?>

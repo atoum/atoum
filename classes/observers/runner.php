@@ -9,5 +9,3 @@ use
 interface runner extends atoum\observer
 {
 }
-
-?>

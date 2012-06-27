@@ -14,14 +14,22 @@ class error extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\asserter')
+		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+	}
+
+	public function testInitWithTest()
+	{
+		$this
+			->if($asserter = new asserters\error($generator = new asserter\generator()))
+			->then
+				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
+				->object($asserter->getScore())->isIdenticalTo($this->getScore())
 		;
 	}
 
 	public function testGetAsString()
 	{
-		$this->assert
+		$this
 			->string(asserters\error::getAsString(E_ERROR))->isEqualTo('E_ERROR')
 			->string(asserters\error::getAsString(E_WARNING))->isEqualTo('E_WARNING')
 			->string(asserters\error::getAsString(E_PARSE))->isEqualTo('E_PARSE')
@@ -44,281 +52,96 @@ class error extends atoum\test
 
 	public function test__construct()
 	{
-		$asserter = new asserters\error($generator = new asserter\generator($this));
-
-		$this->assert
-			->object($asserter->getScore())->isIdenticalTo($this->getScore())
-			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
-			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getMessage())->isNull()
-			->variable($asserter->getType())->isNull()
+		$this
+			->if($asserter = new asserters\error($generator = new asserter\generator()))
+			->then
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->variable($asserter->getMessage())->isNull()
+				->variable($asserter->getType())->isNull()
 		;
 	}
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self($score = new atoum\score())));
-
-		$this->assert
-			->object($asserter->setWith(null, null))->isIdenticalTo($asserter)
-			->variable($asserter->getMessage())->isNull()
-			->variable($asserter->getType())->isNull()
-		;
-
-		$this->assert
-			->object($asserter->setWith($message = uniqid(), null))->isIdenticalTo($asserter)
-			->string($asserter->getMessage())->isEqualTo($message)
-			->variable($asserter->getType())->isNull()
-		;
-
-		$this->assert
-			->object($asserter->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isIdenticalTo($asserter)
-			->string($asserter->getMessage())->isEqualTo($message)
-			->integer($asserter->getType())->isEqualTo($type)
+		$this
+			->if($asserter = new asserters\error($generator = new asserter\generator()))
+			->then
+				->object($asserter->setWith(null, null))->isIdenticalTo($asserter)
+				->variable($asserter->getMessage())->isNull()
+				->variable($asserter->getType())->isNull()
+				->object($asserter->setWith($message = uniqid(), null))->isIdenticalTo($asserter)
+				->string($asserter->getMessage())->isEqualTo($message)
+				->variable($asserter->getType())->isNull()
+				->object($asserter->setWith($message = uniqid(), $type = rand(0, PHP_INT_MAX)))->isIdenticalTo($asserter)
+				->string($asserter->getMessage())->isEqualTo($message)
+				->integer($asserter->getType())->isEqualTo($type)
 		;
 	}
 
 	public function testExists()
 	{
-		$asserter = new asserters\error(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-				->hasMessage($test->getLocale()->_('error does not exist'))
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $test->getLocale()->_('error does not exist')
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX));
-
-		$this->assert
-			->object($asserter->exists())->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => $test->getLocale()->_('error does not exist')
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->array($score->getErrors())->isEmpty()
-		;
-
-		$score->reset();
-
-		$asserter->setWith($message = uniqid(), null);
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('error with message \'%s\' does not exist'), $message))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error with message \'%s\' does not exist'), $message)
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX));
-
-		$this->assert
-			->object($asserter->exists())->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error with message \'%s\' does not exist'), $message)
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->array($score->getErrors())->isEmpty()
-		;
-
-		$score->reset();
-
-		$asserter->setWith($message = uniqid(), $type = E_USER_ERROR);
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('error of type %s with message \'%s\' does not exist'), asserters\error::getAsString($type), $message))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error of type %s with message \'%s\' does not exist'), asserters\error::getAsString($type), $message)
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message, uniqid(), rand(1, PHP_INT_MAX));
-
-		$this->assert
-			->object($asserter->exists())->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error of type %s with message \'%s\' does not exist'), asserters\error::getAsString($type), $message)
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->array($score->getErrors())->isEmpty()
-		;
-
-		$score->reset();
-
-		$asserter->setWith(null, $type = E_USER_ERROR);
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type)))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type))
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX));
-
-		$this->assert
-			->object($asserter->exists())->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type))
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->array($score->getErrors())->isEmpty()
-		;
-
-		$score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX));
-
-		$asserter
-			->withPattern('/FOO/')
-			->withType(null);
-		;
-
-		$this->assert
-			->object($asserter->exists())->isIdenticalTo($asserter)
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::exists()',
-						'fail' => sprintf($test->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type))
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isEqualTo(2)
-			->array($score->getErrors())->isEmpty()
+		$this
+			->if($asserter = new asserters\error($generator = new asserter\generator()))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($generator->getLocale()->_('error does not exist'))
+			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->object($asserter->exists())->isIdenticalTo($asserter)
+				->array($asserter->getScore()->getErrors())->isEmpty()
+			->if($asserter->setWith($message = uniqid(), null))
+			->then
+				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('error with message \'%s\' does not exist'), $message))
+			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->object($asserter->exists())->isIdenticalTo($asserter)
+				->array($asserter->getScore()->getErrors())->isEmpty()
+			->if($asserter->setWith($message = uniqid(), $type = E_USER_ERROR))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('error of type %s with message \'%s\' does not exist'), asserters\error::getAsString($type), $message))
+			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->object($asserter->exists())->isIdenticalTo($asserter)
+				->array($asserter->getScore()->getErrors())->isEmpty()
+			->if($asserter->setWith(null, $type = E_USER_ERROR))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type)))
+			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->then
+				->object($asserter->exists())->isIdenticalTo($asserter)
+				->array($asserter->getScore()->getErrors())->isEmpty()
+			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->and($asserter->withPattern('/FOO/')->withType(null))
+			->then
+				->object($asserter->exists())->isIdenticalTo($asserter)
+				->array($asserter->getScore()->getErrors())->isEmpty()
 		;
 	}
 
 	public function testWithType()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self()));
-
-		$this->assert
-			->object($asserter->withType($type = rand(1, PHP_INT_MAX)))->isIdenticalTo($asserter)
-			->integer($asserter->getType())->isEqualTo($type)
+		$this
+			->if($asserter = new asserters\error(new asserter\generator()))
+			->then
+				->object($asserter->withType($type = rand(1, PHP_INT_MAX)))->isIdenticalTo($asserter)
+				->integer($asserter->getType())->isEqualTo($type)
 		;
 	}
 
 	public function testWithAnyType()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self()));
 
-		$this->assert
-			->if($asserter->withType(rand(1, PHP_INT_MAX)))
+		$this
+			->if($asserter = new asserters\error(new asserter\generator()))
+			->and($asserter->withType(rand(1, PHP_INT_MAX)))
 			->then
 				->variable($asserter->getType())->isNotNull()
 				->object($asserter->withAnyType())->isIdenticalTo($asserter)
@@ -328,33 +151,32 @@ class error extends atoum\test
 
 	public function testWithMessage()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self()));
-
-		$this->assert
-			->object($asserter->withMessage($message = uniqid()))->isIdenticalTo($asserter)
-			->string($asserter->getMessage())->isEqualTo($message)
-			->boolean($asserter->messageIsPattern())->isFalse()
+		$this
+			->if($asserter = new asserters\error(new asserter\generator()))
+			->then
+				->object($asserter->withMessage($message = uniqid()))->isIdenticalTo($asserter)
+				->string($asserter->getMessage())->isEqualTo($message)
+				->boolean($asserter->messageIsPattern())->isFalse()
 		;
 	}
 
 	public function testWithPattern()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self()));
-
-		$this->assert
-			->boolean($asserter->messageIsPattern())->isFalse()
-			->object($asserter->withPattern($pattern = uniqid()))->isIdenticalTo($asserter)
-			->string($asserter->getMessage())->isEqualTo($pattern)
-			->boolean($asserter->messageIsPattern())->isTrue()
+		$this
+			->if($asserter = new asserters\error(new asserter\generator()))
+			->then
+				->boolean($asserter->messageIsPattern())->isFalse()
+				->object($asserter->withPattern($pattern = uniqid()))->isIdenticalTo($asserter)
+				->string($asserter->getMessage())->isEqualTo($pattern)
+				->boolean($asserter->messageIsPattern())->isTrue()
 		;
 	}
 
 	public function testWithAnyMessage()
 	{
-		$asserter = new asserters\error(new asserter\generator(new self()));
-
-		$this->assert
-			->if($asserter->withMessage(uniqid()))
+		$this
+			->if($asserter = new asserters\error(new asserter\generator()))
+			->and($asserter->withMessage(uniqid()))
 			->then
 				->variable($asserter->getMessage())->isNotNull()
 				->boolean($asserter->messageIsPattern())->isFalse()
@@ -371,5 +193,3 @@ class error extends atoum\test
 		;
 	}
 }
-
-?>

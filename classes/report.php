@@ -5,18 +5,32 @@ namespace mageekguy\atoum;
 class report implements observer, adapter\aggregator
 {
 	protected $title = null;
+	protected $factory = null;
 	protected $locale = null;
 	protected $adapter = null;
 	protected $writers = array();
 	protected $fields = array();
 	protected $lastSetFields = array();
 
-	public function __construct(locale $locale = null, adapter $adapter = null)
+	public function __construct(factory $factory = null)
 	{
 		$this
-			->setLocale($locale ?: new locale())
-			->setAdapter($adapter ?: new adapter())
+			->setFactory($factory ?: new factory())
+			->setLocale($this->factory['mageekguy\atoum\locale']())
+			->setAdapter($this->factory['mageekguy\atoum\adapter']())
 		;
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
 	}
 
 	public function setTitle($title)
@@ -106,5 +120,3 @@ class report implements observer, adapter\aggregator
 		return $this;
 	}
 }
-
-?>

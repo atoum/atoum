@@ -74,5 +74,3 @@ class phpNamespace extends tokenizer\iterator
 		return $this->append($phpFunction);
 	}
 }
-
-?>

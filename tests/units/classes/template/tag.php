@@ -160,5 +160,3 @@ class tag extends atoum\test
 		;
 	}
 }
-
-?>

@@ -13,9 +13,9 @@ use
 
 class vim extends reports\asynchronous
 {
-	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct(atoum\factory $factory = null)
 	{
-		parent::__construct($locale, $adapter);
+		parent::__construct($factory);
 
 		$firstLevelPrompt = new prompt('> ');
 		$secondLevelPrompt = new prompt('=> ');
@@ -109,5 +109,3 @@ class vim extends reports\asynchronous
 		;
 	}
 }
-
-?>

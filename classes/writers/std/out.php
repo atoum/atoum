@@ -26,5 +26,3 @@ class out extends writers\std
 		return $this;
 	}
 }
-
-?>

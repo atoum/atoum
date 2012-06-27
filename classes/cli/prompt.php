@@ -49,5 +49,3 @@ class prompt
 		return $this->colorizer;
 	}
 }
-
-?>

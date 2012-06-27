@@ -114,8 +114,6 @@ class cli extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($field = new test\duration\cli())
 				->and($score = new \mock\mageekguy\atoum\score())
@@ -137,8 +135,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($adapter = new adapter())
 				->and($adapter->class_exists = true)
@@ -234,5 +230,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

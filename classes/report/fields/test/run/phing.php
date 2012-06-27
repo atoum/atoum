@@ -24,5 +24,3 @@ class phing extends report\fields\test\run\cli
 		);
 	}
 }
-
-?>

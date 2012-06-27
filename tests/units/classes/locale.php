@@ -56,5 +56,3 @@ class locale extends atoum\test
 		$this->assert->string($locale->__($singular, $plural, rand(2, PHP_INT_MAX)))->isEqualTo($plural);
 	}
 }
-
-?>

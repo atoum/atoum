@@ -43,5 +43,3 @@ abstract class memory extends report\field
 		}
 	}
 }
-
-?>

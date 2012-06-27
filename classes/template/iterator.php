@@ -103,5 +103,3 @@ class iterator implements \iterator, \countable
 		return sizeof($this->tags);
 	}
 }
-
-?>

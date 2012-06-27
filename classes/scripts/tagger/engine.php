@@ -172,5 +172,3 @@ class engine implements adapter\aggregator
 		return $this;
 	}
 }
-
-?>

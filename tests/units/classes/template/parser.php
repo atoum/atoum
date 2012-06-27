@@ -695,5 +695,3 @@ class parser extends atoum\test
 		;
 	}
 }
-
-?>

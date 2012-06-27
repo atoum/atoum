@@ -37,5 +37,3 @@ abstract class failures extends report\field
 		}
 	}
 }
-
-?>

@@ -98,7 +98,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
 			->assert
 				->if($field = new duration\cli())
 				->then
@@ -115,10 +114,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\runner')
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\cli\prompt')
-			->mock('mageekguy\atoum\cli\colorizer')
 			->assert
 				->if($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->getMockController()->getRunningDuration = 1)
@@ -194,5 +189,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

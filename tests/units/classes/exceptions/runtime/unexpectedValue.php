@@ -23,5 +23,3 @@ class unexpectedValue extends atoum\test
 		;
 	}
 }
-
-?>

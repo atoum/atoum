@@ -61,5 +61,3 @@ class decorator
 		return $string;
 	}
 }
-
-?>

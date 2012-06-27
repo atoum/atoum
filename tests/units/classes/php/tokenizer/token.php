@@ -194,5 +194,3 @@ class token extends atoum\test
 		;
 	}
 }
-
-?>

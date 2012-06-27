@@ -20,5 +20,3 @@ class phpConstant extends atoum\test
 		;
 	}
 }
-
-?>

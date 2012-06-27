@@ -66,7 +66,7 @@ class builder extends atoum\test
 			->and($factory->returnWhenBuild('atoum\writers\std\err', $stdErr = new atoum\writers\std\err()))
 			->and($factory->returnWhenBuild('atoum\superglobals', $superglobals = new atoum\superglobals()))
 			->and($factory->returnWhenBuild('atoum\scripts\builder\vcs\svn', $vcs = new atoum\scripts\builder\vcs\svn()))
-			->and( $builder = new scripts\builder($name = uniqid(), $factory))
+			->and($builder = new scripts\builder($name = uniqid(), $factory))
 			->then
 				->string($builder->getName())->isEqualTo($name)
 				->object($builder->getLocale())->isIdenticalTo($locale)
@@ -174,10 +174,6 @@ class builder extends atoum\test
 	public function testSetVcs()
 	{
 		$builder = new scripts\builder(uniqid());
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs')
-		;
 
 		$vcsController = new mock\controller();
 		$vcsController->__construct = function() {};
@@ -340,12 +336,6 @@ class builder extends atoum\test
 
 	public function testCheckUnitTests()
 	{
-		$this
-			->mock($this->getTestedClassName())
-			->mock('mageekguy\atoum\score')
-			->mock('mageekguy\atoum\scripts\builder\vcs')
-		;
-
 		$factory = new atoum\factory();
 		$factory
 			->import('mageekguy\atoum')
@@ -606,12 +596,6 @@ class builder extends atoum\test
 
 	public function testCreatePhar()
 	{
-		$this
-			->mock('mageekguy\atoum\scripts\builder')
-			->mock('mageekguy\atoum\scripts\builder\vcs')
-			->mock('mageekguy\atoum\scripts\tagger\engine')
-		;
-
 		$factory = new atoum\factory();
 		$factory
 			->import('mageekguy\atoum')
@@ -873,8 +857,6 @@ class builder extends atoum\test
 
 	public function testRun()
 	{
-		$this->mock('mageekguy\atoum\scripts\builder');
-
 		$adapter = new atoum\test\adapter();
 		$adapter->file_get_contents = false;
 		$adapter->fopen = $runFileResource = uniqid();
@@ -934,8 +916,6 @@ class builder extends atoum\test
 				->adapter($adapter)->call('file_put_contents')->never()
 		;
 
-		$this->mock('mageekguy\atoum\scripts\builder\vcs');
-
 		$vcsController = new mock\controller();
 		$vcsController->__construct = function() {};
 
@@ -966,5 +946,3 @@ class builder extends atoum\test
 		;
 	}
 }
-
-?>

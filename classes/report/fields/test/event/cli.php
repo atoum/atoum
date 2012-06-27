@@ -77,5 +77,3 @@ class cli extends report\fields\test\event
 		return $string;
 	}
 }
-
-?>
