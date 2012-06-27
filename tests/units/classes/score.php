@@ -1085,4 +1085,13 @@ class score extends atoum\test
 				->variable($score->errorExists($message, $type))->isNull()
 		;
 	}
+
+	public function testGetContainer()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->getContainer())->isEqualTo(new atoum\score\container($score))
+		;
+	}
 }

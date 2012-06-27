@@ -510,6 +510,11 @@ class score
 		return (sizeof(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
 	}
 
+	public function getContainer()
+	{
+		return $this->factory['mageekguy\atoum\score\container']($this);
+	}
+
 	private static function getMethods(array $array)
 	{
 		$methods = array();
