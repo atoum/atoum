@@ -14,214 +14,101 @@ class object extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable')
-		;
+		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
 	}
 
 	public function test__construct()
 	{
-		$asserter = new asserters\object($generator = new asserter\generator($this));
-
-		$this->assert
-			->object($asserter->getScore())->isIdenticalTo($this->getScore())
-			->object($asserter->getLocale())->isIdenticalTo($this->getLocale())
-			->object($asserter->getGenerator())->isIdenticalTo($generator)
-			->variable($asserter->getValue())->isNull()
-			->boolean($asserter->wasSet())->isFalse()
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
 		;
 	}
 
 	public function test__get()
 	{
-		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->toString;
-					}
-				)
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->toString; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
-			->exception(function() use ($asserter, & $property) {
-						$asserter->{$property = uniqid()};
-					}
-				)
+				->exception(function() use ($asserter, & $property) { $asserter->{$property = uniqid()}; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Asserter \'mageekguy\atoum\asserters\\' . $property . '\' does not exist')
-		;
-
-		$asserter->setWith($this);
-
-		$this->assert
-			->object($asserter->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
+					->hasMessage('Asserter \'' . $property . '\' does not exist')
+			->if($asserter->setWith($this))
+			->then
+				->object($asserter->toString)->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 
 	public function testSetWith()
 	{
-		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::setWith()',
-						'fail' => sprintf($test->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value))
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-			->string($asserter->getValue())->isEqualTo($value)
-		;
-
-		$this->assert
-			->object($asserter->setWith($value = $this))->isIdenticalTo($asserter);
-		;
-
-		$this->assert
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->integer($score->getPassNumber())->isEqualTo(1)
-			->object($asserter->getValue())->isIdenticalTo($value)
-		;
-
-		$this->assert
-			->object($asserter->setWith($value = uniqid(), false))->isIdenticalTo($asserter)
-			->string($asserter->getValue())->isEqualTo($value)
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
+				->string($asserter->getValue())->isEqualTo($value)
+				->object($asserter->setWith($value = $this))->isIdenticalTo($asserter)
+				->object($asserter->getValue())->isIdenticalTo($value)
+				->object($asserter->setWith($value = uniqid(), false))->isIdenticalTo($asserter)
+				->string($asserter->getValue())->isEqualTo($value)
 		;
 	}
 
 	public function testHasSize()
 	{
-		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->hasSize(rand(0, PHP_INT_MAX));
-					}
-				)
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
-		;
-
-		$asserter->setWith($this);
-
-		$score->reset();
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasSize(0); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s has not size %d'), $asserter, 0))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::hasSize()',
-						'fail' => sprintf($test->getLocale()->_('%s has not size %d'), $asserter, 0)
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$this->assert
-			->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
-		;
-
-		$this->assert
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->integer($score->getPassNumber())->isEqualTo(1)
+			->if($asserter->setWith($this))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasSize(0); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has not size %d'), $asserter, 0))
+				->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
 		;
 	}
 
 	public function testIsEmpty()
 	{
-		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->hasSize(rand(0, PHP_INT_MAX));
-					}
-				)
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
-		;
-
-		$asserter->setWith($this);
-
-		$score->reset();
-
-		$this->assert
-			->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isEmpty(); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
-				->hasMessage(sprintf($test->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
-			->integer($score->getFailNumber())->isEqualTo(1)
-			->array($score->getFailAssertions())->isEqualTo(array(
-					array(
-						'case' => null,
-						'dataSetKey' => null,
-						'dataSetProvider' => null,
-						'class' => __CLASS__,
-						'method' => $test->getCurrentMethod(),
-						'file' => __FILE__,
-						'line' => $line,
-						'asserter' => get_class($asserter) . '::isEmpty()',
-						'fail' => sprintf($test->getLocale()->_('%s has size %d'), $asserter, sizeof($this))
-					)
-				)
-			)
-			->integer($score->getPassNumber())->isZero()
-		;
-
-		$asserter->setWith(new \arrayIterator());
-
-		$score->reset();
-
-		$this->assert
-			->object($asserter->isEmpty())->isIdenticalTo($asserter); $line = __LINE__
-		;
-
-		$this->assert
-			->integer($score->getFailNumber())->isEqualTo(0)
-			->integer($score->getPassNumber())->isEqualTo(1)
+			->if($asserter->setWith($this))
+			->then
+				->exception(function() use ($asserter) { $asserter->isEmpty(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has size %d'), $asserter, sizeof($this)))
+			->if($asserter->setWith(new \arrayIterator()))
+			->then
+				->object($asserter->isEmpty())->isIdenticalTo($asserter)
 		;
 	}
 
 	public function testToString()
 	{
-		$asserter = new asserters\object(new asserter\generator($test = new self($score = new atoum\score())));
-
-		$this->assert
-			->exception(function() use ($asserter) {
-						$asserter->toString();
-					}
-				)
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->toString(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
-		;
-
-		$asserter->setWith($this);
-
-		$this->assert
-			->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
+			->if($asserter->setWith($this))
+			->then
+				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
 }
-
-?>

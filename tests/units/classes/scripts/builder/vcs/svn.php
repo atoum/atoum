@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\scripts\builder\vcs;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\scripts\builder\vcs
 ;
 
@@ -25,83 +26,74 @@ class svn extends atoum\test
 
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\adapter\aggregator')
-		;
+		$this->testedClass->isSubclassOf('mageekguy\atoum\adapter\aggregator');
 	}
 
 	public function test__construct()
 	{
-		$svn = new vcs\svn();
-
-		$this->assert
-			->object($svn->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->variable($svn->getRepositoryUrl())->isNull()
-		;
-
-		$svn = new vcs\svn($adapter = new atoum\adapter());
-
-		$this->assert
-			->object($svn->getAdapter())->isIdenticalTo($adapter)
-			->variable($svn->getRepositoryUrl())->isNull()
+		$this
+			->if($svn = new vcs\svn())
+			->then
+				->object($svn->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->variable($svn->getRepositoryUrl())->isNull()
+			->if($svn = new vcs\svn($adapter = new atoum\adapter()))
+			->then
+				->object($svn->getAdapter())->isIdenticalTo($adapter)
+				->variable($svn->getRepositoryUrl())->isNull()
 		;
 	}
 
 	public function testSetAdapter()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($svn)
-			->object($svn->getAdapter())->isIdenticalTo($adapter)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($svn = new vcs\svn($adapter))
+			->then
+				->object($svn->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($svn)
+				->object($svn->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
 	public function testSetRepositoryUrl()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setRepositoryUrl($url = uniqid()))->isIdenticalTo($svn)
-			->string($svn->getRepositoryUrl())->isEqualTo($url)
-			->object($svn->setRepositoryUrl($url = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
-			->string($svn->getRepositoryUrl())->isEqualTo((string) $url)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($svn = new vcs\svn($adapter))
+			->then
+				->object($svn->setRepositoryUrl($url = uniqid()))->isIdenticalTo($svn)
+				->string($svn->getRepositoryUrl())->isEqualTo($url)
+				->object($svn->setRepositoryUrl($url = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
+				->string($svn->getRepositoryUrl())->isEqualTo((string) $url)
 		;
 	}
 
 	public function testSetRevision()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
-			->integer($svn->getRevision())->isEqualTo($revisionNumber)
-			->object($svn->setRevision($revisionNumber = uniqid()))->isIdenticalTo($svn)
-			->integer($svn->getRevision())->isEqualTo((int) $revisionNumber)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($svn = new vcs\svn($adapter))
+			->then
+				->object($svn->setRevision($revisionNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($svn)
+				->integer($svn->getRevision())->isEqualTo($revisionNumber)
+				->object($svn->setRevision($revisionNumber = uniqid()))->isIdenticalTo($svn)
+				->integer($svn->getRevision())->isEqualTo((int) $revisionNumber)
 		;
 	}
 
 	public function testSetUsername()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-
-		$svn = new vcs\svn($adapter);
-
-		$this->assert
-			->object($svn->setUsername($username = uniqid()))->isIdenticalTo($svn)
-			->string($svn->getUsername())->isEqualTo($username)
-			->object($svn->setUsername($username = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
-			->string($svn->getUsername())->isEqualTo((string) $username)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($svn = new vcs\svn($adapter))
+			->then
+				->object($svn->setUsername($username = uniqid()))->isIdenticalTo($svn)
+				->string($svn->getUsername())->isEqualTo($username)
+				->object($svn->setUsername($username = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($svn)
+				->string($svn->getUsername())->isEqualTo((string) $username)
 		;
 	}
 
@@ -206,10 +198,6 @@ class svn extends atoum\test
 
 	public function testSetExportDirectory()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-		;
-
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
@@ -225,10 +213,6 @@ class svn extends atoum\test
 
 	public function testExportRepository()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-		;
-
 		$adapter = new atoum\test\adapter();
 		$adapter->extension_loaded = true;
 
@@ -340,72 +324,47 @@ class svn extends atoum\test
 
 	public function testCleanWorkingDirectory()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->extension_loaded = true;
-		$adapter->unlink = function() {};
-		$adapter->rmdir = function() {};
-
-		$this->mockGenerator
-			->generate('mageekguy\atoum\scripts\builder\vcs\svn')
-			->generate('splFileInfo')
-		;
-
-		$firstFile = atoum\mock\stream::get('workingDirectory/aDirectory/firstFile');
-		$firstFile->unlink = true;
-
-		$secondFile = atoum\mock\stream::get('workingDirectory/aDirectory/secondFile');
-		$secondFile->unlink = true;
-
-		$aDirectory = atoum\mock\stream::get('workingDirectory/aDirectory');
-		$aDirectory->opendir = true;
-		$aDirectory->readdir[1] = 'firstFile';
-		$aDirectory->readdir[2] = 'secondFile';
-		$aDirectory->readdir[3] = false;
-
-		$emptyDirectory = atoum\mock\stream::get('workingDirectory/emptyDirectory');
-		$emptyDirectory->opendir = true;
-		$emptyDirectory->readdir[1] = false;
-
-		$anOtherFirstFile = atoum\mock\stream::get('workingDirectory/anOtherDirectory/anOtherFirstFile');
-		$anOtherFirstFile->unlink = true;
-
-		$anOtherSecondFile = atoum\mock\stream::get('workingDirectory/anOtherDirectory/anOtherSecondFile');
-		$anOtherSecondFile->unlink = true;
-
-		$anOtherDirectory = atoum\mock\stream::get('workingDirectory/anOtherDirectory');
-		$anOtherDirectory->opendir = true;
-		$anOtherDirectory->readdir[1] = 'anOtherFirstFile';
-		$anOtherDirectory->readdir[2] = 'anOtherSecondFile';
-		$anOtherDirectory->readdir[3] = false;
-
-		$aFile = atoum\mock\stream::get('workingDirectory/aFile');
-		$aFile->unlink = true;
-
-		$workingDirectory = atoum\mock\stream::get('workingDirectory');
-		$workingDirectory->opendir = true;
-		$workingDirectory->readdir[1] = 'aDirectory';
-		$workingDirectory->readdir[2] = 'emptyDirectory';
-		$workingDirectory->readdir[3] = 'anOtherDirectory';
-		$workingDirectory->readdir[4] = 'aFile';
-		$workingDirectory->readdir[5] = false;
-
-		$svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller());
-
-		$this->assert
-			->when(function() use ($svn) { $svn->setWorkingDirectory('atoum://workingDirectory'); })
-			->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
-			->adapter($adapter)
-				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/firstFile')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/aDirectory/secondFile')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/aDirectory')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/emptyDirectory')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherFirstFile')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/anOtherDirectory/anOtherSecondFile')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory/anOtherDirectory')->once()
-				->call('unlink')->withArguments('atoum://workingDirectory/aFile')->once()
-				->call('rmdir')->withArguments('atoum://workingDirectory')->never()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($adapter->unlink = function() {})
+			->and($adapter->rmdir = function() {})
+			->and($workingDirectory = stream::get('workingDirectory'))
+			->and($workingDirectory->opendir = true)
+			->and($workingDirectory->readdir[1] = $aDirectory = stream::getSubStream($workingDirectory))
+			->and($aDirectory->opendir = true)
+			->and($aDirectory->readdir[1] = $firstFile = stream::getSubStream($aDirectory))
+			->and($firstFile->unlink = true)
+			->and($aDirectory->readdir[2] = $secondFile = stream::getSubStream($aDirectory))
+			->and($secondFile->unlink = true)
+			->and($aDirectory->readdir[3] = false)
+			->and($workingDirectory->readdir[2] = $emptyDirectory = stream::getSubStream($workingDirectory))
+			->and($emptyDirectory->opendir = true)
+			->and($emptyDirectory->readdir[1] = false)
+			->and($workingDirectory->readdir[3] = $anOtherDirectory = stream::getSubStream($workingDirectory))
+			->and($anOtherDirectory->opendir = true)
+			->and($anOtherDirectory->readdir[1] = $anOtherFirstFile =  stream::getSubStream($anOtherDirectory))
+			->and($anOtherFirstFile->unlink = true)
+			->and($anOtherDirectory->readdir[2] = $anOtherSecondFile = stream::getSubStream($anOtherDirectory))
+			->and($anOtherSecondFile->unlink = true)
+			->and($anOtherDirectory->readdir[3] = false)
+			->and($workingDirectory->readdir[4] = $aFile = stream::getSubStream($workingDirectory))
+			->and($aFile->unlink = true)
+			->and($workingDirectory->readdir[5] = false)
+			->and($svn = new \mock\mageekguy\atoum\scripts\builder\vcs\svn($adapter, $svnController = new mock\controller()))
+			->and($svn->setWorkingDirectory('atoum://workingDirectory'))
+			->then
+				->object($svn->cleanWorkingDirectory())->isIdenticalTo($svn)
+				->adapter($adapter)
+					->call('unlink')->withArguments((string) $firstFile)->once()
+					->call('unlink')->withArguments((string) $secondFile)->once()
+					->call('rmdir')->withArguments((string) $aDirectory)->once()
+					->call('rmdir')->withArguments((string) $emptyDirectory)->once()
+					->call('unlink')->withArguments((string) $anOtherFirstFile)->once()
+					->call('unlink')->withArguments((string) $anOtherSecondFile)->once()
+					->call('rmdir')->withArguments((string) $anOtherDirectory)->once()
+					->call('unlink')->withArguments((string) $aFile)->once()
+					->call('rmdir')->withArguments((string) $workingDirectory)->never()
 		;
 	}
 }
-
-?>

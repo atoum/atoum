@@ -158,5 +158,3 @@ class file extends atoum\test
 			;
 	}
 }
-
-?>

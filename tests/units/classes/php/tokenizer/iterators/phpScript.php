@@ -368,5 +368,3 @@ class phpScript extends atoum\test
 		;
 	}
 }
-
-?>

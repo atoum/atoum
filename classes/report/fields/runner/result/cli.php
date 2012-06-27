@@ -71,13 +71,13 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->locale->_('No test running.');
 		}
-		else if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedTestNumber === 0)
+		else if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0)
 		{
 			$string .= $this->successColorizer->colorize(
 					sprintf(
 						$this->locale->_('Success (%s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->uncompletedTestNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
 						sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber),
 						sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
 						sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
@@ -91,7 +91,7 @@ class cli extends fields\runner\result
 					sprintf(
 						$this->locale->_('Failure (%s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->uncompletedTestNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
 						sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),
 						sprintf($this->locale->__('%s error', '%s errors', $this->errorNumber), $this->errorNumber),
 						sprintf($this->locale->__('%s exception', '%s exceptions', $this->exceptionNumber), $this->exceptionNumber)
@@ -103,5 +103,3 @@ class cli extends fields\runner\result
 		return $string . PHP_EOL;
 	}
 }
-
-?>

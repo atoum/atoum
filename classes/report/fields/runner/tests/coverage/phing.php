@@ -89,5 +89,3 @@ class phing extends report\fields\runner\tests\coverage\cli
 		return $string;
 	}
 }
-
-?>

@@ -129,5 +129,3 @@ class tag extends atoum\template
 		return $this;
 	}
 }
-
-?>

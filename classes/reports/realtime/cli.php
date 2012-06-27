@@ -13,9 +13,9 @@ use
 
 class cli extends realtime
 {
-	public function __construct()
+	public function __construct(atoum\factory $factory = null)
 	{
-		parent::__construct();
+		parent::__construct($factory);
 
 		$firstLevelPrompt = new prompt('> ');
 		$firstLevelColorizer = new colorizer('1;36');
@@ -47,11 +47,6 @@ class cli extends realtime
 		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
 
 		$this
-			->addField(new runner\atoum\cli(
-						$firstLevelPrompt,
-						$firstLevelColorizer
-					)
-				)
 			->addField(new runner\php\path\cli(
 						$firstLevelPrompt,
 						$firstLevelColorizer
@@ -145,5 +140,3 @@ class cli extends realtime
 		;
 	}
 }
-
-?>

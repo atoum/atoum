@@ -49,7 +49,6 @@ class parser extends atoum\test
 	public function testGetValues()
 	{
 		$this
-			->mock('mageekguy\atoum\script')
 			->assert
 				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
 				->and($parser = new script\arguments\parser())
@@ -78,7 +77,6 @@ class parser extends atoum\test
 	public function testGetIterator()
 	{
 		$this
-			->mock('mageekguy\atoum\script')
 			->assert
 				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
 				->and($parser = new script\arguments\parser())
@@ -102,7 +100,6 @@ class parser extends atoum\test
 	public function testParse()
 	{
 		$this
-			->mock('mageekguy\atoum\script')
 			->assert('when using $_SERVER')
 				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
 				->and($superglobals = new atoum\superglobals())
@@ -302,5 +299,3 @@ class parser extends atoum\test
 		;
 	}
 }
-
-?>

@@ -48,5 +48,3 @@ class phpArgument extends atoum\test
 		;
 	}
 }
-
-?>

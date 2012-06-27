@@ -19,11 +19,6 @@ class adapter extends atoum\asserter
 	protected $beforeFunctionCalls = array();
 	protected $afterFunctionCalls = array();
 
-	public function __construct(asserter\generator $generator)
-	{
-		parent::__construct($generator);
-	}
-
 	public function setWith($adapter)
 	{
 		$this->adapter = $adapter;
@@ -359,5 +354,3 @@ class adapter extends atoum\asserter
 		return $string;
 	}
 }
-
-?>

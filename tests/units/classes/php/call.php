@@ -112,5 +112,3 @@ class call extends atoum\test
 		;
 	}
 }
-
-?>

@@ -49,5 +49,3 @@ class variable extends tools\diff
 		return trim(ob_get_clean());
 	}
 }
-
-?>

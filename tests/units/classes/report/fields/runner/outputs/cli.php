@@ -159,11 +159,11 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getOutputs = array())
-				->and($runner = new atoum\runner($score))
+				->and($runner = new atoum\runner())
+				->and($runner->setScore($score))
 				->and($defaultField = new outputs\cli())
 				->and($customField = new outputs\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
 				->then
@@ -296,5 +296,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

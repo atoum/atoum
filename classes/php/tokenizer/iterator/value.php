@@ -50,5 +50,3 @@ abstract class value implements \iterator, \countable
 	public abstract function getValue();
 	public abstract function seek($key);
 }
-
-?>

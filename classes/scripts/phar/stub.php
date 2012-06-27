@@ -148,15 +148,14 @@ class stub extends scripts\runner
 		return $this;
 	}
 
-	public function useDefaultConfigFile()
+	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		try
+		if ($startDirectory === null)
 		{
-			$this->useConfigFile(dirname($this->getName()) . '/' . self::defaultConfigFile);
+			$startDirectory = dirname($this->getName());
 		}
-		catch (\exception $exception) {};
 
-		return $this;
+		return parent::useDefaultConfigFiles($startDirectory);
 	}
 
 	public function version()
@@ -434,7 +433,8 @@ class stub extends scripts\runner
 				},
 				array('-u', '--use'),
 				'<script> <args>',
-				$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)')
+				$this->locale->_('Run script <script> from PHAR with <args> as arguments (this argument must be the first)'),
+				4
 			)
 			->addArgumentHandler(
 				function($script, $argument, $values) {
@@ -557,5 +557,3 @@ class stub extends scripts\runner
 		return atoum\directory . '/' . self::scriptsDirectory . '/' . $scriptName . self::scriptsExtension;
 	}
 }
-
-?>

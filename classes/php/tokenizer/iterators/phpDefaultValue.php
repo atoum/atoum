@@ -11,5 +11,3 @@ use
 class phpDefaultValue extends tokenizer\iterator
 {
 }
-
-?>

@@ -6,6 +6,7 @@ class call
 {
 	protected $function = '';
 	protected $arguments = null;
+	protected $identical = false;
 	protected $object = null;
 	protected $decorator = null;
 
@@ -21,6 +22,25 @@ class call
 	public function __toString()
 	{
 		return $this->decorator->decorate($this);
+	}
+
+	public function identical()
+	{
+		$this->identical = true;
+
+		return $this;
+	}
+
+	public function notIdentical()
+	{
+		$this->identical = false;
+
+		return $this;
+	}
+
+	public function isIdentical()
+	{
+		return ($this->identical === true);
 	}
 
 	public function setFunction($function)
@@ -78,5 +98,3 @@ class call
 		return $this->decorator;
 	}
 }
-
-?>

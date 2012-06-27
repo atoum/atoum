@@ -59,5 +59,3 @@ class mock extends php\call
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}
 }
-
-?>

@@ -24,5 +24,3 @@ class phpArgument extends tokenizer\iterator
 		return $this->append($phpDefaultValue);
 	}
 }
-
-?>

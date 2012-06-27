@@ -257,5 +257,3 @@ class data extends atoum\test
 		;
 	}
 }
-
-?>

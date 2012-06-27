@@ -780,5 +780,3 @@ class template extends atoum\test
 		;
 	}
 }
-
-?>

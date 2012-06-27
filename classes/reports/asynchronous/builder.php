@@ -13,9 +13,9 @@ use
 
 class builder extends atoum\reports\asynchronous
 {
-	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null)
+	public function __construct(atoum\factory $factory = null)
 	{
-		parent::__construct($locale, $adapter);
+		parent::__construct($factory);
 
 		$this
 			->addField(new runner\atoum\cli())
@@ -90,5 +90,3 @@ class builder extends atoum\reports\asynchronous
 		;
 	}
 }
-
-?>

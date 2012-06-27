@@ -276,5 +276,3 @@ class engine extends atoum\test
 		;
 	}
 }
-
-?>

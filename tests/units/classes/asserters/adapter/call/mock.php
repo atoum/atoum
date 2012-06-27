@@ -13,69 +13,36 @@ use
 
 class mock extends atoum\test
 {
-	public function beforeTestMethod($testMethod)
-	{
-		$this->mockGenerator
-			->generate('dummy')
-		;
-	}
-
 	public function test__construct()
 	{
-		$call = new call\mock(
-				$adapterAsserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mockAggregator = new \mock\dummy(),
-				$methodName = uniqid()
-		);
-
-		$this->assert
-			->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
-			->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-			->string($call->getMethodName())->isEqualTo($methodName)
-			->variable($call->getArguments())->isNull()
-		;
-
-		$call = new call\mock(
-				$adapterAsserter = new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mockAggregator = new \mock\dummy,
-				$methodName = rand(1, PHP_INT_MAX)
-		);
-
-		$this->assert
-			->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
-			->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-			->string($call->getMethodName())->isEqualTo((string) $methodName)
-			->variable($call->getArguments())->isNull()
+		$this
+			->if($call = new call\mock($adapterAsserter = new asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy(), $methodName = uniqid()))
+			->then
+				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
+				->string($call->getMethodName())->isEqualTo($methodName)
+				->variable($call->getArguments())->isNull()
+			->if($call = new call\mock($adapterAsserter = new asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy, $methodName = rand(1, PHP_INT_MAX)))
+			->then
+				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
+				->string($call->getMethodName())->isEqualTo((string) $methodName)
+				->variable($call->getArguments())->isNull()
 		;
 	}
 
 	public function test__call()
 	{
-		$this->mockGenerator
-			->generate('mageekguy\atoum\asserters\adapter')
-		;
-
-		$call = new call\mock(
-				$adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				new \mock\dummy(),
-				uniqid()
-		);
-
-		$adapterAsserter->getMockController()->call = $adapterAsserter;
-
-		$this->assert
-			->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
-			->mock($adapterAsserter)
-				->call('call')->withArguments($arg)->once()
-		;
-
-		$unknownMethod = uniqid();
-
-		$this->assert
-			->exception(function() use ($call, $unknownMethod) {
-						$call->{$unknownMethod}();
-					}
-				)
+		$this
+			->if($call = new call\mock($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), new \mock\dummy(), uniqid()))
+			->and($adapterAsserter->getMockController()->call = $adapterAsserter)
+			->then
+				->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
+				->mock($adapterAsserter)
+					->call('call')->withArguments($arg)->once()
+			->if($unknownMethod = uniqid())
+			->then
+				->exception(function() use ($call, $unknownMethod) { $call->{$unknownMethod}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownMethod . '() does not exist')
 		;
@@ -83,57 +50,43 @@ class mock extends atoum\test
 
 	public function testWithArguments()
 	{
-		$call = new call\mock(
-				new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				new \mock\dummy(),
-				uniqid()
-		);
-
-		$this->assert
-			->object($call->withArguments($arg = uniqid()))->isIdenticalTo($call)
-			->array($call->getArguments())->isEqualTo(array($arg))
-			->object($call->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($call)
-			->array($call->getArguments())->isEqualTo(array($arg1, $arg2))
+		$this
+			->if($call = new call\mock(new asserters\adapter(new asserter\generator()), new \mock\dummy(), uniqid()))
+			->then
+				->object($call->withArguments($arg = uniqid()))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($arg))
+				->object($call->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($arg1, $arg2))
 		;
 	}
 
 	public function testGetFirstCall()
 	{
-		$call = new call\mock(
-				new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mock = new \mock\dummy(),
-				'foo'
-		);
-
-		$this->assert
-			->variable($call->getFirstCall())->isNull()
-			->when(function() { $otherMock = new \mock\dummy(); $otherMock->foo(); })
+		$this
+			->if($call = new call\mock(new asserters\adapter(new asserter\generator()), $mock = new \mock\dummy(), 'foo'))
+			->then
 				->variable($call->getFirstCall())->isNull()
-			->when(function() use ($mock) { $mock->foo(); })
-				->integer($call->getFirstCall())->isEqualTo(2)
-			->when(function() use ($mock) { $mock->foo(); })
-				->integer($call->getFirstCall())->isEqualTo(2)
+				->when(function() { $otherMock = new \mock\dummy(); $otherMock->foo(); })
+					->variable($call->getFirstCall())->isNull()
+				->when(function() use ($mock) { $mock->foo(); })
+					->integer($call->getFirstCall())->isEqualTo(2)
+				->when(function() use ($mock) { $mock->foo(); })
+					->integer($call->getFirstCall())->isEqualTo(2)
 		;
 	}
 
 	public function testGetLastCall()
 	{
-		$call = new call\mock(
-				new asserters\adapter(new asserter\generator($test = new self($score = new atoum\score()))),
-				$mock = new \mock\dummy(),
-				'foo'
-		);
-
-		$this->assert
-			->variable($call->getLastCall())->isNull()
-			->when(function() { $otherMock = new \mock\dummy(); $otherMock->foo(); })
+		$this
+			->if($call = new call\mock(new asserters\adapter(new asserter\generator()), $mock = new \mock\dummy(), 'foo'))
+			->then
 				->variable($call->getLastCall())->isNull()
-			->when(function() use ($mock) { $mock->foo(); })
-				->integer($call->getLastCall())->isEqualTo(2)
-			->when(function() use ($mock) { $mock->foo(); })
-				->integer($call->getLastCall())->isEqualTo(3)
+				->when(function() { $otherMock = new \mock\dummy(); $otherMock->foo(); })
+					->variable($call->getLastCall())->isNull()
+				->when(function() use ($mock) { $mock->foo(); })
+					->integer($call->getLastCall())->isEqualTo(2)
+				->when(function() use ($mock) { $mock->foo(); })
+					->integer($call->getLastCall())->isEqualTo(3)
 		;
 	}
 }
-
-?>

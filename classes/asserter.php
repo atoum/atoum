@@ -44,7 +44,7 @@ abstract class asserter
 				return $this;
 
 			default:
-				return call_user_func_array(array($this->generator, $method), $arguments);
+				return $this->generator->__call($method, $arguments);
 		}
 	}
 
@@ -98,9 +98,17 @@ abstract class asserter
 		}
 	}
 
-	public function must(\closure $closure)
+	public function setWithTest(test $test)
 	{
-		$closure($this);
+		return $this;
+	}
+
+	public function setWithArguments(array $arguments)
+	{
+		if (sizeof($arguments) > 0)
+		{
+			call_user_func_array(array($this, 'setWith'), $arguments);
+		}
 
 		return $this;
 	}
@@ -109,48 +117,15 @@ abstract class asserter
 
 	protected function pass()
 	{
-		$test = $this->generator->getTest();
-
-		if ($test !== null)
-		{
-			$test->getScore()->addPass();
-		}
+		$this->generator->asserterPass($this);
 
 		return $this;
 	}
 
 	protected function fail($reason)
 	{
-		$failId = null;
+		$this->generator->asserterFail($this, $reason);
 
-		$test = $this->generator->getTest();
-
-		if ($test !== null)
-		{
-			$line = null;
-			$function = null;
-			$class = $test->getClass();
-			$method = $test->getCurrentMethod();
-			$file = $test->getPath();
-
-			foreach (array_filter(debug_backtrace(), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
-			{
-				if ($line === null && isset($backtrace['line']) === true)
-				{
-					$line = $backtrace['line'];
-				}
-
-				if ($function === null && isset($backtrace['object']) === true && isset($backtrace['function']) === true && $backtrace['object'] === $this && $backtrace['function'] !== '__call')
-				{
-					$function = $backtrace['function'];
-				}
-			}
-
-			$failId = $test->getScore()->addFail($file, $line, $class, $method, get_class($this) . ($function ? '::' . $function : '') . '()', $reason);
-		}
-
-		throw new asserter\exception($reason, $failId);
+		return $this;
 	}
 }
-
-?>

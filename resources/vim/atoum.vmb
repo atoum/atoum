@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-147
+148
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -57,6 +57,7 @@ function atoum#run(file, bang)
 		execute 'autocmd BufEnter <buffer> execute ''resize '' .  line(''$'')'
 		autocmd BufEnter <buffer> let g:atoum#cursorline = &cursorline | set nocursorline | call atoum#highlightStatusLine()
 		autocmd BufLeave <buffer> if (g:atoum#cursorline) | set cursorline | endif
+		autocmd BufWinLeave <buffer> au! atoum
 		augroup end
 
 		let g:atoum#success = search('^Success ', 'w')
@@ -144,9 +145,9 @@ endfunction
 "highlightStatusLine {{{1
 function atoum#highlightStatusLine()
 	if g:atoum#success
-		hi statusline guibg=DarkGreen guifg=White
+		hi statusline guibg=DarkGreen guifg=White gui=NONE
 	else
-		hi statusline guibg=DarkRed guifg=White
+		hi statusline guibg=DarkRed guifg=White gui=NONE
 	endif
 endfunction
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
@@ -275,7 +276,7 @@ ftplugin/php/atoumdev.vim	[[[1
 "=============================================================================
 augroup atoumdev
 	au!
-	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository
+	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository | cs add GTAGS
 augroup end
 syntax/atoum.vim	[[[1
 166

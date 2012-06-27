@@ -30,9 +30,6 @@ class stub extends atoum\test
 	public function testUpdate()
 	{
 		$this
-			->mock('phar')
-			->mock('mageekguy\atoum\locale')
-			->mock('mageekguy\atoum\writers\std\out')
 			->assert
 				->if($stub = new phar\stub(uniqid()))
 				->and($stub->setAdapter($adapter = new atoum\test\adapter()))
@@ -56,7 +53,6 @@ class stub extends atoum\test
 							$pharController->offsetExists = true;
 							$pharController->offsetGet = function($path) { return $path; };
 							$pharController->offsetSet = function() {};
-							$pharController->injectInNextMockInstance();
 							$phar = new \mock\phar($path);
 
 							return $phar;
@@ -95,5 +91,3 @@ class stub extends atoum\test
 		;
 	}
 }
-
-?>

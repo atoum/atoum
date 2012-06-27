@@ -7,5 +7,3 @@ use
 ;
 
 class runtime extends \runtimeException implements atoum\exception {}
-
-?>

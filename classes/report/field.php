@@ -46,5 +46,3 @@ abstract class field
 
 	abstract public function __toString();
 }
-
-?>

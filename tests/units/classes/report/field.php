@@ -14,7 +14,6 @@ class field extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->mock('mageekguy\atoum\report\field')
 			->assert
 			->if($field = new \mock\mageekguy\atoum\report\field())
 			->then
@@ -27,5 +26,3 @@ class field extends atoum\test
 		;
 	}
 }
-
-?>

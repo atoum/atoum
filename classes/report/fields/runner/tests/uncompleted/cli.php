@@ -111,17 +111,17 @@ class cli extends report\fields\runner\tests\uncompleted
 
 		if ($this->runner !== null)
 		{
-			$uncompletedTests = $this->runner->getScore()->getUncompletedTests();
+			$uncompletedTests = $this->runner->getScore()->getUncompletedMethods();
 
-			$sizeOfUncompletedTest = sizeof($uncompletedTests);
+			$sizeOfUncompletedMethod = sizeof($uncompletedTests);
 
-			if ($sizeOfUncompletedTest > 0)
+			if ($sizeOfUncompletedMethod > 0)
 			{
 				$string .=
 					$this->titlePrompt .
 					sprintf(
 						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', $sizeOfUncompletedTest), $sizeOfUncompletedTest))
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', $sizeOfUncompletedMethod), $sizeOfUncompletedMethod))
 					) .
 					PHP_EOL
 				;
@@ -154,5 +154,3 @@ class cli extends report\fields\runner\tests\uncompleted
 		return $string;
 	}
 }
-
-?>

@@ -150,5 +150,3 @@ class invoker implements \arrayAccess
 		return $call;
 	}
 }
-
-?>

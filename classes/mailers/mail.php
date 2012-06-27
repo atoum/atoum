@@ -50,5 +50,3 @@ class mail extends atoum\mailer
 		return $this;
 	}
 }
-
-?>

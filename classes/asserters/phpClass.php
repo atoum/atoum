@@ -164,5 +164,3 @@ class phpClass extends atoum\asserter
 		return $this;
 	}
 }
-
-?>

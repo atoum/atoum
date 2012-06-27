@@ -31,9 +31,16 @@ class runner extends atoum\script
 		parent::__construct($name, $factory);
 
 		$this
-			->setRunner($this->factory->build('atoum\runner'))
-			->setIncluder($this->factory->build('atoum\includer'))
+			->setIncluder($this->factory['atoum\includer']())
+			->setRunner($this->factory['atoum\runner']($this->factory))
 		;
+
+		$this->factory['atoum\includer'] = $this->includer;
+	}
+
+	public function isRunningFromCli()
+	{
+		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
 	}
 
 	public function setRunner(atoum\runner $runner)
@@ -100,8 +107,8 @@ class runner extends atoum\script
 				{
 					if ($this->runner->hasReports() === false)
 					{
-						$report = new atoum\reports\realtime\cli();
-						$report->addWriter(new atoum\writers\std\out());
+						$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
+						$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
 
 						$this->runner->addReport($report);
 					}
@@ -167,11 +174,13 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$runner = new atoum\configurator($this);
+		$script = $this->factory['atoum\configurator']($this);
+
+		$runner = $this->runner;
 
 		try
 		{
-			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
+			$this->includer->includePath($path, function($path) use ($script, $runner) { include_once($path); });
 		}
 		catch (atoum\includer\exception $exception)
 		{
@@ -181,15 +190,20 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function useDefaultConfigFiles()
+	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		foreach (self::getSubDirectoryPath(atoum\directory) as $directory)
+		if ($startDirectory === null)
+		{
+			$startDirectory = atoum\directory;
+		}
+
+		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
 		{
 			try
 			{
 				$this->useConfigFile($directory . self::defaultConfigFile);
 			}
-			catch (atoum\includer\exception $exception) {};
+			catch (atoum\includer\exception $exception) {}
 		}
 
 		return $this;
@@ -202,9 +216,19 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function enableLoop()
+	public function enableLoopMode()
 	{
-		$this->loop = true;
+		if ($this->loop !== null)
+		{
+			$this->loop = true;
+		}
+
+		return $this;
+	}
+
+	public function disableLoopMode()
+	{
+		$this->loop = null;
 
 		return $this;
 	}
@@ -365,7 +389,7 @@ class runner extends atoum\script
 						array('-c', '--configuration-files'),
 						'<file>...',
 						$this->locale->_('Use all configuration files <file>'),
-						PHP_INT_MAX - 1
+						1
 					)
 				->addArgumentHandler(
 						function($script, $argument, $file) {
@@ -407,6 +431,54 @@ class runner extends atoum\script
 						$this->locale->_('Disable code coverage')
 					)
 				->addArgumentHandler(
+						function($script, $argument, $directories) {
+							if (sizeof($directories) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($directories as $directory)
+							{
+								$script->getRunner()->getCoverage()->excludeDirectory($directory);
+							}
+						},
+						array('-nccid', '--no-code-coverage-in-directories'),
+						'<directory>...',
+						$this->locale->_('Disable code coverage in directories <directory>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $namespaces) {
+							if (sizeof($namespaces) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($namespaces as $namespace)
+							{
+								$script->getRunner()->getCoverage()->excludeNamespace($namespace);
+							}
+						},
+						array('-nccfns', '--no-code-coverage-for-namespaces'),
+						'<namespace>...',
+						$this->locale->_('Disable code coverage for namespaces <namespace>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $classes) {
+							if (sizeof($classes) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							foreach ($classes as $class)
+							{
+								$script->getRunner()->getCoverage()->excludeClass($class);
+							}
+						},
+						array('-nccfc', '--no-code-coverage-for-classes'),
+						'<class>...',
+						$this->locale->_('Disable code coverage for classes <class>')
+					)
+				->addArgumentHandler(
 						function($script, $argument, $files) {
 							if (sizeof($files) <= 0)
 							{
@@ -441,6 +513,37 @@ class runner extends atoum\script
 						array('-d', '--directories'),
 						'<directory>...',
 						$this->locale->_('Execute unit test files in all <directory>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $extensions) {
+							if (sizeof($extensions) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$script->getRunner()->getTestDirectoryIterator()->acceptExtensions($extensions);
+						},
+						array('-tfe', '--test-file-extensions'),
+						'<extension>...',
+						$this->locale->_('Execute unit test files with one of extensions <extension>')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $patterns) {
+							if (sizeof($patterns) <= 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$runner = $script->getRunner();
+
+							foreach ($patterns as $pattern)
+							{
+								$runner->addTestsFromPattern($pattern);
+							}
+						},
+						array('-g', '--glob'),
+						'<pattern>...',
+						$this->locale->_('Execute unit test files which match <pattern>')
 					)
 				->addArgumentHandler(
 						function($script, $argument, $tags) {
@@ -498,11 +601,25 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$script->enableLoop();
+							$script->enableLoopMode();
 						},
 						array('-l', '--loop'),
 						null,
 						$this->locale->_('Execute tests in an infinite loop')
+					)
+				->addArgumentHandler(
+						function($script, $argument, $values) {
+							if (sizeof($values) !== 0)
+							{
+								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+							}
+
+							$script->disableLoopMode();
+						},
+						array('--disable-loop-mode'),
+						null,
+						null,
+						3
 					)
 				->addArgumentHandler(
 						function($script, $argument, $values) {
@@ -542,7 +659,7 @@ class runner extends atoum\script
 						array('-bf', '--bootstrap-file'),
 						'<file>',
 						$this->locale->_('Include <file> before executing each test method'),
-						PHP_INT_MAX
+						2
 					)
 				->addArgumentHandler(
 						function($script, $argument, $values) {
@@ -551,8 +668,8 @@ class runner extends atoum\script
 								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 							}
 
-							$report = new atoum\reports\realtime\cli\light();
-							$report->addWriter(new atoum\writers\std\out());
+							$report = $script->getFactory()->build('mageekguy\atoum\reports\realtime\cli\light', array($script->getFactory()));
+							$report->addWriter($script->getFactory()->build('mageekguy\atoum\writers\std\out'));
 
 							$script->getRunner()->addReport($report);
 						},
@@ -573,45 +690,83 @@ class runner extends atoum\script
 
 	protected function loop()
 	{
+		$arguments = ' --disable-loop-mode';
+
+		$cli = $this->factory['mageekguy\atoum\cli']();
+
+		if ($cli->isTerminal() === true)
+		{
+			$arguments .= ' --force-terminal';
+		}
+
+		$addScoreFile = false;
+
+		foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
+		{
+			switch ($argument)
+			{
+				case '-l':
+				case '--loop':
+				case '--disable-loop-mode':
+					break;
+
+				case '-sf':
+				case '--score-file':
+					$addScoreFile = true;
+					break;
+
+				default:
+					$arguments .= ' ' . $argument;
+
+					if (sizeof($values) > 0)
+					{
+						$arguments .= ' ' . join(' ', $values);
+					}
+			}
+		}
+
 		if ($this->scoreFile === null)
 		{
 			$this->scoreFile = sys_get_temp_dir() . '/atoum.score';
+
 			@unlink($this->scoreFile);
+
+			$addScoreFile = true;
 		}
+
+		if ($addScoreFile === true)
+		{
+			$arguments .= ' --score-file ' . $this->scoreFile;
+		}
+
+		if ($this->isRunningFromCli() === false)
+		{
+			$declaredTestClasses = $this->runner->getDeclaredTestClasses();
+
+			if (sizeof($declaredTestClasses) > 0)
+			{
+				$files = array();
+
+				foreach ($declaredTestClasses as $declaredTestClass)
+				{
+					$declaredTestClass = $this->factory['reflectionClass']($declaredTestClass);
+
+					$file = $declaredTestClass->getFilename();
+
+					if (in_array($file, $files) === false)
+					{
+						$files[] = $file;
+					}
+				}
+
+				$arguments .= ' -f ' . join(' ', $files);
+			}
+		}
+
+		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
 
 		while ($this->runTests === true)
 		{
-			$arguments = '';
-
-			foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
-			{
-				switch ($argument)
-				{
-					case '-l':
-					case '--loop':
-					case '-sf':
-					case '--score-file':
-						break;
-
-					default:
-						$arguments .= ' ' . $argument;
-
-						if (sizeof($values) > 0)
-						{
-							$arguments .= ' ' . join(' ', $values);
-						}
-				}
-			}
-
-			$cli = new atoum\cli();
-
-			if ($cli->isTerminal() === true)
-			{
-				$arguments .= ' --force-terminal';
-			}
-
-			$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments . ' --score-file ' . $this->scoreFile;
-
 			$php = proc_open(
 				escapeshellcmd($command),
 				array(
@@ -676,7 +831,7 @@ class runner extends atoum\script
 
 	private static function getFailMethods(atoum\score $score)
 	{
-		return self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException());
+		return self::mergeMethods(self::mergeMethods(self::mergeMethods($score->getMethodsWithFail(), $score->getMethodsWithError()), $score->getMethodsWithException()), $score->getMethodsNotCompleted());
 	}
 
 	private static function mergeMethods(array $methods, array $newMethods)
@@ -696,5 +851,3 @@ class runner extends atoum\script
 		return $methods;
 	}
 }
-
-?>

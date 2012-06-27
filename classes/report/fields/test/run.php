@@ -36,5 +36,3 @@ abstract class run extends report\field
 		}
 	}
 }
-
-?>

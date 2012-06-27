@@ -112,8 +112,6 @@ class phing extends atoum\test
 	{
 
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($field = new test\duration\phing())
 				->and($score = new \mock\mageekguy\atoum\score())
@@ -135,8 +133,6 @@ class phing extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($adapter = new adapter())
 				->and($adapter->class_exists = true)
@@ -220,5 +216,3 @@ class phing extends atoum\test
 		;
 	}
 }
-
-?>

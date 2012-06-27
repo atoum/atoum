@@ -31,7 +31,6 @@ class phing extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
 			->assert
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->class_exists = true)
@@ -88,7 +87,6 @@ class phing extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
 			->assert
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->class_exists = true)
@@ -142,5 +140,3 @@ class phing extends atoum\test
 		;
 	}
 }
-
-?>

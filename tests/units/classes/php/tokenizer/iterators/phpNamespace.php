@@ -37,5 +37,3 @@ class phpNamespace extends atoum\test
 		;
 	}
 }
-
-?>

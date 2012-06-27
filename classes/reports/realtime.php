@@ -29,5 +29,3 @@ abstract class realtime extends atoum\report
 		return $this;
 	}
 }
-
-?>

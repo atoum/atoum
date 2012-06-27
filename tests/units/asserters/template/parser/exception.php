@@ -42,5 +42,3 @@ class exception extends asserters\exception
 		}
 	}
 }
-
-?>

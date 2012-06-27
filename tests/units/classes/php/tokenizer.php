@@ -368,5 +368,3 @@ class tokenizer extends atoum\test
 		;
 	}
 }
-
-?>

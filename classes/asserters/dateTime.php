@@ -121,5 +121,3 @@ class dateTime extends asserters\object
 		return ($value instanceof \dateTime);
 	}
 }
-
-?>

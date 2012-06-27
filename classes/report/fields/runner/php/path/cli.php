@@ -76,5 +76,3 @@ class cli extends report\fields\runner\php\path
 		;
 	}
 }
-
-?>

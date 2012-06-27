@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\mock;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
@@ -10,16 +11,21 @@ use
 
 class controller extends test\adapter
 {
+	protected $factory = null;
 	protected $mockClass = null;
 
-	protected static $injectInNextInstance = null;
+	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
-	private $reflectionClassInjector = null;
 
-	public function __construct()
+	public function __construct(atoum\factory $factory = null)
 	{
 		parent::__construct();
+
+		$this
+			->setFactory($factory ?: new atoum\factory())
+			->controlNextNewMock()
+		;
 	}
 
 	public function __set($method, $mixed)
@@ -54,6 +60,18 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function setFactory(atoum\factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
+	}
+
 	public function disableMethodChecking()
 	{
 		$this->disableMethodChecking = true;
@@ -66,49 +84,14 @@ class controller extends test\adapter
 		return $this->mockClass;
 	}
 
-	public function getCalls($method = null, array $arguments = null)
+	public function getCalls($method = null, array $arguments = null, $identical = false)
 	{
 		if ($method !== null)
 		{
 			$this->checkMethod($method);
 		}
 
-		return parent::getCalls($method, $arguments);
-	}
-
-	public function getReflectionClass($class)
-	{
-		$reflectionClass = null;
-
-		if ($this->reflectionClassInjector === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
-
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
-
-		return $reflectionClass;
-	}
-
-	public function setReflectionClassInjector(\closure $reflectionClassInjector)
-	{
-		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
-		}
-
-		$this->reflectionClassInjector = $reflectionClassInjector;
-
-		return $this;
+		return parent::getCalls($method, $arguments, $identical);
 	}
 
 	public function control(mock\aggregator $mock)
@@ -119,7 +102,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = $this->getReflectionClass($this->mockClass);
+			$class = $this->factory['reflectionClass']($this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try
@@ -135,7 +118,7 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
-			foreach ($this->invokers as $method => $closure)
+			foreach (array_keys($this->invokers) as $method)
 			{
 				if (in_array($method, $methods) === false)
 				{
@@ -154,12 +137,27 @@ class controller extends test\adapter
 			$mock->setMockController($this);
 		}
 
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
+
 		return $this;
 	}
 
-	public function injectInNextMockInstance()
+	public function controlNextNewMock()
 	{
-		self::$injectInNextInstance = $this;
+		self::$controlNextNewMock = $this;
+
+		return $this;
+	}
+
+	public function notControlNextNewMock()
+	{
+		if (self::$controlNextNewMock === $this)
+		{
+			self::$controlNextNewMock = null;
+		}
 
 		return $this;
 	}
@@ -185,14 +183,20 @@ class controller extends test\adapter
 
 	public static function get()
 	{
-		$instance = self::$injectInNextInstance;
+		$instance = self::$controlNextNewMock;
 
 		if ($instance !== null)
 		{
-			self::$injectInNextInstance = null;
+			self::$controlNextNewMock = null;
 		}
 
 		return $instance;
+	}
+
+	public function injectInNextMockInstance()
+	{
+		#DEPRECATED
+		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
 	}
 
 	protected function checkMethod($method)
@@ -208,5 +212,3 @@ class controller extends test\adapter
 		return $this;
 	}
 }
-
-?>

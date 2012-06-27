@@ -12,6 +12,8 @@ class includer
 	{
 		$errors = array();
 
+		$path = (string) $path;
+
 		$errorHandler = set_error_handler(function($error, $message, $file, $line, $context) use (& $errors) {
 				$errors[] = func_get_args();
 			}
@@ -43,5 +45,3 @@ class includer
 		return $this;
 	}
 }
-
-?>

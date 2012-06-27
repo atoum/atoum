@@ -11,5 +11,3 @@ use
 class phpProperty extends tokenizer\iterator
 {
 }
-
-?>

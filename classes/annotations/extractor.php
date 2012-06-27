@@ -2,24 +2,9 @@
 
 namespace mageekguy\atoum\annotations;
 
-class extractor implements \iteratorAggregate
+class extractor
 {
-	protected $annotations = array();
-
-	public function __construct($comments = null)
-	{
-		if ($comments !== null)
-		{
-			$this->extract($comments);
-		}
-	}
-
-	public function reset()
-	{
-		$this->annotations = array();
-
-		return $this;
-	}
+	protected $handlers = array();
 
 	public function extract($comments)
 	{
@@ -39,7 +24,16 @@ class extractor implements \iteratorAggregate
 
 					if ($sizeofComment >= 2)
 					{
-						$this->annotations[substr($comment[0], 1)] = $sizeofComment == 2 ? $comment[1] : join(' ', array_slice($comment, 1));
+						$annotation = substr($comment[0], 1);
+						$value = $sizeofComment == 2 ? $comment[1] : join(' ', array_slice($comment, 1));
+
+						foreach ($this->handlers as $handlerAnnotation => $handlerValue)
+						{
+							if (strtolower($annotation) == strtolower($handlerAnnotation))
+							{
+								call_user_func_array($handlerValue, array($value));
+							}
+						}
 					}
 				}
 			}
@@ -48,15 +42,42 @@ class extractor implements \iteratorAggregate
 		return $this;
 	}
 
-	public function getIterator()
+	public function setHandler($annotation, \closure $handler)
 	{
-		return new \arrayIterator($this->annotations);
+		$this->handlers[$annotation] = $handler;
+
+		return $this;
 	}
 
-	public function getAnnotations()
+	public function unsetHandler($annotation)
 	{
-		return $this->annotations;
+		if (isset($this->handlers[$annotation]) === true)
+		{
+			unset($this->handlers[$annotation]);
+		}
+
+		return $this;
+	}
+
+	public function getHandlers()
+	{
+		return $this->handlers;
+	}
+
+	public function resetHandlers()
+	{
+		$this->handlers = array();
+
+		return $this;
+	}
+
+	public static function toBoolean($value)
+	{
+		return strcasecmp($value, 'on') == 0;
+	}
+
+	public static function toArray($value)
+	{
+		return array_values(array_unique(preg_split('/\s+/', $value)));
 	}
 }
-
-?>

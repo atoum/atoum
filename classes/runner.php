@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
@@ -20,10 +21,10 @@ class runner implements observable, adapter\aggregator
 	protected $score = null;
 	protected $adapter = null;
 	protected $locale = null;
+	protected $factory = null;
 	protected $includer = null;
-	protected $observers = array();
-	protected $testObservers = array();
-	protected $reports = array();
+	protected $observers = null;
+	protected $reports = null;
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
@@ -31,23 +32,57 @@ class runner implements observable, adapter\aggregator
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
+	protected $testDirectoryIterator = null;
 
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(score $score = null, adapter $adapter = null, locale $locale = null, includer $includer = null)
+	public function __construct(factory $factory = null)
 	{
 		$this
-			->setAdapter($adapter ?: new adapter())
-			->setScore($score ?: new score())
-			->setLocale($locale ?: new locale())
-			->setIncluder($includer ?: new includer())
+			->setFactory($factory ?: new factory())
+			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setLocale($this->factory['mageekguy\atoum\locale']())
+			->setIncluder($this->factory['mageekguy\atoum\includer']())
+			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
+			->setTestDirectoryIterator($this->factory['mageekguy\atoum\iterators\recursives\directory']())
 		;
 
-		$runnerClass = new \reflectionClass($this);
+		$this->factory['mageekguy\atoum\adapter'] = $this->adapter;
+		$this->factory['mageekguy\atoum\locale'] = $this->locale;
+		$this->factory['mageekguy\atoum\includer'] = $this->includer;
+
+		$runnerClass = $this->factory['reflectionClass']($this);
 
 		$this->path = $runnerClass->getFilename();
 		$this->class = $runnerClass->getName();
+
+		$this->observers = new \splObjectStorage();
+		$this->reports = new \splObjectStorage();
+	}
+
+	public function setFactory(factory $factory)
+	{
+		$this->factory = $factory;
+
+		return $this;
+	}
+
+	public function getFactory()
+	{
+		return $this->factory;
+	}
+
+	public function setTestDirectoryIterator(iterators\recursives\directory $iterator)
+	{
+		$this->testDirectoryIterator = $iterator;
+
+		return $this;
+	}
+
+	public function getTestDirectoryIterator()
+	{
+		return $this->testDirectoryIterator;
 	}
 
 	public function setScore(score $score)
@@ -181,7 +216,14 @@ class runner implements observable, adapter\aggregator
 
 	public function getObservers()
 	{
-		return $this->observers;
+		$observers = array();
+
+		foreach ($this->observers as $observer)
+		{
+			$observers[] = $observer;
+		}
+
+		return $observers;
 	}
 
 	public function getBootstrapFile()
@@ -197,7 +239,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($testClasses as $testClass)
 		{
-			$test = new $testClass();
+			$test = new $testClass($this->factory);
 
 			if (self::isIgnored($test, $namespaces, $tags) === false)
 			{
@@ -211,6 +253,11 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $classes;
+	}
+
+	public function getCoverage()
+	{
+		return $this->score->getCoverage();
 	}
 
 	public function setPhpPath($path)
@@ -241,14 +288,14 @@ class runner implements observable, adapter\aggregator
 
 	public function addObserver(atoum\observer $observer)
 	{
-		$this->observers[] = $observer;
+		$this->observers->attach($observer);
 
 		return $this;
 	}
 
 	public function removeObserver(atoum\observer $observer)
 	{
-		$this->observers = self::remove($observer, $this->observers);
+		$this->observers->detach($observer);
 
 		return $this;
 	}
@@ -356,7 +403,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($runTestClasses as $runTestClass)
 		{
-			$test = new $runTestClass();
+			$test = new $runTestClass($this->factory);
 
 			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
@@ -391,6 +438,10 @@ class runner implements observable, adapter\aggregator
 				if ($this->codeCoverageIsEnabled() === false)
 				{
 					$test->disableCodeCoverage();
+				}
+				else
+				{
+					$test->getScore()->setCoverage($this->getCoverage());
 				}
 
 				foreach ($this->observers as $observer)
@@ -427,9 +478,40 @@ class runner implements observable, adapter\aggregator
 
 	public function addTestsFromDirectory($directory)
 	{
-		foreach (new \recursiveIteratorIterator(new atoum\src\iterator\filter(new \recursiveDirectoryIterator($directory))) as $path)
+		try
 		{
-			$this->addTest($path);
+			foreach (new \recursiveIteratorIterator($this->testDirectoryIterator->getIterator($directory)) as $path)
+			{
+				$this->addTest($path);
+			}
+		}
+		catch (\UnexpectedValueException $exception)
+		{
+			throw new exceptions\runtime('Unable to read test directory \'' . $directory . '\'');
+		}
+
+		return $this;
+	}
+
+	public function addTestsFromPattern($pattern)
+	{
+		try
+		{
+			foreach ($this->factory['globIterator'](rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
+			{
+				if ($path->isDir() === true)
+				{
+					$this->addTestsFromDirectory($path);
+				}
+				else
+				{
+					$this->addTest($path);
+				}
+			}
+		}
+		catch (\UnexpectedValueException $exception)
+		{
+			throw new exceptions\runtime('Unable to read test from pattern \'' . $pattern . '\'');
 		}
 
 		return $this;
@@ -442,10 +524,11 @@ class runner implements observable, adapter\aggregator
 
 	public function getDeclaredTestClasses($testBaseClass = null)
 	{
+		$factory = $this->factory;
 		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
-		return array_filter($this->adapter->get_declared_classes(), function($class) use ($testBaseClass) {
-				$class = new \reflectionClass($class);
+		return array_filter($this->adapter->get_declared_classes(), function($class) use ($factory, $testBaseClass) {
+				$class = $factory['reflectionClass']($class);
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);
@@ -453,14 +536,14 @@ class runner implements observable, adapter\aggregator
 
 	public function addReport(atoum\report $report)
 	{
-		$this->reports[] = $report;
+		$this->reports->attach($report);
 
 		return $this->addObserver($report);
 	}
 
 	public function removeReport(atoum\report $report)
 	{
-		$this->reports = self::remove($report, $this->reports);
+		$this->reports->detach($report);
 
 		return $this->removeObserver($report);
 	}
@@ -469,8 +552,10 @@ class runner implements observable, adapter\aggregator
 	{
 		foreach ($this->reports as $report)
 		{
-			$this->removeReport($report);
+			$this->removeObserver($report);
 		}
+
+		$this->reports = new \splObjectStorage();
 
 		return $this;
 	}
@@ -482,7 +567,14 @@ class runner implements observable, adapter\aggregator
 
 	public function getReports()
 	{
-		return $this->reports;
+		$reports = array();
+
+		foreach ($this->reports as $report)
+		{
+			$reports[] = $report;
+		}
+
+		return $reports;
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)
@@ -504,19 +596,6 @@ class runner implements observable, adapter\aggregator
 		return $isIgnored;
 	}
 
-	protected static function remove($needle, array $haystack)
-	{
-		$key = array_search($needle, $haystack, true);
-
-		if ($key !== false)
-		{
-			unset($haystack[$key]);
-			$haystack = array_values($haystack);
-		}
-
-		return $haystack;
-	}
-
 	private static function getMethods(test $test, array $runTestMethods, array $tags)
 	{
 		$methods = array();
@@ -526,7 +605,7 @@ class runner implements observable, adapter\aggregator
 			$methods = $runTestMethods['*'];
 		}
 
-		$testClass = get_class($test);
+		$testClass = $test->getClass();
 
 		if (isset($runTestMethods[$testClass]) === true)
 		{
@@ -550,5 +629,3 @@ class runner implements observable, adapter\aggregator
 		return $methods;
 	}
 }
-
-?>

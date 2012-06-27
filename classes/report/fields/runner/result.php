@@ -17,7 +17,7 @@ abstract class result extends report\field
 	protected $failNumber = null;
 	protected $errorNumber = null;
 	protected $exceptionNumber = null;
-	protected $uncompletedTestNumber = null;
+	protected $uncompletedMethodNumber = null;
 
 	public function __construct(locale $locale = null)
 	{
@@ -54,9 +54,9 @@ abstract class result extends report\field
 		return $this->exceptionNumber;
 	}
 
-	public function getUncompletedTestNumber()
+	public function getUncompletedMethodNumber()
 	{
-		return $this->uncompletedTestNumber;
+		return $this->uncompletedMethodNumber;
 	}
 
 	public function handleEvent($event, observable $observable)
@@ -75,11 +75,9 @@ abstract class result extends report\field
 			$this->failNumber = $score->getFailNumber();
 			$this->errorNumber = $score->getErrorNumber();
 			$this->exceptionNumber = $score->getExceptionNumber();
-			$this->uncompletedTestNumber = $score->getUncompletedTestNumber();
+			$this->uncompletedMethodNumber = $score->getUncompletedMethodNumber();
 
 			return true;
 		}
 	}
 }
-
-?>

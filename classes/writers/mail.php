@@ -78,5 +78,3 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		return $this->write((string) $report);
 	}
 }
-
-?>

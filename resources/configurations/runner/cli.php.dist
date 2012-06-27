@@ -19,5 +19,3 @@ $cliReport = new atoum\reports\realtime\cli();
 $cliReport->addWriter($stdOutWriter);
 
 $runner->addReport($cliReport);
-
-?>

@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock
+	mageekguy\atoum\mock\stream
 ;
 
 require __DIR__ . '/../runner.php';
@@ -15,20 +15,20 @@ class includer extends atoum\test
 	{
 		$this->assert
 			->if($includer = new atoum\includer())
-			->and($fileNotExistsController = mock\stream::get('file/not/exists'))
+			->and($unknownFile = stream::get())
 			->then
-				->exception(function() use ($includer) { $includer->includePath('atoum://file/not/exists'); })
+				->exception(function() use ($includer, $unknownFile) { $includer->includePath($unknownFile); })
 					->isInstanceOf('mageekguy\atoum\includer\exception')
-					->hasMessage('Unable to include \'atoum://file/not/exists\'')
-			->if($fileExistsController = mock\stream::get('file/exists'))
-			->and($fileExistsController->file_get_contents = $fileContents = uniqid())
+					->hasMessage('Unable to include \'' . $unknownFile . '\'')
+			->if($file = stream::get())
+			->and($file->file_get_contents = $fileContents = uniqid())
 			->then
-				->object($includer->includePath('atoum://file/exists'))->isIdenticalTo($includer)
+				->object($includer->includePath($file))->isIdenticalTo($includer)
 				->output->isEqualTo($fileContents)
-			->if($fileWithAnErrorController = mock\stream::get('file/with/an/error'))
-			->and($fileWithAnErrorController->file_get_contents = '<?php trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
+			->if($fileWithError = stream::get())
+			->and($fileWithError->file_get_contents = '<?php trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
 			->then
-				->object($includer->includePath('atoum://file/with/an/error'))->isIdenticalTo($includer)
+				->object($includer->includePath($fileWithError))->isIdenticalTo($includer)
 				->error
 					->withType(E_USER_WARNING)
 					->withMessage($message)
@@ -36,5 +36,3 @@ class includer extends atoum\test
 		;
 	}
 }
-
-?>

@@ -33,5 +33,3 @@ class output extends asserters\string
 		return parent::setWith($value, $label, $charlist, $checkType);
 	}
 }
-
-?>

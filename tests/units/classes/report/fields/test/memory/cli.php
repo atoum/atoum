@@ -97,8 +97,6 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($field = new test\memory\cli())
 				->and($score = new \mock\mageekguy\atoum\score())
@@ -120,8 +118,6 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->mock('mageekguy\atoum\test')
-			->mock('mageekguy\atoum\score')
 			->assert
 				->if($score = new \mock\mageekguy\atoum\score())
 				->and($score->getMockController()->getTotalMemoryUsage = $totalMemoryUsage = rand(0, PHP_INT_MAX))
@@ -175,5 +171,3 @@ class cli extends atoum\test
 		;
 	}
 }
-
-?>

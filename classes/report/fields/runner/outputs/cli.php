@@ -146,5 +146,3 @@ class cli extends outputs
 		return $colorizer === null ? $string : $colorizer->colorize($string);
 	}
 }
-
-?>

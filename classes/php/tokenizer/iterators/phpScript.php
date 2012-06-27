@@ -54,5 +54,3 @@ class phpScript extends tokenizer\iterators\phpNamespace
 		return (isset($this->importations[$index]) === false ? null : $this->importations[$index]);
 	}
 }
-
-?>

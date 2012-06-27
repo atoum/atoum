@@ -53,5 +53,3 @@ class decorator extends atoum\test
 		;
 	}
 }
-
-?>

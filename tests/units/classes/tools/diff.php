@@ -180,5 +180,3 @@ class diff extends atoum\test
 		;
 	}
 }
-
-?>

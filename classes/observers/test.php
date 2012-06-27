@@ -9,5 +9,3 @@ use
 interface test extends atoum\observer
 {
 }
-
-?>

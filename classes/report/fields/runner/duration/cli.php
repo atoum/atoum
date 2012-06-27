@@ -75,5 +75,3 @@ class cli extends duration
 		;
 	}
 }
-
-?>

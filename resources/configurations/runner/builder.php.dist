@@ -26,5 +26,3 @@ $builderReport
 ;
 
 $runner->addReport($builderReport);
-
-?>

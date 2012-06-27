@@ -34,5 +34,3 @@ class castToString extends asserters\string
 		return (is_object($value) === true);
 	}
 }
-
-?>
