@@ -10,7 +10,11 @@ use
 class score
 {
 	private $factory = null;
-	private $passAssertions = 0;
+	private $phpPath = null;
+	private $phpVersion = null;
+	private $atoumPath = null;
+	private $atoumVersion = null;
+	private $passNumber = 0;
 	private $failAssertions = array();
 	private $exceptions = array();
 	private $runtimeExceptions = array();
@@ -18,12 +22,8 @@ class score
 	private $outputs = array();
 	private $durations = array();
 	private $memoryUsages = array();
-	private $coverage = null;
 	private $uncompletedMethods = array();
-	private $phpPath = null;
-	private $phpVersion = null;
-	private $atoumPath = null;
-	private $atoumVersion = null;
+	private $coverage = null;
 	private $case = null;
 	private $dataSetKey = null;
 	private $dataSetProvider = null;
@@ -56,7 +56,7 @@ class score
 		$this->phpVersion = null;
 		$this->atoumPath = null;
 		$this->atoumVersion = null;
-		$this->passAssertions = 0;
+		$this->passNumber = 0;
 		$this->failAssertions = array();
 		$this->exceptions = array();
 		$this->runtimeExceptions = array();
@@ -64,8 +64,8 @@ class score
 		$this->outputs = array();
 		$this->durations = array();
 		$this->memoryUsages = array();
-		$this->coverage->reset();
 		$this->uncompletedMethods = array();
+		$this->coverage->reset();
 
 		return $this;
 	}
@@ -127,7 +127,7 @@ class score
 
 	public function addPass()
 	{
-		$this->passAssertions++;
+		$this->passNumber++;
 
 		return $this;
 	}
@@ -250,15 +250,15 @@ class score
 
 	public function merge(score $score)
 	{
-		$this->passAssertions += $score->passAssertions;
+		$this->passNumber += $score->passNumber;
 		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
 		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
 		$this->errors = array_merge($this->errors, $score->errors);
 		$this->outputs = array_merge($this->outputs, $score->outputs);
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
-		$this->coverage->merge($score->coverage);
 		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
+		$this->coverage->merge($score->coverage);
 
 		return $this;
 	}
@@ -354,12 +354,12 @@ class score
 
 	public function getAssertionNumber()
 	{
-		return ($this->passAssertions + sizeof($this->failAssertions));
+		return ($this->passNumber + sizeof($this->failAssertions));
 	}
 
 	public function getPassNumber()
 	{
-		return ($this->getAssertionNumber() - sizeof($this->getFailAssertions()));
+		return $this->passNumber;
 	}
 
 	public function getExceptionNumber()
@@ -395,6 +395,11 @@ class score
 	public function getCoverage()
 	{
 		return $this->coverage;
+	}
+
+	public function getCoverageContainer()
+	{
+		return $this->coverage->getContainer();
 	}
 
 	public function getUncompletedMethods()

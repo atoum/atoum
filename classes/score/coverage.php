@@ -115,36 +115,7 @@ class coverage implements \countable
 
 	public function merge(score\coverage $coverage)
 	{
-		foreach ($coverage->methods as $class => $methods)
-		{
-			$reflectedClass = $this->factory['reflectionClass']($class);
-
-			if ($this->isExcluded($reflectedClass) === false)
-			{
-				if (isset($this->classes[$class]) === false)
-				{
-					$this->classes[$class] = $coverage->classes[$class];
-				}
-
-				foreach ($methods as $method => $lines)
-				{
-					$declaringClass = $reflectedClass->getMethod($method)->getDeclaringClass();
-
-					if ($this->isExcluded($declaringClass) === false)
-					{
-						foreach ($lines as $line => $call)
-						{
-							if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
-							{
-								$this->methods[$class][$method][$line] = $call;
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return $this;
+		return $this->mergeClassesAndMethods($coverage->classes, $coverage->methods);
 	}
 
 	public function getValue()
@@ -320,6 +291,16 @@ class coverage implements \countable
 		return self::itemIsExcluded($this->excludedDirectories, $file, DIRECTORY_SEPARATOR);
 	}
 
+	public function getContainer()
+	{
+		return $this->factory['mageekguy\atoum\score\coverage\container']($this);
+	}
+
+	public function mergeContainer(coverage\container $container)
+	{
+		return $this->mergeClassesAndMethods($container->getClasses(), $container->getMethods());
+	}
+
 	protected function isExcluded(\reflectionClass $class)
 	{
 		$className = $class->getName();
@@ -334,6 +315,38 @@ class coverage implements \countable
 
 			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
 		}
+	}
+
+	protected function mergeClassesAndMethods(array $classes, array $methods)
+	{
+		foreach ($methods as $class => $methods)
+		{
+			$reflectedClass = $this->factory['reflectionClass']($class);
+
+			if (isset($this->classes[$class]) === false)
+			{
+				if ($this->isExcluded($reflectedClass) === false)
+				{
+					$this->classes[$class] = $classes[$class];
+				}
+			}
+
+			foreach ($methods as $method => $lines)
+			{
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
+				{
+					foreach ($lines as $line => $call)
+					{
+						if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+						{
+							$this->methods[$class][$method][$line] = $call;
+						}
+					}
+				}
+			}
+		}
+
+		return $this;
 	}
 
 	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)
