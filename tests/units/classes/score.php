@@ -1094,4 +1094,42 @@ class score extends atoum\test
 				->object($score->getContainer())->isEqualTo(new atoum\score\container($score))
 		;
 	}
+
+	public function testMergeContainer()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->object($score->mergeContainer(new atoum\score\container(new atoum\score())))->isIdenticalTo($score)
+				->integer($score->getPassNumber())->isZero()
+				->array($score->getFailAssertions())->isEmpty()
+				->array($score->getExceptions())->isEmpty()
+				->array($score->getErrors())->isEmpty()
+				->array($score->getOutputs())->isEmpty()
+				->array($score->getDurations())->isEmpty()
+				->array($score->getMemoryUsages())->isEmpty()
+				->array($score->getUncompletedMethods())->isEmpty()
+			->if($otherScore = new atoum\score())
+			->and($otherScore->addPass())
+			->and($otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
+			->and($otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
+			->and($otherScore->addRuntimeException(new atoum\exceptions\runtime()))
+			->and($otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->and($otherScore->addOutput(uniqid(), uniqid(), uniqid()))
+			->and($otherScore->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->and($otherScore->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->and($otherScore->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
+			->and($container = new atoum\score\container($otherScore))
+			->then
+				->object($score->mergeContainer($container))->isIdenticalTo($score)
+				->integer($score->getPassNumber())->isEqualTo($otherScore->getPassNumber())
+				->array($score->getFailAssertions())->isEqualTo($otherScore->getFailAssertions())
+				->array($score->getExceptions())->isEqualTo($otherScore->getExceptions())
+				->array($score->getErrors())->isEqualTo($otherScore->getErrors())
+				->array($score->getOutputs())->isEqualTo($otherScore->getOutputs())
+				->array($score->getDurations())->isEqualTo($otherScore->getDurations())
+				->array($score->getMemoryUsages())->isEqualTo($otherScore->getMemoryUsages())
+				->array($score->getUncompletedMethods())->isEqualTo($otherScore->getUncompletedMethods())
+		;
+	}
 }

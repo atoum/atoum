@@ -253,6 +253,7 @@ class score
 		$this->passNumber += $score->passNumber;
 		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
 		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->runtimeExceptions);
 		$this->errors = array_merge($this->errors, $score->errors);
 		$this->outputs = array_merge($this->outputs, $score->outputs);
 		$this->durations = array_merge($this->durations, $score->durations);
@@ -513,6 +514,22 @@ class score
 	public function getContainer()
 	{
 		return $this->factory['mageekguy\atoum\score\container']($this);
+	}
+
+	public function mergeContainer(score\container $container)
+	{
+		$this->passNumber += $container->getPassNumber();
+		$this->failAssertions = array_merge($this->failAssertions, $container->getFailAssertions());
+		$this->exceptions = array_merge($this->exceptions, $container->getExceptions());
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $container->getRuntimeExceptions());
+		$this->errors = array_merge($this->errors, $container->getErrors());
+		$this->outputs = array_merge($this->outputs, $container->getOutputs());
+		$this->durations = array_merge($this->durations, $container->getDurations());
+		$this->memoryUsages = array_merge($this->memoryUsages, $container->getMemoryUsages());
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $container->getUncompletedMethods());
+		$this->coverage->mergeContainer($container->getCoverage());
+
+		return $this;
 	}
 
 	private static function getMethods(array $array)
