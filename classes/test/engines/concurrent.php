@@ -110,7 +110,7 @@ class concurrent extends test\engine
 
 			$phpCode .=
 				'ob_end_clean();' .
-				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
+				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore()->getContainer());'
 			;
 
 			$this->adapter->fwrite($this->pipes[0], $phpCode);
@@ -150,12 +150,17 @@ class concurrent extends test\engine
 				$this->adapter->proc_close($this->php);
 				$this->php = null;
 
-				$score = @unserialize($this->stdOut);
+				$score = $this->factory['mageekguy\atoum\score']($this->factory);
 
-				if ($score instanceof atoum\score === false)
+				$scoreContainer = @unserialize($this->stdOut);
+
+				if ($scoreContainer instanceof atoum\score\container === false)
 				{
-					$score = $this->factory['mageekguy\atoum\score']($this->factory);
 					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
+				}
+				else
+				{
+					$score->mergeContainer($scoreContainer);
 				}
 
 				if ($this->stdErr !== '')
