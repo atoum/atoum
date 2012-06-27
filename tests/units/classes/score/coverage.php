@@ -223,7 +223,9 @@ class coverage extends atoum\test
 			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
 			->and($methodController->getStartLine = 6)
 			->and($methodController->getEndLine = 8)
-			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($method = new \mock\reflectionMethod(uniqid(), uniqid(), $methodController))
+			->and($classController->getMethod = function() use ($method) { return $method; })
+			->and($classController->getMethods = array($method))
 			->and($classFile = uniqid())
 			->and($className = uniqid())
 			->and($methodName = uniqid())
@@ -342,6 +344,54 @@ class coverage extends atoum\test
 						)
 					)
 				)
+			->if($classController = new mock\controller())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($class = new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 6)
+			->and($methodController->getEndLine = 8)
+			->and($method = new \mock\reflectionMethod(uniqid(), uniqid(), $methodController))
+			->and($classController->getMethod = function() use ($method) { return $method; })
+			->and($classController->getMethods = array($method))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				  $classFile =>
+					 array(
+						5 => -2,
+						6 => -1,
+						7 => 1,
+						8 => -2,
+						9 =>-2
+					),
+				  uniqid() =>
+					 array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
+					)
+				)
+			)
+			->and($coverage = new score\coverage($factory = new atoum\factory()))
+			->and($coverage->excludeClass($className))
+			->and($factory['reflectionClass'] = $class)
+			->and($otherCoverage = new score\coverage($otherFactory = new atoum\factory()))
+			->and($otherFactory['reflectionClass'] = $class)
+			->and($otherCoverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->array($otherCoverage->getMethods())->isNotEmpty()
+				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
+				->array($coverage->getMethods())->isEmpty()
 		;
 	}
 

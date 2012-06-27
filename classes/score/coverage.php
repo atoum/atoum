@@ -117,18 +117,28 @@ class coverage implements \countable
 	{
 		foreach ($coverage->methods as $class => $methods)
 		{
-			if (isset($this->classes[$class]) === false)
-			{
-				$this->classes[$class] = $coverage->classes[$class];
-			}
+			$reflectedClass = $this->factory['reflectionClass']($class);
 
-			foreach ($methods as $method => $lines)
+			if ($this->isExcluded($reflectedClass) === false)
 			{
-				foreach ($lines as $line => $call)
+				if (isset($this->classes[$class]) === false)
 				{
-					if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+					$this->classes[$class] = $coverage->classes[$class];
+				}
+
+				foreach ($methods as $method => $lines)
+				{
+					$declaringClass = $reflectedClass->getMethod($method)->getDeclaringClass();
+
+					if ($this->isExcluded($declaringClass) === false)
 					{
-						$this->methods[$class][$method][$line] = $call;
+						foreach ($lines as $line => $call)
+						{
+							if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+							{
+								$this->methods[$class][$method][$line] = $call;
+							}
+						}
 					}
 				}
 			}
