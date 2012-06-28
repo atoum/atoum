@@ -149,7 +149,7 @@ class generator
 
 		foreach ($class->getMethods() as $method)
 		{
-			$isConstructor = $method->isConstructor();
+			$isConstructor = $method->isConstructor() || $method->getName() === '__construct';
 
 			if ($isConstructor === true)
 			{
