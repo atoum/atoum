@@ -718,9 +718,9 @@ class runner extends atoum\script
 				default:
 					$arguments .= ' ' . $argument;
 
-					if (sizeof($values) > 0)
+					foreach ($values as $value)
 					{
-						$arguments .= ' ' . join(' ', $values);
+						$arguments .= ' ' . escapeshellarg($value);
 					}
 			}
 		}
@@ -736,7 +736,7 @@ class runner extends atoum\script
 
 		if ($addScoreFile === true)
 		{
-			$arguments .= ' --score-file ' . $this->scoreFile;
+			$arguments .= ' --score-file ' . escapeshellarg($this->scoreFile);
 		}
 
 		if ($this->isRunningFromCli() === false)
@@ -755,15 +755,18 @@ class runner extends atoum\script
 
 					if (in_array($file, $files) === false)
 					{
-						$files[] = $file;
+						$files[] = escapeshellarg($file);
 					}
 				}
 
-				$arguments .= ' -f ' . join(' ', $files);
+				if (sizeof($files) > 0)
+				{
+					$arguments .= ' -f ' . join(' ', $files);
+				}
 			}
 		}
 
-		$command = $this->runner->getPhpPath() . ' ' . $this->getName() . $arguments;
+		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($this->getName()) . $arguments;
 
 		while ($this->runTests === true)
 		{
