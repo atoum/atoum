@@ -770,43 +770,7 @@ class runner extends atoum\script
 
 		while ($this->runTests === true)
 		{
-			$php = proc_open(
-				escapeshellcmd($command),
-				array(
-					1 => array('pipe', 'w'),
-					2 => array('pipe', 'w')
-				),
-				$pipes
-			);
-
-			stream_set_blocking($pipes[1], 0);
-			stream_set_blocking($pipes[2], 0);
-
-			$null = null;
-
-			while (feof($pipes[1]) === false && feof($pipes[2]) === false)
-			{
-				$updatedPipes = $pipes;
-
-				$pipesUpdated = stream_select($updatedPipes, $null, $null, null);
-
-				if ($pipesUpdated !== false)
-				{
-					foreach ($updatedPipes as $pipe)
-					{
-						switch ($pipe)
-						{
-							case $pipes[1]:
-								$this->outputWriter->write(stream_get_contents($pipe));
-								break;
-
-							default:
-								$this->errorWriter->write(stream_get_contents($pipe));
-						}
-
-					}
-				}
-			}
+			passthru(escapeshellcmd($command));
 
 			if ($this->loop === false || $this->runAgain() === false)
 			{
