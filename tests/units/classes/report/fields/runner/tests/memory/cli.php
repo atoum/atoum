@@ -118,7 +118,7 @@ class cli extends atoum\test
 		$this
 			->assert
 				->if($field = new memory\cli())
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
 				->and($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->setScore($score))
@@ -137,7 +137,7 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
 				->and($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->setScore($score))

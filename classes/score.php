@@ -3,30 +3,14 @@
 namespace mageekguy\atoum;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
-class score
+class score extends atoum\score\container
 {
-	private $factory = null;
-	private $phpPath = null;
-	private $phpVersion = null;
-	private $atoumPath = null;
-	private $atoumVersion = null;
-	private $passNumber = 0;
-	private $failAssertions = array();
-	private $exceptions = array();
-	private $runtimeExceptions = array();
-	private $errors = array();
-	private $outputs = array();
-	private $durations = array();
-	private $memoryUsages = array();
-	private $uncompletedMethods = array();
-	private $coverage = null;
-	private $case = null;
-	private $dataSetKey = null;
-	private $dataSetProvider = null;
+	protected $factory = null;
 
 	private static $failId = 0;
 
@@ -45,17 +29,15 @@ class score
 		return $this;
 	}
 
-	public function getFactory()
+	public function setCoverage(score\coverage $coverage)
 	{
-		return $this->factory;
+		$this->coverage = $coverage;
+
+		return $this;
 	}
 
 	public function reset()
 	{
-		$this->phpPath = null;
-		$this->phpVersion = null;
-		$this->atoumPath = null;
-		$this->atoumVersion = null;
 		$this->passNumber = 0;
 		$this->failAssertions = array();
 		$this->exceptions = array();
@@ -70,57 +52,18 @@ class score
 		return $this;
 	}
 
-	public function setCoverage(score\coverage $coverage)
+	public function merge(score $score)
 	{
-		$this->coverage = $coverage;
-
-		return $this;
-	}
-
-	public function setAtoumPath($path)
-	{
-		if ($this->atoumPath !== null)
-		{
-			throw new exceptions\runtime('Path of atoum is already set');
-		}
-
-		$this->atoumPath = (string) $path;
-
-		return $this;
-	}
-
-	public function setAtoumVersion($version)
-	{
-		if ($this->atoumVersion !== null)
-		{
-			throw new exceptions\runtime('Version of atoum is already set');
-		}
-
-		$this->atoumVersion = (string) $version;
-
-		return $this;
-	}
-
-	public function setPhpPath($path)
-	{
-		if ($this->phpPath !== null)
-		{
-			throw new exceptions\runtime('PHP path is already set');
-		}
-
-		$this->phpPath = (string) $path;
-
-		return $this;
-	}
-
-	public function setPhpVersion($version)
-	{
-		if ($this->phpVersion !== null)
-		{
-			throw new exceptions\runtime('PHP version is already set');
-		}
-
-		$this->phpVersion = (string) $version;
+		$this->passNumber += $score->passNumber;
+		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
+		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->runtimeExceptions);
+		$this->errors = array_merge($this->errors, $score->errors);
+		$this->outputs = array_merge($this->outputs, $score->outputs);
+		$this->durations = array_merge($this->durations, $score->durations);
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
+		$this->coverage->merge($score->coverage);
 
 		return $this;
 	}
@@ -132,13 +75,13 @@ class score
 		return $this;
 	}
 
-	public function addFail($file, $line, $class, $method, $asserter, $reason)
+	public function addFail($file, $line, $class, $method, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->failAssertions[] = array(
 			'id' => ++self::$failId,
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -150,12 +93,12 @@ class score
 		return self::$failId;
 	}
 
-	public function addException($file, $line, $class, $method, \exception $exception)
+	public function addException($file, $line, $class, $method, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->exceptions[] = array(
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -173,12 +116,12 @@ class score
 		return $this;
 	}
 
-	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null)
+	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->errors[] = array(
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
 			'class' => $class,
 			'method' => $method,
 			'file' => $file,
@@ -211,7 +154,6 @@ class score
 		if ($duration > 0)
 		{
 			$this->durations[] = array(
-				'case' => $this->case,
 				'class' => $class,
 				'method' => $method,
 				'value' => $duration
@@ -226,7 +168,6 @@ class score
 		if ($memoryUsage > 0)
 		{
 			$this->memoryUsages[] = array(
-				'case' => $this->case,
 				'class' => $class,
 				'method' => $method,
 				'value' => $memoryUsage
@@ -248,40 +189,9 @@ class score
 		return $this;
 	}
 
-	public function merge(score $score)
+	public function getFactory()
 	{
-		$this->passNumber += $score->passNumber;
-		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
-		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
-		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->runtimeExceptions);
-		$this->errors = array_merge($this->errors, $score->errors);
-		$this->outputs = array_merge($this->outputs, $score->outputs);
-		$this->durations = array_merge($this->durations, $score->durations);
-		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
-		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
-		$this->coverage->merge($score->coverage);
-
-		return $this;
-	}
-
-	public function getAtoumPath()
-	{
-		return $this->atoumPath;
-	}
-
-	public function getAtoumVersion()
-	{
-		return $this->atoumVersion;
-	}
-
-	public function getPhpPath()
-	{
-		return $this->phpPath;
-	}
-
-	public function getPhpVersion()
-	{
-		return $this->phpVersion;
+		return $this->factory;
 	}
 
 	public function getOutputs()
@@ -338,11 +248,6 @@ class score
 		return self::sort($this->exceptions);
 	}
 
-	public function getRuntimeExceptions()
-	{
-		return $this->runtimeExceptions;
-	}
-
 	public function getDurationNumber()
 	{
 		return sizeof($this->durations);
@@ -356,11 +261,6 @@ class score
 	public function getAssertionNumber()
 	{
 		return ($this->passNumber + sizeof($this->failAssertions));
-	}
-
-	public function getPassNumber()
-	{
-		return $this->passNumber;
 	}
 
 	public function getExceptionNumber()
@@ -393,34 +293,9 @@ class score
 		return sizeof($this->uncompletedMethods);
 	}
 
-	public function getCoverage()
-	{
-		return $this->coverage;
-	}
-
 	public function getCoverageContainer()
 	{
 		return $this->coverage->getContainer();
-	}
-
-	public function getUncompletedMethods()
-	{
-		return $this->uncompletedMethods;
-	}
-
-	public function getCase()
-	{
-		return $this->case;
-	}
-
-	public function getDataSetKey()
-	{
-		return $this->dataSetKey;
-	}
-
-	public function getDataSetProvider()
-	{
-		return $this->dataSetProvider;
 	}
 
 	public function getMethodsWithFail()
@@ -441,36 +316,6 @@ class score
 	public function getMethodsNotCompleted()
 	{
 		return self::getMethods($this->getUncompletedMethods());
-	}
-
-	public function setCase($case)
-	{
-		$this->case = (string) $case;
-
-		return $this;
-	}
-
-	public function setDataSet($key, $dataProvider)
-	{
-		$this->dataSetKey = $key;
-		$this->dataSetProvider = $dataProvider;
-
-		return $this;
-	}
-
-	public function unsetCase()
-	{
-		$this->case = null;
-
-		return $this;
-	}
-
-	public function unsetDataSet()
-	{
-		$this->dataSetKey = null;
-		$this->dataSetProvider = null;
-
-		return $this;
 	}
 
 	public function errorExists($message = null, $type = null, $messageIsPattern = false)

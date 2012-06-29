@@ -150,7 +150,7 @@ class concurrent extends test\engine
 				$this->adapter->proc_close($this->php);
 				$this->php = null;
 
-				$score = $this->factory['mageekguy\atoum\score']($this->factory);
+				$score = $this->factory['mageekguy\atoum\test\score']($this->factory);
 
 				$scoreContainer = @unserialize($this->stdOut);
 

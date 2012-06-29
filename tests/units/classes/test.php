@@ -92,7 +92,7 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new emptyTest())
 				->then
 					->object($test->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-					->object($test->getScore())->isEqualTo(new atoum\score($test->getFactory()))
+					->object($test->getScore())->isEqualTo(new atoum\test\score($test->getFactory()))
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
 					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
@@ -107,7 +107,7 @@ namespace mageekguy\atoum\tests\units
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->variable($test->getBootstrapFile())->isNull()
 				->if($factory = new atoum\factory())
-				->and($factory->returnWhenBuild('mageekguy\atoum\score', $score = new atoum\score()))
+				->and($factory->returnWhenBuild('mageekguy\atoum\test\score', $score = new atoum\test\score()))
 				->and($factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new atoum\locale()))
 				->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter = new atoum\adapter()))
 				->and($factory->returnWhenBuild('mageekguy\atoum\superglobals', $superglobals = new atoum\superglobals()))
@@ -353,7 +353,7 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->setScore($score = new atoum\score()))->isIdenticalTo($test)
+					->object($test->setScore($score = new atoum\test\score()))->isIdenticalTo($test)
 					->object($test->getScore())->isIdenticalTo($score)
 			;
 		}

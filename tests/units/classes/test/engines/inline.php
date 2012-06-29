@@ -54,7 +54,7 @@ class inline extends atoum\test
 			->and($test->getMockController()->runTestMethod = $test)
 			->and($engine->run($test))
 			->then
-				->object($engine->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($engine->getScore())->isInstanceOf('mageekguy\atoum\test\score')
 		;
 	}
 }

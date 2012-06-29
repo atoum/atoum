@@ -8,11 +8,9 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class coverage implements \countable
+class coverage extends score\coverage\container implements \countable
 {
 	protected $factory = null;
-	protected $classes = array();
-	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
@@ -43,16 +41,6 @@ class coverage implements \countable
 		$this->excludedDirectories = array();
 
 		return $this;
-	}
-
-	public function getClasses()
-	{
-		return $this->classes;
-	}
-
-	public function getMethods()
-	{
-		return $this->methods;
 	}
 
 	public function addXdebugDataForTest(atoum\test $test, array $data)
