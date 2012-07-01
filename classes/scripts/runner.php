@@ -770,7 +770,7 @@ class runner extends atoum\script
 
 		while ($this->runTests === true)
 		{
-			passthru(escapeshellcmd($command));
+			passthru($command);
 
 			if ($this->loop === false || $this->runAgain() === false)
 			{
