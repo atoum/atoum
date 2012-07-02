@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-148
+144
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -26,10 +26,8 @@ function atoum#run(file, bang)
 
 		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
 
-		syntax on
-
 		set filetype=atoum
-		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
 
 		%d _
 
@@ -48,8 +46,6 @@ function atoum#run(file, bang)
 
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
 		nnoremap <silent> <buffer> <LocalLeader><CR> :call atoum#goToFailure(getline('.'))<CR>
-
-		set nocursorline
 
 		augroup atoum
 		au!
@@ -238,7 +234,7 @@ atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
 
 ?>
 ftplugin/php/atoum.vim	[[[1
-29
+28
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
@@ -248,7 +244,7 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 	let b:atoum_loaded = 1
 
 	if &cp
-		echomsg 'No compatible mode is required by atoum'
+		echomsg 'No compatible mode is required by atoum.vim'
 	else
 		let s:cpo = &cpo
 		setlocal cpo&vim
@@ -266,7 +262,6 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 endif
 
 finish
-
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 ftplugin/php/atoumdev.vim	[[[1
 8
