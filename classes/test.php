@@ -21,6 +21,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTestMethod = 'beforeTestMethod';
 	const fail = 'testAssertionFail';
 	const error = 'testError';
+	const void = 'testVoid';
 	const uncompleted = 'testUncompleted';
 	const exception = 'testException';
 	const runtimeException = 'testRuntimeException';
@@ -655,6 +656,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 					}
 
+					$assertionNumber = $this->score->getAssertionNumber();
 					$time = microtime(true);
 					$memory = memory_get_usage(true);
 
@@ -697,17 +699,22 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$memoryUsage = memory_get_usage(true) - $memory;
 					$duration = microtime(true) - $time;
 
-					if ($this->codeCoverageIsEnabled() === true)
-					{
-						$this->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
-						xdebug_stop_code_coverage();
-					}
-
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
 						->addDuration($this->class, $this->currentMethod, $duration)
 						->addOutput($this->class, $this->currentMethod, ob_get_clean())
 					;
+
+					if ($this->codeCoverageIsEnabled() === true)
+					{
+						$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
+						xdebug_stop_code_coverage();
+					}
+
+					if ($assertionNumber == $this->score->getAssertionNumber())
+					{
+						$this->score->addVoidMethod($this->class, $this->currentMethod);
+					}
 				}
 				catch (\exception $exception)
 				{
@@ -797,6 +804,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 										case $score->getRuntimeExceptionNumber() > 0:
 											$this->callObservers(self::runtimeException);
 											throw current($score->getRuntimeExceptions());
+
+										case $score->getVoidMethodNumber() > 0:
+											$this->callObservers(self::void);
+											break;
 
 										case $score->getUncompletedMethodNumber():
 											$this->callObservers(self::uncompleted);

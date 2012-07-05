@@ -6,6 +6,4 @@ use
 	mageekguy\atoum
 ;
 
-interface runner extends atoum\observer
-{
-}
+interface runner extends atoum\observer {}

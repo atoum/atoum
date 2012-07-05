@@ -62,6 +62,7 @@ class score extends atoum\score\container
 		$this->outputs = array_merge($this->outputs, $score->outputs);
 		$this->durations = array_merge($this->durations, $score->durations);
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
+		$this->voidMethods = array_merge($this->voidMethods, $score->voidMethods);
 		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
 		$this->coverage->merge($score->coverage);
 
@@ -177,6 +178,16 @@ class score extends atoum\score\container
 		return $this;
 	}
 
+	public function addVoidMethod($class, $method)
+	{
+		$this->voidMethods[] = array(
+			'class' => $class,
+			'method' => $method
+		);
+
+		return $this;
+	}
+
 	public function addUncompletedMethod($class, $method, $exitCode, $output)
 	{
 		$this->uncompletedMethods[] = array(
@@ -288,6 +299,11 @@ class score extends atoum\score\container
 		return sizeof($this->errors);
 	}
 
+	public function getVoidMethodNumber()
+	{
+		return sizeof($this->voidMethods);
+	}
+
 	public function getUncompletedMethodNumber()
 	{
 		return sizeof($this->uncompletedMethods);
@@ -371,6 +387,7 @@ class score extends atoum\score\container
 		$this->outputs = array_merge($this->outputs, $container->getOutputs());
 		$this->durations = array_merge($this->durations, $container->getDurations());
 		$this->memoryUsages = array_merge($this->memoryUsages, $container->getMemoryUsages());
+		$this->voidMethods = array_merge($this->voidMethods, $container->getVoidMethods());
 		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $container->getUncompletedMethods());
 		$this->coverage->mergeContainer($container->getCoverage());
 

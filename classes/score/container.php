@@ -16,6 +16,7 @@ class container
 	protected $outputs = array();
 	protected $durations = array();
 	protected $memoryUsages = array();
+	protected $voidMethods = array();
 	protected $uncompletedMethods = array();
 	protected $coverage = null;
 
@@ -29,6 +30,7 @@ class container
 		$this->outputs = $score->getOutputs();
 		$this->durations = $score->getDurations();
 		$this->memoryUsages = $score->getMemoryUsages();
+		$this->voidMethods = $score->getVoidMethods();
 		$this->uncompletedMethods = $score->getUncompletedMethods();
 		$this->coverage = $score->getCoverage()->getContainer();
 	}
@@ -71,6 +73,11 @@ class container
 	public function getMemoryUsages()
 	{
 		return $this->memoryUsages;
+	}
+
+	public function getVoidMethods()
+	{
+		return $this->voidMethods;
 	}
 
 	public function getUncompletedMethods()
