@@ -11,12 +11,6 @@ class container
 	protected $classes = array();
 	protected $methods = array();
 
-	public function __construct(score\coverage $coverage)
-	{
-		$this->classes = $coverage->getClasses();
-		$this->methods = $coverage->getMethods();
-	}
-
 	public function getClasses()
 	{
 		return $this->classes;
@@ -25,5 +19,13 @@ class container
 	public function getMethods()
 	{
 		return $this->methods;
+	}
+
+	public function merge(container $container)
+	{
+		$this->classes = array_merge($this->classes, $container->getClasses());
+		$this->methods = array_merge($this->methods, $container->getMethods());
+
+		return $this;
 	}
 }

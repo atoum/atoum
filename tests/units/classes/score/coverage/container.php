@@ -6,7 +6,8 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\score,
-	mageekguy\atoum\score\coverage\container as testedClass
+	mageekguy\atoum\score\coverage\container as testedClass,
+	mock\mageekguy\atoum\score\coverage\container as mockedTestedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -16,30 +17,28 @@ class container extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($coverage = new score\coverage($factory = new atoum\factory()))
-			->and($container = new testedClass($coverage))
+			->if($container = new testedClass())
 			->then
 				->array($container->getClasses())->isEmpty()
 				->array($container->getMethods())->isEmpty()
-			->if($coverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($coverage->getMockController()->getClasses = array(
-					$className = uniqid() => $classFile = uniqid()
-				)
-			)
-			->and($coverage->getMockController()->getMethods = array(
-					$className => array(
-						$methodName = uniqid() => array(
-							6 => -1,
-							7 => 1,
-							8 => -2
-						)
-					)
-				)
-			)
-			->and($container = new testedClass($coverage))
+		;
+	}
+
+	public function testMerge()
+	{
+		$this
+			->if($container = new testedClass())
+			->and($otherContainer = new mockedTestedClass())
 			->then
-				->array($container->getClasses())->isEqualTo($coverage->getClasses())
-				->array($container->getMethods())->isEqualTo($coverage->getMethods())
+				->object($container->merge($otherContainer))->isIdenticalTo($container)
+				->array($container->getClasses())->isEmpty()
+				->array($container->getMethods())->isEmpty()
+			->if($otherContainer->getMockController()->getClasses = $classes = array(uniqid(), uniqid()))
+			->and($otherContainer->getMockController()->getMethods = $methods = array(uniqid(), uniqid()))
+			->then
+				->object($container->merge($otherContainer))->isIdenticalTo($container)
+				->array($container->getClasses())->isEqualTo($classes)
+				->array($container->getMethods())->isEqualTo($methods)
 		;
 	}
 }

@@ -368,7 +368,7 @@ class score extends atoum\score\container
 		$container->memoryUsages = $this->getMemoryUsages();
 		$container->voidMethods = $this->getVoidMethods();
 		$container->uncompletedMethods = $this->getUncompletedMethods();
-		$container->coverage = $this->getCoverage();
+		$container->coverage = $this->getCoverage()->getContainer();
 
 		return $container;
 	}

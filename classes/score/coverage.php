@@ -101,9 +101,44 @@ class coverage extends score\coverage\container implements \countable
 		return $this;
 	}
 
-	public function merge(score\coverage $coverage)
+	public function merge(score\coverage\container $container)
 	{
-		return $this->mergeClassesAndMethods($coverage->classes, $coverage->methods);
+		if ($container instanceof self)
+		{
+			$container = $container->getContainer();
+		}
+
+		$classes = $container->getClasses();
+		$methods = $container->getMethods();
+
+		foreach ($methods as $class => $methods)
+		{
+			$reflectedClass = $this->factory['reflectionClass']($class);
+
+			if (isset($this->classes[$class]) === false)
+			{
+				if ($this->isExcluded($reflectedClass) === false)
+				{
+					$this->classes[$class] = $classes[$class];
+				}
+			}
+
+			foreach ($methods as $method => $lines)
+			{
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
+				{
+					foreach ($lines as $line => $call)
+					{
+						if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+						{
+							$this->methods[$class][$method][$line] = $call;
+						}
+					}
+				}
+			}
+		}
+
+		return $this;
 	}
 
 	public function getValue()
@@ -281,12 +316,12 @@ class coverage extends score\coverage\container implements \countable
 
 	public function getContainer()
 	{
-		return $this->factory['mageekguy\atoum\score\coverage\container']($this);
-	}
+		$container = $this->factory['mageekguy\atoum\score\coverage\container']();
 
-	public function mergeContainer(coverage\container $container)
-	{
-		return $this->mergeClassesAndMethods($container->getClasses(), $container->getMethods());
+		$container->classes = $this->getClasses();
+		$container->methods = $this->getMethods();
+
+		return $container;
 	}
 
 	protected function isExcluded(\reflectionClass $class)
@@ -303,38 +338,6 @@ class coverage extends score\coverage\container implements \countable
 
 			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
 		}
-	}
-
-	protected function mergeClassesAndMethods(array $classes, array $methods)
-	{
-		foreach ($methods as $class => $methods)
-		{
-			$reflectedClass = $this->factory['reflectionClass']($class);
-
-			if (isset($this->classes[$class]) === false)
-			{
-				if ($this->isExcluded($reflectedClass) === false)
-				{
-					$this->classes[$class] = $classes[$class];
-				}
-			}
-
-			foreach ($methods as $method => $lines)
-			{
-				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
-				{
-					foreach ($lines as $line => $call)
-					{
-						if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
-						{
-							$this->methods[$class][$method][$line] = $call;
-						}
-					}
-				}
-			}
-		}
-
-		return $this;
 	}
 
 	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)

@@ -252,14 +252,17 @@ class coverage extends atoum\test
 			->and($factory['reflectionClass'] = $class)
 			->then
 				->object($coverage->merge($coverage))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 			->if($otherCoverage = new score\coverage($otherFactory = new atoum\factory()))
 			->then
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 			->if($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
 				->array($coverage->getMethods())->isEqualTo(array(
 						$className => array(
 							$methodName => array(
@@ -271,6 +274,7 @@ class coverage extends atoum\test
 					)
 				)
 				->object($coverage->merge($coverage))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
 				->array($coverage->getMethods())->isEqualTo(array(
 						$className => array(
 							$methodName => array(
@@ -325,6 +329,11 @@ class coverage extends atoum\test
 			->and($otherFactory['reflectionClass'] = $otherClass)
 			->then
 				->object($coverage->merge($otherCoverage->addXdebugDataForTest($this, $otherXdebugData)))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEqualTo(array(
+						$className => $classFile,
+						$otherClassName => $otherClassFile
+					)
+				)
 				->array($coverage->getMethods())->isEqualTo(array(
 						$className => array(
 							$methodName => array(
@@ -389,8 +398,10 @@ class coverage extends atoum\test
 			->and($otherFactory['reflectionClass'] = $class)
 			->and($otherCoverage->addXdebugDataForTest($this, $xdebugData))
 			->then
+				->array($otherCoverage->getClasses())->isNotEmpty()
 				->array($otherCoverage->getMethods())->isNotEmpty()
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 		;
 	}
@@ -952,161 +963,6 @@ class coverage extends atoum\test
 			->if($coverage = new score\coverage())
 			->then
 				->object($coverage->getContainer())->isEqualTo(new score\coverage\container($coverage))
-		;
-	}
-
-	public function testMergeContainer()
-	{
-		$this
-			->if($coverage = new score\coverage($factory = new atoum\factory()))
-			->then
-				->object($coverage->mergeContainer(new score\coverage\container(new score\coverage())))->isIdenticalTo($coverage)
-				->array($coverage->getMethods())->isEmpty()
-			->if($factory['reflectionClass'] = function($aClassName) use (& $className, & $methodName, & $otherClassName1, & $otherMethodName1, & $otherClassName2, & $otherMethodName2) {
-					$classController = new mock\controller();
-					$classController->__construct = function() {};
-					$classController->getName = $aClassName;
-					$classController->getFileName = uniqid();
-
-					$class = new \mock\reflectionClass($aClassName, $classController);
-
-					$methodController = new mock\controller();
-					$methodController->__construct = function() {};
-					$methodController->getDeclaringClass = $class;
-
-					switch ($aClassName)
-					{
-						case $className:
-							$methodController->getName = $methodName;
-							break;
-
-						case $otherClassName1:
-							$methodController->getName = $otherMethodName1;
-							break;
-
-						case $otherClassName2:
-							$methodController->getName = $otherMethodName2;
-							break;
-					}
-
-					$classController->getMethod = new \mock\reflectionMethod(uniqid(), uniqid(), $methodController);
-
-					return $class;
-				}
-			)
-			->if($mergedCoverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($mergedCoverage->getMockController()->getClasses = $classes = array(
-					$className = uniqid() => $classFile = uniqid()
-				)
-			)
-			->and($mergedCoverage->getMockController()->getMethods = $methods = array(
-					$className => array(
-						$methodName = uniqid() => array(
-							6 => -1,
-							7 => 1,
-							8 => -2
-						)
-					)
-				)
-			)
-			->then
-				->object($coverage->mergeContainer($mergedCoverage->getContainer()))->isIdenticalTo($coverage)
-				->array($coverage->getClasses())->isEqualTo($classes)
-				->array($coverage->getMethods())->isEqualTo($methods)
-				->object($coverage->mergeContainer($mergedCoverage->getContainer()))->isIdenticalTo($coverage)
-				->array($coverage->getClasses())->isEqualTo($classes)
-				->array($coverage->getMethods())->isEqualTo($methods)
-			->if($otherMergedCoverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($otherMergedCoverage->getMockController()->getClasses = $otherClasses = array(
-					$otherClassName1 = uniqid() => $otherClassFile1 = uniqid(),
-					$otherClassName2 = uniqid() => $otherClassFile2 =  uniqid()
-				)
-			)
-			->and($otherMergedCoverage->getMockController()->getMethods = $otherMethods = array(
-					$otherClassName1 => array(
-						$otherMethodName1 = uniqid() => array(
-							61 => -1,
-							62 => 1,
-							63 => -2
-						)
-					),
-					$otherClassName2 => array(
-						$otherMethodName2 = uniqid() => array(
-							31 => -1,
-							32 => 1,
-							33 => -2
-						)
-					)
-				)
-			)
-			->then
-				->object($coverage->mergeContainer($otherMergedCoverage->getContainer()))->isIdenticalTo($coverage)
-				->array($coverage->getClasses())->isEqualTo(array(
-						$className => $classFile,
-						$otherClassName1 => $otherClassFile1,
-						$otherClassName2 => $otherClassFile2
-					)
-				)
-				->array($coverage->getMethods())->isEqualTo(array(
-						$className => array(
-							$methodName => array(
-								6 => -1,
-								7 => 1,
-								8 => -2
-							)
-						),
-						$otherClassName1 => array(
-							$otherMethodName1 => array(
-								61 => -1,
-								62 => 1,
-								63 => -2
-							)
-						),
-						$otherClassName2 => array(
-							$otherMethodName2 => array(
-								31 => -1,
-								32 => 1,
-								33 => -2
-							)
-						)
-					)
-				)
-			->if($mergedCoverage->getMockController()->getMethods = $methods = array(
-					$className => array(
-						$methodName => array(
-							6 => 1,
-							7 => 1,
-							8 => 1
-						)
-					)
-				)
-			)
-			->then
-				->object($coverage->mergeContainer($mergedCoverage->getContainer()))->isIdenticalTo($coverage)
-				->array($coverage->getMethods())->isEqualTo(array(
-						$className => array(
-							$methodName => array(
-								6 => 1,
-								7 => 1,
-								8 => 1
-							)
-						),
-						$otherClassName1 => array(
-							$otherMethodName1 => array(
-								61 => -1,
-								62 => 1,
-								63 => -2
-							)
-						),
-						$otherClassName2 => array(
-							$otherMethodName2 => array(
-								31 => -1,
-								32 => 1,
-								33 => -2
-							)
-						)
-					)
-				)
 		;
 	}
 }
