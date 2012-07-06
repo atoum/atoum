@@ -160,7 +160,7 @@ class concurrent extends test\engine
 				}
 				else
 				{
-					$score->mergeContainer($scoreContainer);
+					$score->merge($scoreContainer);
 				}
 
 				if ($this->stdErr !== '')
