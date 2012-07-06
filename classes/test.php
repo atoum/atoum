@@ -56,6 +56,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $engines = array();
 	private $classEngine = null;
 	private $methodEngines = array();
+	private $classHasNotVoidMethods = false;
+	private $methodsAreNotVoid = array();
 	private $asynchronousEngines = 0;
 	private $maxAsynchronousEngines = null;
 	private $codeCoverage = false;
@@ -93,6 +95,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
+			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
+			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
 			->extract($class->getDocComment())
 		;
 
@@ -118,6 +122,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
 			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
+			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
+			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
 		;
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
@@ -177,6 +183,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getClassEngine()
 	{
 		return $this->classEngine;
+	}
+
+	public function classHasVoidMethods()
+	{
+		$this->classHasNotVoidMethods = false;
+	}
+
+	public function classHasNotVoidMethods()
+	{
+		$this->classHasNotVoidMethods = true;
+	}
+
+	public function setMethodVoid($method)
+	{
+		$this->methodsAreNotVoid[$method] = false;
+	}
+
+	public function setMethodNotVoid($method)
+	{
+		$this->methodsAreNotVoid[$method] = true;
+	}
+
+	public function methodIsNotVoid($method)
+	{
+		return (isset($this->methodsAreNotVoid[$method]) === false ? $this->classHasNotVoidMethods : $this->methodsAreNotVoid[$method]);
 	}
 
 	public function setMethodEngine($method, $engine)
@@ -711,7 +742,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_stop_code_coverage();
 					}
 
-					if ($assertionNumber == $this->score->getAssertionNumber())
+					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)
 					{
 						$this->score->addVoidMethod($this->class, $this->currentMethod);
 					}
@@ -825,9 +856,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 											$this->callObservers(self::exception);
 											break;
 
-										case $score->getPassNumber():
+										default:
 											$this->callObservers(self::success);
-											break;
 									}
 
 									$this->score->merge($score);
