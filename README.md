@@ -85,8 +85,6 @@ class helloWorld extends atoum\test
 		;
 	}
 }
-
-?>
 ```
 
 ### Step 3 : Run your test with the commandline
@@ -116,8 +114,6 @@ class helloWorld
 		return 'Hello World!';
 	}
 }
-
-?>
 ```
 
 ### Step 5 : Run your test once more
@@ -165,8 +161,6 @@ class helloWorld extends atoum\test
 		;
 	}
 }
-
-?>
 ```
 
 ## To go further
