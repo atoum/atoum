@@ -117,7 +117,7 @@ class html extends report\fields\runner\coverage\cli
 			{
 				$this->cleanDestinationDirectory();
 
-				$this->adapter->copy($this->templatesDirectory . '/screen.css', $this->destinationDirectory . '/screen.css');
+				$this->adapter->copy($this->templatesDirectory . DIRECTORY_SEPARATOR . 'screen.css', $this->destinationDirectory . DIRECTORY_SEPARATOR . 'screen.css');
 
 				$classes = $this->coverage->getClasses();
 
