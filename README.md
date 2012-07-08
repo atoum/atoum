@@ -57,7 +57,7 @@ This PHAR archive contains the latest development version to pass the totality o
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
 To do that, you just need to run the following command in your terminal :
 
-	# php mageekguy.atoum.phar --testIt
+	# php mageekguy.atoum.phar --test-it
 
 ### Step 2 : Write your tests
 
