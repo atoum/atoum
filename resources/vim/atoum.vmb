@@ -274,7 +274,7 @@ augroup atoumdev
 	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository | cs add GTAGS
 augroup end
 syntax/atoum.vim	[[[1
-166
+178
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -368,6 +368,17 @@ if !exists('b:current_syntax')
 	syntax match atoumUncompletedMethodDescriptionPrompt '^==> ' contained
 	highlight default atoumUncompletedMethodDescriptionPrompt guifg=Brown ctermfg=Brown
 
+	syntax region atoumVoidDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ void methods\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumVoidTitle,atoumVoidMethodPrompt,atoumVoidMethod,atoumVoidDescriptionPrompt
+
+	syntax match atoumVoidMethod '.\+::.\+()$' contained
+	highlight default atoumVoidMethod guifg=White ctermfg=White
+
+	syntax match atoumVoidTitle 'There \(is\|are\) \d\+ void methods\?:$' contained
+	highlight default atoumVoidTitle guifg=Blue ctermfg=Blue
+
+	syntax match atoumVoidMethodPrompt '^=> ' contained
+	highlight default atoumVoidMethodPrompt guifg=Blue ctermfg=Blue
+
 	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionMethodPrompt,atoumExceptionMethod,atoumExceptionDescriptionPrompt,atoumExceptionDescription
 
 	syntax match atoumExceptionDescription '.*$' contained
@@ -379,6 +390,7 @@ if !exists('b:current_syntax')
 
 	syntax match atoumExceptionTitle 'There \(is\|are\) \d\+ exceptions\?:$' contained
 	highlight default atoumExceptionTitle guifg=Magenta ctermfg=Magenta
+
 	syntax match atoumExceptionMethodPrompt '^=> ' contained
 	highlight default atoumExceptionMethodPrompt guifg=Magenta ctermfg=Magenta
 

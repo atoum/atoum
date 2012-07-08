@@ -87,6 +87,14 @@ class vim extends reports\asynchronous
 						$thirdLevelPrompt
 					)
 				)
+			->addField(new runner\tests\void\cli(
+						$firstLevelPrompt,
+						null,
+						$secondLevelPrompt,
+						null,
+						$thirdLevelPrompt
+					)
+				)
 			->addField(
 				new runner\outputs\cli(
 					$firstLevelPrompt,

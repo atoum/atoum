@@ -121,7 +121,7 @@ class cli extends report\fields\runner\tests\void
 					$this->titlePrompt .
 					sprintf(
 						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d test method with no assertion', 'There are %d methods with no assertion', $sizeOfVoidMethod), $sizeOfVoidMethod))
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d void method', 'There are %d void methods', $sizeOfVoidMethod), $sizeOfVoidMethod))
 					) .
 					PHP_EOL
 				;
