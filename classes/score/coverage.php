@@ -251,6 +251,18 @@ class coverage implements \countable, \serializable
 		return $value;
 	}
 
+	public function getCoverageForClass($class)
+	{
+		$class = (string) $class;
+
+		if(isset($this->methods[$class]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Class \'' . $class . '\' does not exist');
+		}
+
+		return ($this->isInExcludedClasses($class) ? array() : $this->methods[$class]);
+	}
+
 	public function getValueForMethod($class, $method)
 	{
 		$value = null;
@@ -280,6 +292,18 @@ class coverage implements \countable, \serializable
 		}
 
 		return $value;
+	}
+
+	public function getCoverageForMethod($class, $method)
+	{
+		$class = $this->getCoverageForClass($class);
+
+		if(isset($class[$method]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Method \'' . $method . '\' does not exist');
+		}
+
+		return $class[$method];
 	}
 
 	public function excludeClass($class)

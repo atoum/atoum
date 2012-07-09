@@ -1,0 +1,23 @@
+<?php
+
+/*
+Sample atoum configuration file to have code coverage in clover format.
+Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/runner.php -c path/to/this/file -f path/to/test/file" to use it.
+*/
+
+use \mageekguy\atoum;
+
+/*
+Please replace in next line /path/to/destination/directory/atoum.coverage.xml by your output file for clover report.
+*/
+$cloverWriter = new atoum\writers\file('/path/to/destination/directory/atoum.coverage.xml');
+
+/*
+Generate a clover XML report.
+*/
+$cloverReport = new atoum\reports\asynchronous\clover();
+$cloverReport->addWriter($cloverWriter);
+
+$runner->addReport($cloverReport);
+
+?>
