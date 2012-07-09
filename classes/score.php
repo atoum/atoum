@@ -82,21 +82,128 @@ class score
 		return $this->coverage;
 	}
 
-	public function merge(score $score)
+	public function getOutputs()
 	{
-		$this->passNumber += $score->getPassNumber();
-		$this->failAssertions = array_merge($this->failAssertions, $score->getFailAssertions());
-		$this->exceptions = array_merge($this->exceptions, $score->getExceptions());
-		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->getRuntimeExceptions());
-		$this->errors = array_merge($this->errors, $score->getErrors());
-		$this->outputs = array_merge($this->outputs, $score->getOutputs());
-		$this->durations = array_merge($this->durations, $score->getDurations());
-		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
-		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
-		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
-		$this->coverage->merge($score->getCoverage());
+		return array_values($this->outputs);
+	}
 
-		return $this;
+	public function getTotalDuration()
+	{
+		$total = 0.0;
+
+		foreach ($this->durations as $duration)
+		{
+			$total += $duration['value'];
+		}
+
+		return $total;
+	}
+
+	public function getDurations()
+	{
+		return array_values($this->durations);
+	}
+
+	public function getTotalMemoryUsage()
+	{
+		$total = 0.0;
+
+		foreach ($this->memoryUsages as $memoryUsage)
+		{
+			$total += $memoryUsage['value'];
+		}
+
+		return $total;
+	}
+
+	public function getMemoryUsages()
+	{
+		return array_values($this->memoryUsages);
+	}
+
+	public function getFailAssertions()
+	{
+		return self::sort(self::cleanAssertions($this->failAssertions));
+	}
+
+	public function getErrors()
+	{
+		return self::sort($this->errors);
+	}
+
+	public function getExceptions()
+	{
+		return self::sort($this->exceptions);
+	}
+
+	public function getDurationNumber()
+	{
+		return sizeof($this->durations);
+	}
+
+	public function getOutputNumber()
+	{
+		return sizeof($this->outputs);
+	}
+
+	public function getAssertionNumber()
+	{
+		return ($this->passNumber + sizeof($this->failAssertions));
+	}
+
+	public function getExceptionNumber()
+	{
+		return sizeof($this->exceptions);
+	}
+
+	public function getRuntimeExceptionNumber()
+	{
+		return sizeof($this->runtimeExceptions);
+	}
+
+	public function getMemoryUsageNumber()
+	{
+		return sizeof($this->memoryUsages);
+	}
+
+	public function getFailNumber()
+	{
+		return sizeof($this->getFailAssertions());
+	}
+
+	public function getErrorNumber()
+	{
+		return sizeof($this->errors);
+	}
+
+	public function getVoidMethodNumber()
+	{
+		return sizeof($this->voidMethods);
+	}
+
+	public function getUncompletedMethodNumber()
+	{
+		return sizeof($this->uncompletedMethods);
+	}
+
+	public function getMethodsWithFail()
+	{
+		return self::getMethods($this->getFailAssertions());
+	}
+
+	public function getMethodsWithError()
+	{
+		return self::getMethods($this->getErrors());
+	}
+
+	public function getMethodsWithException()
+	{
+		return self::getMethods($this->getExceptions());
+	}
+
+	public function getMethodsNotCompleted()
+	{
+		return self::getMethods($this->getUncompletedMethods());
 	}
 
 	public function addPass()
@@ -230,128 +337,21 @@ class score
 		return $this;
 	}
 
-	public function getOutputs()
+	public function merge(score $score)
 	{
-		return array_values($this->outputs);
-	}
+		$this->passNumber += $score->getPassNumber();
+		$this->failAssertions = array_merge($this->failAssertions, $score->getFailAssertions());
+		$this->exceptions = array_merge($this->exceptions, $score->getExceptions());
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->getRuntimeExceptions());
+		$this->errors = array_merge($this->errors, $score->getErrors());
+		$this->outputs = array_merge($this->outputs, $score->getOutputs());
+		$this->durations = array_merge($this->durations, $score->getDurations());
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
+		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
+		$this->coverage->merge($score->getCoverage());
 
-	public function getTotalDuration()
-	{
-		$total = 0.0;
-
-		foreach ($this->durations as $duration)
-		{
-			$total += $duration['value'];
-		}
-
-		return $total;
-	}
-
-	public function getDurations()
-	{
-		return array_values($this->durations);
-	}
-
-	public function getTotalMemoryUsage()
-	{
-		$total = 0.0;
-
-		foreach ($this->memoryUsages as $memoryUsage)
-		{
-			$total += $memoryUsage['value'];
-		}
-
-		return $total;
-	}
-
-	public function getMemoryUsages()
-	{
-		return array_values($this->memoryUsages);
-	}
-
-	public function getFailAssertions()
-	{
-		return self::sort(self::cleanAssertions($this->failAssertions));
-	}
-
-	public function getErrors()
-	{
-		return self::sort($this->errors);
-	}
-
-	public function getExceptions()
-	{
-		return self::sort($this->exceptions);
-	}
-
-	public function getDurationNumber()
-	{
-		return sizeof($this->durations);
-	}
-
-	public function getOutputNumber()
-	{
-		return sizeof($this->outputs);
-	}
-
-	public function getAssertionNumber()
-	{
-		return ($this->passNumber + sizeof($this->failAssertions));
-	}
-
-	public function getExceptionNumber()
-	{
-		return sizeof($this->exceptions);
-	}
-
-	public function getRuntimeExceptionNumber()
-	{
-		return sizeof($this->runtimeExceptions);
-	}
-
-	public function getMemoryUsageNumber()
-	{
-		return sizeof($this->memoryUsages);
-	}
-
-	public function getFailNumber()
-	{
-		return sizeof($this->getFailAssertions());
-	}
-
-	public function getErrorNumber()
-	{
-		return sizeof($this->errors);
-	}
-
-	public function getVoidMethodNumber()
-	{
-		return sizeof($this->voidMethods);
-	}
-
-	public function getUncompletedMethodNumber()
-	{
-		return sizeof($this->uncompletedMethods);
-	}
-
-	public function getMethodsWithFail()
-	{
-		return self::getMethods($this->getFailAssertions());
-	}
-
-	public function getMethodsWithError()
-	{
-		return self::getMethods($this->getErrors());
-	}
-
-	public function getMethodsWithException()
-	{
-		return self::getMethods($this->getExceptions());
-	}
-
-	public function getMethodsNotCompleted()
-	{
-		return self::getMethods($this->getUncompletedMethods());
+		return $this;
 	}
 
 	public function errorExists($message = null, $type = null, $messageIsPattern = false)
