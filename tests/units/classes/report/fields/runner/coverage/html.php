@@ -452,10 +452,10 @@ class html extends atoum\test
 			->and($templateParserController->parseFile = function($path) use ($templatesDirectory, $indexTemplate, $classTemplate) {
 						switch ($path)
 						{
-							case $templatesDirectory . '/index.tpl':
+							case $templatesDirectory . DIRECTORY_SEPARATOR . 'index.tpl':
 								return $indexTemplate;
 
-							case $templatesDirectory . '/class.tpl':
+							case $templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl':
 								return $classTemplate;
 						}
 					}
