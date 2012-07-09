@@ -27,7 +27,6 @@ class xunit extends atoum\reports\asynchronous
 	public function handleEvent($event, atoum\observable $observable)
 	{
 		$this->score = ($event !== atoum\runner::runStop) ? null : $observable->getScore();
-
 		return parent::handleEvent($event, $observable);
 	}
 
@@ -90,40 +89,67 @@ class xunit extends atoum\reports\asynchronous
 					$testSuite->appendChild($testCase = $document->createElement('testcase'));
 
 					$testCase->setAttribute('name', $duration['method']);
+					$testCase->setIdAttribute('name', true);
 					$testCase->setAttribute('time', $duration['value']);
+					$testCase->setAttribute('file', $duration['path']);
 					$testCase->setAttribute('classname', $name);
-
-					foreach (array_filter($class['fails'], $filterMethod) as $fail)
-					{
-						$testCase->appendChild($xFail = $document->createElement('failure', $fail['fail']));
-
-						$xFail->setAttribute('type','Assertion Fail');
-						$xFail->setAttribute('message', $fail['asserter']);
-					}
-
-					foreach (array_filter($class['excepts'], $filterMethod) as $except)
-					{
-						$testCase->appendChild($xError = $document->createElement('error'));
-
-						$xError->setAttribute('type','Exception');
-						$xError->appendChild($document->createCDATASection($except['value']));
-					}
 				}
 
 				$testSuite->setAttribute('time', $time);
 
 				foreach ($class['errors'] as $error)
 				{
-					$testSuite->appendChild($testCase = $document->createElement('testcase'));
-
-					$testCase->setAttribute('name', $error['method']);
-					$testCase->setAttribute('time', '0');
-					$testCase->setAttribute('classname', $name);
-
+					if( ($testCase = $document->getElementById($error['method'])) === null)
+					{
+						$testSuite->appendChild($testCase = $document->createElement('testcase'));
+						$testCase->setAttribute('name', $error['method']);
+						$testCase->setIdAttribute('name', true);
+						$testCase->setAttribute('time', '0');
+						$testCase->setAttribute('classname', $name);
+						$testCase->setAttribute('file', $error['file']);
+					}
+					
 					$testCase->appendChild($xError = $document->createElement('error'));
 
 					$xError->setAttribute('type', $error['type']);
-					$xError->appendChild($document->createCDATASection($cError['message']));
+					$xError->appendChild($document->createCDATASection($error['message']));
+				}
+				
+				foreach ($class['fails'] as $fail)
+				{
+					if( ($testCase = $document->getElementById($fail['method'])) === null)
+					{
+						$testSuite->appendChild($testCase = $document->createElement('testcase'));
+						$testCase->setAttribute('name', $fail['method']);
+						$testCase->setIdAttribute('name', true);
+						$testCase->setAttribute('time', '0');
+						$testCase->setAttribute('classname', $name);
+						$testCase->setAttribute('file', $fail['file']);
+					}
+					
+					$testCase->appendChild($xFail = $document->createElement('failure'));
+
+					$xFail->setAttribute('type', 'Failure');
+					$xFail->setAttribute('message', $fail['asserter']);
+					$xFail->appendChild($document->createCDATASection($fail['fail']));
+				}
+				
+				foreach ($class['excepts'] as $exc)
+				{
+					if( ($testCase = $document->getElementById($exc['method'])) === null)
+					{
+						$testSuite->appendChild($testCase = $document->createElement('testcase'));
+						$testCase->setAttribute('name', $exc['method']);
+						$testCase->setIdAttribute('name', true);
+						$testCase->setAttribute('time', '0');
+						$testCase->setAttribute('classname', $name);
+						$testCase->setAttribute('file', $exc['file']);
+					}
+					
+					$testCase->appendChild($xError = $document->createElement('error'));
+
+					$xError->setAttribute('type', 'Exception');
+					$xError->appendChild($document->createCDATASection($exc['value']));
 				}
 			}
 

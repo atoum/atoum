@@ -732,7 +732,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
-						->addDuration($this->class, $this->currentMethod, $duration)
+						->addDuration($this->class, $this->path, $this->currentMethod, $duration)
 						->addOutput($this->class, $this->currentMethod, ob_get_clean())
 					;
 
