@@ -8,25 +8,30 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class score extends atoum\score\container
+class score
 {
-	protected $factory = null;
+	protected $passNumber = 0;
+	protected $failAssertions = array();
+	protected $exceptions = array();
+	protected $runtimeExceptions = array();
+	protected $errors = array();
+	protected $outputs = array();
+	protected $durations = array();
+	protected $memoryUsages = array();
+	protected $voidMethods = array();
+	protected $uncompletedMethods = array();
+	protected $coverage = null;
 
 	private static $failId = 0;
 
-	public function __construct(factory $factory = null)
+	public function __construct(dependencies $dependencies = null)
 	{
-		$this
-			->setFactory($factory ?: new factory())
-			->setCoverage($this->factory['mageekguy\atoum\score\coverage']($this->factory))
-		;
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
 	}
 
-	public function setFactory(factory $factory)
+	public function setDependencies(dependencies $dependencies)
 	{
-		$this->factory = $factory;
-
-		return $this;
+		return $this->setCoverage($dependencies['coverage'] === null ? new score\coverage($dependencies) : $dependencies['coverage']());
 	}
 
 	public function setCoverage(score\coverage $coverage)
@@ -48,6 +53,48 @@ class score extends atoum\score\container
 		$this->memoryUsages = array();
 		$this->uncompletedMethods = array();
 		$this->coverage->reset();
+
+		return $this;
+	}
+
+	public function getPassNumber()
+	{
+		return $this->passNumber;
+	}
+
+	public function getRuntimeExceptions()
+	{
+		return $this->runtimeExceptions;
+	}
+
+	public function getVoidMethods()
+	{
+		return $this->voidMethods;
+	}
+
+	public function getUncompletedMethods()
+	{
+		return $this->uncompletedMethods;
+	}
+
+	public function getCoverage()
+	{
+		return $this->coverage;
+	}
+
+	public function merge(score $score)
+	{
+		$this->passNumber += $score->getPassNumber();
+		$this->failAssertions = array_merge($this->failAssertions, $score->getFailAssertions());
+		$this->exceptions = array_merge($this->exceptions, $score->getExceptions());
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->getRuntimeExceptions());
+		$this->errors = array_merge($this->errors, $score->getErrors());
+		$this->outputs = array_merge($this->outputs, $score->getOutputs());
+		$this->durations = array_merge($this->durations, $score->getDurations());
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
+		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
+		$this->coverage->merge($score->getCoverage());
 
 		return $this;
 	}
@@ -183,11 +230,6 @@ class score extends atoum\score\container
 		return $this;
 	}
 
-	public function getFactory()
-	{
-		return $this->factory;
-	}
-
 	public function getOutputs()
 	{
 		return array_values($this->outputs);
@@ -292,11 +334,6 @@ class score extends atoum\score\container
 		return sizeof($this->uncompletedMethods);
 	}
 
-	public function getCoverageContainer()
-	{
-		return $this->coverage->getContainer();
-	}
-
 	public function getMethodsWithFail()
 	{
 		return self::getMethods($this->getFailAssertions());
@@ -353,34 +390,6 @@ class score extends atoum\score\container
 		$id = $exception->getCode();
 
 		return (sizeof(array_filter($this->failAssertions, function($assertion) use ($id) { return ($assertion['id'] === $id); })) > 0);
-	}
-
-	public function getContainer()
-	{
-		$container = $this->factory['mageekguy\atoum\score\container']();
-		$container->passNumber = $this->getPassNumber();
-		$container->failAssertions = $this->getFailAssertions();
-		$container->exceptions = $this->getExceptions();
-		$container->runtimeExceptions = $this->getRuntimeExceptions();
-		$container->errors = $this->getErrors();
-		$container->outputs = $this->getOutputs();
-		$container->durations = $this->getDurations();
-		$container->memoryUsages = $this->getMemoryUsages();
-		$container->voidMethods = $this->getVoidMethods();
-		$container->uncompletedMethods = $this->getUncompletedMethods();
-		$container->coverage = $this->getCoverage()->getContainer();
-
-		return $container;
-	}
-
-	public function merge(score\container $container)
-	{
-		if ($container instanceof score === true)
-		{
-			$container = $container->getContainer();
-		}
-
-		return parent::merge($container);
 	}
 
 	private static function getMethods(array $array)

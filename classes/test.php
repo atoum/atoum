@@ -71,7 +71,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setScore($this->factory['mageekguy\atoum\test\score']($this->factory))
+			->setScore($this->factory['mageekguy\atoum\test\score']())
 			->setLocale($this->factory['mageekguy\atoum\locale']())
 			->setAdapter($this->factory['mageekguy\atoum\adapter']())
 			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())

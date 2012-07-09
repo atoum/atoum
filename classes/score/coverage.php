@@ -8,28 +8,72 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class coverage extends score\coverage\container implements \countable
+class coverage implements \countable, \serializable
 {
-	protected $factory = null;
+	protected $dependencies = null;
+	protected $classes = array();
+	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct(atoum\dependencies $dependencies = null)
 	{
-		$this->setFactory($factory ?: new atoum\factory());
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function serialize()
 	{
-		$this->factory = $factory;
+		return serialize(array(
+				$this->classes,
+				$this->methods,
+				$this->excludedClasses,
+				$this->excludedNamespaces,
+				$this->excludedDirectories
+			)
+		);
+	}
+
+	public function unserialize($string, atoum\dependencies $dependencies = null)
+	{
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
+
+		list(
+			$this->classes,
+			$this->methods,
+			$this->excludedClasses,
+			$this->excludedNamespaces,
+			$this->excludedDirectories
+		) = unserialize($string);
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		return $this->factory;
+		$this->dependencies = $dependencies;
+
+		if (isset($this->dependencies['reflection\class']) === false)
+		{
+			$this->dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+		}
+
+		return $this;
+	}
+
+	public function getDependencies()
+	{
+		return $this->dependencies;
+	}
+
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+
+	public function getMethods()
+	{
+		return $this->methods;
 	}
 
 	public function reset()
@@ -54,7 +98,7 @@ class coverage extends score\coverage\container implements \countable
 		{
 			try
 			{
-				$reflectedClass = $this->factory['reflectionClass']($class);
+				$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
@@ -101,19 +145,14 @@ class coverage extends score\coverage\container implements \countable
 		return $this;
 	}
 
-	public function merge(score\coverage\container $container)
+	public function merge(score\coverage $coverage)
 	{
-		if ($container instanceof self)
-		{
-			$container = $container->getContainer();
-		}
-
-		$classes = $container->getClasses();
-		$methods = $container->getMethods();
+		$classes = $coverage->getClasses();
+		$methods = $coverage->getMethods();
 
 		foreach ($methods as $class => $methods)
 		{
-			$reflectedClass = $this->factory['reflectionClass']($class);
+			$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
 
 			if (isset($this->classes[$class]) === false)
 			{
@@ -312,16 +351,6 @@ class coverage extends score\coverage\container implements \countable
 	public function isInExcludedDirectories($file)
 	{
 		return self::itemIsExcluded($this->excludedDirectories, $file, DIRECTORY_SEPARATOR);
-	}
-
-	public function getContainer()
-	{
-		$container = $this->factory['mageekguy\atoum\score\coverage\container']();
-
-		$container->classes = $this->getClasses();
-		$container->methods = $this->getMethods();
-
-		return $container;
 	}
 
 	protected function isExcluded(\reflectionClass $class)

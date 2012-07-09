@@ -15,7 +15,6 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
-				->object($score->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
@@ -24,12 +23,11 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
-				->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage($score->getFactory()))
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\score\coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
-			->and($score = new atoum\score($factory))
+				->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
+			->and($score = new atoum\score($dependencies))
 			->then
-				->object($score->getFactory())->isIdenticalTo($factory)
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
@@ -618,7 +616,6 @@ class score extends atoum\test
 			->if($score = new atoum\score())
 			->then
 				->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
-				->object($coverage->getFactory())->isIdenticalTo($score->getFactory())
 		;
 	}
 
@@ -889,50 +886,6 @@ class score extends atoum\test
 				->integer($score->errorExists($message, $type))->isEqualTo(0)
 				->object($score->deleteError(0))->isIdenticalTo($score)
 				->variable($score->errorExists($message, $type))->isNull()
-		;
-	}
-
-	public function testGetContainer()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($container = $score->getContainer())->isInstanceOf('mageekguy\atoum\score\container')
-				->integer($container->getPassNumber())->isEqualTo($score->getPassNumber())
-				->array($container->getFailAssertions())->isEqualTo($score->getFailAssertions())
-				->array($container->getExceptions())->isEqualTo($score->getExceptions())
-				->array($container->getRuntimeExceptions())->isEqualTo($score->getRuntimeExceptions())
-				->array($container->getErrors())->isEqualTo($score->getErrors())
-				->array($container->getOutputs())->isEqualTo($score->getOutputs())
-				->array($container->getDurations())->isEqualTo($score->getDurations())
-				->array($container->getMemoryUsages())->isEqualTo($score->getMemoryUsages())
-				->array($container->getVoidMethods())->isEqualTo($score->getVoidMethods())
-				->array($container->getUncompletedMethods())->isEqualTo($score->getUncompletedMethods())
-				->object($container->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage\container')
-			->if($score
-				->addPass()
-				->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception())
-				->addRuntimeException(new atoum\exceptions\runtime())
-				->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX))
-				->addOutput(uniqid(), uniqid(), uniqid())
-				->addDuration(uniqid(), uniqid(), rand(1, PHP_INT_MAX))
-				->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX))
-				->addVoidMethod(uniqid(), uniqid())
-				->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid())
-			)
-			->then
-				->object($container = $score->getContainer())->isInstanceOf('mageekguy\atoum\score\container')
-				->integer($container->getPassNumber())->isEqualTo($score->getPassNumber())
-				->array($container->getFailAssertions())->isEqualTo($score->getFailAssertions())
-				->array($container->getExceptions())->isEqualTo($score->getExceptions())
-				->array($container->getRuntimeExceptions())->isEqualTo($score->getRuntimeExceptions())
-				->array($container->getErrors())->isEqualTo($score->getErrors())
-				->array($container->getOutputs())->isEqualTo($score->getOutputs())
-				->array($container->getDurations())->isEqualTo($score->getDurations())
-				->array($container->getMemoryUsages())->isEqualTo($score->getMemoryUsages())
-				->array($container->getVoidMethods())->isEqualTo($score->getVoidMethods())
-				->array($container->getUncompletedMethods())->isEqualTo($score->getUncompletedMethods())
-				->object($container->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage\container')
 		;
 	}
 }
