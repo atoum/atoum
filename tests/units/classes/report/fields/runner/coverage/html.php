@@ -30,7 +30,7 @@ class html extends atoum\test
 			->then
 				->string($field->getProjectName())->isEqualTo($projectName)
 				->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
-				->string($field->getTemplatesDirectory())->isEqualTo(atoum\directory . '/resources/templates/coverage')
+				->string($field->getTemplatesDirectory())->isEqualTo(atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage')
 				->object($field->getPrompt())->isEqualTo(new prompt())
 				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
 				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())

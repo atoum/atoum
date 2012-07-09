@@ -435,7 +435,7 @@ class html extends report\fields\runner\coverage\cli
 
 	public function setRootUrl($rootUrl)
 	{
-		$this->rootUrl = rtrim((string) $rootUrl, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		$this->rootUrl = rtrim((string) $rootUrl, '/') . '/';
 
 		return $this;
 	}
