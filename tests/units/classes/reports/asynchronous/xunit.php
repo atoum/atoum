@@ -45,10 +45,7 @@ class xunit extends atoum\test
 				->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
 			->if($adapter->extension_loaded = false)
 			->then
-				->exception(function() use ($factory) {
-								new reports\xunit($factory);
-							}
-						)
+				->exception(function() use ($factory) { new reports\xunit($factory); })
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 				->hasMessage('libxml PHP extension is mandatory for xunit report')
 		;

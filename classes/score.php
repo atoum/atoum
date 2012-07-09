@@ -56,7 +56,6 @@ class score
 
 		return $this;
 	}
-
 	public function getPassNumber()
 	{
 		return $this->passNumber;
@@ -287,14 +286,15 @@ class score
 		return $this;
 	}
 
-	public function addDuration($class, $method, $duration)
+	public function addDuration($class, $path, $method, $duration)
 	{
 		if ($duration > 0)
 		{
 			$this->durations[] = array(
 				'class' => $class,
 				'method' => $method,
-				'value' => $duration
+				'value' => $duration,
+				'path' => $path
 			);
 		}
 
