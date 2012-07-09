@@ -3,71 +3,35 @@
 namespace mageekguy\atoum;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions
 ;
 
 class score
 {
-	private $factory = null;
-	private $passAssertions = 0;
-	private $failAssertions = array();
-	private $exceptions = array();
-	private $runtimeExceptions = array();
-	private $errors = array();
-	private $outputs = array();
-	private $durations = array();
-	private $memoryUsages = array();
-	private $coverage = null;
-	private $uncompletedMethods = array();
-	private $phpPath = null;
-	private $phpVersion = null;
-	private $atoumPath = null;
-	private $atoumVersion = null;
-	private $case = null;
-	private $dataSetKey = null;
-	private $dataSetProvider = null;
+	protected $passNumber = 0;
+	protected $failAssertions = array();
+	protected $exceptions = array();
+	protected $runtimeExceptions = array();
+	protected $errors = array();
+	protected $outputs = array();
+	protected $durations = array();
+	protected $memoryUsages = array();
+	protected $voidMethods = array();
+	protected $uncompletedMethods = array();
+	protected $coverage = null;
 
 	private static $failId = 0;
 
-	public function __construct(factory $factory = null)
+	public function __construct(dependencies $dependencies = null)
 	{
-		$this
-			->setFactory($factory ?: new factory())
-			->setCoverage($this->factory['mageekguy\atoum\score\coverage']($this->factory))
-		;
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
 	}
 
-	public function setFactory(factory $factory)
+	public function setDependencies(dependencies $dependencies)
 	{
-		$this->factory = $factory;
-
-		return $this;
-	}
-
-	public function getFactory()
-	{
-		return $this->factory;
-	}
-
-	public function reset()
-	{
-		$this->phpPath = null;
-		$this->phpVersion = null;
-		$this->atoumPath = null;
-		$this->atoumVersion = null;
-		$this->passAssertions = 0;
-		$this->failAssertions = array();
-		$this->exceptions = array();
-		$this->runtimeExceptions = array();
-		$this->errors = array();
-		$this->outputs = array();
-		$this->durations = array();
-		$this->memoryUsages = array();
-		$this->coverage->reset();
-		$this->uncompletedMethods = array();
-
-		return $this;
+		return $this->setCoverage($dependencies['coverage'] === null ? new score\coverage($dependencies) : $dependencies['coverage']());
 	}
 
 	public function setCoverage(score\coverage $coverage)
@@ -77,211 +41,44 @@ class score
 		return $this;
 	}
 
-	public function setAtoumPath($path)
+	public function reset()
 	{
-		if ($this->atoumPath !== null)
-		{
-			throw new exceptions\runtime('Path of atoum is already set');
-		}
-
-		$this->atoumPath = (string) $path;
+		$this->passNumber = 0;
+		$this->failAssertions = array();
+		$this->exceptions = array();
+		$this->runtimeExceptions = array();
+		$this->errors = array();
+		$this->outputs = array();
+		$this->durations = array();
+		$this->memoryUsages = array();
+		$this->uncompletedMethods = array();
+		$this->coverage->reset();
 
 		return $this;
 	}
-
-	public function setAtoumVersion($version)
+	public function getPassNumber()
 	{
-		if ($this->atoumVersion !== null)
-		{
-			throw new exceptions\runtime('Version of atoum is already set');
-		}
-
-		$this->atoumVersion = (string) $version;
-
-		return $this;
+		return $this->passNumber;
 	}
 
-	public function setPhpPath($path)
+	public function getRuntimeExceptions()
 	{
-		if ($this->phpPath !== null)
-		{
-			throw new exceptions\runtime('PHP path is already set');
-		}
-
-		$this->phpPath = (string) $path;
-
-		return $this;
+		return $this->runtimeExceptions;
 	}
 
-	public function setPhpVersion($version)
+	public function getVoidMethods()
 	{
-		if ($this->phpVersion !== null)
-		{
-			throw new exceptions\runtime('PHP version is already set');
-		}
-
-		$this->phpVersion = (string) $version;
-
-		return $this;
+		return $this->voidMethods;
 	}
 
-	public function addPass()
+	public function getUncompletedMethods()
 	{
-		$this->passAssertions++;
-
-		return $this;
+		return $this->uncompletedMethods;
 	}
 
-	public function addFail($file, $line, $class, $method, $asserter, $reason)
+	public function getCoverage()
 	{
-		$this->failAssertions[] = array(
-			'id' => ++self::$failId,
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
-			'class' => $class,
-			'method' => $method,
-			'file' => $file,
-			'line' => $line,
-			'asserter' => $asserter,
-			'fail' => $reason
-		);
-
-		return self::$failId;
-	}
-
-	public function addException($file, $line, $class, $method, \exception $exception)
-	{
-		$this->exceptions[] = array(
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
-			'class' => $class,
-			'method' => $method,
-			'file' => $file,
-			'line' => $line,
-			'value' => (string) $exception
-		);
-
-		return $this;
-	}
-
-	public function addRuntimeException(exceptions\runtime $exception)
-	{
-		$this->runtimeExceptions[] = $exception;
-
-		return $this;
-	}
-
-	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null)
-	{
-		$this->errors[] = array(
-			'case' => $this->case,
-			'dataSetKey' => $this->dataSetKey,
-			'dataSetProvider' => $this->dataSetProvider,
-			'class' => $class,
-			'method' => $method,
-			'file' => $file,
-			'line' => $line,
-			'type' => $type,
-			'message' => trim($message),
-			'errorFile' => $errorFile,
-			'errorLine' => $errorLine
-		);
-
-		return $this;
-	}
-
-	public function addOutput($class, $method, $output)
-	{
-		if ($output != '')
-		{
-			$this->outputs[] = array(
-				'class' => $class,
-				'method' => $method,
-				'value' => $output
-			);
-		}
-
-		return $this;
-	}
-
-	public function addDuration($class, $path, $method, $duration)
-	{
-		if ($duration > 0)
-		{
-			$this->durations[] = array(
-				'case' => $this->case,
-				'class' => $class,
-				'path' => $path,
-				'method' => $method,
-				'value' => $duration
-			);
-		}
-
-		return $this;
-	}
-
-	public function addMemoryUsage($class, $method, $memoryUsage)
-	{
-		if ($memoryUsage > 0)
-		{
-			$this->memoryUsages[] = array(
-				'case' => $this->case,
-				'class' => $class,
-				'method' => $method,
-				'value' => $memoryUsage
-			);
-		}
-
-		return $this;
-	}
-
-	public function addUncompletedMethod($class, $method, $exitCode, $output)
-	{
-		$this->uncompletedMethods[] = array(
-			'class' => $class,
-			'method' => $method,
-			'exitCode' => $exitCode,
-			'output' => $output
-		);
-
-		return $this;
-	}
-
-	public function merge(score $score)
-	{
-		$this->passAssertions += $score->passAssertions;
-		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
-		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
-		$this->errors = array_merge($this->errors, $score->errors);
-		$this->outputs = array_merge($this->outputs, $score->outputs);
-		$this->durations = array_merge($this->durations, $score->durations);
-		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
-		$this->coverage->merge($score->coverage);
-		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
-
-		return $this;
-	}
-
-	public function getAtoumPath()
-	{
-		return $this->atoumPath;
-	}
-
-	public function getAtoumVersion()
-	{
-		return $this->atoumVersion;
-	}
-
-	public function getPhpPath()
-	{
-		return $this->phpPath;
-	}
-
-	public function getPhpVersion()
-	{
-		return $this->phpVersion;
+		return $this->coverage;
 	}
 
 	public function getOutputs()
@@ -338,11 +135,6 @@ class score
 		return self::sort($this->exceptions);
 	}
 
-	public function getRuntimeExceptions()
-	{
-		return $this->runtimeExceptions;
-	}
-
 	public function getDurationNumber()
 	{
 		return sizeof($this->durations);
@@ -355,12 +147,7 @@ class score
 
 	public function getAssertionNumber()
 	{
-		return ($this->passAssertions + sizeof($this->failAssertions));
-	}
-
-	public function getPassNumber()
-	{
-		return ($this->getAssertionNumber() - sizeof($this->getFailAssertions()));
+		return ($this->passNumber + sizeof($this->failAssertions));
 	}
 
 	public function getExceptionNumber()
@@ -388,34 +175,14 @@ class score
 		return sizeof($this->errors);
 	}
 
+	public function getVoidMethodNumber()
+	{
+		return sizeof($this->voidMethods);
+	}
+
 	public function getUncompletedMethodNumber()
 	{
 		return sizeof($this->uncompletedMethods);
-	}
-
-	public function getCoverage()
-	{
-		return $this->coverage;
-	}
-
-	public function getUncompletedMethods()
-	{
-		return $this->uncompletedMethods;
-	}
-
-	public function getCase()
-	{
-		return $this->case;
-	}
-
-	public function getDataSetKey()
-	{
-		return $this->dataSetKey;
-	}
-
-	public function getDataSetProvider()
-	{
-		return $this->dataSetProvider;
 	}
 
 	public function getMethodsWithFail()
@@ -438,32 +205,151 @@ class score
 		return self::getMethods($this->getUncompletedMethods());
 	}
 
-	public function setCase($case)
+	public function addPass()
 	{
-		$this->case = (string) $case;
+		$this->passNumber++;
 
 		return $this;
 	}
 
-	public function setDataSet($key, $dataProvider)
+	public function addFail($file, $line, $class, $method, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
-		$this->dataSetKey = $key;
-		$this->dataSetProvider = $dataProvider;
+		$this->failAssertions[] = array(
+			'id' => ++self::$failId,
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
+			'class' => $class,
+			'method' => $method,
+			'file' => $file,
+			'line' => $line,
+			'asserter' => $asserter,
+			'fail' => $reason
+		);
+
+		return self::$failId;
+	}
+
+	public function addException($file, $line, $class, $method, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
+	{
+		$this->exceptions[] = array(
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
+			'class' => $class,
+			'method' => $method,
+			'file' => $file,
+			'line' => $line,
+			'value' => (string) $exception
+		);
 
 		return $this;
 	}
 
-	public function unsetCase()
+	public function addRuntimeException(exceptions\runtime $exception)
 	{
-		$this->case = null;
+		$this->runtimeExceptions[] = $exception;
 
 		return $this;
 	}
 
-	public function unsetDataSet()
+	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
-		$this->dataSetKey = null;
-		$this->dataSetProvider = null;
+		$this->errors[] = array(
+			'case' => $case,
+			'dataSetKey' => $dataSetKey,
+			'dataSetProvider' => $dataSetProvider,
+			'class' => $class,
+			'method' => $method,
+			'file' => $file,
+			'line' => $line,
+			'type' => $type,
+			'message' => trim($message),
+			'errorFile' => $errorFile,
+			'errorLine' => $errorLine
+		);
+
+		return $this;
+	}
+
+	public function addOutput($class, $method, $output)
+	{
+		if ($output != '')
+		{
+			$this->outputs[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $output
+			);
+		}
+
+		return $this;
+	}
+
+	public function addDuration($class, $path, $method, $duration)
+	{
+		if ($duration > 0)
+		{
+			$this->durations[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $duration,
+				'path' => $path
+			);
+		}
+
+		return $this;
+	}
+
+	public function addMemoryUsage($class, $method, $memoryUsage)
+	{
+		if ($memoryUsage > 0)
+		{
+			$this->memoryUsages[] = array(
+				'class' => $class,
+				'method' => $method,
+				'value' => $memoryUsage
+			);
+		}
+
+		return $this;
+	}
+
+	public function addVoidMethod($class, $method)
+	{
+		$this->voidMethods[] = array(
+			'class' => $class,
+			'method' => $method
+		);
+
+		return $this;
+	}
+
+	public function addUncompletedMethod($class, $method, $exitCode, $output)
+	{
+		$this->uncompletedMethods[] = array(
+			'class' => $class,
+			'method' => $method,
+			'exitCode' => $exitCode,
+			'output' => $output
+		);
+
+		return $this;
+	}
+
+	public function merge(score $score)
+	{
+		$this->passNumber += $score->getPassNumber();
+		$this->failAssertions = array_merge($this->failAssertions, $score->getFailAssertions());
+		$this->exceptions = array_merge($this->exceptions, $score->getExceptions());
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->getRuntimeExceptions());
+		$this->errors = array_merge($this->errors, $score->getErrors());
+		$this->outputs = array_merge($this->outputs, $score->getOutputs());
+		$this->durations = array_merge($this->durations, $score->getDurations());
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
+		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
+		$this->coverage->merge($score->getCoverage());
 
 		return $this;
 	}

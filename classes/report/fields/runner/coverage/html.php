@@ -37,7 +37,7 @@ class html extends report\fields\runner\coverage\cli
 			->setUrlPrompt($urlPrompt ?: new prompt())
 			->setUrlColorizer($urlColorizer ?: new colorizer())
 			->setProjectName($projectName)
-			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . '/resources/templates/coverage')
+			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage')
 			->setDestinationDirectory($destinationDirectory)
 			->setTemplateParser($parser ?: new template\parser())
 			->setAdapter($adapter ?: new atoum\adapter())
@@ -117,11 +117,11 @@ class html extends report\fields\runner\coverage\cli
 			{
 				$this->cleanDestinationDirectory();
 
-				$this->adapter->copy($this->templatesDirectory . '/screen.css', $this->destinationDirectory . '/screen.css');
+				$this->adapter->copy($this->templatesDirectory . DIRECTORY_SEPARATOR . 'screen.css', $this->destinationDirectory . DIRECTORY_SEPARATOR . 'screen.css');
 
 				$classes = $this->coverage->getClasses();
 
-				$indexTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/index.tpl');
+				$indexTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'index.tpl');
 				$indexTemplate->projectName = $this->projectName;
 				$indexTemplate->rootUrl = $this->rootUrl;
 
@@ -165,9 +165,9 @@ class html extends report\fields\runner\coverage\cli
 					$classCoverageUnavailableTemplates->resetData();
 				}
 
-				$this->adapter->file_put_contents($this->destinationDirectory . '/index.html', (string) $indexTemplate->build());
+				$this->adapter->file_put_contents($this->destinationDirectory . DIRECTORY_SEPARATOR . 'index.html', (string) $indexTemplate->build());
 
-				$classTemplate = $this->templateParser->parseFile($this->templatesDirectory . '/class.tpl');
+				$classTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl');
 
 				$classTemplate->rootUrl = $this->rootUrl;
 				$classTemplate->projectName = $this->projectName;
@@ -296,7 +296,7 @@ class html extends report\fields\runner\coverage\cli
 						$this->adapter->fclose($srcFile);
 					}
 
-					$file = $this->destinationDirectory . '/' . str_replace('\\', DIRECTORY_SEPARATOR, $className) . self::htmlExtensionFile;
+					$file = $this->destinationDirectory . DIRECTORY_SEPARATOR . str_replace('\\', '/', $className) . self::htmlExtensionFile;
 
 					$directory = $this->adapter->dirname($file);
 

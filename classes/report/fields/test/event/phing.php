@@ -23,6 +23,9 @@ class phing extends report\fields\test\event\cli
 			case atoum\test::success:
 				 return 'S';
 
+			case atoum\test::void:
+				 return '0';
+
 			case atoum\test::uncompleted:
 				 return 'U';
 

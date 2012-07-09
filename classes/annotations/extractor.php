@@ -22,10 +22,23 @@ class extractor
 
 					$sizeofComment = sizeof($comment);
 
-					if ($sizeofComment >= 2)
+					if ($sizeofComment >= 1)
 					{
 						$annotation = substr($comment[0], 1);
-						$value = $sizeofComment == 2 ? $comment[1] : join(' ', array_slice($comment, 1));
+
+						switch (true)
+						{
+							case $sizeofComment === 1:
+								$value = true;
+								break;
+
+							case $sizeofComment === 2:
+								$value = $comment[1];
+								break;
+
+							default:
+								$value = join(' ', array_slice($comment, 1));
+						}
 
 						foreach ($this->handlers as $handlerAnnotation => $handlerValue)
 						{

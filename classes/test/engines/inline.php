@@ -20,7 +20,7 @@ class inline extends test\engine
 	{
 		parent::__construct($factory);
 
-		$this->score = $this->factory['mageekguy\atoum\score']();
+		$this->score = $this->factory['mageekguy\atoum\test\score']();
 	}
 
 	public function run(atoum\test $test)

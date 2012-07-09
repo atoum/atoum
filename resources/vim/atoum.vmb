@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-148
+144
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -26,10 +26,8 @@ function atoum#run(file, bang)
 
 		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
 
-		syntax on
-
 		set filetype=atoum
-		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap number
+		setlocal buftype=nowrite bufhidden=wipe nobuflisted noswapfile nowrap nonumber nocursorline
 
 		%d _
 
@@ -48,8 +46,6 @@ function atoum#run(file, bang)
 
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
 		nnoremap <silent> <buffer> <LocalLeader><CR> :call atoum#goToFailure(getline('.'))<CR>
-
-		set nocursorline
 
 		augroup atoum
 		au!
@@ -238,7 +234,7 @@ atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
 
 ?>
 ftplugin/php/atoum.vim	[[[1
-29
+28
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
@@ -248,7 +244,7 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 	let b:atoum_loaded = 1
 
 	if &cp
-		echomsg 'No compatible mode is required by atoum'
+		echomsg 'No compatible mode is required by atoum.vim'
 	else
 		let s:cpo = &cpo
 		setlocal cpo&vim
@@ -266,7 +262,6 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 endif
 
 finish
-
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 ftplugin/php/atoumdev.vim	[[[1
 8
@@ -279,7 +274,7 @@ augroup atoumdev
 	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository | cs add GTAGS
 augroup end
 syntax/atoum.vim	[[[1
-166
+178
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -373,6 +368,17 @@ if !exists('b:current_syntax')
 	syntax match atoumUncompletedMethodDescriptionPrompt '^==> ' contained
 	highlight default atoumUncompletedMethodDescriptionPrompt guifg=Brown ctermfg=Brown
 
+	syntax region atoumVoidDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ void methods\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumVoidTitle,atoumVoidMethodPrompt,atoumVoidMethod,atoumVoidDescriptionPrompt
+
+	syntax match atoumVoidMethod '.\+::.\+()$' contained
+	highlight default atoumVoidMethod guifg=White ctermfg=White
+
+	syntax match atoumVoidTitle 'There \(is\|are\) \d\+ void methods\?:$' contained
+	highlight default atoumVoidTitle guifg=Blue ctermfg=Blue
+
+	syntax match atoumVoidMethodPrompt '^=> ' contained
+	highlight default atoumVoidMethodPrompt guifg=Blue ctermfg=Blue
+
 	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionMethodPrompt,atoumExceptionMethod,atoumExceptionDescriptionPrompt,atoumExceptionDescription
 
 	syntax match atoumExceptionDescription '.*$' contained
@@ -384,6 +390,7 @@ if !exists('b:current_syntax')
 
 	syntax match atoumExceptionTitle 'There \(is\|are\) \d\+ exceptions\?:$' contained
 	highlight default atoumExceptionTitle guifg=Magenta ctermfg=Magenta
+
 	syntax match atoumExceptionMethodPrompt '^=> ' contained
 	highlight default atoumExceptionMethodPrompt guifg=Magenta ctermfg=Magenta
 

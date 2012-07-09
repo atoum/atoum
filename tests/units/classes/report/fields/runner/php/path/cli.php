@@ -93,7 +93,7 @@ class cli extends atoum\test
 		$this
 			->assert
 				->if($field = new runner\php\path\cli())
-				->and($score = new \mock\mageekguy\atoum\score())
+				->and($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
 				->then
 					->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isFalse()
@@ -108,7 +108,7 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getPhpPath = $phpPath = uniqid())
 				->and($defaultField = new runner\php\path\cli())
 				->then

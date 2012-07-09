@@ -158,8 +158,8 @@ class phing extends atoum\test
 	{
 		$this
 			->assert
-				->if($scoreCoverage = new score\coverage($factory = new atoum\factory()))
-				->and($score = new \mock\mageekguy\atoum\score())
+				->if($scoreCoverage = new score\coverage($dependencies = new atoum\dependencies()))
+				->and($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 				->and($runner = new atoum\runner())
 				->and($runner->setScore($score))
@@ -192,7 +192,7 @@ class phing extends atoum\test
 				->and($methodController->getStartLine = 6)
 				->and($methodController->getEndLine = 8)
 				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-				->and($factory['reflectionClass'] = $class)
+				->and($dependencies['reflection\class'] = $class)
 				->and($className = uniqid())
 				->and($methodName = uniqid())
 				->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(

@@ -30,7 +30,7 @@ class html extends atoum\test
 			->then
 				->string($field->getProjectName())->isEqualTo($projectName)
 				->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
-				->string($field->getTemplatesDirectory())->isEqualTo(atoum\directory . '/resources/templates/coverage')
+				->string($field->getTemplatesDirectory())->isEqualTo(atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage')
 				->object($field->getPrompt())->isEqualTo(new prompt())
 				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
 				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
@@ -551,7 +551,8 @@ class html extends atoum\test
 				->mock($notCoveredLineTemplate)
 					->call('__set')->withArguments('code', $line7)->once()
 				->adapter($adapter)
-					->call('file_put_contents')->withArguments($destinationDirectory . '/index.html', $buildOfIndexTemplate)->once()
+					->call('file_put_contents')->withArguments($destinationDirectory . DIRECTORY_SEPARATOR . 'index.html', $buildOfIndexTemplate)->once()
+					->call('copy')->withArguments($templatesDirectory . DIRECTORY_SEPARATOR . 'screen.css', $destinationDirectory . DIRECTORY_SEPARATOR . 'screen.css')->once()
 					->call('fopen')->withArguments($classFile, 'r')->once()
 					->call('fgets')->withArguments($classResource)->atLeastOnce()
 					->call('fclose')->withArguments($classResource)->once()

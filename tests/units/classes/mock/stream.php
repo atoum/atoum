@@ -76,6 +76,7 @@ class stream extends test
 			->and($adapter->stream_wrapper_register = true)
 			->and($stream = mock\stream::get())
 			->then
+				->string($stream . '\\' . uniqid())->match('#^' . $stream . preg_quote('\\') . '[^' . preg_quote('\\') . ']+$#')
 				->object($subStream = mock\stream::getSubStream($stream))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
 				->castToString($subStream)->match('#^' . $stream . preg_quote(DIRECTORY_SEPARATOR) . '[^' . preg_quote(DIRECTORY_SEPARATOR) . ']+$#')
 				->object($subStream = mock\stream::getSubStream($stream, $basename = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')

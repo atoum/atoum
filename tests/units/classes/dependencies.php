@@ -120,7 +120,7 @@ class dependencies extends atoum\test
 		;
 	}
 
-	public function testUnsetDependencies()
+	public function testUnsetDependence()
 	{
 		$this
 			->if($dependencies = new testedClass())

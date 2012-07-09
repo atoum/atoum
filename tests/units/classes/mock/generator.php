@@ -764,6 +764,90 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testGetMockedClassCodeForAbstractClassWithConstructorInInterface()
+	{
+		$this
+			->if($publicMethodController = new mock\controller())
+			->and($publicMethodController->__construct = function() {})
+			->and($publicMethodController->getName = '__construct')
+			->and($publicMethodController->isConstructor = false)
+			->and($publicMethodController->getParameters = array())
+			->and($publicMethodController->isPublic = true)
+			->and($publicMethodController->isProtected = false)
+			->and($publicMethodController->isFinal = false)
+			->and($publicMethodController->isStatic = false)
+			->and($publicMethodController->isAbstract = true)
+			->and($publicMethodController->returnsReference = false)
+			->and($publicMethod = new \mock\reflectionMethod(null, null))
+			->and($classController = new mock\controller())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = $className = uniqid())
+			->and($classController->isFinal = false)
+			->and($classController->isInterface = false)
+			->and($classController->isAbstract = true)
+			->and($classController->getMethods = array($publicMethod))
+			->and($class = new \mock\reflectionClass(null))
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->class_exists = function($class) use ($className) { return ($class == '\\' . $className); })
+			->and($factory = new atoum\factory())
+			->and($factory['reflectionClass'] = $class)
+			->and($factory['mageekguy\atoum\adapter'] = $adapter)
+			->and($generator = new mock\generator($factory))
+			->then
+				->string($generator->getMockedClassCode($className))->isEqualTo(
+					'namespace mock {' . PHP_EOL .
+					'final class ' . $className . ' extends \\' . $className . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'{' . PHP_EOL .
+					"\t" . 'private $mockController = null;' . PHP_EOL .
+					"\t" . 'public function getMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function resetMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = $this->mockController;' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = null;' . PHP_EOL .
+					"\t\t\t" . '$mockController->reset();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
+					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					'}' . PHP_EOL .
+					'}'
+				)
+		;
+	}
+
 	public function testGenerate()
 	{
 		$this

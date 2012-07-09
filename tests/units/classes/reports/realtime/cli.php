@@ -86,6 +86,13 @@ class cli extends atoum\test
 							null,
 							new prompt('==> ', new colorizer('0;37'))
 						),
+						new fields\runner\tests\void\cli(
+							new prompt('> '),
+							new colorizer('0;34'),
+							new prompt('=> ', new colorizer('0;34')),
+							null,
+							new prompt('==> ', new colorizer('0;34'))
+						),
 						new fields\test\run\cli(
 							new prompt('> '),
 							new colorizer('1;36')
@@ -170,6 +177,13 @@ class cli extends atoum\test
 							new prompt('=> ', new colorizer('0;37')),
 							null,
 							new prompt('==> ', new colorizer('0;37'))
+						),
+						new fields\runner\tests\void\cli(
+							new prompt('> '),
+							new colorizer('0;34'),
+							new prompt('=> ', new colorizer('0;34')),
+							null,
+							new prompt('==> ', new colorizer('0;34'))
 						),
 						new fields\test\run\cli(
 							new prompt('> '),

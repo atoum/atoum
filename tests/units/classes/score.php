@@ -15,14 +15,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
-				->object($score->getFactory())->isInstanceOf('mageekguy\atoum\factory')
-				->variable($score->getPhpPath())->isNull()
-				->variable($score->getPhpVersion())->isNull()
-				->variable($score->getAtoumPath())->isNull()
-				->variable($score->getAtoumVersion())->isNull()
 				->integer($score->getPassNumber())->isZero()
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
 				->array($score->getErrors())->isEmpty()
@@ -30,19 +23,12 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
-				->object($score->getCoverage())->isEqualTo(new \mageekguy\atoum\score\coverage($score->getFactory()))
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\score\coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
-			->and($score = new atoum\score($factory))
+				->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['coverage'] = $coverage = new \mageekguy\atoum\score\coverage())
+			->and($score = new atoum\score($dependencies))
 			->then
-				->object($score->getFactory())->isIdenticalTo($factory)
-				->variable($score->getPhpPath())->isNull()
-				->variable($score->getPhpVersion())->isNull()
-				->variable($score->getAtoumPath())->isNull()
-				->variable($score->getAtoumVersion())->isNull()
 				->integer($score->getPassNumber())->isZero()
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
 				->array($score->getErrors())->isEmpty()
@@ -329,7 +315,6 @@ class score extends atoum\test
 				->object($score->addDuration($class = uniqid(), $path = uniqid(), $method = uniqid(), $duration = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getDurations())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $duration,
@@ -341,14 +326,12 @@ class score extends atoum\test
 				->object($score->addDuration($otherClass = uniqid(), $otherPath = uniqid(), $otherMethod = uniqid(), $otherDuration = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getDurations())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $duration,
 							'path' => $path
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherDuration,
@@ -360,14 +343,12 @@ class score extends atoum\test
 				->object($score->addDuration(uniqid(), uniqid(), uniqid(), 0))->isIdenticalTo($score)
 				->array($score->getDurations())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $duration,
 							'path' => $path
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherDuration,
@@ -379,14 +360,12 @@ class score extends atoum\test
 				->object($score->addDuration(uniqid(), uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getDurations())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $duration,
 							'path' => $path
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherDuration,
@@ -398,21 +377,18 @@ class score extends atoum\test
 				->object($score->addDuration($class, $path, $method, $moreDuration = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getDurations())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $duration,
 							'path' => $path
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherDuration,
 							'path' => $otherPath
 						),
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $moreDuration,
@@ -433,7 +409,6 @@ class score extends atoum\test
 				->object($score->addMemoryUsage($class = uniqid(), $method = uniqid(), $memoryUsage = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getMemoryUsages())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $memoryUsage
@@ -443,13 +418,11 @@ class score extends atoum\test
 				->object($score->addMemoryUsage($otherClass = uniqid(), $otherMethod = uniqid(), $otherMemoryUsage = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getMemoryUsages())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $memoryUsage
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherMemoryUsage
@@ -459,13 +432,11 @@ class score extends atoum\test
 				->object($score->addMemoryUsage(uniqid(), uniqid(), 0))->isIdenticalTo($score)
 				->array($score->getMemoryUsages())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $memoryUsage
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherMemoryUsage
@@ -475,13 +446,11 @@ class score extends atoum\test
 				->object($score->addMemoryUsage(uniqid(), uniqid(), - rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getMemoryUsages())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $memoryUsage
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherMemoryUsage
@@ -491,19 +460,16 @@ class score extends atoum\test
 				->object($score->addMemoryUsage($class, $method, $moreMemoryUsage = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->array($score->getMemoryUsages())->isEqualTo(array(
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $memoryUsage
 						),
 						array(
-							'case' => null,
 							'class' => $otherClass,
 							'method' => $otherMethod,
 							'value' => $otherMemoryUsage
 						),
 						array(
-							'case' => null,
 							'class' => $class,
 							'method' => $method,
 							'value' => $moreMemoryUsage
@@ -568,99 +534,6 @@ class score extends atoum\test
 					)
 				)
 				->integer($score->getRuntimeExceptionNumber())->isEqualTo(2)
-		;
-	}
-
-	public function testSetAtoumPath()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setAtoumPath($path = uniqid()))->isIdenticalTo($score)
-				->string($score->getAtoumPath())->isEqualTo($path)
-				->exception(function() use ($score) {
-							$score->setAtoumPath(uniqid());
-						}
-					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Path of atoum is already set')
-				->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-				->string($score->getAtoumPath())->isEqualTo((string) $path)
-		;
-	}
-
-	public function testSetAtoumVersion()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setAtoumVersion($version = uniqid()))->isIdenticalTo($score)
-				->string($score->getAtoumVersion())->isEqualTo($version)
-				->exception(function() use ($score) {
-							$score->setAtoumVersion(uniqid());
-						}
-					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Version of atoum is already set')
-				->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-				->string($score->getAtoumVersion())->isEqualTo((string) $version)
-		;
-	}
-
-	public function testSetPhpPath()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setPhpPath($path = uniqid()))->isIdenticalTo($score)
-				->string($score->getPhpPath())->isEqualTo($path)
-				->exception(function() use ($score) {
-							$score->setPhpPath(uniqid());
-						}
-					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('PHP path is already set')
-				->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-				->string($score->getPhpPath())->isEqualTo((string) $path)
-		;
-	}
-
-	public function testSetPhpVersion()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setPhpVersion(\PHP_VERSION_ID))->isIdenticalTo($score)
-				->string($score->getPhpVersion())->isEqualTo((string) \PHP_VERSION_ID)
-				->exception(function() use ($score) {
-						$score->setPhpVersion(uniqid());
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('PHP version is already set')
-		;
-	}
-
-	public function testSetCase()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setCase($case = uniqid()))->isIdenticalTo($score)
-				->string($score->getCase())->isEqualTo($case)
-				->object($score->setCase($case = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
-				->string($score->getCase())->isEqualTo((string) $case)
-		;
-	}
-
-	public function testSetDataSet()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->setDataSet($key = rand(1, PHP_INT_MAX), $dataProvider = uniqid()))->isIdenticalTo($score)
-				->integer($score->getDataSetKey())->isEqualTo($key)
-				->string($score->getDataSetProvider())->isEqualTo($dataProvider)
 		;
 	}
 
@@ -753,7 +626,6 @@ class score extends atoum\test
 			->if($score = new atoum\score())
 			->then
 				->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
-				->object($coverage->getFactory())->isIdenticalTo($score->getFactory())
 		;
 	}
 
@@ -824,47 +696,11 @@ class score extends atoum\test
 		;
 	}
 
-	public function testUnsetCase()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->variable($score->getCase())->isNull()
-				->object($score->unsetCase())->isIdenticalTo($score)
-				->variable($score->getCase())->isNull()
-			->if($score->setCase(uniqid()))
-			->then
-				->string($score->getCase())->isNotNull()
-				->object($score->unsetCase())->isIdenticalTo($score)
-				->variable($score->getCase())->isNull()
-		;
-	}
-
-	public function testUnsetDataSet()
-	{
-		$this
-			->if($score = new atoum\score())
-			->then
-				->object($score->unsetDataSet())->isIdenticalTo($score)
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
-			->if($score->setDataSet(rand(1, PHP_INT_MAX), uniqid()))
-			->then
-				->object($score->unsetDataSet())->isIdenticalTo($score)
-				->variable($score->getDataSetKey())->isNull()
-				->variable($score->getDataSetProvider())->isNull()
-		;
-	}
-
 	public function testReset()
 	{
 		$this
 			->if($score = new atoum\score())
 			->then
-				->variable($score->getPhpPath())->isNull()
-				->variable($score->getPhpVersion())->isNull()
-				->variable($score->getAtoumPath())->isNull()
-				->variable($score->getAtoumVersion())->isNull()
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
@@ -875,10 +711,6 @@ class score extends atoum\test
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
 				->object($score->reset())->isIdenticalTo($score)
-				->variable($score->getPhpPath())->isNull()
-				->variable($score->getPhpVersion())->isNull()
-				->variable($score->getAtoumPath())->isNull()
-				->variable($score->getAtoumVersion())->isNull()
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
@@ -889,10 +721,6 @@ class score extends atoum\test
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
 			->if($score
-				->setPhpPath(uniqid())
-				->setPhpVersion(uniqid())
-				->setAtoumPath(uniqid())
-				->setAtoumVersion(uniqid())
 				->addPass()
 				->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception())
 				->addRuntimeException(new atoum\exceptions\runtime())
@@ -904,10 +732,6 @@ class score extends atoum\test
 			)
 			->and($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
 			->then
-				->variable($score->getPhpPath())->isNotNull()
-				->variable($score->getPhpVersion())->isNotNull()
-				->variable($score->getAtoumPath())->isNotNull()
-				->variable($score->getAtoumVersion())->isNotNull()
 				->integer($score->getPassNumber())->isGreaterThan(0)
 				->array($score->getFailAssertions())->isNotEmpty()
 				->array($score->getExceptions())->isNotEmpty()
@@ -918,10 +742,6 @@ class score extends atoum\test
 				->array($score->getMemoryUsages())->isNotEmpty()
 				->array($score->getUncompletedMethods())->isNotEmpty()
 				->object($score->reset())->isIdenticalTo($score)
-				->variable($score->getPhpPath())->isNull()
-				->variable($score->getPhpVersion())->isNull()
-				->variable($score->getAtoumPath())->isNull()
-				->variable($score->getAtoumVersion())->isNull()
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
@@ -940,17 +760,11 @@ class score extends atoum\test
 			->if($score = new atoum\score())
 			->and($otherScore = new atoum\score())
 			->then
-				->integer($score->getPassNumber())->isZero()
-				->array($score->getFailAssertions())->isEmpty()
-				->array($score->getExceptions())->isEmpty()
-				->array($score->getErrors())->isEmpty()
-				->array($score->getOutputs())->isEmpty()
-				->array($score->getDurations())->isEmpty()
-				->array($score->getMemoryUsages())->isEmpty()
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isZero()
 				->array($score->getFailAssertions())->isEmpty()
 				->array($score->getExceptions())->isEmpty()
+				->array($score->getRuntimeExceptions())->isEmpty()
 				->array($score->getErrors())->isEmpty()
 				->array($score->getOutputs())->isEmpty()
 				->array($score->getDurations())->isEmpty()
@@ -959,19 +773,13 @@ class score extends atoum\test
 			->if($score->addPass())
 			->and($score->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
 			->and($score->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
+			->and($score->addRuntimeException(new atoum\exceptions\runtime()))
 			->and($score->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addOutput(uniqid(), uniqid(), uniqid()))
 			->and($score->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
 			->then
-				->integer($score->getPassNumber())->isEqualTo(1)
-				->integer($score->getFailNumber())->isEqualTo(1)
-				->integer($score->getExceptionNumber())->isEqualTo(1)
-				->integer($score->getErrorNumber())->isEqualTo(1)
-				->integer($score->getOutputNumber())->isEqualTo(1)
-				->integer($score->getDurationNumber())->isEqualTo(1)
-				->integer($score->getMemoryUsageNumber())->isEqualTo(1)
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(1)
 				->integer($score->getFailNumber())->isEqualTo(1)
@@ -984,24 +792,18 @@ class score extends atoum\test
 			->if($otherScore->addPass())
 			->and($otherScore->addFail(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
 			->and($otherScore->addException(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), new \exception()))
+			->and($otherScore->addRuntimeException(new atoum\exceptions\runtime()))
 			->and($otherScore->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), E_ERROR, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addOutput(uniqid(), uniqid(), uniqid()))
 			->and($otherScore->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addMemoryUsage(uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
 			->then
-				->integer($otherScore->getPassNumber())->isEqualTo(1)
-				->integer($otherScore->getFailNumber())->isEqualTo(1)
-				->integer($otherScore->getExceptionNumber())->isEqualTo(1)
-				->integer($otherScore->getErrorNumber())->isEqualTo(1)
-				->integer($otherScore->getOutputNumber())->isEqualTo(1)
-				->integer($otherScore->getDurationNumber())->isEqualTo(1)
-				->integer($otherScore->getMemoryUsageNumber())->isEqualTo(1)
-				->integer($otherScore->getUncompletedMethodNumber())->isEqualTo(1)
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(2)
 				->integer($score->getFailNumber())->isEqualTo(2)
 				->integer($score->getExceptionNumber())->isEqualTo(2)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(2)
 				->integer($score->getErrorNumber())->isEqualTo(2)
 				->integer($score->getOutputNumber())->isEqualTo(2)
 				->integer($score->getDurationNumber())->isEqualTo(2)
@@ -1011,6 +813,7 @@ class score extends atoum\test
 				->integer($score->getPassNumber())->isEqualTo(3)
 				->integer($score->getFailNumber())->isEqualTo(3)
 				->integer($score->getExceptionNumber())->isEqualTo(3)
+				->integer($score->getRuntimeExceptionNumber())->isEqualTo(3)
 				->integer($score->getErrorNumber())->isEqualTo(3)
 				->integer($score->getOutputNumber())->isEqualTo(3)
 				->integer($score->getDurationNumber())->isEqualTo(3)

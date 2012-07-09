@@ -3,9 +3,9 @@
 namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
 
 use
-	mageekguy\atoum\score,
-	mageekguy\atoum\runner,
 	mageekguy\atoum\locale,
+	mageekguy\atoum\runner,
+	mageekguy\atoum\runner\score,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
 	mageekguy\atoum\tests\units,

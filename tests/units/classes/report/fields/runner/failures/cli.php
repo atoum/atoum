@@ -131,7 +131,7 @@ class cli extends atoum\test
 
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getErrors = array())
 				->and($runner = new atoum\runner())
 				->and($runner->setScore($score))

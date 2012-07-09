@@ -21,6 +21,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const beforeTestMethod = 'beforeTestMethod';
 	const fail = 'testAssertionFail';
 	const error = 'testError';
+	const void = 'testVoid';
 	const uncompleted = 'testUncompleted';
 	const exception = 'testException';
 	const runtimeException = 'testRuntimeException';
@@ -55,6 +56,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $engines = array();
 	private $classEngine = null;
 	private $methodEngines = array();
+	private $classHasNotVoidMethods = false;
+	private $methodsAreNotVoid = array();
 	private $asynchronousEngines = 0;
 	private $maxAsynchronousEngines = null;
 	private $codeCoverage = false;
@@ -68,7 +71,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this
 			->setFactory($factory ?: new factory())
-			->setScore($this->factory['mageekguy\atoum\score']($this->factory))
+			->setScore($this->factory['mageekguy\atoum\test\score']())
 			->setLocale($this->factory['mageekguy\atoum\locale']())
 			->setAdapter($this->factory['mageekguy\atoum\adapter']())
 			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())
@@ -92,6 +95,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
+			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
+			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
 			->extract($class->getDocComment())
 		;
 
@@ -117,6 +122,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
 			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
+			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
+			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
 		;
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
@@ -176,6 +183,31 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getClassEngine()
 	{
 		return $this->classEngine;
+	}
+
+	public function classHasVoidMethods()
+	{
+		$this->classHasNotVoidMethods = false;
+	}
+
+	public function classHasNotVoidMethods()
+	{
+		$this->classHasNotVoidMethods = true;
+	}
+
+	public function setMethodVoid($method)
+	{
+		$this->methodsAreNotVoid[$method] = false;
+	}
+
+	public function setMethodNotVoid($method)
+	{
+		$this->methodsAreNotVoid[$method] = true;
+	}
+
+	public function methodIsNotVoid($method)
+	{
+		return (isset($this->methodsAreNotVoid[$method]) === false ? $this->classHasNotVoidMethods : $this->methodsAreNotVoid[$method]);
 	}
 
 	public function setMethodEngine($method, $engine)
@@ -429,7 +461,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->adapter;
 	}
 
-	public function setScore(score $score)
+	public function setScore(test\score $score)
 	{
 		$this->score = $score;
 
@@ -655,6 +687,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 						xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
 					}
 
+					$assertionNumber = $this->score->getAssertionNumber();
 					$time = microtime(true);
 					$memory = memory_get_usage(true);
 
@@ -697,17 +730,22 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$memoryUsage = memory_get_usage(true) - $memory;
 					$duration = microtime(true) - $time;
 
-					if ($this->codeCoverageIsEnabled() === true)
-					{
-						$this->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
-						xdebug_stop_code_coverage();
-					}
-
 					$this->score
 						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
 						->addDuration($this->class, $this->path, $this->currentMethod, $duration)
 						->addOutput($this->class, $this->currentMethod, ob_get_clean())
 					;
+
+					if ($this->codeCoverageIsEnabled() === true)
+					{
+						$this->score->getCoverage()->addXdebugDataForTest($this, xdebug_get_code_coverage());
+						xdebug_stop_code_coverage();
+					}
+
+					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)
+					{
+						$this->score->addVoidMethod($this->class, $this->currentMethod);
+					}
 				}
 				catch (\exception $exception)
 				{
@@ -798,6 +836,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 											$this->callObservers(self::runtimeException);
 											throw current($score->getRuntimeExceptions());
 
+										case $score->getVoidMethodNumber() > 0:
+											$this->callObservers(self::void);
+											break;
+
 										case $score->getUncompletedMethodNumber():
 											$this->callObservers(self::uncompleted);
 											break;
@@ -814,9 +856,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 											$this->callObservers(self::exception);
 											break;
 
-										case $score->getPassNumber():
+										default:
 											$this->callObservers(self::success);
-											break;
 									}
 
 									$this->score->merge($score);

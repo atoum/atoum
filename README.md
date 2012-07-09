@@ -1,4 +1,4 @@
-# *atoum*
+# *atoum* [![Build Status](https://secure.travis-ci.org/mageekguy/atoum.png?branch=master)](http://travis-ci.org/mageekguy/atoum)
 
 ## A simple, modern and intuitive unit testing framework for PHP!
 
@@ -57,7 +57,7 @@ This PHAR archive contains the latest development version to pass the totality o
 To check if *atoum* works correctly with your configuration, you can execute all its unit tests.  
 To do that, you just need to run the following command in your terminal :
 
-	# php mageekguy.atoum.phar --testIt
+	# php mageekguy.atoum.phar --test-it
 
 ### Step 2 : Write your tests
 
@@ -85,8 +85,6 @@ class helloWorld extends atoum\test
 		;
 	}
 }
-
-?>
 ```
 
 ### Step 3 : Run your test with the commandline
@@ -116,8 +114,6 @@ class helloWorld
 		return 'Hello World!';
 	}
 }
-
-?>
 ```
 
 ### Step 5 : Run your test once more
@@ -165,8 +161,6 @@ class helloWorld extends atoum\test
 		;
 	}
 }
-
-?>
 ```
 
 ## To go further
@@ -227,7 +221,7 @@ In order to use [APC](http://fr.php.net/manual/en/apc.configuration.php) with *a
 
 ### Getting segfault when mocking objects
 When using *atoum* and mocking objects, you will sometime get segfaults coming from [PHP](http://www.php.net).  
-These segfaults are caused by [XDebug](http://xdebug.org/) in version less than 2.1.0 which has problem handling reflection in some cases.--
+These segfaults are caused by [XDebug](http://xdebug.org/) in version less than 2.1.0 which has problem handling reflection in some cases.  
 To check the current version of [XDebug](http://xdebug.org/), you can run `php -v`.  
 To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest [stable version](http://xdebug.org/download.php).  
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  

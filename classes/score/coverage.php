@@ -8,30 +8,72 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class coverage implements \countable
+class coverage implements \countable, \serializable
 {
-	protected $factory = null;
+	protected $dependencies = null;
 	protected $classes = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct(atoum\dependencies $dependencies = null)
 	{
-		$this->setFactory($factory ?: new atoum\factory());
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function serialize()
 	{
-		$this->factory = $factory;
+		return serialize(array(
+				$this->classes,
+				$this->methods,
+				$this->excludedClasses,
+				$this->excludedNamespaces,
+				$this->excludedDirectories
+			)
+		);
+	}
+
+	public function unserialize($string, atoum\dependencies $dependencies = null)
+	{
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
+
+		list(
+			$this->classes,
+			$this->methods,
+			$this->excludedClasses,
+			$this->excludedNamespaces,
+			$this->excludedDirectories
+		) = unserialize($string);
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		return $this->factory;
+		$this->dependencies = $dependencies;
+
+		if (isset($this->dependencies['reflection\class']) === false)
+		{
+			$this->dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+		}
+
+		return $this;
+	}
+
+	public function getDependencies()
+	{
+		return $this->dependencies;
+	}
+
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+
+	public function getMethods()
+	{
+		return $this->methods;
 	}
 
 	public function reset()
@@ -45,16 +87,6 @@ class coverage implements \countable
 		return $this;
 	}
 
-	public function getClasses()
-	{
-		return $this->classes;
-	}
-
-	public function getMethods()
-	{
-		return $this->methods;
-	}
-
 	public function addXdebugDataForTest(atoum\test $test, array $data)
 	{
 		return $this->addXdebugDataForClass($test->getTestedClassName(), $data);
@@ -66,7 +98,7 @@ class coverage implements \countable
 		{
 			try
 			{
-				$reflectedClass = $this->factory['reflectionClass']($class);
+				$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
@@ -115,20 +147,31 @@ class coverage implements \countable
 
 	public function merge(score\coverage $coverage)
 	{
-		foreach ($coverage->methods as $class => $methods)
+		$classes = $coverage->getClasses();
+		$methods = $coverage->getMethods();
+
+		foreach ($methods as $class => $methods)
 		{
+			$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
+
 			if (isset($this->classes[$class]) === false)
 			{
-				$this->classes[$class] = $coverage->classes[$class];
+				if ($this->isExcluded($reflectedClass) === false)
+				{
+					$this->classes[$class] = $classes[$class];
+				}
 			}
 
 			foreach ($methods as $method => $lines)
 			{
-				foreach ($lines as $line => $call)
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
 				{
-					if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+					foreach ($lines as $line => $call)
 					{
-						$this->methods[$class][$method][$line] = $call;
+						if (isset($this->methods[$class][$method][$line]) === false || $this->methods[$class][$method][$line] < $call)
+						{
+							$this->methods[$class][$method][$line] = $call;
+						}
 					}
 				}
 			}

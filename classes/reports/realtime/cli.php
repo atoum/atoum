@@ -46,6 +46,12 @@ class cli extends realtime
 		$uncompletedTestOutputPrompt = clone $thirdLevelPrompt;
 		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
 
+		$voidTestColorizer = new colorizer('0;34');
+		$voidTestMethodPrompt = clone $secondLevelPrompt;
+		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
+		$voidTestOutputPrompt = clone $thirdLevelPrompt;
+		$voidTestOutputPrompt->setColorizer($voidTestColorizer);
+
 		$this
 			->addField(new runner\php\path\cli(
 						$firstLevelPrompt,
@@ -121,6 +127,14 @@ class cli extends realtime
 						$uncompletedTestMethodPrompt,
 						null,
 						$uncompletedTestOutputPrompt
+					)
+				)
+			->addField(new runner\tests\void\cli(
+						$firstLevelPrompt,
+						$voidTestColorizer,
+						$voidTestMethodPrompt,
+						null,
+						$voidTestOutputPrompt
 					)
 				)
 			->addField(new test\run\cli(

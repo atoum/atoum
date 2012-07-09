@@ -57,7 +57,7 @@ class runner extends atoum\test
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
 				->array($runner->getObservers())->isEmpty()
-			->if($factory['mageekguy\atoum\score'] = $score = new atoum\score())
+			->if($factory['mageekguy\atoum\runner\score'] = $score = new atoum\runner\score())
 			->if($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
 			->if($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
 			->if($factory['mageekguy\atoum\includer'] = $includer = new atoum\includer())
@@ -95,7 +95,7 @@ class runner extends atoum\test
 		$this
 			->if($runner = new atoum\runner())
 			->then
-				->object($runner->setScore($score = new atoum\score()))->isIdenticalTo($runner)
+				->object($runner->setScore($score = new atoum\runner\score()))->isIdenticalTo($runner)
 				->object($runner->getScore())->isIdenticalTo($score);
 		;
 	}
@@ -379,7 +379,7 @@ class runner extends atoum\test
 	public function testSetPathAndVersionInScore()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\score())
+			->if($score = new \mock\mageekguy\atoum\runner\score())
 			->and($scoreController = $score->getMockController())
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->defined = false)

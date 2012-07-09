@@ -14,11 +14,11 @@ class error extends \mageekguy\atoum\asserter
 	protected $type = null;
 	protected $messageIsPattern = false;
 
-	public function __construct(atoum\asserter\generator $generator, atoum\score $score = null)
+	public function __construct(atoum\asserter\generator $generator, atoum\test\score $score = null)
 	{
 		parent::__construct($generator);
 
-		$this->setScore($score ?: new atoum\score());
+		$this->setScore($score ?: new atoum\test\score());
 	}
 
 	public function setWithTest(atoum\test $test)

@@ -111,7 +111,7 @@ class cli extends atoum\test
 					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
 					->variable($field->getValue())->isNull()
 					->variable($field->getTestNumber())->isNull()
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (float) rand(1, PHP_INT_MAX))
 				->and($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->setScore($score))
@@ -127,7 +127,7 @@ class cli extends atoum\test
 	{
 		$this
 			->assert
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getTotalDuration = $totalDuration = (rand(1, 100) / 1000))
 				->and($runner = new \mock\mageekguy\atoum\runner())
 				->and($runner->setScore($score))
