@@ -492,7 +492,7 @@ class runner extends atoum\script
 								$runner->addTest($path);
 							}
 						},
-						array('-f', '--test-files'),
+						array('-f', '--files'),
 						'<file>...',
 						$this->locale->_('Execute all unit test files <file>')
 					)
