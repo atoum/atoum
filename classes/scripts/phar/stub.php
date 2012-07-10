@@ -401,7 +401,7 @@ class stub extends scripts\runner
 
 					$script->extractTo($values[0]);
 				},
-				array('-e', '--extractTo'),
+				array('-e', '--extract-to'),
 				'<directory>',
 				$this->locale->_('Extract all file from phar to <directory>, do not run any script')
 			)
@@ -414,7 +414,7 @@ class stub extends scripts\runner
 
 					$script->extractResourcesTo($values[0]);
 				},
-				array('-er', '--extractResourcesTo'),
+				array('-er', '--extract-resources-to'),
 				'<directory>',
 				$this->locale->_('Extract resources from phar to <directory>, do not run any script')
 			)
