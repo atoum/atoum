@@ -168,7 +168,7 @@ class html extends atoum\test
 			->then
 				->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory)))))
 				->array(current($iterators)->getClosures())->isEqualTo(array($closure))
-			->if($field->addSrcDirectory($otherDirectory = __DIR__ . '/..', $otherClosure = function() {}))
+			->if($field->addSrcDirectory($otherDirectory = __DIR__ . DIRECTORY_SEPARATOR . '..', $otherClosure = function() {}))
 			->then
 				->array($iterators = $field->getSrcDirectoryIterators())->isEqualTo(array(
 							new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($directory))),
@@ -499,8 +499,8 @@ class html extends atoum\test
 					->call('getValueForMethod')->withArguments($className, $method3Name)->never()
 					->call('getValueForMethod')->withArguments($className, $method4Name)->once()
 				->mock($templateParser)
-					->call('parseFile')->withArguments($templatesDirectory . '/index.tpl', null)->once()
-					->call('parseFile')->withArguments($templatesDirectory . '/class.tpl', null)->once()
+					->call('parseFile')->withArguments($templatesDirectory . DIRECTORY_SEPARATOR . 'index.tpl', null)->once()
+					->call('parseFile')->withArguments($templatesDirectory . DIRECTORY_SEPARATOR . 'class.tpl', null)->once()
 				->mock($indexTemplate)
 					->call('__set')->withArguments('projectName', $projectName)->once()
 					->call('__set')->withArguments('rootUrl', $rootUrl . '/')->once()
