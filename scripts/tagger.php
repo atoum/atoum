@@ -1,7 +1,5 @@
 <?php
 
-namespace mageekguy\atoum\scripts\tagger;
-
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts

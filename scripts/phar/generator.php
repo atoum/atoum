@@ -1,7 +1,5 @@
 <?php
 
-namespace mageekguy\atoum\phar;
-
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts

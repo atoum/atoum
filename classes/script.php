@@ -255,6 +255,8 @@ abstract class script implements atoum\adapter\aggregator
 
 	protected function setArgumentHandlers()
 	{
+		$this->argumentsParser->resetHandlers();
+
 		$this->help = array();
 
 		return $this;

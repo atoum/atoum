@@ -63,7 +63,7 @@ class runner extends atoum\test
 							'Define default report title with <string>'
 						),
 						array(
-							array('-c', '--configuration-files'),
+							array('-c', '--configurations'),
 							'<file>...',
 							'Use all configuration files <file>'
 						),
@@ -196,7 +196,7 @@ class runner extends atoum\test
 							'Define default report title with <string>'
 						),
 						array(
-							array('-c', '--configuration-files'),
+							array('-c', '--configurations'),
 							'<file>...',
 							'Use all configuration files <file>'
 						),
