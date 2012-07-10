@@ -98,7 +98,7 @@ class runner extends atoum\test
 							'Disable code coverage for classes <class>'
 						),
 						array(
-							array('-f', '--test-files'),
+							array('-f', '--files'),
 							'<file>...',
 							'Execute all unit test files <file>'
 						),
@@ -231,7 +231,7 @@ class runner extends atoum\test
 							'Disable code coverage for classes <class>'
 						),
 						array(
-							array('-f', '--test-files'),
+							array('-f', '--files'),
 							'<file>...',
 							'Execute all unit test files <file>'
 						),
