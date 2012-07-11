@@ -1,7 +1,5 @@
 <?php
 
-namespace mageekguy\atoum\scripts\svn\builder;
-
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts
