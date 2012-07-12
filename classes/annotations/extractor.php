@@ -10,29 +10,27 @@ class extractor
 	{
 		$comments = trim((string) $comments);
 
-		if (substr($comments, 0, 3) == '/**' && substr($comments, -2) == '*/')
+		if (substr($comments, 0, 2) == '/*' && substr($comments, -2) == '*/')
 		{
-			foreach (explode("\n", trim(trim($comments, '/*'))) as $comment)
+			foreach (explode("\n", trim($comments, "/* \t\r\n\0\x0B")) as $comment)
 			{
-				$comment = trim(trim(trim($comment), '*/'));
+				$cleanComment = ltrim($comment, "@ \t\r\n\0\x0B");
 
-				if (substr($comment, 0, 1) == '@')
+				if ($cleanComment != $comment)
 				{
-					$comment = preg_split("/\s+/", $comment);
+					$comment = preg_split("/\s+/", $cleanComment);
 
-					$sizeofComment = sizeof($comment);
-
-					if ($sizeofComment >= 1)
+					if ($comment)
 					{
-						$annotation = substr($comment[0], 1);
+						$annotation = strtolower($comment[0]);
 
-						switch (true)
+						switch (sizeof($comment))
 						{
-							case $sizeofComment === 1:
+							case 1:
 								$value = true;
 								break;
 
-							case $sizeofComment === 2:
+							case 2:
 								$value = $comment[1];
 								break;
 
@@ -42,7 +40,7 @@ class extractor
 
 						foreach ($this->handlers as $handlerAnnotation => $handlerValue)
 						{
-							if (strtolower($annotation) == strtolower($handlerAnnotation))
+							if ($annotation == strtolower($handlerAnnotation))
 							{
 								call_user_func_array($handlerValue, array($value));
 							}
@@ -86,7 +84,16 @@ class extractor
 
 	public static function toBoolean($value)
 	{
-		return strcasecmp($value, 'on') == 0;
+		switch (strtolower((string) $value))
+		{
+			case 'on':
+			case '1':
+			case 'true':
+				return true;
+
+			default:
+				return false;
+		}
 	}
 
 	public static function toArray($value)
