@@ -8,17 +8,37 @@ use
 
 class manager
 {
+	protected $disable = false;
 	protected $handlers = array();
 	protected $defaultHandler = null;
 
 	public function __get($event)
 	{
-		return $this->invoke($event);
+		return ($this->disable ? $this : $this->invoke($event));
 	}
 
 	public function __call($event, array $arguments)
 	{
-		return $this->invoke($event, $arguments);
+		return ($this->disable ? $this : $this->invoke($event, $arguments));
+	}
+
+	public function enable()
+	{
+		$this->disable = false;
+
+		return $this;
+	}
+
+	public function disable()
+	{
+		$this->disable = true;
+
+		return $this;
+	}
+
+	public function isEnabled()
+	{
+		return ($this->disable === false);
 	}
 
 	public function getDefaultHandler()

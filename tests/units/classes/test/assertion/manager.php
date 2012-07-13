@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\test\assertion;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test,
-	mageekguy\atoum\test\assertion
+	mageekguy\atoum\test\assertion\manager as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -14,18 +14,40 @@ class manager extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->variable($assertionManager->getDefaultHandler())->isNull()
 				->array($assertionManager->getHandlers())->isEmpty()
+				->boolean($assertionManager->isEnabled())->isTrue()
+		;
+	}
+
+	public function testDisable()
+	{
+		$this
+			->if($assertionManager = new testedClass())
+			->then
+				->object($assertionManager->disable())->isIdenticalTo($assertionManager)
+				->boolean($assertionManager->isEnabled())->isFalse
+		;
+	}
+
+	public function testEnable()
+	{
+		$this
+			->if($assertionManager = new testedClass())
+			->and($assertionManager->disable())
+			->then
+				->object($assertionManager->enable())->isIdenticalTo($assertionManager)
+				->boolean($assertionManager->isEnabled())->isTrue()
 		;
 	}
 
 	public function test__get()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->exception(function() use ($assertionManager, & $event) {
 						$assertionManager->{$event = uniqid()};
@@ -39,13 +61,16 @@ class manager extends atoum\test
 			->if($assertionManager->setHandler($event = uniqid(), function() use (& $eventReturn) { return ($eventReturn = uniqid()); }))
 			->then
 				->string($assertionManager->{$event})->isEqualTo($eventReturn)
+			->if($assertionManager->disable())
+			->then
+				->object($assertionManager->{$event})->isIdenticalTo($assertionManager)
 		;
 	}
 
 	public function test__call()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->exception(function() use ($assertionManager, & $event) {
 						$assertionManager->{$event = uniqid()}();
@@ -59,13 +84,16 @@ class manager extends atoum\test
 			->if($assertionManager->setHandler($event, function($arg) { return $arg; }))
 			->then
 				->string($assertionManager->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
+			->if($assertionManager->disable())
+			->then
+				->object($assertionManager->{$event}($eventArg = uniqid()))->isIdenticalTo($assertionManager)
 		;
 	}
 
 	public function testSetHandler()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->object($assertionManager->setHandler($event = uniqid(), $handler = function() {}))->isIdenticalTo($assertionManager)
 				->array($assertionManager->getHandlers())->isEqualTo(array($event => $handler))
@@ -78,8 +106,8 @@ class manager extends atoum\test
 
 	public function testSetDefaultHandler()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->object($assertionManager->setDefaultHandler($handler = function() {}))->isIdenticalTo($assertionManager)
 				->object($assertionManager->getDefaultHandler())->isIdenticalTo($handler)
@@ -88,8 +116,8 @@ class manager extends atoum\test
 
 	public function testInvoke()
 	{
-		$this->assert
-			->if($assertionManager = new assertion\manager())
+		$this
+			->if($assertionManager = new testedClass())
 			->then
 				->exception(function() use ($assertionManager, & $event) {
 						$assertionManager->invoke($event = uniqid());
