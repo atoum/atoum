@@ -251,7 +251,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$this->assertionManager
 			->setHandler('dump', function() use ($assertionManager) { call_user_func_array('var_dump', func_get_args()); return $assertionManager; })
-			->setHandler('break', function() use ($assertionManager) { return $assertionManager->disable(); })
+			->setHandler('stop', function() { throw new test\exceptions\stop(); })
 		;
 
 		$this->assertionManager->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
@@ -773,6 +773,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 			catch (test\exceptions\runtime $exception)
 			{
 				$this->score->addRuntimeException($exception);
+			}
+			catch (test\exceptions\stop $exception)
+			{
 			}
 			catch (\exception $exception)
 			{

@@ -19,28 +19,6 @@ class manager extends atoum\test
 			->then
 				->variable($assertionManager->getDefaultHandler())->isNull()
 				->array($assertionManager->getHandlers())->isEmpty()
-				->boolean($assertionManager->isEnabled())->isTrue()
-		;
-	}
-
-	public function testDisable()
-	{
-		$this
-			->if($assertionManager = new testedClass())
-			->then
-				->object($assertionManager->disable())->isIdenticalTo($assertionManager)
-				->boolean($assertionManager->isEnabled())->isFalse
-		;
-	}
-
-	public function testEnable()
-	{
-		$this
-			->if($assertionManager = new testedClass())
-			->and($assertionManager->disable())
-			->then
-				->object($assertionManager->enable())->isIdenticalTo($assertionManager)
-				->boolean($assertionManager->isEnabled())->isTrue()
 		;
 	}
 
@@ -61,9 +39,6 @@ class manager extends atoum\test
 			->if($assertionManager->setHandler($event = uniqid(), function() use (& $eventReturn) { return ($eventReturn = uniqid()); }))
 			->then
 				->string($assertionManager->{$event})->isEqualTo($eventReturn)
-			->if($assertionManager->disable())
-			->then
-				->object($assertionManager->{$event})->isIdenticalTo($assertionManager)
 		;
 	}
 
@@ -84,9 +59,6 @@ class manager extends atoum\test
 			->if($assertionManager->setHandler($event, function($arg) { return $arg; }))
 			->then
 				->string($assertionManager->{$event}($eventArg = uniqid()))->isEqualTo($eventArg)
-			->if($assertionManager->disable())
-			->then
-				->object($assertionManager->{$event}($eventArg = uniqid()))->isIdenticalTo($assertionManager)
 		;
 	}
 
