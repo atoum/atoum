@@ -212,7 +212,7 @@ class score
 		return $this;
 	}
 
-	public function addFail($file, $line, $class, $method, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
+	public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->failAssertions[] = array(
 			'id' => ++self::$failId,
