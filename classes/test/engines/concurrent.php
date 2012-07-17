@@ -151,7 +151,7 @@ class concurrent extends test\engine
 				{
 					$score = $this
 						->factory['mageekguy\atoum\score']()
-						->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut)
+						->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut)
 					;
 				}
 
@@ -159,11 +159,11 @@ class concurrent extends test\engine
 				{
 					if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->stdErr), $errors, PREG_SET_ORDER) === 0)
 					{
-						$score->addError($this->test->getPath(), null, $this->test->getClass(), $this->method, 'UNKNOWN', $this->stdErr);
+						$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, 'UNKNOWN', $this->stdErr);
 					}
 					else foreach ($errors as $error)
 					{
-						$score->addError($this->test->getPath(), null, $this->test->getClass(), $this->method, $error[1], $error[2], $error[3], $error[4]);
+						$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, $error[1], $error[2], $error[3], $error[4]);
 					}
 				}
 

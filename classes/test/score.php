@@ -30,9 +30,9 @@ class score extends atoum\score
 		return parent::addException($file, $class, $method, $line, $exception, $case ?: $this->case, $dataSetKey ?: $this->dataSetKey, $dataSetProvider ?: $this->dataSetProvider);
 	}
 
-	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
+	public function addError($file, $class, $method, $line, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
-		return parent::addError($file, $line, $class, $method, $type, $message, $errorFile, $errorLine, $case ?: $this->case, $dataSetKey ?: $this->dataSetKey, $dataSetProvider ?: $this->dataSetProvider);
+		return parent::addError($file, $class, $method, $line, $type, $message, $errorFile, $errorLine, $case ?: $this->case, $dataSetKey ?: $this->dataSetKey, $dataSetProvider ?: $this->dataSetProvider);
 	}
 
 	public function getCase()

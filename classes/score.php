@@ -253,7 +253,7 @@ class score
 		return $this;
 	}
 
-	public function addError($file, $line, $class, $method, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
+	public function addError($file, $class, $method, $line, $type, $message, $errorFile = null, $errorLine = null, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->errors[] = array(
 			'case' => $case,
@@ -272,7 +272,7 @@ class score
 		return $this;
 	}
 
-	public function addOutput($class, $method, $output)
+	public function addOutput($file, $class, $method, $output)
 	{
 		if ($output != '')
 		{
@@ -286,7 +286,7 @@ class score
 		return $this;
 	}
 
-	public function addDuration($class, $path, $method, $duration)
+	public function addDuration($file, $class, $method, $duration)
 	{
 		if ($duration > 0)
 		{
@@ -294,14 +294,14 @@ class score
 				'class' => $class,
 				'method' => $method,
 				'value' => $duration,
-				'path' => $path
+				'path' => $file
 			);
 		}
 
 		return $this;
 	}
 
-	public function addMemoryUsage($class, $method, $memoryUsage)
+	public function addMemoryUsage($file, $class, $method, $memoryUsage)
 	{
 		if ($memoryUsage > 0)
 		{
@@ -315,7 +315,7 @@ class score
 		return $this;
 	}
 
-	public function addVoidMethod($class, $method)
+	public function addVoidMethod($file, $class, $method)
 	{
 		$this->voidMethods[] = array(
 			'class' => $class,
@@ -325,7 +325,7 @@ class score
 		return $this;
 	}
 
-	public function addUncompletedMethod($class, $method, $exitCode, $output)
+	public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
 	{
 		$this->uncompletedMethods[] = array(
 			'class' => $class,

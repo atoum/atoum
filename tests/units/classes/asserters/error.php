@@ -87,7 +87,7 @@ class error extends atoum\test
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('error does not exist'))
-			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->exists())->isIdenticalTo($asserter)
 				->array($asserter->getScore()->getErrors())->isEmpty()
@@ -96,7 +96,7 @@ class error extends atoum\test
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error with message \'%s\' does not exist'), $message))
-			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->exists())->isIdenticalTo($asserter)
 				->array($asserter->getScore()->getErrors())->isEmpty()
@@ -105,7 +105,7 @@ class error extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error of type %s with message \'%s\' does not exist'), asserters\error::getAsString($type), $message))
-			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->exists())->isIdenticalTo($asserter)
 				->array($asserter->getScore()->getErrors())->isEmpty()
@@ -114,11 +114,11 @@ class error extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error of type %s does not exist'), asserters\error::getAsString($type)))
-			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->exists())->isIdenticalTo($asserter)
 				->array($asserter->getScore()->getErrors())->isEmpty()
-			->if($asserter->getScore()->addError(uniqid(), rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
+			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(1, PHP_INT_MAX), $message = uniqid() . 'FOO' . uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($asserter->withPattern('/FOO/')->withType(null))
 			->then
 				->object($asserter->exists())->isIdenticalTo($asserter)

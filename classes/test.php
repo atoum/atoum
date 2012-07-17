@@ -741,9 +741,9 @@ abstract class test implements observable, adapter\aggregator, \countable
 					$duration = microtime(true) - $time;
 
 					$this->score
-						->addMemoryUsage($this->class, $this->currentMethod, $memoryUsage)
-						->addDuration($this->class, $this->path, $this->currentMethod, $duration)
-						->addOutput($this->class, $this->currentMethod, ob_get_clean())
+						->addMemoryUsage($this->path, $this->class, $this->currentMethod, $memoryUsage)
+						->addDuration($this->path, $this->class, $this->currentMethod, $duration)
+						->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean())
 					;
 
 					if ($this->codeCoverageIsEnabled() === true)
@@ -754,12 +754,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)
 					{
-						$this->score->addVoidMethod($this->class, $this->currentMethod);
+						$this->score->addVoidMethod($this->path, $this->class, $this->currentMethod);
 					}
 				}
 				catch (\exception $exception)
 				{
-					$this->score->addOutput($this->class, $this->currentMethod, ob_get_clean());
+					$this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
 
 					throw $exception;
 				}
@@ -836,7 +836,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			list($file, $line) = $this->getBacktrace();
 
-			$this->score->addError($file, $line, $this->class, $this->currentMethod, $errno, $errstr, $errfile, $errline);
+			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
 		}
 
 		return true;
