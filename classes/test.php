@@ -773,7 +773,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 			catch (test\exceptions\runtime $exception)
 			{
-				$this->score->addRuntimeException($exception);
+				$this->score->addRuntimeException($this->path, $this->class, $this->currentMethod, $exception);
 			}
 			catch (test\exceptions\stop $exception)
 			{
@@ -933,7 +933,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		list($file, $line) = $this->getBacktrace($exception->getTrace());
 
-		$this->score->addException($file, $line, $this->class, $this->currentMethod, $exception);
+		$this->score->addException($file, $this->class, $this->currentMethod, $line, $exception);
 
 		return $this;
 	}

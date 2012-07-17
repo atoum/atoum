@@ -230,7 +230,7 @@ class score
 		return self::$failId;
 	}
 
-	public function addException($file, $line, $class, $method, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
+	public function addException($file, $class, $method, $line, \exception $exception, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->exceptions[] = array(
 			'case' => $case,
@@ -246,7 +246,7 @@ class score
 		return $this;
 	}
 
-	public function addRuntimeException(exceptions\runtime $exception)
+	public function addRuntimeException($file, $class, $method, exceptions\runtime $exception)
 	{
 		$this->runtimeExceptions[] = $exception;
 
