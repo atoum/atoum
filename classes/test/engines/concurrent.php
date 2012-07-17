@@ -132,17 +132,12 @@ class concurrent extends test\engine
 		{
 			$phpStatus = $this->adapter->proc_get_status($this->php);
 
-			if ($phpStatus['running'] == true)
-			{
-				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
-				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
-			}
-			else
-			{
-				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
-				$this->adapter->fclose($this->pipes[1]);
+			$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
+			$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
 
-				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
+			if ($phpStatus['running'] == false)
+			{
+				$this->adapter->fclose($this->pipes[1]);
 				$this->adapter->fclose($this->pipes[2]);
 
 				$this->pipes = array();

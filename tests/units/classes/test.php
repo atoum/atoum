@@ -420,17 +420,20 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->boolean($test->isIgnored())->isTrue()
 					->object($test->ignore(false))->isIdenticalTo($test)
-					->boolean($test->isIgnored())->isFalse()
+					->boolean($test->isIgnored())->isTrue()
 					->object($test->ignore(true))->isIdenticalTo($test)
 					->boolean($test->isIgnored())->isTrue()
 				->if($test = new notEmptyTest())
 				->then
+					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->methodIsIgnored('testMethod1'))->isTrue()
 					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
 					->object($test->ignore(false))->isIdenticalTo($test)
+					->boolean($test->isIgnored())->isFalse()
 					->boolean($test->methodIsIgnored('testMethod1'))->isFalse()
 					->boolean($test->methodIsIgnored('testMethod2'))->isFalse()
 					->object($test->ignore(true))->isIdenticalTo($test)
+					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->methodIsIgnored('testMethod1'))->istrue()
 					->boolean($test->methodIsIgnored('testMethod2'))->isTrue()
 			;
@@ -473,7 +476,7 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->boolean($test->ignore(false)->isIgnored())->isFalse()
+					->boolean($test->ignore(false)->isIgnored())->isTrue()
 					->sizeOf($test)->isZero()
 					->array($test->getTestMethods())->isEmpty()
 				->if($test = new notEmptyTest())
@@ -577,8 +580,8 @@ namespace mageekguy\atoum\tests\units
 					->object($test->run())->isIdenticalTo($test)
 					->mock($test)
 						->call('callObservers')
-							->withArguments(\mageekguy\atoum\test::runStart)->once()
-							->withArguments(\mageekguy\atoum\test::runStop)->once()
+							->withArguments(\mageekguy\atoum\test::runStart)->never()
+							->withArguments(\mageekguy\atoum\test::runStop)->never()
 							->withArguments(\mageekguy\atoum\test::beforeSetUp)->never()
 							->withArguments(\mageekguy\atoum\test::afterSetUp)->never()
 							->withArguments(\mageekguy\atoum\test::beforeTestMethod)->never()
