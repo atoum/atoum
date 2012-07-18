@@ -243,8 +243,8 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->assertionManager
 			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getAssertionManager(); })
 			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
-			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
-			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
+			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null, $disableConstructor = false) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass, $disableConstructor); return $test; })
+			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null, $disableConstructor = false) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass, $disableConstructor); return $test; })
 		;
 
 		$asserterGenerator = $this->asserterGenerator;
