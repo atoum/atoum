@@ -11,6 +11,7 @@ class generator
 {
 	const defaultNamespace = 'mock';
 
+	protected $disableConstructor = false;
 	protected $factory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
@@ -117,8 +118,9 @@ class generator
 		}
 	}
 
-	public function generate($class, $mockNamespace = null, $mockClass = null)
+	public function generate($class, $mockNamespace = null, $mockClass = null, $disableConstructor = false)
 	{
+		$this->disableConstructor = (bool) $disableConstructor;
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
 		$this->shuntedMethods = array();
@@ -153,6 +155,10 @@ class generator
 
 			if ($isConstructor === true)
 			{
+				if ($this->disableConstructor === true)
+				{
+					continue;
+				}
 				$hasConstructor = true;
 			}
 
@@ -406,6 +412,10 @@ class generator
 
 				if ($isConstructor === true)
 				{
+					if ($this->disableConstructor === true)
+					{
+						continue;
+					}
 					$hasConstructor = true;
 				}
 
