@@ -87,14 +87,14 @@ class generator extends atoum\test
 		;
 	}
 
-	public function orphanize($method)
+	public function testOrphanize()
 	{
 		$this
 			->if($generator = new mock\generator())
 			->then
 				->object($generator->orphanize($method = uniqid()))->isIdenticalTo($generator)
 				->boolean($generator->isOverloaded($method))->isTrue()
-				->boolean($generator->isShunted($methoe))->isTrue()
+				->boolean($generator->isShunted($method))->isTrue()
 		;
 	}
 
