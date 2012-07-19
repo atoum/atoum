@@ -45,7 +45,32 @@ class generator extends atoum\test
 		$this
 			->if($generator = new mock\generator())
 			->then
-				->object($generator->overload(new mock\php\method(uniqid())))->isIdenticalTo($generator)
+				->object($generator->overload(new mock\php\method($method = uniqid())))->isIdenticalTo($generator)
+				->boolean($generator->isOverloaded($method))->isTrue()
+		;
+	}
+
+	public function testIsOverloaded()
+	{
+		$this
+			->if($generator = new mock\generator())
+			->then
+				->boolean($generator->isOverloaded(uniqid()))->isFalse()
+			->if($generator->overload(new mock\php\method($method = uniqid())))
+			->then
+				->boolean($generator->isOverloaded($method))->isTrue()
+		;
+	}
+
+	public function testGetOverload()
+	{
+		$this
+			->if($generator = new mock\generator())
+			->then
+				->variable($generator->getOverload(uniqid()))->isNull()
+			->if($generator->overload($overload = new mock\php\method(uniqid())))
+			->then
+				->object($generator->getOverload($overload->getName()))->isIdenticalTo($overload)
 		;
 	}
 
@@ -59,6 +84,17 @@ class generator extends atoum\test
 				->boolean($generator->isShunted(strtoupper($method)))->isTrue()
 				->boolean($generator->isShunted(strtolower($method)))->isTrue()
 				->boolean($generator->isShunted(uniqid()))->isFalse()
+		;
+	}
+
+	public function orphanize($method)
+	{
+		$this
+			->if($generator = new mock\generator())
+			->then
+				->object($generator->orphanize($method = uniqid()))->isIdenticalTo($generator)
+				->boolean($generator->isOverloaded($method))->isTrue()
+				->boolean($generator->isShunted($methoe))->isTrue()
 		;
 	}
 

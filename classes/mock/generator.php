@@ -48,9 +48,19 @@ class generator
 
 	public function overload(php\method $method)
 	{
-		$this->overloadedMethods[$method->getName()] = $method;
+		$this->overloadedMethods[strtolower($method->getName())] = $method;
 
 		return $this;
+	}
+
+	public function isOverloaded($method)
+	{
+		return ($this->getOverload($method) !== null);
+	}
+
+	public function getOverload($method)
+	{
+		return (isset($this->overloadedMethods[$method = strtolower($method)]) === false ? null : $this->overloadedMethods[$method]);
 	}
 
 	public function shunt($method)
@@ -66,6 +76,14 @@ class generator
 	public function isShunted($method)
 	{
 		return (in_array(strtolower($method), $this->shuntedMethods) === true);
+	}
+
+	public function orphanize($method)
+	{
+		return $this
+			->overload($this->factory['mageekguy\atoum\mock\php\method']($method))
+			->shunt($method)
+		;
 	}
 
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
@@ -171,25 +189,9 @@ class generator
 					case $method->isPublic():
 						$parameters = array();
 
-						if (isset($this->overloadedMethods[$methodName]) === true)
-						{
-							foreach ($this->overloadedMethods[$methodName]->getArguments() as $argument)
-							{
-								$parameters[] = $argument->getVariable();
-							}
+						$overload = $this->getOverload($methodName);
 
-							if ($isConstructor === true)
-							{
-								$this->overloadedMethods[$methodName]->addArgument(php\method\argument::get('mockController')
-										->isObject('\\' . __NAMESPACE__ . '\\controller')
-										->setDefaultValue(null)
-									)
-								;
-							}
-
-							$methodCode = "\t" . ((string) $this->overloadedMethods[$methodName]). PHP_EOL . "\t" . '{' . PHP_EOL;
-						}
-						else
+						if ($overload === null)
 						{
 							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
 							$methodCode .= "\t" . '{' . PHP_EOL;
@@ -200,6 +202,24 @@ class generator
 							{
 								$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
 							}
+						}
+						else
+						{
+							foreach ($overload->getArguments() as $argument)
+							{
+								$parameters[] = $argument->getVariable();
+							}
+
+							if ($isConstructor === true)
+							{
+								$overload->addArgument(php\method\argument::get('mockController')
+										->isObject('\\' . __NAMESPACE__ . '\\controller')
+										->setDefaultValue(null)
+									)
+								;
+							}
+
+							$methodCode = "\t" . $overload . PHP_EOL . "\t" . '{' . PHP_EOL;
 						}
 
 						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
