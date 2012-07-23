@@ -10,7 +10,7 @@ class extension extends \recursiveFilterIterator
 {
 	protected $acceptedExtensions = array();
 
-	public function __construct($mixed, array $acceptedExtensions)
+	public function __construct($mixed, array $acceptedExtensions, atoum\dependencies $dependencies = null)
 	{
 		if ($mixed instanceof \recursiveIterator)
 		{
@@ -18,7 +18,22 @@ class extension extends \recursiveFilterIterator
 		}
 		else
 		{
-			parent::__construct($this->createFactory()->build('recursiveDirectoryIterator', array((string) $mixed)));
+			if ($dependencies === null)
+			{
+				$dependencies = new atoum\dependencies();
+			}
+
+			if (isset($dependencies['iterator']) === false)
+			{
+				$dependencies['iterator'] = new \recursiveDirectoryIterator((string) $mixed);
+			}
+
+			if (isset($dependencies['iterator']['directory']) === false)
+			{
+				$dependencies['iterator']['directory'] = (string) $mixed;
+			}
+
+			parent::__construct($dependencies['iterator']());
 		}
 
 		$this->setAcceptedExtensions($acceptedExtensions);
@@ -50,10 +65,5 @@ class extension extends \recursiveFilterIterator
 	public function getChildren()
 	{
 		return new self($this->getInnerIterator()->getChildren(), $this->acceptedExtensions);
-	}
-
-	public function createFactory()
-	{
-		return new atoum\factory();
 	}
 }

@@ -30,12 +30,12 @@ class dot extends atoum\test
 				->string($filter->getInnerIterator()->getPath())->isEqualTo(__DIR__)
 			->if($dependencies = new atoum\dependencies())
 			->and($dependencies['iterator'] = function($dependencies) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($dependencies['directory']())); })
-			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid(), $dependencies))
+			->and($filter = new recursives\dot($path = uniqid(), $dependencies))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
 				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path, null)->once()
 			->if($dependencies['iterator']['directory'] = $otherPath = uniqid())
-			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid(), $dependencies))
+			->and($filter = new recursives\dot($path = uniqid(), $dependencies))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
 				->mock($filter->getInnerIterator())->call('__construct')->withArguments($otherPath, null)->once()

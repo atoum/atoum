@@ -20,20 +20,27 @@ class extension extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->mockGenerator->shunt('__construct')
-			->if($iteratorController = new mock\controller())
+			->if->mockGenerator->shunt('__construct')
 			->and($filter = new recursives\extension($recursiveIterator = new \mock\recursiveDirectoryIterator(uniqid()), $acceptedExtensions = array('php')))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($recursiveIterator)
 				->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
-			->if($factory = new atoum\factory())
-			->and($factory->setBuilder('recursiveDirectoryIterator', function($path) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($path)); }))
-			->and($filterController = new mock\controller())
-			->and($filterController->createFactory = $factory)
-			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\extension($path = uniqid(), $acceptedExtensions = array('php')))
+			->and($filter = new recursives\extension(__DIR__, $acceptedExtensions))
+			->then
+				->object($filter->getInnerIterator())->isEqualTo(new \recursiveDirectoryIterator(__DIR__ ))
+				->string($filter->getInnerIterator()->getPath())->isEqualTo(__DIR__)
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['iterator'] = function($dependencies) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($dependencies['directory']())); })
+			->and($filter = new recursives\extension($path = uniqid(), $acceptedExtensions, $dependencies))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
 				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)->once()
+				->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
+			->if($dependencies['iterator']['directory'] = $otherPath = uniqid())
+			->and($filter = new recursives\extension($path = uniqid(), $acceptedExtensions, $dependencies))
+			->then
+				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
+				->mock($filter->getInnerIterator())->call('__construct')->withArguments($otherPath, null)->once()
 				->array($filter->getAcceptedExtensions())->isEqualTo($acceptedExtensions)
 		;
 	}
