@@ -11,11 +11,32 @@
 			"name": "Frédéric Hardy",
 			"email": "frederic.hardy@atoum.org",
 			"homepage": "http://blog.mageekbox.net"
+		},
+		{
+			"name": "François Dussert",
+			"email": "francois.dussert@atoum.org"
+		},
+		{
+			"name": "Gérald Croes",
+			"email": "gerald.croes@atoum.org",
+		},
+		{
+			"name": "Julien Bianchi",
+			"email": "julien.bianchi@atoum.org",
+		},
+		{
+			"name": "Ludovic Fleury",
+			"email": "ludovic.fleury@atoum.org",
 		}
 	],
 	"require":
 	{
 		"php": ">=5.3.3"
 	},
-  "bin": ["bin/atoum"]
+  "bin": ["bin/atoum"],
+  "autoload": {
+		"psr-0": {
+			"mageekguy\\atoum": "classes/"
+		}
+	}
 }
