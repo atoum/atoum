@@ -10,7 +10,7 @@ class extension extends \recursiveFilterIterator
 {
 	protected $acceptedExtensions = array();
 
-	public function __construct($mixed, array $acceptedExtensions, atoum\dependencies $dependencies = null)
+	public function __construct($mixed, array $acceptedExtensions = array(), atoum\dependencies $dependencies = null)
 	{
 		if ($mixed instanceof \recursiveIterator)
 		{

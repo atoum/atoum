@@ -4,7 +4,8 @@ namespace mageekguy\atoum\iterators\recursives;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\iterators\filters
 ;
 
 class directory implements \iteratorAggregate
@@ -12,15 +13,16 @@ class directory implements \iteratorAggregate
 	protected $path = null;
 	protected $acceptDots = false;
 	protected $acceptedExtensions = array('php');
+	protected $dependencies = null;
 
-	public function __construct($path = null, atoum\factory $factory = null)
+	public function __construct($path = null, atoum\dependencies $dependencies = null)
 	{
 		if ($path !== null)
 		{
 			$this->setPath($path);
 		}
 
-		$this->setFactory($factory ?: new atoum\factory());
+		$this->setDependencies($dependencies ?: new atoum\dependencies());
 	}
 
 	public function setPath($path)
@@ -30,16 +32,31 @@ class directory implements \iteratorAggregate
 		return $this;
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		$this->factory = $factory;
+		$this->dependencies = $dependencies;
+
+		if (isset($this->dependencies['iterator']) === false)
+		{
+			$this->dependencies['iterator'] = function($dependencies) { return new \recursiveDirectoryIterator($dependencies['directory']()); };
+		}
+
+		if (isset($this->dependencies['filters\dot']) === false)
+		{
+			$this->dependencies['filters\dot'] = function($dependencies) { return new filters\recursives\dot($dependencies['iterator']()); };
+		}
+
+		if (isset($this->dependencies['filters\extension']) === false)
+		{
+			$this->dependencies['filters\extension'] = function($dependencies) { return new filters\recursives\extension($dependencies['iterator'](), $dependencies['extensions']()); };
+		}
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function getDependencies()
 	{
-		return $this->factory;
+		return $this->dependencies;
 	}
 
 	public function getPath()
@@ -58,16 +75,16 @@ class directory implements \iteratorAggregate
 			throw new exceptions\runtime('Path is undefined');
 		}
 
-		$iterator = $this->factory->build('recursiveDirectoryIterator', array($this->path));
+		$iterator = $this->dependencies['iterator'](array('directory' => $this->path));
 
 		if ($this->acceptDots === false)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\dot', array($iterator));
+			$iterator = $this->dependencies['filters\dot'](array('iterator' => $iterator));
 		}
 
 		if (sizeof($this->acceptedExtensions) > 0)
 		{
-			$iterator = $this->factory->build('mageekguy\atoum\iterators\filters\recursives\extension', array($iterator, $this->acceptedExtensions));
+			$iterator = $this->dependencies['filters\extension'](array('iterator' => $iterator, 'extensions' => $this->acceptedExtensions));
 		}
 
 		return $iterator;

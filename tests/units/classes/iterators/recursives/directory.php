@@ -29,13 +29,13 @@ class directory extends atoum\test
 				->variable($iterator->getPath())->isNull()
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
-				->object($iterator->getFactory())->isEqualTo(new atoum\factory())
-			->if($iterator = new recursives\directory($path = uniqid(), $factory = new atoum\factory()))
+				->object($iterator->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
+			->if($iterator = new recursives\directory($path = uniqid(), $dependencies = new atoum\dependencies()))
 			->then
 				->string($iterator->getPath())->isEqualTo($path)
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
-				->object($iterator->getFactory())->isIdenticalTo($factory)
+				->object($iterator->getDependencies())->isIdenticalTo($dependencies)
 		;
 	}
 
@@ -49,13 +49,17 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testSetFactory()
+	public function testSetDependencies()
 	{
 		$this
 			->if($iterator = new recursives\directory())
 			->then
-				->object($iterator->setFactory($factory = new atoum\factory()))->isIdenticalTo($iterator)
-				->object($iterator->getFactory())->isIdenticalTo($factory)
+				->object($iterator->setDependencies($dependencies = new atoum\dependencies()))->isIdenticalTo($iterator)
+				->object($iterator->getDependencies())->isIdenticalTo($dependencies)
+				->object($dependencies['iterator'](array('directory' => __DIR__)))->isInstanceOf('recursiveDirectoryIterator')
+				->string($dependencies['iterator'](array('directory' => __DIR__))->getPath())->isEqualTo(__DIR__)
+				->object($dependencies['filters\dot'](array('iterator' => $iterator = new \recursiveDirectoryIterator(__DIR__))))->isEqualTo(new filters\recursives\dot($iterator))
+				->object($dependencies['filters\extension'](array('iterator' => $iterator = new \recursiveDirectoryIterator(__DIR__), 'extensions' => $extensions = array('php'))))->isEqualTo(new filters\recursives\extension($iterator, $extensions))
 		;
 	}
 
@@ -126,66 +130,63 @@ class directory extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Path is undefined')
-			->if($factory = new \mock\mageekguy\atoum\factory())
-			->and($factory->setBuilder('recursiveDirectoryIterator', function($path) use (& $recursiveDirectoryIterator) { return ($recursiveDirectoryIterator = new \mock\recursiveDirectoryIterator($path)); }))
-			->and($iterator = new recursives\directory($path = uniqid(), $factory))
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['iterator'] = function($dependencies) use (& $recursiveDirectoryIterator) { return ($recursiveDirectoryIterator = new \mock\recursiveDirectoryIterator($dependencies['directory']())); })
+			->and($dependencies['filters\dot'] = function($dependencies) use (& $dotFilterIterator) { return ($dotFilterIterator = new filters\recursives\dot($dependencies['iterator']())); })
+			->and($dependencies['filters\extension'] = function($dependencies) use (& $extensionFilterIterator) { return ($extensionFilterIterator = new filters\recursives\extension($dependencies['iterator'](), $dependencies['extensions']())); })
+			->and($iterator = new recursives\directory($path = uniqid(), $dependencies))
 			->then
-				->object($filterIterator = $iterator->getIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
-				->object($filterIterator->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
+				->object($filterIterator = $iterator->getIterator())->isIdenticalTo($extensionFilterIterator)
+				->object($filterIterator->getInnerIterator())->isIdenticalTo($dotFilterIterator)
 				->object($filterIterator->getInnerIterator()->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->once()
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\dot', array($recursiveDirectoryIterator))->once()
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\extension', array(new atoum\iterators\filters\recursives\dot($recursiveDirectoryIterator), array('php')))->once()
+				->mock($filterIterator->getInnerIterator()->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
 			->if($iterator->acceptDots())
 			->then
-				->object($filterIterator = $iterator->getIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
+				->object($filterIterator = $iterator->getIterator())->isIdenticalTo($extensionFilterIterator)
 				->object($filterIterator->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->exactly(2)
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\extension', array($recursiveDirectoryIterator, array('php')))->once()
+				->mock($filterIterator->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
+			->stop()
 			->if($iterator->refuseDots())
 			->and($iterator->acceptExtensions(array()))
 			->then
-				->object($filterIterator = $iterator->getIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
+				->object($filterIterator = $iterator->getIterator())->isIdenticalTo($dotFilterIterator)
 				->object($filterIterator->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->exactly(3)
+				->mock($filterIterator->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
 			->if($iterator->acceptDots())
 			->and($iterator->acceptExtensions(array()))
 			->then
-				->object($iterator->getIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->exactly(4)
-			->if($iterator = new recursives\directory(null, $factory))
+				->object($filterIterator = $iterator->getIterator())->isIdenticalTo($recursiveDirectoryIterator)
+				->mock($filterIterator)
+					->call('__construct')->withArguments($path)->once()
+			->if($iterator = new recursives\directory(null, $dependencies))
 			->then
-				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
-				->object($filterIterator->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
+				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($extensionFilterIterator)
+				->object($filterIterator->getInnerIterator())->isIdenticalTo($dotFilterIterator)
 				->object($filterIterator->getInnerIterator()->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->once()
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\dot', array($recursiveDirectoryIterator))->once()
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\extension', array(new atoum\iterators\filters\recursives\dot($recursiveDirectoryIterator), array('php')))->exactly(2)
+				->mock($filterIterator->getInnerIterator()->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
 			->if($iterator->acceptDots())
 			->then
-				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\extension')
+				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($extensionFilterIterator)
 				->object($filterIterator->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->once()
-					->withArguments('mageekguy\atoum\iterators\filters\recursives\extension', array($recursiveDirectoryIterator, array('php')))->once()
+				->mock($filterIterator->getInnerIterator()->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
 			->if($iterator->refuseDots())
 			->and($iterator->acceptExtensions(array()))
 			->then
-				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
+				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($dotFilterIterator)
 				->object($filterIterator->getInnerIterator())->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->once()
+				->mock($filterIterator->getInnerIterator())
+					->call('__construct')->withArguments($path)->once()
 			->if($iterator->acceptDots())
 			->and($iterator->acceptExtensions(array()))
 			->then
-				->object($iterator->getIterator($path = uniqid()))->isIdenticalTo($recursiveDirectoryIterator)
-				->mock($factory)->call('build')
-					->withArguments('recursiveDirectoryIterator', array($path))->once()
+				->object($filterIterator = $iterator->getIterator($path = uniqid()))->isIdenticalTo($recursiveDirectoryIterator)
+				->mock($filterIterator)
+					->call('__construct')->withArguments($path)->once()
 		;
 	}
 }

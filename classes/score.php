@@ -31,7 +31,7 @@ class score
 
 	public function setDependencies(dependencies $dependencies)
 	{
-		return $this->setCoverage($dependencies['coverage'] === null ? new score\coverage($dependencies) : $dependencies['coverage']());
+		return $this->setCoverage(isset($dependencies['coverage']) === false ? new score\coverage($dependencies) : $dependencies['coverage']());
 	}
 
 	public function setCoverage(score\coverage $coverage)
