@@ -56,6 +56,7 @@ class score
 
 		return $this;
 	}
+
 	public function getPassNumber()
 	{
 		return $this->passNumber;
