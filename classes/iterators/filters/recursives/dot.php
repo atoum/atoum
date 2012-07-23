@@ -8,7 +8,7 @@ use
 
 class dot extends \recursiveFilterIterator
 {
-	public function __construct($mixed)
+	public function __construct($mixed, $dependencies = null)
 	{
 		if ($mixed instanceof \recursiveIterator)
 		{
@@ -16,17 +16,27 @@ class dot extends \recursiveFilterIterator
 		}
 		else
 		{
-			parent::__construct($this->createFactory()->build('recursiveDirectoryIterator', array((string) $mixed)));
+			if ($dependencies === null)
+			{
+				$dependencies = new atoum\dependencies();
+			}
+
+			if (isset($dependencies['iterator']) === false)
+			{
+				$dependencies['iterator'] = new \recursiveDirectoryIterator((string) $mixed);
+			}
+
+			if (isset($dependencies['iterator']['directory']) === false)
+			{
+				$dependencies['iterator']['directory'] = (string) $mixed;
+			}
+
+			parent::__construct($dependencies['iterator']());
 		}
 	}
 
 	public function accept()
 	{
 		return (substr(basename((string) $this->getInnerIterator()->current()), 0, 1) != '.');
-	}
-
-	public function createFactory()
-	{
-		return new atoum\factory();
 	}
 }

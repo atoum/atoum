@@ -20,19 +20,25 @@ class dot extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->mockGenerator->shunt('__construct')
-			->if($iteratorController = new mock\controller())
+			->if->mockGenerator->shunt('__construct')
 			->and($filter = new recursives\dot($recursiveIterator = new \mock\recursiveDirectoryIterator(uniqid())))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($recursiveIterator)
-			->if($factory = new atoum\factory())
-			->and($factory->setBuilder('recursiveDirectoryIterator', function($path) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($path)); }))
-			->and($filterController = new mock\controller())
-			->and($filterController->createFactory = $factory)
-			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid()))
+			->and($filter = new recursives\dot(__DIR__))
+			->then
+				->object($filter->getInnerIterator())->isEqualTo(new \recursiveDirectoryIterator(__DIR__ ))
+				->string($filter->getInnerIterator()->getPath())->isEqualTo(__DIR__)
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['iterator'] = function($dependencies) use (& $innerIterator) { return ($innerIterator = new \mock\recursiveDirectoryIterator($dependencies['directory']())); })
+			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid(), $dependencies))
 			->then
 				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
-				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path)->once()
+				->mock($filter->getInnerIterator())->call('__construct')->withArguments($path, null)->once()
+			->if($dependencies['iterator']['directory'] = $otherPath = uniqid())
+			->and($filter = new \mock\mageekguy\atoum\iterators\filters\recursives\dot($path = uniqid(), $dependencies))
+			->then
+				->object($filter->getInnerIterator())->isIdenticalTo($innerIterator)
+				->mock($filter->getInnerIterator())->call('__construct')->withArguments($otherPath, null)->once()
 		;
 	}
 
@@ -52,15 +58,6 @@ class dot extends atoum\test
 			->if($iteratorController->current = new \splFileInfo(uniqid() . DIRECTORY_SEPARATOR . '.' . uniqid()))
 			->then
 				->boolean($filter->accept())->isFalse()
-		;
-	}
-
-	public function testCreateFactory()
-	{
-		$this
-			->if($filter = new recursives\dot(new \mock\recursiveIterator()))
-			->then
-				->object($filter->createFactory())->isInstanceOf('mageekguy\atoum\factory')
 		;
 	}
 }
