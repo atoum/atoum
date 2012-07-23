@@ -18,24 +18,34 @@
 		},
 		{
 			"name": "Gérald Croes",
-			"email": "gerald.croes@atoum.org",
+			"email": "gerald.croes@atoum.org"
 		},
 		{
 			"name": "Julien Bianchi",
-			"email": "julien.bianchi@atoum.org",
+			"email": "julien.bianchi@atoum.org"
 		},
 		{
 			"name": "Ludovic Fleury",
-			"email": "ludovic.fleury@atoum.org",
+			"email": "ludovic.fleury@atoum.org"
+		},
+		{
+			"name": "Jérémy Poulain",
+			"email": "jerem.poulain@gmail.com"
 		}
+
 	],
 	"require":
 	{
 		"php": ">=5.3.3"
 	},
-  "bin": ["bin/atoum"],
-  "autoload": {
-		"psr-0": {
+	"bin":
+	[
+		"bin/atoum"
+	],
+  "autoload":
+  {
+		"psr-0":
+		{
 			"mageekguy\\atoum": "classes/"
 		}
 	}
