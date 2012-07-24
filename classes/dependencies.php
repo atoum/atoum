@@ -46,6 +46,26 @@ class dependencies implements \arrayAccess
 
 	public function setDependence($name, $mixed)
 	{
+		return $this->offsetSet($name, $mixed);
+	}
+
+	public function getDependence($name)
+	{
+		return $this->offsetGet($name);
+	}
+
+	public function dependenceExists($name)
+	{
+		return $this->offsetExists($name);
+	}
+
+	public function unsetDependence($name)
+	{
+		return $this->offsetUnset($name);
+	}
+
+	public function offsetSet($name, $mixed)
+	{
 		if ($mixed instanceof self)
 		{
 			$this->dependencies[$name] = $mixed;
@@ -59,17 +79,17 @@ class dependencies implements \arrayAccess
 		return $this;
 	}
 
-	public function getDependence($name)
+	public function offsetGet($name)
 	{
-		return ($this->dependenceExists($name) === false ? null : $this->dependencies[$name]);
+		return ($this->dependenceExists($name) === false ? new static() : $this->dependencies[$name]);
 	}
 
-	public function dependenceExists($name)
+	public function offsetExists($name)
 	{
 		return isset($this->dependencies[$name]);
 	}
 
-	public function unsetDependence($name)
+	public function offsetUnset($name)
 	{
 		if ($this->dependenceExists($name) === true)
 		{
@@ -77,25 +97,5 @@ class dependencies implements \arrayAccess
 		}
 
 		return $this;
-	}
-
-	public function offsetSet($name, $value)
-	{
-		return $this->setDependence($name, $value);
-	}
-
-	public function offsetGet($name)
-	{
-		return $this->getDependence($name);
-	}
-
-	public function offsetExists($name)
-	{
-		return $this->dependenceExists($name);
-	}
-
-	public function offsetUnset($name)
-	{
-		return $this->unsetDependence($name);
 	}
 }
