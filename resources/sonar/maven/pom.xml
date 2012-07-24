@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>[GROUP ID]</groupId>
+    <artifactId>[ARTIFACT ID]</artifactId>
+    <name>[PROJECT NAME]</name>
+    <version>[PROJECT VERSION]</version>
+
+    <packaging>pom</packaging>
+
+    <build>
+        <!-- Change this path to your project's source dir -->
+        <sourceDirectory>${basedir}/src</sourceDirectory>
+        <!-- Change this path to your project's test dir -->
+        <testSourceDirectory>${basedir}/test</testSourceDirectory>
+    </build>
+
+    <properties>
+        <sonar.language>php</sonar.language>
+        <sonar.exclusions>[EXCLUDE PATTERNS]</sonar.exclusions>
+
+        <sonar.phpUnit.skip>true</sonar.phpUnit.skip>
+        <sonar.phpUnit.coverage.skip>true</sonar.phpUnit.coverage.skip>
+        <sonar.phpUnit.analyze.test.directory>false</sonar.phpUnit.analyze.test.directory>
+
+        <sonar.atoum.skip>false</sonar.atoum.skip>
+        <sonar.atoum.coverage.skip>false</sonar.atoum.coverage.skip>
+        <sonar.atoum.commandLine>mageekguy.atoum.phar</sonar.atoum.commandLine>
+        <sonar.atoum.commandLineArgument></sonar.atoum.commandLineArgument>
+        <!-- Change this path to your atoum configuration file -->
+        <sonar.atoum.configuration>${basedir}/.atoum.php</sonar.atoum.configuration>
+        <!-- Change this path to your atoum bootstrap file -->
+        <sonar.atoum.bootstrap>${basedir}/.atoum.bootstrap.php</sonar.atoum.bootstrap>
+    </properties>
+</project>
