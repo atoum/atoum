@@ -8,7 +8,12 @@ class autoloader
 {
 	protected static $autoloader = null;
 
-	protected $directories = array(__NAMESPACE__ => array(__DIR__));
+	protected $directories = array();
+
+	public function __construct()
+	{
+		$this->addDirectory(__NAMESPACE__, __DIR__);
+	}
 
 	public function register($prepend = false)
 	{
@@ -34,7 +39,7 @@ class autoloader
 	{
 		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
-			$this->directories[$namespace][] = $directory;
+			$this->directories[trim($namespace, '\\') . '\\'][] = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
 			krsort($this->directories, \SORT_STRING);
 		}
@@ -55,7 +60,7 @@ class autoloader
 			{
 				$namespaceLength = strlen($namespace);
 
-				if (strncmp($class, $namespace, $namespaceLength) === 0)
+				if (substr($class, 0, $namespaceLength) == $namespace)
 				{
 					$classFile = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, $namespaceLength)) . '.php';
 
