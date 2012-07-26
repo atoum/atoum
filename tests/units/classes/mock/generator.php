@@ -4,7 +4,8 @@ namespace mageekguy\atoum\tests\units\mock;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock
+	mageekguy\atoum\mock,
+	mageekguy\atoum\mock\generator as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,11 +15,11 @@ class generator extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->object($generator->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 			->if($factory = new atoum\factory())
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->object($generator->getFactory())->isIdenticalTo($factory)
 		;
@@ -27,7 +28,7 @@ class generator extends atoum\test
 	public function testSetDefaultNamespace()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->object($generator->setDefaultNamespace($namespace = uniqid()))->isIdenticalTo($generator)
 				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
@@ -43,7 +44,7 @@ class generator extends atoum\test
 	public function testOverload()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->object($generator->overload(new mock\php\method($method = uniqid())))->isIdenticalTo($generator)
 				->boolean($generator->isOverloaded($method))->isTrue()
@@ -53,7 +54,7 @@ class generator extends atoum\test
 	public function testIsOverloaded()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->boolean($generator->isOverloaded(uniqid()))->isFalse()
 			->if($generator->overload(new mock\php\method($method = uniqid())))
@@ -65,7 +66,7 @@ class generator extends atoum\test
 	public function testGetOverload()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->variable($generator->getOverload(uniqid()))->isNull()
 			->if($generator->overload($overload = new mock\php\method(uniqid())))
@@ -77,7 +78,7 @@ class generator extends atoum\test
 	public function testShunt()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->object($generator->shunt($method = uniqid()))->isIdenticalTo($generator)
 				->boolean($generator->isShunted($method))->isTrue()
@@ -90,7 +91,7 @@ class generator extends atoum\test
 	public function testOrphanize()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->object($generator->orphanize($method = uniqid()))->isIdenticalTo($generator)
 				->boolean($generator->isOverloaded($method))->isTrue()
@@ -105,7 +106,7 @@ class generator extends atoum\test
 			->and($adapter->class_exists = false)
 			->and($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($unknownClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -207,7 +208,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -296,7 +297,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->and($generator->overload($overloadedMethod))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
@@ -385,7 +386,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -468,7 +469,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->and($generator->shunt('__construct'))
 			->then
 				->string($generator->getMockedClassCode($realClass))->isEqualTo(
@@ -548,7 +549,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -630,7 +631,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $reflectionClass)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -736,7 +737,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $class)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($className))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -828,7 +829,7 @@ class generator extends atoum\test
 			->and($factory = new atoum\factory())
 			->and($factory['reflectionClass'] = $class)
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->then
 				->string($generator->getMockedClassCode($className))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
@@ -887,7 +888,7 @@ class generator extends atoum\test
 	public function testGenerate()
 	{
 		$this
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->then
 				->exception(function() use ($generator) { $generator->generate(''); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -901,7 +902,7 @@ class generator extends atoum\test
 			->if($adapter = new atoum\test\adapter())
 			->and($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\adapter'] = $adapter)
-			->and($generator = new mock\generator($factory))
+			->and($generator = new testedClass($factory))
 			->and($adapter->class_exists = false)
 			->and($adapter->interface_exists = false)
 			->and($class = uniqid('unknownClass'))
@@ -958,13 +959,13 @@ class generator extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Class \'' . $class . '\' is final, unable to mock it')
 			->if($reflectionClassController->isFinal = false)
-			->and($generator = new mock\generator())
+			->and($generator = new testedClass())
 			->then
 				->object($generator->generate(__CLASS__))->isIdenticalTo($generator)
 				->class('\mock\\' . __CLASS__)
 					->hasParent(__CLASS__)
 					->hasInterface('mageekguy\atoum\mock\aggregator')
-			->if($generator = new mock\generator())
+			->if($generator = new testedClass())
 			->and($generator->shunt('__construct'))
 			->then
 				->boolean($generator->isShunted('__construct'))->isTrue()
