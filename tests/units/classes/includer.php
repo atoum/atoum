@@ -13,7 +13,7 @@ class includer extends atoum\test
 {
 	public function testIncludePath()
 	{
-		$this->assert
+		$this
 			->if($includer = new atoum\includer())
 			->and($unknownFile = stream::get())
 			->then

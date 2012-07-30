@@ -12,79 +12,71 @@ class cli extends atoum\test
 {
 	public function testIsTerminalWhenStdoutIsUndefined()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
 	public function testIsTerminalWhenPosixIsTtyIsUndefined()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = true;
-		$adapter->function_exists = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = true)
+			->and($adapter->function_exists = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
 	public function testIsTerminalWhenPosixIsTtyReturnFalse()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = true;
-		$adapter->function_exists = true;
-		$adapter->constant = null;
-		$adapter->posix_isatty = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = true)
+			->and($adapter->function_exists = true)
+			->and($adapter->constant = null)
+			->and($adapter->posix_isatty = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
 	public function testIsTerminalWhenPosixIsTtyReturnTrue()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = true;
-		$adapter->function_exists = true;
-		$adapter->constant = null;
-		$adapter->posix_isatty = true;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = true)
+			->and($adapter->function_exists = true)
+			->and($adapter->constant = null)
+			->and($adapter->posix_isatty = true)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isTrue()
 		;
 	}
 
 	public function testIsTerminalWhenForceTerminalWasUsedAfterFirstCallToConstructor()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
-		;
-
-		$otherCli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($otherCli->isTerminal())->isFalse()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
+			->if($otherCli = new atoum\cli($adapter))
+			->then
+				->boolean($otherCli->isTerminal())->isFalse()
 		;
 
 		\mageekguy\atoum\cli::forceTerminal();
 
-		$this->assert
+		$this
 			->boolean($cli->isTerminal())->isTrue()
 			->boolean($otherCli->isTerminal())->isTrue()
 		;
@@ -94,19 +86,15 @@ class cli extends atoum\test
 	{
 		\mageekguy\atoum\cli::forceTerminal();
 
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
-		;
-
-		$otherCli = new atoum\cli();
-
-		$this->assert
-			->boolean($otherCli->isTerminal())->isTrue()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isTrue()
+			->if($otherCli = new atoum\cli($adapter))
+			->then
+				->boolean($otherCli->isTerminal())->isTrue()
 		;
 	}
 }
