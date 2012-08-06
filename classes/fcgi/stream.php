@@ -37,6 +37,11 @@ class stream
 		return $this->address;
 	}
 
+	public function __invoke(request $request = null)
+	{
+		return ($request === null ? $this->read() : $this->write($request));
+	}
+
 	public function getAddress()
 	{
 		return $this->address;
@@ -167,6 +172,18 @@ class stream
 		return $responses;
 	}
 
+	public function generateRequestId()
+	{
+		$id = 1;
+
+		while (isset($this->responses[$id]) === true)
+		{
+			$id++;
+		}
+
+		return (string) $id;
+	}
+
 	protected function writeToSocket($data)
 	{
 		if ($this->adapter->fwrite($this->open()->socket, $data, strlen($data)) === false)
@@ -213,18 +230,6 @@ class stream
 		}
 
 		return $values;
-	}
-
-	public function generateRequestId()
-	{
-		$id = 1;
-
-		while (isset($this->responses[$id]) === true)
-		{
-			$id++;
-		}
-
-		return (string) $id;
 	}
 
 	protected static function getValue($valueB0, $valueB1)
