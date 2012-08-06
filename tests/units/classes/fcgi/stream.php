@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\fcgi;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\fcgi,
 	mageekguy\atoum\fcgi\stream as testedClass
 ;
 
@@ -96,10 +97,7 @@ class stream extends atoum\test
 	{
 		$this
 			->if($stream = new testedClass())
-			->then
-				->object($stream->write(''))->isIdenticalTo($stream)
-				->boolean($stream->isOpen())->isFalse()
-			->if($stream->setAdapter($adapter = new atoum\test\adapter()))
+			->and($stream->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->fclose = function() {})
 			->and($adapter->stream_socket_client = function($socket, & $errno, & $errstr, $timeout, $flags) use (& $errorCode, & $errorMessage) {
 					$errorCode = $errno = rand(1, PHP_INT_MAX);
@@ -108,20 +106,22 @@ class stream extends atoum\test
 				}
 			)
 			->then
-				->exception(function() use ($stream) { $stream->write(uniqid()); })
+				->exception(function() use ($stream) { $stream->write(new fcgi\requests\post()); })
 					->isInstanceOf('mageekguy\atoum\fcgi\stream\exception')
 					->hasCode($errorCode)
 					->hasMessage($errorMessage)
-			->if($adapter->stream_socket_client = $socket = uniqid())
+			->if($adapter->resetCalls())
+			->and($adapter->stream_socket_client = $socket = uniqid())
 			->and($adapter->fwrite = false)
 			->then
-				->exception(function() use ($stream, & $data) { $stream->write($data = uniqid()); })
+				->exception(function() use ($stream, & $request) { $stream->write($request = new fcgi\requests\post()); })
 					->isInstanceOf('mageekguy\atoum\fcgi\stream\exception')
-					->hasMessage('Unable to write \'' . $data . '\' in stream \'' . $stream . '\'')
-			->if($adapter->fwrite = function() {} )
+					->hasMessage('Unable to write data \'' . $request->getStreamData($stream) . '\' in stream \'' . $stream . '\'')
+			->if($adapter->resetCalls())
+			->and($adapter->fwrite = function() {} )
 			->then
-				->object($stream->write($data = uniqid()))->isIdenticalTo($stream)
-				->adapter($adapter)->call('fwrite')->withArguments($socket, $data, strlen($data))->once()
+				->object($stream->write($request = new fcgi\requests\post()))->isIdenticalTo($stream)
+				->adapter($adapter)->call('fwrite')->withArguments($socket, $data = $request->getStreamData($stream), strlen($data))->once()
 		;
 	}
 
@@ -141,14 +141,12 @@ class stream extends atoum\test
 			->then
 				->exception(function() use ($stream) { $stream->read(); })
 					->isInstanceOf('mageekguy\atoum\fcgi\stream\exception')
-					->hasMessage('Unable to read in stream \'' . $stream . '\'')
+					->hasMessage('Unable to read record from stream \'' . $stream . '\'')
 			->if($adapter->resetCalls())
 			->and($adapter->fread = $data = uniqid())
 			->then
-				->string($stream->read())->isEqualTo($data)
+				->array($stream->read())->isEmpty()
 				->adapter($adapter)->call('fread')->withArguments($socket, 8)->once()
-				->string($stream->read($length = rand(1, PHP_INT_MAX)))->isEqualTo($data)
-				->adapter($adapter)->call('fread')->withArguments($socket, $length)->once()
 		;
 	}
 }

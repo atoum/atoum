@@ -15,28 +15,18 @@ abstract class record
 
 	protected $type = '';
 	protected $requestId = '';
-	protected $contentData = '';
 
-	public function __construct($type, $requestId, $contentData)
+	public function __construct($type, $requestId)
 	{
 		if (bindec(sprintf('%08b', $type)) > self::maxType)
 		{
 			throw new fcgi\record\exception('Type must be less than or equal to ' . self::maxType);
 		}
 
-		if (bindec(sprintf('%016b', $requestId)) > self::maxRequestId)
-		{
-			throw new fcgi\record\exception('Request ID must be less than or equal to ' . self::maxRequestId);
-		}
-
-		if (strlen($contentData) > self::maxContentDataLength)
-		{
-			throw new fcgi\record\exception('Content data length must be less than or equal to ' . self::maxContentDataLength);
-		}
-
-		$this->type = (string) $type;
-		$this->requestId = (string) $requestId;
-		$this->contentData = (string) $contentData;
+		$this
+			->setRequestId($requestId)
+			->type = (string) $type
+		;
 	}
 
 	public function getType()
@@ -49,8 +39,15 @@ abstract class record
 		return $this->requestId;
 	}
 
-	public function getContentData()
+	protected function setRequestId($requestId)
 	{
-		return $this->contentData;
+		if (bindec(sprintf('%016b', $requestId)) > self::maxRequestId)
+		{
+			throw new fcgi\record\exception('Request ID must be less than or equal to ' . self::maxRequestId);
+		}
+
+		$this->requestId = (string) $requestId;
+
+		return $this;
 	}
 }
