@@ -15,6 +15,7 @@ class request extends atoum\test
 	{
 		$this->testedClass
 			->isSubclassOf('mageekguy\atoum\fcgi\record')
+			->hasInterface('countable')
 			->isAbstract()
 		;
 	}
@@ -43,6 +44,18 @@ class request extends atoum\test
 				->exception(function() { new testedClass(rand(0, 255), 65536, uniqid()); })
 					->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
 					->hasMessage('Request ID must be less than or equal to 65535')
+		;
+	}
+
+	public function testCount()
+	{
+		$this
+			->if($record = new testedClass(rand(0, 255)))
+			->then
+				->sizeOf($record)->isZero()
+			->if($record = new testedClass(rand(0, 255), rand(0, 65535), $contentData = uniqid()))
+			->then
+				->sizeOf($record)->isEqualTo(strlen($record->getContentData()))
 		;
 	}
 

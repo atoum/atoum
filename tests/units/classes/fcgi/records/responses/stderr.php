@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\fcgi\records\responses;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\fcgi,
 	mageekguy\atoum\fcgi\records\responses\stderr as testedClass
 ;
 
@@ -29,6 +30,17 @@ class stderr extends atoum\test
 				->string($record->getType())->isEqualTo(testedClass::type)
 				->string($record->getRequestId())->isEqualTo($requestId)
 				->string($record->getContentData())->isEqualTo($contentData)
+		;
+	}
+
+	public function testAddToResponse()
+	{
+		$this
+			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
+			->and($response = new fcgi\response($requestId))
+			->then
+				->object($record->addToResponse($response))->isIdenticalTo($record)
+				->string($response->getStderr())->isEqualTo($contentData)
 		;
 	}
 }

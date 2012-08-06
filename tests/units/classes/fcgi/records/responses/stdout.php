@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\fcgi\records\responses;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\fcgi,
 	mageekguy\atoum\fcgi\records\responses\stdout as testedClass
 ;
 
@@ -29,6 +30,16 @@ class stdout extends atoum\test
 				->string($record->getType())->isEqualTo(testedClass::type)
 				->string($record->getRequestId())->isEqualTo($requestId)
 				->string($record->getContentData())->isEqualTo($contentData)
+		;
+	}
+
+	public function testAddToResponse()
+	{
+		$this
+			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
+			->then
+				->object($record->addToResponse($response = new fcgi\response($requestId)))->isIdenticalTo($record)
+				->string($response->getStdout())->isEqualTo($contentData)
 		;
 	}
 }

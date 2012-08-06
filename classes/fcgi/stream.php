@@ -224,7 +224,7 @@ class stream
 			$id++;
 		}
 
-		return $id;
+		return (string) $id;
 	}
 
 	protected static function getValue($valueB0, $valueB1)

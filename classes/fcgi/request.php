@@ -10,7 +10,7 @@ class request
 {
 	protected $params = null;
 	protected $stdin = null;
-	protected $requestId = '1';
+	protected $requestId = null;
 
 	public function __construct()
 	{

@@ -101,6 +101,19 @@ class request extends atoum\test
 		;
 	}
 
+	public function testGetRequestId()
+	{
+		$this
+			->if($request = new testedClass())
+			->then
+				->variable($request->getRequestId())->isNull()
+			->if($stream = new fcgi\stream())
+			->and($request->getStreamData($stream))
+			->then
+				->string($request->getRequestId())->isEqualTo($stream->generateRequestId())
+		;
+	}
+
 	public function testGetStreamData()
 	{
 		$this
