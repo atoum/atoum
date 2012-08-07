@@ -16,6 +16,11 @@ class params extends records\request
 	public function __construct(array $values = array(), $requestId = 1)
 	{
 		parent::__construct(self::type, $requestId);
+
+		foreach ($values as $name => $value)
+		{
+			$this->{$name} = $value;
+		}
 	}
 
 	public function __set($name, $value)

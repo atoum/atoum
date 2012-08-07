@@ -38,7 +38,7 @@ class stdout extends atoum\test
 		$this
 			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
 			->then
-				->object($record->addToResponse($response = new fcgi\response($requestId)))->isIdenticalTo($record)
+				->object($record->addToResponse($response = new fcgi\response(new fcgi\request())))->isIdenticalTo($record)
 				->string($response->getStdout())->isEqualTo($contentData)
 		;
 	}

@@ -4,17 +4,18 @@ namespace mageekguy\atoum\fcgi;
 
 class response
 {
+	protected $request = null;
 	protected $stdout = '';
 	protected $stderr = '';
 
-	public function __construct($requestId)
+	public function __construct(request $request)
 	{
-		$this->requestId = (string) $requestId;
+		$this->request = $request;
 	}
 
-	public function getRequestId()
+	public function getRequest()
 	{
-		return $this->requestId;
+		return $this->request;
 	}
 
 	public function getStdout()
@@ -39,10 +40,7 @@ class response
 
 	private function addToStream(& $stream, records\response $record)
 	{
-		if ($record->getRequestId() == $this->requestId)
-		{
-			$stream .= $record->getContentData();
-		}
+		$stream .= $record->getContentData();
 
 		return $this;
 	}

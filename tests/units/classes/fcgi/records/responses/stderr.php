@@ -37,9 +37,8 @@ class stderr extends atoum\test
 	{
 		$this
 			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
-			->and($response = new fcgi\response($requestId))
 			->then
-				->object($record->addToResponse($response))->isIdenticalTo($record)
+				->object($record->addToResponse($response = new fcgi\response(new fcgi\request())))->isIdenticalTo($record)
 				->string($response->getStderr())->isEqualTo($contentData)
 		;
 	}

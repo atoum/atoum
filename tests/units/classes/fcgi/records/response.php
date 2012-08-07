@@ -25,7 +25,7 @@ class response extends atoum\test
 		$this
 			->if($response = new testedClass(rand(1, 255), rand(1, 65535)))
 			->then
-				->object($response->addToResponse(new fcgi\response(rand(1, 65535))))->isIdenticalTo($response)
+				->object($response->addToResponse(new fcgi\response(new fcgi\request())))->isIdenticalTo($response)
 		;
 	}
 }

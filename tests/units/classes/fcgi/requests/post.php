@@ -26,7 +26,6 @@ class post extends atoum\test
 				->object($request->offsetSet($name = uniqid(), $value = uniqid()))->isIdenticalTo($request)
 				->string($request->offsetGet($name))->isEqualTo($value)
 				->string($request->getStdin())->isEqualTo(http_build_query(array($name => $value)))
-				->string($request->content_length)->isEqualTo(strlen($request->getStdin()))
 				->object($request->offsetSet($name, $otherValue = uniqid()))->isIdenticalTo($request)
 				->string($request->offsetGet($name))->isEqualTo($otherValue)
 				->object($request->offsetSet($otherName = uniqid(), $value))->isIdenticalTo($request)

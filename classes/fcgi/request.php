@@ -8,15 +8,8 @@ use
 
 class request
 {
-	protected $params = null;
-	protected $stdin = null;
-	protected $requestId = null;
-
-	public function __construct()
-	{
-		$this->stdin = new requests\stdin();
-		$this->params = new requests\params();
-	}
+	protected $params = array();
+	protected $stdin = '';
 
 	public function __set($name, $value)
 	{
@@ -40,81 +33,74 @@ class request
 
 	public function setStdin($stdin)
 	{
-		$this->stdin->setContentData($stdin);
+		$this->stdin = (string) $stdin;
 
 		return $this;
 	}
 
 	public function unsetStdin()
 	{
-		return $this->setStdin('');
+		return $this->stdin = '';
 	}
 
 	public function stdinIsSet()
 	{
-		return ($this->stdin->getContentData() != '');
+		return ($this->stdin != '');
 	}
 
 	public function getStdin()
 	{
-		return $this->stdin->getContentData();
+		return $this->stdin;
 	}
 
 	public function getParam($name)
 	{
-		return $this->params->{$name};
+		return (isset($this->params[$name]) === false ? null : $this->params[$name]);
 	}
 
 	public function setParam($name, $value)
 	{
-		$this->params->{$name} = $value;
+		$this->params[$name] = $value;
 	}
 
 	public function unsetParam($name)
 	{
-		unset($this->params->{$name});
+		if (isset($this->params[$name]) === true)
+		{
+			unset($this->params[$name]);
+		}
 
 		return $this;
 	}
 
 	public function paramIsSet($name)
 	{
-		return isset($this->params->{$name});
+		return isset($this->params[$name]);
 	}
 
 	public function getParams()
 	{
-		return $this->params->getValues();
+		return $this->params;
 	}
 
-	public function getRequestId()
+	public function getRecords(stream $stream)
 	{
-		return $this->requestId;
-	}
+		$records = array();
 
-	public function getStreamData(stream $stream)
-	{
-		$streamData = '';
+		$requestId = $stream->generateRequestId();
 
-		$this->requestId = $stream->generateRequestId();
-
-		$begin =  new requests\begin(requests\begin::responder, $stream->isPersistent(), $this->requestId);
-		$streamData .=  $begin->getStreamData();
+		$records[] = new requests\begin(requests\begin::responder, $stream->isPersistent(), $requestId);
 
 		if (sizeof($this->params) > 0)
 		{
-			$streamData .= $this->params->setRequestId($this->requestId)->getStreamData();
-
-			$endOfParams = new requests\params(array(), $this->requestId);
-			$streamData .= $endOfParams->getStreamData();
+			$records[] = new requests\params($this->params, $requestId);
+			$records[] = new requests\params(array(), $requestId);
 		}
 
-		$streamData .= $this->stdin->setRequestId($this->requestId)->getStreamData();
+		$records[] = new requests\stdin($this->stdin, $requestId);
+		$records[] = new requests\stdin('', $requestId);
 
-		$endOfStdin = new requests\stdin('', $this->requestId);
-		$streamData .= $endOfStdin->getStreamData();
-
-		return $streamData;
+		return $records;
 	}
 
 	private static function cleanName($name)

@@ -46,17 +46,18 @@ class post extends fcgi\request implements \arrayAccess
 		return isset($variables[$name]);
 	}
 
-	public function getStreamData(fcgi\stream $stream)
+	public function getRecords(fcgi\stream $stream)
 	{
 		$this->REQUEST_METHOD = self::requestMethod;
 		$this->CONTENT_TYPE = self::contentType;
+		$this->CONTENT_LENGTH = strlen($this->stdin);
 
-		return parent::getStreamData($stream);
+		return parent::getRecords($stream);
 	}
 
 	private function buildStdin(array $variables)
 	{
-		$this->setStdin(http_build_query($variables, ''))->content_length = sizeof($this->stdin);
+		$this->setStdin(http_build_query($variables, ''));
 
 		return $this;
 	}
