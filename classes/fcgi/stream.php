@@ -234,14 +234,10 @@ class stream
 
 	private function writeRecords(request $request)
 	{
-		foreach ($request->getRecords($this) as $record)
-		{
-			$this->writeSocket($record->getStreamData());
-		}
+		$records = $request->getRecords($this);
+		$requestId = $records->getRequestId();
 
-		$requestId = $record->getRequestId();
-
-		if (isset($this->requests[$requestId]) === false)
+		if (isset($this->writeSocket($records->getStreamData())->requests[$requestId]) === false)
 		{
 			$this->requests[$requestId] = $request;
 			$this->records[$requestId] = array();

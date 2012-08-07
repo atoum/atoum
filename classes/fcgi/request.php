@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\fcgi;
 
 use
+	mageekguy\atoum\fcgi\records,
 	mageekguy\atoum\fcgi\records\requests
 ;
 
@@ -85,7 +86,7 @@ class request
 
 	public function getRecords(stream $stream)
 	{
-		$records = array();
+		$records = new records\collection();
 
 		$requestId = $stream->generateRequestId();
 
