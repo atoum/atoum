@@ -110,7 +110,14 @@ class clover extends atoum\reports\asynchronous {
 
 		foreach ($coverage->getClasses() as $class => $file)
 		{
-			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
+			try
+			{
+				$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
+			}
+			catch (exceptions\logic\invalidArgument $e)
+			{
+				$package->appendChild($this->makeFileElement($document, $file, $class, array()));
+			}
 		}
 
 		$package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
@@ -253,7 +260,6 @@ class clover extends atoum\reports\asynchronous {
 
 		return $line;
 	}
-	
 
 	protected function addLoc($count)
 	{
