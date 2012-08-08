@@ -29,7 +29,24 @@ class params extends atoum\test
 			->if($record = new testedClass())
 			->then
 				->string($record->getType())->isEqualTo(testedClass::type)
+				->string($record->getRequestId())->isEqualTo(1)
 				->array($record->getValues())->isEmpty()
+			->if($record = new testedClass(array(), $requestId = rand(2, 65535)))
+			->then
+				->string($record->getType())->isEqualTo(testedClass::type)
+				->string($record->getRequestId())->isEqualTo($requestId)
+				->array($record->getValues())->isEmpty()
+			->if($record = new testedClass($values = array('AUTH_TYPE' => uniqid(), 'CONTENT_LENGTH' => uniqid()), $requestId = rand(2, 65535)))
+			->then
+				->string($record->getType())->isEqualTo(testedClass::type)
+				->string($record->getRequestId())->isEqualTo($requestId)
+				->array($record->getValues())->isEqualTo($values)
+			->exception(function() { new testedClass(array(), rand(- PHP_INT_MAX, 0)); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Request ID must be greater than 0')
+			->exception(function() { new testedClass(array(), ''); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Request ID must be greater than 0')
 		;
 	}
 

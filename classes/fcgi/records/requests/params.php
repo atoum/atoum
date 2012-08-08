@@ -15,6 +15,11 @@ class params extends records\request
 
 	public function __construct(array $values = array(), $requestId = 1)
 	{
+		if ($requestId < 1)
+		{
+			throw new record\exception('Request ID must be greater than 0');
+		}
+
 		parent::__construct(self::type, $requestId);
 
 		foreach ($values as $name => $value)

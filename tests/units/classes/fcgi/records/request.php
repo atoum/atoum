@@ -33,17 +33,12 @@ class request extends atoum\test
 				->string($record->getType())->isEqualTo($type)
 				->string($record->getRequestId())->isEqualTo($requestId)
 				->string($record->getContentData())->isEmpty()
-			->if($record = new testedClass($type = rand(0, 255), $requestId = rand(0, 65535), $contentData = uniqid()))
-			->then
-				->string($record->getType())->isEqualTo($type)
-				->string($record->getRequestId())->isEqualTo($requestId)
-				->string($record->getContentData())->isEmpty()
-				->exception(function() { new testedClass(256, rand(0, 65535), uniqid()); })
-					->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
-					->hasMessage('Type must be less than or equal to 255')
-				->exception(function() { new testedClass(rand(0, 255), 65536, uniqid()); })
-					->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
-					->hasMessage('Request ID must be less than or equal to 65535')
+			->exception(function() { new testedClass(256, rand(0, 65535)); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Type must be less than or equal to 255')
+			->exception(function() { new testedClass(rand(0, 255), 65536); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Request ID must be less than or equal to 65535')
 		;
 	}
 
@@ -53,9 +48,10 @@ class request extends atoum\test
 			->if($record = new testedClass(rand(0, 255)))
 			->then
 				->sizeOf($record)->isZero()
-			->if($record = new testedClass(rand(0, 255), rand(0, 65535), $contentData = uniqid()))
+			->if($record = new testedClass(rand(0, 255), rand(0, 65535)))
+			->and($record->getMockController()->getContentData = $contentData = uniqid())
 			->then
-				->sizeOf($record)->isEqualTo(strlen($record->getContentData()))
+				->sizeOf($record)->isEqualTo(strlen($contentData))
 		;
 	}
 

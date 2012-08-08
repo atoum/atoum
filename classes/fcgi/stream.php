@@ -54,6 +54,13 @@ class stream
 		return $this->timeout;
 	}
 
+	public function setPersistent()
+	{
+		$this->close()->persistent = true;
+
+		return $this;
+	}
+
 	public function isPersistent()
 	{
 		return $this->persistent;
@@ -87,11 +94,11 @@ class stream
 				$flags |= STREAM_CLIENT_PERSISTENT;
 			}
 
-			$socket = $this->adapter->invoke('stream_socket_client', array($this->address, & $errorCode, & $errorMessage, $this->timeout, $flags));
+			$socket = @$this->adapter->invoke('stream_socket_client', array($this->address, & $errorCode, & $errorMessage, $this->timeout, $flags));
 
 			if ($socket === false)
 			{
-				throw new stream\exception($errorMessage, $errorCode);
+				throw new stream\exception('Unable to connect to \'' . $this . '\': ' . $errorMessage, $errorCode);
 			}
 
 			$this->socket = $socket;
@@ -109,6 +116,9 @@ class stream
 			$this->adapter->fclose($this->socket);
 
 			$this->socket = null;
+			$this->records = array();
+			$this->requests = array();
+			$this->responses = array();
 		}
 
 		return $this;
@@ -175,6 +185,8 @@ class stream
 
 		if ($type !== null)
 		{
+			$contentData = '';
+
 			if ($contentLength > 0)
 			{
 				$contentData = $this->readSocket($contentLength + $padding);
@@ -222,7 +234,7 @@ class stream
 
 	private function readSocket($length)
 	{
-		$data = $this->adapter->fread($this->socket, $length);
+		$data = @$this->adapter->fread($this->socket, $length);
 
 		if ($data === false)
 		{
@@ -250,7 +262,7 @@ class stream
 	{
 		while ($data != '')
 		{
-			$dataWrited = $this->adapter->fwrite($this->open()->socket, $data, strlen($data));
+			$dataWrited = @$this->adapter->fwrite($this->open()->socket, $data, strlen($data));
 
 			if ($dataWrited === false)
 			{

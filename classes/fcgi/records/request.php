@@ -8,9 +8,9 @@ use
 
 abstract class request extends fcgi\record implements \countable
 {
-	public function __construct($type, $requestId = '1', $contentData = '')
+	public function __construct($type, $requestId = '1')
 	{
-		parent::__construct($type, $requestId, $contentData);
+		parent::__construct($type, $requestId);
 	}
 
 	public function count()
@@ -21,11 +21,6 @@ abstract class request extends fcgi\record implements \countable
 	public function setRequestId($requestId)
 	{
 		return parent::setRequestId($requestId);
-	}
-
-	public function getContentData()
-	{
-		return '';
 	}
 
 	public function getStreamData()

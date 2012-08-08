@@ -36,10 +36,16 @@ class stdin extends atoum\test
 				->string($record->getType())->isEqualTo(testedClass::type)
 				->string($record->getRequestId())->isEqualTo(1)
 				->string($record->getContentData())->isEqualTo($contentData)
-			->if($record = new testedClass($contentData = uniqid(), $requestId = uniqid()))
+			->if($record = new testedClass($contentData = uniqid(), $requestId = rand(1, 65535)))
 				->string($record->getType())->isEqualTo(testedClass::type)
 				->string($record->getRequestId())->isEqualTo($requestId)
 				->string($record->getContentData())->isEqualTo($contentData)
+			->exception(function() { new testedClass($contentData = uniqid(), rand(- PHP_INT_MAX, 0)); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Request ID must be greater than 0')
+			->exception(function() { new testedClass($contentData = uniqid(), ''); })
+				->isInstanceOf('mageekguy\atoum\fcgi\record\exception')
+				->hasMessage('Request ID must be greater than 0')
 		;
 	}
 

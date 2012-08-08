@@ -25,7 +25,7 @@ class stderr extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
+			->if($record = new testedClass($requestId = rand(1, 65535), $contentData = uniqid()))
 			->then
 				->string($record->getType())->isEqualTo(testedClass::type)
 				->string($record->getRequestId())->isEqualTo($requestId)
@@ -36,7 +36,7 @@ class stderr extends atoum\test
 	public function testAddToResponse()
 	{
 		$this
-			->if($record = new testedClass($requestId = uniqid(), $contentData = uniqid()))
+			->if($record = new testedClass($requestId = rand(1, 65535), $contentData = uniqid()))
 			->then
 				->object($record->addToResponse($response = new fcgi\response(new fcgi\request())))->isIdenticalTo($record)
 				->string($response->getStderr())->isEqualTo($contentData)

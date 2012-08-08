@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\fcgi\records\requests;
 
 use
+	mageekguy\atoum\fcgi\record,
 	mageekguy\atoum\fcgi\records
 ;
 
@@ -14,6 +15,11 @@ class stdin extends records\request
 
 	public function __construct($contentData = '', $requestId = 1)
 	{
+		if ($requestId < 1)
+		{
+			throw new record\exception('Request ID must be greater than 0');
+		}
+
 		parent::__construct(self::type, $requestId);
 
 		$this->setContentData($contentData);

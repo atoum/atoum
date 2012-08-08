@@ -39,6 +39,11 @@ abstract class record
 		return $this->requestId;
 	}
 
+	public function getContentData()
+	{
+		return '';
+	}
+
 	protected function setRequestId($requestId)
 	{
 		if (bindec(sprintf('%016b', $requestId)) > self::maxRequestId)

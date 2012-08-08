@@ -11,6 +11,14 @@ class collection implements \iterator, \countable, \arrayAccess
 	protected $requestId = null;
 	protected $records = array();
 
+	public function __construct(array $records = array())
+	{
+		foreach ($records as $record)
+		{
+			$this->setRecord($record);
+		}
+	}
+
 	public function rewind()
 	{
 		reset($this->records);

@@ -5,6 +5,8 @@ namespace mageekguy\atoum\tests\units\fcgi;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\fcgi,
+	mageekguy\atoum\fcgi\records,
+	mageekguy\atoum\fcgi\records\requests,
 	mageekguy\atoum\fcgi\request as testedClass
 ;
 
@@ -96,6 +98,36 @@ class request extends atoum\test
 			->when(function() use ($request) { unset($request->CONTENT_LENGTH); })
 			->then
 				->boolean(isset($request->CONTENT_LENGTH))->isFalse()
+		;
+	}
+
+	public function testGetRecords()
+	{
+		$this
+			->if($request = new testedClass())
+			->and($stream = new fcgi\stream())
+			->then
+				->object($request->getRecords($stream))->isEqualTo(new records\collection())
+			->if($request->STDIN = $stdin = uniqid())
+			->then
+				->object($request->getRecords($stream))->isEqualTo(new records\collection(array(
+							new requests\begin(requests\begin::responder, $stream->isPersistent(), $stream->generateRequestId()),
+							new requests\stdin($stdin, $stream->generateRequestId()),
+							new requests\stdin('', $stream->generateRequestId())
+						)
+					)
+				)
+			->if($request->CONTENT_LENGTH = $contentLength = uniqid())
+			->then
+				->object($request->getRecords($stream))->isEqualTo(new records\collection(array(
+							new requests\begin(requests\begin::responder, $stream->isPersistent(), $stream->generateRequestId()),
+							new requests\params(array('CONTENT_LENGTH' => $contentLength), $stream->generateRequestId()),
+							new requests\params(array(), $stream->generateRequestId()),
+							new requests\stdin($stdin, $stream->generateRequestId()),
+							new requests\stdin('', $stream->generateRequestId())
+						)
+					)
+				)
 		;
 	}
 }

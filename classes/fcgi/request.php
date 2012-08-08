@@ -88,18 +88,24 @@ class request
 	{
 		$records = new records\collection();
 
-		$requestId = $stream->generateRequestId();
-
-		$records[] = new requests\begin(requests\begin::responder, $stream->isPersistent(), $requestId);
-
-		if (sizeof($this->params) > 0)
+		if (sizeof($this->params) > 0 || $this->stdin !== '')
 		{
-			$records[] = new requests\params($this->params, $requestId);
-			$records[] = new requests\params(array(), $requestId);
-		}
+			$requestId = $stream->generateRequestId();
 
-		$records[] = new requests\stdin($this->stdin, $requestId);
-		$records[] = new requests\stdin('', $requestId);
+			$records[] = new requests\begin(requests\begin::responder, $stream->isPersistent(), $requestId);
+
+			if (sizeof($this->params) > 0)
+			{
+				$records[] = new requests\params($this->params, $requestId);
+				$records[] = new requests\params(array(), $requestId);
+			}
+
+			if ($this->stdin !== '')
+			{
+				$records[] = new requests\stdin($this->stdin, $requestId);
+				$records[] = new requests\stdin('', $requestId);
+			}
+		}
 
 		return $records;
 	}
