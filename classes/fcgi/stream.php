@@ -14,17 +14,15 @@ class stream
 
 	protected $address = '';
 	protected $timeout = 30;
-	protected $persistent = false;
 	protected $socket = null;
 	protected $records = array();
 	protected $requests = array();
 	protected $responses = array();
 
-	public function __construct($address = 'tcp://127.0.0.1:9000', $timeout = 30, $persistent = false, atoum\adapter $adapter = null)
+	public function __construct($address = 'tcp://127.0.0.1:9000', $timeout = 30, atoum\adapter $adapter = null)
 	{
 		$this->address = (string) $address;
 		$this->timeout = (int) $timeout;
-		$this->persistent = (bool) $persistent;
 
 		$this->setAdapter($adapter ?: new atoum\adapter());
 	}
@@ -54,16 +52,9 @@ class stream
 		return $this->timeout;
 	}
 
-	public function setPersistent()
-	{
-		$this->close()->persistent = true;
-
-		return $this;
-	}
-
 	public function isPersistent()
 	{
-		return $this->persistent;
+		return true;
 	}
 
 	public function setAdapter(atoum\adapter $adapter)
@@ -87,14 +78,7 @@ class stream
 	{
 		if ($this->isOpen() === false)
 		{
-			$flags = STREAM_CLIENT_CONNECT;
-
-			if ($this->isPersistent() === true)
-			{
-				$flags |= STREAM_CLIENT_PERSISTENT;
-			}
-
-			$socket = @$this->adapter->invoke('stream_socket_client', array($this->address, & $errorCode, & $errorMessage, $this->timeout, $flags));
+			$socket = @$this->adapter->invoke('stream_socket_client', array($this->address, & $errorCode, & $errorMessage, $this->timeout, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT));
 
 			if ($socket === false)
 			{
