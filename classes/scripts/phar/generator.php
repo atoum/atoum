@@ -6,11 +6,12 @@ require_once __DIR__ . '/../../../constants.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\script,
 	mageekguy\atoum\iterators,
 	mageekguy\atoum\exceptions
 ;
 
-class generator extends atoum\script
+class generator extends script\cli
 {
 	const phar = 'mageekguy.atoum.phar';
 

@@ -52,16 +52,6 @@ class script extends atoum\test
 				->array($script->getHelp())->isEmpty()
 				->object($script->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($script->getLocale())
 				->object($script->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($script->getAdapter())
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->php_sapi_name = uniqid())
-			->and($factory['atoum\adapter'] = $adapter)
-			->then
-				->exception(function() use ($factory, & $name) {
-						new mock\script($name = uniqid(), $factory);
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 	}
 
