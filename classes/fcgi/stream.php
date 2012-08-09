@@ -12,6 +12,7 @@ class stream
 {
 	const version = 1;
 
+	protected $data = '';
 	protected $address = '';
 	protected $timeout = 30;
 	protected $socket = null;
@@ -233,6 +234,16 @@ class stream
 		if ($data === false)
 		{
 			throw new stream\exception('Unable to read record from stream \'' . $this . '\'');
+		}
+
+		$this->data .= $data;
+
+		$data = '';
+
+		if (strlen($this->data) >= $length)
+		{
+			$data = substr($this->data, 0, $length);
+			$this->data = substr($this->data, $length);
 		}
 
 		return $data;
