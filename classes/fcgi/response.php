@@ -7,6 +7,7 @@ class response
 	protected $request = null;
 	protected $stdout = '';
 	protected $stderr = '';
+	protected $exitCode = 0;
 
 	public function __construct(request $request)
 	{
@@ -43,6 +44,18 @@ class response
 		$endOfHttpHeaders = strpos($this->stdout, "\r\n\r\n");
 
 		return ($endOfHttpHeaders === false ? '' : substr($this->stdout, $endOfHttpHeaders + 4));
+	}
+
+	public function setExitCode($code)
+	{
+		$this->exitCode = $code;
+
+		return $this;
+	}
+
+	public function getExitCode()
+	{
+		return $this->exitCode;
 	}
 
 	private function addToStream(& $stream, records\response $record)

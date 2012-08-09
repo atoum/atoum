@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\fcgi\records\responses;
 
 use
+	mageekguy\atoum\fcgi,
 	mageekguy\atoum\fcgi\record,
 	mageekguy\atoum\fcgi\records
 ;
@@ -14,6 +15,8 @@ class end extends records\response
 	const serverCanNotMultiplexConnection = '1';
 	const serverIsOverloaded = '2';
 	const serverDoesNotKnowRole = '3';
+
+	protected $exitCode = 0;
 
 	public function __construct($requestId, $contentData)
 	{
@@ -35,5 +38,14 @@ class end extends records\response
 			case self::serverDoesNotKnowRole:
 				throw new record\exception('Server does not know the role');
 		}
+
+		$this->exitCode = (($contentData[0] & 0x7f) << 24) + (ord($contentData[1]) << 16) + (ord($contentData[2]) << 8) + ord($contentData[3]);
+	}
+
+	public function addToResponse(fcgi\response $response)
+	{
+		$response->setExitCode($this->exitCode);
+
+		return $this;
 	}
 }

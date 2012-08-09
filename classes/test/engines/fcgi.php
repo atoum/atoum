@@ -60,7 +60,7 @@ class fcgi extends test\engine
 					{
 						$methodScore = $this
 							->factory['mageekguy\atoum\score']()
-							->addUncompletedMethod($request->getLocalTestPath(), $request->getTestClass(), $request->getTestMethod(), 0, $stdOut)
+							->addUncompletedMethod($request->getLocalTestPath(), $request->getTestClass(), $request->getTestMethod(), $response->getExitCode(), $stdOut)
 						;
 					}
 
