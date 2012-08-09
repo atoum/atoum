@@ -204,7 +204,7 @@ These maps are available in buffer opened by atoum plug-ins.
 
  vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
 ftplugin/php/atoum.php	[[[1
-28
+25
 <?php
 
 /*
@@ -213,8 +213,7 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 */
 
 use
-  \mageekguy\atoum,
-  \mageekguy\atoum\cli\prompt
+  \mageekguy\atoum
 ;
 
 /*
@@ -230,9 +229,7 @@ $vimReport
   ->addWriter($stdOutWriter)
 ;
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
-
-?>
+$runner->addReport($vimReport);
 ftplugin/php/atoum.vim	[[[1
 28
 "=============================================================================
