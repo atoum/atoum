@@ -254,28 +254,33 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public static function getAutorunner()
-	{
-		return self::$autorunner;
-	}
-
-	public static function autorun($name)
+	public static function enableAutorun($name)
 	{
 		if (self::$autorunner !== null)
 		{
 			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
-		$autorunner = self::$autorunner = new static($name);
+		self::$autorunner = new static($name);
 
-		register_shutdown_function(function() use ($autorunner) {
-				$score = $autorunner->run()->getRunner()->getScore();
+		$autorunner = & self::$autorunner;
 
-				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+		register_shutdown_function(function() use (& $autorunner) {
+				if ($autorunner !== null)
+				{
+					$score = $autorunner->run()->getRunner()->getScore();
+
+					exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+				}
 			}
 		);
 
 		return $autorunner;
+	}
+
+	public static function disableAutorun()
+	{
+		self::$autorunner = null;
 	}
 
 	public static function getSubDirectoryPath($directory, $directorySeparator = null)
@@ -734,34 +739,7 @@ class runner extends atoum\script
 			$arguments .= ' --score-file ' . escapeshellarg($this->scoreFile);
 		}
 
-		if ($this->isRunningFromCli() === false)
-		{
-			$declaredTestClasses = $this->runner->getDeclaredTestClasses();
-
-			if (sizeof($declaredTestClasses) > 0)
-			{
-				$files = array();
-
-				foreach ($declaredTestClasses as $declaredTestClass)
-				{
-					$declaredTestClass = $this->factory['reflectionClass']($declaredTestClass);
-
-					$file = $declaredTestClass->getFilename();
-
-					if (in_array($file, $files) === false)
-					{
-						$files[] = escapeshellarg($file);
-					}
-				}
-
-				if (sizeof($files) > 0)
-				{
-					$arguments .= ' -f ' . join(' ', $files);
-				}
-			}
-		}
-
-		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($this->getName()) . $arguments;
+		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($_SERVER['argv'][0]) . $arguments;
 
 		while ($this->runTests === true)
 		{

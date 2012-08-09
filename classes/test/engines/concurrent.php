@@ -60,8 +60,7 @@ class concurrent extends test\engine
 			$phpCode =
 				'<?php ' .
 				'ob_start();' .
-				'define(\'mageekguy\atoum\autorun\', false);' .
-				'require \'' . atoum\directory . '/scripts/runner.php\';'
+				'require \'' . atoum\directory . '/classes/autoloader.php\';'
 			;
 
 			$bootstrapFile = $this->test->getBootstrapFile();
@@ -69,7 +68,6 @@ class concurrent extends test\engine
 			if ($bootstrapFile !== null)
 			{
 				$phpCode .=
-					'require \'' . atoum\directory . '/classes/includer.php\';' .
 					'$includer = new mageekguy\atoum\includer();' .
 					'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
 					'catch (mageekguy\atoum\includer\exception $exception)' .
@@ -110,7 +108,8 @@ class concurrent extends test\engine
 
 			$phpCode .=
 				'ob_end_clean();' .
-				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
+				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());' .
+				'mageekguy\atoum\scripts\runner::disableAutorun();'
 			;
 
 			$this->adapter->fwrite($this->pipes[0], $phpCode);
