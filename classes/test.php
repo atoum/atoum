@@ -64,6 +64,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $codeCoverage = false;
 	private $includer = null;
 	private $bootstrapFile = null;
+	private $fastCgiStream = null;
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
@@ -184,6 +185,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getClassEngine()
 	{
 		return $this->classEngine;
+	}
+
+	public function setFastCgiStream(fcgi\stream $stream)
+	{
+		$this->fastCgiStream = $stream;
+
+		return $this;
+	}
+
+	public function getFastCgiStream()
+	{
+		return $this->fastCgiStream;
 	}
 
 	public function classHasVoidMethods()

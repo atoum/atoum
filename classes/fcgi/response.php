@@ -38,6 +38,13 @@ class response
 		return $this->addToStream($this->stderr, $record);
 	}
 
+	public function getHttpBody()
+	{
+		$endOfHttpHeaders = strpos($this->stdout, "\r\n\r\n");
+
+		return ($endOfHttpHeaders === false ? '' : substr($this->stdout, $endOfHttpHeaders + 4));
+	}
+
 	private function addToStream(& $stream, records\response $record)
 	{
 		$stream .= $record->getContentData();

@@ -8,6 +8,8 @@ use
 
 abstract class engine
 {
+	protected $factory = null;
+
 	public function __construct(atoum\factory $factory = null)
 	{
 		$this->setFactory($factory ?: new atoum\factory());

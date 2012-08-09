@@ -25,6 +25,7 @@ class runner implements observable, adapter\aggregator
 	protected $includer = null;
 	protected $observers = null;
 	protected $reports = null;
+	protected $fastCgiStream = null;
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
@@ -310,6 +311,18 @@ class runner implements observable, adapter\aggregator
 		return $this;
 	}
 
+	public function setFastCgiStream(fcgi\stream $stream)
+	{
+		$this->fastCgiStream = $stream;
+
+		return $this;
+	}
+
+	public function getFastCgiStream()
+	{
+		return $this->fastCgiStream;
+	}
+
 	public function setPathAndVersionInScore()
 	{
 		$this->score
@@ -408,6 +421,11 @@ class runner implements observable, adapter\aggregator
 			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
 				$tests[] = array($test, $methods);
+
+				if ($this->fastCgiStream !== null)
+				{
+					$test->setFastCgiStream($this->fastCgiStream);
+				}
 
 				$this->testNumber++;
 				$this->testMethodNumber += sizeof($methods);

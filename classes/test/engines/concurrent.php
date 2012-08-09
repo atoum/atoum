@@ -12,13 +12,12 @@ class concurrent extends test\engine
 {
 	protected $test = null;
 	protected $method = '';
-	protected $factory = null;
-	protected $stdOut = '';
-	protected $stdErr = '';
 
 	private $adapter = null;
 	private $php = null;
 	private $pipes = array();
+	private $stdOut = '';
+	private $stdErr = '';
 
 	public function __construct(atoum\factory $factory = null)
 	{
@@ -127,7 +126,7 @@ class concurrent extends test\engine
 	{
 		$score = null;
 
-		if ($this->php !== null)
+		if ($this->isRunning() === true)
 		{
 			$phpStatus = $this->adapter->proc_get_status($this->php);
 

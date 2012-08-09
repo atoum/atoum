@@ -158,6 +158,16 @@ class stream
 		return (string) $id;
 	}
 
+	public function waitResponses()
+	{
+		return (sizeof($this->requests) > 0);
+	}
+
+	public function getPendingRequests()
+	{
+		return array_values($this->requests);
+	}
+
 	private function readRecords()
 	{
 		if ($this->isOpen() === false)
@@ -231,6 +241,7 @@ class stream
 	private function writeRecords(request $request)
 	{
 		$records = $request->getRecords($this);
+
 		$requestId = $records->getRequestId();
 
 		if (isset($this->writeSocket($records->getStreamData())->requests[$requestId]) === false)

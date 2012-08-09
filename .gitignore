@@ -1,6 +1,7 @@
 /G*
 /*.un~
 /vim.php
+/fcgi.php
 /config.php
 /.atoum.php
 /.buildpath
