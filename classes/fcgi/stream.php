@@ -12,13 +12,13 @@ class stream
 {
 	const version = 1;
 
-	protected $data = '';
+	protected $input = '';
+	protected $output = '';
 	protected $address = '';
 	protected $timeout = 30;
 	protected $socket = null;
 	protected $records = array();
 	protected $requests = array();
-	protected $responses = array();
 
 	public function __construct($address = 'tcp://127.0.0.1:9000', $timeout = 30, atoum\adapter $adapter = null)
 	{
@@ -103,7 +103,6 @@ class stream
 			$this->socket = null;
 			$this->records = array();
 			$this->requests = array();
-			$this->responses = array();
 		}
 
 		return $this;
@@ -113,25 +112,29 @@ class stream
 	{
 		$this->open();
 
-		$request = clone $request;
+		$records = $request->getRecords($this);
+		$this->output .= $records->getStreamData();
 
-		while ($this->requestWasSent($request) === false)
+		$requestId = $records->getRequestId();
+		$this->requests[$requestId] = clone $request;
+		$this->records[$requestId] = array();
+
+		$read = null;
+		$write = array($this->socket);
+		$except = null;
+
+		if ($this->adapter->invoke('stream_select', array(& $read, & $write, & $except, 0)) > 0)
 		{
-			$write = array($this->socket);
-			$read = array($this->socket);
-			$except = null;
+			$output = @$this->adapter->fwrite($this->socket, $this->output);
 
-			if ($this->adapter->invoke('stream_select', array(& $read, & $write, & $except, 0)) > 0)
+			if ($output === false)
 			{
-				if ($read)
-				{
-					$this->readRecords();
-				}
+				throw new stream\exception('Unable to write data \'' . $this->output . '\' in stream \'' . $this . '\'');
+			}
 
-				if ($write)
-				{
-					$this->writeRecords($request);
-				}
+			if ($output > 0)
+			{
+				$this->output = substr($this->output, $output);
 			}
 		}
 
@@ -140,9 +143,71 @@ class stream
 
 	public function read()
 	{
-		$responses = $this->readRecords()->responses;
+		if ($this->isOpen() === false)
+		{
+			throw new stream\exception('Stream \'' . $this . '\' is not open');
+		}
 
-		$this->responses = array();
+		$responses = array();
+
+		$read = array($this->socket);
+		$write = null;
+		$except = null;
+
+		if ($this->adapter->invoke('stream_select', array(& $read, & $write, & $except, 0)) > 0)
+		{
+			$input = @$this->adapter->stream_get_contents($this->socket);
+
+			if ($input === false)
+			{
+				throw new stream\exception('Unable to read from stream \'' . $this . '\'');
+			}
+
+			$this->input .= $input;
+		}
+
+		while (strlen($this->input) >= 8)
+		{
+			list($type, $requestId, $contentLength, $padding) = self::getValues(substr($this->input, 0, 8));
+
+			if (strlen($this->input) >= 8 + $contentLength + $padding)
+			{
+				$contentData = substr($this->input, 8, $contentLength);
+
+				$this->input = (string) substr($this->input, 8 + $contentLength + $padding);
+
+				switch ($type)
+				{
+					case responses\stdout::type:
+						$this->records[$requestId][] = new responses\stdout($requestId, $contentData);
+						break;
+
+					case responses\stderr::type:
+						$this->records[$requestId][] = new responses\stderr($requestId, $contentData);
+						break;
+
+					case responses\end::type:
+						$response = new response($this->requests[$requestId]);
+						unset($this->requests[$requestId]);
+
+						foreach ($this->records[$requestId] as $record)
+						{
+							$record->addToResponse($response);
+						}
+
+						unset($this->records[$requestId]);
+
+						$record = new responses\end($requestId, $contentData);
+						$record->addToResponse($response);
+
+						$responses[] = $response;
+						break;
+
+					default:
+						throw new record\exception('Type \'' . $type . '\' is unknown');
+				}
+			}
+		}
 
 		return $responses;
 	}
@@ -167,123 +232,6 @@ class stream
 	public function getPendingRequests()
 	{
 		return array_values($this->requests);
-	}
-
-	private function readRecords()
-	{
-		if ($this->isOpen() === false)
-		{
-			throw new stream\exception('Stream \'' . $this . '\' is not open');
-		}
-
-		list($type, $requestId, $contentLength, $padding) = self::getValues($this->readSocket(8));
-
-		if ($type !== null)
-		{
-			$contentData = '';
-
-			if ($contentLength > 0)
-			{
-				$contentData = $this->readSocket($contentLength + $padding);
-
-				if ($padding > 0)
-				{
-					$contentData = substr($contentData, 0, - $padding);
-				}
-			}
-
-			switch ($type)
-			{
-				case responses\stdout::type:
-					$this->records[$requestId][] = new responses\stdout($requestId, $contentData);
-					break;
-
-				case responses\stderr::type:
-					$this->records[$requestId][] = new responses\stderr($requestId, $contentData);
-					break;
-
-				case responses\end::type:
-					$response = new response($this->requests[$requestId]);
-					unset($this->requests[$requestId]);
-
-					foreach ($this->records[$requestId] as $record)
-					{
-						$record->addToResponse($response);
-					}
-
-					unset($this->records[$requestId]);
-
-					$record = new responses\end($requestId, $contentData);
-					$record->addToResponse($response);
-
-					$this->responses[] = $response;
-					break;
-
-				default:
-					throw new record\exception('Type \'' . $type . '\' is unknown');
-			}
-		}
-
-		return $this;
-	}
-
-	private function readSocket($length)
-	{
-		$data = @$this->adapter->fread($this->socket, $length);
-
-		if ($data === false)
-		{
-			throw new stream\exception('Unable to read record from stream \'' . $this . '\'');
-		}
-
-		$this->data .= $data;
-
-		$data = '';
-
-		if (strlen($this->data) >= $length)
-		{
-			$data = substr($this->data, 0, $length);
-			$this->data = substr($this->data, $length);
-		}
-
-		return $data;
-	}
-
-	private function writeRecords(request $request)
-	{
-		$records = $request->getRecords($this);
-
-		$requestId = $records->getRequestId();
-
-		if (isset($this->writeSocket($records->getStreamData())->requests[$requestId]) === false)
-		{
-			$this->requests[$requestId] = $request;
-			$this->records[$requestId] = array();
-		}
-
-		return $this;
-	}
-
-	private function writeSocket($data)
-	{
-		while ($data != '')
-		{
-			$dataWrited = @$this->adapter->fwrite($this->open()->socket, $data, strlen($data));
-
-			if ($dataWrited === false)
-			{
-				throw new stream\exception('Unable to write data \'' . $data . '\' in stream \'' . $this . '\'');
-			}
-
-			$data = substr($data, $dataWrited);
-		}
-
-		return $this;
-	}
-
-	private function requestWasSent(request $request)
-	{
-		return in_array($request, $this->requests, true);
 	}
 
 	private static function getValues($streamData)

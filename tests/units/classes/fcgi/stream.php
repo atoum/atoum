@@ -53,12 +53,12 @@ class stream extends atoum\test
 			->and($adapter->stream_select = 1)
 			->and($adapter->socket_set_blocking = function() {})
 			->and($adapter->fwrite = strlen($request->getRecords($stream)->getStreamData()))
-			->and($adapter->fread = '')
+			->and($adapter->stream_get_contents = '')
 			->and($adapter->fclose = function() {})
 			->and($streamData = $request->getRecords($stream)->getStreamData())
 			->then
 				->object($stream($request))->isIdenticalTo($stream)
-				->adapter($adapter)->call('fwrite')->withArguments($socket, $streamData, strlen($streamData))->once()
+				->adapter($adapter)->call('fwrite')->withArguments($socket, $streamData)->once()
 			->if($stream = new testedClass())
 			->and($stream->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->stream_socket_client = uniqid())
@@ -68,9 +68,7 @@ class stream extends atoum\test
 			->and($request->STDIN = uniqid())
 			->and($adapter->fwrite = strlen($request->getRecords($stream)->getStreamData()))
 			->and($adapter->fclose = function() {})
-			->and($adapter->fread[1] = '')
-			->and($adapter->fread[2] = "\001\003\000\001\000" . chr(8) . "\000\000\001")
-			->and($adapter->fread[3] = "\000\000\000\000\000\000\000\000")
+			->and($adapter->stream_get_contents = "\001\003\000\001\000" . chr(8) . "\000\000\001" . "\000\000\000\000\000\000\000\000")
 			->and($stream($request))
 			->then
 				->array($stream())->isEqualTo(array(new fcgi\response($request)))
@@ -145,14 +143,13 @@ class stream extends atoum\test
 			->and($adapter->stream_select = 1)
 			->and($adapter->socket_set_blocking = function() {})
 			->and($adapter->fwrite = strlen($request->getRecords($stream)->getStreamData()))
-			->and($adapter->fread = '')
+			->and($adapter->stream_get_contents = '')
 			->and($adapter->fclose = function() {})
 			->and($stream->write($request))
 			->then
 				->string($stream->generateRequestId())->isEqualTo(2)
 			->if($adapter->resetCalls())
-			->and($adapter->fread[1] = "\001\003\000\001\000" . chr(8) . "\000\000\001")
-			->and($adapter->fread[2] = "\000\000\000\000\000\000\000\000")
+			->and($adapter->stream_get_contents = "\001\003\000\001\000" . chr(8) . "\000\000\001" . "\000\000\000\000\000\000\000\000")
 			->and($stream->read())
 			->then
 				->string($stream->generateRequestId())->isEqualTo(1)
@@ -170,12 +167,12 @@ class stream extends atoum\test
 			->and($adapter->stream_select = 1)
 			->and($adapter->socket_set_blocking = function() {})
 			->and($adapter->fwrite = strlen($request->getRecords($stream)->getStreamData()))
-			->and($adapter->fread = '')
+			->and($adapter->stream_get_contents = '')
 			->and($adapter->fclose = function() {})
 			->and($streamData = $request->getRecords($stream)->getStreamData())
 			->then
 				->object($stream->write($request))->isIdenticalTo($stream)
-				->adapter($adapter)->call('fwrite')->withArguments($socket, $streamData, strlen($streamData))->once()
+				->adapter($adapter)->call('fwrite')->withArguments($socket, $streamData)->once()
 		;
 	}
 
@@ -191,9 +188,7 @@ class stream extends atoum\test
 			->and($request->STDIN = uniqid())
 			->and($adapter->fwrite = strlen($request->getRecords($stream)->getStreamData()))
 			->and($adapter->fclose = function() {})
-			->and($adapter->fread[1] = '')
-			->and($adapter->fread[2] = "\001\003\000\001\000" . chr(8) . "\000\000\001")
-			->and($adapter->fread[3] = "\000\000\000\000\000\000\000\000")
+			->and($adapter->stream_get_contents = "\001\003\000\001\000" . chr(8) . "\000\000\001" . "\000\000\000\000\000\000\000\000")
 			->and($stream->write($request))
 			->then
 				->array($stream->read())->isEqualTo(array(new fcgi\response($request)))
