@@ -125,7 +125,7 @@ class stream
 
 		if ($this->adapter->invoke('stream_select', array(& $read, & $write, & $except, 0)) > 0)
 		{
-			$output = @$this->adapter->fwrite($this->socket, $this->output);
+			$output = $this->adapter->fwrite($this->socket, $this->output);
 
 			if ($output === false)
 			{
@@ -156,7 +156,7 @@ class stream
 
 		if ($this->adapter->invoke('stream_select', array(& $read, & $write, & $except, 0)) > 0)
 		{
-			$input = @$this->adapter->stream_get_contents($this->socket);
+			$input = $this->adapter->stream_get_contents($this->socket);
 
 			if ($input === false)
 			{
@@ -170,7 +170,11 @@ class stream
 		{
 			list($type, $requestId, $contentLength, $padding) = self::getValues(substr($this->input, 0, 8));
 
-			if (strlen($this->input) >= 8 + $contentLength + $padding)
+			if (strlen($this->input) < 8 + $contentLength + $padding)
+			{
+				break;
+			}
+			else
 			{
 				$contentData = substr($this->input, 8, $contentLength);
 
