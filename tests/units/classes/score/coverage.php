@@ -747,10 +747,7 @@ class coverage extends atoum\test
         $this
             ->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
             ->then
-                ->exception(function() use ($coverage) {
-                    $coverage->getCoverageForClass(uniqid());
-                })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                ->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
             ->if($classController = new mock\controller())
             ->and($classController->__construct = function() {})
             ->and($classController->getName = function() use (& $className) { return $className; })
@@ -943,10 +940,7 @@ class coverage extends atoum\test
         $this
             ->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
             ->then
-                ->exception(function() use ($coverage) {
-                    $coverage->getCoverageForClass(uniqid());
-                })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+                ->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
             ->if($classController = new mock\controller())
             ->and($classController->__construct = function() {})
             ->and($classController->getName = function() use (& $className) { return $className; })
