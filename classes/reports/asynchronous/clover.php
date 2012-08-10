@@ -110,14 +110,7 @@ class clover extends atoum\reports\asynchronous {
 
 		foreach ($coverage->getClasses() as $class => $file)
 		{
-			try
-			{
-				$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
-			}
-			catch (exceptions\logic\invalidArgument $e)
-			{
-				$package->appendChild($this->makeFileElement($document, $file, $class, array()));
-			}
+			$package->appendChild($this->makeFileElement($document, $file, $class, $coverage->getCoverageForClass($class)));
 		}
 
 		$package->appendChild($this->makePackageMetricsElement($document, sizeof($coverage->getClasses())));
@@ -127,7 +120,7 @@ class clover extends atoum\reports\asynchronous {
 
 	protected function makePackageMetricsElement(\DOMDocument $document, $files)
 	{
-		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, 1);
+		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, $files);
 		$metrics->setAttribute('files', $files);
 
 		return $metrics;
@@ -148,8 +141,6 @@ class clover extends atoum\reports\asynchronous {
 		{
 			if (sizeof($lines) > 0)
 			{
-				++$coveredMethods;
-
 				foreach ($lines as $lineNumber => $cover)
 				{
 					if ($cover >= -1)
@@ -162,6 +153,15 @@ class clover extends atoum\reports\asynchronous {
 						$coveredLines++;
 						$file->appendChild($this->makeLineElement($document, $lineNumber));
 					}
+					else
+					{
+						$file->appendChild($this->makeLineElement($document, $lineNumber, 0));
+					}
+				}
+
+				if ($coveredLines === $totalLines)
+				{
+					++$coveredMethods;
 				}
 			}
 		}
@@ -175,7 +175,7 @@ class clover extends atoum\reports\asynchronous {
 		;
 
 		$file->appendChild($this->makeClassElement($document, $class, $coverage));
-		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, $this->classes));
+		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, 1));
 
 		return $file;
 	}
@@ -245,13 +245,13 @@ class clover extends atoum\reports\asynchronous {
 		return $metrics;
 	}
 
-	protected function makeLineElement(\DOMDocument $document, $linenum)
+	protected function makeLineElement(\DOMDocument $document, $linenum, $count = 1)
 	{
 		$line = $document->createElement('line');
 		$line->setAttribute('num', $linenum);
 		$line->setAttribute('type', self::lineTypeStatement);
 		$line->setAttribute('complexity', 0);
-		$line->setAttribute('count', 1);
+		$line->setAttribute('count', $count);
 		$line->setAttribute('falsecount', 0);
 		$line->setAttribute('truecount', 0);
 		$line->setAttribute('signature', '');
