@@ -166,51 +166,40 @@ class stream
 			$this->input .= $input;
 		}
 
-		while (strlen($this->input) >= 8)
+		list($type, $requestId, $contentData) = $this->getRecordValues();
+
+		switch ($type)
 		{
-			list($type, $requestId, $contentLength, $padding) = self::getValues(substr($this->input, 0, 8));
-
-			if (strlen($this->input) < 8 + $contentLength + $padding)
-			{
+			case null:
 				break;
-			}
-			else
-			{
-				$contentData = substr($this->input, 8, $contentLength);
 
-				$this->input = (string) substr($this->input, 8 + $contentLength + $padding);
+			case responses\stdout::type:
+				$this->records[$requestId][] = new responses\stdout($requestId, $contentData);
+				break;
 
-				switch ($type)
+			case responses\stderr::type:
+				$this->records[$requestId][] = new responses\stderr($requestId, $contentData);
+				break;
+
+			case responses\end::type:
+				$response = new response($this->requests[$requestId]);
+				unset($this->requests[$requestId]);
+
+				foreach ($this->records[$requestId] as $record)
 				{
-					case responses\stdout::type:
-						$this->records[$requestId][] = new responses\stdout($requestId, $contentData);
-						break;
-
-					case responses\stderr::type:
-						$this->records[$requestId][] = new responses\stderr($requestId, $contentData);
-						break;
-
-					case responses\end::type:
-						$response = new response($this->requests[$requestId]);
-						unset($this->requests[$requestId]);
-
-						foreach ($this->records[$requestId] as $record)
-						{
-							$record->addToResponse($response);
-						}
-
-						unset($this->records[$requestId]);
-
-						$record = new responses\end($requestId, $contentData);
-						$record->addToResponse($response);
-
-						$responses[] = $response;
-						break;
-
-					default:
-						throw new record\exception('Type \'' . $type . '\' is unknown');
+					$record->addToResponse($response);
 				}
-			}
+
+				unset($this->records[$requestId]);
+
+				$record = new responses\end($requestId, $contentData);
+				$record->addToResponse($response);
+
+				$responses[] = $response;
+				break;
+
+				default:
+					throw new record\exception('Type \'' . $type . '\' is unknown');
 		}
 
 		return $responses;
@@ -238,33 +227,35 @@ class stream
 		return array_values($this->requests);
 	}
 
-	private static function getValues($streamData)
+	private function getRecordValues()
 	{
 		$values = null;
 
-		if (strlen($streamData) >= 7)
+		$inputLength = strlen($this->input);
+
+		if ($inputLength >= 8)
 		{
-			if (ord($streamData[0]) == self::version)
+			$contentLength = self::getRecordValue($this->input[4], $this->input[5]);
+			$padding = ord($this->input[6]);
+
+			$recordLength = 8 + $contentLength + $padding;
+
+			if ($inputLength >= $recordLength)
 			{
 				$values = array(
-					ord($streamData[1]),
-					self::getValue($streamData[2], $streamData[3])
+					ord($this->input[1]),
+					self::getRecordValue($this->input[2], $this->input[3]),
+					substr($this->input, 8, $contentLength)
 				);
 
-				$contentLength = self::getValue($streamData[4], $streamData[5]);
-
-				if ($contentLength > 0)
-				{
-					$values[] = $contentLength;
-					$values[] = ord($streamData[6]);
-				}
+				$this->input = (string) substr($this->input, $recordLength);
 			}
 		}
 
 		return $values;
 	}
 
-	private static function getValue($valueB0, $valueB1)
+	private static function getRecordValue($valueB0, $valueB1)
 	{
 		return (ord($valueB0) << 8) + ord($valueB1);
 	}
