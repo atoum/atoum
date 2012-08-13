@@ -254,16 +254,21 @@ class runner extends atoum\script
 		return $this;
 	}
 
+	public static function autorunIsEnabled()
+	{
+		return (static::$autorunner !== null);
+	}
+
 	public static function enableAutorun($name)
 	{
-		if (self::$autorunner !== null)
+		if (static::$autorunner !== null)
 		{
-			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
+			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
-		self::$autorunner = new static($name);
+		static::$autorunner = new static($name);
 
-		$autorunner = & self::$autorunner;
+		$autorunner = & static::$autorunner;
 
 		register_shutdown_function(function() use (& $autorunner) {
 				if ($autorunner !== null)
@@ -280,7 +285,7 @@ class runner extends atoum\script
 
 	public static function disableAutorun()
 	{
-		self::$autorunner = null;
+		static::$autorunner = null;
 	}
 
 	public static function getSubDirectoryPath($directory, $directorySeparator = null)
