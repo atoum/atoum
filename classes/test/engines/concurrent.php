@@ -108,8 +108,8 @@ class concurrent extends test\engine
 
 			$phpCode .=
 				'ob_end_clean();' .
-				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());' .
-				'mageekguy\atoum\scripts\runner::disableAutorun();'
+				'mageekguy\atoum\scripts\runner::disableAutorun();' .
+				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
 			;
 
 			$this->adapter->fwrite($this->pipes[0], $phpCode);
