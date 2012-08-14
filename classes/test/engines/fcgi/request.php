@@ -12,7 +12,7 @@ class request extends requests\post
 {
 	protected $localTestPath = '';
 
-	public function __construct(atoum\test $test, atoum\fcgi\stream $stream)
+	public function __construct(atoum\test $test, stream $stream)
 	{
 		$this->localTestPath = $test->getPath();
 
