@@ -76,8 +76,8 @@ else
 
 $test->setMethodTags($_POST['testMethod'], array('engine' => 'inline'));
 
+\mageekguy\atoum\scripts\runner::disableAutorun();
+
 ob_end_clean();
 
 echo serialize($test->runTestMethod($_POST['testMethod'])->getScore());
-
-\mageekguy\atoum\scripts\runner::disableAutorun();
