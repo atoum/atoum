@@ -143,6 +143,11 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
+							array('--test-all'),
+							null,
+							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+						),
+						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -276,6 +281,11 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
+							array('--test-all'),
+							null,
+							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+						),
+						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -312,7 +322,7 @@ class runner extends atoum\test
 		$this
 			->if($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\locale'] = $locale = new \mock\mageekguy\atoum\locale())
-			->and($runner = new scripts\runner($name = uniqid(), $factory))
+			->and($runner = new scripts\runner(uniqid(), $factory))
 			->then
 				->exception(function() use ($runner, & $file) {
 						$runner->useConfigFile($file = uniqid());
@@ -333,7 +343,7 @@ class runner extends atoum\test
 	public function testUseDefaultConfigFiles()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($runner->getMockController()->useConfigFile = function() {})
 			->then
 				->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
@@ -342,6 +352,29 @@ class runner extends atoum\test
 							$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
 						}
 					)
+		;
+	}
+
+	public function getTestAllDirectories()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->array($runner->getTestAllDirectories())->isEmpty()
+		;
+	}
+
+	public function testAddTestAllDirectory()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->addTestAllDirectory($directory = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestAllDirectories())->isEqualTo(array($directory))
+				->object($runner->addtestalldirectory($directory))->isidenticalto($runner)
+				->array($runner->gettestalldirectories())->isequalto(array($directory))
+				->object($runner->addtestalldirectory(($otherDirectory = uniqid()) . DIRECTORY_SEPARATOR))->isidenticalto($runner)
+				->array($runner->gettestalldirectories())->isequalto(array($directory, $otherDirectory))
 		;
 	}
 

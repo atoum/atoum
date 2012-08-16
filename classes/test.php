@@ -244,6 +244,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 		$this->assertionManager->setHandler('when', function($mixed) use ($assertionManager) { if (is_callable($mixed) === true) { call_user_func($mixed); } return $assertionManager; });
 
+		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
+
+		$this->assertionManager
+			->setHandler('callOf', $mockControllerExtractor)
+			->setHandler('ƒ', $mockControllerExtractor)
+		;
+
 		$returnAssertionManager = function() use ($assertionManager) { return $assertionManager; };
 		$this->assertionManager
 			->setHandler('if', $returnAssertionManager)
@@ -251,6 +258,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('then', $returnAssertionManager)
 			->setHandler('given', $returnAssertionManager)
 		;
+
 
 		$test = $this;
 		$this->assertionManager
