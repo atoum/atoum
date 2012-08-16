@@ -234,7 +234,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
 
 		$this->assertionManager
-			->setHandler('callOf', $mockControllerExtractor)
+			->setHandler('calling', $mockControllerExtractor)
 			->setHandler('ƒ', $mockControllerExtractor)
 		;
 
