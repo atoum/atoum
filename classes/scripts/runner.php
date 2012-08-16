@@ -20,6 +20,7 @@ class runner extends atoum\script
 	protected $scoreFile = null;
 	protected $arguments = array();
 	protected $namespaces = array();
+	protected $testAllDirectories = array();
 	protected $tags = array();
 	protected $methods = array();
 	protected $loop = false;
@@ -89,6 +90,23 @@ class runner extends atoum\script
 		$this->arguments = $arguments;
 
 		return $this;
+	}
+
+	public function addTestAllDirectory($directory)
+	{
+		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
+
+		if (in_array($directory, $this->testAllDirectories) === false)
+		{
+			$this->testAllDirectories[] = $directory;
+		}
+
+		return $this;
+	}
+
+	public function getTestAllDirectories()
+	{
+		return $this->testAllDirectories;
 	}
 
 	public function run(array $arguments = array())
@@ -639,6 +657,24 @@ class runner extends atoum\script
 					array('--test-it'),
 					null,
 					$this->locale->_('Execute atoum unit tests')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$runner = $script->getRunner();
+
+						foreach ($script->getTestAllDirectories() as $directory)
+						{
+							$runner->addTestsFromDirectory($directory);
+						}
+					},
+					array('--test-all'),
+					null,
+					$this->locale->_('Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {

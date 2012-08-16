@@ -26,11 +26,19 @@ class configurator
 	{
 		if (isset($this->methods[$method]) === false)
 		{
-			throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
+			if (method_exists($this->script, $method) === false)
+			{
+				throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
+			}
+
+			call_user_func_array(array($this->script, $method), $arguments);
+
+			return $this;
 		}
 		else
 		{
 			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$method], $arguments);
+
 			return $this;
 		}
 	}

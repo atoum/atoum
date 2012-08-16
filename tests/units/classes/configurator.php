@@ -37,6 +37,8 @@ class configurator extends atoum\test
 					->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
 					->object($configurator->bootstrapFile($bootstrapFile = uniqid()))->isIdenticalTo($configurator)
 					->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
+					->object($configurator->setScoreFile($scoreFile = uniqid()))->isIdenticalTo($configurator)
+					->mock($script)->call('setScoreFile')->withArguments($scoreFile)->once()
 				->exception(function() use ($configurator, & $method) { $configurator->{$method = uniqid()}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Method \'' . $method . '\' is unavailable')
