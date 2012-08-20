@@ -253,14 +253,16 @@ class coverage implements \countable, \serializable
 
 	public function getCoverageForClass($class)
 	{
+		$coverage = array();
+
 		$class = (string) $class;
 
-		if(isset($this->methods[$class]) === false)
+		if (isset($this->methods[$class]) === true && $this->isInExcludedClasses($class) === false)
 		{
-			return array();
+			$coverage = $this->methods[$class];
 		}
 
-		return ($this->isInExcludedClasses($class) ? array() : $this->methods[$class]);
+		return $coverage;
 	}
 
 	public function getValueForMethod($class, $method)
@@ -298,12 +300,7 @@ class coverage implements \countable, \serializable
 	{
 		$class = $this->getCoverageForClass($class);
 
-		if(isset($class[$method]) === false)
-		{
-			return array();
-		}
-
-		return $class[$method];
+		return (isset($class[$method]) === false ? array() : $class[$method]);
 	}
 
 	public function excludeClass($class)

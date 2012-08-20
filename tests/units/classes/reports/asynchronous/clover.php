@@ -91,13 +91,13 @@ class clover extends atoum\test
 			->and($observable->getMockController()->getScore = $score)
 			->and($score->getMockController()->getCoverage = $coverage)
 			->and($coverage->getMockController()->getClasses = array())
-			->and($filepath = implode(
+			->and($filepath = join(
 				DIRECTORY_SEPARATOR,
 				array(
 					__DIR__,
 					'clover',
 					'resources',
-					'clover.xml'
+					'1.xml'
 				)
 			))
 			->and($report = new reports\clover($factory))
@@ -136,13 +136,13 @@ class clover extends atoum\test
 					9 => 1
 				)
 			))
-			->and($filepath = implode(
+			->and($filepath = join(
 				DIRECTORY_SEPARATOR,
 				array(
 					__DIR__,
 					'clover',
 					'resources',
-					'clover-2.xml'
+					'2.xml'
 				)
 			))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
