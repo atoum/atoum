@@ -257,7 +257,7 @@ class coverage implements \countable, \serializable
 
 		if(isset($this->methods[$class]) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Class \'' . $class . '\' does not exist');
+			return array();
 		}
 
 		return ($this->isInExcludedClasses($class) ? array() : $this->methods[$class]);
@@ -300,7 +300,7 @@ class coverage implements \countable, \serializable
 
 		if(isset($class[$method]) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Method \'' . $method . '\' does not exist');
+			return array();
 		}
 
 		return $class[$method];
