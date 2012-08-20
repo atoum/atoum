@@ -190,12 +190,6 @@ class controller extends test\adapter
 		return $instance;
 	}
 
-	public function injectInNextMockInstance()
-	{
-		#DEPRECATED
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
-	}
-
 	protected function checkMethod($method)
 	{
 		if ($this->mockClass !== null && $this->disableMethodChecking === false)

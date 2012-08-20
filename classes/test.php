@@ -850,13 +850,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return true;
 	}
 
-	public function mock($class, $mockNamespace = null, $mockClass = null)
-	{
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::mockClass() instead');
-
-		return $this;
-	}
-
 	public function startCase($case)
 	{
 		test\adapter::resetCallsForAllInstances();
