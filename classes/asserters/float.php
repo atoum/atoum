@@ -39,22 +39,9 @@ class float extends \mageekguy\atoum\asserters\integer
 		return (is_float($value) === true);
 	}
 
-    /**
-     * Test if float is nearly equal to an other one.
-     *
-     * Example:
-     * You want to test if 101 is nearly equal to 100
-     * you'll just have to pass an epsilon 0.01 or higher
-     *
-     * @param float       $value       value to test
-     * @param float       $epsilon     epsilon, (ex: 0.01)
-     * @param string|null $failMessage message if fail
-     * @link http://www.floating-point-gui.de/errors/comparison/
-     *
-     * @return \mageekguy\atoum\asserters\float
-     */
 	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
 	{
+		//@link http://www.floating-point-gui.de/errors/comparison/
 		static::check($value, __METHOD__);
 
 		if (null === $epsilon) {
