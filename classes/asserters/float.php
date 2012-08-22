@@ -46,8 +46,8 @@ class float extends \mageekguy\atoum\asserters\integer
 		//see http://www.floating-point-gui.de/errors/comparison/ for more informations
 
 		$originalValue = abs($this->valueIsSet()->value);
-		$value = abs($value);
-		$diff = abs($originalValue - $value);
+		$absValue = abs($value);
+		$diff = abs($originalValue - $absValue);
 
 		if ($epsilon === null) {
 			$epsilon = pow(10, - ini_get('precision'));
@@ -55,9 +55,10 @@ class float extends \mageekguy\atoum\asserters\integer
 
 		switch (true)
 		{
-			case $originalValue == $value:
-			case $originalValue * $value == 0 && $diff < pow($epsilon, 2):
-			case $diff / ($originalValue + $value) < $epsilon:
+			case $originalValue == $absValue:
+			case $originalValue * $absValue == 0 && $diff < pow($epsilon, 2):
+			case !is_nan($diff) && $diff / ($originalValue + $absValue) < $epsilon:
+
 				return $this;
 
 			default:
