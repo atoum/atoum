@@ -246,7 +246,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('given', $returnAssertionManager)
 		;
 
-
 		$test = $this;
 		$this->assertionManager
 			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getAssertionManager(); })
