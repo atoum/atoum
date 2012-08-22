@@ -44,7 +44,7 @@ class object extends asserters\variable
 	{
 		try
 		{
-			self::check($value, __METHOD__);
+			self::check($value, __FUNCTION__);
 		}
 		catch (\logicException $exception)
 		{
@@ -106,7 +106,7 @@ class object extends asserters\variable
 	{
 		if (self::isObject($value) === false)
 		{
-			throw new exceptions\logic('Argument of ' . $method . '() must be a class instance');
+			throw new exceptions\logic('Argument of ' . __CLASS__ . '::' . $method . '() must be a class instance');
 		}
 	}
 

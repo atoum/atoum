@@ -50,12 +50,36 @@ class float extends atoum\test
 			->and($asserter->setWith($value = (float) rand(1, PHP_INT_MAX)))
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $notFloat) { $asserter->isEqualTo($notFloat = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of ' . get_class($asserter) . '::isEqualTo() must be a float')
 			->if($diff = new diffs\variable())
 			->and($diff->setReference(- $value)->setData($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isEqualTo(- $value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value)) . PHP_EOL . $diff)
+		;
+	}
+
+	public function testIsNearlyEqualTo()
+	{
+		$this
+			->if($asserter = new asserters\float($generator = new asserter\generator()))
+			->and($asserter->setWith($value = (float) 100))
+			->and($testValue = (float) 101)
+			->and($epsilonFail = pow(10, -3))
+			->and($epsilonSuccess = pow(10, -2))
+			->then
+				->object($asserter->isNearlyEqualTo($value))->isIdenticalTo($asserter)
+			->then
+				->object($asserter->isNearlyEqualTo($testValue, $epsilonSuccess))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->and($diff->setReference($testValue)->setData($value))
+			->then
+				->exception(function() use ($asserter, $testValue, $epsilonFail) { $asserter->isNearlyEqualTo($testValue, $epsilonFail); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $asserter, $asserter->getTypeOf($testValue), $epsilonFail) . PHP_EOL . $diff);
 		;
 	}
 }

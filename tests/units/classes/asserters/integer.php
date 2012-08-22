@@ -82,28 +82,6 @@ class integer extends atoum\test
 		;
 	}
 
-	public function testIsLowerThan()
-	{
-		$this
-			->if($asserter = new asserters\integer($generator = new asserter\generator()))
-			->and($asserter->setWith($value = - rand(1, PHP_INT_MAX - 1)))
-			->then
-				->object($asserter->isLowerThan(0))->isIdenticalTo($asserter)
-			->if($diff = new diffs\variable())
-			->and($diff->setReference(- PHP_INT_MAX)->setData($value))
-			->then
-				->exception(function() use ($asserter, $value) { $asserter->isLowerThan(- PHP_INT_MAX); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
-			->if($diff = new diffs\variable())
-			->and($diff->setReference($value)->setData($value))
-			->then
-				->exception(function() use ($asserter, $value) { $asserter->isLowerThan($value); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf($value)))
-		;
-	}
-
 	public function testIsLessThan()
 	{
 		$this
@@ -116,13 +94,13 @@ class integer extends atoum\test
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThan(- PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
 			->if($diff = new diffs\variable())
 			->and($diff->setReference($value)->setData($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThan($value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than %s'), $asserter, $asserter->getTypeOf($value)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than %s'), $asserter, $asserter->getTypeOf($value)))
 		;
 	}
 
@@ -143,24 +121,7 @@ class integer extends atoum\test
 		;
 	}
 
-	public function testIsLowerThanOrEqualTo()
-	{
-		$this
-			->if($asserter = new asserters\integer($generator = new asserter\generator()))
-			->and($asserter->setWith($value = - rand(1, PHP_INT_MAX - 1)))
-			->then
-				->object($asserter->isLowerThanOrEqualTo(0))->isIdenticalTo($asserter)
-				->object($asserter->isLowerThanOrEqualTo($value))->isIdenticalTo($asserter)
-			->if($diff = new diffs\variable())
-			->and($diff->setReference(- PHP_INT_MAX)->setData($value))
-			->then
-				->exception(function() use ($asserter, $value) { $asserter->isLowerThanOrEqualTo(- PHP_INT_MAX); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
-		;
-	}
-
-	public function testisLessThanOrEqualTo()
+	public function testIsLessThanOrEqualTo()
 	{
 		$this
 			->if($asserter = new asserters\integer($generator = new asserter\generator()))
@@ -173,7 +134,7 @@ class integer extends atoum\test
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThanOrEqualTo(- PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not lower than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
 		;
 	}
 }
