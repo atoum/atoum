@@ -212,7 +212,7 @@ class runner extends atoum\script
 	{
 		if ($startDirectory === null)
 		{
-			$startDirectory = getcwd();
+			$startDirectory = $this->adapter->getcwd();
 		}
 
 		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
