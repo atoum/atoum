@@ -41,35 +41,33 @@ class float extends \mageekguy\atoum\asserters\integer
 
 	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
 	{
-		//@link http://www.floating-point-gui.de/errors/comparison/
 		static::check($value, __METHOD__);
 
-		if (null === $epsilon) {
-			$epsilon = pow(10, -ini_get('precision'));
-		}
+		//see http://www.floating-point-gui.de/errors/comparison/ for more informations
 
 		$originalValue = abs($this->valueIsSet()->value);
-		$value         = abs($value);
-		$diff          = abs($originalValue - $value);
+		$value = abs($value);
+		$diff = abs($originalValue - $value);
 
-		if ($originalValue == $value) {
-			return $this;
-		} elseif ($originalValue * $value == 0) {
-			if($diff < ($epsilon * $epsilon)) {
-				return $this;
-			}
-		} else {
-			if ($diff / ($originalValue + $value) < $epsilon) {
-				return $this;
-			}
+		if ($epsilon === null) {
+			$epsilon = pow(10, - ini_get('precision'));
 		}
 
-		$diff = new diffs\variable();
+		switch (true)
+		{
+			case $originalValue == $value:
+			case $originalValue * $value == 0 && $diff < pow($epsilon, 2):
+			case $diff / ($originalValue + $value) < $epsilon:
+				return $this;
 
-		$this->fail(
-			($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
-			PHP_EOL .
-			$diff->setReference($value)->setData($this->value)
-		);
+			default:
+				$diff = new diffs\variable();
+
+				$this->fail(
+					($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
+					PHP_EOL .
+					$diff->setReference($value)->setData($this->value)
+				);
+		}
 	}
 }
