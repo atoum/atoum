@@ -41,34 +41,36 @@ class float extends \mageekguy\atoum\asserters\integer
 
 	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
 	{
-		static::check($value, __METHOD__);
+		static::check($value, __FUNCTION__);
 
-		//see http://www.floating-point-gui.de/errors/comparison/ for more informations
-
-		$originalValue = abs($this->valueIsSet()->value);
-		$absValue = abs($value);
-		$diff = abs($originalValue - $absValue);
-
-		if ($epsilon === null) {
-			$epsilon = pow(10, - ini_get('precision'));
-		}
-
-		switch (true)
+		if ($this->valueIsSet()->value !== $value)
 		{
-			case $originalValue == $absValue:
-			case $originalValue * $absValue == 0 && $diff < pow($epsilon, 2):
-			case !is_nan($diff) && $diff / ($originalValue + $absValue) < $epsilon:
+			// see http://www.floating-point-gui.de/errors/comparison/ for more informations
+			$absValue = abs($value);
+			$originalValue = abs($this->value);
+			$offset = abs($originalValue - $absValue);
+			$offsetIsNaN = is_nan($offset);
 
-				return $this;
+			if ($offsetIsNaN === false && $epsilon === null)
+			{
+				$epsilon = pow(10, - ini_get('precision'));
+			}
 
-			default:
-				$diff = new diffs\variable();
+			switch (true)
+			{
+				case $offsetIsNaN === true:
+				case $offset / ($originalValue + $absValue) >= $epsilon:
+				case $originalValue * $absValue == 0 && $offset >= pow($epsilon, 2):
+					$diff = new diffs\variable();
 
-				$this->fail(
-					($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
-					PHP_EOL .
-					$diff->setReference($value)->setData($this->value)
-				);
+					$this->fail(
+						($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
+						PHP_EOL .
+						$diff->setReference($value)->setData($this->value)
+					);
+				}
 		}
+
+		return $this;
 	}
 }
