@@ -12,7 +12,7 @@ class extractor
 
 		if (substr($comments, 0, 2) == '/*' && substr($comments, -2) == '*/')
 		{
-			foreach (explode("\n", trim($comments, "/* \t\r\n\0\x0B")) as $comment)
+			foreach (preg_split('/\r?\n/', trim($comments, "/* \t\r\n\0\x0B")) as $comment)
 			{
 				$cleanComment = ltrim($comment, "@ \t\r\n\0\x0B");
 
