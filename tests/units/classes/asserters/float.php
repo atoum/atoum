@@ -96,7 +96,8 @@ class float extends atoum\test
 			array((float) -1.0001, (float) -1, pow(10, -4), true),
 			array((float) -1.0001, (float) -1, pow(10, -5), false),
 			array((float) 0.0001, (float) -0.0001, pow(10, -4), true),
-            array((float) INF, (float) -INF, 1, false),
+			array((float) INF, (float) -INF, 1, false),
+			array((float) INF, (float) INF, 1, true),
 		);
 	}
 }
