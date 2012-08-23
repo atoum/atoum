@@ -352,20 +352,17 @@ class runner extends atoum\test
 							$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
 						}
 					)
-		;
-
-
-		$this
 			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($runner->getMockController()->useConfigFile = function() {})
-			->and($runner->getAdapter()->cwd= function(){ return atoum\directory; })
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->cwd= function(){ return atoum\directory; })
 			->then
 				->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
 				->mock($runner)
 					->foreach(scripts\runner::getSubDirectoryPath(atoum\directory), function($mock, $path) {
 						$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
 					}
-					)
+				)
 		;
 	}
 
