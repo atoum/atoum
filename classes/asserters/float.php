@@ -47,8 +47,8 @@ class float extends \mageekguy\atoum\asserters\integer
 		{
 			// see http://www.floating-point-gui.de/errors/comparison/ for more informations
 			$absValue = abs($value);
-			$originalValue = abs($this->value);
-			$offset = abs($originalValue - $absValue);
+			$absCurrentValue = abs($this->value);
+			$offset = abs($absCurrentValue - $absValue);
 			$offsetIsNaN = is_nan($offset);
 
 			if ($offsetIsNaN === false && $epsilon === null)
@@ -59,8 +59,8 @@ class float extends \mageekguy\atoum\asserters\integer
 			switch (true)
 			{
 				case $offsetIsNaN === true:
-				case $offset / ($originalValue + $absValue) >= $epsilon:
-				case $originalValue * $absValue == 0 && $offset >= pow($epsilon, 2):
+				case $offset / ($absCurrentValue + $absValue) >= $epsilon:
+				case $absCurrentValue * $absValue == 0 && $offset >= pow($epsilon, 2):
 					$diff = new diffs\variable();
 
 					$this->fail(
