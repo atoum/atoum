@@ -25,6 +25,7 @@ class cli extends atoum\test
 	public function testIsTerminalWhenPosixIsTtyIsUndefined()
 	{
 		$adapter = new atoum\test\adapter();
+		$adapter->getenv = false;
 		$adapter->defined = true;
 		$adapter->function_exists = false;
 
@@ -38,6 +39,7 @@ class cli extends atoum\test
 	public function testIsTerminalWhenPosixIsTtyReturnFalse()
 	{
 		$adapter = new atoum\test\adapter();
+		$adapter->getenv = false;
 		$adapter->defined = true;
 		$adapter->function_exists = true;
 		$adapter->constant = null;
@@ -57,6 +59,18 @@ class cli extends atoum\test
 		$adapter->function_exists = true;
 		$adapter->constant = null;
 		$adapter->posix_isatty = true;
+
+		$cli = new atoum\cli($adapter);
+
+		$this->assert
+			->boolean($cli->isTerminal())->isTrue()
+		;
+	}
+
+	public function testIsTerminalWhenGetenvReturnTrue()
+	{
+		$adapter = new atoum\test\adapter();
+		$adapter->getenv = true;
 
 		$cli = new atoum\cli($adapter);
 
