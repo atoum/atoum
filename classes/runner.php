@@ -177,7 +177,12 @@ class runner implements observable, adapter\aggregator
 	{
 		if ($this->phpPath === null)
 		{
-			$phpPath = $this->adapter->constant('PHP_BINARY');
+			$phpPath = null;
+
+			if ($this->adapter->defined('PHP_BINARY') === true)
+			{
+				$phpPath = $this->adapter->constant('PHP_BINARY');
+			}
 
 			if ($phpPath === null)
 			{
