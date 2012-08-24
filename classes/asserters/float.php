@@ -26,19 +26,6 @@ class float extends \mageekguy\atoum\asserters\integer
 		return $this;
 	}
 
-	protected static function check($value, $method)
-	{
-		if (self::isFloat($value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be a float');
-		}
-	}
-
-	protected static function isFloat($value)
-	{
-		return (is_float($value) === true);
-	}
-
 	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
 	{
 		static::check($value, __FUNCTION__);
@@ -72,5 +59,18 @@ class float extends \mageekguy\atoum\asserters\integer
 		}
 
 		return $this;
+	}
+
+	protected static function check($value, $method)
+	{
+		if (self::isFloat($value) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be a float');
+		}
+	}
+
+	protected static function isFloat($value)
+	{
+		return (is_float($value) === true);
 	}
 }
