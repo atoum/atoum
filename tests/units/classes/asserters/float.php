@@ -62,24 +62,45 @@ class float extends atoum\test
 		;
 	}
 
-	public function testIsNearlyEqualTo()
+	/**
+	 * @dataProvider dataProviderNearlyEqualTo
+	 */
+	public function testIsNearlyEqualTo($value, $testValue, $epsilon, $pass)
 	{
 		$this
 			->if($asserter = new asserters\float($generator = new asserter\generator()))
-			->and($asserter->setWith($value = (float) 100))
-			->and($testValue = (float) 101)
-			->and($epsilonFail = pow(10, -3))
-			->and($epsilonSuccess = pow(10, -2))
-			->then
-				->object($asserter->isNearlyEqualTo($value))->isIdenticalTo($asserter)
-			->then
-				->object($asserter->isNearlyEqualTo($testValue, $epsilonSuccess))->isIdenticalTo($asserter)
-			->if($diff = new diffs\variable())
-			->and($diff->setReference($testValue)->setData($value))
-			->then
-				->exception(function() use ($asserter, $testValue, $epsilonFail) { $asserter->isNearlyEqualTo($testValue, $epsilonFail); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $asserter, $asserter->getTypeOf($testValue), $epsilonFail) . PHP_EOL . $diff);
+			->and($asserter->setWith($value));
+
+			if ($pass) {
+				$this->object($asserter->isNearlyEqualTo($testValue, $epsilon))
+					->isIdenticalTo($asserter);
+			} else {
+				$this->if($diff = new diffs\variable())
+					->and($diff->setReference($testValue)->setData($value))
+					->then
+						->exception(function() use ($asserter, $testValue, $epsilon) { $asserter->isNearlyEqualTo($testValue, $epsilon); })
+							->isInstanceOf('mageekguy\atoum\asserter\exception')
+							->hasMessage(sprintf($generator->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $asserter, $asserter->getTypeOf($testValue), $epsilon) . PHP_EOL . $diff);
+			}
+
 		;
+	}
+
+	public function dataProviderNearlyEqualTo()
+	{
+		return array(
+			array((float) 100, (float) 100, 1, true),
+			array((float) 100, (float) 101, pow(10, -2), true),
+			array((float) 101, (float) 100, pow(10, -2), true),
+			array((float) 100, (float) 101, pow(10, -3), false),
+			array((float) 101, (float) 100, pow(10, -3), false),
+			array((float) -10001, (float) -10000, pow(10, -5), false),
+			array((float) -10001, (float) -10000, pow(10, -4), true),
+			array((float) -1.0001, (float) -1, pow(10, -4), true),
+			array((float) -1.0001, (float) -1, pow(10, -5), false),
+			array((float) 0.0001, (float) -0.0001, pow(10, -4), true),
+			array((float) INF, (float) -INF, 1, false),
+			array((float) INF, (float) INF, 1, true),
+		);
 	}
 }

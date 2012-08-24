@@ -26,37 +26,6 @@ class float extends \mageekguy\atoum\asserters\integer
 		return $this;
 	}
 
-	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
-	{
-		static::check($value, __FUNCTION__);
-
-		// see http://www.floating-point-gui.de/errors/comparison/ for more informations
-		$originalValue = abs($this->valueIsSet()->value);
-		$value = abs($value);
-		$diff = abs($originalValue - $value);
-
-		if ($epsilon === null) {
-			$epsilon = pow(10, - ini_get('precision'));
-		}
-
-		switch (true)
-		{
-			case $originalValue == $value:
-			case $originalValue * $value == 0 && $diff < pow($epsilon, 2):
-			case $diff / ($originalValue + $value) < $epsilon:
-				return $this;
-
-			default:
-				$diff = new diffs\variable();
-
-				$this->fail(
-					($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
-					PHP_EOL .
-					$diff->setReference($value)->setData($this->value)
-				);
-		}
-	}
-
 	protected static function check($value, $method)
 	{
 		if (self::isFloat($value) === false)
@@ -68,5 +37,40 @@ class float extends \mageekguy\atoum\asserters\integer
 	protected static function isFloat($value)
 	{
 		return (is_float($value) === true);
+	}
+
+	public function isNearlyEqualTo($value, $epsilon = null, $failMessage = null)
+	{
+		static::check($value, __FUNCTION__);
+
+		if ($this->valueIsSet()->value !== $value)
+		{
+			// see http://www.floating-point-gui.de/errors/comparison/ for more informations
+			$absValue = abs($value);
+			$absCurrentValue = abs($this->value);
+			$offset = abs($absCurrentValue - $absValue);
+			$offsetIsNaN = is_nan($offset);
+
+			if ($offsetIsNaN === false && $epsilon === null)
+			{
+				$epsilon = pow(10, - ini_get('precision'));
+			}
+
+			switch (true)
+			{
+				case $offsetIsNaN === true:
+				case $offset / ($absCurrentValue + $absValue) >= $epsilon:
+				case $absCurrentValue * $absValue == 0 && $offset >= pow($epsilon, 2):
+					$diff = new diffs\variable();
+
+					$this->fail(
+						($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
+						PHP_EOL .
+						$diff->setReference($value)->setData($this->value)
+					);
+				}
+		}
+
+		return $this;
 	}
 }
