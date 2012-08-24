@@ -10,117 +10,192 @@ require_once __DIR__ . '/../runner.php';
 
 class cli extends atoum\test
 {
-	public function testIsTerminalWhenStdoutIsUndefined()
+	public function testIsTerminalWhenOsIsNotWindowsAndStdoutIsUndefined()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+						case 'STDOUT':
+							return false;
+					}
+				}
+			)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
-	public function testIsTerminalWhenPosixIsTtyIsUndefined()
+
+	public function testIsTerminalWhenOsIsNotWindowsStdoutIsTtyIsUndefined()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->getenv = false;
-		$adapter->defined = true;
-		$adapter->function_exists = false;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+						case 'STDOUT':
+							return true;
+					}
+				}
+			)
+			->and($adapter->function_exists = function($function) { return ($function != 'posix_isatty'); })
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
-	public function testIsTerminalWhenPosixIsTtyReturnFalse()
+	public function testIsTerminalWhenOsIsNotWindowsStdoutIsTtyIsReturnFalse()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->getenv = false;
-		$adapter->defined = true;
-		$adapter->function_exists = true;
-		$adapter->constant = null;
-		$adapter->posix_isatty = false;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
+						case 'STDOUT':
+							return true;
+					}
+				}
+			)
+			->and($adapter->function_exists = function($function) { return ($function == 'posix_isatty'); })
+			->and($adapter->constant = uniqid())
+			->and($adapter->posix_isatty = false)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
 		;
 	}
 
-	public function testIsTerminalWhenPosixIsTtyReturnTrue()
+	public function testIsTerminalWhenOsIsNotWindowsStdoutIsTtyIsReturnTrue()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = true;
-		$adapter->function_exists = true;
-		$adapter->constant = null;
-		$adapter->posix_isatty = true;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
+						case 'STDOUT':
+							return true;
+					}
+				}
+			)
+			->and($adapter->function_exists = function($function) { return ($function == 'posix_isatty'); })
+			->and($adapter->constant = uniqid())
+			->and($adapter->posix_isatty = true)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isTrue()
 		;
 	}
 
-	public function testIsTerminalWhenGetenvReturnTrue()
+	public function testIsTerminalWhenOsIsWindowsAndAnsiconIsUndefined()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->getenv = true;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return true;
 
-		$cli = new atoum\cli($adapter);
+						default:
+							return false;
+					}
+				}
+			)
+			->and($adapter->getenv = function($variable) { return ($variable != 'ANSICON'); })
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
+		;
+	}
 
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
+	public function testIsTerminalWhenOsIsWindowsAndAnsiconIsDefined()
+	{
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return true;
+
+						default:
+							return false;
+					}
+				}
+			)
+			->and($adapter->getenv = function($variable) { return ($variable == 'ANSICON'); })
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isTrue()
 		;
 	}
 
 	public function testIsTerminalWhenForceTerminalWasUsedAfterFirstCallToConstructor()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isFalse()
-		;
-
-		$otherCli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($otherCli->isTerminal())->isFalse()
-		;
-
-		\mageekguy\atoum\cli::forceTerminal();
-
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
-			->boolean($otherCli->isTerminal())->isTrue()
+						case 'STDOUT':
+							return false;
+					}
+				}
+			)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isFalse()
+			->if($otherCli = new atoum\cli($adapter))
+			->then
+				->boolean($otherCli->isTerminal())->isFalse()
+			->if(\mageekguy\atoum\cli::forceTerminal())
+			->then
+				->boolean($cli->isTerminal())->isTrue()
+				->boolean($otherCli->isTerminal())->isTrue()
 		;
 	}
 
 	public function testIsTerminalWhenForceTerminalWasUsedBeforeFirstCallToConstructor()
 	{
-		\mageekguy\atoum\cli::forceTerminal();
+		$this
+			->if(\mageekguy\atoum\cli::forceTerminal())
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->defined = function($constant) {
+					switch ($constant)
+					{
+						case 'PHP_WINDOWS_VERSION_BUILD':
+							return false;
 
-		$adapter = new atoum\test\adapter();
-		$adapter->defined = false;
-
-		$cli = new atoum\cli($adapter);
-
-		$this->assert
-			->boolean($cli->isTerminal())->isTrue()
-		;
-
-		$otherCli = new atoum\cli();
-
-		$this->assert
-			->boolean($otherCli->isTerminal())->isTrue()
+						case 'STDOUT':
+							return false;
+					}
+				}
+			)
+			->and($cli = new atoum\cli($adapter))
+			->then
+				->boolean($cli->isTerminal())->isTrue()
+			->if($otherCli = new atoum\cli())
+			->then
+				->boolean($otherCli->isTerminal())->isTrue()
 		;
 	}
 }
