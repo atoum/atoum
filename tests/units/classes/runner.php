@@ -115,11 +115,18 @@ class runner extends atoum\test
 		$this
 			->if($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->constant = function($constant) use (& $phpBinary) { return ($constant != 'PHP_BINARY' ? null : $phpBinary = uniqid()); })
+			->then
+				->string($runner->getPhpPath())->isEqualTo($phpBinary)
+			->if($runner = new atoum\runner())
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->constant = null)
 			->and($adapter->getenv = function($variable) use (& $pearPhpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearPhpPath = uniqid()); })
 			->then
 				->string($runner->getPhpPath())->isEqualTo($pearPhpPath)
 			->if($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->constant = null)
 			->and($adapter->getenv = function($variable) use (& $phpBinPath) {
 					switch ($variable)
 					{
@@ -133,6 +140,12 @@ class runner extends atoum\test
 			)
 			->then
 				->string($runner->getPhpPath())->isEqualTo($phpBinPath)
+			->if($runner = new atoum\runner())
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->constant = function($constant) use (& $phpBinDir) { return ($constant != 'PHP_BINDIR' ? null : $phpBinDir = uniqid()); })
+			->and($adapter->getenv = false)
+			->then
+				->string($runner->getPhpPath())->isEqualTo($phpBinDir . '/php')
 		;
 	}
 
@@ -384,7 +397,7 @@ class runner extends atoum\test
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->defined = false)
 			->and($adapter->proc_open = false)
-			->and($adapter->getenv = function($variable) use (& $phpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $phpPath = uniqid()); })
+			->and($adapter->constant = function($constant) use (& $phpPath) { return ($constant != 'PHP_BINARY' ? null : $phpPath = uniqid()); })
 			->and($adapter->realpath = function($path) { return $path; })
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

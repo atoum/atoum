@@ -177,13 +177,26 @@ class runner implements observable, adapter\aggregator
 	{
 		if ($this->phpPath === null)
 		{
-			if (($phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN')) === false)
+			$phpPath = $this->adapter->constant('PHP_BINARY');
+
+			if ($phpPath === null)
 			{
-				if (($phpPath = $this->adapter->getenv('PHPBIN')) === false)
+				$phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN');
+
+				if ($phpPath === false)
 				{
-					if ($this->adapter->constant('DIRECTORY_SEPARATOR') === '\\' || ($phpPath = ($this->adapter->defined('PHP_BINARY') ? PHP_BINARY : PHP_BINDIR . '/php')) === false)
+					$phpPath = $this->adapter->getenv('PHPBIN');
+
+					if ($phpPath === false)
 					{
-						throw new exceptions\runtime('Unable to find PHP executable');
+						$phpDirectory = $this->adapter->constant('PHP_BINDIR');
+
+						if ($phpDirectory === null)
+						{
+							throw new exceptions\runtime('Unable to find PHP executable');
+						}
+
+						$phpPath = $phpDirectory . '/php';
 					}
 				}
 			}
