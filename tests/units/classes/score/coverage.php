@@ -191,9 +191,9 @@ class coverage extends atoum\test
 				)
 			)
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
-			->and($coverage->excludeClass(uniqid()))
-			->and($coverage->excludeNamespace(uniqid()))
-			->and($coverage->excludeDirectory(uniqid()))
+			->and($coverage->excludeClass($excludedClass =uniqid()))
+			->and($coverage->excludeNamespace($excludedNamespace= uniqid()))
+			->and($coverage->excludeDirectory($excludedDirectory = uniqid()))
 			->then
 				->array($coverage->getClasses())->isNotEmpty()
 				->array($coverage->getMethods())->isNotEmpty()
@@ -203,8 +203,50 @@ class coverage extends atoum\test
 				->object($coverage->reset())->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
+				->array($coverage->getExcludedClasses())->isNotEmpty()
+				->array($coverage->getExcludedNamespaces())->isNotEmpty()
+				->array($coverage->getExcludedDirectories())->isNotEmpty()
+		;
+	}
+
+	public function testResetExcludedClasses()
+	{
+		$this
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->resetExcludedClasses())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedClasses())->isEmpty()
+			->if($coverage->excludeClass(uniqid()))
+			->then
+				->object($coverage->resetExcludedClasses())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedClasses())->isEmpty()
+		;
+	}
+
+	public function testResetExcludedNamespaces()
+	{
+		$this
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEmpty()
+			->if($coverage->excludeNamespace(uniqid()))
+			->then
+				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEmpty()
+		;
+	}
+
+	public function testResetExcludedDirectories()
+	{
+		$this
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->resetExcludedDirectories())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEmpty()
+			->if($coverage->excludeDirectory(uniqid()))
+			->then
+				->object($coverage->resetExcludedDirectories())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEmpty()
 		;
 	}

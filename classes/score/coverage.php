@@ -80,8 +80,26 @@ class coverage implements \countable, \serializable
 	{
 		$this->classes = array();
 		$this->methods = array();
+
+		return $this;
+	}
+
+	public function resetExcludedClasses()
+	{
 		$this->excludedClasses = array();
+
+		return $this;
+	}
+
+	public function resetExcludedNamespaces()
+	{
 		$this->excludedNamespaces = array();
+
+		return $this;
+	}
+
+	public function resetExcludedDirectories()
+	{
 		$this->excludedDirectories = array();
 
 		return $this;
