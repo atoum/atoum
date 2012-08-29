@@ -118,8 +118,10 @@ class coverage extends atoum\test
 						)
 					)
 				)
-			->if($coverage = new score\coverage())
-			->and($coverage->excludeClass($this->getTestedClassName()))
+			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->and($class->getMockController()->getName = get_class($class))
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->excludeClass(get_class($class)))
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -128,8 +130,8 @@ class coverage extends atoum\test
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($coverage->excludeDirectory($classDirectory))
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->excludeDirectory($classDirectory))
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()

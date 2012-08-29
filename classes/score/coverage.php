@@ -182,7 +182,7 @@ class coverage implements \countable, \serializable
 
 			foreach ($methods as $method => $lines)
 			{
-				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded(self::getDeclaringClass($reflectedClass->getMethod($method))) === false)
 				{
 					foreach ($lines as $line => $call)
 					{
