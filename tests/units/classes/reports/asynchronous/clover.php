@@ -106,6 +106,7 @@ class clover extends atoum\test
 				->castToString($report)->isEqualToContentsOfFile($filepath)
 			->and($coverage->getMockController()->getClasses = array())
 			->and($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = $className = 'bar')
 			->and($classController->getFileName = $classFile = 'foo/bar.php')

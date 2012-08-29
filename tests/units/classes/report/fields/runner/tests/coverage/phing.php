@@ -179,6 +179,7 @@ class phing extends atoum\test
 					->castToString($defaultField)->isEmpty()
 					->castToString($customField)->isEmpty()
 				->if($classController = new mock\controller())
+				->and($classController->disableMethodChecking())
 				->and($classController->__construct = function() {})
 				->and($classController->getName = function() use (& $className) { return $className; })
 				->and($classController->getFileName = function() use (& $classFile) { return $classFile; })

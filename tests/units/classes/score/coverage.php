@@ -45,6 +45,7 @@ class coverage extends atoum\test
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -156,6 +157,7 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedNamespaces())->isEmpty()
 				->array($coverage->getExcludedDirectories())->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -260,6 +262,7 @@ class coverage extends atoum\test
 	{
 		$this
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -338,6 +341,7 @@ class coverage extends atoum\test
 					)
 				)
 			->if($otherClassController = new mock\controller())
+			->and($otherClassController->disableMethodChecking())
 			->and($otherClassController->__construct = function() {})
 			->and($otherClassController->getName = function() use (& $otherClassName) { return $otherClassName; })
 			->and($otherClassController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; })
@@ -409,6 +413,7 @@ class coverage extends atoum\test
 					)
 				)
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -471,6 +476,7 @@ class coverage extends atoum\test
 			->then
 				->sizeOf($coverage)->isZero()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -520,6 +526,7 @@ class coverage extends atoum\test
 		$this
 			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
 			->and($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -563,6 +570,7 @@ class coverage extends atoum\test
 		$this
 			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
 			->and($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -688,6 +696,7 @@ class coverage extends atoum\test
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -817,6 +826,7 @@ class coverage extends atoum\test
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -882,6 +892,7 @@ class coverage extends atoum\test
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
@@ -1016,6 +1027,7 @@ class coverage extends atoum\test
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
