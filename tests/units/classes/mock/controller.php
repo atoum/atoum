@@ -235,6 +235,16 @@ class controller extends atoum\test
 			->and($mockController->control($mock))
 			->then
 				->variable(testedClass::get())->isNull()
+			->if($mockController = new testedClass())
+			->and($mockController->{$method = uniqid()} = uniqid())
+			->then
+				->exception(function() use ($mockController, $aMock) { $mockController->control($aMock); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Method \'' . get_class($aMock) . '::' . $method . '()\' does not exist')
+			->if($mockController->disableMethodChecking())
+			->and($mockController->{uniqid()} = uniqid())
+			->then
+				->object($mockController->control($aMock))->isIdenticalTo($mockController)
 		;
 	}
 

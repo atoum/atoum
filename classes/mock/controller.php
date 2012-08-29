@@ -117,7 +117,7 @@ class controller extends test\adapter
 
 			foreach (array_keys($this->invokers) as $method)
 			{
-				if (in_array($method, $methods) === false)
+				if ($this->disableMethodChecking === false && in_array($method, $methods) === false)
 				{
 					throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 				}
