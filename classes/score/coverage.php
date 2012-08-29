@@ -129,7 +129,7 @@ class coverage implements \countable, \serializable
 					{
 						if ($method->isAbstract() === false)
 						{
-							$declaringClass = $method->getDeclaringClass();
+							$declaringClass = self::getDeclaringClass($method);
 
 							if ($this->isExcluded($declaringClass) === false)
 							{
@@ -421,5 +421,32 @@ class coverage implements \countable, \serializable
 		}
 
 		return false;
+	}
+
+	protected static function getDeclaringClass(\reflectionMethod $method)
+	{
+		$declaringClass = $method->getDeclaringClass();
+
+		$methodFileName = $method->getFileName();
+
+		if ($methodFileName !== $declaringClass->getFileName() || $method->getStartLine() < $declaringClass->getStartLine() || $method->getEndLine() > $declaringClass->getEndLine())
+		{
+			$traits = $declaringClass->getTraits();
+
+			if (sizeof($traits) > 0)
+			{
+				$methodName = $method->getName();
+
+				foreach ($declaringClass->getTraits() as $trait)
+				{
+					if ($methodFileName === $trait->getFileName() && $trait->hasMethod($methodName) === true)
+					{
+						return $trait;
+					}
+				}
+			}
+		}
+
+		return $declaringClass;
 	}
 }
