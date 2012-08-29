@@ -36,7 +36,7 @@ class adapter extends test
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
 				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies->getInjector('invoker'))->isIdenticalTo($dependence)
+				->object($dependencies->getValue('invoker'))->isIdenticalTo($dependence)
 		;
 	}
 

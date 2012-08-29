@@ -37,8 +37,8 @@ class controller extends atoum\test
 				->array($mockController->getInvokers())->isEmpty()
 				->variable($mockController->getMockClass())->isNull()
 				->object($dependencies = $mockController->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
-				->object($dependencies['reflection\class']->getInjector())->isIdenticalTo($reflectionClass)
-				->object($dependencies['invoker']->getInjector())->isIdenticalTo($invoker)
+				->object($dependencies['reflection\class']->getValue())->isIdenticalTo($reflectionClass)
+				->object($dependencies['invoker']->getValue())->isIdenticalTo($invoker)
 		;
 	}
 

@@ -4,14 +4,14 @@ namespace mageekguy\atoum;
 
 class dependencies implements \arrayAccess
 {
-	protected $injector = null;
+	protected $value = null;
 	protected $dependencies = array();
 
 	public function __invoke(array $dependencies = array())
 	{
-		if ($this->injector === null)
+		if ($this->value === null)
 		{
-			throw new dependencies\exception('Injector is undefined');
+			throw new dependencies\exception('Value is undefined');
 		}
 
 		foreach ($dependencies as $name => $value)
@@ -19,27 +19,27 @@ class dependencies implements \arrayAccess
 			$this->setDependence($name, $value);
 		}
 
-		return ($this->injector instanceof \closure === false ? $this->injector : $this->injector->__invoke($this));
+		return ($this->value instanceof \closure === false ? $this->value : $this->value->__invoke($this));
 	}
 
-	public function getInjector($dependence = null)
+	public function getValue($dependence = null)
 	{
 		switch (true)
 		{
 			case $dependence === null:
-				return $this->injector;
+				return $this->value;
 
 			case isset($this->dependencies[$dependence]) === false:
 				return null;
 
 			default:
-				return $this->dependencies[$dependence]->getInjector();
+				return $this->dependencies[$dependence]->getValue();
 		}
 	}
 
-	public function setInjector($mixed)
+	public function setValue($mixed)
 	{
-		$this->injector = $mixed;
+		$this->value = $mixed;
 
 		return $this;
 	}
@@ -72,8 +72,7 @@ class dependencies implements \arrayAccess
 		}
 		else
 		{
-			$this->dependencies[$name] = new static();
-			$this->dependencies[$name]->setInjector($mixed);
+			$this[$name]->setValue($mixed);
 		}
 
 		return $this;
@@ -81,17 +80,22 @@ class dependencies implements \arrayAccess
 
 	public function offsetGet($name)
 	{
-		return ($this->dependenceExists($name) === false ? new static() : $this->dependencies[$name]);
+		if (isset($this->dependencies[$name]) === false)
+		{
+			$this->dependencies[$name] = new static();
+		}
+
+		return $this->dependencies[$name];
 	}
 
 	public function offsetExists($name)
 	{
-		return isset($this->dependencies[$name]);
+		return (isset($this->dependencies[$name]) === true && $this->dependencies[$name]->value !== null);
 	}
 
 	public function offsetUnset($name)
 	{
-		if ($this->dependenceExists($name) === true)
+		if (isset($this->dependencies[$name]) === true)
 		{
 			unset($this->dependencies[$name]);
 		}
