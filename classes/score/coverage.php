@@ -11,6 +11,8 @@ use
 class coverage implements \countable, \serializable
 {
 	protected $dependencies = null;
+	protected $adapter = null;
+	protected $reflectionClassDependency = null;
 	protected $classes = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
@@ -20,6 +22,30 @@ class coverage implements \countable, \serializable
 	public function __construct(atoum\dependencies $dependencies = null)
 	{
 		$this->setDependencies($dependencies ?: new atoum\dependencies());
+	}
+
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setReflectionClassDependency(atoum\dependencies $dependencies)
+	{
+		$this->reflectionClassDependency = $dependencies;
+
+		return $this;
+	}
+
+	public function getReflectionClassDependency()
+	{
+		return $this->reflectionClassDependency;
 	}
 
 	public function serialize()
@@ -51,24 +77,25 @@ class coverage implements \countable, \serializable
 
 	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		$this->dependencies = $dependencies;
-
-		if (isset($this->dependencies['reflection\class']) === false)
+		if (isset($dependencies['reflection\class']) === true)
 		{
-			$this->dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+			$this->setReflectionClassDependency($dependencies['reflection\class']);
+		}
+		else
+		{
+			$this->setReflectionClassDependency(new atoum\dependencies(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
 		}
 
-		if (isset($this->dependencies['adapter']) === false)
+		if (isset($dependencies['adapter']) === true)
 		{
-			$this->dependencies['adapter'] = new atoum\adapter();
+			$this->setAdapter($dependencies['adapter']());
+		}
+		else
+		{
+			$this->setAdapter(new atoum\adapter());
 		}
 
 		return $this;
-	}
-
-	public function getDependencies()
-	{
-		return $this->dependencies;
 	}
 
 	public function getClasses()
@@ -121,7 +148,7 @@ class coverage implements \countable, \serializable
 		{
 			try
 			{
-				$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
+				$reflectedClass = $this->getReflectionClass($class);
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
@@ -175,7 +202,7 @@ class coverage implements \countable, \serializable
 
 		foreach ($methods as $class => $methods)
 		{
-			$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
+			$reflectedClass = $this->getReflectionClass($class);
 
 			if (isset($this->classes[$class]) === false)
 			{
@@ -413,26 +440,11 @@ class coverage implements \countable, \serializable
 		}
 	}
 
-	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)
-	{
-		foreach ($excludedItems as $excludedItem)
-		{
-			$excludedItem .= $delimiter;
-
-			if (substr($item, 0, strlen($excludedItem)) === $excludedItem)
-			{
-				return true;
-			}
-		}
-
-		return false;
-	}
-
 	protected function getDeclaringClass(\reflectionMethod $method)
 	{
 		$declaringClass = $method->getDeclaringClass();
 
-		$traits = ($this->dependencies['adapter']()->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
+		$traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
 
 		if (sizeof($traits) > 0)
 		{
@@ -456,5 +468,27 @@ class coverage implements \countable, \serializable
 		}
 
 		return $declaringClass;
+	}
+
+	protected function getReflectionClass($class)
+	{
+		$reflectionClassDependency = $this->reflectionClassDependency;
+
+		return $reflectionClassDependency(array('class' => $class));
+	}
+
+	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)
+	{
+		foreach ($excludedItems as $excludedItem)
+		{
+			$excludedItem .= $delimiter;
+
+			if (substr($item, 0, strlen($excludedItem)) === $excludedItem)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

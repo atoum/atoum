@@ -27,19 +27,50 @@ class coverage extends atoum\test
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
+				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
 			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getDependencies())->isIdenticalTo($dependencies)
+				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['adapter'] = $adapter = new atoum\adapter())
+			->and($dependencies['reflection\class'] = $reflectionClassDependency = function() {})
+			->and($coverage = new score\coverage($dependencies))
+			->then
+				->variable($coverage->getValue())->isNull()
+				->array($coverage->getMethods())->isEmpty()
+				->object($coverage->getAdapter())->isIdenticalTo($adapter)
+				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependencies['reflection\class'])
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($coverage)
+				->object($coverage->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testSetReflectionClassDepedency()
+	{
+		$this
+			->if($coverage = new score\coverage())
+			->then
+				->object($coverage->setReflectionClassDependency($dependency = new atoum\dependencies()))->isIdenticalTo($coverage)
+				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependency)
 		;
 	}
 
 	public function testAddXdebugDataForTest()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage())
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -87,9 +118,11 @@ class coverage extends atoum\test
 						)
 					)
 				)
+			->and($dependencies = new atoum\dependencies())
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->then
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
-			/*
 				->array($coverage->getMethods())->isEqualTo(array(
 						$className => array(
 							$methodName => array(
@@ -121,28 +154,25 @@ class coverage extends atoum\test
 						)
 					)
 				)
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($class->getMockController()->getName = get_class($class))
-			->and($dependencies['reflection\class'] = $class)
+			->if($class->getMockController()->getName = get_class($class))
+			->and($coverage = new score\coverage($dependencies))
 			->and($coverage->excludeClass(get_class($class)))
 			->then
-			*/
-//				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
-//				->array($coverage->getClasses())->isEmpty()
-//				->array($coverage->getMethods())->isEmpty()
-//				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
-//				->array($coverage->getClasses())->isEmpty()
-//				->array($coverage->getMethods())->isEmpty()
-//			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-//			->and($dependencies['reflection\class'] = $class)
-//			->and($coverage->excludeDirectory($classDirectory))
-//			->then
-//				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
-//				->array($coverage->getClasses())->isEmpty()
-//				->array($coverage->getMethods())->isEmpty()
-//				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
-//				->array($coverage->getClasses())->isEmpty()
-//				->array($coverage->getMethods())->isEmpty()
+				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
+				->array($coverage->getMethods())->isEmpty()
+				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
+				->array($coverage->getMethods())->isEmpty()
+			->if($coverage = new score\coverage($dependencies))
+			->and($coverage->excludeDirectory($classDirectory))
+			->then
+				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
+				->array($coverage->getMethods())->isEmpty()
+				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
+				->array($coverage->getClasses())->isEmpty()
+				->array($coverage->getMethods())->isEmpty()
 		;
 	}
 
@@ -309,13 +339,14 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->and($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new score\coverage($dependencies))
 			->then
 				->object($coverage->merge($coverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
-			->if($otherCoverage = new score\coverage($otherDependencies = new atoum\dependencies()))
+			->if($otherCoverage = new score\coverage())
 			->then
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -391,7 +422,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($otherDependencies = new atoum\dependencies())
 			->and($otherDependencies['reflection\class'] = $otherClass)
+			->and($otherCoverage->setDependencies($otherDependencies))
 			->then
 				->object($coverage->merge($otherCoverage->addXdebugDataForTest($this, $otherXdebugData)))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEqualTo(array(
@@ -460,11 +493,11 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->and($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($coverage->excludeClass($className))
 			->and($dependencies['reflection\class'] = $class)
-			->and($otherCoverage = new score\coverage($otherDependencies = new atoum\dependencies()))
+			->and($coverage = new score\coverage($dependencies))
+			->and($coverage->excludeClass($className))
 			->and($otherDependencies['reflection\class'] = $class)
+			->and($otherCoverage = new score\coverage($otherDependencies))
 			->and($otherCoverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($otherCoverage->getClasses())->isNotEmpty()
@@ -530,8 +563,7 @@ class coverage extends atoum\test
 	public function testGetClasses()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($classController = new mock\controller())
+			->if($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
@@ -564,7 +596,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new score\coverage($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
@@ -574,8 +608,7 @@ class coverage extends atoum\test
 	public function testGetValue()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($classController = new mock\controller())
+			->if($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
@@ -616,7 +649,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new score\coverage($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->float($coverage->getValue())->isEqualTo(0.0)
@@ -698,7 +733,7 @@ class coverage extends atoum\test
 	public function testGetValueForClass()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage())
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
 			->if($classController = new mock\controller())
@@ -742,7 +777,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -828,7 +865,7 @@ class coverage extends atoum\test
 	public function testGetCoverageForClass()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage())
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
@@ -884,7 +921,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($coverage->getCoverageForClass($className))->isEqualTo($expected)
@@ -894,7 +933,7 @@ class coverage extends atoum\test
 	public function testGetValueForMethod()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage())
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 			->if($classController = new mock\controller())
@@ -939,7 +978,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
@@ -1029,7 +1070,7 @@ class coverage extends atoum\test
 	public function testGetCoverageForMethod()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage())
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
@@ -1075,13 +1116,16 @@ class coverage extends atoum\test
 				)
 			)
 			->and($expected = array(
-				4 => 1,
-				5 => -1,
-				6 => -1,
-				7 => -1,
-				8 => -2,
-			))
+					4 => 1,
+					5 => -1,
+					6 => -1,
+					7 => -1,
+					8 => -2,
+				)
+			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($coverage->getCoverageForMethod($className, $methodName))->isEqualTo($expected)

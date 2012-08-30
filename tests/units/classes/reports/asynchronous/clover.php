@@ -11,7 +11,7 @@ use
 
 require_once __DIR__ . '/../../../runner.php';
 
-class clover extends atoum\test
+class clover extends Atoum\test
 {
 	public function testClass()
 	{
@@ -75,7 +75,7 @@ class clover extends atoum\test
 		$this
 			->if($report = new reports\clover())
 			->and($score = new \mock\mageekguy\atoum\score())
-			->and($coverage = new \mock\mageekguy\atoum\score\coverage($dependencies = new atoum\dependencies()))
+			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
 			->and($writer = new \mock\mageekguy\atoum\writers\file())
 			->and($writer->getMockController()->write = $writer)
 			->then
@@ -127,7 +127,6 @@ class clover extends atoum\test
 				$className => $classFile,
 				'foo' => 'bar/foo.php'
 			))
-			->and($dependencies['reflection\class'] = $class)
 			->and($xdebugData = array(
 				$classFile =>
 				array(
@@ -149,6 +148,9 @@ class clover extends atoum\test
 					'2.xml'
 				)
 			))
+			->and($dependencies = new atoum\dependencies())
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)

@@ -7,6 +7,14 @@ class dependencies implements \arrayAccess
 	protected $value = null;
 	protected $dependencies = array();
 
+	public function __construct($mixed = null)
+	{
+		if ($mixed !== null)
+		{
+			$this->setValue($mixed);
+		}
+	}
+
 	public function __invoke(array $dependencies = array())
 	{
 		if ($this->value === null)
@@ -78,7 +86,7 @@ class dependencies implements \arrayAccess
 		return $this;
 	}
 
-	public function offsetGet($name)
+	public function offsetGet($name = null)
 	{
 		if (isset($this->dependencies[$name]) === false)
 		{
