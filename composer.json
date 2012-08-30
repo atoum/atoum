@@ -37,11 +37,8 @@
 	[
 		"bin/atoum"
 	],
-  "autoload":
-  {
-		"psr-0":
-		{
-			"mageekguy\\atoum": "classes/"
-		}
+	"autoload":
+	{
+		"classmap": [ "classes/" ]
 	}
 }
