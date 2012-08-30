@@ -58,6 +58,11 @@ class coverage implements \countable, \serializable
 			$this->dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
 		}
 
+		if (isset($this->dependencies['adapter']) === false)
+		{
+			$this->dependencies['adapter'] = new atoum\adapter();
+		}
+
 		return $this;
 	}
 
@@ -129,7 +134,7 @@ class coverage implements \countable, \serializable
 					{
 						if ($method->isAbstract() === false)
 						{
-							$declaringClass = self::getDeclaringClass($method);
+							$declaringClass = $this->getDeclaringClass($method);
 
 							if ($this->isExcluded($declaringClass) === false)
 							{
@@ -182,7 +187,7 @@ class coverage implements \countable, \serializable
 
 			foreach ($methods as $method => $lines)
 			{
-				if (isset($this->methods[$class][$method]) === true || $this->isExcluded(self::getDeclaringClass($reflectedClass->getMethod($method))) === false)
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($this->getDeclaringClass($reflectedClass->getMethod($method))) === false)
 				{
 					foreach ($lines as $line => $call)
 					{
@@ -423,25 +428,28 @@ class coverage implements \countable, \serializable
 		return false;
 	}
 
-	protected static function getDeclaringClass(\reflectionMethod $method)
+	protected function getDeclaringClass(\reflectionMethod $method)
 	{
 		$declaringClass = $method->getDeclaringClass();
 
-		$methodFileName = $method->getFileName();
+		$traits = ($this->dependencies['adapter']()->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
 
-		if ($methodFileName !== $declaringClass->getFileName() || $method->getStartLine() < $declaringClass->getStartLine() || $method->getEndLine() > $declaringClass->getEndLine())
+		if (sizeof($traits) > 0)
 		{
-			$traits = $declaringClass->getTraits();
+			$methodFileName = $method->getFileName();
 
-			if (sizeof($traits) > 0)
+			if ($methodFileName !== $declaringClass->getFileName() || $method->getStartLine() < $declaringClass->getStartLine() || $method->getEndLine() > $declaringClass->getEndLine())
 			{
-				$methodName = $method->getName();
-
-				foreach ($declaringClass->getTraits() as $trait)
+				if (sizeof($traits) > 0)
 				{
-					if ($methodFileName === $trait->getFileName() && $trait->hasMethod($methodName) === true)
+					$methodName = $method->getName();
+
+					foreach ($traits as $trait)
 					{
-						return $trait;
+						if ($methodFileName === $trait->getFileName() && $trait->hasMethod($methodName) === true)
+						{
+							return $trait;
+						}
 					}
 				}
 			}
