@@ -12,6 +12,7 @@ use
 class controller extends test\adapter
 {
 	protected $mockClass = null;
+	protected $reflectionClassDependency = null;
 
 	protected static $controlNextNewMock = null;
 
@@ -21,10 +22,7 @@ class controller extends test\adapter
 	{
 		parent::__construct($dependencies);
 
-		$this
-			->setDependencies($dependencies ?: new atoum\dependencies())
-			->controlNextNewMock()
-		;
+		$this->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -59,11 +57,27 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function setReflectionClassDependency(atoum\dependency $dependency)
+	{
+		$this->reflectionClassDependency = $dependency;
+
+		return $this;
+	}
+
+	public function getReflectionClassDependency()
+	{
+		return $this->reflectionClassDependency;
+	}
+
 	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		if (isset($dependencies['reflection\class']) === false)
+		if (isset($dependencies['reflection\class']) === true)
 		{
-			$dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+			$this->setReflectionClassDependency($dependencies['reflection\class']);
+		}
+		else
+		{
+			$this->setReflectionClassDependency(new atoum\dependency(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
 		}
 
 		return parent::setDependencies($dependencies);
@@ -99,7 +113,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = $this->dependencies['reflection\class'](array('class' => $this->mockClass));
+			$class = $this->getReflectionClass($this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try
@@ -201,5 +215,12 @@ class controller extends test\adapter
 		}
 
 		return $this;
+	}
+
+	protected function getReflectionClass($class)
+	{
+		$reflectionClassDependency = $this->reflectionClassDependency;
+
+		return $reflectionClassDependency(array('class' => $class));
 	}
 }

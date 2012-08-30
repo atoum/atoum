@@ -17,6 +17,11 @@ class dependencies implements \arrayAccess
 
 	public function __invoke(array $dependencies = array())
 	{
+		return $this->build($dependencies);
+	}
+
+	public function build(array $dependencies = array())
+	{
 		if ($this->value === null)
 		{
 			throw new dependencies\exception('Value is undefined');

@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\test\adapter as testedClass,
 	mageekguy\atoum\test\adapter\invoker,
-	mageekguy\atoum\dependence,
+	mageekguy\atoum\dependency,
 	mageekguy\atoum\dependencies
 ;
 
@@ -21,22 +21,19 @@ class adapter extends test
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-				->object($dependencies = $adapter->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
-				->object($dependencies['invoker']())->isEqualTo(new invoker())
-			->if($adapter = new testedClass($dependencies = new dependencies()))
+				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
+			->if($adapter = new testedClass(new dependencies()))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker']())->isEqualTo(new invoker())
+				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = $dependence = function() {})
+			->and($dependencies['invoker'] = function() {})
 			->and($adapter = new testedClass($dependencies))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies->getValue('invoker'))->isIdenticalTo($dependence)
+				->object($adapter->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
 		;
 	}
 
@@ -192,20 +189,28 @@ class adapter extends test
 		;
 	}
 
+	public function testSetInvokerDependency()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->object($adapter->setInvokerDependency($dependency = new dependency()))->isIdenticalTo($adapter)
+				->object($adapter->getInvokerDependency())->isIdenticalTo($dependency)
+		;
+	}
+
 	public function testSetDependencies()
 	{
 		$this
 			->if($adapter = new testedClass())
 			->then
-				->object($adapter->setDependencies($dependencies = new dependencies()))->isIdenticalTo($adapter)
-				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker']())->isEqualTo(new invoker())
+				->object($adapter->setDependencies(new dependencies()))->isIdenticalTo($adapter)
+				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
 			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = $invoker = new invoker())
+			->and($dependencies['invoker'] = function() {})
 			->then
 				->object($adapter->setDependencies($dependencies))->isIdenticalTo($adapter)
-				->object($adapter->getDependencies())->isIdenticalTo($dependencies)
-				->object($dependencies['invoker']())->isEqualTo($invoker)
+				->object($adapter->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
 		;
 	}
 
