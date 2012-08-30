@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\score;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
-	mageekguy\atoum\score
+	mageekguy\atoum\score,
+	mageekguy\atoum\score\coverage as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -23,13 +24,13 @@ class coverage extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
 				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
-			->if($coverage = new score\coverage(new atoum\dependencies()))
+			->if($coverage = new testedClass(new atoum\dependencies()))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
@@ -38,7 +39,7 @@ class coverage extends atoum\test
 			->if($dependencies = new atoum\dependencies())
 			->and($dependencies['adapter'] = new atoum\adapter())
 			->and($dependencies['reflection\class'] = function() {})
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
@@ -50,7 +51,7 @@ class coverage extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($coverage)
 				->object($coverage->getAdapter())->isIdenticalTo($adapter)
@@ -60,7 +61,7 @@ class coverage extends atoum\test
 	public function testSetReflectionClassDepedency()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->setReflectionClassDependency($dependency = new atoum\dependencies()))->isIdenticalTo($coverage)
 				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependency)
@@ -70,7 +71,7 @@ class coverage extends atoum\test
 	public function testAddXdebugDataForTest()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -155,7 +156,7 @@ class coverage extends atoum\test
 					)
 				)
 			->if($class->getMockController()->getName = get_class($class))
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->excludeClass(get_class($class)))
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
@@ -164,7 +165,7 @@ class coverage extends atoum\test
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
-			->if($coverage = new score\coverage($dependencies))
+			->if($coverage = new testedClass($dependencies))
 			->and($coverage->excludeDirectory($classDirectory))
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
@@ -179,7 +180,7 @@ class coverage extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass($dependencies = new atoum\dependencies()))
 			->then
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
@@ -255,7 +256,7 @@ class coverage extends atoum\test
 	public function testResetExcludedClasses()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->resetExcludedClasses())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedClasses())->isEmpty()
@@ -269,7 +270,7 @@ class coverage extends atoum\test
 	public function testResetExcludedNamespaces()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEmpty()
@@ -283,7 +284,7 @@ class coverage extends atoum\test
 	public function testResetExcludedDirectories()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->resetExcludedDirectories())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEmpty()
@@ -341,12 +342,12 @@ class coverage extends atoum\test
 			)
 			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->then
 				->object($coverage->merge($coverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
-			->if($otherCoverage = new score\coverage())
+			->if($otherCoverage = new testedClass())
 			->then
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -494,10 +495,10 @@ class coverage extends atoum\test
 				)
 			)
 			->and($dependencies['reflection\class'] = $class)
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->excludeClass($className))
 			->and($otherDependencies['reflection\class'] = $class)
-			->and($otherCoverage = new score\coverage($otherDependencies))
+			->and($otherCoverage = new testedClass($otherDependencies))
 			->and($otherCoverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($otherCoverage->getClasses())->isNotEmpty()
@@ -511,7 +512,7 @@ class coverage extends atoum\test
 	public function testCount()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass($dependencies = new atoum\dependencies()))
 			->then
 				->sizeOf($coverage)->isZero()
 			->if($classController = new mock\controller())
@@ -598,7 +599,7 @@ class coverage extends atoum\test
 			)
 			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
@@ -651,7 +652,7 @@ class coverage extends atoum\test
 			)
 			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
-			->and($coverage = new score\coverage($dependencies))
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->float($coverage->getValue())->isEqualTo(0.0)
@@ -733,7 +734,7 @@ class coverage extends atoum\test
 	public function testGetValueForClass()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
 			->if($classController = new mock\controller())
@@ -865,7 +866,7 @@ class coverage extends atoum\test
 	public function testGetCoverageForClass()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
@@ -933,7 +934,7 @@ class coverage extends atoum\test
 	public function testGetValueForMethod()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 			->if($classController = new mock\controller())
@@ -1070,7 +1071,7 @@ class coverage extends atoum\test
 	public function testGetCoverageForMethod()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
 			->if($classController = new mock\controller())
@@ -1135,7 +1136,7 @@ class coverage extends atoum\test
 	public function testExcludeClass()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeClass($class = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedClasses())->isEqualTo(array($class))
@@ -1149,7 +1150,7 @@ class coverage extends atoum\test
 	public function testExcludeNamespace()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeNamespace($namespace = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace))
@@ -1165,7 +1166,7 @@ class coverage extends atoum\test
 	public function testExcludeDirectory()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeDirectory($directory = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory))
@@ -1181,7 +1182,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedClasses()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
 			->if($coverage->excludeClass($class = uniqid()))
@@ -1194,7 +1195,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedNamespaces()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
 			->if($coverage->excludeNamespace($namespace = uniqid()))
@@ -1207,7 +1208,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedDirectories()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedDirectories(uniqid()))->isFalse()
 			->if($coverage->excludeDirectory($directory = uniqid()))
