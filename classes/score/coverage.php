@@ -10,7 +10,6 @@ use
 
 class coverage implements \countable, \serializable
 {
-	protected $dependencies = null;
 	protected $adapter = null;
 	protected $reflectionClassDependency = null;
 	protected $classes = array();
@@ -36,9 +35,9 @@ class coverage implements \countable, \serializable
 		return $this->adapter;
 	}
 
-	public function setReflectionClassDependency(atoum\dependencies $dependencies)
+	public function setReflectionClassDependency(atoum\dependency $dependency)
 	{
-		$this->reflectionClassDependency = $dependencies;
+		$this->reflectionClassDependency = $dependency;
 
 		return $this;
 	}

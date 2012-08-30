@@ -111,3 +111,5 @@ class dependencies implements \arrayAccess
 		return $this;
 	}
 }
+
+class_alias(__NAMESPACE__ . '\dependencies', __NAMESPACE__ . '\dependency');

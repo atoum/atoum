@@ -29,20 +29,20 @@ class coverage extends atoum\test
 				->array($coverage->getMethods())->isEmpty()
 				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new score\coverage(new atoum\dependencies()))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
 				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
 			->if($dependencies = new atoum\dependencies())
-			->and($dependencies['adapter'] = $adapter = new atoum\adapter())
-			->and($dependencies['reflection\class'] = $reflectionClassDependency = function() {})
+			->and($dependencies['adapter'] = new atoum\adapter())
+			->and($dependencies['reflection\class'] = function() {})
 			->and($coverage = new score\coverage($dependencies))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getAdapter())->isIdenticalTo($adapter)
+				->object($coverage->getAdapter())->isIdenticalTo($dependencies['adapter']())
 				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependencies['reflection\class'])
 		;
 	}
