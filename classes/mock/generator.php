@@ -250,6 +250,12 @@ class generator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
+
+							if ($methodName === '__call')
+							{
+								$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(current(array_slice($arguments, 0, 1)), current(array_slice($arguments, 1)));' . PHP_EOL;
+							}
+
 							$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
@@ -354,7 +360,8 @@ class generator
 			"\t" . '{' . PHP_EOL .
 			"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+			"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+			"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t\t" . 'return $this->mockController;' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .

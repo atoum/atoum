@@ -10,6 +10,11 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
+class foo
+{
+	public function __call($method, $arguments) {}
+}
+
 class controller extends atoum\test
 {
 	public function testClass()
@@ -59,6 +64,21 @@ class controller extends atoum\test
 			->then
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
+			->if($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->then
+				->boolean(isset($mockController->__call))->isTrue()
+				->string($mockController->invoke($method))->isEqualTo($return)
+				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
+				->array($mockController->getCalls($method))->hasSize(2)
+				->variable($mockController->getCalls('__call'))->isNull()
+			->if($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->and($mockController->bar = function() {})
+			->and($mock->bar($arg = uniqid(), $otherArg = uniqid()))
+			->then
+				->array($mockController->getCalls('bar'))->hasSize(1)
+				->array($mockController->getCalls('__call'))->hasSize(1)
+				->mock($mock)->call('bar')->withArguments($arg)->once()
+				->mock($mock)->call('__call')->withArguments('bar', array($arg, $otherArg))->once()
 		;
 	}
 

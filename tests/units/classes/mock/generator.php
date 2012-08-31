@@ -125,7 +125,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -227,7 +228,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -317,7 +319,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -405,7 +408,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -489,7 +493,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -568,7 +573,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -650,7 +656,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -756,7 +763,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
@@ -848,7 +856,8 @@ class generator extends atoum\test
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController;' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
