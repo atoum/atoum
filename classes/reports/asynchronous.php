@@ -24,6 +24,7 @@ abstract class asynchronous extends atoum\report
 			case atoum\test::fail:
 			case atoum\test::error:
 			case atoum\test::exception:
+			case atoum\test::uncompleted:
 				$this->fail = true;
 				break;
 		}
