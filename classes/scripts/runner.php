@@ -279,7 +279,7 @@ class runner extends atoum\script
 
 	public static function enableAutorun($name)
 	{
-		if (static::$autorunner !== null)
+		if (static::autorunIsEnabled() === true)
 		{
 			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
 		}
