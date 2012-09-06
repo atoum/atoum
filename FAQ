@@ -9,9 +9,10 @@ The word "class" is reserved by PHP, so it's not possible to use this name for a
 In this case, the atoum convention is to prefix name with word "php".
 
 * Where is the documentation ?
-Currently, unit test is the documentation.
-You find them in path/to/atoum/tests/units.
-We work to write a real documentation and if you want to help to .
+There is an english documentation available : https://github.com/geraldcroes/atoum-s-documentation.
+It's a work in progress and you're welcome to improve it.
+Moreover, atoum's unit test is the documentation.
+You find them in the directory path/to/atoum/tests/units.
 
 * Why php mageekguy.atoum.phar does not works ?
 Try a "php -n mageekguy.atoum.phar" in a terminal.
