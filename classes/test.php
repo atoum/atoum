@@ -64,6 +64,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $codeCoverage = false;
 	private $includer = null;
 	private $bootstrapFile = null;
+	private $executeOnFailure = array();
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
@@ -225,6 +226,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return (isset($this->methodEngines[$method]) === false ? null : $this->methodEngines[$method]);
 	}
 
+	public function executeOnFailure(\closure $closure)
+	{
+		$this->executeOnFailure[] = $closure;
+
+		return $this;
+	}
+
 	public function setAssertionManager(test\assertion\manager $assertionManager)
 	{
 		$this->assertionManager = $assertionManager;
@@ -260,6 +268,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->assertionManager
 			->setHandler('dump', function() use ($assertionManager) { call_user_func_array('var_dump', func_get_args()); return $assertionManager; })
 			->setHandler('stop', function() { throw new test\exceptions\stop(); })
+			->setHandler('executeOnFailure', function($callback) use ($test, $assertionManager) { $test->executeOnFailure($callback); return $assertionManager; })
 		;
 
 		$this->assertionManager->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
@@ -685,6 +694,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			ini_set('log_errors_max_len', '0');
 
 			$this->currentMethod = $testMethod;
+			$this->executeOnFailure = array();
 
 			try
 			{
@@ -766,6 +776,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 				}
 				catch (\exception $exception)
 				{
+					foreach ($this->executeOnFailure as $closure)
+					{
+						$closure();
+					}
+
 					$this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
 
 					throw $exception;
