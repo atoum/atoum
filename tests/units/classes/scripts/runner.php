@@ -396,15 +396,15 @@ class runner extends atoum\test
 			->array(scripts\runner::getSubDirectoryPath('', '/'))->isEmpty()
 			->array(scripts\runner::getSubDirectoryPath('', '\\'))->isEmpty()
 			->array(scripts\runner::getSubDirectoryPath('/', '/'))->isEqualTo(array('/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto', '/'))->isEqualTo(array('/', '/toto/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/', '/'))->isEqualTo(array('/', '/toto/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/tutu', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/tutu/', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo', '/'))->isEqualTo(array('/', '/foo/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/', '/'))->isEqualTo(array('/', '/foo/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/bar', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/bar/', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
 			->array(scripts\runner::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(array('c:\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
 		;
 	}
 }
