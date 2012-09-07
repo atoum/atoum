@@ -33,6 +33,7 @@ class runner implements observable, adapter\aggregator
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
 	protected $testDirectoryIterator = null;
+	protected $debugMode = false;
 
 	private $start = null;
 	private $stop = null;
@@ -131,6 +132,25 @@ class runner implements observable, adapter\aggregator
 	public function getIncluder()
 	{
 		return $this->includer;
+	}
+
+	public function enableDebugMode()
+	{
+		$this->debugMode = true;
+
+		return $this;
+	}
+
+	public function disableDebugMode()
+	{
+		$this->debugMode = false;
+
+		return $this;
+	}
+
+	public function debugModeIsEnabled()
+	{
+		return $this->debugMode;
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -447,6 +467,11 @@ class runner implements observable, adapter\aggregator
 					->setLocale($this->locale)
 					->setBootstrapFile($this->bootstrapFile)
 				;
+
+				if ($this->debugMode === true)
+				{
+					$test->enableDebugMode();
+				}
 
 				if ($this->maxChildrenNumber !== null)
 				{

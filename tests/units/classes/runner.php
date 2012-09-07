@@ -165,6 +165,34 @@ class runner extends atoum\test
 		;
 	}
 
+	public function runnerEnableDebugMode()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($runner->enableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isTrue()
+				->object($runner->enableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isTrue()
+		;
+	}
+
+	public function runnerDisableDebugMode()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+			->if($runner->enableDebugMode())
+			->then
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+		;
+	}
+
 	public function testAddObserver()
 	{
 		$this

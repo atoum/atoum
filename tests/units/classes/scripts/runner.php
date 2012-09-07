@@ -161,6 +161,11 @@ class runner extends atoum\test
 							array('-ulr', '--use-light-report'),
 							null,
 							'Use "light" CLI report'
+						),
+						array(
+							array('--debug'),
+							null,
+							'Enable debug mode'
 						)
 					)
 				)
@@ -299,6 +304,11 @@ class runner extends atoum\test
 							array('-ulr', '--use-light-report'),
 							null,
 							'Use "light" CLI report'
+						),
+						array(
+							array('--debug'),
+							null,
+							'Enable debug mode'
 						)
 					)
 				)

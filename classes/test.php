@@ -65,6 +65,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $includer = null;
 	private $bootstrapFile = null;
 	private $executeOnFailure = array();
+	private $debugMode = false;
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
@@ -226,6 +227,25 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return (isset($this->methodEngines[$method]) === false ? null : $this->methodEngines[$method]);
 	}
 
+	public function enableDebugMode()
+	{
+		$this->debugMode = true;
+
+		return $this;
+	}
+
+	public function disableDebugMode()
+	{
+		$this->debugMode = false;
+
+		return $this;
+	}
+
+	public function debugModeIsEnabled()
+	{
+		return $this->debugMode;
+	}
+
 	public function executeOnFailure(\closure $closure)
 	{
 		$this->executeOnFailure[] = $closure;
@@ -237,7 +257,27 @@ abstract class test implements observable, adapter\aggregator, \countable
 	{
 		$this->assertionManager = $assertionManager;
 
-		$this->assertionManager->setHandler('when', function($mixed) use ($assertionManager) { if ($mixed instanceof \closure) { $mixed(); } return $assertionManager; });
+		$test = $this;
+
+		$this->assertionManager
+			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed(); } return $test; })
+			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test; })
+			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
+			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
+			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
+			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
+			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
+			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
+		;
+
+		$returnAssertionManager = function() use ($test) { return $test; };
+
+		$this->assertionManager
+			->setHandler('if', $returnAssertionManager)
+			->setHandler('and', $returnAssertionManager)
+			->setHandler('then', $returnAssertionManager)
+			->setHandler('given', $returnAssertionManager)
+		;
 
 		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
 
@@ -246,32 +286,12 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('ƒ', $mockControllerExtractor)
 		;
 
-		$returnAssertionManager = function() use ($assertionManager) { return $assertionManager; };
-		$this->assertionManager
-			->setHandler('if', $returnAssertionManager)
-			->setHandler('and', $returnAssertionManager)
-			->setHandler('then', $returnAssertionManager)
-			->setHandler('given', $returnAssertionManager)
-		;
-
-		$test = $this;
-		$this->assertionManager
-			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test->getAssertionManager(); })
-			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
-			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
-			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
-		;
-
 		$asserterGenerator = $this->asserterGenerator;
-		$this->assertionManager->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; });
 
 		$this->assertionManager
-			->setHandler('dump', function() use ($assertionManager) { call_user_func_array('var_dump', func_get_args()); return $assertionManager; })
-			->setHandler('stop', function() { throw new test\exceptions\stop(); })
-			->setHandler('executeOnFailure', function($callback) use ($test, $assertionManager) { $test->executeOnFailure($callback); return $assertionManager; })
+			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
+			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
 		;
-
-		$this->assertionManager->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); });
 
 		return $this;
 	}

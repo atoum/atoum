@@ -82,6 +82,11 @@ class concurrent extends test\engine
 				'$test->setPhpPath(\'' . $phpPath . '\');'
 			;
 
+			if ($this->test->debugModeIsEnabled() === true)
+			{
+				$phpCode .= '$test->enableDebugMode();';
+			}
+
 			if ($this->test->codeCoverageIsEnabled() === false)
 			{
 				$phpCode .= '$test->disableCodeCoverage();';

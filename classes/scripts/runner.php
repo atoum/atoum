@@ -719,6 +719,19 @@ class runner extends atoum\script
 					null,
 					$this->locale->_('Use "light" CLI report')
 				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->getRunner()->enableDebugMode();
+					},
+					array('--debug'),
+					null,
+					$this->locale->_('Enable debug mode')
+				)
 		;
 
 		return $this;

@@ -13,6 +13,7 @@ class adapter extends atoum\test
 	public function test__construct()
 	{
 		$this
+			->dump('foo')
 			->if($asserter = new \mock\mageekguy\atoum\asserter($generator = new atoum\asserter\generator()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
