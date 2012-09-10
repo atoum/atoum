@@ -349,7 +349,7 @@ class stub extends scripts\runner
 		unset($versions[$versionDirectory]);
 		unset($phar[$versionDirectory]);
 
-		$currentVersion = $versions['current'];
+		$currentVersion = $versions[$versions['current']];
 		unset($versions['current']);
 
 		$versions = array_values($versions);
