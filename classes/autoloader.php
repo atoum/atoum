@@ -54,8 +54,6 @@ class autoloader
 
 	public function getPath($class)
 	{
-		$class = strtolower($class);
-
 		foreach ($this->directories as $namespace => $directories)
 		{
 			if ($class !== $namespace)
