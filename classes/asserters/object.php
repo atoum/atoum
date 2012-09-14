@@ -73,6 +73,16 @@ class object extends asserters\variable
 		return $this;
 	}
 
+	public function isCloneOf($object, $failMessage = null)
+	{
+		if ($failMessage === null)
+		{
+			$failMessage = sprintf($this->getLocale()->_('%s is not a clone of %s'), $this, $object);
+		}
+
+		return $this->isEqualTo($object, $failMessage)->isNotIdenticalTo($object, $failMessage);
+	}
+
 	public function isEmpty($failMessage = null)
 	{
 		if (sizeof($this->valueIsSet()->value) == 0)
