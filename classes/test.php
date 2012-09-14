@@ -16,7 +16,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
-	const setUpFail = 'setUpFail';
 	const afterSetUp = 'afterTestSetUp';
 	const beforeTestMethod = 'beforeTestMethod';
 	const fail = 'testAssertionFail';
@@ -28,7 +27,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const success = 'testAssertionSuccess';
 	const afterTestMethod = 'afterTestMethod';
 	const beforeTearDown = 'beforeTestTearDown';
-	const tearDownFail = 'tearDownFail';
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
 	const defaultEngine = 'concurrent';
@@ -944,25 +942,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return self::$defaultEngine ?: self::defaultEngine;
 	}
 
-	protected function setUp()
-	{
-		return true;
-	}
+	protected function setUp() {}
 
-	protected function beforeTestMethod($testMethod)
-	{
-		return $this;
-	}
+	protected function beforeTestMethod($testMethod) {}
 
-	protected function afterTestMethod($testMethod)
-	{
-		return $this;
-	}
+	protected function afterTestMethod($testMethod) {}
 
-	protected function tearDown()
-	{
-		return false;
-	}
+	protected function tearDown() {}
 
 	protected function addExceptionToScore(\exception $exception)
 	{
@@ -1016,64 +1002,65 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function runEngines()
 	{
-		if ($this->doSetUp() === true)
+		$this->callObservers(self::beforeSetUp);
+		$this->setUp();
+		$this->callObservers(self::afterSetUp);
+
+		while ($this->runEngine()->engines)
 		{
-			while ($this->runEngine()->engines)
+			$engines = $this->engines;
+
+			foreach ($engines as $this->currentMethod => $engine)
 			{
-				$engines = $this->engines;
+				$score = $engine->getScore();
 
-				foreach ($engines as $this->currentMethod => $engine)
+				if ($score !== null)
 				{
-					$score = $engine->getScore();
+					unset($this->engines[$this->currentMethod]);
 
-					if ($score !== null)
+					$this->callObservers(self::afterTestMethod);
+
+					switch (true)
 					{
-						unset($this->engines[$this->currentMethod]);
+						case $score->getRuntimeExceptionNumber() > 0:
+							$this->callObservers(self::runtimeException);
+							$runtimeExceptions = $score->getRuntimeExceptions();
+							throw array_shift($runtimeExceptions);
 
-						$this->callObservers(self::afterTestMethod);
+						case $score->getVoidMethodNumber() > 0:
+							$this->callObservers(self::void);
+							break;
 
-						switch (true)
-						{
-							case $score->getRuntimeExceptionNumber() > 0:
-								$this->callObservers(self::runtimeException);
-								$runtimeExceptions = $score->getRuntimeExceptions();
-								throw array_shift($runtimeExceptions);
+						case $score->getUncompletedMethodNumber():
+							$this->callObservers(self::uncompleted);
+							break;
 
-							case $score->getVoidMethodNumber() > 0:
-								$this->callObservers(self::void);
-								break;
+						case $score->getFailNumber():
+							$this->callObservers(self::fail);
+							break;
 
-							case $score->getUncompletedMethodNumber():
-								$this->callObservers(self::uncompleted);
-								break;
+						case $score->getErrorNumber():
+							$this->callObservers(self::error);
+							break;
 
-							case $score->getFailNumber():
-								$this->callObservers(self::fail);
-								break;
+						case $score->getExceptionNumber():
+							$this->callObservers(self::exception);
+							break;
 
-							case $score->getErrorNumber():
-								$this->callObservers(self::error);
-								break;
+						default:
+							$this->callObservers(self::success);
+					}
 
-							case $score->getExceptionNumber():
-								$this->callObservers(self::exception);
-								break;
+					$this->score->merge($score);
 
-							default:
-								$this->callObservers(self::success);
-						}
-
-						$this->score->merge($score);
-
-						if ($engine->isAsynchronous() === true)
-						{
-							$this->asynchronousEngines--;
-						}
+					if ($engine->isAsynchronous() === true)
+					{
+						$this->asynchronousEngines--;
 					}
 				}
-
-				$this->currentMethod = null;
 			}
+
+			$this->currentMethod = null;
 		}
 
 		return $this->doTearDown();
@@ -1142,34 +1129,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return ($this->runTestMethods && ($engine->isAsynchronous() === false || ($this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines)));
 	}
 
-	private function doSetUp()
-	{
-		$this->callObservers(self::beforeSetUp);
-
-		switch (true)
-		{
-			case $this->setUp():
-				$this->callObservers(self::afterSetUp);
-				return true;
-
-			default:
-				$this->callObservers(self::setUpFail);
-				return false;
-		}
-	}
-
 	private function doTearDown()
 	{
 		$this->callObservers(self::beforeTearDown);
-
-		if ($this->tearDown() === true)
-		{
-			$this->callObservers(self::afterTearDown);
-		}
-		else
-		{
-			$this->callObservers(self::tearDownFail);
-		}
+		$this->tearDown();
+		$this->callObservers(self::afterTearDown);
 
 		return $this;
 	}
