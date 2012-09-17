@@ -125,10 +125,7 @@ class runner extends atoum\script
 				{
 					if ($this->runner->hasReports() === false)
 					{
-						$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
-						$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
-
-						$this->runner->addReport($report);
+						$this->runner->addDefaultReport();
 					}
 
 					$methods = $this->methods;

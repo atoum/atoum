@@ -586,4 +586,14 @@ class runner extends atoum\test
 				->object($runner->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
 		;
 	}
+
+	public function testAddDefaultReport()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
+				->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
+		;
+	}
 }
