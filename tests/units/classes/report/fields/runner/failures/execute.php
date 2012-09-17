@@ -77,7 +77,7 @@ class execute extends atoum\test
 						)
 					)
 				)
-			->if($field->handleEvent(atoum\runner::runStop, $runner))
+			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
 				->adapter($adapter)->call('system')->withArguments(sprintf($command, $file, $line))->once()
