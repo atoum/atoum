@@ -7,8 +7,6 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 
 use \mageekguy\atoum;
 
-$stdOutWriter = new atoum\writers\std\out();
-
 /*
 Please replace in next line /path/to/destination/directory by your destination directory path for html files.
 */
@@ -19,10 +17,7 @@ Please replace in next line http://url/of/web/site by the root url of your code 
 */
 $coverageField->setRootUrl('http://url/of/web/site');
 
-$cliReport = new atoum\reports\realtime\cli();
-$cliReport
-	->addWriter($stdOutWriter)
-	->addField($coverageField, array(atoum\runner::runStop))
+$runner
+	->addDefaultReport()
+		->addField($coverageField)
 ;
-
-$runner->addReport($cliReport);
