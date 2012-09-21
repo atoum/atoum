@@ -298,9 +298,10 @@ class runner extends atoum\script
 		if ($autorunIsRegistered === false)
 		{
 			$autorunner = & static::$autorunner;
+			$calledClass = get_called_class();
 
-			register_shutdown_function(function() use (& $autorunner) {
-					if ($autorunner instanceof static)
+			register_shutdown_function(function() use (& $autorunner, $calledClass) {
+					if ($autorunner instanceof $calledClass)
 					{
 						$score = $autorunner->run()->getRunner()->getScore();
 
