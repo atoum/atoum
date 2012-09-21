@@ -689,7 +689,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 		if ($this->methodIsIgnored($testMethod, $tags) === false)
 		{
 			$mockGenerator = $this->getMockGenerator();
-			$mockNamespacePattern = '/^' . $mockGenerator->getDefaultNamespace() . '\\\/';
+			$mockNamespacePattern = '/^' . preg_quote($mockGenerator->getDefaultNamespace()) . '\\\/i';
 
 			$mockAutoloader = function($class) use ($mockGenerator, $mockNamespacePattern) {
 				$mockedClass = preg_replace($mockNamespacePattern, '', $class);
