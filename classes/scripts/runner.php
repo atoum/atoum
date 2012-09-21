@@ -25,7 +25,7 @@ class runner extends atoum\script
 	protected $methods = array();
 	protected $loop = false;
 
-	protected static $autorunner = null;
+	protected static $autorunner = true;
 
 	public function __construct($name, atoum\factory $factory = null)
 	{
@@ -271,36 +271,46 @@ class runner extends atoum\script
 
 	public static function autorunIsEnabled()
 	{
-		return (static::$autorunner !== null);
+		return (static::$autorunner !== false);
 	}
 
 	public static function enableAutorun($name)
 	{
-		if (static::autorunIsEnabled() === true)
+		if (static::$autorunner instanceof static)
 		{
 			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
 		static::$autorunner = new static($name);
 
-		$autorunner = & static::$autorunner;
-
-		register_shutdown_function(function() use (& $autorunner) {
-				if ($autorunner !== null)
-				{
-					$score = $autorunner->run()->getRunner()->getScore();
-
-					exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
-				}
-			}
-		);
-
-		return $autorunner;
+		return static::$autorunner;
 	}
 
 	public static function disableAutorun()
 	{
-		static::$autorunner = null;
+		static::$autorunner = false;
+	}
+
+	public static function registerAutorun()
+	{
+		static $autorunIsRegistered = false;
+
+		if ($autorunIsRegistered === false)
+		{
+			$autorunner = & static::$autorunner;
+
+			register_shutdown_function(function() use (& $autorunner) {
+					if ($autorunner instanceof static)
+					{
+						$score = $autorunner->run()->getRunner()->getScore();
+
+						exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+					}
+				}
+			);
+
+			$autorunIsRegistered = true;
+		}
 	}
 
 	public static function getSubDirectoryPath($directory, $directorySeparator = null)
@@ -842,3 +852,5 @@ class runner extends atoum\script
 		return $methods;
 	}
 }
+
+runner::registerAutorun();
