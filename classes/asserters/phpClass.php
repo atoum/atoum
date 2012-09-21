@@ -12,6 +12,21 @@ class phpClass extends atoum\asserter
 	protected $class = null;
 	protected $reflectionClassInjector = null;
 
+	public function __call($method, $arguments)
+	{
+		switch (strtolower($method))
+		{
+			case 'extends':
+				return call_user_func_array(array($this, 'isSubClassOf'), $arguments);
+
+			case 'implements':
+				return call_user_func_array(array($this, 'hasInterface'), $arguments);
+
+			default:
+				return parent::__call($method, $arguments);
+		}
+	}
+
 	public function getReflectionClass($class)
 	{
 		$reflectionClass = null;
