@@ -25,7 +25,7 @@ if (defined(__NAMESPACE__ . '\scripts\runner') === false)
 	define(__NAMESPACE__ . '\scripts\runner', __FILE__);
 }
 
-if (phar\stub::autorunIsEnabled() === false)
+if (phar\stub::autorunIsEnabled() === true)
 {
 	phar\stub::enableAutorun(constant(__NAMESPACE__ . '\scripts\runner'));
 }
