@@ -14,6 +14,11 @@ require_once __DIR__ . '/../../runner.php';
 
 class adapter extends test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\adapter');
+	}
+
 	public function test__construct()
 	{
 		$this
