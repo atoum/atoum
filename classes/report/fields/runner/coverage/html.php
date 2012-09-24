@@ -117,6 +117,23 @@ class html extends report\fields\runner\coverage\cli
 			{
 				$this->cleanDestinationDirectory();
 
+				$dirs = \explode(DIRECTORY_SEPARATOR, $this->destinationDirectory);
+				$currentDir = '';
+				$mode = 0777;
+				foreach ($dirs as $d)
+				{
+					$currentDir .= $d . DIRECTORY_SEPARATOR;
+					if ($this->adapter->is_dir($currentDir) === false)
+					{
+						$this->adapter->mkdir($currentDir, $mode);
+					}
+					else
+					{
+						$tmpStat = $this->adapter->stat($currentDir);
+						$mode = $tmpStat['mode'];
+					}
+				}
+
 				$this->adapter->copy($this->templatesDirectory . DIRECTORY_SEPARATOR . 'screen.css', $this->destinationDirectory . DIRECTORY_SEPARATOR . 'screen.css');
 
 				$classes = $this->coverage->getClasses();
