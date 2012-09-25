@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class error extends \mageekguy\atoum\asserter
+class error extends atoum\asserter
 {
 	protected $score = null;
 	protected $message = null;

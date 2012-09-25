@@ -3,12 +3,11 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
 ;
 
-class exception extends asserters\object
+class exception extends object
 {
 	public function setWith($value, $label = null, $check = true)
 	{

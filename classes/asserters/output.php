@@ -3,11 +3,10 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserters
+	mageekguy\atoum
 ;
 
-class output extends asserters\string
+class output extends string
 {
 	public function __construct(atoum\asserter\generator $generator)
 	{

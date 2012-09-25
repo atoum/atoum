@@ -2,11 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters
-;
-
-class castToString extends asserters\string
+class castToString extends string
 {
 	public function setWith($value, $label = null, $charlist = null, $checkType = true)
 	{

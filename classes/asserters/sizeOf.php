@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-class sizeOf extends \mageekguy\atoum\asserters\integer
+class sizeOf extends integer
 {
 	public function setWith($value, $label = null)
 	{
