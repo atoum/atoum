@@ -3,10 +3,11 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class dateTime extends object
+class dateTime extends asserters\object
 {
 	public function setWith($value, $checkType = true)
 	{

@@ -3,11 +3,12 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
 ;
 
-class phpArray extends variable
+class phpArray extends asserters\variable
 {
 	public function setWith($value, $label = null)
 	{

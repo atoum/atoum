@@ -5,10 +5,11 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class string extends variable
+class string extends asserters\variable
 {
 	protected $charlist = null;
 

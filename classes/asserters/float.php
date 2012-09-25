@@ -3,11 +3,12 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
 ;
 
-class float extends integer
+class float extends asserters\integer
 {
 	public function setWith($value, $label = null)
 	{

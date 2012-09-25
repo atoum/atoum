@@ -3,10 +3,11 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class integer extends variable
+class integer extends asserters\variable
 {
 	public function setWith($value, $label = null)
 	{
