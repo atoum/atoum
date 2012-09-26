@@ -2,9 +2,7 @@
 
 namespace mageekguy\atoum\asserters;
 
-use
-	mageekguy\atoum\asserters
-;
+use mageekguy\atoum\asserters;
 
 class castToString extends asserters\string
 {

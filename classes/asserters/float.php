@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-class float extends \mageekguy\atoum\asserters\integer
+class float extends asserters\integer
 {
 	public function setWith($value, $label = null)
 	{
