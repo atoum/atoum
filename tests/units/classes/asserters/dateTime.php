@@ -129,6 +129,9 @@ class dateTime extends atoum\test
 				->exception(function() use ($asserter) { $asserter->hasDate(1976, 10, 6); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
+				->exception(function() use ($asserter) { $asserter->hasDate(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('You must give at least the year, month or day')
 			->if($asserter->setWith($dateTime = new \dateTime('1976-10-06')))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDate(1980, 8, 14); })
@@ -137,11 +140,21 @@ class dateTime extends atoum\test
 				->object($asserter->hasDate(1976, 10, 6))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '6'))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '06'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1976', '10'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1976'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1976', null, 6))->isIdenticalTo($asserter)
+				->object($asserter->hasDate(null, null, 6))->isIdenticalTo($asserter)
+				->object($asserter->hasDate(null, 10, 6))->isIdenticalTo($asserter)
 			->if($asserter->setWith($dateTime = new \dateTime('1980-08-14')))
 			->then
 				->object($asserter->hasDate(1980, 8, 14))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1980', '8', '14'))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1980', '08', '14'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1980', '8'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1980'))->isIdenticalTo($asserter)
+				->object($asserter->hasDate('1980', null, 14))->isIdenticalTo($asserter)
+				->object($asserter->hasDate(null, null, 14))->isIdenticalTo($asserter)
+				->object($asserter->hasDate(null, 8, 14))->isIdenticalTo($asserter)
 		;
 	}
 }

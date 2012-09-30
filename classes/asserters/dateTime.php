@@ -84,9 +84,35 @@ class dateTime extends asserters\object
 		return $this;
 	}
 
-	public function hasDate($year, $month = null, $day = null, $failMessage = null)
+	public function hasDate($year = null, $month = null, $day = null, $failMessage = null)
 	{
-		if ($this->valueIsSet()->value->format('Y-m-d') == sprintf('%d-%02d-%02d', $year, $month, $day))
+		if($year === null && $month === null && $day === null) {
+			throw new exceptions\logic('You must give at least the year, month or day');
+		}
+		
+		if($year === null)
+		{
+			$format = $date = '';
+		}
+		else 
+		{
+			$format = 'Y';
+			$date   = $year;
+		}
+
+		if($month !== null)
+		{
+			$format .= '-m';
+			$date   .= sprintf('-%02d', $month);
+		}
+
+		if($day !== null)
+		{
+			$format .= '-d';
+			$date   .= sprintf('-%02d', $day);
+		}
+
+		if ($this->valueIsSet()->value->format($format) == $date)
 		{
 			$this->pass();
 		}
