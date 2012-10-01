@@ -58,7 +58,7 @@ class dateTime extends asserters\object
 
 	public function isInYear()
 	{
-		die('The method ' . __METHOD__ . ' is deprecated, please use hasYear instead');
+		die('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasYear instead');
 	}
 
 	public function hasMonth($month, $failMessage = null)
@@ -77,7 +77,7 @@ class dateTime extends asserters\object
 
 	public function isInMonth()
 	{
-		die('The method ' . __METHOD__ . ' is deprecated, please use hasMonth instead');
+		die('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasMonth instead');
 	}
 
 	public function hasDay($day, $failMessage = null)
@@ -96,7 +96,7 @@ class dateTime extends asserters\object
 
 	public function isInDay()
 	{
-		die('The method ' . __METHOD__ . ' is deprecated, please use hasDay instead');
+		die('The method ' . __METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::hasDay instead');
 	}
 
 	public function hasDate($year, $month, $day, $failMessage = null)
