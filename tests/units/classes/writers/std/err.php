@@ -13,7 +13,7 @@ class err extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\writers\std')
 				->hasInterface('mageekguy\atoum\adapter\aggregator')
@@ -24,30 +24,28 @@ class err extends atoum\test
 
 	public function test__construct()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->fopen = null;
-		$adapter->fwrite = null;
-
-		$stderr = new std\err($adapter);
-
-		$this->assert
-			->object($stderr->getAdapter())->isIdenticalTo($adapter)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fopen = null)
+			->and($adapter->fwrite = null)
+			->and($stderr = new std\err($adapter))
+			->then
+				->object($stderr->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
 	public function testWrite()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->fopen = null;
-		$adapter->fwrite = null;
-
-		$stderr = new std\err($adapter);
-
-		$this->assert
-			->object($stderr->write($string = uniqid()))->isIdenticalTo($stderr)
-			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
-			->object($stderr->write($string = uniqid() . "\n"))->isIdenticalTo($stderr)
-			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fopen = null)
+			->and($adapter->fwrite = null)
+			->and($stderr = new std\err($adapter))
+			->then
+				->object($stderr->write($string = uniqid()))->isIdenticalTo($stderr)
+				->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
+				->object($stderr->write($string = uniqid() . "\n"))->isIdenticalTo($stderr)
+				->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 		;
 	}
 }

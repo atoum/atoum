@@ -12,155 +12,117 @@ class template extends atoum\test
 {
 	public function test__construct()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->string($template->getData())->isEmpty()
-		;
-
-		$template = new atoum\template($data = uniqid());
-
-		$this->assert
-			->string($template->getData())->isEqualTo($data)
+		$this
+			->if($template = new atoum\template())
+			->then
+				->string($template->getData())->isEmpty()
+			->if($template = new atoum\template($data = uniqid()))
+			->then
+				->string($template->getData())->isEqualTo($data)
 		;
 	}
 
 	public function test__toString()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->string($template->getData())->isEmpty()
-			->boolean($template->hasChildren())->isFalse()
-			->variable($template->getId())->isNull()
-			->variable($template->getTag())->isNull()
-		;
-
-		$template = new atoum\template($data = uniqid());
-
-		$this->assert
-			->string($template->getData())->isEqualTo($data)
-			->boolean($template->hasChildren())->isFalse()
-			->variable($template->getId())->isNull()
-			->variable($template->getTag())->isNull()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->string($template->getData())->isEmpty()
+				->boolean($template->hasChildren())->isFalse()
+				->variable($template->getId())->isNull()
+				->variable($template->getTag())->isNull()
+			->if($template = new atoum\template($data = uniqid()))
+			->then
+				->string($template->getData())->isEqualTo($data)
+				->boolean($template->hasChildren())->isFalse()
+				->variable($template->getId())->isNull()
+				->variable($template->getTag())->isNull()
 		;
 	}
 
 	public function test__get()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->object($iterator = $template->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isZero()
-		;
-
-		$template->addChild($childTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($childTag)
-		;
-
-		$template->addChild($otherChildTag = new atoum\template\tag($childTag->getTag()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-		;
-
-		$template->addChild($anotherChildTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(2)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($anotherChildTag)
-		;
-
-		$childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag()));
-
-		$this->assert
-			->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(3)
-			->object($iterator->current())->isIdenticalTo($childTag)
-			->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
-			->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
-			->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
-			->sizeOf($iterator)->isEqualTo(1)
-			->object($iterator->current())->isIdenticalTo($anotherChildTag)
+		$this
+			->if($template = new atoum\template())
+			->then
+				->object($iterator = $template->{uniqid()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isZero()
+			->if($template->addChild($childTag = new atoum\template\tag(uniqid())))
+			->then
+				->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($childTag)
+			->if($template->addChild($otherChildTag = new atoum\template\tag($childTag->getTag())))
+			->then
+				->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(2)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+			->if($template->addChild($anotherChildTag = new atoum\template\tag(uniqid())))
+			->then
+				->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(2)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+				->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($anotherChildTag)
+			->if($childTag->addChild($littleChildTag  = new atoum\template\tag($childTag->getTag())))
+			->then
+				->object($iterator = $template->{$childTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(3)
+				->object($iterator->current())->isIdenticalTo($childTag)
+				->object($iterator->next()->current())->isIdenticalTo($littleChildTag)
+				->object($iterator->next()->current())->isIdenticalTo($otherChildTag)
+				->object($iterator = $template->{$anotherChildTag->getTag()})->isInstanceOf('mageekguy\atoum\template\iterator')
+				->sizeOf($iterator)->isEqualTo(1)
+				->object($iterator->current())->isIdenticalTo($anotherChildTag)
 		;
 	}
 
 	public function test__set()
 	{
-		$template = new atoum\template();
-
-		$template
-			->addChild($tag  = new atoum\template\tag(uniqid()))
-			->{$tag->getTag()} = $data = uniqid()
-		;
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-		;
-
-		$tag->addChild($childTag  = new atoum\template\tag($tag->getTag()));
-
-		$template->{$tag->getTag()} = $data;
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-			->string($childTag->getData())->isEqualTo($data)
-		;
-
-		$tag->addChild($otherChildTag = new atoum\template\tag(uniqid()));
-
-		$template->{$otherChildTag->getTag()} = $otherData = uniqid();
-
-		$this->assert
-			->string($tag->getData())->isEqualTo($data)
-			->string($childTag->getData())->isEqualTo($data)
-			->string($otherChildTag->getData())->isEqualTo($otherData)
+		$this
+			->if($template = new atoum\template())
+			->and($template->addChild($tag  = new atoum\template\tag(uniqid())))
+			->and($template->{$tag->getTag()} = $data = uniqid())
+			->then
+				->string($tag->getData())->isEqualTo($data)
+			->if($tag->addChild($childTag  = new atoum\template\tag($tag->getTag())))
+			->and($template->{$tag->getTag()} = $data)
+			->then
+				->string($tag->getData())->isEqualTo($data)
+				->string($childTag->getData())->isEqualTo($data)
+			->if($tag->addChild($otherChildTag = new atoum\template\tag(uniqid())))
+			->and($template->{$otherChildTag->getTag()} = $otherData = uniqid())
+			->then
+				->string($tag->getData())->isEqualTo($data)
+				->string($childTag->getData())->isEqualTo($data)
+				->string($otherChildTag->getData())->isEqualTo($otherData)
 		;
 	}
 
 	public function test__isset()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->boolean(isset($template->{uniqid()}))->isFalse()
-		;
-
-		$template->addChild($childTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->boolean(isset($template->{uniqid()}))->isFalse()
-			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
-		;
-
-		$childTag->addChild($otherChildTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->boolean(isset($template->{uniqid()}))->isFalse()
-			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
-			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
-		;
-
-		$childTag->addChild($littleChildTag = new atoum\template\tag(uniqid()));
-
-		$this->assert
-			->boolean(isset($template->{uniqid()}))->isFalse()
-			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
-			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
-			->boolean(isset($template->{$littleChildTag->getTag()}))->isTrue()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->boolean(isset($template->{uniqid()}))->isFalse()
+			->if($template->addChild($childTag = new atoum\template\tag(uniqid())))
+			->then
+				->boolean(isset($template->{uniqid()}))->isFalse()
+				->boolean(isset($template->{$childTag->getTag()}))->isTrue()
+			->if($childTag->addChild($otherChildTag = new atoum\template\tag(uniqid())))
+			->then
+				->boolean(isset($template->{uniqid()}))->isFalse()
+				->boolean(isset($template->{$childTag->getTag()}))->isTrue()
+				->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
+			->if($childTag->addChild($littleChildTag = new atoum\template\tag(uniqid())))
+			->then
+				->boolean(isset($template->{uniqid()}))->isFalse()
+				->boolean(isset($template->{$childTag->getTag()}))->isTrue()
+				->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
+				->boolean(isset($template->{$littleChildTag->getTag()}))->isTrue()
 		;
 	}
 
@@ -170,28 +132,28 @@ class template extends atoum\test
 
 		$template->addChild($childTag = new atoum\template\tag(uniqid()));
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 		;
 
 		unset($template->{$childTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 		;
 
 		$template->{$childTag->getTag()} = uniqid();
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isNotEmpty()
 		;
 
 		unset($template->{$childTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 		;
@@ -199,7 +161,7 @@ class template extends atoum\test
 
 		$template->addChild($otherChildTag = new atoum\template\tag(uniqid()));
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -209,7 +171,7 @@ class template extends atoum\test
 		unset($template->{$childTag->getTag()});
 		unset($template->{$otherChildTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -219,7 +181,7 @@ class template extends atoum\test
 		$template->{$childTag->getTag()} = uniqid();
 		$template->{$otherChildTag->getTag()} = uniqid();
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isNotEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -228,7 +190,7 @@ class template extends atoum\test
 
 		unset($template->{$childTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -237,7 +199,7 @@ class template extends atoum\test
 
 		unset($template->{$otherChildTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -246,7 +208,7 @@ class template extends atoum\test
 
 		$childTag->addChild($littleChildTag = new atoum\template\tag(uniqid()));
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -259,7 +221,7 @@ class template extends atoum\test
 		$template->{$otherChildTag->getTag()} = uniqid();
 		$template->{$littleChildTag->getTag()} = uniqid();
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isNotEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -270,7 +232,7 @@ class template extends atoum\test
 
 		unset($template->{$childTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -281,7 +243,7 @@ class template extends atoum\test
 
 		unset($template->{$otherChildTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -292,7 +254,7 @@ class template extends atoum\test
 
 		unset($template->{$littleChildTag->getTag()});
 
-		$this->assert
+		$this
 			->boolean(isset($template->{$childTag->getTag()}))->isTrue()
 			->string($childTag->getData())->isEmpty()
 			->boolean(isset($template->{$otherChildTag->getTag()}))->isTrue()
@@ -306,20 +268,20 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->object($template->getRoot())->isIdenticalTo($template)
 		;
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->object($template->getRoot())->isIdenticalTo($template)
 			->object($childTemplate->getRoot())->isIdenticalTo($template)
 		;
 
 		$childTemplate->addChild($littleChildTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->object($template->getRoot())->isIdenticalTo($template)
 			->object($childTemplate->getRoot())->isIdenticalTo($template)
 			->object($littleChildTemplate->getRoot())->isIdenticalTo($template)
@@ -330,20 +292,20 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->variable($template->getParent())->isNull()
 		;
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->variable($template->getParent())->isNull()
 			->object($childTemplate->getParent())->isIdenticalTo($template)
 		;
 
 		$childTemplate->addChild($littleChildTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->variable($template->getParent())->isNull()
 			->object($childTemplate->getParent())->isIdenticalTo($template)
 			->object($littleChildTemplate->getParent())->isIdenticalTo($childTemplate)
@@ -354,27 +316,27 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 		;
 
 		$childTemplate = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->boolean($childTemplate->parentIsSet())->isFalse()
 		;
 
 		$template->addChild($childTemplate);
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->boolean($childTemplate->parentIsSet())->isTrue()
 		;
 
 		$littleChildTemplate = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->boolean($childTemplate->parentIsSet())->isTrue()
 			->boolean($littleChildTemplate->parentIsSet())->isFalse()
@@ -382,7 +344,7 @@ class template extends atoum\test
 
 		$childTemplate->addChild($littleChildTemplate);
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->boolean($childTemplate->parentIsSet())->isTrue()
 			->boolean($littleChildTemplate->parentIsSet())->isTrue()
@@ -393,7 +355,7 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->object($template->unsetParent())->isIdenticalTo($template)
 			->boolean($template->parentIsSet())->isFalse()
@@ -401,7 +363,7 @@ class template extends atoum\test
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->boolean($template->parentIsSet())->isFalse()
 			->boolean($childTemplate->parentIsSet())->isTrue()
 			->object($template->unsetParent())->isIdenticalTo($template)
@@ -413,12 +375,12 @@ class template extends atoum\test
 
 	public function testSetParent()
 	{
-		$childTemplate = new atoum\template();
-
-		$this->assert
-			->boolean($childTemplate->parentIsSet())->isFalse()
-			->object($childTemplate->setParent(new atoum\template()))->isIdenticalTo($childTemplate)
-			->boolean($childTemplate->parentIsSet())->isTrue()
+		$this
+			->if($childTemplate = new atoum\template())
+			->then
+				->boolean($childTemplate->parentIsSet())->isFalse()
+				->object($childTemplate->setParent(new atoum\template()))->isIdenticalTo($childTemplate)
+				->boolean($childTemplate->parentIsSet())->isTrue()
 		;
 	}
 
@@ -426,94 +388,91 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->string($template->getData())->isEmpty()
 		;
 
 		$template = new atoum\template($data = uniqid());
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data)
 		;
 
 		$template = new atoum\template();
 		$template->setData($data = uniqid());
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data)
 		;
 
 		$template->addChild(new atoum\template($otherData = uniqid()));
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data)
 		;
 
 		$template->build();
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data . $otherData)
 		;
 	}
 
 	public function testSetData()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->object($template->setData($data = uniqid()))->isIdenticalTo($template)
-			->string($template->getData())->isEqualTo($data)
+		$this
+			->if($template = new atoum\template())
+			->then
+				->object($template->setData($data = uniqid()))->isIdenticalTo($template)
+				->string($template->getData())->isEqualTo($data)
 		;
 	}
 
 	public function testAddData()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->object($template->addData($data = uniqid()))->isIdenticalTo($template)
-			->string($template->getData())->isEqualTo($data)
-			->object($template->addData($data))->isIdenticalTo($template)
-			->string($template->getData())->isEqualTo($data . $data)
-			->object($template->addData($otherData = uniqid()))->isIdenticalTo($template)
-			->string($template->getData())->isEqualTo($data . $data . $otherData)
+		$this
+			->if($template = new atoum\template())
+			->then
+				->object($template->addData($data = uniqid()))->isIdenticalTo($template)
+				->string($template->getData())->isEqualTo($data)
+				->object($template->addData($data))->isIdenticalTo($template)
+				->string($template->getData())->isEqualTo($data . $data)
+				->object($template->addData($otherData = uniqid()))->isIdenticalTo($template)
+				->string($template->getData())->isEqualTo($data . $data . $otherData)
 		;
 	}
 
 	public function testResetData()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->string($template->getData())->isEmpty()
-			->object($template->resetData())->isIdenticalTo($template)
-			->string($template->getData())->isEmpty()
-		;
-
-		$template = new atoum\template($data = uniqid());
-
-		$this->assert
-			->string($template->getData())->isEqualTo($data)
-			->object($template->resetData())->isIdenticalTo($template)
-			->string($template->getData())->isEmpty()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->string($template->getData())->isEmpty()
+				->object($template->resetData())->isIdenticalTo($template)
+				->string($template->getData())->isEmpty()
+			->if($template = new atoum\template($data = uniqid()))
+			->then
+				->string($template->getData())->isEqualTo($data)
+				->object($template->resetData())->isIdenticalTo($template)
+				->string($template->getData())->isEmpty()
 		;
 	}
 
 	public function testGetId()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->variable($template->getId())->isNull()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->variable($template->getId())->isNull()
 		;
 	}
 
 	public function testIsRoot()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->boolean($template->isRoot())->isTrue()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->boolean($template->isRoot())->isTrue()
 		;
 	}
 
@@ -523,23 +482,23 @@ class template extends atoum\test
 
 		$childTemplate = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->isChild($childTemplate))->isFalse()
 		;
 
 		$template->addChild($childTemplate);
 
-		$this->assert
+		$this
 			->boolean($template->isChild($childTemplate))->isTrue()
 		;
 	}
 
 	public function testGetTag()
 	{
-		$template = new atoum\template();
-
-		$this->assert
-			->variable($template->getTag())->isNull()
+		$this
+			->if($template = new atoum\template())
+			->then
+				->variable($template->getTag())->isNull()
 		;
 	}
 
@@ -547,25 +506,25 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->array($template->getChildren())->isEmpty()
 		;
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->array($template->getChildren())->isIdenticalTo(array($childTemplate))
 		;
 
 		$template->addChild($otherChildTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->array($template->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
 		;
 
 		$childTemplate->addChild($littleChildTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->array($template->getChildren())->isIdenticalTo(array($childTemplate, $otherChildTemplate))
 		;
 	}
@@ -574,7 +533,7 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->hasChildren())->isFalse()
 			->object($template->addChild($childTemplate = new atoum\template()))->isIdenticalTo($template)
 			->object($childTemplate->getParent())->isIdenticalTo($template)
@@ -587,7 +546,7 @@ class template extends atoum\test
 		$otherTemplate = new atoum\template();
 		$otherTemplate->addChild($otherChildTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->array($otherTemplate->getChildren())->isIdenticalTo(array($otherChildTemplate))
 			->object($otherChildTemplate->getParent())->isIdenticalTo($otherTemplate)
 			->object($template->addChild($otherChildTemplate))->isIdenticalTo($template)
@@ -602,7 +561,7 @@ class template extends atoum\test
 
 		$templateWithSameId = clone $templateWithId;
 
-		$this->assert
+		$this
 			->boolean($template->hasChildren())->isFalse()
 			->object($template->addChild($templateWithId))->isIdenticalTo($template)
 			->array($template->getChildren())->isIdenticalTo(array($templateWithId))
@@ -622,7 +581,7 @@ class template extends atoum\test
 		$template = new atoum\template();
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->object($childTemplate->getParent())->isIdenticalTo($template)
 			->array($template->getChildren())->isIdenticalTo(array($childTemplate))
 			->object($template->deleteChild($childTemplate))->isIdenticalTo($template)
@@ -635,19 +594,19 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->boolean($template->hasChildren())->isFalse()
 		;
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->boolean($template->hasChildren())->isTrue()
 		;
 
 		$template->deleteChild($childTemplate);
 
-		$this->assert
+		$this
 			->boolean($template->hasChildren())->isFalse()
 		;
 	}
@@ -656,14 +615,14 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 		;
 
 		$template->addChild($tag = new atoum\template\tag(uniqid()));
 
-		$this->assert
+		$this
 			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
@@ -673,7 +632,7 @@ class template extends atoum\test
 
 		$template->addChild($otherTag = new atoum\template\tag($tag->getTag()));
 
-		$this->assert
+		$this
 			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
@@ -684,7 +643,7 @@ class template extends atoum\test
 
 		$tag->addChild($childTag = new atoum\template\tag($tag->getTag()));
 
-		$this->assert
+		$this
 			->object($iterator = $template->getByTag(uniqid()))->isInstanceOf('mageekguy\atoum\template\iterator')
 			->sizeOf($iterator)->isZero()
 			->object($iterator = $template->getByTag($tag->getTag()))->isInstanceOf('mageekguy\atoum\template\iterator')
@@ -699,14 +658,14 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->variable($template->getById(uniqid()))->isNull()
 		;
 
 		$tag = new atoum\template\tag(uniqid());
 		$template->addChild($tag->setId($id = uniqid()));
 
-		$this->assert
+		$this
 			->variable($template->getById(uniqid()))->isNull()
 			->object($template->getById($id))->isIdenticalTo($tag)
 		;
@@ -714,7 +673,7 @@ class template extends atoum\test
 		$childTag = new atoum\template\tag(uniqid());
 		$tag->addChild($childTag->setId($childId = uniqid()));
 
-		$this->assert
+		$this
 			->variable($template->getById(uniqid()))->isNull()
 			->object($template->getById($id))->isIdenticalTo($tag)
 			->object($tag->getById($id))->isIdenticalTo($tag)
@@ -729,7 +688,7 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->string($template->getData())->isEmpty()
 			->boolean($template->hasChildren())->isFalse()
 			->object($template->build())->isIdenticalTo($template)
@@ -738,7 +697,7 @@ class template extends atoum\test
 
 		$template = new atoum\template($data = uniqid());
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data)
 			->boolean($template->hasChildren())->isFalse()
 			->object($template->build())->isIdenticalTo($template)
@@ -749,7 +708,7 @@ class template extends atoum\test
 
 		$template->addChild($childTemplate = new atoum\template($childData = uniqid()));
 
-		$this->assert
+		$this
 			->string($template->getData())->isEqualTo($data)
 			->string($childTemplate->getData())->isEqualTo($childData)
 			->array($template->getChildren())->isIdenticalTo(array($childTemplate))
@@ -765,7 +724,7 @@ class template extends atoum\test
 	{
 		$template = new atoum\template();
 
-		$this->assert
+		$this
 			->variable($template->getChild(0))->isNull()
 			->variable($template->getChild(rand(1, PHP_INT_MAX)))->isNull()
 			->variable($template->getChild(- rand(1, PHP_INT_MAX)))->isNull()
@@ -773,7 +732,7 @@ class template extends atoum\test
 
 		$template->addChild($childTemplate = new atoum\template());
 
-		$this->assert
+		$this
 			->variable($template->getChild(0))->isIdenticalTo($childTemplate)
 			->variable($template->getChild(rand(1, PHP_INT_MAX)))->isNull()
 			->variable($template->getChild(- rand(1, PHP_INT_MAX)))->isNull()

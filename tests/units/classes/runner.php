@@ -13,7 +13,7 @@ class runner extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->hasInterface('mageekguy\atoum\observable')
 				->hasInterface('mageekguy\atoum\adapter\aggregator')

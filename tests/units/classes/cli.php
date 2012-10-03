@@ -31,7 +31,6 @@ class cli extends atoum\test
 		;
 	}
 
-
 	public function testIsTerminalWhenOsIsNotWindowsStdoutIsTtyIsUndefined()
 	{
 		$this

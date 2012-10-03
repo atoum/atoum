@@ -13,7 +13,7 @@ class badMethodCall extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubclassOf('logicException')
 				->isSubclassOf('badMethodCallException')
