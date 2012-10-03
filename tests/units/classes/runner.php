@@ -115,11 +115,21 @@ class runner extends atoum\test
 		$this
 			->if($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
+			->and($adapter->constant = function($constant) use (& $phpBinary) { return ($constant != 'PHP_BINARY' ? null : $phpBinary = uniqid()); })
+			->then
+				->string($runner->getPhpPath())->isEqualTo($phpBinary)
+			->if($runner = new atoum\runner())
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->defined = false)
+			->and($adapter->constant = null)
 			->and($adapter->getenv = function($variable) use (& $pearPhpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearPhpPath = uniqid()); })
 			->then
 				->string($runner->getPhpPath())->isEqualTo($pearPhpPath)
 			->if($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->defined = false)
+			->and($adapter->constant = null)
 			->and($adapter->getenv = function($variable) use (& $phpBinPath) {
 					switch ($variable)
 					{
@@ -133,6 +143,13 @@ class runner extends atoum\test
 			)
 			->then
 				->string($runner->getPhpPath())->isEqualTo($phpBinPath)
+			->if($runner = new atoum\runner())
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->defined = false)
+			->and($adapter->constant = function($constant) use (& $phpBinDir) { return ($constant != 'PHP_BINDIR' ? null : $phpBinDir = uniqid()); })
+			->and($adapter->getenv = false)
+			->then
+				->string($runner->getPhpPath())->isEqualTo($phpBinDir . '/php')
 		;
 	}
 
@@ -145,6 +162,34 @@ class runner extends atoum\test
 				->string($runner->getPhpPath())->isIdenticalTo($phpPath)
 				->object($runner->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($runner)
 				->string($runner->getPhpPath())->isIdenticalTo((string) $phpPath)
+		;
+	}
+
+	public function runnerEnableDebugMode()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($runner->enableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isTrue()
+				->object($runner->enableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isTrue()
+		;
+	}
+
+	public function runnerDisableDebugMode()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
+			->if($runner->enableDebugMode())
+			->then
+				->object($runner->disableDebugMode())->isIdenticalTo($runner)
+				->boolean($runner->debugModeIsEnabled())->isFalse()
 		;
 	}
 
@@ -384,7 +429,8 @@ class runner extends atoum\test
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->defined = false)
 			->and($adapter->proc_open = false)
-			->and($adapter->getenv = function($variable) use (& $phpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $phpPath = uniqid()); })
+			->and($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
+			->and($adapter->constant = function($constant) use (& $phpPath) { return ($constant != 'PHP_BINARY' ? null : $phpPath = uniqid()); })
 			->and($adapter->realpath = function($path) { return $path; })
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))
@@ -538,6 +584,16 @@ class runner extends atoum\test
 			->if($runner = new atoum\runner())
 			->then
 				->object($runner->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
+		;
+	}
+
+	public function testAddDefaultReport()
+	{
+		$this
+			->if($runner = new atoum\runner())
+			->then
+				->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
+				->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
 		;
 	}
 }

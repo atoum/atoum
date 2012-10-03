@@ -209,15 +209,15 @@ class script extends atoum\test
 			->and($script = new mock\script(uniqid(), $factory))
 			->then
 				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
 				->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(2)
 			->if($adapter->fgets = ' ' . ($input = uniqid()) . "\t")
 			->then
 				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(3)
 		;
 	}
@@ -231,21 +231,21 @@ class script extends atoum\test
 			->and($script->setOutputWriter($stdOut))
 			->then
 				->object($script->writeMessage($message = uniqid()))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->once()
 				->object($script->writeMessage(($message = uniqid()) . PHP_EOL))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->once()
 				->object($script->writeMessage(($message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->once()
 				->object($script->writeMessage(($message = PHP_EOL . $message) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->once()
 				->object($script->writeMessage($message = uniqid(), false))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->object($script->writeMessage(($message = uniqid()) . PHP_EOL, false))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->object($script->writeMessage(($message = uniqid()) . ' ' . PHP_EOL, false))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 				->object($script->writeMessage(($message = PHP_EOL . $message) . ' ' . PHP_EOL, false))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($message)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 		;
 	}
 
@@ -260,16 +260,16 @@ class script extends atoum\test
 			->and($script->setLocale($locale))
 			->then
 				->object($script->writeError($message = uniqid()))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->once()
 				->object($script->writeError(($message = uniqid()) . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(2)
 				->object($script->writeError(($message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(3)
 				->object($script->writeError((' ' . $message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(4)
 		;
 	}
@@ -296,17 +296,17 @@ class script extends atoum\test
 			->and($script->setOutputWriter($stdOut))
 			->then
 				->object($script->writeLabel($label = uniqid(), $message = uniqid()))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->once()
 				->object($script->writeLabel($label, $message, 0))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->exactly(2)
+				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->exactly(2)
 				->object($script->writeLabel(($label = ' ' . $label) . PHP_EOL, ' ' . $message . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->once()
 				->object($script->writeLabel($label, $message, 0))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments($label . ': ' . $message . PHP_EOL)->exactly(2)
+				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->exactly(2)
 				->object($script->writeLabel($label = uniqid(), $message = uniqid(), 1))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 				->object($script->writeLabel($label, $message, 2))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments(atoum\script::padding . atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 		;
 	}
 
@@ -319,7 +319,7 @@ class script extends atoum\test
 			->and($script->setOutputWriter($stdOut))
 			->then
 				->object($script->writeLabels(array($label = uniqid() => $message = uniqid())))->isIdenticalTo($script)
-				->mock($stdOut)->call('write')->withArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
+				->mock($stdOut)->call('write')->withIdenticalArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
 				->object($script->writeLabels(
 						array(
 							$label1 = uniqid() => $message1 = uniqid(),
@@ -330,9 +330,9 @@ class script extends atoum\test
 				)
 					->isIdenticalTo($script)
 				->mock($stdOut)
-					->call('write')->withArguments(atoum\script::padding . $label1 . ': ' . $message1 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . $label2 . ': ' . $message2 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . $label3 . ': ' . $message3 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . $label1 . ': ' . $message1 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . $label2 . ': ' . $message2 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . $label3 . ': ' . $message3 . PHP_EOL)->once()
 				->object($script->writeLabels(
 						array(
 							$label1 = uniqid() => $message1 = uniqid(),
@@ -343,9 +343,9 @@ class script extends atoum\test
 				)
 					->isIdenticalTo($script)
 				->mock($stdOut)
-					->call('write')->withArguments(atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
 				->object($script->writeLabels(array(
 							$label1 = uniqid() => $message1 = uniqid(),
 							$label2 = 'xx' . uniqid() => $message2 = uniqid(),
@@ -355,9 +355,9 @@ class script extends atoum\test
 				)
 					->isIdenticalTo($script)
 				->mock($stdOut)
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message2 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
 				->object($script->writeLabels(array(
 							$label1 = uniqid() => $message1 = uniqid(),
 							$label2 = 'xx' . uniqid() => ($message21 = uniqid()) . PHP_EOL . ($message22 = uniqid()),
@@ -367,10 +367,10 @@ class script extends atoum\test
 				)
 					->isIdenticalTo($script)
 				->mock($stdOut)
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message21 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '               ' . ': ' . $message22 . PHP_EOL)->once()
-					->call('write')->withArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label1 . ': ' . $message1 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding .        $label2 . ': ' . $message21 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '               ' . ': ' . $message22 . PHP_EOL)->once()
+					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
 		;
 	}
 }

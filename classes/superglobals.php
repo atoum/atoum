@@ -19,97 +19,38 @@ class superglobals
 	{
 		$this->check($superglobal);
 
-		switch ($superglobal)
+		if (array_key_exists($superglobal, $this->superglobals) === true)
+		{
+			return $this->superglobals[$superglobal];
+		}
+		else switch ($superglobal)
 		{
 			case 'GLOBALS':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $GLOBALS;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $GLOBALS;
 
 			case '_SERVER':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_SERVER;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_SERVER;
 
 			case '_GET':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_GET;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_GET;
 
 			case '_POST':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_POST;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_POST;
 
 			case '_FILES':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_FILES;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_FILES;
 
 			case '_COOKIE':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_COOKIE;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_COOKIE;
 
 			case '_SESSION':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_SESSION;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_SESSION;
 
 			case '_REQUEST':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_REQUEST;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_REQUEST;
 
 			case '_ENV':
-				if (array_key_exists($superglobal, $this->superglobals) === false)
-				{
-					return $_ENV;
-				}
-				else
-				{
-					return $this->superglobals[$superglobal];
-				}
+				return $_ENV;
 		}
 	}
 

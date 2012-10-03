@@ -155,6 +155,13 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
+	public function withIdenticalArguments()
+	{
+		$this->calledFunctionNameIsSet()->call->setArguments(func_get_args())->identical();
+
+		return $this;
+	}
+
 	public function withAnyArguments()
 	{
 		$this->calledFunctionNameIsSet()->call->unsetArguments();

@@ -17,15 +17,14 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures')
 		;
 	}
 
 	public function test__construct()
 	{
-
-		$this->assert
+		$this
 			->if($field = new runner\failures\cli())
 			->then
 				->object($field->getTitlePrompt())->isEqualTo(new prompt())
@@ -58,8 +57,7 @@ class cli extends atoum\test
 
 	public function testSetTitlePrompt()
 	{
-
-		$this->assert
+		$this
 			->if($field = new runner\failures\cli())
 			->then
 				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -73,7 +71,7 @@ class cli extends atoum\test
 
 	public function testSetTitleColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new runner\failures\cli())
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -87,7 +85,7 @@ class cli extends atoum\test
 
 	public function testSetMethodPrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new runner\failures\cli())
 			->then
 				->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -101,7 +99,7 @@ class cli extends atoum\test
 
 	public function testSetMethodColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new runner\failures\cli())
 			->then
 				->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -116,223 +114,222 @@ class cli extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->assert
-				->if($field = new runner\failures\cli())
-				->then
-					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
-					->variable($field->getRunner())->isNull()
-					->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isTrue()
-					->object($field->getRunner())->isIdenticalTo($runner)
+			->if($field = new runner\failures\cli())
+			->then
+				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
+				->variable($field->getRunner())->isNull()
+				->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isTrue()
+				->object($field->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function test__toString()
 	{
-
 		$this
-			->assert
-				->if($score = new \mock\mageekguy\atoum\runner\score())
-				->and($score->getMockController()->getErrors = array())
-				->and($runner = new atoum\runner())
-				->and($runner->setScore($score))
-				->and($defaultField = new runner\failures\cli())
-				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
-				->and($customField->handleEvent(atoum\runner::runStart, $runner))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->and($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($score->getMockController()->getFailAssertions = $fails = array(
-							array(
-								'case' => null,
-								'dataSetKey' => null,
-								'class' => $class = uniqid(),
-								'method' => $method = uniqid(),
-								'file' => $file = uniqid(),
-								'line' => $line = uniqid(),
-								'asserter' => $asserter = uniqid(),
-								'fail' => $fail = uniqid()
-							),
-							array(
-								'case' => null,
-								'dataSetKey' => null,
-								'class' => $otherClass = uniqid(),
-								'method' => $otherMethod = uniqid(),
-								'file' => $otherFile = uniqid(),
-								'line' => $otherLine = uniqid(),
-								'asserter' => $otherAsserter = uniqid(),
-								'fail' => $otherFail = uniqid()
-							)
+			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->and($score->getMockController()->getErrors = array())
+			->and($runner = new atoum\runner())
+			->and($runner->setScore($score))
+			->and($defaultField = new runner\failures\cli())
+			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
+			->and($customField->handleEvent(atoum\runner::runStart, $runner))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->and($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($score->getMockController()->getFailAssertions = $fails = array(
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'class' => $class = uniqid(),
+							'method' => $method = uniqid(),
+							'file' => $file = uniqid(),
+							'line' => $line = uniqid(),
+							'asserter' => $asserter = uniqid(),
+							'fail' => $fail = uniqid()
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'class' => $otherClass = uniqid(),
+							'method' => $otherMethod = uniqid(),
+							'file' => $otherFile = uniqid(),
+							'line' => $otherLine = uniqid(),
+							'asserter' => $otherAsserter = uniqid(),
+							'fail' => $otherFail = uniqid()
 						)
 					)
-				->and($defaultField = new runner\failures\cli())
-				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->and($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
-						$class . '::' . $method . '():' . PHP_EOL .
-						sprintf('In file %s on line %d, %s failed: %s', $file, $line, $asserter, $fail) . PHP_EOL .
-						$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-						sprintf('In file %s on line %d, %s failed: %s', $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
-					)
-					->castToString($customField)->isEqualTo(
-						$titlePrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
-						) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($class . '::' . $method . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d, %s failed: %s'), $file, $line, $asserter, $fail) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
-						PHP_EOL
-					)
-				->if($score->getMockController()->getFailAssertions = $fails = array(
-							array(
-								'case' => $case =  uniqid(),
-								'dataSetKey' => null,
-								'class' => $class = uniqid(),
-								'method' => $method = uniqid(),
-								'file' => $file = uniqid(),
-								'line' => $line = uniqid(),
-								'asserter' => $asserter = uniqid(),
-								'fail' => $fail = uniqid()
-							),
-							array(
-								'case' => $otherCase =  uniqid(),
-								'dataSetKey' => null,
-								'class' => $otherClass = uniqid(),
-								'method' => $otherMethod = uniqid(),
-								'file' => $otherFile = uniqid(),
-								'line' => $otherLine = uniqid(),
-								'asserter' => $otherAsserter = uniqid(),
-								'fail' => $otherFail = uniqid()
-							)
+				)
+			->and($defaultField = new runner\failures\cli())
+			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->and($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+					$class . '::' . $method . '():' . PHP_EOL .
+					sprintf('In file %s on line %d, %s failed: %s', $file, $line, $asserter, $fail) . PHP_EOL .
+					$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+					sprintf('In file %s on line %d, %s failed: %s', $otherFile, $otherLine, $otherAsserter, $otherFail) . PHP_EOL
+				)
+				->castToString($customField)->isEqualTo(
+					$titlePrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+					) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($class . '::' . $method . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d, %s failed: %s'), $file, $line, $asserter, $fail) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d, %s failed: %s'), $otherFile, $otherLine, $otherAsserter, $otherFail) .
+					PHP_EOL
+				)
+			->if($score->getMockController()->getFailAssertions = $fails = array(
+						array(
+							'case' => $case =  uniqid(),
+							'dataSetKey' => null,
+							'class' => $class = uniqid(),
+							'method' => $method = uniqid(),
+							'file' => $file = uniqid(),
+							'line' => $line = uniqid(),
+							'asserter' => $asserter = uniqid(),
+							'fail' => $fail = uniqid()
+						),
+						array(
+							'case' => $otherCase =  uniqid(),
+							'dataSetKey' => null,
+							'class' => $otherClass = uniqid(),
+							'method' => $otherMethod = uniqid(),
+							'file' => $otherFile = uniqid(),
+							'line' => $otherLine = uniqid(),
+							'asserter' => $otherAsserter = uniqid(),
+							'fail' => $otherFail = uniqid()
 						)
 					)
-				->and($defaultField = new runner\failures\cli())
-				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->and($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
-						$class . '::' . $method . '():' . PHP_EOL .
-						sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $line, $case, $asserter, $fail) . PHP_EOL .
-						$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-						sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) . PHP_EOL
-					)
-					->castToString($customField)->isEqualTo(
-						$titlePrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
-						) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($class . '::' . $method . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $file, $line, $case, $asserter, $fail) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) .
-						PHP_EOL
-					)
-				->if($score->getMockController()->getFailAssertions = $fails = array(
-							array(
-								'case' => $case =  uniqid(),
-								'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
-								'class' => $class = uniqid(),
-								'method' => $method = uniqid(),
-								'file' => $file = uniqid(),
-								'line' => $line = uniqid(),
-								'asserter' => $asserter = uniqid(),
-								'fail' => $fail = uniqid()
-							),
-							array(
-								'case' => $otherCase =  uniqid(),
-								'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
-								'class' => $otherClass = uniqid(),
-								'method' => $otherMethod = uniqid(),
-								'file' => $otherFile = uniqid(),
-								'line' => $otherLine = uniqid(),
-								'asserter' => $otherAsserter = uniqid(),
-								'fail' => $otherFail = uniqid()
-							)
+				)
+			->and($defaultField = new runner\failures\cli())
+			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->and($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+					$class . '::' . $method . '():' . PHP_EOL .
+					sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $file, $line, $case, $asserter, $fail) . PHP_EOL .
+					$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+					sprintf('In file %s on line %d in case \'%s\', %s failed: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) . PHP_EOL
+				)
+				->castToString($customField)->isEqualTo(
+					$titlePrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+					) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($class . '::' . $method . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $file, $line, $case, $asserter, $fail) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherFail) .
+					PHP_EOL
+				)
+			->if($score->getMockController()->getFailAssertions = $fails = array(
+						array(
+							'case' => $case =  uniqid(),
+							'dataSetKey' => $dataSetKey = rand(1, PHP_INT_MAX),
+							'dataSetProvider' => $dataSetProvider = uniqid(),
+							'class' => $class = uniqid(),
+							'method' => $method = uniqid(),
+							'file' => $file = uniqid(),
+							'line' => $line = uniqid(),
+							'asserter' => $asserter = uniqid(),
+							'fail' => $fail = uniqid()
+						),
+						array(
+							'case' => $otherCase =  uniqid(),
+							'dataSetKey' => $otherDataSetKey = rand(1, PHP_INT_MAX),
+							'dataSetProvider' => $otherDataSetProvider = uniqid(),
+							'class' => $otherClass = uniqid(),
+							'method' => $otherMethod = uniqid(),
+							'file' => $otherFile = uniqid(),
+							'line' => $otherLine = uniqid(),
+							'asserter' => $otherAsserter = uniqid(),
+							'fail' => $otherFail = uniqid()
 						)
 					)
-				->and($defaultField = new runner\failures\cli())
-				->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($defaultField)->isEmpty()
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->and($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
-						$class . '::' . $method . '():' . PHP_EOL .
-						sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s', $file, $line, $case, $asserter, $dataSetKey, $fail) . PHP_EOL .
-						$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-						sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherFail) . PHP_EOL
-					)
-					->castToString($customField)->isEqualTo(
-						$titlePrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
-						) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($class . '::' . $method . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s'), $file, $line, $case, $asserter, $dataSetKey, $fail) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
-						) .
-						PHP_EOL .
-						sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherFail) .
-						PHP_EOL
-					)
+				)
+			->and($defaultField = new runner\failures\cli())
+			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($defaultField)->isEmpty()
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->and($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('There are %d failures:', sizeof($fails)) . PHP_EOL .
+					$class . '::' . $method . '():' . PHP_EOL .
+					sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s', $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) . PHP_EOL .
+					$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
+					sprintf('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s', $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) . PHP_EOL
+				)
+				->castToString($customField)->isEqualTo(
+					$titlePrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$titleColorizer->colorize(sprintf($locale->__('There is %d failure', 'There are %d failures', sizeof($fails)), sizeof($fails)))
+					) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($class . '::' . $method . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s'), $file, $line, $case, $asserter, $dataSetKey, $dataSetProvider, $fail) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize($otherClass . '::' . $otherMethod . '()')
+					) .
+					PHP_EOL .
+					sprintf($locale->_('In file %s on line %d in case \'%s\', %s failed for data set #%s of data provider %s: %s'), $otherFile, $otherLine, $otherCase, $otherAsserter, $otherDataSetKey, $otherDataSetProvider, $otherFail) .
+					PHP_EOL
+				)
 		;
 	}
 }

@@ -10,7 +10,8 @@ use
 
 class coverage implements \countable, \serializable
 {
-	protected $dependencies = null;
+	protected $adapter = null;
+	protected $reflectionClassDependency = null;
 	protected $classes = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
@@ -20,6 +21,30 @@ class coverage implements \countable, \serializable
 	public function __construct(atoum\dependencies $dependencies = null)
 	{
 		$this->setDependencies($dependencies ?: new atoum\dependencies());
+	}
+
+	public function setAdapter(atoum\adapter $adapter)
+	{
+		$this->adapter = $adapter;
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setReflectionClassDependency(atoum\dependency $dependency)
+	{
+		$this->reflectionClassDependency = $dependency;
+
+		return $this;
+	}
+
+	public function getReflectionClassDependency()
+	{
+		return $this->reflectionClassDependency;
 	}
 
 	public function serialize()
@@ -51,19 +76,25 @@ class coverage implements \countable, \serializable
 
 	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		$this->dependencies = $dependencies;
-
-		if (isset($this->dependencies['reflection\class']) === false)
+		if (isset($dependencies['reflection\class']) === true)
 		{
-			$this->dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+			$this->setReflectionClassDependency($dependencies['reflection\class']);
+		}
+		else
+		{
+			$this->setReflectionClassDependency(new atoum\dependencies(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
+		}
+
+		if (isset($dependencies['adapter']) === true)
+		{
+			$this->setAdapter($dependencies['adapter']());
+		}
+		else
+		{
+			$this->setAdapter(new atoum\adapter());
 		}
 
 		return $this;
-	}
-
-	public function getDependencies()
-	{
-		return $this->dependencies;
 	}
 
 	public function getClasses()
@@ -80,8 +111,26 @@ class coverage implements \countable, \serializable
 	{
 		$this->classes = array();
 		$this->methods = array();
+
+		return $this;
+	}
+
+	public function resetExcludedClasses()
+	{
 		$this->excludedClasses = array();
+
+		return $this;
+	}
+
+	public function resetExcludedNamespaces()
+	{
 		$this->excludedNamespaces = array();
+
+		return $this;
+	}
+
+	public function resetExcludedDirectories()
+	{
 		$this->excludedDirectories = array();
 
 		return $this;
@@ -98,7 +147,7 @@ class coverage implements \countable, \serializable
 		{
 			try
 			{
-				$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
+				$reflectedClass = $this->getReflectionClass($class);
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
@@ -111,7 +160,7 @@ class coverage implements \countable, \serializable
 					{
 						if ($method->isAbstract() === false)
 						{
-							$declaringClass = $method->getDeclaringClass();
+							$declaringClass = $this->getDeclaringClass($method);
 
 							if ($this->isExcluded($declaringClass) === false)
 							{
@@ -152,7 +201,7 @@ class coverage implements \countable, \serializable
 
 		foreach ($methods as $class => $methods)
 		{
-			$reflectedClass = $this->dependencies['reflection\class'](array('class' => $class));
+			$reflectedClass = $this->getReflectionClass($class);
 
 			if (isset($this->classes[$class]) === false)
 			{
@@ -164,7 +213,7 @@ class coverage implements \countable, \serializable
 
 			foreach ($methods as $method => $lines)
 			{
-				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($reflectedClass->getMethod($method)->getDeclaringClass()) === false)
+				if (isset($this->methods[$class][$method]) === true || $this->isExcluded($this->getDeclaringClass($reflectedClass->getMethod($method))) === false)
 				{
 					foreach ($lines as $line => $call)
 					{
@@ -253,14 +302,16 @@ class coverage implements \countable, \serializable
 
 	public function getCoverageForClass($class)
 	{
+		$coverage = array();
+
 		$class = (string) $class;
 
-		if(isset($this->methods[$class]) === false)
+		if (isset($this->methods[$class]) === true && $this->isInExcludedClasses($class) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Class \'' . $class . '\' does not exist');
+			$coverage = $this->methods[$class];
 		}
 
-		return ($this->isInExcludedClasses($class) ? array() : $this->methods[$class]);
+		return $coverage;
 	}
 
 	public function getValueForMethod($class, $method)
@@ -298,12 +349,7 @@ class coverage implements \countable, \serializable
 	{
 		$class = $this->getCoverageForClass($class);
 
-		if(isset($class[$method]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Method \'' . $method . '\' does not exist');
-		}
-
-		return $class[$method];
+		return (isset($class[$method]) === false ? array() : $class[$method]);
 	}
 
 	public function excludeClass($class)
@@ -391,6 +437,43 @@ class coverage implements \countable, \serializable
 
 			return ($fileName === false || $this->isInExcludedDirectories($fileName) === true);
 		}
+	}
+
+	protected function getDeclaringClass(\reflectionMethod $method)
+	{
+		$declaringClass = $method->getDeclaringClass();
+
+		$traits = ($this->adapter->method_exists($declaringClass, 'getTraits') === false ? array() : $declaringClass->getTraits());
+
+		if (sizeof($traits) > 0)
+		{
+			$methodFileName = $method->getFileName();
+
+			if ($methodFileName !== $declaringClass->getFileName() || $method->getStartLine() < $declaringClass->getStartLine() || $method->getEndLine() > $declaringClass->getEndLine())
+			{
+				if (sizeof($traits) > 0)
+				{
+					$methodName = $method->getName();
+
+					foreach ($traits as $trait)
+					{
+						if ($methodFileName === $trait->getFileName() && $trait->hasMethod($methodName) === true)
+						{
+							return $trait;
+						}
+					}
+				}
+			}
+		}
+
+		return $declaringClass;
+	}
+
+	protected function getReflectionClass($class)
+	{
+		$reflectionClassDependency = $this->reflectionClassDependency;
+
+		return $reflectionClassDependency(array('class' => $class));
 	}
 
 	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)

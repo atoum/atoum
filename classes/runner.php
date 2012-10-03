@@ -33,6 +33,7 @@ class runner implements observable, adapter\aggregator
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
 	protected $testDirectoryIterator = null;
+	protected $debugMode = false;
 
 	private $start = null;
 	private $stop = null;
@@ -133,6 +134,25 @@ class runner implements observable, adapter\aggregator
 		return $this->includer;
 	}
 
+	public function enableDebugMode()
+	{
+		$this->debugMode = true;
+
+		return $this;
+	}
+
+	public function disableDebugMode()
+	{
+		$this->debugMode = false;
+
+		return $this;
+	}
+
+	public function debugModeIsEnabled()
+	{
+		return $this->debugMode;
+	}
+
 	public function setMaxChildrenNumber($number)
 	{
 		if ($number < 1)
@@ -177,13 +197,31 @@ class runner implements observable, adapter\aggregator
 	{
 		if ($this->phpPath === null)
 		{
-			if (($phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN')) === false)
+			$phpPath = null;
+
+			if ($this->adapter->defined('PHP_BINARY') === true)
 			{
-				if (($phpPath = $this->adapter->getenv('PHPBIN')) === false)
+				$phpPath = $this->adapter->constant('PHP_BINARY');
+			}
+
+			if ($phpPath === null)
+			{
+				$phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN');
+
+				if ($phpPath === false)
 				{
-					if ($this->adapter->constant('DIRECTORY_SEPARATOR') === '\\' || ($phpPath = ($this->adapter->defined('PHP_BINARY') ? PHP_BINARY : PHP_BINDIR . '/php')) === false)
+					$phpPath = $this->adapter->getenv('PHPBIN');
+
+					if ($phpPath === false)
 					{
-						throw new exceptions\runtime('Unable to find PHP executable');
+						$phpDirectory = $this->adapter->constant('PHP_BINDIR');
+
+						if ($phpDirectory === null)
+						{
+							throw new exceptions\runtime('Unable to find PHP executable');
+						}
+
+						$phpPath = $phpDirectory . '/php';
 					}
 				}
 			}
@@ -430,6 +468,11 @@ class runner implements observable, adapter\aggregator
 					->setBootstrapFile($this->bootstrapFile)
 				;
 
+				if ($this->debugMode === true)
+				{
+					$test->enableDebugMode();
+				}
+
 				if ($this->maxChildrenNumber !== null)
 				{
 					$test->setMaxChildrenNumber($this->maxChildrenNumber);
@@ -575,6 +618,16 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $reports;
+	}
+
+	public function addDefaultReport()
+	{
+		$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
+		$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
+
+		$this->addReport($report);
+
+		return $report;
 	}
 
 	public static function isIgnored(test $test, array $namespaces, array $tags)

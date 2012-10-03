@@ -20,11 +20,12 @@ class runner extends atoum\script
 	protected $scoreFile = null;
 	protected $arguments = array();
 	protected $namespaces = array();
+	protected $testAllDirectories = array();
 	protected $tags = array();
 	protected $methods = array();
 	protected $loop = false;
 
-	protected static $autorunner = null;
+	protected static $autorunner = true;
 
 	public function __construct($name, atoum\factory $factory = null)
 	{
@@ -91,6 +92,23 @@ class runner extends atoum\script
 		return $this;
 	}
 
+	public function addTestAllDirectory($directory)
+	{
+		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
+
+		if (in_array($directory, $this->testAllDirectories) === false)
+		{
+			$this->testAllDirectories[] = $directory;
+		}
+
+		return $this;
+	}
+
+	public function getTestAllDirectories()
+	{
+		return $this->testAllDirectories;
+	}
+
 	public function run(array $arguments = array())
 	{
 		try
@@ -107,10 +125,7 @@ class runner extends atoum\script
 				{
 					if ($this->runner->hasReports() === false)
 					{
-						$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
-						$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
-
-						$this->runner->addReport($report);
+						$this->runner->addDefaultReport();
 					}
 
 					$methods = $this->methods;
@@ -194,7 +209,7 @@ class runner extends atoum\script
 	{
 		if ($startDirectory === null)
 		{
-			$startDirectory = atoum\directory;
+			$startDirectory = $this->adapter->getcwd();
 		}
 
 		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
@@ -254,28 +269,46 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public static function getAutorunner()
+	public static function autorunIsEnabled()
 	{
-		return self::$autorunner;
+		return (static::$autorunner !== false);
 	}
 
-	public static function autorun($name)
+	public static function enableAutorun($name)
 	{
-		if (self::$autorunner !== null)
+		static $autorunIsRegistered = false;
+
+		if ($autorunIsRegistered === false)
 		{
-			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . self::$autorunner->getName() . '\' is already set as autorunner');
+			$autorunner = & static::$autorunner;
+			$calledClass = get_called_class();
+
+			register_shutdown_function(function() use (& $autorunner, $calledClass) {
+					if ($autorunner instanceof $calledClass)
+					{
+						$score = $autorunner->run()->getRunner()->getScore();
+
+						exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+					}
+				}
+			);
+
+			$autorunIsRegistered = true;
 		}
 
-		$autorunner = self::$autorunner = new static($name);
+		if (static::$autorunner instanceof static)
+		{
+			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
+		}
 
-		register_shutdown_function(function() use ($autorunner) {
-				$score = $autorunner->run()->getRunner()->getScore();
+		static::$autorunner = new static($name);
 
-				exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
-			}
-		);
+		return static::$autorunner;
+	}
 
-		return $autorunner;
+	public static function disableAutorun()
+	{
+		static::$autorunner = false;
 	}
 
 	public static function getSubDirectoryPath($directory, $directorySeparator = null)
@@ -632,6 +665,24 @@ class runner extends atoum\script
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$runner = $script->getRunner();
+
+						foreach ($script->getTestAllDirectories() as $directory)
+						{
+							$runner->addTestsFromDirectory($directory);
+						}
+					},
+					array('--test-all'),
+					null,
+					$this->locale->_('Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
 						if ($values)
 						{
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
@@ -672,6 +723,19 @@ class runner extends atoum\script
 					array('-ulr', '--use-light-report'),
 					null,
 					$this->locale->_('Use "light" CLI report')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->getRunner()->enableDebugMode();
+					},
+					array('--debug'),
+					null,
+					$this->locale->_('Enable debug mode')
 				)
 		;
 
@@ -734,34 +798,7 @@ class runner extends atoum\script
 			$arguments .= ' --score-file ' . escapeshellarg($this->scoreFile);
 		}
 
-		if ($this->isRunningFromCli() === false)
-		{
-			$declaredTestClasses = $this->runner->getDeclaredTestClasses();
-
-			if (sizeof($declaredTestClasses) > 0)
-			{
-				$files = array();
-
-				foreach ($declaredTestClasses as $declaredTestClass)
-				{
-					$declaredTestClass = $this->factory['reflectionClass']($declaredTestClass);
-
-					$file = $declaredTestClass->getFilename();
-
-					if (in_array($file, $files) === false)
-					{
-						$files[] = escapeshellarg($file);
-					}
-				}
-
-				if (sizeof($files) > 0)
-				{
-					$arguments .= ' -f ' . join(' ', $files);
-				}
-			}
-		}
-
-		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($this->getName()) . $arguments;
+		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($_SERVER['argv'][0]) . $arguments;
 
 		while ($this->runTests === true)
 		{

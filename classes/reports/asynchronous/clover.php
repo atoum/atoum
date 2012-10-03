@@ -8,14 +8,13 @@ use
 	mageekguy\atoum\score
 ;
 
-class clover extends atoum\reports\asynchronous {
+class clover extends atoum\reports\asynchronous
+{
 	const defaultTitle = 'atoum code coverage';
 	const defaultPackage = 'atoumCodeCoverage';
 	const lineTypeMethod = 'method';
 	const lineTypeStatement = 'stmt';
 	const lineTypeConditional = 'cond';
-
-	private $package;
 
 	protected $score = null;
 	protected $loc = 0;
@@ -23,6 +22,7 @@ class clover extends atoum\reports\asynchronous {
 	protected $methods = 0;
 	protected $coveredMethods = 0;
 	protected $classes = 0;
+	protected $package = '';
 
 	public function __construct(atoum\factory $factory = null)
 	{
@@ -36,24 +36,24 @@ class clover extends atoum\reports\asynchronous {
 
 	public function getTitle()
 	{
-		return $this->title ?: self::defaultTitle;
+		return ($this->title ?: self::defaultTitle);
 	}
 
 	public function getPackage()
 	{
-		return $this->package ?: self::defaultPackage;
+		return ($this->package ?: self::defaultPackage);
 	}
 
 	public function setPackage($package)
 	{
-		$this->package = $package;
+		$this->package = (string) $package;
 
 		return $this;
 	}
 
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		$this->score = ($event !== atoum\runner::runStop) ? null : $observable->getScore();
+		$this->score = ($event !== atoum\runner::runStop ? null : $observable->getScore());
 
 		return parent::handleEvent($event, $observable);
 	}
@@ -63,6 +63,7 @@ class clover extends atoum\reports\asynchronous {
 		if ($event === atoum\runner::runStop)
 		{
 			$document = new \DOMDocument('1.0', 'UTF-8');
+
 			$document->formatOutput = true;
 			$document->appendChild($this->makeRootElement($document, $this->score->getCoverage()));
 
@@ -75,6 +76,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeRootElement(\DOMDocument $document, score\coverage $coverage)
 	{
 		$root = $document->createElement('coverage');
+
 		$root->setAttribute('generated', $this->getAdapter()->time());
 		$root->setAttribute('clover', $this->getAdapter()->uniqid());
 
@@ -86,6 +88,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeProjectElement(\DOMDocument $document, score\coverage $coverage)
 	{
 		$project = $document->createElement('project');
+
 		$project->setAttribute('timestamp', $this->getAdapter()->time());
 		$project->setAttribute('name', $this->getTitle());
 
@@ -98,6 +101,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeProjectMetricsElement(\DOMDocument $document, $files)
 	{
 		$metrics = $this->makePackageMetricsElement($document, $files);
+
 		$metrics->setAttribute('packages', 1);
 
 		return $metrics;
@@ -106,6 +110,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makePackageElement(\DOMDocument $document, score\coverage $coverage)
 	{
 		$package = $document->createElement('package');
+
 		$package->setAttribute('name', $this->getPackage());
 
 		foreach ($coverage->getClasses() as $class => $file)
@@ -120,7 +125,8 @@ class clover extends atoum\reports\asynchronous {
 
 	protected function makePackageMetricsElement(\DOMDocument $document, $files)
 	{
-		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, 1);
+		$metrics = $this->makeFileMetricsElement($document, $this->loc, $this->coveredLoc, $this->methods, $this->coveredMethods, $files);
+
 		$metrics->setAttribute('files', $files);
 
 		return $metrics;
@@ -129,6 +135,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeFileElement(\DOMDocument $document, $filename, $class, array $coverage)
 	{
 		$file = $document->createElement('file');
+
 		$file->setAttribute('name', basename($filename));
 		$file->setAttribute('path', $filename);
 
@@ -141,8 +148,6 @@ class clover extends atoum\reports\asynchronous {
 		{
 			if (sizeof($lines) > 0)
 			{
-				++$coveredMethods;
-
 				foreach ($lines as $lineNumber => $cover)
 				{
 					if ($cover >= -1)
@@ -155,6 +160,15 @@ class clover extends atoum\reports\asynchronous {
 						$coveredLines++;
 						$file->appendChild($this->makeLineElement($document, $lineNumber));
 					}
+					else
+					{
+						$file->appendChild($this->makeLineElement($document, $lineNumber, 0));
+					}
+				}
+
+				if ($coveredLines === $totalLines)
+				{
+					++$coveredMethods;
 				}
 			}
 		}
@@ -168,7 +182,7 @@ class clover extends atoum\reports\asynchronous {
 		;
 
 		$file->appendChild($this->makeClassElement($document, $class, $coverage));
-		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, $this->classes));
+		$file->appendChild($this->makeFileMetricsElement($document, $totalLines, $coveredLines, $methods, $coveredMethods, 1));
 
 		return $file;
 	}
@@ -176,6 +190,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeFileMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $coveredMethods, $classes)
 	{
 		$metrics = $this->makeClassMetricsElement($document, $loc, $cloc, $methods, $coveredMethods);
+
 		$metrics->setAttribute('classes', $classes);
 		$metrics->setAttribute('loc', $loc);
 		$metrics->setAttribute('ncloc', $loc);
@@ -186,12 +201,14 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeClassElement(\DOMDocument $document, $classname, array $coverage)
 	{
 		$class = $document->createElement('class');
+
 		$class->setAttribute('name', basename(str_replace('\\', DIRECTORY_SEPARATOR, $classname)));
 
 		$methods = count($coverage);
 		$coveredMethods = 0;
 		$totalLines = 0;
 		$coveredLines = 0;
+
 		foreach ($coverage as $lines)
 		{
 			if (sizeof($lines) > 0)
@@ -221,6 +238,7 @@ class clover extends atoum\reports\asynchronous {
 	protected function makeClassMetricsElement(\DOMDocument $document, $loc, $cloc, $methods, $cmethods)
 	{
 		$metrics = $document->createElement('metrics');
+
 		$metrics->setAttribute('complexity', 0);
 		$metrics->setAttribute('elements', $loc);
 		$metrics->setAttribute('coveredelements', $cloc);
@@ -238,13 +256,14 @@ class clover extends atoum\reports\asynchronous {
 		return $metrics;
 	}
 
-	protected function makeLineElement(\DOMDocument $document, $linenum)
+	protected function makeLineElement(\DOMDocument $document, $linenum, $count = 1)
 	{
 		$line = $document->createElement('line');
+
 		$line->setAttribute('num', $linenum);
 		$line->setAttribute('type', self::lineTypeStatement);
 		$line->setAttribute('complexity', 0);
-		$line->setAttribute('count', 1);
+		$line->setAttribute('count', $count);
 		$line->setAttribute('falsecount', 0);
 		$line->setAttribute('truecount', 0);
 		$line->setAttribute('signature', '');
@@ -253,7 +272,6 @@ class clover extends atoum\reports\asynchronous {
 
 		return $line;
 	}
-	
 
 	protected function addLoc($count)
 	{

@@ -98,6 +98,25 @@ class object extends atoum\test
 		;
 	}
 
+	public function testIsCloneOf()
+	{
+		$this
+			->if($asserter = new asserters\object($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isCloneOf($asserter); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Object is undefined')
+			->if($asserter->setWith($asserter))
+			->then
+				->exception(function() use ($asserter) { $asserter->isCloneOf($asserter); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter))
+			->if($clonedAsserter = clone $asserter)
+			->then
+				->object($asserter->isCloneOf($clonedAsserter))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testToString()
 	{
 		$this

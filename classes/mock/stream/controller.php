@@ -27,7 +27,7 @@ class controller extends test\adapter
 
 	public function __get($method)
 	{
-		$this->dependencies['invoker']['method'] = $method = strtolower(self::mapMethod($method));
+		$this->invokerDependency['method'] = $method = strtolower(self::mapMethod($method));
 
 		return parent::__get($method);
 	}

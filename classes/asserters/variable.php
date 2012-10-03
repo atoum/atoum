@@ -63,7 +63,7 @@ class variable extends atoum\asserter
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->valueIsSet()->value == $value)
 		{
@@ -85,7 +85,7 @@ class variable extends atoum\asserter
 
 	public function isNotEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->valueIsSet()->value != $value)
 		{
@@ -101,7 +101,7 @@ class variable extends atoum\asserter
 
 	public function isIdenticalTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->valueIsSet()->value === $value)
 		{
@@ -123,7 +123,7 @@ class variable extends atoum\asserter
 
 	public function isNotIdenticalTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->valueIsSet()->value !== $value)
 		{

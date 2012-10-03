@@ -46,7 +46,7 @@ class exception extends asserters\object
 	{
 		try
 		{
-			self::check($value, __METHOD__);
+			self::check($value, __FUNCTION__);
 		}
 		catch (\logicException $exception)
 		{
@@ -130,7 +130,7 @@ class exception extends asserters\object
 	{
 		if (self::isException($value) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an exception instance');
+			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be an exception instance');
 		}
 	}
 

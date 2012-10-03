@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\score;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
-	mageekguy\atoum\score
+	mageekguy\atoum\score,
+	mageekguy\atoum\score\coverage as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -23,31 +24,66 @@ class coverage extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getDependencies())->isInstanceOf('mageekguy\atoum\dependencies')
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
+			->if($coverage = new testedClass(new atoum\dependencies()))
 			->then
 				->variable($coverage->getValue())->isNull()
 				->array($coverage->getMethods())->isEmpty()
-				->object($coverage->getDependencies())->isIdenticalTo($dependencies)
+				->object($coverage->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($coverage->getReflectionClassDependency())->isInstanceOf('mageekguy\atoum\dependencies')
+			->if($dependencies = new atoum\dependencies())
+			->and($dependencies['adapter'] = new atoum\adapter())
+			->and($dependencies['reflection\class'] = function() {})
+			->and($coverage = new testedClass($dependencies))
+			->then
+				->variable($coverage->getValue())->isNull()
+				->array($coverage->getMethods())->isEmpty()
+				->object($coverage->getAdapter())->isIdenticalTo($dependencies['adapter']())
+				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependencies['reflection\class'])
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($coverage)
+				->object($coverage->getAdapter())->isIdenticalTo($adapter)
+		;
+	}
+
+	public function testSetReflectionClassDepedency()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->setReflectionClassDependency($dependency = new atoum\dependencies()))->isIdenticalTo($coverage)
+				->object($coverage->getReflectionClassDependency())->isIdenticalTo($dependency)
 		;
 	}
 
 	public function testAddXdebugDataForTest()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -57,7 +93,8 @@ class coverage extends atoum\test
 			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
 			->and($methodController->getStartLine = 6)
 			->and($methodController->getEndLine = 8)
-			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($methodController->getFileName = $classFile)
+			->and($classController->getMethods = array($method = new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
 			->and($dependencies['reflection\class'] = $class)
 			->and($classDirectory = uniqid())
 			->and($classFile = $classDirectory . DIRECTORY_SEPARATOR . uniqid())
@@ -82,6 +119,9 @@ class coverage extends atoum\test
 						)
 					)
 				)
+			->and($dependencies = new atoum\dependencies())
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->then
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 				->array($coverage->getMethods())->isEqualTo(array(
@@ -115,8 +155,9 @@ class coverage extends atoum\test
 						)
 					)
 				)
-			->if($coverage = new score\coverage())
-			->and($coverage->excludeClass($this->getTestedClassName()))
+			->if($class->getMockController()->getName = get_class($class))
+			->and($coverage = new testedClass($dependencies))
+			->and($coverage->excludeClass(get_class($class)))
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -124,9 +165,8 @@ class coverage extends atoum\test
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass($dependencies))
 			->and($coverage->excludeDirectory($classDirectory))
-			->and($dependencies['reflection\class'] = $class)
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -140,7 +180,7 @@ class coverage extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass($dependencies = new atoum\dependencies()))
 			->then
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
@@ -154,9 +194,13 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedNamespaces())->isEmpty()
 				->array($coverage->getExcludedDirectories())->isEmpty()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -191,9 +235,9 @@ class coverage extends atoum\test
 				)
 			)
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
-			->and($coverage->excludeClass(uniqid()))
-			->and($coverage->excludeNamespace(uniqid()))
-			->and($coverage->excludeDirectory(uniqid()))
+			->and($coverage->excludeClass($excludedClass =uniqid()))
+			->and($coverage->excludeNamespace($excludedNamespace= uniqid()))
+			->and($coverage->excludeDirectory($excludedDirectory = uniqid()))
 			->then
 				->array($coverage->getClasses())->isNotEmpty()
 				->array($coverage->getMethods())->isNotEmpty()
@@ -203,8 +247,50 @@ class coverage extends atoum\test
 				->object($coverage->reset())->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
+				->array($coverage->getExcludedClasses())->isNotEmpty()
+				->array($coverage->getExcludedNamespaces())->isNotEmpty()
+				->array($coverage->getExcludedDirectories())->isNotEmpty()
+		;
+	}
+
+	public function testResetExcludedClasses()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->resetExcludedClasses())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedClasses())->isEmpty()
+			->if($coverage->excludeClass(uniqid()))
+			->then
+				->object($coverage->resetExcludedClasses())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedClasses())->isEmpty()
+		;
+	}
+
+	public function testResetExcludedNamespaces()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEmpty()
+			->if($coverage->excludeNamespace(uniqid()))
+			->then
+				->object($coverage->resetExcludedNamespaces())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedNamespaces())->isEmpty()
+		;
+	}
+
+	public function testResetExcludedDirectories()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->object($coverage->resetExcludedDirectories())->isIdenticalTo($coverage)
+				->array($coverage->getExcludedDirectories())->isEmpty()
+			->if($coverage->excludeDirectory(uniqid()))
+			->then
+				->object($coverage->resetExcludedDirectories())->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEmpty()
 		;
 	}
@@ -213,9 +299,13 @@ class coverage extends atoum\test
 	{
 		$this
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -250,13 +340,14 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->and($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new testedClass($dependencies))
 			->then
 				->object($coverage->merge($coverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
 				->array($coverage->getMethods())->isEmpty()
-			->if($otherCoverage = new score\coverage($otherDependencies = new atoum\dependencies()))
+			->if($otherCoverage = new testedClass())
 			->then
 				->object($coverage->merge($otherCoverage))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEmpty()
@@ -288,9 +379,13 @@ class coverage extends atoum\test
 					)
 				)
 			->if($otherClassController = new mock\controller())
+			->and($otherClassController->disableMethodChecking())
 			->and($otherClassController->__construct = function() {})
 			->and($otherClassController->getName = function() use (& $otherClassName) { return $otherClassName; })
 			->and($otherClassController->getFileName = function() use (& $otherClassFile) { return $otherClassFile; })
+			->and($otherClassController->getTraits = array())
+			->and($otherClassController->getStartLine = 1)
+			->and($otherClassController->getEndLine = 12)
 			->and($otherClass = new \mock\reflectionClass($class, $otherClassController))
 			->and($otherMethodController = new mock\controller())
 			->and($otherMethodController->__construct = function() {})
@@ -328,7 +423,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($otherDependencies = new atoum\dependencies())
 			->and($otherDependencies['reflection\class'] = $otherClass)
+			->and($otherCoverage->setDependencies($otherDependencies))
 			->then
 				->object($coverage->merge($otherCoverage->addXdebugDataForTest($this, $otherXdebugData)))->isIdenticalTo($coverage)
 				->array($coverage->getClasses())->isEqualTo(array(
@@ -356,9 +453,13 @@ class coverage extends atoum\test
 					)
 				)
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -393,11 +494,11 @@ class coverage extends atoum\test
 					)
 				)
 			)
-			->and($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($coverage->excludeClass($className))
 			->and($dependencies['reflection\class'] = $class)
-			->and($otherCoverage = new score\coverage($otherDependencies = new atoum\dependencies()))
+			->and($coverage = new testedClass($dependencies))
+			->and($coverage->excludeClass($className))
 			->and($otherDependencies['reflection\class'] = $class)
+			->and($otherCoverage = new testedClass($otherDependencies))
 			->and($otherCoverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($otherCoverage->getClasses())->isNotEmpty()
@@ -411,13 +512,17 @@ class coverage extends atoum\test
 	public function testCount()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass($dependencies = new atoum\dependencies()))
 			->then
 				->sizeOf($coverage)->isZero()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -456,14 +561,17 @@ class coverage extends atoum\test
 		;
 	}
 
-	public function testClasses()
+	public function testGetClasses()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($classController = new mock\controller())
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -489,7 +597,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->array($coverage->getClasses())->isEqualTo(array($className => $classFile))
@@ -499,11 +609,14 @@ class coverage extends atoum\test
 	public function testGetValue()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-			->and($classController = new mock\controller())
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -537,7 +650,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage = new testedClass($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->float($coverage->getValue())->isEqualTo(0.0)
@@ -619,13 +734,17 @@ class coverage extends atoum\test
 	public function testGetValueForClass()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class =  new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -659,7 +778,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->variable($coverage->getValueForClass(uniqid()))->isNull()
@@ -742,81 +863,88 @@ class coverage extends atoum\test
 		;
 	}
 
-    public function testGetCoverageForClass()
-    {
-        $this
-            ->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-            ->then
-                ->exception(function() use ($coverage) {
-                    $coverage->getCoverageForClass(uniqid());
-                })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-            ->if($classController = new mock\controller())
-            ->and($classController->__construct = function() {})
-            ->and($classController->getName = function() use (& $className) { return $className; })
-            ->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
-            ->and($class =  new \mock\reflectionClass(uniqid(), $classController))
-            ->and($methodController = new mock\controller())
-            ->and($methodController->__construct = function() {})
-            ->and($methodController->getName = function() use (& $methodName) { return $methodName; })
-            ->and($methodController->isAbstract = false)
-            ->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
-            ->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
-            ->and($methodController->getStartLine = 4)
-            ->and($methodController->getEndLine = 8)
-            ->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-            ->and($classFile = uniqid())
-            ->and($className = uniqid())
-            ->and($methodName = uniqid())
-            ->and($xdebugData = array(
-                $classFile =>
-                    array(
-                        3 => -2,
-                        4 => 1,
-                        5 => -1,
-                        6 => -1,
-                        7 => -1,
-                        8 => -2,
-                        9 => -1
-                    ),
-                    uniqid() =>
-                    array(
-                        5 => 2,
-                        6 => 3,
-                        7 => 4,
-                        8 => 3,
-                        9 => 2
-                    )
-                )
-            )
-            ->and($expected = array(
-                $methodName =>
-                    array(
-                        4 => 1,
-                        5 => -1,
-                        6 => -1,
-                        7 => -1,
-                        8 => -2,
-                    )
-                )
-            )
-            ->and($dependencies['reflection\class'] = $class)
-            ->and($coverage->addXdebugDataForTest($this, $xdebugData))
-            ->then
-                ->array($coverage->getCoverageForClass($className))->isEqualTo($expected)
-        ;
-    }
+	public function testGetCoverageForClass()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
+			->and($class =  new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 4)
+			->and($methodController->getEndLine = 8)
+			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				$classFile =>
+					array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -1
+					),
+					uniqid() =>
+					array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
+					)
+				)
+			)
+			->and($expected = array(
+				$methodName =>
+					array(
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+					)
+				)
+			)
+			->and($dependencies = new atoum\dependencies())
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
+			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->array($coverage->getCoverageForClass($className))->isEqualTo($expected)
+		;
+	}
 
 	public function testGetValueForMethod()
 	{
 		$this
-			->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
+			->if($coverage = new testedClass())
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
 			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
 			->and($classController->getName = function() use (& $className) { return $className; })
 			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
 			->and($class = new \mock\reflectionClass(uniqid(), $classController))
 			->and($methodController = new mock\controller())
 			->and($methodController->__construct = function() {})
@@ -851,7 +979,9 @@ class coverage extends atoum\test
 					)
 				)
 			)
+			->and($dependencies = new atoum\dependencies())
 			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->variable($coverage->getValueForMethod(uniqid(), uniqid()))->isNull()
@@ -938,71 +1068,75 @@ class coverage extends atoum\test
 		;
 	}
 
-    public function testGetCoverageForMethod()
-    {
-        $this
-            ->if($coverage = new score\coverage($dependencies = new atoum\dependencies()))
-            ->then
-                ->exception(function() use ($coverage) {
-                    $coverage->getCoverageForClass(uniqid());
-                })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-            ->if($classController = new mock\controller())
-            ->and($classController->__construct = function() {})
-            ->and($classController->getName = function() use (& $className) { return $className; })
-            ->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
-            ->and($class =  new \mock\reflectionClass(uniqid(), $classController))
-            ->and($methodController = new mock\controller())
-            ->and($methodController->__construct = function() {})
-            ->and($methodController->getName = function() use (& $methodName) { return $methodName; })
-            ->and($methodController->isAbstract = false)
-            ->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
-            ->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
-            ->and($methodController->getStartLine = 4)
-            ->and($methodController->getEndLine = 8)
-            ->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-            ->and($classFile = uniqid())
-            ->and($className = uniqid())
-            ->and($methodName = uniqid())
-            ->and($xdebugData = array(
-                $classFile =>
-                    array(
-                        3 => -2,
-                        4 => 1,
-                        5 => -1,
-                        6 => -1,
-                        7 => -1,
-                        8 => -2,
-                        9 => -1
-                    ),
-                    uniqid() =>
-                    array(
-                        5 => 2,
-                        6 => 3,
-                        7 => 4,
-                        8 => 3,
-                        9 => 2
-                    )
-                )
-            )
-            ->and($expected = array(
-                4 => 1,
-                5 => -1,
-                6 => -1,
-                7 => -1,
-                8 => -2,
-            ))
-            ->and($dependencies['reflection\class'] = $class)
-            ->and($coverage->addXdebugDataForTest($this, $xdebugData))
-            ->then
-                ->array($coverage->getCoverageForMethod($className, $methodName))->isEqualTo($expected)
-        ;
-    }
+	public function testGetCoverageForMethod()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->array($coverage->getCoverageForClass(uniqid()))->isEmpty()
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
+			->and($class =  new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 4)
+			->and($methodController->getEndLine = 8)
+			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				$classFile =>
+					array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -1
+					),
+					uniqid() =>
+					array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
+					)
+				)
+			)
+			->and($expected = array(
+					4 => 1,
+					5 => -1,
+					6 => -1,
+					7 => -1,
+					8 => -2,
+				)
+			)
+			->and($dependencies = new atoum\dependencies())
+			->and($dependencies['reflection\class'] = $class)
+			->and($coverage->setDependencies($dependencies))
+			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->array($coverage->getCoverageForMethod($className, $methodName))->isEqualTo($expected)
+		;
+	}
 
 	public function testExcludeClass()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeClass($class = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedClasses())->isEqualTo(array($class))
@@ -1016,7 +1150,7 @@ class coverage extends atoum\test
 	public function testExcludeNamespace()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeNamespace($namespace = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace))
@@ -1032,7 +1166,7 @@ class coverage extends atoum\test
 	public function testExcludeDirectory()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->object($coverage->excludeDirectory($directory = uniqid()))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedDirectories())->isEqualTo(array($directory))
@@ -1048,7 +1182,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedClasses()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedClasses(uniqid()))->isFalse()
 			->if($coverage->excludeClass($class = uniqid()))
@@ -1061,7 +1195,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedNamespaces()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedNamespaces(uniqid()))->isFalse()
 			->if($coverage->excludeNamespace($namespace = uniqid()))
@@ -1074,7 +1208,7 @@ class coverage extends atoum\test
 	public function testIsInExcludedDirectories()
 	{
 		$this
-			->if($coverage = new score\coverage())
+			->if($coverage = new testedClass())
 			->then
 				->boolean($coverage->isInExcludedDirectories(uniqid()))->isFalse()
 			->if($coverage->excludeDirectory($directory = uniqid()))

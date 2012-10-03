@@ -97,6 +97,7 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
 					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 					->boolean($test->isIgnored())->isTrue()
+					->boolean($test->debugModeIsEnabled())->isFalse()
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 					->array($test->getTags())->isEqualTo($tags)
 					->array($test->getMethodTags())->isEmpty()
@@ -141,7 +142,7 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new emptyTest())
 				->then
-					->object($test->assert)->isInstanceOf('mageekguy\atoum\test\assertion\manager')
+					->object($test->assert)->isInstanceOf('mageekguy\atoum\test')
 					->object($test->define)->isInstanceOf('mageekguy\atoum\test\asserter\generator')
 					->object($test->mockGenerator)->isInstanceOf('mageekguy\atoum\mock\generator')
 				->if($test->setMockGenerator($mockGenerator = new atoum\test\mock\generator($this)))
@@ -149,10 +150,38 @@ namespace mageekguy\atoum\tests\units
 					->object($test->mockGenerator)->isIdenticalTo($mockGenerator)
 				->if($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest())))
 				->then
-					->object($test->assert)->isIdenticalTo($test->getAssertionManager())
+					->object($test->assert)->isIdenticalTo($test)
 					->exception(function() use ($test, & $property) { $test->{$property = uniqid()}; })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Asserter \'' . $property . '\' does not exist')
+			;
+		}
+
+		public function testEnableDebugMode()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->enableDebugMode())->isIdenticalTo($test)
+					->boolean($test->debugModeIsEnabled())->isTrue()
+					->object($test->enableDebugMode())->isIdenticalTo($test)
+					->boolean($test->debugModeIsEnabled())->isTrue()
+			;
+		}
+
+		public function testDisableDebugMode()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->disableDebugMode())->isIdenticalTo($test)
+					->boolean($test->debugModeIsEnabled())->isFalse()
+					->object($test->disableDebugMode())->isIdenticalTo($test)
+					->boolean($test->debugModeIsEnabled())->isFalse()
+				->if($test->enableDebugMode())
+				->then
+					->object($test->disableDebugMode())->isIdenticalTo($test)
+					->boolean($test->debugModeIsEnabled())->isFalse()
 			;
 		}
 

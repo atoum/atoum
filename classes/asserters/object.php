@@ -44,7 +44,7 @@ class object extends asserters\variable
 	{
 		try
 		{
-			self::check($value, __METHOD__);
+			self::check($value, __FUNCTION__);
 		}
 		catch (\logicException $exception)
 		{
@@ -71,6 +71,16 @@ class object extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	public function isCloneOf($object, $failMessage = null)
+	{
+		if ($failMessage === null)
+		{
+			$failMessage = sprintf($this->getLocale()->_('%s is not a clone of %s'), $this, $object);
+		}
+
+		return $this->isEqualTo($object, $failMessage)->isNotIdenticalTo($object, $failMessage);
 	}
 
 	public function isEmpty($failMessage = null)
@@ -106,7 +116,7 @@ class object extends asserters\variable
 	{
 		if (self::isObject($value) === false)
 		{
-			throw new exceptions\logic('Argument of ' . $method . '() must be a class instance');
+			throw new exceptions\logic('Argument of ' . __CLASS__ . '::' . $method . '() must be a class instance');
 		}
 	}
 

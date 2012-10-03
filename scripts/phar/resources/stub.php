@@ -20,11 +20,14 @@ $versions = unserialize(file_get_contents('phar://' . atoum\phar\name . '/versio
 
 require_once 'phar://' . atoum\phar\name . '/' . $versions['current'] . '/classes/autoloader.php';
 
-if (defined(__NAMESPACE__ . '\autorun') === false)
+if (defined(__NAMESPACE__ . '\scripts\runner') === false)
 {
-	define(__NAMESPACE__ . '\autorun', true);
+	define(__NAMESPACE__ . '\scripts\runner', __FILE__);
+}
 
-	phar\stub::autorun(__FILE__);
+if (phar\stub::autorunIsEnabled() === true)
+{
+	phar\stub::enableAutorun(constant(__NAMESPACE__ . '\scripts\runner'));
 }
 
 __HALT_COMPILER();

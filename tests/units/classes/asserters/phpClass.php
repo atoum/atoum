@@ -182,6 +182,34 @@ class phpClass extends atoum\test
 		;
 	}
 
+	public function testExtends()
+	{
+		$this
+			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->extends(uniqid()); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+			->if($class = uniqid())
+			->and($parentClass = uniqid())
+			->and($mockController = new atoum\mock\controller())
+			->and($mockController->__construct = function() {})
+			->and($mockController->getName = function() use ($class) { return $class; })
+			->and($asserter
+				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
+				->setWith($class)
+			)
+			->and($mockController->isSubclassOf = false)
+			->then
+				->exception(function() use ($asserter, $parentClass) { $asserter->extends($parentClass); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Class %s is not a sub-class of %s'), $class, $parentClass))
+			->if($mockController->isSubclassOf = true)
+			->then
+				->object($asserter->extends($parentClass))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testHasInterface()
 	{
 		$this
@@ -207,6 +235,34 @@ class phpClass extends atoum\test
 			->if($mockController->implementsInterface = true)
 			->then
 				->object($asserter->hasInterface($interface))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testImplements()
+	{
+		$this
+			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->implements(uniqid()); })
+					->isInstanceOf('logicException')
+					->hasMessage('Class is undefined')
+			->if($class = uniqid())
+			->and($interface = uniqid())
+			->and($mockController = new atoum\mock\controller())
+			->and($mockController->__construct = function() {})
+			->and($mockController->getName = function() use ($class) { return $class; })
+			->and($asserter
+				->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); })
+				->setWith($class)
+			)
+			->and($mockController->implementsInterface = false)
+			->then
+				->exception(function() use ($asserter, $interface) { $asserter->implements($interface); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Class %s does not implement interface %s'), $class, $interface))
+			->if($mockController->implementsInterface = true)
+			->then
+				->object($asserter->implements($interface))->isIdenticalTo($asserter)
 		;
 	}
 

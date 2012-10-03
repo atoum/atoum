@@ -158,7 +158,7 @@ class phing extends atoum\test
 	{
 		$this
 			->assert
-				->if($scoreCoverage = new score\coverage($dependencies = new atoum\dependencies()))
+				->if($scoreCoverage = new score\coverage())
 				->and($score = new \mock\mageekguy\atoum\runner\score())
 				->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 				->and($runner = new atoum\runner())
@@ -179,9 +179,13 @@ class phing extends atoum\test
 					->castToString($defaultField)->isEmpty()
 					->castToString($customField)->isEmpty()
 				->if($classController = new mock\controller())
+				->and($classController->disableMethodChecking())
 				->and($classController->__construct = function() {})
 				->and($classController->getName = function() use (& $className) { return $className; })
 				->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+				->and($classController->getTraits = array())
+				->and($classController->getStartLine = 1)
+				->and($classController->getEndLine = 12)
 				->and($class = new \mock\reflectionClass(uniqid(), $classController))
 				->and($methodController = new mock\controller())
 				->and($methodController->__construct = function() {})
@@ -192,9 +196,11 @@ class phing extends atoum\test
 				->and($methodController->getStartLine = 6)
 				->and($methodController->getEndLine = 8)
 				->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+				->and($dependencies = new atoum\dependencies())
 				->and($dependencies['reflection\class'] = $class)
 				->and($className = uniqid())
 				->and($methodName = uniqid())
+				->and($scoreCoverage->setDependencies($dependencies))
 				->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(
 							  ($classFile = uniqid()) =>
 								 array(

@@ -39,7 +39,7 @@ class dateTime extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of \\dateTime'), $asserter->getTypeOf($value)))
 				->string($asserter->getValue())->isEqualTo($value)
 			->assert('The asserter was returned when it set with a date time')
-				->object($asserter->setWith($value = new \dateTime()))->isIdenticalTo($asserter)
+				->object($asserter->setWith($value = new \DateTime()))->isIdenticalTo($asserter)
 				->object($asserter->getValue())->isIdenticalTo($value)
 			->assert('It is possible to disable type checking')
 				->object($asserter->setWith($value = uniqid(), false))->isIdenticalTo($asserter)
@@ -54,7 +54,7 @@ class dateTime extends atoum\test
 			->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
-			->if($asserter->setWith($dateTime = new \dateTime('now', $timezone = new \dateTimezone('Europe/Paris'))))
+			->if($asserter->setWith($dateTime = new \DateTime('now', $timezone = new \DateTimezone('Europe/Paris'))))
 			->then
 				->exception(function() use (& $line, & $requiredTimezone, $asserter) { $line = __LINE__; $asserter->hasTimezone($requiredTimezone = new \DateTimezone('Europe/London')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -63,61 +63,62 @@ class dateTime extends atoum\test
 		;
 	}
 
-	public function testIsInYear()
+	public function testHasYear()
 	{
 		$this
 			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
-			->exception(function() use ($asserter) { $asserter->isInYear(rand(0, PHP_INT_MAX)); })
+			->exception(function() use ($asserter) { $asserter->hasYear(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
-			->if($asserter->setWith($dateTime = new \dateTime('1976-10-06')))
+			->if($asserter->setWith($dateTime = new \DateTime('1976-10-06')))
 			->then
-				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInYear(2011); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasYear(1981); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 2011, 1976))
-				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInYear(76); })
+					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 1981, 1976))
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasYear(76); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 76, 1976))
-				->object($asserter->isInYear(1976))->isIdenticalTo($asserter)
+					->hasMessage(sprintf($generator->getLocale()->_('Year is %04d instead of %s'), 76, 1976))
+				->object($asserter->hasYear('1976'))->isIdenticalTo($asserter)
+				->object($asserter->hasYear(1976))->isIdenticalTo($asserter)
 		;
 	}
 
-	public function testIsInMonth()
+	public function testHasMonth()
 	{
 		$this
 			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
-			->exception(function() use ($asserter) { $asserter->isInMonth(rand(0, PHP_INT_MAX)); })
+			->exception(function() use ($asserter) { $asserter->hasMonth(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
-			->if($asserter->setWith($dateTime = new \dateTime('1976-10-06')))
+			->if($asserter->setWith($dateTime = new \DateTime('1976-09-06')))
 			->then
-				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInMonth(1); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasMonth(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Month is %s instead of %s'), 1, 10))
-				->object($asserter->isInMonth(10))->isIdenticalTo($asserter)
-			->if($asserter->setWith($dateTime = new \dateTime('1980-08-14')))
+					->hasMessage(sprintf($generator->getLocale()->_('Month is %02d instead of %02d'), 1, 9))
+				->object($asserter->hasMonth(9))->isIdenticalTo($asserter)
+			->if($asserter->setWith($dateTime = new \DateTime('1980-08-14')))
 			->then
-				->object($asserter->isInMonth('08'))->isIdenticalTo($asserter)
-				->object($asserter->isInMonth('8'))->isIdenticalTo($asserter)
-				->object($asserter->isInMonth(8))->isIdenticalTo($asserter)
+				->object($asserter->hasMonth('08'))->isIdenticalTo($asserter)
+				->object($asserter->hasMonth('8'))->isIdenticalTo($asserter)
+				->object($asserter->hasMonth(8))->isIdenticalTo($asserter)
 		;
 	}
 
-	public function testIsInDay()
+	public function testHasDay()
 	{
 		$this
 			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
-			->exception(function() use ($asserter) { $asserter->isInDay(rand(0, PHP_INT_MAX)); })
+			->exception(function() use ($asserter) { $asserter->hasDay(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
-			->if($asserter->setWith($dateTime = new \dateTime('1976-10-06')))
+			->if($asserter->setWith($dateTime = new \DateTime('1976-10-06')))
 			->then
-				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->isInDay(1); })
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDay(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Day is %s instead of %s'), 1, 6))
-				->object($asserter->isInDay('06'))->isIdenticalTo($asserter)
-				->object($asserter->isInDay('6'))->isIdenticalTo($asserter)
-				->object($asserter->isInDay(6))->isIdenticalTo($asserter)
+					->hasMessage(sprintf($generator->getLocale()->_('Day is %02d instead of %02d'), 1, 6))
+				->object($asserter->hasDay('06'))->isIdenticalTo($asserter)
+				->object($asserter->hasDay('6'))->isIdenticalTo($asserter)
+				->object($asserter->hasDay(6))->isIdenticalTo($asserter)
 		;
 	}
 
@@ -129,7 +130,7 @@ class dateTime extends atoum\test
 				->exception(function() use ($asserter) { $asserter->hasDate(1976, 10, 6); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Instance of \\dateTime is undefined')
-			->if($asserter->setWith($dateTime = new \dateTime('1976-10-06')))
+			->if($asserter->setWith($dateTime = new \DateTime('1976-10-06')))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDate(1980, 8, 14); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -137,11 +138,98 @@ class dateTime extends atoum\test
 				->object($asserter->hasDate(1976, 10, 6))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '6'))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '06'))->isIdenticalTo($asserter)
-			->if($asserter->setWith($dateTime = new \dateTime('1980-08-14')))
+		;
+	}
+
+	public function testHasHours()
+	{
+		$this
+			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->exception(function() use ($asserter) { $asserter->hasHours(rand(0, PHP_INT_MAX)); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Instance of \\dateTime is undefined')
+			->if($asserter->setWith($dateTime = new \DateTime('01:02:03')))
 			->then
-				->object($asserter->hasDate(1980, 8, 14))->isIdenticalTo($asserter)
-				->object($asserter->hasDate('1980', '8', '14'))->isIdenticalTo($asserter)
-				->object($asserter->hasDate('1980', '08', '14'))->isIdenticalTo($asserter)
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasHours(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Hours are %02d instead of %02d'), 2, 1))
+				->object($asserter->hasHours('01'))->isIdenticalTo($asserter)
+				->object($asserter->hasHours('1'))->isIdenticalTo($asserter)
+				->object($asserter->hasHours(1))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasMinutes()
+	{
+		$this
+			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->exception(function() use ($asserter) { $asserter->hasMinutes(rand(0, PHP_INT_MAX)); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Instance of \\dateTime is undefined')
+			->if($asserter->setWith($dateTime = new \DateTime('01:02:03')))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasMinutes(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Minutes are %02d instead of %02d'), 1, 2))
+				->object($asserter->hasMinutes('02'))->isIdenticalTo($asserter)
+				->object($asserter->hasMinutes('2'))->isIdenticalTo($asserter)
+				->object($asserter->hasMinutes(2))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasSeconds()
+	{
+		$this
+			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->exception(function() use ($asserter) { $asserter->hasSeconds(rand(0, PHP_INT_MAX)); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Instance of \\dateTime is undefined')
+			->if($asserter->setWith($dateTime = new \DateTime('01:02:03')))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasSeconds(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Seconds are %02d instead of %02d'), 1, 3))
+				->object($asserter->hasSeconds('03'))->isIdenticalTo($asserter)
+				->object($asserter->hasSeconds('3'))->isIdenticalTo($asserter)
+				->object($asserter->hasSeconds(3))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasTime()
+	{
+		$this
+			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasTime(1, 2, 3); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Instance of \\dateTime is undefined')
+			->if($asserter->setWith($dateTime = new \DateTime('01:02:03')))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasTime(4, 5, 6); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Time is %s instead of %s'), '04:05:06', '01:02:03'))
+				->object($asserter->hasTime('01', '02', '03'))->isIdenticalTo($asserter)
+				->object($asserter->hasTime('1', '2', '3'))->isIdenticalTo($asserter)
+				->object($asserter->hasTime(1, 2, 3))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasDateAndTime()
+	{
+		$this
+			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Instance of \\dateTime is undefined')
+			->if($asserter->setWith($dateTime = new \DateTime('1981-02-13 01:02:03')))
+			->then
+				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDateAndTime(1900, 1, 1, 4, 5, 6); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Datetime is %s instead of %s'), '1900-01-01 04:05:06', '1981-02-13 01:02:03'))
+				->object($asserter->hasDateAndTime('1981', '02', '13', '01', '02', '03'))->isIdenticalTo($asserter)
+				->object($asserter->hasDateAndTime('1981', '2', '13', '1', '2', '3'))->isIdenticalTo($asserter)
+				->object($asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3))->isIdenticalTo($asserter)
 		;
 	}
 }

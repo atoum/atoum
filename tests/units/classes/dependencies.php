@@ -21,7 +21,7 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->variable($dependencies->getInjector())->isNull()
+				->variable($dependencies->getValue())->isNull()
 		;
 	}
 
@@ -32,17 +32,17 @@ class dependencies extends atoum\test
 			->then
 				->exception(function() use ($dependencies) { $dependencies(); })
 					->isInstanceOf('mageekguy\atoum\dependencies\exception')
-					->hasMessage('Injector is undefined')
-			->if($dependencies->setInjector($value = uniqid()))
+					->hasMessage('Value is undefined')
+			->if($dependencies->setValue($value = uniqid()))
 			->then
 				->string($dependencies())->isEqualTo($value)
-			->if($dependencies->setInjector(function() use (& $value) { return ($value = uniqid()); }))
+			->if($dependencies->setValue(function() use (& $value) { return ($value = uniqid()); }))
 			->then
 				->string($dependencies())->isEqualTo($value)
-			->if($dependencies->setInjector(function($dependencies) { return $dependencies; }))
+			->if($dependencies->setValue(function($dependencies) { return $dependencies; }))
 			->then
 				->object($dependencies())->isIdenticalTo($dependencies)
-			->if($dependencies->setInjector(function($dependencies) { return $dependencies['argument'](); }))
+			->if($dependencies->setValue(function($dependencies) { return $dependencies['argument'](); }))
 			->then
 				->string($dependencies(array('argument' => $argument = uniqid())))->isEqualTo($argument)
 		;
@@ -53,10 +53,10 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->object($dependencies->setInjector($injector = function() {}))->isIdenticalTo($dependencies)
-				->object($dependencies->getInjector())->isIdenticalTo($injector)
-				->object($dependencies->setInjector($injector = uniqid()))->isIdenticalTo($dependencies)
-				->string($dependencies->getInjector())->isIdenticalTo($injector)
+				->object($dependencies->setValue($injector = function() {}))->isIdenticalTo($dependencies)
+				->object($dependencies->getValue())->isIdenticalTo($injector)
+				->object($dependencies->setValue($injector = uniqid()))->isIdenticalTo($dependencies)
+				->string($dependencies->getValue())->isIdenticalTo($injector)
 		;
 	}
 
@@ -65,17 +65,17 @@ class dependencies extends atoum\test
 		$this
 			->if($dependencies = new testedClass())
 			->then
-				->variable($dependencies->getInjector())->isNull()
-				->variable($dependencies->getInjector(uniqid()))->isNull()
-			->if($dependencies->setInjector($injector = uniqid()))
+				->variable($dependencies->getValue())->isNull()
+				->variable($dependencies->getValue(uniqid()))->isNull()
+			->if($dependencies->setValue($injector = uniqid()))
 			->then
-				->string($dependencies->getInjector())->isEqualTo($injector)
-				->variable($dependencies->getInjector(uniqid()))->isNull()
+				->string($dependencies->getValue())->isEqualTo($injector)
+				->variable($dependencies->getValue(uniqid()))->isNull()
 			->if($dependencies->setDependence($name = uniqid(), $otherInjector = uniqid()))
 			->then
-				->string($dependencies->getInjector())->isEqualTo($injector)
-				->variable($dependencies->getInjector(uniqid()))->isNull()
-				->string($dependencies->getInjector($name))->isEqualTo($otherInjector)
+				->string($dependencies->getValue())->isEqualTo($injector)
+				->variable($dependencies->getValue(uniqid()))->isNull()
+				->string($dependencies->getValue($name))->isEqualTo($otherInjector)
 		;
 	}
 
@@ -86,10 +86,10 @@ class dependencies extends atoum\test
 			->then
 				->object($dependencies->setDependence($name = uniqid(), $value = uniqid()))->isIdenticalTo($dependencies)
 				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
-				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->string($dependencies->getValue($name))->isEqualTo($value)
 				->object($dependencies->setDependence($otherName = uniqid(), $subDependence = new testedClass()))->isIdenticalTo($dependencies)
 				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
-				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->string($dependencies->getValue($name))->isEqualTo($value)
 				->object($dependencies->getDependence($otherName))->isIdenticalTo($subDependence)
 		;
 	}
@@ -141,10 +141,10 @@ class dependencies extends atoum\test
 			->then
 				->object($dependencies->offsetSet($name = uniqid(), $value = uniqid()))->isIdenticalTo($dependencies)
 				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
-				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->string($dependencies->getValue($name))->isEqualTo($value)
 				->object($dependencies->offsetSet($otherName = uniqid(), $subDependence = new testedClass()))->isIdenticalTo($dependencies)
 				->object($dependencies->getDependence($name))->isInstanceOf($dependencies)
-				->string($dependencies->getInjector($name))->isEqualTo($value)
+				->string($dependencies->getValue($name))->isEqualTo($value)
 				->object($dependencies->getDependence($otherName))->isIdenticalTo($subDependence)
 		;
 	}

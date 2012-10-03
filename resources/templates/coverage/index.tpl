@@ -32,7 +32,7 @@
 								<li>
 									<tpl:classCoverageUnavailable>
 										<div class="bar">
-											<div class="label"><a href="<tpl:classUrl />"><tpl:className /></a> <span>n/a</span></div>
+											<div class="label"><tpl:className /> <span>n/a</span></div>
 										</div>
 									</tpl:classCoverageUnavailable>
 									<tpl:classCoverageAvailable>

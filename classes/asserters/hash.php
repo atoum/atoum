@@ -3,10 +3,11 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class hash extends string
+class hash extends asserters\string
 {
 	public function isSha1($failMessage = null)
 	{

@@ -12,6 +12,7 @@ use
 class controller extends test\adapter
 {
 	protected $mockClass = null;
+	protected $reflectionClassDependency = null;
 
 	protected static $controlNextNewMock = null;
 
@@ -21,17 +22,14 @@ class controller extends test\adapter
 	{
 		parent::__construct($dependencies);
 
-		$this
-			->setDependencies($dependencies ?: new atoum\dependencies())
-			->controlNextNewMock()
-		;
+		$this->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
 	{
 		$this->checkMethod($method);
 
-		parent::__set($method, $mixed);
+		return parent::__set($method, $mixed);
 	}
 
 	public function __get($method)
@@ -59,11 +57,27 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function setReflectionClassDependency(atoum\dependency $dependency)
+	{
+		$this->reflectionClassDependency = $dependency;
+
+		return $this;
+	}
+
+	public function getReflectionClassDependency()
+	{
+		return $this->reflectionClassDependency;
+	}
+
 	public function setDependencies(atoum\dependencies $dependencies)
 	{
-		if (isset($dependencies['reflection\class']) === false)
+		if (isset($dependencies['reflection\class']) === true)
 		{
-			$dependencies['reflection\class'] = function($dependencies) { return new \reflectionClass($dependencies['class']()); };
+			$this->setReflectionClassDependency($dependencies['reflection\class']);
+		}
+		else
+		{
+			$this->setReflectionClassDependency(new atoum\dependency(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
 		}
 
 		return parent::setDependencies($dependencies);
@@ -99,7 +113,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = $this->dependencies['reflection\class'](array('class' => $this->mockClass));
+			$class = $this->getReflectionClass($this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try
@@ -115,11 +129,23 @@ class controller extends test\adapter
 
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
-			foreach (array_keys($this->invokers) as $method)
+			if ($this->disableMethodChecking === false)
 			{
-				if (in_array($method, $methods) === false)
+				foreach (array_keys($this->invokers) as $method)
 				{
-					throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+					if (in_array($method, $methods) === false)
+					{
+						if (in_array('__call', $methods) === false)
+						{
+							throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+						}
+						else if (isset($this->invokers['__call']) === false)
+						{
+							$this->invokers['__call'] = null;
+
+							$this->set__call();
+						}
+					}
 				}
 			}
 
@@ -131,8 +157,9 @@ class controller extends test\adapter
 				}
 			}
 
-			$mock->setMockController($this);
 		}
+
+		$mock->setMockController($this);
 
 		if (self::$controlNextNewMock === $this)
 		{
@@ -190,21 +217,41 @@ class controller extends test\adapter
 		return $instance;
 	}
 
-	public function injectInNextMockInstance()
-	{
-		#DEPRECATED
-		die(__METHOD__ . ' is deprecated, please use ' . __CLASS__ . '::controlNextNewMock() instead');
-	}
-
 	protected function checkMethod($method)
 	{
 		if ($this->mockClass !== null && $this->disableMethodChecking === false)
 		{
 			if (array_key_exists(strtolower($method), $this->invokers) === false)
 			{
-				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+				if (array_key_exists('__call', $this->invokers) === false)
+				{
+					throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+				}
+				else if (isset($this->__call) === false)
+				{
+					$this->set__call();
+				}
 			}
 		}
+
+		return $this;
+	}
+
+	protected function getReflectionClass($class)
+	{
+		$reflectionClassDependency = $this->reflectionClassDependency;
+
+		return $reflectionClassDependency(array('class' => $class));
+	}
+
+	private function set__call()
+	{
+		$controller = $this;
+
+		parent::__set('__call', function($method, $arguments) use ($controller) {
+				return $controller->invoke($method, $arguments);
+			}
+		);
 
 		return $this;
 	}

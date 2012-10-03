@@ -143,6 +143,11 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
+							array('--test-all'),
+							null,
+							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+						),
+						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -156,6 +161,11 @@ class runner extends atoum\test
 							array('-ulr', '--use-light-report'),
 							null,
 							'Use "light" CLI report'
+						),
+						array(
+							array('--debug'),
+							null,
+							'Enable debug mode'
 						)
 					)
 				)
@@ -276,6 +286,11 @@ class runner extends atoum\test
 							'Execute atoum unit tests'
 						),
 						array(
+							array('--test-all'),
+							null,
+							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+						),
+						array(
 							array('-ft', '--force-terminal'),
 							null,
 							'Force output as in terminal'
@@ -289,6 +304,11 @@ class runner extends atoum\test
 							array('-ulr', '--use-light-report'),
 							null,
 							'Use "light" CLI report'
+						),
+						array(
+							array('--debug'),
+							null,
+							'Enable debug mode'
 						)
 					)
 				)
@@ -312,7 +332,7 @@ class runner extends atoum\test
 		$this
 			->if($factory = new atoum\factory())
 			->and($factory['mageekguy\atoum\locale'] = $locale = new \mock\mageekguy\atoum\locale())
-			->and($runner = new scripts\runner($name = uniqid(), $factory))
+			->and($runner = new scripts\runner(uniqid(), $factory))
 			->then
 				->exception(function() use ($runner, & $file) {
 						$runner->useConfigFile($file = uniqid());
@@ -333,15 +353,49 @@ class runner extends atoum\test
 	public function testUseDefaultConfigFiles()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner($name = uniqid()))
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($runner->getMockController()->useConfigFile = function() {})
 			->then
-				->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
+				->object($runner->useDefaultConfigFiles(atoum\directory))->isIdenticalTo($runner)
 				->mock($runner)
 					->foreach(scripts\runner::getSubDirectoryPath(atoum\directory), function($mock, $path) {
 							$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
 						}
 					)
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($runner->getMockController()->useConfigFile = function() {})
+			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->getcwd = $workingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
+			->then
+				->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
+				->mock($runner)
+					->foreach(scripts\runner::getSubDirectoryPath($workingDirectory), function($mock, $path) {
+						$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
+					}
+				)
+		;
+	}
+
+	public function getTestAllDirectories()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->array($runner->getTestAllDirectories())->isEmpty()
+		;
+	}
+
+	public function testAddTestAllDirectory()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->addTestAllDirectory($directory = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestAllDirectories())->isEqualTo(array($directory))
+				->object($runner->addtestalldirectory($directory))->isidenticalto($runner)
+				->array($runner->gettestalldirectories())->isequalto(array($directory))
+				->object($runner->addtestalldirectory(($otherDirectory = uniqid()) . DIRECTORY_SEPARATOR))->isidenticalto($runner)
+				->array($runner->gettestalldirectories())->isequalto(array($directory, $otherDirectory))
 		;
 	}
 
@@ -352,15 +406,15 @@ class runner extends atoum\test
 			->array(scripts\runner::getSubDirectoryPath('', '/'))->isEmpty()
 			->array(scripts\runner::getSubDirectoryPath('', '\\'))->isEmpty()
 			->array(scripts\runner::getSubDirectoryPath('/', '/'))->isEqualTo(array('/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto', '/'))->isEqualTo(array('/', '/toto/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/', '/'))->isEqualTo(array('/', '/toto/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/tutu', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
-			->array(scripts\runner::getSubDirectoryPath('/toto/tutu/', '/'))->isEqualTo(array('/', '/toto/', '/toto/tutu/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo', '/'))->isEqualTo(array('/', '/foo/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/', '/'))->isEqualTo(array('/', '/foo/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/bar', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
+			->array(scripts\runner::getSubDirectoryPath('/foo/bar/', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
 			->array(scripts\runner::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(array('c:\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\toto\tutu\\', '\\'))->isEqualTo(array('c:\\', 'c:\toto\\', 'c:\toto\tutu\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
+			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
 		;
 	}
 }

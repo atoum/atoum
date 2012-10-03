@@ -5,7 +5,7 @@ namespace mageekguy\atoum\test;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\dependence,
+	mageekguy\atoum\dependency,
 	mageekguy\atoum\dependencies,
 	mageekguy\atoum\test\adapter\invoker
 ;
@@ -14,7 +14,7 @@ class adapter extends atoum\adapter
 {
 	protected $calls = array();
 	protected $invokers = array();
-	protected $dependencies = null;
+	protected $invokerDependency = null;
 
 	private static $callsNumber = 0;
 	private static $instances = null;
@@ -49,7 +49,7 @@ class adapter extends atoum\adapter
 
 		if (isset($this->invokers[$functionName]) === false)
 		{
-			$this->invokers[$functionName] = $this->dependencies['invoker']();
+			$this->invokers[$functionName] = $this->getInvoker();
 		}
 
 		return $this->invokers[$functionName];
@@ -80,21 +80,30 @@ class adapter extends atoum\adapter
 		return $this;
 	}
 
-	public function setDependencies(dependencies $dependencies)
+	public function setInvokerDependency(atoum\dependency $dependency)
 	{
-		$this->dependencies = $dependencies;
-
-		if (isset($this->dependencies['invoker']) === false)
-		{
-			$this->dependencies['invoker'] = function() { return new invoker(); };
-		}
+		$this->invokerDependency = $dependency;
 
 		return $this;
 	}
 
-	public function getDependencies()
+	public function getInvokerDependency()
 	{
-		return $this->dependencies;
+		return $this->invokerDependency;
+	}
+
+	public function setDependencies(dependencies $dependencies)
+	{
+		if (isset($dependencies['invoker']) === true)
+		{
+			$this->setInvokerDependency($dependencies['invoker']);
+		}
+		else
+		{
+			$this->setInvokerDependency(new dependency(function() { return new invoker(); }));
+		}
+
+		return $this;
 	}
 
 	public function getInvokers()
@@ -211,6 +220,13 @@ class adapter extends atoum\adapter
 				$instance->resetCalls();
 			}
 		}
+	}
+
+	protected function getInvoker()
+	{
+		$invokerDependency = $this->invokerDependency;
+
+		return $invokerDependency();
 	}
 
 	protected static function isLanguageConstruct($functionName)

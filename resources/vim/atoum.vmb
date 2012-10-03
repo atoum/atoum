@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-144
+149
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -15,7 +15,7 @@ if !exists('g:atoum#_')
 	let g:atoum#_ = ''
 endif
 "run {{{1
-function atoum#run(file, bang)
+function atoum#run(file, bang, args)
 	let _ = a:bang != '' ? g:atoum#_ : g:atoum#php . ' -f ' . a:file . ' -- -c ' . g:atoum#configuration
 
 	if (_ != '')
@@ -39,9 +39,10 @@ function atoum#run(file, bang)
 
 		2d _ | resize 1 | redraw
 
-		execute 'silent! %!'. _
+		execute 'silent! %!' . _ . ' ' . a:args
 		execute 'resize ' . line('$')
-		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''')<CR>'
+		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''', '''')<CR>'
+		execute 'nnoremap <silent> <buffer> <C-CR> :call atoum#run(''' . a:file . ''', '''', '' --debug'')<CR>'
 		execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
 
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>
@@ -133,9 +134,7 @@ function atoum#makeVimball()
 
 		echomsg 'Vimball is in ''' . getcwd() . ''''
 	catch /.*/
-		echohl ErrorMsg
-		echomsg v:exception
-		echohl None
+		call atoum#displayError(v:exception)
 	endtry
 endfunction
 "highlightStatusLine {{{1
@@ -145,6 +144,12 @@ function atoum#highlightStatusLine()
 	else
 		hi statusline guibg=DarkRed guifg=White gui=NONE
 	endif
+endfunction
+"displayError {{{1
+function atoum#displayError(error)
+	echohl ErrorMsg
+	echomsg a:error
+	echohl None
 endfunction
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
 doc/atoum.txt	[[[1
@@ -204,7 +209,7 @@ These maps are available in buffer opened by atoum plug-ins.
 
  vim:ts=8 sw=8 noexpandtab tw=78 ft=help:
 ftplugin/php/atoum.php	[[[1
-28
+25
 <?php
 
 /*
@@ -213,8 +218,7 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 */
 
 use
-  \mageekguy\atoum,
-  \mageekguy\atoum\cli\prompt
+  \mageekguy\atoum
 ;
 
 /*
@@ -230,9 +234,7 @@ $vimReport
   ->addWriter($stdOutWriter)
 ;
 
-atoum\scripts\runner::getAutorunner()->getRunner()->addReport($vimReport);
-
-?>
+$runner->addReport($vimReport);
 ftplugin/php/atoum.vim	[[[1
 28
 "=============================================================================
@@ -253,7 +255,7 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 			let g:atoum#configuration = expand('<sfile>:h') . '/atoum.php'
 		endif
 
-		command -buffer -nargs=0 -bang Atoum call atoum#run(expand('%'), '<bang>')
+		command -buffer -nargs=* -bang Atoum call atoum#run(expand('%'), '<bang>', '<args>')
 		command -buffer -nargs=0 AtoumVimball call atoum#makeVimball()
 
 		let &cpo = s:cpo

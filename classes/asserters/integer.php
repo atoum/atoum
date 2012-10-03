@@ -32,14 +32,14 @@ class integer extends asserters\variable
 
 	public function isEqualTo($value, $failMessage = null)
 	{
-		static::check($value, __METHOD__);
+		static::check($value, __FUNCTION__);
 
 		return parent::isEqualTo($value, $failMessage);
 	}
 
 	public function isGreaterThan($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->value > $value)
 		{
@@ -55,7 +55,7 @@ class integer extends asserters\variable
 
 	public function isLessThan($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->value < $value)
 		{
@@ -63,23 +63,15 @@ class integer extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not lower than %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not less than %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
 	}
 
-	/**
-	 * @obsolete use isLessThan instead
-	 */
-	public function isLowerThan($value, $failMessage = null)
-	{
-		return $this->isLessThan($value, $failMessage);
-	}
-
 	public function isGreaterThanOrEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->value >= $value)
 		{
@@ -93,17 +85,9 @@ class integer extends asserters\variable
 		return $this;
 	}
 
-	/**
-	 * @obsolete use isLessThanOrEqualTo instead
-	 */
-	public function isLowerThanOrEqualTo($value, $failMessage = null)
-	{
-		return $this->isLessThanOrEqualTo($value, $failMessage);
-	}
-
 	public function isLessThanOrEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __METHOD__);
+		self::check($value, __FUNCTION__);
 
 		if ($this->value <= $value)
 		{
@@ -111,7 +95,7 @@ class integer extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not lower than or equal to %s'), $this, $this->getTypeOf($value)));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not less than or equal to %s'), $this, $this->getTypeOf($value)));
 		}
 
 		return $this;
@@ -121,7 +105,7 @@ class integer extends asserters\variable
 	{
 		if (self::isInteger($value) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be an integer');
+			throw new exceptions\logic\invalidArgument('Argument of ' . __CLASS__ . '::' . $method . '() must be an integer');
 		}
 	}
 

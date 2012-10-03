@@ -216,6 +216,20 @@ class extractor extends atoum\test
 					->string($dataProvider)->isEqualTo('aDataProvider')
 					->string($namespace)->isEqualTo('bar')
 					->string($maxChildrenNumber)->isEqualTo($number)
+				->object($extractor->extract(
+						'/*' . "\r\n" .
+						"\t" . '@ignore off' . "\r\n" .
+						'*/')
+					)
+						->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('off')
+				->object($extractor->extract(
+						'/*' . "\n" .
+						"\t" . '@ignore on' . "\n" .
+						'*/')
+					)
+						->isIdenticalTo($extractor)
+					->string($ignore)->isEqualTo('on')
 		;
 	}
 

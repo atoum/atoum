@@ -172,7 +172,7 @@ abstract class script implements atoum\adapter\aggregator
 
 	public function run(array $arguments = array())
 	{
-		$this->adapter->ini_set('log_errors_max_len', '0');
+		$this->adapter->ini_set('log_errors_max_len', 0);
 		$this->adapter->ini_set('log_errors', 'Off');
 		$this->adapter->ini_set('display_errors', 'stderr');
 

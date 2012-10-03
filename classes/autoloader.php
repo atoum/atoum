@@ -54,6 +54,8 @@ class autoloader
 
 	public function getPath($class)
 	{
+		$class = preg_replace_callback('/(^.|\\\.)/', function($matches) { return strtolower($matches[0]); }, $class);
+
 		foreach ($this->directories as $namespace => $directories)
 		{
 			if ($class !== $namespace)

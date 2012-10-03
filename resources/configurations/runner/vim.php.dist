@@ -12,7 +12,7 @@ Write all on stdout.
 $stdOutWriter = new atoum\writers\std\out();
 
 /*
-Generate a CLI report.
+Generate a VIM report.
 */
 $vimReport = new atoum\reports\asynchronous\vim();
 $vimReport->addWriter($stdOutWriter);

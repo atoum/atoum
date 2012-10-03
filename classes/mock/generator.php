@@ -92,47 +92,45 @@ class generator
 		{
 			throw new exceptions\runtime('Class name \'' . $class . '\' is invalid');
 		}
+
+		$code = '';
+
+		$class = '\\' . ltrim($class, '\\');
+
+		if ($mockNamespace === null)
+		{
+			$mockNamespace = $this->getNamespace($class);
+		}
+
+		if ($mockClass === null)
+		{
+			$mockClass = self::getClassName($class);
+		}
+
+		$adapter = $this->factory['mageekguy\atoum\adapter']();
+
+		if ($adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
+		{
+			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
+		}
+
+		if ($adapter->class_exists($class, true) === false && $adapter->interface_exists($class, true) === false)
+		{
+			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
+		}
 		else
 		{
-			$code = null;
+			$reflectionClass = $this->factory['reflectionClass']($class);
 
-			$class = '\\' . ltrim($class, '\\');
-
-			if ($mockNamespace === null)
+			if ($reflectionClass->isFinal() === true)
 			{
-				$mockNamespace = $this->getNamespace($class);
+				throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
 			}
 
-			if ($mockClass === null)
-			{
-				$mockClass = self::getClassName($class);
-			}
-
-			$adapter = $this->factory['mageekguy\atoum\adapter']();
-
-			if ($adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
-			{
-				throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
-			}
-
-			if ($adapter->class_exists($class, true) === false && $adapter->interface_exists($class, true) === false)
-			{
-				$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
-			}
-			else
-			{
-				$reflectionClass = $this->factory['reflectionClass']($class);
-
-				if ($reflectionClass->isFinal() === true)
-				{
-					throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
-				}
-
-				$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : self::generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
-			}
-
-			return $code;
+			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : self::generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
 		}
+
+		return $code;
 	}
 
 	public function generate($class, $mockNamespace = null, $mockClass = null)
@@ -252,6 +250,12 @@ class generator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
+
+							if ($methodName === '__call')
+							{
+								$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(current(array_slice($arguments, 0, 1)), current(array_slice($arguments, 1)));' . PHP_EOL;
+							}
+
 							$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
@@ -356,7 +360,8 @@ class generator
 			"\t" . '{' . PHP_EOL .
 			"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
-			"\t\t\t" . '$this->mockController = $controller->control($this);' . PHP_EOL .
+			"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+			"\t\t\t" . '$controller->control($this);' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t\t" . 'return $this->mockController;' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .
