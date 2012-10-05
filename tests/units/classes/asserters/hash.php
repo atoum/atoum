@@ -25,6 +25,9 @@ class hash extends atoum\test
 			->and($asserter->setWith($value = hash('sha1', 'hello')))
 			->then
 				->object($asserter->isSha1())->isIdenticalTo($asserter)
+			->if($asserter->setWith($value = strtoupper($value)))
+			->then
+				->object($asserter->isSha1())->isIdenticalTo($asserter)
 			->if($asserter->setWith($newvalue = substr($value, 1)))
 			->and($diff = new diffs\variable())
 			->and($diff->setReference( $newvalue )->setData($value))
@@ -47,6 +50,9 @@ class hash extends atoum\test
 		$this
 			->if($asserter = new asserters\hash($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('sha256', 'hello')))
+			->then
+				->object($asserter->isSha256())->isIdenticalTo($asserter)
+			->if($asserter->setWith($value = strtoupper($value)))
 			->then
 				->object($asserter->isSha256())->isIdenticalTo($asserter)
 			->if($asserter->setWith($newvalue = substr($value, 1)))
@@ -73,6 +79,9 @@ class hash extends atoum\test
 			->and($asserter->setWith($value = hash('sha512', 'hello')))
 			->then
 				->object($asserter->isSha512())->isIdenticalTo($asserter)
+			->if($asserter->setWith($value = strtoupper($value)))
+			->then
+				->object($asserter->isSha512())->isIdenticalTo($asserter)
 			->if($asserter->setWith($newvalue = substr($value, 1)))
 			->and($diff = new diffs\variable())
 			->and($diff->setReference( $newvalue )->setData($value))
@@ -95,6 +104,9 @@ class hash extends atoum\test
 		$this
 			->if($asserter = new asserters\hash($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('md5', 'hello')))
+			->then
+				->object($asserter->isMd5())->isIdenticalTo($asserter)
+			->if($asserter->setWith($value = strtoupper($value)))
 			->then
 				->object($asserter->isMd5())->isIdenticalTo($asserter)
 			->if($asserter->setWith($newvalue = substr($value, 1)))
