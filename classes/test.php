@@ -1087,40 +1087,44 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 	private function runEngine()
 	{
-		$this->currentMethod = current($this->runTestMethods);
+		$this->currentMethod = current($this->runTestMethods) ?: null;
 
-		$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
-
-		if (ltrim($engineClass, '\\') === $engineClass)
+		if ($this->currentMethod !== null)
 		{
-			$engineClass = self::enginesNamespace . '\\' . $engineClass;
-		}
+			$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
 
-		if (class_exists($engineClass) === false)
-		{
-			throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
-		}
-
-		$engine = $this->factory[$engineClass]($this->factory);
-
-		if ($engine instanceof test\engine === false)
-		{
-			throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
-		}
-
-		if ($this->canRunEngine($engine) === true)
-		{
-			array_shift($this->runTestMethods);
-
-			$this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
-
-			if ($engine->isAsynchronous() === true)
+			if (ltrim($engineClass, '\\') === $engineClass)
 			{
-				$this->asynchronousEngines++;
+				$engineClass = self::enginesNamespace . '\\' . $engineClass;
 			}
-		}
 
-		$this->currentMethod = null;
+			if (class_exists($engineClass) === false)
+			{
+				throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
+			}
+
+			$engine = $this->factory[$engineClass]($this->factory);
+
+			if ($engine instanceof test\engine === false)
+			{
+				throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
+			}
+
+			if ($this->canRunEngine($engine) === true)
+			{
+
+				array_shift($this->runTestMethods);
+
+				$this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
+
+				if ($engine->isAsynchronous() === true)
+				{
+					$this->asynchronousEngines++;
+				}
+			}
+
+			$this->currentMethod = null;
+		}
 
 		return $this;
 	}
