@@ -13,7 +13,7 @@ if (defined(__NAMESPACE__ . '\scripts\runner') === false)
 	define(__NAMESPACE__ . '\scripts\runner', __FILE__);
 }
 
-if (scripts\runner::autorunIsEnabled() === true)
+if (scripts\runner::autorunMustBeEnabled() === true)
 {
 	scripts\runner::enableAutorun(constant(__NAMESPACE__ . '\scripts\runner'));
 }
