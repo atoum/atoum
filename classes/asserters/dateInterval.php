@@ -111,8 +111,10 @@ class dateInterval extends asserters\object
         
 	private function lowerThan(\dateInterval $interval)
 	{
-				$value = $this->valueIsSet()->value;
-		foreach($value as $attr => $val){
+		$value = $this->valueIsSet()->value;
+                
+		foreach($value as $attr => $val)
+                {
 			if($val === $interval->$attr || $attr === 'days')
 			{
 				continue;

@@ -28,6 +28,7 @@ class dateInterval extends atoum\test
 				->boolean($asserter->wasSet())->isFalse()
 		;
 	}
+        
 	public function testSetWith()
 	{
 		$this
@@ -66,6 +67,7 @@ class dateInterval extends atoum\test
 			
 		;
 	}
+        
 	public function testIsShorterThan()
 	{
 		$this
@@ -86,6 +88,7 @@ class dateInterval extends atoum\test
 			
 		;
 	}
+        
 	public function testIsAsLongAs()
 	{
 		$tomorrow = new \dateTime('tomorrow');
