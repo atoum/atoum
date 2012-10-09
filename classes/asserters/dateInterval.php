@@ -2,8 +2,8 @@
 
 namespace mageekguy\atoum\asserters;
 use
-mageekguy\atoum\asserters,
-mageekguy\atoum\exceptions
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\exceptions
 ;
 
 class dateInterval extends asserters\object
@@ -32,27 +32,35 @@ class dateInterval extends asserters\object
 		if($this->greaterThan($interval))
 		{
 			$this->pass();
-		}else
+		}
+                else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('This interval is not longer than %s years %s months %s days %s hours %s minutes %s seconds'),
-				$interval->y, $interval->m, $interval->d,$interval->h,$interval->i,$interval->s));
+				$interval->y, $interval->m, $interval->d ,$interval->h, $interval->i, $interval->s));
 		}
+                
 		return $this;
 	}
 	
 	public function isShorterThan(\dateInterval $interval,$failMessage = null)
 	{
-		if($this->lowerThan($interval)){
+		if($this->lowerThan($interval))
+                {
 			$this->pass();
-		}else{
-		$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('This interval is not shorter than %s years %s months %s days %s hours %s minutes %s seconds'),
-				$interval->y, $interval->m, $interval->d,$interval->h,$interval->i,$interval->s));
 		}
+                else
+                {
+		$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('This interval is not shorter than %s years %s months %s days %s hours %s minutes %s seconds'),
+				$interval->y, $interval->m, $interval->d, $interval->h, $interval->i, $interval->s));
+		}
+                
 		return $this;
 	}	
+        
 	public function isAsLongAs(\dateInterval $interval,$failMessage = null)
 	{
 		$value = $this->valueIsSet()->value;
+                
 		if($this->equals($interval))
 		{
 			$this->pass();
@@ -63,11 +71,14 @@ class dateInterval extends asserters\object
 				$interval->y, $interval->m, $interval->d,$interval->h,$interval->i,$interval->s));
 			
 		}
+                
 		return $this;
 	}
+        
 	public function isInRange(\dateInterval $low,\dateInterval $high,$failMessage = null)
 	{
 		$value = $this->valueIsSet()->value;
+                
 		if(($this->equals($low) || $this->greaterThan($low)) && ($this->equals($high) || $this->lowerThan($high)))
 		{
 			$this->pass();
@@ -79,6 +90,7 @@ class dateInterval extends asserters\object
 				$high->y, $high->m, $high->d,$high->h,$high->i,$high->s));
 			
 		}
+                
 		return $this;
 	}
 	
@@ -86,6 +98,7 @@ class dateInterval extends asserters\object
 	{
 		return ($value instanceof \dateInterval);
 	}
+        
 	protected function valueIsSet($message = 'Instance of \\dateInterval is undefined')
 	{
 		if (self::isDateInterval(parent::valueIsSet($message)->value) === false)
@@ -95,6 +108,7 @@ class dateInterval extends asserters\object
 
 		return $this;
 	}
+        
 	private function lowerThan(\dateInterval $interval)
 	{
 				$value = $this->valueIsSet()->value;
@@ -137,9 +151,11 @@ class dateInterval extends asserters\object
 		}
 
 	}
+        
 	private function equals(\dateInterval $interval)
 	{
 		$value = $this->valueIsSet()->value;
+                
 		return $value->y === $interval->y && $value->m === $interval->m && $value->d === $interval->d
 				&& $value->h === $interval->h && $value->i === $interval->i && $value->s === $interval->s ;
 	}
