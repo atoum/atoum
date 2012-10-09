@@ -114,7 +114,7 @@ class dateInterval extends asserters\object
 		$value = $this->valueIsSet()->value;
                 
 		foreach($value as $attr => $val)
-                {
+		{
 			if($val === $interval->$attr || $attr === 'days')
 			{
 				continue;
@@ -134,7 +134,8 @@ class dateInterval extends asserters\object
 
 	private function greaterThan(\dateInterval $interval)
 	{
-				$value = $this->valueIsSet()->value;
+		$value = $this->valueIsSet()->value;
+		
 		foreach($value as $attr => $val)
 		{
 			if($val === $interval->$attr || $attr === 'days')
