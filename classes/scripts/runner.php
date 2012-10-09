@@ -271,7 +271,7 @@ class runner extends atoum\script
 
 	public static function autorunMustBeEnabled()
 	{
-		return (static::$autorunner !== false && static::$autorunner === true);
+		return (static::$autorunner === true);
 	}
 
 	public static function enableAutorun($name)
