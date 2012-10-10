@@ -68,6 +68,30 @@ class dateInterval extends atoum\test
 		;
 	}
         
+        public function testIsZero()
+        {
+            
+            $tomorrow = new \dateTime('tomorrow');
+		
+		$this	
+			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+				->exception(function() use ($asserter) { $asserter->isZero(); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Instance of \\dateInterval is undefined')
+			->if($asserter->setWith(new \DateInterval('P0Y')))
+				->then
+				->object($asserter->isZero())->isIdenticalTo($asserter)
+                        ->if($asserter->setWith($tomorrow->diff($tomorrow)))
+                                ->then  
+				->object($asserter->isZero())->isIdenticalTo($asserter)
+                         ->if($asserter->setWith(new \DateInterval('P1Y')))
+                                ->then
+                                        ->exception(function()use($asserter){$asserter->isZero();})
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('This interval is not equal to 0 years 0 months 0 days 0 hours 0 minutes 0 seconds')	
+		;
+        }
+        
 	public function testIsLessThan()
 	{
 		$this
