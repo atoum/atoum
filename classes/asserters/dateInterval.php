@@ -72,6 +72,11 @@ class dateInterval extends asserters\object
                 
 		return $this;
 	}
+                
+        public function isZero($failMessage = null)
+	{
+		return $this->isAsLongAs(new \dateInterval('P0D'), $failMessage);
+	}
         
 	public function isInRange(\dateInterval $low,\dateInterval $high,$failMessage = null)
 	{
