@@ -27,7 +27,7 @@ class dateInterval extends asserters\object
 		return $this;
 	}
 	
-	public function isLongerThan(\dateInterval $interval,$failMessage = null)
+	public function isGreaterThan(\dateInterval $interval,$failMessage = null)
 	{
 		if($this->greaterThan($interval))
 		{
@@ -42,7 +42,7 @@ class dateInterval extends asserters\object
 		return $this;
 	}
 	
-	public function isShorterThan(\dateInterval $interval,$failMessage = null)
+	public function isLessThan(\dateInterval $interval,$failMessage = null)
 	{
 		if($this->lowerThan($interval))
                 {
@@ -55,12 +55,10 @@ class dateInterval extends asserters\object
 		}
                 
 		return $this;
-	}	
+	}
         
 	public function isAsLongAs(\dateInterval $interval,$failMessage = null)
-	{
-		$value = $this->valueIsSet()->value;
-                
+	{                
 		if($this->equals($interval))
 		{
 			$this->pass();

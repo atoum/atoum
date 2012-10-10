@@ -47,20 +47,20 @@ class dateInterval extends atoum\test
 		;
 	}
 
-	public function testIsLongerThan()
+	public function testIsGreaterThan()
 	{
 		$this
 			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
-				->exception(function() use ($asserter) { $asserter->isLongerThan(new \DateInterval('P1D')); })
+				->exception(function() use ($asserter) { $asserter->isGreaterThan(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateInterval is undefined')
 			->if($asserter->setWith(new \DateInterval('P1Y')))
 			->then	
-				->object($asserter->isLongerThan(new \DateInterval('P1M')))->isIdenticalTo($asserter)
-				->exception(function()use($asserter){$asserter->isLongerThan(new \DateInterval('P2Y'));})
+				->object($asserter->isGreaterThan(new \DateInterval('P1M')))->isIdenticalTo($asserter)
+				->exception(function()use($asserter){$asserter->isGreaterThan(new \DateInterval('P2Y'));})
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('This interval is not longer than 2 years 0 months 0 days 0 hours 0 minutes 0 seconds')
-				->exception(function()use($asserter){$asserter->isLongerThan(new \DateInterval('P1Y'));})
+				->exception(function()use($asserter){$asserter->isGreaterThan(new \DateInterval('P1Y'));})
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('This interval is not longer than 1 years 0 months 0 days 0 hours 0 minutes 0 seconds')
 
@@ -68,20 +68,20 @@ class dateInterval extends atoum\test
 		;
 	}
         
-	public function testIsShorterThan()
+	public function testIsLessThan()
 	{
 		$this
 			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
-				->exception(function() use ($asserter) { $asserter->isShorterThan(new \DateInterval('P1D')); })
+				->exception(function() use ($asserter) { $asserter->isLessThan(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateInterval is undefined')
 			->if($asserter->setWith(new \dateInterval('P2D')))
 			->then	
-				->object($asserter->isShorterThan(new \dateInterval('P1M')))->isIdenticalTo($asserter)
-				->exception(function()use($asserter){$asserter->isShorterThan(new \dateInterval('P1D'));})
+				->object($asserter->isLessThan(new \dateInterval('P1M')))->isIdenticalTo($asserter)
+				->exception(function()use($asserter){$asserter->isLessThan(new \dateInterval('P1D'));})
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('This interval is not shorter than 0 years 0 months 1 days 0 hours 0 minutes 0 seconds')
-				->exception(function()use($asserter){$asserter->isShorterThan(new \dateInterval('P2D'));})
+				->exception(function()use($asserter){$asserter->isLessThan(new \dateInterval('P2D'));})
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('This interval is not shorter than 0 years 0 months 2 days 0 hours 0 minutes 0 seconds')
 
@@ -95,7 +95,7 @@ class dateInterval extends atoum\test
 		
 		$this	
 			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
-				->exception(function() use ($asserter) { $asserter->isShorterThan(new \dateInterval('P1D')); })
+				->exception(function() use ($asserter) { $asserter->isAsLongAs(new \dateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateInterval is undefined')
 			->if($asserter->setWith(new \DateInterval('P1D')))
