@@ -417,4 +417,14 @@ class runner extends atoum\test
 			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
 		;
 	}
+
+	public function testAddDefaultReport()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
+				->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
+		;
+	}
 }
