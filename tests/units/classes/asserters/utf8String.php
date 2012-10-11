@@ -90,9 +90,9 @@ class utf8String extends atoum\test
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith($firstString = $this->getRandomUtf8String()))
 			->and($diff = new diffs\variable())
-			->and($tester = $this)
+			->and($secondString = $this->getRandomUtf8String())
 			->then
-				->exception(function() use ($asserter, & $secondString, $tester) { $asserter->isEqualTo($secondString = $tester->getRandomUtf8String()); })
+				->exception(function() use ($asserter, $secondString) { $asserter->isEqualTo($secondString); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
 			->object($asserter->isEqualTo($firstString))->isIdenticalTo($asserter)
@@ -197,9 +197,9 @@ class utf8String extends atoum\test
 					->hasMessage('Value is undefined')
 			->if($asserter->setWith($string = $this->getRandomUtf8String()))
 			->and($diff = new diffs\variable())
-			->and($tester = $this)
+			->and($fragment = $this->getRandomUtf8String())
 			->then
-				->exception(function() use ($asserter, & $fragment, $tester) { $asserter->contains($fragment = $tester->getRandomUtf8String()); })
+				->exception(function() use ($asserter, $fragment) { $asserter->contains($fragment); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
 				->object($asserter->contains($string))->isIdenticalTo($asserter)
