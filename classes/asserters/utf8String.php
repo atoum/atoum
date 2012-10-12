@@ -16,25 +16,6 @@ class utf8String extends asserters\string
 		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist)));
 	}
 
-	public function setWith($value, $label = null, $charlist = null, $checkType = true)
-	{
-		parent::setWith($value, $label, $charlist, $checkType);
-
-		if ($checkType === true)
-		{
-			if (self::isUtf8String($this->value) === false)
-			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not a unicode string'), $this));
-			}
-			else
-			{
-				$this->pass();
-			}
-		}
-
-		return $this;
-	}
-
 	public function hasLength($length, $failMessage = null)
 	{
 		if (mb_strlen($this->valueIsSet()->value, 'UTF-8') == $length)
@@ -61,18 +42,5 @@ class utf8String extends asserters\string
 		}
 
 		return $this;
-	}
-
-	protected static function check($value, $method)
-	{
-		if (self::isString($value) === false || self::isUtf8String($this->value) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Argument of ' . $method . '() must be a string');
-		}
-	}
-
-	protected static function isUtf8String($value)
-	{
-		return (empty($value) || mb_detect_encoding($value) === 'UTF-8');
 	}
 }
