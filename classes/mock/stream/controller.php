@@ -4,18 +4,16 @@ namespace mageekguy\atoum\mock\stream;
 
 use
 	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\dependence,
-	mageekguy\atoum\dependencies
+	mageekguy\atoum\exceptions
 ;
 
 class controller extends test\adapter
 {
 	protected $stream = '';
 
-	public function __construct($stream, dependencies $dependencies = null)
+	public function __construct($stream)
 	{
-		parent::__construct($dependencies);
+		parent::__construct();
 
 		$this->stream = (string) $stream;
 	}
@@ -27,9 +25,9 @@ class controller extends test\adapter
 
 	public function __get($method)
 	{
-		$this->invokerDependency['method'] = $method = strtolower(self::mapMethod($method));
+		$method = self::mapMethod($method);
 
-		return parent::__get($method);
+		return $this->setInvoker($method, function() use ($method) { return new invoker($method); });
 	}
 
 	public function __set($method, $value)
@@ -87,16 +85,6 @@ class controller extends test\adapter
 		return parent::__isset(self::mapMethod($method));
 	}
 
-	public function setDependencies(dependencies $dependencies)
-	{
-		if (isset($dependencies['invoker']) === false)
-		{
-			$dependencies['invoker'] = function($dependencies) { return new invoker($dependencies['method']()); };
-		}
-
-		return parent::setDependencies($dependencies);
-	}
-
 	public function getStream()
 	{
 		return $this->stream;
@@ -117,6 +105,11 @@ class controller extends test\adapter
 		}
 
 		return (isset($this->{$method}) === false ? null : parent::invoke($method, $arguments));
+	}
+
+	protected function buildInvoker()
+	{
+		return new invoker();
 	}
 
 	protected static function mapMethod($method)
