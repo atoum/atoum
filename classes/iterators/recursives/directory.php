@@ -10,81 +10,68 @@ use
 
 class directory implements \iteratorAggregate
 {
-	protected $path = null;
+	protected $dotFilterFactory = null;
 	protected $acceptDots = false;
+	protected $extensionFilterFactory = null;
 	protected $acceptedExtensions = array('php');
-	protected $dependencies = null;
 
-	public function __construct($path = null, atoum\dependencies $dependencies = null)
+	public function __construct(\closure $iteratorFactory = null, \closure $dotFilterFactory = null, \closure $extensionFilterFactory = null)
 	{
-		if ($path !== null)
-		{
-			$this->setPath($path);
-		}
-
-		$this->setDependencies($dependencies ?: new atoum\dependencies());
+		$this
+			->setIteratorFactory($iteratorFactory)
+			->setDotFilterFactory($dotFilterFactory)
+			->setExtensionFilterFactory($extensionFilterFactory)
+		;
 	}
 
-	public function setPath($path)
+	public function setIteratorFactory(\closure $factory = null)
 	{
-		$this->path = (string) $path;
+		$this->iteratorFactory = $factory ?: function($path) { return new \recursiveDirectoryIterator($path); };
 
 		return $this;
 	}
 
-	public function setDependencies(atoum\dependencies $dependencies)
+	public function getIteratorFactory()
 	{
-		$this->dependencies = $dependencies;
+		return $this->iteratorFactory;
+	}
 
-		if (isset($this->dependencies['iterator']) === false)
-		{
-			$this->dependencies['iterator'] = function($dependencies) { return new \recursiveDirectoryIterator($dependencies['directory']()); };
-		}
-
-		if (isset($this->dependencies['filters\dot']) === false)
-		{
-			$this->dependencies['filters\dot'] = function($dependencies) { return new filters\recursives\dot($dependencies['iterator']()); };
-		}
-
-		if (isset($this->dependencies['filters\extension']) === false)
-		{
-			$this->dependencies['filters\extension'] = function($dependencies) { return new filters\recursives\extension($dependencies['iterator'](), $dependencies['extensions']()); };
-		}
+	public function setDotFilterFactory(\closure $factory = null)
+	{
+		$this->dotFilterFactory = $factory ?: function($iterator) { return new filters\recursives\dot($iterator); };
 
 		return $this;
 	}
 
-	public function getDependencies()
+	public function getDotFilterFactory()
 	{
-		return $this->dependencies;
+		return $this->dotFilterFactory;
 	}
 
-	public function getPath()
+	public function setExtensionFilterFactory(\closure $factory = null)
 	{
-		return $this->path;
+		$this->extensionFilterFactory = $factory ?: function($iterator, $extensions) { return new filters\recursives\extension($iterator, $extensions); };
+
+		return $this;
 	}
 
-	public function getIterator($path = null)
+	public function getExtensionFilterFactory()
 	{
-		if ($path !== null)
-		{
-			$this->setPath($path);
-		}
-		else if ($this->path === null)
-		{
-			throw new exceptions\runtime('Path is undefined');
-		}
+		return $this->extensionFilterFactory;
+	}
 
-		$iterator = $this->dependencies['iterator'](array('directory' => $this->path));
+	public function getIterator($path)
+	{
+		$iterator = call_user_func($this->iteratorFactory, $path);
 
 		if ($this->acceptDots === false)
 		{
-			$iterator = $this->dependencies['filters\dot'](array('iterator' => $iterator));
+			$iterator = call_user_func($this->dotFilterFactory, $iterator);
 		}
 
 		if (sizeof($this->acceptedExtensions) > 0)
 		{
-			$iterator = $this->dependencies['filters\extension'](array('iterator' => $iterator, 'extensions' => $this->acceptedExtensions));
+			$iterator = call_user_func($this->extensionFilterFactory, $iterator, $this->acceptedExtensions);
 		}
 
 		return $iterator;
