@@ -95,7 +95,6 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
-					->object($test->getSuperglobals())->isEqualTo(new atoum\superglobals())
 					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->debugModeIsEnabled())->isFalse()
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
@@ -111,14 +110,12 @@ namespace mageekguy\atoum\tests\units
 				->and($factory->returnWhenBuild('mageekguy\atoum\test\score', $score = new atoum\test\score()))
 				->and($factory->returnWhenBuild('mageekguy\atoum\locale', $locale = new atoum\locale()))
 				->and($factory->returnWhenBuild('mageekguy\atoum\adapter', $adapter = new atoum\adapter()))
-				->and($factory->returnWhenBuild('mageekguy\atoum\superglobals', $superglobals = new atoum\superglobals()))
 				->and($test = new emptyTest($factory))
 				->then
 					->object($test->getFactory())->isIdenticalTo($factory)
 					->object($test->getScore())->isIdenticalTo($score)
 					->object($test->getLocale())->isIdenticalTo($locale)
 					->object($test->getAdapter())->isIdenticalTo($adapter)
-					->object($test->getSuperglobals())->isIdenticalTo($superglobals)
 					->boolean($test->isIgnored())->isTrue()
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
 					->array($test->getTags())->isEqualTo($tags)
@@ -232,16 +229,6 @@ namespace mageekguy\atoum\tests\units
 					->boolean($test->codeCoverageIsEnabled())->isTrue()
 					->object($test->disableCodeCoverage())->isIdenticalTo($test)
 					->boolean($test->codeCoverageIsEnabled())->isFalse()
-			;
-		}
-
-		public function testSetSuperglobals()
-		{
-			$this
-				->if($test = new emptyTest())
-				->then
-					->object($test->setSuperglobals($superglobals = new atoum\superglobals()))->isIdenticalTo($test)
-					->object($test->getSuperglobals())->isIdenticalTo($superglobals);
 			;
 		}
 
