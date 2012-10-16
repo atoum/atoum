@@ -60,7 +60,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $asynchronousEngines = 0;
 	private $maxAsynchronousEngines = null;
 	private $codeCoverage = false;
-	private $includer = null;
 	private $bootstrapFile = null;
 	private $executeOnFailure = array();
 	private $debugMode = false;
@@ -76,7 +75,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setLocale($this->factory['mageekguy\atoum\locale']())
 			->setAdapter($this->factory['mageekguy\atoum\adapter']())
 			->setSuperglobals($this->factory['mageekguy\atoum\superglobals']())
-			->setIncluder($this->factory['mageekguy\atoum\includer']())
 			->enableCodeCoverage()
 		;
 
@@ -343,18 +341,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getSuperglobals()
 	{
 		return $this->superglobals;
-	}
-
-	public function setIncluder(includer $includer)
-	{
-		$this->includer = $includer;
-
-		return $this;
-	}
-
-	public function getIncluder()
-	{
-		return $this->includer;
 	}
 
 	public function setBootstrapFile($path)
