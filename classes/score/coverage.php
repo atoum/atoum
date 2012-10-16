@@ -11,21 +11,24 @@ use
 class coverage implements \countable, \serializable
 {
 	protected $adapter = null;
-	protected $reflectionClassDependency = null;
+	protected $reflectionClassFactory = null;
 	protected $classes = array();
 	protected $methods = array();
 	protected $excludedClasses = array();
 	protected $excludedNamespaces = array();
 	protected $excludedDirectories = array();
 
-	public function __construct(atoum\dependencies $dependencies = null)
+	public function __construct(atoum\adapter $adapter = null, \closure $reflectionClassFactory = null)
 	{
-		$this->setDependencies($dependencies ?: new atoum\dependencies());
+		$this
+			->setAdapter($adapter)
+			->setReflectionClassFactory($reflectionClassFactory)
+		;
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setAdapter(atoum\adapter $adapter = null)
 	{
-		$this->adapter = $adapter;
+		$this->adapter = $adapter ?: new atoum\adapter();
 
 		return $this;
 	}
@@ -35,16 +38,16 @@ class coverage implements \countable, \serializable
 		return $this->adapter;
 	}
 
-	public function setReflectionClassDependency(atoum\dependency $dependency)
+	public function setReflectionClassFactory(\closure $factory = null)
 	{
-		$this->reflectionClassDependency = $dependency;
+		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
 
 		return $this;
 	}
 
-	public function getReflectionClassDependency()
+	public function getReflectionClassFactory()
 	{
-		return $this->reflectionClassDependency;
+		return $this->reflectionClassFactory;
 	}
 
 	public function serialize()
@@ -59,9 +62,9 @@ class coverage implements \countable, \serializable
 		);
 	}
 
-	public function unserialize($string, atoum\dependencies $dependencies = null)
+	public function unserialize($string, \closure $reflectionClassFactory = null)
 	{
-		$this->setDependencies($dependencies ?: new atoum\dependencies());
+		$this->setReflectionClassFactory($reflectionClassFactory);
 
 		list(
 			$this->classes,
@@ -70,29 +73,6 @@ class coverage implements \countable, \serializable
 			$this->excludedNamespaces,
 			$this->excludedDirectories
 		) = unserialize($string);
-
-		return $this;
-	}
-
-	public function setDependencies(atoum\dependencies $dependencies)
-	{
-		if (isset($dependencies['reflection\class']) === true)
-		{
-			$this->setReflectionClassDependency($dependencies['reflection\class']);
-		}
-		else
-		{
-			$this->setReflectionClassDependency(new atoum\dependencies(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
-		}
-
-		if (isset($dependencies['adapter']) === true)
-		{
-			$this->setAdapter($dependencies['adapter']());
-		}
-		else
-		{
-			$this->setAdapter(new atoum\adapter());
-		}
 
 		return $this;
 	}
@@ -147,7 +127,7 @@ class coverage implements \countable, \serializable
 		{
 			try
 			{
-				$reflectedClass = $this->getReflectionClass($class);
+				$reflectedClass = call_user_func($this->reflectionClassFactory, $class);
 
 				if ($this->isExcluded($reflectedClass) === false)
 				{
@@ -201,7 +181,7 @@ class coverage implements \countable, \serializable
 
 		foreach ($methods as $class => $methods)
 		{
-			$reflectedClass = $this->getReflectionClass($class);
+			$reflectedClass = call_user_func($this->reflectionClassFactory, $class);
 
 			if (isset($this->classes[$class]) === false)
 			{
@@ -467,13 +447,6 @@ class coverage implements \countable, \serializable
 		}
 
 		return $declaringClass;
-	}
-
-	protected function getReflectionClass($class)
-	{
-		$reflectionClassDependency = $this->reflectionClassDependency;
-
-		return $reflectionClassDependency(array('class' => $class));
 	}
 
 	protected static function itemIsExcluded(array $excludedItems, $item, $delimiter)

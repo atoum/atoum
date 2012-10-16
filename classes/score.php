@@ -24,21 +24,21 @@ class score
 
 	private static $failId = 0;
 
-	public function __construct(dependencies $dependencies = null)
+	public function __construct(score\coverage $coverage = null)
 	{
-		$this->setDependencies($dependencies ?: new atoum\dependencies());
+		$this->setCoverage($coverage);
 	}
 
-	public function setDependencies(dependencies $dependencies)
+	public function setCoverage(score\coverage $coverage = null)
 	{
-		return $this->setCoverage(isset($dependencies['coverage']) === false ? new score\coverage($dependencies['coverage']) : $dependencies['coverage']());
-	}
-
-	public function setCoverage(score\coverage $coverage)
-	{
-		$this->coverage = $coverage;
+		$this->coverage = $coverage ?: new score\coverage();
 
 		return $this;
+	}
+
+	public function getCoverage()
+	{
+		return $this->coverage;
 	}
 
 	public function reset()
@@ -75,11 +75,6 @@ class score
 	public function getUncompletedMethods()
 	{
 		return $this->uncompletedMethods;
-	}
-
-	public function getCoverage()
-	{
-		return $this->coverage;
 	}
 
 	public function getOutputs()

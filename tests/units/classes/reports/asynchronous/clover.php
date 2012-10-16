@@ -148,9 +148,7 @@ class clover extends Atoum\test
 					'2.xml'
 				)
 			))
-			->and($dependencies = new atoum\dependencies())
-			->and($dependencies['reflection\class'] = $class)
-			->and($coverage->setDependencies($dependencies))
+			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
