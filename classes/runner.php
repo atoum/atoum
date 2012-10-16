@@ -16,8 +16,6 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
-	protected $path = '';
-	protected $class = '';
 	protected $score = null;
 	protected $adapter = null;
 	protected $locale = null;
@@ -52,11 +50,6 @@ class runner implements observable, adapter\aggregator
 		$this->factory['mageekguy\atoum\adapter'] = $this->adapter;
 		$this->factory['mageekguy\atoum\locale'] = $this->locale;
 		$this->factory['mageekguy\atoum\includer'] = $this->includer;
-
-		$runnerClass = $this->factory['reflectionClass']($this);
-
-		$this->path = $runnerClass->getFilename();
-		$this->class = $runnerClass->getName();
 
 		$this->observers = new \splObjectStorage();
 		$this->reports = new \splObjectStorage();
@@ -230,16 +223,6 @@ class runner implements observable, adapter\aggregator
 		}
 
 		return $this->phpPath;
-	}
-
-	public function getPath()
-	{
-		return $this->path;
-	}
-
-	public function getClass()
-	{
-		return $this->class;
 	}
 
 	public function getTestNumber()
