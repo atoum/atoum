@@ -5,6 +5,7 @@ namespace mageekguy\atoum;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\script,
+	mageekguy\atoum\writers,
 	mageekguy\atoum\exceptions
 ;
 
@@ -22,21 +23,17 @@ abstract class script implements atoum\adapter\aggregator
 	private $help = array();
 	private $argumentsParser = null;
 
-	public function __construct($name, atoum\factory $factory = null)
+	public function __construct($name, atoum\adapter $adapter = null)
 	{
 		$this->name = (string) $name;
 
 		$this
-			->setFactory($factory ?: new atoum\factory())
-			->setLocale($this->factory['atoum\locale']())
-			->setAdapter($this->factory['atoum\adapter']())
-			->setArgumentsParser($this->factory['atoum\script\arguments\parser']())
-			->setOutputWriter($this->factory['atoum\writers\std\out']())
-			->setErrorWriter($this->factory['atoum\writers\std\err']())
+			->setAdapter($adapter)
+			->setLocale()
+			->setArgumentsParser()
+			->setOutputWriter()
+			->setErrorWriter()
 		;
-
-		$this->factory['atoum\locale'] = $this->locale;
-		$this->factory['atoum\adapter'] = $this->adapter;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
 		{
@@ -44,44 +41,9 @@ abstract class script implements atoum\adapter\aggregator
 	 	}
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function setAdapter(atoum\adapter $adapter = null)
 	{
-		$this->factory = $factory->import('mageekguy\atoum');
-
-		return $this;
-	}
-
-	public function getFactory()
-	{
-		return $this->factory;
-	}
-
-	public function setOutputWriter(atoum\writer $writer)
-	{
-		$this->outputWriter = $writer;
-
-		return $this;
-	}
-
-	public function setErrorWriter(atoum\writer $writer)
-	{
-		$this->errorWriter = $writer;
-
-		return $this;
-	}
-
-	public function setArgumentsParser(script\arguments\parser $parser)
-	{
-		$this->argumentsParser = $parser;
-
-		$this->setArgumentHandlers();
-
-		return $this;
-	}
-
-	public function setAdapter(atoum\adapter $adapter)
-	{
-		$this->adapter = $adapter;
+		$this->adapter = $adapter ?: new atoum\adapter();
 
 		return $this;
 	}
@@ -91,9 +53,49 @@ abstract class script implements atoum\adapter\aggregator
 		return $this->adapter;
 	}
 
+	public function setLocale(atoum\locale $locale = null)
+	{
+		$this->locale = $locale ?: new atoum\locale();
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function setArgumentsParser(script\arguments\parser $parser = null)
+	{
+		$this->argumentsParser = $parser ?: new script\arguments\parser();
+
+		$this->setArgumentHandlers();
+
+		return $this;
+	}
+
+	public function getArgumentsParser()
+	{
+		return $this->argumentsParser;
+	}
+
+	public function setOutputWriter(atoum\writer $writer = null)
+	{
+		$this->outputWriter = $writer ?: new writers\std\out();
+
+		return $this;
+	}
+
 	public function getOutputWriter()
 	{
 		return $this->outputWriter;
+	}
+
+	public function setErrorWriter(atoum\writer $writer = null)
+	{
+		$this->errorWriter = $writer ?: new writers\std\err();
+
+		return $this;
 	}
 
 	public function getErrorWriter()
@@ -106,26 +108,9 @@ abstract class script implements atoum\adapter\aggregator
 		return $this->name;
 	}
 
-	public function getArgumentsParser()
-	{
-		return $this->argumentsParser;
-	}
-
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
 	public function getHelp()
 	{
 		return $this->help;
-	}
-
-	public function setLocale(atoum\locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
 	}
 
 	public function help()

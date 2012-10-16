@@ -33,21 +33,21 @@ class builder extends atoum\script
 	protected $reportTitle = null;
 	protected $runnerConfigurationFiles = array();
 
-	public function __construct($name, atoum\factory $factory = null)
+	public function __construct($name, atoum\adapter $adapter = null)
 	{
-		parent::__construct($name, $factory);
+		parent::__construct($name, $adapter);
 
 		$this
-			->setVcs($this->factory->build('atoum\scripts\builder\vcs\svn'))
-			->setSuperglobals($this->factory->build('atoum\superglobals'))
+			->setVcs()
+			->setSuperglobals()
 			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
 			->setPharGeneratorScript(self::defaultPharGeneratorScript)
 		;
 	}
 
-	public function setVcs(builder\vcs $vcs)
+	public function setVcs(builder\vcs $vcs = null)
 	{
-		$this->vcs = $vcs;
+		$this->vcs = $vcs ?: new builder\vcs\svn();
 
 		return $this;
 	}
@@ -55,6 +55,18 @@ class builder extends atoum\script
 	public function getVcs()
 	{
 		return $this->vcs;
+	}
+
+	public function setSuperglobals(atoum\superglobals $superglobals = null)
+	{
+		$this->superglobals = $superglobals ?: new atoum\superglobals();
+
+		return $this;
+	}
+
+	public function getSuperglobals()
+	{
+		return $this->superglobals;
 	}
 
 	public function setTaggerEngine(atoum\scripts\tagger\engine $engine)
@@ -151,18 +163,6 @@ class builder extends atoum\script
 	public function getVersion()
 	{
 		return $this->version;
-	}
-
-	public function setSuperglobals(atoum\superglobals $superglobals)
-	{
-		$this->superglobals = $superglobals;
-
-		return $this;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
 	}
 
 	public function setScoreDirectory($path)

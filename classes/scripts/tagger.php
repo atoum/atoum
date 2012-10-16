@@ -4,6 +4,7 @@ namespace mageekguy\atoum\scripts;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\scripts,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\scripts\tagger
 ;
@@ -13,16 +14,16 @@ class tagger extends atoum\script
 	protected $engine = null;
 	protected $tagVersion = true;
 
-	public function __construct($name, atoum\factory $factory = null)
+	public function __construct($name, atoum\adapter $adapter = null)
 	{
-		parent::__construct($name, $factory);
+		parent::__construct($name, $adapter);
 
-		$this->setEngine($this->factory->build('atoum\scripts\tagger\engine', array($this->getAdapter())));
+		$this->setEngine();
 	}
 
-	public function setEngine(tagger\engine $engine)
+	public function setEngine(tagger\engine $engine = null)
 	{
-		$this->engine = $engine;
+		$this->engine = $engine ?: new scripts\tagger\engine();
 
 		$this->setArgumentHandlers();
 
