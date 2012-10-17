@@ -12,25 +12,36 @@ class report implements observer, adapter\aggregator
 	protected $fields = array();
 	protected $lastSetFields = array();
 
-	public function __construct(factory $factory = null)
+	public function __construct()
 	{
 		$this
-			->setFactory($factory ?: new factory())
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setLocale()
+			->setAdapter()
 		;
 	}
 
-	public function setFactory(factory $factory)
+	public function setLocale(locale $locale = null)
 	{
-		$this->factory = $factory;
+		$this->locale = $locale ?: new locale();
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function getLocale()
 	{
-		return $this->factory;
+		return $this->locale;
+	}
+
+	public function setAdapter(adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
 	}
 
 	public function setTitle($title)
@@ -43,30 +54,6 @@ class report implements observer, adapter\aggregator
 	public function getTitle()
 	{
 		return $this->title;
-	}
-
-	public function setLocale(locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
-	}
-
-	public function getLocale()
-	{
-		return $this->locale;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function addField(report\field $field)

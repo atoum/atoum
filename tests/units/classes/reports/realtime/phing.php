@@ -16,7 +16,7 @@ class phing extends atoum\test
 {
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($report = new reports\realtime\phing())
 			->then
 				->variable($report->getCodeCoverageReportPath())->isNull()
@@ -26,7 +26,6 @@ class phing extends atoum\test
 				->boolean($report->codeCoverageIsShowed())->isTrue()
 				->boolean($report->missingCodeCoverageIsShowed())->isTrue()
 				->boolean($report->progressIsShowed())->isTrue()
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 		  ;
 	}
 }
