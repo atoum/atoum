@@ -12,7 +12,10 @@ class report extends atoum\test
 {
 	public function testTestedClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\observer');
+		$this->testedClass
+			->isSubclassOf('mageekguy\atoum\observer')
+			->isSubclassOf('mageekguy\atoum\adapter\aggregator')
+		;
 	}
 
 	public function test__construct()
@@ -22,6 +25,7 @@ class report extends atoum\test
 			->then
 				->variable($report->getTitle())->isNull()
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->array($report->getWriters())->isEmpty()
 		;
@@ -37,6 +41,19 @@ class report extends atoum\test
 				->object($report->setLocale())->isIdenticalTo($report)
 				->object($defaultLocale = $report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($defaultLocale)->isNotIdenticalTo($locale)
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($report = new atoum\report())
+			->then
+				->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
+				->object($report->getAdapter())->isIdenticalTo($adapter)
+				->object($report->setAdapter())->isIdenticalTo($report)
+				->object($defaultAdapter = $report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($defaultAdapter)->isNotIdenticalTo($adapter)
 		;
 	}
 

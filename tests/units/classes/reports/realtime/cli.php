@@ -20,6 +20,7 @@ class cli extends atoum\test
 			->if($report = new reports\realtime\cli())
 			->then
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEqualTo(array(
 						new fields\runner\php\path\cli(
 							new prompt('> '),

@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-class report implements observer
+class report implements observer, adapter\aggregator
 {
 	protected $title = null;
 	protected $factory = null;
@@ -14,7 +14,10 @@ class report implements observer
 
 	public function __construct()
 	{
-		$this->setLocale();
+		$this
+			->setLocale()
+			->setAdapter()
+		;
 	}
 
 	public function setLocale(locale $locale = null)
@@ -27,6 +30,18 @@ class report implements observer
 	public function getLocale()
 	{
 		return $this->locale;
+	}
+
+	public function setAdapter(adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
 	}
 
 	public function setTitle($title)
