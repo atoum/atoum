@@ -13,7 +13,7 @@ class concurrent extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\test\engine');
+		$this->testedClass->extends('mageekguy\atoum\test\engine');
 	}
 
 	public function test__construct()
@@ -37,9 +37,8 @@ class concurrent extends atoum\test
 	public function testRun()
 	{
 		$this
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->and($engine = new engines\concurrent($factory))
+			->if($engine = new engines\concurrent())
+			->and($engine->setAdapter($adapter = new atoum\test\adapter()))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
 				->boolean($engine->isRunning())->isFalse()
@@ -92,9 +91,8 @@ class concurrent extends atoum\test
 			->if($engine = new engines\concurrent())
 			->then
 				->variable($engine->getScore())->isNull()
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->and($engine = new engines\concurrent($factory))
+			->if($engine = new engines\concurrent())
+			->and($engine->setAdapter($adapter = new atoum\test\adapter()))
 			->and($engine->run($test = new \mock\mageekguy\atoum\test()))
 			->then
 				->variable($engine->getScore())->isNull()
