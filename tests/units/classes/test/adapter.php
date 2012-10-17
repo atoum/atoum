@@ -26,16 +26,6 @@ class adapter extends test
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-			->if($adapter = new testedClass(new dependencies()))
-			->then
-				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
-			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = function() {})
-			->and($adapter = new testedClass($dependencies))
-			->then
-				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
 		;
 	}
 
