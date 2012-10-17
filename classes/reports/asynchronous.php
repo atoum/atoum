@@ -12,25 +12,6 @@ abstract class asynchronous extends atoum\report
 	protected $string = '';
 	protected $fail = false;
 
-	public function __construct()
-	{
-		parent::__construct();
-
-		$this->setAdapter();
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
 	public function __toString()
 	{
 		return $this->string;
