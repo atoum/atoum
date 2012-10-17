@@ -13,9 +13,9 @@ use
 
 class builder extends atoum\reports\asynchronous
 {
-	public function __construct(atoum\factory $factory = null)
+	public function __construct()
 	{
-		parent::__construct($factory);
+		parent::__construct();
 
 		$this
 			->addField(new runner\atoum\cli())

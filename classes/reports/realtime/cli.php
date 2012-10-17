@@ -13,9 +13,9 @@ use
 
 class cli extends realtime
 {
-	public function __construct(atoum\factory $factory = null)
+	public function __construct()
 	{
-		parent::__construct($factory);
+		parent::__construct();
 
 		$firstLevelPrompt = new prompt('> ');
 		$firstLevelColorizer = new colorizer('1;36');

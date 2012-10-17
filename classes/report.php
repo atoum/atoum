@@ -4,10 +4,9 @@ namespace mageekguy\atoum;
 
 class report implements observer, adapter\aggregator
 {
-	protected $title = null;
-	protected $factory = null;
 	protected $locale = null;
 	protected $adapter = null;
+	protected $title = null;
 	protected $writers = array();
 	protected $fields = array();
 	protected $lastSetFields = array();
