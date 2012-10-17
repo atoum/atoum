@@ -25,7 +25,7 @@ Finally, even though it is developed mainly on UNIX, it can also work on Windows
 *atoum* absolutely requires *PHP 5.3.3* or later to work.
 On UNIX, in order to check whether you have the right PHP version, you just need to run the following command in your terminal :
 
-	# php -v | grep -oi 'php 5.3.\([3-9]\|1[0-9]\{1,\}\)'
+	# php -v | grep -oi 'php 5.\([3-4]\).\([3-9]\|1[0-9]\{1,\}\)'
 
 If `PHP 5.3.x` or equivalent gets displayed, then you have the right PHP version installed.
 Should you want to use *atoum* using its PHAR archive, you also need [PHP](http://www.php.net) to be able to access the `phar` module, which is normally available by default.  
