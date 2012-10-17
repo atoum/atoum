@@ -20,7 +20,6 @@ class light extends atoum\test
 			->if($report = new reports\realtime\cli\light())
 			->then
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEqualTo(array(
 						new fields\runner\event\cli(),
 						new fields\runner\result\cli(
