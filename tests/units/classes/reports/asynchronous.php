@@ -5,14 +5,31 @@ namespace mageekguy\atoum\tests\units\reports;
 require __DIR__ . '/../../runner.php';
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mock\mageekguy\atoum\reports\asynchronous as testedClass
 ;
 
 class asynchronous extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report');
+		$this->testedClass
+			->isAbstract()
+			->extends('mageekguy\atoum\report')
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($report = new testedClass())
+			->then
+				->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
+				->object($report->getAdapter())->isIdenticalTo($adapter)
+				->object($report->setAdapter())->isIdenticalTo($report)
+				->object($defaultAdapter = $report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($defaultAdapter)->isNotIdenticalTo($adapter)
+		;
 	}
 
 	public function testHandleEvent()
