@@ -13,7 +13,7 @@ class inline extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\test\engine');
+		$this->testedClass->extends('mageekguy\atoum\test\engine');
 	}
 
 	public function testIsAsynchronous()
