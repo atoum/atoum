@@ -460,7 +460,7 @@ class controller extends atoum\test
 				->array($mockController->getCalls())->isEmpty()
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = true)
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\controller(null, null, $adapter))
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\controller($adapter))
 			->and($mockController->control($mock))
 			->and($mockController->{$method = __FUNCTION__} = function() {})
 			->and($mockController->invoke($method, array()))

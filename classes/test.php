@@ -32,16 +32,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const defaultEngine = 'concurrent';
 	const enginesNamespace = '\mageekguy\atoum\test\engines';
 
+	private $score = null;
+	private $locale = null;
+	private $adapter = null;
+	private $mockGenerator = null;
+	private $reflectionMethodFactory = null;
+	private $asserterGenerator = null;
+	private $assertionManager = null;
 	private $phpPath = null;
 	private $path = '';
 	private $class = '';
 	private $classNamespace = '';
 	private $testedClass = null;
-	private $factory = null;
-	private $adapter = null;
-	private $assertionManager = null;
-	private $asserterGenerator = null;
-	private $score = null;
 	private $observers = array();
 	private $tags = array();
 	private $ignore = false;
@@ -50,7 +52,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private $runTestMethods = array();
 	private $currentMethod = null;
 	private $testNamespace = null;
-	private $mockGenerator = null;
 	private $size = 0;
 	private $engines = array();
 	private $classEngine = null;
@@ -67,23 +68,26 @@ abstract class test implements observable, adapter\aggregator, \countable
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
 
-	public function __construct(factory $factory = null)
+	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
 	{
 		$this
-			->setFactory($factory ?: new factory())
-			->setScore($this->factory['mageekguy\atoum\test\score']())
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
+			->setAdapter($adapter)
+			->setAsserterGenerator($asserterGenerator)
+			->setAssertionManager($assertionManager)
+			->setScore()
+			->setLocale()
+			->setMockGenerator()
+			->setReflectionMethodFactory()
 			->enableCodeCoverage()
 		;
 
-		$class = $this->factory['reflectionClass']($this);
+		$class = ($reflectionClassFactory ? $reflectionClassFactory($this) : new \reflectionClass($this));
 
 		$this->path = $class->getFilename();
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$annotationExtractor = $this->factory['mageekguy\atoum\annotations\extractor']();
+		$annotationExtractor = $annotationExtractor ?: new annotations\extractor();
 
 		$test = $this;
 
@@ -134,14 +138,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
-		$this
-			->runTestMethods($this->getTestMethods())
-			->getAsserterGenerator()
-				->setAlias('array', 'phpArray')
-				->setAlias('class', 'phpClass')
-		;
-
-		$this->setAssertionManager($this->factory['mageekguy\atoum\test\assertion\manager']());
+		$this->runTestMethods($this->getTestMethods());
 	}
 
 	public function __toString()
@@ -159,16 +156,140 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this->assertionManager->invoke($method, $arguments);
 	}
 
-	public function setFactory(factory $factory)
+	public function setScore(test\score $score = null)
 	{
-		$this->factory = $factory;
+		$this->score = $score ?: new test\score();
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function getScore()
 	{
-		return $this->factory;
+		return $this->score;
+	}
+
+	public function setLocale(locale $locale = null)
+	{
+		$this->locale = $locale ?: new locale();
+
+		return $this;
+	}
+
+	public function getLocale()
+	{
+		return $this->locale;
+	}
+
+	public function setAdapter(adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setMockGenerator(test\mock\generator $generator = null)
+	{
+		if ($generator === null)
+		{
+			$generator = new test\mock\generator($this);
+		}
+		else
+		{
+			$generator->setTest($this);
+		}
+
+		$this->mockGenerator = $generator;
+
+		return $this;
+	}
+
+	public function getMockGenerator()
+	{
+		return $this->mockGenerator;
+	}
+
+	public function setReflectionMethodFactory(\closure $factory = null)
+	{
+		$this->reflectionMethodFactory = $factory ?: function($class, $method) { return new \reflectionMethod($class, $method); };
+
+		return $this;
+	}
+
+	public function setAsserterGenerator(test\asserter\generator $generator = null)
+	{
+		if ($generator === null)
+		{
+			$generator = new test\asserter\generator($this);
+		}
+		else
+		{
+			$generator->setTest($this);
+		}
+
+		$this->asserterGenerator = $generator->setAlias('array', 'phpArray')->setAlias('class', 'phpClass');
+
+		return $this;
+	}
+
+	public function getAsserterGenerator()
+	{
+		test\adapter::resetCallsForAllInstances();
+
+		return $this->asserterGenerator;
+	}
+
+	public function setAssertionManager(test\assertion\manager $assertionManager = null)
+	{
+		$this->assertionManager = $assertionManager ?: new test\assertion\manager();
+
+		$test = $this;
+
+		$this->assertionManager
+			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed(); } return $test; })
+			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test; })
+			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
+			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
+			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
+			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
+			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
+			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
+			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
+		;
+
+		$returnAssertionManager = function() use ($test) { return $test; };
+
+		$this->assertionManager
+			->setHandler('if', $returnAssertionManager)
+			->setHandler('and', $returnAssertionManager)
+			->setHandler('then', $returnAssertionManager)
+			->setHandler('given', $returnAssertionManager)
+		;
+
+		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
+
+		$this->assertionManager
+			->setHandler('calling', $mockControllerExtractor)
+			->setHandler('ƒ', $mockControllerExtractor)
+		;
+
+		$asserterGenerator = $this->asserterGenerator;
+
+		$this->assertionManager
+			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
+			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
+		;
+
+		return $this;
+	}
+
+	public function getAssertionManager()
+	{
+		return $this->assertionManager;
 	}
 
 	public function setClassEngine($engine)
@@ -248,55 +369,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function setAssertionManager(test\assertion\manager $assertionManager)
-	{
-		$this->assertionManager = $assertionManager;
-
-		$test = $this;
-
-		$this->assertionManager
-			->setHandler('when', function($mixed) use ($test) { if ($mixed instanceof \closure) { $mixed(); } return $test; })
-			->setHandler('assert', function($case = null) use ($test) { $test->stopCase(); if ($case !== null) { $test->startCase($case); } return $test; })
-			->setHandler('mockGenerator', function() use ($test) { return $test->getMockGenerator(); })
-			->setHandler('mockClass', function($class, $mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($class, $mockNamespace, $mockClass); return $test; })
-			->setHandler('mockTestedClass', function($mockNamespace = null, $mockClass = null) use ($test) { $test->getMockGenerator()->generate($test->getTestedClassName(), $mockNamespace, $mockClass); return $test; })
-			->setHandler('dump', function() use ($test) { if ($test->debugModeIsEnabled() === true) { call_user_func_array('var_dump', func_get_args()); } return $test; })
-			->setHandler('stop', function() use ($test) { if ($test->debugModeIsEnabled() === true) { throw new test\exceptions\stop(); } return $test; })
-			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
-			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
-		;
-
-		$returnAssertionManager = function() use ($test) { return $test; };
-
-		$this->assertionManager
-			->setHandler('if', $returnAssertionManager)
-			->setHandler('and', $returnAssertionManager)
-			->setHandler('then', $returnAssertionManager)
-			->setHandler('given', $returnAssertionManager)
-		;
-
-		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
-
-		$this->assertionManager
-			->setHandler('calling', $mockControllerExtractor)
-			->setHandler('ƒ', $mockControllerExtractor)
-		;
-
-		$asserterGenerator = $this->asserterGenerator;
-
-		$this->assertionManager
-			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
-			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
-		;
-
-		return $this;
-	}
-
-	public function getAssertionManager()
-	{
-		return $this->assertionManager;
-	}
-
 	public function codeCoverageIsEnabled()
 	{
 		return $this->codeCoverage;
@@ -340,32 +412,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getBootstrapFile()
 	{
 		return $this->bootstrapFile;
-	}
-
-	public function setMockGenerator(test\mock\generator $generator)
-	{
-		$this->mockGenerator = $generator->setTest($this);
-
-		return $this;
-	}
-
-	public function getMockGenerator()
-	{
-		return $this->mockGenerator ?: $this->setMockGenerator($this->factory['mageekguy\atoum\test\mock\generator']($this))->mockGenerator;
-	}
-
-	public function setAsserterGenerator(test\asserter\generator $generator)
-	{
-		$this->asserterGenerator = $generator->setTest($this);
-
-		return $this;
-	}
-
-	public function getAsserterGenerator()
-	{
-		test\adapter::resetCallsForAllInstances();
-
-		return $this->asserterGenerator ?: $this->setAsserterGenerator($this->factory['mageekguy\atoum\test\asserter\generator']($this))->asserterGenerator;
 	}
 
 	public function setTestNamespace($testNamespace)
@@ -465,42 +511,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	public function getDataProviders()
 	{
 		return $this->dataProviders;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
-	public function setScore(test\score $score)
-	{
-		$this->score = $score;
-
-		return $this;
-	}
-
-	public function getScore()
-	{
-		return $this->score;
-	}
-
-	public function setLocale(locale $locale)
-	{
-		$this->locale = $locale;
-
-		return $this;
-	}
-
-	public function getLocale()
-	{
-		return $this->locale;
 	}
 
 	public function getTestedClassName()
@@ -723,7 +733,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 							throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() must return an array or an iterator');
 						}
 
-						$reflectedTestMethod = $this->factory['reflectionMethod']($this, $testMethod);
+						$reflectedTestMethod = call_user_func($this->reflectionMethodFactory, $this, $testMethod);
 						$numberOfArguments = $reflectedTestMethod->getNumberOfRequiredParameters();
 
 						foreach ($data as $key => $arguments)
@@ -1076,7 +1086,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 				throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
 			}
 
-			$engine = $this->factory[$engineClass]($this->factory);
+			$engine = new $engineClass();
 
 			if ($engine instanceof test\engine === false)
 			{
