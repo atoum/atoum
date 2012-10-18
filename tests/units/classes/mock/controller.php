@@ -39,11 +39,11 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mockController = new testedClass())
-			->and($mockController->{$method = uniqid()} = function() use (& $return) { return $return = uniqid(); })
+			->and($mockController->{$method = 'aMethod'} = function() use (& $return) { return $return = uniqid(); })
 			->then
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
-			->if($mockController->{$method = uniqid()} = $return = uniqid())
+			->if($mockController->{$method = 'anOtherMethod'} = $return = uniqid())
 			->then
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
