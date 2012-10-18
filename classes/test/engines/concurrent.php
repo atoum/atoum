@@ -10,21 +10,46 @@ use
 
 class concurrent extends test\engine
 {
+	protected $adapter = null;
+	protected $scoreFactory = null;
 	protected $test = null;
 	protected $method = '';
-	protected $factory = null;
 	protected $stdOut = '';
 	protected $stdErr = '';
 
-	private $adapter = null;
 	private $php = null;
 	private $pipes = array();
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct()
 	{
-		parent::__construct($factory);
+		$this
+			->setAdapter()
+			->setScoreFactory()
+		;
+	}
 
-		$this->adapter = $this->factory['mageekguy\atoum\adapter']();
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setScoreFactory(\closure $factory = null)
+	{
+		$this->scoreFactory = $factory ?: function() { return new atoum\score(); };
+
+		return $this;
+	}
+
+	public function getScoreFactory()
+	{
+		return $this->scoreFactory;
 	}
 
 	public function isRunning()
@@ -50,7 +75,7 @@ class concurrent extends test\engine
 
 			$phpPath = $this->test->getPhpPath();
 
-			$this->php = @$this->adapter->invoke('proc_open', array(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), & $this->pipes));
+			$this->php = @call_user_func_array(array($this->adapter, 'proc_open'), array(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), & $this->pipes));
 
 			if ($this->php === false)
 			{
@@ -158,10 +183,8 @@ class concurrent extends test\engine
 
 				if ($score instanceof atoum\score === false)
 				{
-					$score = $this
-						->factory['mageekguy\atoum\score']()
-						->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut)
-					;
+					$score = call_user_func($this->scoreFactory);
+					$score->addUncompletedMethod($this->test->getPath(), $this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
 				}
 
 				if ($this->stdErr !== '')

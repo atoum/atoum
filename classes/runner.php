@@ -16,13 +16,12 @@ class runner implements observable, adapter\aggregator
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';
 
-	protected $path = '';
-	protected $class = '';
 	protected $score = null;
 	protected $adapter = null;
 	protected $locale = null;
-	protected $factory = null;
 	protected $includer = null;
+	protected $globIteratorFactory = null;
+	protected $reflectionClassFactory = null;
 	protected $observers = null;
 	protected $reports = null;
 	protected $testNumber = 0;
@@ -38,69 +37,25 @@ class runner implements observable, adapter\aggregator
 	private $start = null;
 	private $stop = null;
 
-	public function __construct(factory $factory = null)
+	public function __construct()
 	{
 		$this
-			->setFactory($factory ?: new factory())
-			->setAdapter($this->factory['mageekguy\atoum\adapter']())
-			->setLocale($this->factory['mageekguy\atoum\locale']())
-			->setIncluder($this->factory['mageekguy\atoum\includer']())
-			->setScore($this->factory['mageekguy\atoum\runner\score']())
-			->setTestDirectoryIterator($this->factory['mageekguy\atoum\iterators\recursives\directory']())
+			->setAdapter()
+			->setLocale()
+			->setIncluder()
+			->setScore()
+			->setTestDirectoryIterator()
+			->setGlobIteratorFactory()
+			->setReflectionClassFactory()
 		;
-
-		$this->factory['mageekguy\atoum\adapter'] = $this->adapter;
-		$this->factory['mageekguy\atoum\locale'] = $this->locale;
-		$this->factory['mageekguy\atoum\includer'] = $this->includer;
-
-		$runnerClass = $this->factory['reflectionClass']($this);
-
-		$this->path = $runnerClass->getFilename();
-		$this->class = $runnerClass->getName();
 
 		$this->observers = new \splObjectStorage();
 		$this->reports = new \splObjectStorage();
 	}
 
-	public function setFactory(factory $factory)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->factory = $factory;
-
-		return $this;
-	}
-
-	public function getFactory()
-	{
-		return $this->factory;
-	}
-
-	public function setTestDirectoryIterator(iterators\recursives\directory $iterator)
-	{
-		$this->testDirectoryIterator = $iterator;
-
-		return $this;
-	}
-
-	public function getTestDirectoryIterator()
-	{
-		return $this->testDirectoryIterator;
-	}
-
-	public function setScore(runner\score $score)
-	{
-		$this->score = $score;
-
-		return $this;
-	}
-
-	public function getScore()
-	{
-		return $this->score;
-	}
-
-	public function setAdapter(adapter $adapter)
-	{
-		$this->adapter = $adapter;
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}
@@ -110,9 +65,9 @@ class runner implements observable, adapter\aggregator
 		return $this->adapter;
 	}
 
-	public function setLocale(locale $locale)
+	public function setLocale(locale $locale = null)
 	{
-		$this->locale = $locale;
+		$this->locale = $locale ?: new locale();
 
 		return $this;
 	}
@@ -122,9 +77,9 @@ class runner implements observable, adapter\aggregator
 		return $this->locale;
 	}
 
-	public function setIncluder(includer $includer)
+	public function setIncluder(includer $includer = null)
 	{
-		$this->includer = $includer;
+		$this->includer = $includer ?: new includer();
 
 		return $this;
 	}
@@ -132,6 +87,54 @@ class runner implements observable, adapter\aggregator
 	public function getIncluder()
 	{
 		return $this->includer;
+	}
+
+	public function setScore(runner\score $score = null)
+	{
+		$this->score = $score ?: new runner\score();
+
+		return $this;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
+	}
+
+	public function setTestDirectoryIterator(iterators\recursives\directory $iterator = null)
+	{
+		$this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory();
+
+		return $this;
+	}
+
+	public function getTestDirectoryIterator()
+	{
+		return $this->testDirectoryIterator;
+	}
+
+	public function setGlobIteratorFactory(\closure $factory = null)
+	{
+		$this->globIteratorFactory = $factory ?: function($pattern) { return new \globIterator($pattern); };
+
+		return $this;
+	}
+
+	public function getGlobIteratorFactory()
+	{
+		return $this->globIteratorFactory;
+	}
+
+	public function setReflectionClassFactory(\closure $factory = null)
+	{
+		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
+
+		return $this;
+	}
+
+	public function getReflectionClassFactory()
+	{
+		return $this->reflectionClassFactory;
 	}
 
 	public function enableDebugMode()
@@ -232,16 +235,6 @@ class runner implements observable, adapter\aggregator
 		return $this->phpPath;
 	}
 
-	public function getPath()
-	{
-		return $this->path;
-	}
-
-	public function getClass()
-	{
-		return $this->class;
-	}
-
 	public function getTestNumber()
 	{
 		return $this->testNumber;
@@ -277,7 +270,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($testClasses as $testClass)
 		{
-			$test = new $testClass($this->factory);
+			$test = new $testClass();
 
 			if (self::isIgnored($test, $namespaces, $tags) === false)
 			{
@@ -441,7 +434,7 @@ class runner implements observable, adapter\aggregator
 
 		foreach ($runTestClasses as $runTestClass)
 		{
-			$test = new $runTestClass($this->factory);
+			$test = new $runTestClass();
 
 			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
@@ -540,7 +533,7 @@ class runner implements observable, adapter\aggregator
 	{
 		try
 		{
-			foreach ($this->factory['globIterator'](rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
+			foreach (call_user_func($this->globIteratorFactory, rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
 			{
 				if ($path->isDir() === true)
 				{
@@ -567,11 +560,12 @@ class runner implements observable, adapter\aggregator
 
 	public function getDeclaredTestClasses($testBaseClass = null)
 	{
-		$factory = $this->factory;
+		$reflectionClassFactory = $this->reflectionClassFactory;
 		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
 
-		return array_filter($this->adapter->get_declared_classes(), function($class) use ($factory, $testBaseClass) {
-				$class = $factory['reflectionClass']($class);
+		return array_filter($this->adapter->get_declared_classes(), function($class) use ($reflectionClassFactory, $testBaseClass) {
+				$class = $reflectionClassFactory($class);
+
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);

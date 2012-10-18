@@ -24,23 +24,36 @@ class report extends atoum\test
 			->if($report = new atoum\report())
 			->then
 				->variable($report->getTitle())->isNull()
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->array($report->getWriters())->isEmpty()
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\adapter())
-			->and($report = new atoum\report($factory))
+		;
+	}
+
+	public function testSetLocale()
+	{
+		$this
+			->if($report = new atoum\report())
 			->then
-				->variable($report->getTitle())->isNull()
+				->object($report->setLocale($locale = new atoum\locale()))->isIdenticalTo($report)
 				->object($report->getLocale())->isIdenticalTo($locale)
+				->object($report->setLocale())->isIdenticalTo($report)
+				->object($defaultLocale = $report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($defaultLocale)->isNotIdenticalTo($locale)
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($report = new atoum\report())
+			->then
+				->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
 				->object($report->getAdapter())->isIdenticalTo($adapter)
-				->object($report->getFactory()->build('mageekguy\atoum\locale'))->isIdenticalTo($locale)
-				->object($report->getFactory()->build('mageekguy\atoum\adapter'))->isIdenticalTo($adapter)
-				->array($report->getFields())->isEmpty()
-				->array($report->getWriters())->isEmpty()
+				->object($report->setAdapter())->isIdenticalTo($report)
+				->object($defaultAdapter = $report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($defaultAdapter)->isNotIdenticalTo($adapter)
 		;
 	}
 
@@ -56,17 +69,6 @@ class report extends atoum\test
 		;
 	}
 
-	public function testSetLocale()
-	{
-
-		$this
-			->if($report = new atoum\report())
-			->then
-				->object($report->setLocale($locale = new atoum\locale()))->isIdenticalTo($report)
-				->object($report->getLocale())->isIdenticalTo($locale)
-		;
-	}
-
 	public function testAddField()
 	{
 		$this
@@ -76,6 +78,7 @@ class report extends atoum\test
 				->array($report->getFields())->isIdenticalTo(array($field))
 				->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field, $otherField))
+				->object($field->getLocale())->isIdenticalTo($report->getLocale())
 		;
 	}
 }

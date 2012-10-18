@@ -4,6 +4,7 @@ namespace mageekguy\atoum\mock;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\mock,
 	mageekguy\atoum\exceptions
 ;
 
@@ -11,27 +12,57 @@ class generator
 {
 	const defaultNamespace = 'mock';
 
-	protected $factory = null;
+	protected $adapter = null;
+	protected $phpMethodFactory = null;
+	protected $reflectionClassFactory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
 
 	private $defaultNamespace = null;
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct()
 	{
-		$this->setFactory($factory ?: new atoum\factory());
+		$this
+			->setAdapter()
+			->setPhpMethodFactory()
+			->setReflectionClassFactory()
+		;
 	}
 
-	public function setFactory(atoum\factory $factory)
+	public function setAdapter(atoum\adapter $adapter = null)
 	{
-		$this->factory = $factory;
+		$this->adapter = $adapter ?: new atoum\adapter();
 
 		return $this;
 	}
 
-	public function getFactory()
+	public function getAdapter()
 	{
-		return $this->factory;
+		return $this->adapter;
+	}
+
+	public function setPhpMethodFactory(\closure $factory = null)
+	{
+		$this->phpMethodFactory = $factory ?: function($method) { return new mock\php\method($method); };
+
+		return $this;
+	}
+
+	public function getPhpMethodFactory()
+	{
+		return $this->phpMethodFactory;
+	}
+
+	public function setReflectionClassFactory(\closure $factory = null)
+	{
+		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
+
+		return $this;
+	}
+
+	public function getReflectionClassFactory()
+	{
+		return $this->reflectionClassFactory;
 	}
 
 	public function setDefaultNamespace($namespace)
@@ -81,7 +112,7 @@ class generator
 	public function orphanize($method)
 	{
 		return $this
-			->overload($this->factory['mageekguy\atoum\mock\php\method']($method))
+			->overload(call_user_func($this->phpMethodFactory, $method))
 			->shunt($method)
 		;
 	}
@@ -107,20 +138,18 @@ class generator
 			$mockClass = self::getClassName($class);
 		}
 
-		$adapter = $this->factory['mageekguy\atoum\adapter']();
-
-		if ($adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
+		if ($this->adapter->class_exists($mockNamespace . '\\' . $mockClass, false) === true || $this->adapter->interface_exists($mockNamespace . '\\' . $mockClass, false) === true)
 		{
 			throw new exceptions\logic('Class \'' . $mockNamespace . '\\' . $mockClass . '\' already exists');
 		}
 
-		if ($adapter->class_exists($class, true) === false && $adapter->interface_exists($class, true) === false)
+		if ($this->adapter->class_exists($class, true) === false && $this->adapter->interface_exists($class, true) === false)
 		{
 			$code = self::generateUnknownClassCode($class, $mockNamespace, $mockClass);
 		}
 		else
 		{
-			$reflectionClass = $this->factory['reflectionClass']($class);
+			$reflectionClass = call_user_func($this->reflectionClassFactory, $class);
 
 			if ($reflectionClass->isFinal() === true)
 			{

@@ -26,19 +26,6 @@ class adapter extends test
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
-			->if($adapter = new testedClass(new dependencies()))
-			->then
-				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
-			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = function() {})
-			->and($adapter = new testedClass($dependencies))
-			->then
-				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
 		;
 	}
 
@@ -194,31 +181,6 @@ class adapter extends test
 		;
 	}
 
-	public function testSetInvokerDependency()
-	{
-		$this
-			->if($adapter = new testedClass())
-			->then
-				->object($adapter->setInvokerDependency($dependency = new dependency()))->isIdenticalTo($adapter)
-				->object($adapter->getInvokerDependency())->isIdenticalTo($dependency)
-		;
-	}
-
-	public function testSetDependencies()
-	{
-		$this
-			->if($adapter = new testedClass())
-			->then
-				->object($adapter->setDependencies(new dependencies()))->isIdenticalTo($adapter)
-				->object($adapter->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependency')
-			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = function() {})
-			->then
-				->object($adapter->setDependencies($dependencies))->isIdenticalTo($adapter)
-				->object($adapter->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
-		;
-	}
-
 	public function testGetCallsNumber()
 	{
 		$this
@@ -279,6 +241,18 @@ class adapter extends test
 		;
 	}
 
+	public function testAddCall()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->getCalls())->isEmpty()
+				->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args))
+				->array($adapter->getCalls(strtoupper($method)))->isEqualTo(array(1 => $args))
+		;
+	}
+
 	public function testResetCalls()
 	{
 		$this
@@ -323,18 +297,6 @@ class adapter extends test
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
 				->array($adapter->getCalls())->isEmpty()
-		;
-	}
-
-	public function testAddCall()
-	{
-		$this
-			->if($adapter = new testedClass())
-			->then
-				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args))
-				->array($adapter->getCalls(strtoupper($method)))->isEqualTo(array(1 => $args))
 		;
 	}
 }

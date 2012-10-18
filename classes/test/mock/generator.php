@@ -13,7 +13,7 @@ class generator extends mock\generator
 
 	public function __construct(atoum\test $test)
 	{
-		parent::__construct($test->getFactory());
+		parent::__construct();
 
 		$this->setTest($test);
 	}

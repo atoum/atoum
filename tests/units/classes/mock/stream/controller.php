@@ -51,16 +51,6 @@ class controller extends atoum\test
 				->variable($streamController->invoke('stream_write'))->isNull()
 				->variable($streamController->invoke('unlink'))->isNull()
 				->variable($streamController->invoke('url_stat'))->isNull()
-				->object($streamController->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependencies')
-				->object($streamController->getInvokerDependency()->build(array('method' => $method = uniqid())))->isEqualTo(new stream\invoker($method))
-			->if($streamController = new testedClass($stream = uniqid(), $dependencies = new dependencies()))
-			->then
-				->object($streamController->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependencies')
-			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = function() {})
-			->and($streamController = new testedClass(uniqid(), $dependencies))
-			->then
-				->object($streamController->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
 		;
 	}
 
@@ -765,22 +755,6 @@ class controller extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
-		;
-	}
-
-	public function testSetDependencies()
-	{
-		$this
-			->if($streamController = new testedClass(uniqid()))
-			->then
-				->object($streamController->setDependencies(new dependencies()))->isIdenticalTo($streamController)
-				->object($streamController->getInvokerDependency())->isInstanceOf('mageekguy\atoum\dependencies')
-				->object($streamController->getInvokerDependency()->build(array('method' => $method = uniqid())))->isEqualTo(new stream\invoker($method))
-			->if($dependencies = new dependencies())
-			->and($dependencies['invoker'] = new stream\invoker(uniqid()))
-			->then
-				->object($streamController->setDependencies($dependencies))->isIdenticalTo($streamController)
-				->object($streamController->getInvokerDependency())->isIdenticalTo($dependencies['invoker'])
 		;
 	}
 }

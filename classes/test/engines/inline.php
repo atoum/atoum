@@ -16,11 +16,21 @@ class inline extends test\engine
 		return false;
 	}
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct(atoum\test\score $score = null)
 	{
-		parent::__construct($factory);
+		$this->setScore();
+	}
 
-		$this->score = $this->factory['mageekguy\atoum\test\score']();
+	public function setScore(atoum\test\score $score = null)
+	{
+		$this->score = $score ?: new atoum\test\score();
+
+		return $this;
+	}
+
+	public function getScore()
+	{
+		return $this->score;
 	}
 
 	public function run(atoum\test $test)
@@ -39,10 +49,5 @@ class inline extends test\engine
 		}
 
 		return $this;
-	}
-
-	public function getScore()
-	{
-		return $this->score;
 	}
 }

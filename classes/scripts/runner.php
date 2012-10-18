@@ -16,6 +16,9 @@ class runner extends atoum\script
 
 	protected $runner = null;
 	protected $includer = null;
+	protected $cliFactory = null;
+	protected $configuratorFactory = null;
+	protected $defaultReportFactory = null;
 	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $arguments = array();
@@ -27,26 +30,22 @@ class runner extends atoum\script
 
 	protected static $autorunner = true;
 
-	public function __construct($name, atoum\factory $factory = null)
+	public function __construct($name, atoum\adapter $adapter = null)
 	{
-		parent::__construct($name, $factory);
+		parent::__construct($name, $adapter);
 
 		$this
-			->setIncluder($this->factory['atoum\includer']())
-			->setRunner($this->factory['atoum\runner']($this->factory))
+			->setRunner()
+			->setIncluder()
+			->setCliFactory()
+			->setConfiguratorFactory()
+			->setDefaultReportFactory()
 		;
-
-		$this->factory['atoum\includer'] = $this->includer;
 	}
 
-	public function isRunningFromCli()
+	public function setRunner(atoum\runner $runner = null)
 	{
-		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
-	}
-
-	public function setRunner(atoum\runner $runner)
-	{
-		$this->runner = $runner;
+		$this->runner = $runner ?: new atoum\runner();
 
 		return $this->setArgumentHandlers();
 	}
@@ -56,9 +55,9 @@ class runner extends atoum\script
 		return $this->runner;
 	}
 
-	public function setIncluder(atoum\includer $includer)
+	public function setIncluder(atoum\includer $includer = null)
 	{
-		$this->includer = $includer;
+		$this->includer = $includer ?: new atoum\includer();
 
 		return $this;
 	}
@@ -66,6 +65,52 @@ class runner extends atoum\script
 	public function getIncluder()
 	{
 		return $this->includer;
+	}
+
+	public function setCliFactory(\closure $factory = null)
+	{
+		$this->cliFactory = $factory ?: function() { return new atoum\cli(); };
+
+		return $this;
+	}
+
+	public function getCliFactory()
+	{
+		return $this->cliFactory;
+	}
+
+	public function setConfiguratorFactory(\closure $factory = null)
+	{
+		$this->configuratorFactory = $factory ?: function($test) { return new atoum\configurator($test); };
+
+		return $this;
+	}
+
+	public function getConfiguratorFactory()
+	{
+		return $this->configuratorFactory;
+	}
+
+	public function setDefaultReportFactory(\closure $factory = null)
+	{
+		$this->defaultReportFactory = $factory ?: function($script) {
+			$report = new atoum\reports\realtime\cli();
+			$report->addWriter($script->getOutputWriter());
+
+			return $report;
+		};
+
+		return $this;
+	}
+
+	public function getDefaultReportFactory()
+	{
+		return $this->defaultReportFactory;
+	}
+
+	public function isRunningFromCli()
+	{
+		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
 	}
 
 	public function setScoreFile($path)
@@ -189,7 +234,7 @@ class runner extends atoum\script
 
 	public function useConfigFile($path)
 	{
-		$script = $this->factory['atoum\configurator']($this);
+		$script = call_user_func($this->configuratorFactory, $this);
 
 		$runner = $this->runner;
 
@@ -271,10 +316,7 @@ class runner extends atoum\script
 
 	public function addDefaultReport()
 	{
-		$report = $this->factory['mageekguy\atoum\reports\realtime\cli']($this->factory);
-		$report->addWriter($this->factory['mageekguy\atoum\writers\std\out']());
-
-		$this->runner->addReport($report);
+		$this->runner->addReport($report = call_user_func($this->defaultReportFactory, $this));
 
 		return $report;
 	}
@@ -761,7 +803,7 @@ class runner extends atoum\script
 	{
 		$arguments = ' --disable-loop-mode';
 
-		$cli = $this->factory['mageekguy\atoum\cli']();
+		$cli = call_user_func($this->cliFactory);
 
 		if ($cli->isTerminal() === true)
 		{

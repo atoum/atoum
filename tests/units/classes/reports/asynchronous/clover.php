@@ -15,7 +15,7 @@ class clover extends Atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
 	}
 
 	public function testClassConstants()
@@ -32,27 +32,17 @@ class clover extends Atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($report = new reports\clover($adapter = new atoum\test\adapter()))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
-				->object($report->getFactory())->isInstanceOf('mageekguy\atoum\factory')
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\locale'] = $locale = new atoum\locale())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->and($adapter->extension_loaded = true)
-			->and($report = new reports\clover($factory))
-			->then
-				->object($report->getFactory())->isIdenticalTo($factory)
-				->object($report->getLocale())->isIdenticalTo($locale)
-				->object($report->getAdapter())->isIdenticalTo($adapter)
 				->array($report->getFields())->isEmpty()
 				->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
 			->if($adapter->extension_loaded = false)
 			->then
-				->exception(function() use ($factory) {
-								new reports\clover($factory);
+				->exception(function() use ($adapter) {
+								new reports\clover($adapter);
 							}
 						)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -60,20 +50,12 @@ class clover extends Atoum\test
 		;
 	}
 
-	public function testSetAdapter()
-	{
-		$this
-			->if($report = new reports\clover())
-			->then
-				->object($report->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($report)
-				->object($report->getAdapter())->isIdenticalTo($adapter)
-		;
-	}
-
 	public function testHandleEvent()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($adapter = new atoum\test\adapter())
+			->if($adapter->extension_loaded = true)
+			->and($report = new reports\clover($adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
 			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
 			->and($writer = new \mock\mageekguy\atoum\writers\file())
@@ -83,8 +65,6 @@ class clover extends Atoum\test
 						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
 					})
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
 			->and($adapter->time = 762476400)
 			->and($adapter->uniqid = 'foo')
 			->and($observable = new \mock\mageekguy\atoum\runner())
@@ -100,11 +80,11 @@ class clover extends Atoum\test
 					'1.xml'
 				)
 			))
-			->and($report = new reports\clover($factory))
+			->and($report = new reports\clover($adapter))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
-			->and($coverage->getMockController()->getClasses = array())
+			->if($coverage->getMockController()->getClasses = array())
 			->and($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
@@ -148,9 +128,7 @@ class clover extends Atoum\test
 					'2.xml'
 				)
 			))
-			->and($dependencies = new atoum\dependencies())
-			->and($dependencies['reflection\class'] = $class)
-			->and($coverage->setDependencies($dependencies))
+			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->and($coverage->addXdebugDataForTest($this, $xdebugData))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)

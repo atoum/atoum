@@ -10,12 +10,16 @@ use
 
 class asynchronous extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\report');
+	}
+
 	public function testHandleEvent()
 	{
 		$this
-			->if($factory = new atoum\factory())
-			->and($factory['mageekguy\atoum\adapter'] = $adapter = new atoum\test\adapter())
-			->if($report = new \mock\mageekguy\atoum\reports\asynchronous($factory))
+			->if($report = new \mock\mageekguy\atoum\reports\asynchronous())
+			->and($report->setAdapter($adapter = new atoum\test\adapter()))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)
 				->variable($report->getTitle())->isNull()

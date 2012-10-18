@@ -5,8 +5,6 @@ namespace mageekguy\atoum\test;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\dependency,
-	mageekguy\atoum\dependencies,
 	mageekguy\atoum\test\adapter\invoker
 ;
 
@@ -14,15 +12,12 @@ class adapter extends atoum\adapter
 {
 	protected $calls = array();
 	protected $invokers = array();
-	protected $invokerDependency = null;
 
 	private static $callsNumber = 0;
 	private static $instances = null;
 
-	public function __construct(dependencies $dependencies = null)
+	public function __construct()
 	{
-		$this->setDependencies($dependencies ?: new dependencies());
-
 		if (self::$instances === null)
 		{
 			self::$instances = new \splObjectStorage();
@@ -45,14 +40,7 @@ class adapter extends atoum\adapter
 
 	public function __get($functionName)
 	{
-		$functionName = strtolower($functionName);
-
-		if (isset($this->invokers[$functionName]) === false)
-		{
-			$this->invokers[$functionName] = $this->getInvoker();
-		}
-
-		return $this->invokers[$functionName];
+		return $this->setInvoker(strtolower($functionName), function() { return new invoker(); });
 	}
 
 	public function __isset($functionName)
@@ -75,32 +63,6 @@ class adapter extends atoum\adapter
 					unset($this->calls[$callName]);
 				}
 			}
-		}
-
-		return $this;
-	}
-
-	public function setInvokerDependency(atoum\dependency $dependency)
-	{
-		$this->invokerDependency = $dependency;
-
-		return $this;
-	}
-
-	public function getInvokerDependency()
-	{
-		return $this->invokerDependency;
-	}
-
-	public function setDependencies(dependencies $dependencies)
-	{
-		if (isset($dependencies['invoker']) === true)
-		{
-			$this->setInvokerDependency($dependencies['invoker']);
-		}
-		else
-		{
-			$this->setInvokerDependency(new dependency(function() { return new invoker(); }));
 		}
 
 		return $this;
@@ -222,11 +184,14 @@ class adapter extends atoum\adapter
 		}
 	}
 
-	protected function getInvoker()
+	protected function setInvoker($name, \closure $factory)
 	{
-		$invokerDependency = $this->invokerDependency;
+		if (isset($this->invokers[$name]) === false)
+		{
+			$this->invokers[$name] = call_user_func($factory);
+		}
 
-		return $invokerDependency();
+		return $this->invokers[$name];
 	}
 
 	protected static function isLanguageConstruct($functionName)

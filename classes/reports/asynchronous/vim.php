@@ -13,9 +13,9 @@ use
 
 class vim extends reports\asynchronous
 {
-	public function __construct(atoum\factory $factory = null)
+	public function __construct()
 	{
-		parent::__construct($factory);
+		parent::__construct();
 
 		$firstLevelPrompt = new prompt('> ');
 		$secondLevelPrompt = new prompt('=> ');

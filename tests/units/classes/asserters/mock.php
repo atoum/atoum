@@ -67,7 +67,7 @@ class mock extends atoum\test
 				->exception(function() use ($asserter, & $mock) { $asserter->setWith($mock = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not a mock'), $asserter->getTypeOf($mock)))
-				->object($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter)))->isIdenticalTo($asserter)
+				->object($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock($adapter)))->isIdenticalTo($asserter)
 				->object($asserter->getMock())->isIdenticalTo($mock)
 		;
 	}
@@ -82,7 +82,7 @@ class mock extends atoum\test
 						->hasMessage('Mock is undefined')
 				->if($adapter = new atoum\test\adapter())
 				->and($adapter->class_exists = true)
-				->and($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter)))
+				->and($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock($adapter)))
 				->and($mock->getMockController()->resetCalls())
 				->then
 					->exception(function() use ($asserter) { $asserter->wasCalled(); })
@@ -108,7 +108,7 @@ class mock extends atoum\test
 					->hasMessage('Mock is undefined')
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = true)
-			->and($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock(null, null, $adapter)))
+			->and($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\mock($adapter)))
 			->and($mock->getMockController()->resetCalls())
 			->then
 				->object($asserter->wasNotCalled())->isIdenticalTo($asserter)

@@ -12,17 +12,20 @@ use
 class controller extends test\adapter
 {
 	protected $mockClass = null;
-	protected $reflectionClassDependency = null;
+	protected $reflectionClassFactory = null;
 
 	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 
-	public function __construct(atoum\dependencies $dependencies = null)
+	public function __construct(\closure $reflectionClassFactory = null)
 	{
-		parent::__construct($dependencies);
+		parent::__construct();
 
-		$this->controlNextNewMock();
+		$this
+			->setReflectionClassFactory($reflectionClassFactory)
+			->controlNextNewMock()
+		;
 	}
 
 	public function __set($method, $mixed)
@@ -57,30 +60,16 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	public function setReflectionClassDependency(atoum\dependency $dependency)
+	public function setReflectionClassFactory(\closure $factory = null)
 	{
-		$this->reflectionClassDependency = $dependency;
+		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
 
 		return $this;
 	}
 
-	public function getReflectionClassDependency()
+	public function getReflectionClassFactory()
 	{
-		return $this->reflectionClassDependency;
-	}
-
-	public function setDependencies(atoum\dependencies $dependencies)
-	{
-		if (isset($dependencies['reflection\class']) === true)
-		{
-			$this->setReflectionClassDependency($dependencies['reflection\class']);
-		}
-		else
-		{
-			$this->setReflectionClassDependency(new atoum\dependency(function($dependencies) { return new \reflectionClass($dependencies['class']()); }));
-		}
-
-		return parent::setDependencies($dependencies);
+		return $this->reflectionClassFactory;
 	}
 
 	public function disableMethodChecking()
@@ -113,7 +102,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = $this->getReflectionClass($this->mockClass);
+			$class = call_user_func($this->reflectionClassFactory, $this->mockClass);
 
 			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
 					try
@@ -235,13 +224,6 @@ class controller extends test\adapter
 		}
 
 		return $this;
-	}
-
-	protected function getReflectionClass($class)
-	{
-		$reflectionClassDependency = $this->reflectionClassDependency;
-
-		return $reflectionClassDependency(array('class' => $class));
 	}
 
 	private function set__call()

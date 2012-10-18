@@ -19,14 +19,12 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\duration')
-		;
+		$this->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\duration');
 	}
 
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($field = new test\duration\cli())
 			->then
 				->object($field->getPrompt())->isEqualTo(new prompt())
@@ -56,7 +54,7 @@ class cli extends atoum\test
 
 	public function testSetPrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new test\duration\cli())
 			->then
 				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
@@ -70,7 +68,7 @@ class cli extends atoum\test
 
 	public function testSetTitleColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new test\duration\cli())
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -84,7 +82,7 @@ class cli extends atoum\test
 
 	public function testSetDurationColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new test\duration\cli())
 			->then
 				->object($field->setDurationColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -98,7 +96,7 @@ class cli extends atoum\test
 
 	public function testSetLocale()
 	{
-		$this->assert
+		$this
 			->if($field = new test\duration\cli())
 			->then
 				->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
@@ -112,121 +110,118 @@ class cli extends atoum\test
 
 	public function testHandleEvent()
 	{
-
 		$this
-			->assert
-				->if($field = new test\duration\cli())
-				->and($score = new \mock\mageekguy\atoum\score())
-				->and($score->getMockController()->getTotalDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); })
-				->and($adapter = new adapter())
-				->and($adapter->class_exists = true)
-				->and($testController = new mock\controller())
-				->and($testController->getTestedClassName = uniqid())
-				->and($testController->getScore = $score)
-				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
-				->then
-					->boolean($field->handleEvent(atoum\runner::runStop, $test))->isFalse()
-					->variable($field->getValue())->isNull()
-					->boolean($field->handleEvent(atoum\test::runStop, $test))->isTrue()
-					->integer($field->getValue())->isEqualTo($runningDuration)
+			->if($field = new test\duration\cli())
+			->and($score = new \mock\mageekguy\atoum\score())
+			->and($score->getMockController()->getTotalDuration = function() use (& $runningDuration) { return $runningDuration = rand(0, PHP_INT_MAX); })
+			->and($adapter = new adapter())
+			->and($adapter->class_exists = true)
+			->and($testController = new mock\controller())
+			->and($testController->getTestedClassName = uniqid())
+			->and($testController->getScore = $score)
+			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->then
+				->boolean($field->handleEvent(atoum\runner::runStop, $test))->isFalse()
+				->variable($field->getValue())->isNull()
+				->boolean($field->handleEvent(atoum\test::runStop, $test))->isTrue()
+				->integer($field->getValue())->isEqualTo($runningDuration)
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->assert
-				->if($adapter = new adapter())
-				->and($adapter->class_exists = true)
-				->and($score = new \mock\mageekguy\atoum\score())
-				->and($score->getMockController()->getTotalDuration = $runningDuration = rand(1, 1000) / 1000)
-				->and($testController = new mock\controller())
-				->and($testController->getTestedClassName = uniqid())
-				->and($testController->getScore = $score)
-				->and($test = new \mock\mageekguy\atoum\test(null, null, $adapter, null, null, $testController))
-				->and($defaultField = new test\duration\cli())
-				->and($customField = new test\duration\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
-				->then
-					->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$locale->_('unknown')
-							) .
-							PHP_EOL
-						)
-				->if($defaultField->handleEvent(atoum\runner::runStop, $test))
-				->then
-					->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
-				->if($customField->handleEvent(atoum\runner::runStop, $test))
-				->then
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$locale->_('unknown')
-							) .
-							PHP_EOL
-						)
-				->if($defaultField->handleEvent(atoum\test::runStop, $test))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f second.', $runningDuration) . PHP_EOL)
-				->if($customField->handleEvent(atoum\test::runStop, $test))
-				->then
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
-							) .
-							PHP_EOL
-						)
-				->if($score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX))
-				->and($defaultField = new test\duration\cli())
-				->and($customField = new test\duration\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
-				->then
-					->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$locale->_('unknown')
-							) .
-							PHP_EOL
-						)
-				->if($defaultField->handleEvent(atoum\runner::runStop, $test))
-				->then
-					->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
-				->if($customField->handleEvent(atoum\runner::runStop, $test))
-				->then
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$locale->_('unknown')
-							) .
-							PHP_EOL
-						)
-				->if($defaultField->handleEvent(atoum\test::runStop, $test))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f seconds.', $runningDuration) . PHP_EOL)
-				->if($customField->handleEvent(atoum\test::runStop, $test))
-				->then
-					->castToString($customField)->isEqualTo(
-							$prompt .
-							sprintf(
-								'%1$s: %2$s.',
-								$titleColorizer->colorize($locale->_('Test duration')),
-								$durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
-							) .
-							PHP_EOL
-						)
+			->if($adapter = new adapter())
+			->and($adapter->class_exists = true)
+			->and($score = new \mock\mageekguy\atoum\score())
+			->and($score->getMockController()->getTotalDuration = $runningDuration = rand(1, 1000) / 1000)
+			->and($testController = new mock\controller())
+			->and($testController->getTestedClassName = uniqid())
+			->and($testController->getScore = $score)
+			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->and($defaultField = new test\duration\cli())
+			->and($customField = new test\duration\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
+			->then
+				->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$locale->_('unknown')
+						) .
+						PHP_EOL
+					)
+			->if($defaultField->handleEvent(atoum\runner::runStop, $test))
+			->then
+				->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
+			->if($customField->handleEvent(atoum\runner::runStop, $test))
+			->then
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$locale->_('unknown')
+						) .
+						PHP_EOL
+					)
+			->if($defaultField->handleEvent(atoum\test::runStop, $test))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f second.', $runningDuration) . PHP_EOL)
+			->if($customField->handleEvent(atoum\test::runStop, $test))
+			->then
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
+						) .
+						PHP_EOL
+					)
+			->if($score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX))
+			->and($defaultField = new test\duration\cli())
+			->and($customField = new test\duration\cli($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
+			->then
+				->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$locale->_('unknown')
+						) .
+						PHP_EOL
+					)
+			->if($defaultField->handleEvent(atoum\runner::runStop, $test))
+			->then
+				->castToString($defaultField)->isEqualTo('Test duration: unknown.' . PHP_EOL)
+			->if($customField->handleEvent(atoum\runner::runStop, $test))
+			->then
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$locale->_('unknown')
+						) .
+						PHP_EOL
+					)
+			->if($defaultField->handleEvent(atoum\test::runStop, $test))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('Test duration: %4.2f seconds.', $runningDuration) . PHP_EOL)
+			->if($customField->handleEvent(atoum\test::runStop, $test))
+			->then
+				->castToString($customField)->isEqualTo(
+						$prompt .
+						sprintf(
+							'%1$s: %2$s.',
+							$titleColorizer->colorize($locale->_('Test duration')),
+							$durationColorizer->colorize(sprintf($locale->__('%4.2f second', '%4.2f seconds', $runningDuration), $runningDuration))
+						) .
+						PHP_EOL
+					)
 		;
 	}
 }

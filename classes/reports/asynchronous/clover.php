@@ -24,11 +24,13 @@ class clover extends atoum\reports\asynchronous
 	protected $classes = 0;
 	protected $package = '';
 
-	public function __construct(atoum\factory $factory = null)
+	public function __construct(atoum\adapter $adapter = null)
 	{
-		parent::__construct($factory);
+		parent::__construct();
 
-		if ($this->getAdapter()->extension_loaded('libxml') === false)
+		$this->setAdapter($adapter);
+
+		if ($this->adapter->extension_loaded('libxml') === false)
 		{
 			throw new exceptions\runtime('libxml PHP extension is mandatory for clover report');
 		}

@@ -13,28 +13,25 @@ class tagger extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\script')
-		;
+		$this->testedClass->isSubclassOf('mageekguy\atoum\script');
 	}
 
 	public function test__construct()
 	{
-		$tagger = new scripts\tagger(uniqid());
-
-		$this->assert
-			->object($tagger->getEngine())->isInstanceOf('mageekguy\atoum\scripts\tagger\engine')
-			->object($tagger->getEngine()->getAdapter())->isIdenticalTo($tagger->getAdapter())
+		$this
+			->if($tagger = new scripts\tagger(uniqid()))
+			->then
+				->object($tagger->getEngine())->isInstanceOf('mageekguy\atoum\scripts\tagger\engine')
 		;
 	}
 
 	public function testSetEngine()
 	{
-		$tagger = new scripts\tagger(uniqid());
-
-		$this->assert
-			->object($tagger->setEngine($engine = new scripts\tagger\engine()))->isIdenticalTo($tagger)
-			->object($tagger->getEngine())->isIdenticalTo($engine)
+		$this
+			->if($tagger = new scripts\tagger(uniqid()))
+			->then
+				->object($tagger->setEngine($engine = new scripts\tagger\engine()))->isIdenticalTo($tagger)
+				->object($tagger->getEngine())->isIdenticalTo($engine)
 		;
 	}
 

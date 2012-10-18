@@ -182,11 +182,9 @@ class cli extends atoum\test
 			->and($methodController->getStartLine = 6)
 			->and($methodController->getEndLine = 8)
 			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
-			->and($dependencies = new atoum\dependencies())
-			->and($dependencies['reflection\class'] = $class)
 			->and($className = uniqid())
 			->and($methodName = uniqid())
-			->and($scoreCoverage->setDependencies($dependencies))
+			->and($scoreCoverage->setReflectionClassFactory(function() use ($class) { return $class; }))
 			->and($scoreCoverage->addXdebugDataForTest($this, $xdebugData = array(
 						  ($classFile = uniqid()) =>
 							 array(

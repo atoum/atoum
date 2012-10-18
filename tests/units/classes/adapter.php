@@ -8,7 +8,7 @@ use
 
 require_once __DIR__ . '/../runner.php';
 
-class adapter extends atoum\test
+class adapter extends \atoum\test
 {
 	public function test__construct()
 	{

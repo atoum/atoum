@@ -14,12 +14,13 @@ abstract class field
 	public function __construct(array $events = null, atoum\locale $locale = null)
 	{
 		$this->events = $events;
-		$this->setLocale($locale ?: new atoum\locale());
+
+		$this->setLocale($locale);
 	}
 
-	public function setLocale(atoum\locale $locale)
+	public function setLocale(atoum\locale $locale = null)
 	{
-		$this->locale = $locale;
+		$this->locale = $locale ?: new atoum\locale();
 
 		return $this;
 	}
