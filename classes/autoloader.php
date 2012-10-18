@@ -2,17 +2,24 @@
 
 namespace mageekguy\atoum;
 
-require_once __DIR__ . '/../constants.php';
-
 class autoloader
 {
 	protected static $autoloader = null;
 
 	protected $directories = array();
+	protected $aliases = array();
 
-	public function __construct()
+	public function __construct(array $namespaces = array(__NAMESPACE__ => __DIR__), array $aliases = array('atoum' => __NAMESPACE__))
 	{
-		$this->addDirectory(__NAMESPACE__, __DIR__);
+		foreach ($namespaces as $namespace => $directory)
+		{
+			$this->addDirectory($namespace, $directory);
+		}
+
+		foreach ($aliases as $alias => $target)
+		{
+			$this->addAlias($alias, $target);
+		}
 	}
 
 	public function register($prepend = false)
@@ -52,10 +59,20 @@ class autoloader
 		return $this->directories;
 	}
 
+	public function addAlias($alias, $target)
+	{
+		$this->aliases[trim($alias, '\\') . '\\'] = trim($target, '\\') . '\\';
+
+		return $this;
+	}
+
+	public function getAliases()
+	{
+		return $this->aliases;
+	}
+
 	public function getPath($class)
 	{
-		$class = preg_replace_callback('/(^.|\\\.)/', function($matches) { return strtolower($matches[0]); }, $class);
-
 		foreach ($this->directories as $namespace => $directories)
 		{
 			if ($class !== $namespace)
@@ -82,6 +99,23 @@ class autoloader
 		return null;
 	}
 
+	public function requireClass($class)
+	{
+		$class = preg_replace_callback('/(^.|\\\.)/', function($matches) { return strtolower($matches[0]); }, $class);
+
+		$realClass = $this->resolveAlias($class);
+
+		if (class_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
+		{
+			require $path;
+
+			if ($realClass != $class)
+			{
+				class_alias($realClass, $class);
+			}
+		}
+	}
+
 	public static function set()
 	{
 		if (static::$autoloader === null)
@@ -98,12 +132,17 @@ class autoloader
 		return static::$autoloader;
 	}
 
-	public function requireClass($class)
+	protected function resolveAlias($class)
 	{
-		if (($path = $this->getPath($class)) !== null)
+		foreach ($this->aliases as $alias => $target)
 		{
-			require $path;
+			if (strpos($class, $alias) === 0)
+			{
+				$class = $target . substr($class, strlen($alias));
+			}
 		}
+
+		return $class;
 	}
 }
 
