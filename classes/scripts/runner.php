@@ -69,7 +69,7 @@ class runner extends atoum\script
 
 	public function setCliFactory(\closure $factory = null)
 	{
-		$this->cliFactory = $factory ?: function($test) { return new atoum\cli(); };
+		$this->cliFactory = $factory ?: function() { return new atoum\cli(); };
 
 		return $this;
 	}
