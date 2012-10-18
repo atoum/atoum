@@ -19,6 +19,18 @@ class report implements observer, adapter\aggregator
 		;
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		foreach ($this->lastSetFields as $field)
+		{
+			$string .= $field;
+		}
+
+		return $string;
+	}
+
 	public function setLocale(locale $locale = null)
 	{
 		$this->locale = $locale ?: new locale();
@@ -57,7 +69,7 @@ class report implements observer, adapter\aggregator
 
 	public function addField(report\field $field)
 	{
-		$this->fields[] = $field;
+		$this->fields[] = $field->setLocale($this->locale);
 
 		return $this;
 	}
@@ -85,18 +97,6 @@ class report implements observer, adapter\aggregator
 		}
 
 		return $this;
-	}
-
-	public function __toString()
-	{
-		$string = '';
-
-		foreach ($this->lastSetFields as $field)
-		{
-			$string .= $field;
-		}
-
-		return $string;
 	}
 
 	protected function doAddWriter($writer)

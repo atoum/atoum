@@ -78,6 +78,7 @@ class report extends atoum\test
 				->array($report->getFields())->isIdenticalTo(array($field))
 				->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field, $otherField))
+				->object($field->getLocale())->isIdenticalTo($report->getLocale())
 		;
 	}
 }

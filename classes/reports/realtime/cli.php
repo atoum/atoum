@@ -17,12 +17,12 @@ class cli extends realtime
 	{
 		parent::__construct();
 
+		$defaultColorizer = new colorizer('1;36');
+
 		$firstLevelPrompt = new prompt('> ');
-		$firstLevelColorizer = new colorizer('1;36');
+		$secondLevelPrompt = new prompt('=> ', $defaultColorizer);
+		$thirdLevelPrompt = new prompt('==> ', $defaultColorizer);
 
-		$secondLevelPrompt = new prompt('=> ', $firstLevelColorizer);
-
-		$thirdLevelPrompt = new prompt('==> ', $firstLevelColorizer);
 
 		$failureColorizer = new colorizer('0;31');
 		$failurePrompt = clone $secondLevelPrompt;
@@ -55,35 +55,35 @@ class cli extends realtime
 		$this
 			->addField(new runner\php\path\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer
+						$defaultColorizer
 					)
 				)
 			->addField(new runner\php\version\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer,
+						$defaultColorizer,
 						$secondLevelPrompt
 					)
 				)
 			->addField(new runner\tests\duration\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer
+						$defaultColorizer
 					)
 				)
 			->addField(new runner\tests\memory\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer
+						$defaultColorizer
 					)
 				)
 			->addField(new runner\tests\coverage\cli(
 						$firstLevelPrompt,
 						$secondLevelPrompt,
-						new prompt('==> ', $firstLevelColorizer),
-						$firstLevelColorizer
+						new prompt('==> ', $defaultColorizer),
+						$defaultColorizer
 					)
 				)
 			->addField(new runner\duration\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer
+						$defaultColorizer
 					)
 				)
 			->addField(new runner\result\cli(
@@ -101,7 +101,7 @@ class cli extends realtime
 			->addField(
 				new runner\outputs\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer,
+						$defaultColorizer,
 						$secondLevelPrompt
 					)
 				)
@@ -139,7 +139,7 @@ class cli extends realtime
 				)
 			->addField(new test\run\cli(
 						$firstLevelPrompt,
-						$firstLevelColorizer
+						$defaultColorizer
 					)
 				)
 			->addField(new test\event\cli())
