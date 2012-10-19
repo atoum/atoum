@@ -44,6 +44,22 @@ class utf8String extends atoum\test
 				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
+
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($asserter = new asserters\utf8String($generator = new asserter\generator(), $adapter))
+			->then
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getAdapter())->isEqualTo($adapter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+
+			->if($adapter->extension_loaded = false)
+			->then
+				->exception(function() use ($adapter) { new asserters\utf8String(new asserter\generator(), $adapter); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('mbstring PHP extension is mandatory to use utf8String asserter')
 		;
 	}
 

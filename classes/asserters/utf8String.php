@@ -11,6 +11,16 @@ use
 
 class utf8String extends asserters\string
 {
+	public function __construct(asserter\generator $generator, atoum\adapter $adapter = null)
+	{
+		parent::__construct($generator, $adapter);
+
+		if ($this->adapter->extension_loaded('mbstring') === false)
+		{
+			throw new exceptions\runtime('mbstring PHP extension is mandatory to use utf8String asserter');
+		}
+	}
+
 	public function __toString()
 	{
 		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist)));
