@@ -108,11 +108,11 @@ class autoloader
 		if (class_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
 		{
 			require $path;
+		}
 
-			if ($realClass != $class)
-			{
-				class_alias($realClass, $class);
-			}
+		if ($realClass != $class)
+		{
+			class_alias($realClass, $class);
 		}
 	}
 
@@ -138,7 +138,7 @@ class autoloader
 		{
 			if (strpos($class, $alias) === 0)
 			{
-				$class = $target . substr($class, strlen($alias));
+				return $target . substr($class, strlen($alias));
 			}
 		}
 
