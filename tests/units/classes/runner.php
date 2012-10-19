@@ -33,7 +33,7 @@ class runner extends atoum\test
 				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory')
+				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory\factory')
 				->object($defaultGlobIteratorFactory = $runner->getGlobIteratorFactory())->isInstanceOf('closure')
 				->object($defaultGlobIteratorFactory($pattern = uniqid()))->isEqualTo(new \globIterator($pattern))
 				->object($defaultReflectionClassFactory = $runner->getReflectionClassFactory())->isInstanceOf('closure')

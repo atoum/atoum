@@ -101,9 +101,9 @@ class runner implements observable, adapter\aggregator
 		return $this->score;
 	}
 
-	public function setTestDirectoryIterator(iterators\recursives\directory $iterator = null)
+	public function setTestDirectoryIterator(iterators\recursives\directory\factory $iterator = null)
 	{
-		$this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory();
+		$this->testDirectoryIterator = $iterator ?: new iterators\recursives\directory\factory();
 
 		return $this;
 	}

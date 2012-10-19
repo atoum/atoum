@@ -1,16 +1,16 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\recursives;
+namespace mageekguy\atoum\tests\units\iterators\recursives\directory;
 
-require_once __DIR__ . '/../../../runner.php';
+require_once __DIR__ . '/../../../../runner.php';
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\iterators\filters,
-	mageekguy\atoum\iterators\recursives
+	mageekguy\atoum\iterators\recursives\directory\factory as testedClass
 ;
 
-class directory extends atoum\test
+class factory extends atoum\test
 {
 	public function testClass()
 	{
@@ -20,7 +20,7 @@ class directory extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
 				->object($iteratorFactory = $iterator->getIteratorFactory())->isInstanceOf('closure')
@@ -30,7 +30,7 @@ class directory extends atoum\test
 				->object($extensionFilterIterator = $iterator->getExtensionFilterFactory())->isInstanceOf('closure')
 				->object($extensionFilterIterator($defaultIterator, $extensions = array('foo')))->isEqualTo(new filters\recursives\extension($defaultIterator, $extensions))
 
-			->if($iterator = new recursives\directory($iteratorFactory = function() {}, $dotFilterFactory = function() {}, $extensionFilterFactory = function() {}))
+			->if($iterator = new testedClass($iteratorFactory = function() {}, $dotFilterFactory = function() {}, $extensionFilterFactory = function() {}))
 			->then
 				->boolean($iterator->dotsAreAccepted())->isFalse()
 				->array($iterator->getAcceptedExtensions())->isEqualTo(array('php'))
@@ -43,7 +43,7 @@ class directory extends atoum\test
 	public function testSetIteratorFactory()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->setIteratorFactory($factory = function() {}))->isIdenticalTo($iterator)
 				->object($iterator->getIteratorFactory())->isIdenticalTo($factory)
@@ -58,7 +58,7 @@ class directory extends atoum\test
 	public function testSetDotFilterFactory()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->setDotFilterFactory($factory = function() {}))->isIdenticalTo($iterator)
 				->object($iterator->getDotFilterFactory())->isIdenticalTo($factory)
@@ -73,7 +73,7 @@ class directory extends atoum\test
 	public function testSetExtensionFilterFactory()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->setExtensionFilterFactory($factory = function() {}))->isIdenticalTo($iterator)
 				->object($iterator->getExtensionFilterFactory())->isIdenticalTo($factory)
@@ -88,7 +88,7 @@ class directory extends atoum\test
 	public function testAcceptExtensions()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->acceptExtensions($extensions = array(uniqid())))->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEqualTo($extensions)
@@ -100,7 +100,7 @@ class directory extends atoum\test
 	public function testAcceptAllExtensions()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->acceptAllExtensions())->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEmpty()
@@ -110,7 +110,7 @@ class directory extends atoum\test
 	public function testRefuseExtension()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->refuseExtension('php'))->isIdenticalTo($iterator)
 				->array($iterator->getAcceptedExtensions())->isEmpty()
@@ -124,7 +124,7 @@ class directory extends atoum\test
 	public function testAcceptDots()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->acceptDots())->isIdenticalTo($iterator)
 				->boolean($iterator->dotsAreAccepted())->isTrue()
@@ -134,7 +134,7 @@ class directory extends atoum\test
 	public function testRefuseDots()
 	{
 		$this
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->then
 				->object($iterator->refuseDots())->isIdenticalTo($iterator)
 				->boolean($iterator->dotsAreAccepted())->isFalse()
@@ -147,7 +147,7 @@ class directory extends atoum\test
 			->mockGenerator
 				->shunt('__construct')
 				->generate('recursiveDirectoryIterator')
-			->if($iterator = new recursives\directory())
+			->if($iterator = new testedClass())
 			->and($iterator->setIteratorFactory(function($path) use (& $recursiveDirectoryIterator) { return ($recursiveDirectoryIterator = new \mock\recursiveDirectoryIterator($path)); }))
 			->and($iterator->setDotFilterFactory(function($iterator) use (& $dotFilterIterator) { return ($dotFilterIterator = new filters\recursives\dot($iterator)); }))
 			->and($iterator->setExtensionFilterFactory(function($iterator, $extensions) use (& $extensionFilterIterator) { return ($extensionFilterIterator = new filters\recursives\extension($iterator, $extensions)); }))

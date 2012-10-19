@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives;
+namespace mageekguy\atoum\iterators\recursives\directory;
 
 use
 	mageekguy\atoum,
@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\iterators\filters
 ;
 
-class directory implements \iteratorAggregate
+class factory implements \iteratorAggregate
 {
 	protected $dotFilterFactory = null;
 	protected $acceptDots = false;
