@@ -831,18 +831,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
-	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
-	{
-		if (error_reporting() !== 0)
-		{
-			list($file, $line) = $this->getBacktrace();
-
-			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
-		}
-
-		return true;
-	}
-
 	public function startCase($case)
 	{
 		test\adapter::resetCallsForAllInstances();
@@ -878,6 +866,18 @@ abstract class test implements observable, adapter\aggregator, \countable
 		return $this;
 	}
 
+	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
+	{
+		if (error_reporting() !== 0)
+		{
+			list($file, $line) = $this->getBacktrace();
+
+			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
+		}
+
+		return true;
+	}
+
 	public static function setNamespace($namespace)
 	{
 		self::$namespace = self::cleanNamespace($namespace);
@@ -910,56 +910,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 	protected function afterTestMethod($testMethod) {}
 
 	protected function tearDown() {}
-
-	protected function addExceptionToScore(\exception $exception)
-	{
-		list($file, $line) = $this->getBacktrace($exception->getTrace());
-
-		$this->score->addException($file, $this->class, $this->currentMethod, $line, $exception);
-
-		return $this;
-	}
-
-	protected function getBacktrace(array $trace = null)
-	{
-		$debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
-
-		foreach ($debugBacktrace as $key => $value)
-		{
-			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->class && $value['function'] === $this->currentMethod)
-			{
-				if (isset($debugBacktrace[$key - 1]) === true)
-				{
-					$key -= 1;
-				}
-
-				return array(
-					$debugBacktrace[$key]['file'],
-					$debugBacktrace[$key]['line']
-				);
-			}
-		}
-
-		return null;
-	}
-
-	protected function runTestMethods(array $methods)
-	{
-		$this->runTestMethods = $methods;
-		$this->size = sizeof($this->runTestMethods);
-
-		return $this;
-	}
-
-	protected function checkMethod($methodName)
-	{
-		if (isset($this->testMethods[$methodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
-		}
-
-		return $this;
-	}
 
 	protected function setClassAnnotations(annotations\extractor $extractor)
 	{
@@ -1003,6 +953,56 @@ abstract class test implements observable, adapter\aggregator, \countable
 			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
 			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
 		;
+
+		return $this;
+	}
+
+	protected function getBacktrace(array $trace = null)
+	{
+		$debugBacktrace = $trace === null ? debug_backtrace(false) : $trace;
+
+		foreach ($debugBacktrace as $key => $value)
+		{
+			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->class && $value['function'] === $this->currentMethod)
+			{
+				if (isset($debugBacktrace[$key - 1]) === true)
+				{
+					$key -= 1;
+				}
+
+				return array(
+					$debugBacktrace[$key]['file'],
+					$debugBacktrace[$key]['line']
+				);
+			}
+		}
+
+		return null;
+	}
+
+	private function checkMethod($methodName)
+	{
+		if (isset($this->testMethods[$methodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
+		}
+
+		return $this;
+	}
+
+	private function runTestMethods(array $methods)
+	{
+		$this->runTestMethods = $methods;
+		$this->size = sizeof($this->runTestMethods);
+
+		return $this;
+	}
+
+	private function addExceptionToScore(\exception $exception)
+	{
+		list($file, $line) = $this->getBacktrace($exception->getTrace());
+
+		$this->score->addException($file, $this->class, $this->currentMethod, $line, $exception);
 
 		return $this;
 	}
@@ -1118,7 +1118,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 			if ($this->canRunEngine($engine) === true)
 			{
-
 				array_shift($this->runTestMethods);
 
 				$this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
