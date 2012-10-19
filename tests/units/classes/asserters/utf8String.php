@@ -13,22 +13,6 @@ require_once __DIR__ . '/../../runner.php';
 
 class utf8String extends atoum\test
 {
-	private function getRandomUtf8String()
-	{
-		$characters = 'àâäéèêëîïôöùüŷÿ';
-		$characters = mb_convert_encoding($characters, 'UTF-8', mb_detect_encoding($characters));
-		$charactersLength = mb_strlen($characters, 'UTF-8');
-
-		$utf8String = '';
-
-		for($i = 0; $i < 16; $i++)
-		{
-			$utf8String .= mb_substr($characters, rand(0, $charactersLength - 1), 1, 'UTF-8');
-		}
-
-		return $utf8String;
-	}
-
 	public function testClass()
 	{
 		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
@@ -226,5 +210,21 @@ class utf8String extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
 		;
+	}
+
+	private function getRandomUtf8String()
+	{
+		$characters = 'àâäéèêëîïôöùüŷÿ';
+		$characters = mb_convert_encoding($characters, 'UTF-8', mb_detect_encoding($characters));
+		$charactersLength = mb_strlen($characters, 'UTF-8');
+
+		$utf8String = '';
+
+		for($i = 0; $i < 16; $i++)
+		{
+			$utf8String .= mb_substr($characters, rand(0, $charactersLength - 1), 1, 'UTF-8');
+		}
+
+		return $utf8String;
 	}
 }
