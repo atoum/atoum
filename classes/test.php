@@ -87,28 +87,13 @@ abstract class test implements observable, adapter\aggregator, \countable
 		$this->class = $class->getName();
 		$this->classNamespace = $class->getNamespaceName();
 
-		$annotationExtractor = $annotationExtractor ?: new annotations\extractor();
+		$this->setClassAnnotations($annotationExtractor = $annotationExtractor ?: new annotations\extractor());
 
-		$test = $this;
-
-		$annotationExtractor
-			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
-			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
-			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
-			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
-			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
-			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
-			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
-			->extract($class->getDocComment())
-		;
+		$annotationExtractor->extract($class->getDocComment());
 
 		if ($this->testNamespace === null)
 		{
-			$annotationExtractor
-				->unsetHandler('ignore')
-				->unsetHandler('tags')
-				->unsetHandler('maxChildrenNumber')
-			;
+			$this->setParentClassAnnotations($annotationExtractor);
 
 			$parentClass = $class;
 
@@ -118,19 +103,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 		}
 
-		$annotationExtractor
-			->resetHandlers()
-			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
-			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
-			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
-			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
-			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
-			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
-		;
+		$this->setMethodAnnotations($annotationExtractor, $methodName);
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (strpos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			if (stripos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -980,6 +957,52 @@ abstract class test implements observable, adapter\aggregator, \countable
 		{
 			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
 		}
+
+		return $this;
+	}
+
+	protected function setClassAnnotations(annotations\extractor $extractor)
+	{
+		$test = $this;
+
+		$extractor
+			->resetHandlers()
+			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
+			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
+			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
+			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
+			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
+		;
+
+		return $this;
+	}
+
+	protected function setParentClassAnnotations(annotations\extractor $extractor)
+	{
+		$extractor
+			->unsetHandler('ignore')
+			->unsetHandler('tags')
+			->unsetHandler('maxChildrenNumber')
+		;
+
+		return $this;
+	}
+
+	protected function setMethodAnnotations(annotations\extractor $extractor, & $methodName)
+	{
+		$test = $this;
+
+		$extractor
+			->resetHandlers()
+			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
+			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
+			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
+			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
+			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
+			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
+		;
 
 		return $this;
 	}

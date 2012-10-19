@@ -266,13 +266,11 @@ class runner implements observable, adapter\aggregator
 	{
 		$classes = array();
 
-		$testClasses = $this->getDeclaredTestClasses($testBaseClass);
-
-		foreach ($testClasses as $testClass)
+		foreach ($this->getDeclaredTestClasses($testBaseClass) as $testClass)
 		{
 			$test = new $testClass();
 
-			if (self::isIgnored($test, $namespaces, $tags) === false)
+			if (static::isIgnored($test, $namespaces, $tags) === false)
 			{
 				$methods =  self::getMethods($test, $testMethods, $tags);
 
@@ -436,7 +434,7 @@ class runner implements observable, adapter\aggregator
 		{
 			$test = new $runTestClass();
 
-			if (self::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
+			if (static::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
 				$tests[] = array($test, $methods);
 
@@ -457,6 +455,7 @@ class runner implements observable, adapter\aggregator
 
 				$test
 					->setPhpPath($phpPath)
+					->setAdapter($this->adapter)
 					->setLocale($this->locale)
 					->setBootstrapFile($this->bootstrapFile)
 				;
