@@ -67,7 +67,6 @@ class dateInterval extends atoum\test
 			
 		;
 	}
-        
 
         public function testIsZero()
         {
