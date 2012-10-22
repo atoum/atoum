@@ -76,6 +76,7 @@ namespace mageekguy\atoum\tests\units
 				->string(atoum\test::fail)->isEqualTo('testAssertionFail')
 				->string(atoum\test::error)->isEqualTo('testError')
 				->string(atoum\test::uncompleted)->isEqualTo('testUncompleted')
+				->string(atoum\test::skipped)->isEqualTo('testSkipped')
 				->string(atoum\test::exception)->isEqualTo('testException')
 				->string(atoum\test::success)->isEqualTo('testAssertionSuccess')
 				->string(atoum\test::afterTestMethod)->isEqualTo('afterTestMethod')

@@ -22,6 +22,7 @@ abstract class test implements observable, adapter\aggregator, \countable
 	const error = 'testError';
 	const void = 'testVoid';
 	const uncompleted = 'testUncompleted';
+	const skipped = 'testSkipped';
 	const exception = 'testException';
 	const runtimeException = 'testRuntimeException';
 	const success = 'testAssertionSuccess';
@@ -262,6 +263,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 		;
 
 		return $this;
+	}
+
+	public function skip($message)
+	{
+		throw new test\exceptions\skip($message);
 	}
 
 	public function getAssertionManager()
@@ -755,11 +761,6 @@ abstract class test implements observable, adapter\aggregator, \countable
 				}
 				catch (\exception $exception)
 				{
-					foreach ($this->executeOnFailure as $closure)
-					{
-						$closure();
-					}
-
 					$this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
 
 					throw $exception;
@@ -767,6 +768,11 @@ abstract class test implements observable, adapter\aggregator, \countable
 			}
 			catch (asserter\exception $exception)
 			{
+				foreach ($this->executeOnFailure as $closure)
+				{
+					$closure();
+				}
+
 				if ($this->score->failExists($exception) === false)
 				{
 					$this->addExceptionToScore($exception);
@@ -775,6 +781,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 			catch (test\exceptions\runtime $exception)
 			{
 				$this->score->addRuntimeException($this->path, $this->class, $this->currentMethod, $exception);
+			}
+			catch (test\exceptions\skip $exception)
+			{
+				$this->score->addSkippedMethod($this->class, $this->currentMethod, $exception->getMessage());
 			}
 			catch (test\exceptions\stop $exception)
 			{
@@ -1040,6 +1050,10 @@ abstract class test implements observable, adapter\aggregator, \countable
 
 						case $score->getUncompletedMethodNumber():
 							$this->callObservers(self::uncompleted);
+							break;
+
+						case $score->getSkippedMethodNumber():
+							$this->callObservers(self::skipped);
 							break;
 
 						case $score->getFailNumber():

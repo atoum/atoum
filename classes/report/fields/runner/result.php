@@ -18,6 +18,7 @@ abstract class result extends report\field
 	protected $errorNumber = null;
 	protected $exceptionNumber = null;
 	protected $uncompletedMethodNumber = null;
+	protected $skippedMethodNumber = null;
 
 	public function __construct(locale $locale = null)
 	{
@@ -59,6 +60,11 @@ abstract class result extends report\field
 		return $this->uncompletedMethodNumber;
 	}
 
+	public function getSkippedMethodNumber()
+	{
+		return $this->skippedMethodNumber;
+	}
+
 	public function handleEvent($event, observable $observable)
 	{
 		if (parent::handleEvent($event, $observable) === false)
@@ -76,6 +82,7 @@ abstract class result extends report\field
 			$this->errorNumber = $score->getErrorNumber();
 			$this->exceptionNumber = $score->getExceptionNumber();
 			$this->uncompletedMethodNumber = $score->getUncompletedMethodNumber();
+			$this->skippedMethodNumber = $score->getSkippedMethodNumber();
 
 			return true;
 		}
