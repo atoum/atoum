@@ -321,7 +321,7 @@ class score
 		return $this;
 	}
 
-	public function addUncompletedMethod($file, $class, $method, $exitCode, $output)
+	public function addUncompletedMethod($class, $method, $exitCode, $output)
 	{
 		$this->uncompletedMethods[] = array(
 			'class' => $class,
