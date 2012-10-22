@@ -52,11 +52,6 @@ class concurrent extends test\engine
 		return $this->scoreFactory;
 	}
 
-	public function isRunning()
-	{
-		return ($this->php !== null);
-	}
-
 	public function isAsynchronous()
 	{
 		return true;

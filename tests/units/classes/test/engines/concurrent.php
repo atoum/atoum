@@ -21,7 +21,9 @@ class concurrent extends atoum\test
 		$this
 			->if($engine = new engines\concurrent())
 			->then
-				->boolean($engine->isRunning())->isFalse()
+				->object($engine->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf('closure')
+				->object($defaultScoreFactory())->isInstanceOf('mageekguy\atoum\score')
 		;
 	}
 
@@ -41,7 +43,6 @@ class concurrent extends atoum\test
 			->and($engine->setAdapter($adapter = new atoum\test\adapter()))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
-				->boolean($engine->isRunning())->isFalse()
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->getPath = $testPath = uniqid())
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
@@ -67,7 +68,6 @@ class concurrent extends atoum\test
 			->and($adapter->fclose = function() {})
 			->then
 				->object($engine->run($test))->isIdenticalTo($engine)
-				->boolean($engine->isRunning())->isTrue()
 				->adapter($adapter)
 					->call('fwrite')->withArguments(
 						$stdIn,
