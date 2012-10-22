@@ -58,6 +58,11 @@ class score
 		return $this;
 	}
 
+	public function getAssertionNumber()
+	{
+		return ($this->passNumber + sizeof($this->failAssertions));
+	}
+
 	public function getPassNumber()
 	{
 		return $this->passNumber;
@@ -73,9 +78,19 @@ class score
 		return $this->voidMethods;
 	}
 
+	public function getVoidMethodNumber()
+	{
+		return sizeof($this->voidMethods);
+	}
+
 	public function getUncompletedMethods()
 	{
 		return $this->uncompletedMethods;
+	}
+
+	public function getUncompletedMethodNumber()
+	{
+		return sizeof($this->uncompletedMethods);
 	}
 
 	public function getSkippedMethods()
@@ -83,9 +98,19 @@ class score
 		return $this->skippedMethods;
 	}
 
+	public function getSkippedMethodNumber()
+	{
+		return sizeof($this->skippedMethods);
+	}
+
 	public function getOutputs()
 	{
 		return array_values($this->outputs);
+	}
+
+	public function getOutputNumber()
+	{
+		return sizeof($this->outputs);
 	}
 
 	public function getTotalDuration()
@@ -105,6 +130,11 @@ class score
 		return array_values($this->durations);
 	}
 
+	public function getDurationNumber()
+	{
+		return sizeof($this->durations);
+	}
+
 	public function getTotalMemoryUsage()
 	{
 		$total = 0.0;
@@ -122,9 +152,19 @@ class score
 		return array_values($this->memoryUsages);
 	}
 
+	public function getMemoryUsageNumber()
+	{
+		return sizeof($this->memoryUsages);
+	}
+
 	public function getFailAssertions()
 	{
 		return self::sort(self::cleanAssertions($this->failAssertions));
+	}
+
+	public function getFailNumber()
+	{
+		return sizeof($this->getFailAssertions());
 	}
 
 	public function getErrors()
@@ -132,24 +172,14 @@ class score
 		return self::sort($this->errors);
 	}
 
+	public function getErrorNumber()
+	{
+		return sizeof($this->errors);
+	}
+
 	public function getExceptions()
 	{
 		return self::sort($this->exceptions);
-	}
-
-	public function getDurationNumber()
-	{
-		return sizeof($this->durations);
-	}
-
-	public function getOutputNumber()
-	{
-		return sizeof($this->outputs);
-	}
-
-	public function getAssertionNumber()
-	{
-		return ($this->passNumber + sizeof($this->failAssertions));
 	}
 
 	public function getExceptionNumber()
@@ -160,31 +190,6 @@ class score
 	public function getRuntimeExceptionNumber()
 	{
 		return sizeof($this->runtimeExceptions);
-	}
-
-	public function getMemoryUsageNumber()
-	{
-		return sizeof($this->memoryUsages);
-	}
-
-	public function getFailNumber()
-	{
-		return sizeof($this->getFailAssertions());
-	}
-
-	public function getErrorNumber()
-	{
-		return sizeof($this->errors);
-	}
-
-	public function getVoidMethodNumber()
-	{
-		return sizeof($this->voidMethods);
-	}
-
-	public function getUncompletedMethodNumber()
-	{
-		return sizeof($this->uncompletedMethods);
 	}
 
 	public function getMethodsWithFail()
@@ -339,11 +344,12 @@ class score
 		return $this;
 	}
 
-	public function addSkippedMethod($class, $method)
+	public function addSkippedMethod($class, $method, $message)
 	{
 		$this->skippedMethods[] = array(
 			'class' => $class,
-			'method' => $method
+			'method' => $method,
+			'message' => $message
 		);
 
 		return $this;
@@ -361,6 +367,7 @@ class score
 		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
 		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
 		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
+		$this->skippedMethods = array_merge($this->skippedMethods, $score->getSkippedMethods());
 		$this->coverage->merge($score->getCoverage());
 
 		return $this;

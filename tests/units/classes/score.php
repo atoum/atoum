@@ -521,11 +521,12 @@ class score extends atoum\test
 			->if($score = new atoum\score())
 			->then
 				->array($score->getSkippedMethods())->isEmpty()
-				->object($score->addSkippedMethod($class = uniqid(), $method = uniqid()))->isIdenticalTo($score)
+				->object($score->addSkippedMethod($class = uniqid(), $method = uniqid(), $message = uniqid()))->isIdenticalTo($score)
 				->array($score->getSkippedMethods())->isEqualTo(array(
 						array(
 							'class' => $class,
-							'method' => $method
+							'method' => $method,
+							'message' => $message
 						)
 					)
 				)
@@ -788,6 +789,7 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
+				->array($score->getSkippedMethods())->isEmpty()
 			->if($score->addPass())
 			->and($score->addFail(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
 			->and($score->addException(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), new \exception()))
@@ -797,6 +799,7 @@ class score extends atoum\test
 			->and($score->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addMemoryUsage(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
+			->and($score->addSkippedMethod(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(1)
@@ -807,6 +810,7 @@ class score extends atoum\test
 				->integer($score->getDurationNumber())->isEqualTo(1)
 				->integer($score->getMemoryUsageNumber())->isEqualTo(1)
 				->integer($score->getUncompletedMethodNumber())->isEqualTo(1)
+				->integer($score->getSkippedMethodNumber())->isEqualTo(1)
 			->if($otherScore->addPass())
 			->and($otherScore->addFail(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), new atoum\asserters\integer(new atoum\asserter\generator()), uniqid()))
 			->and($otherScore->addException(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), new \exception()))
@@ -816,6 +820,7 @@ class score extends atoum\test
 			->and($otherScore->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addMemoryUsage(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
+			->and($otherScore->addSkippedMethod(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(2)
@@ -827,6 +832,7 @@ class score extends atoum\test
 				->integer($score->getDurationNumber())->isEqualTo(2)
 				->integer($score->getMemoryUsageNumber())->isEqualTo(2)
 				->integer($score->getUncompletedMethodNumber())->isEqualTo(2)
+				->integer($score->getSkippedMethodNumber())->isEqualTo(2)
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(3)
 				->integer($score->getFailNumber())->isEqualTo(3)
@@ -837,6 +843,7 @@ class score extends atoum\test
 				->integer($score->getDurationNumber())->isEqualTo(3)
 				->integer($score->getMemoryUsageNumber())->isEqualTo(3)
 				->integer($score->getUncompletedMethodNumber())->isEqualTo(3)
+				->integer($score->getSkippedMethodNumber())->isEqualTo(3)
 		;
 	}
 
