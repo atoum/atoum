@@ -20,6 +20,7 @@ class score
 	protected $memoryUsages = array();
 	protected $voidMethods = array();
 	protected $uncompletedMethods = array();
+	protected $skippedMethods = array();
 	protected $coverage = null;
 
 	private static $failId = 0;
@@ -75,6 +76,11 @@ class score
 	public function getUncompletedMethods()
 	{
 		return $this->uncompletedMethods;
+	}
+
+	public function getSkippedMethods()
+	{
+		return $this->skippedMethods;
 	}
 
 	public function getOutputs()
@@ -328,6 +334,16 @@ class score
 			'method' => $method,
 			'exitCode' => $exitCode,
 			'output' => $output
+		);
+
+		return $this;
+	}
+
+	public function addSkippedMethod($class, $method)
+	{
+		$this->skippedMethods[] = array(
+			'class' => $class,
+			'method' => $method
 		);
 
 		return $this;

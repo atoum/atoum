@@ -23,6 +23,7 @@ class score extends atoum\test
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
+				->array($score->getSkippedMethods())->isEmpty()
 				->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
 			->and($score = new atoum\score($coverage = new atoum\score\coverage()))
 			->then
@@ -33,6 +34,8 @@ class score extends atoum\test
 				->array($score->getOutputs())->isEmpty()
 				->array($score->getDurations())->isEmpty()
 				->array($score->getMemoryUsages())->isEmpty()
+				->array($score->getUncompletedMethods())->isEmpty()
+				->array($score->getSkippedMethods())->isEmpty()
 				->object($score->getCoverage())->isIdenticalTo($coverage)
 		;
 	}
@@ -506,6 +509,23 @@ class score extends atoum\test
 							'method' => $otherMethod,
 							'exitCode' => $otherExitCode,
 							'output' => $otherOutput,
+						)
+					)
+				)
+		;
+	}
+
+	public function testAddSkippedMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->array($score->getSkippedMethods())->isEmpty()
+				->object($score->addSkippedMethod($class = uniqid(), $method = uniqid()))->isIdenticalTo($score)
+				->array($score->getSkippedMethods())->isEqualTo(array(
+						array(
+							'class' => $class,
+							'method' => $method
 						)
 					)
 				)
