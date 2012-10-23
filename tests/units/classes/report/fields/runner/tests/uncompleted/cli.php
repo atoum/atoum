@@ -18,14 +18,12 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\tests\uncompleted')
-		;
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\tests\uncompleted');
 	}
 
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->getTitlePrompt())->isEqualTo(new prompt())
@@ -64,7 +62,7 @@ class cli extends atoum\test
 
 	public function testSetTitlePrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -78,7 +76,7 @@ class cli extends atoum\test
 
 	public function testSetTitleColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -92,7 +90,7 @@ class cli extends atoum\test
 
 	public function testSetMethodPrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -106,7 +104,7 @@ class cli extends atoum\test
 
 	public function testSetMethodColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -120,7 +118,7 @@ class cli extends atoum\test
 
 	public function testSetOutputPrompt()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setOutputPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
@@ -134,7 +132,7 @@ class cli extends atoum\test
 
 	public function testSetOutputColorizer()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setOutputColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
@@ -148,7 +146,7 @@ class cli extends atoum\test
 
 	public function testSetLocale()
 	{
-		$this->assert
+		$this
 			->if($field = new tests\uncompleted\cli())
 			->then
 				->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
@@ -164,126 +162,124 @@ class cli extends atoum\test
 	{
 
 		$this
-			->assert
-				->if($field = new tests\uncompleted\cli())
-				->then
-					->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
-					->variable($field->getRunner())->isNull()
-					->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isTrue()
-					->object($field->getRunner())->isIdenticalTo($runner)
+			->if($field = new tests\uncompleted\cli())
+			->then
+				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
+				->variable($field->getRunner())->isNull()
+				->boolean($field->handleEvent(atoum\runner::runStop, $runner = new atoum\runner()))->isTrue()
+				->object($field->getRunner())->isIdenticalTo($runner)
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->assert
-				->if($score = new \mock\mageekguy\atoum\runner\score())
-				->and($score->getMockController()->getUncompletedMethods = array())
-				->and($runner = new atoum\runner())
-				->and($runner->setScore($score))
-				->and($defaultField = new tests\uncompleted\cli())
-				->then
-					->castToString($defaultField)->isEmpty()
-				->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
-				->then
-					->castToString($defaultField)->isEmpty()
-				->if($customField->handleEvent(atoum\runner::runStart, $runner))
-				->then
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEmpty()
-				->if($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($customField)->isEmpty()
-				->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = array(
-							array(
-								'class' => $class = uniqid(),
-								'method' => $method = uniqid(),
-								'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
-								'output' => $output = uniqid()
-							),
-							array(
-								'class' => $otherClass = uniqid(),
-								'method' => $otherMethod = uniqid(),
-								'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
-								'output' => ($otherOutputLine1 = uniqid()) . PHP_EOL . ($otherOutputLine2 = uniqid())
-							),
-							array(
-								'class' => $anotherClass = uniqid(),
-								'method' => $anotherMethod = uniqid(),
-								'exitCode' => $anotherExitCode = rand(1, PHP_INT_MAX),
-								'output' => ''
-							)
+			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->and($score->getMockController()->getUncompletedMethods = array())
+			->and($runner = new atoum\runner())
+			->and($runner->setScore($score))
+			->and($defaultField = new tests\uncompleted\cli())
+			->then
+				->castToString($defaultField)->isEmpty()
+			->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
+			->then
+				->castToString($defaultField)->isEmpty()
+			->if($customField->handleEvent(atoum\runner::runStart, $runner))
+			->then
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEmpty()
+			->if($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($customField)->isEmpty()
+			->if($score->getMockController()->getUncompletedMethods = $allUncompletedMethods = array(
+						array(
+							'class' => $class = uniqid(),
+							'method' => $method = uniqid(),
+							'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
+							'output' => $output = uniqid()
+						),
+						array(
+							'class' => $otherClass = uniqid(),
+							'method' => $otherMethod = uniqid(),
+							'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
+							'output' => ($otherOutputLine1 = uniqid()) . PHP_EOL . ($otherOutputLine2 = uniqid())
+						),
+						array(
+							'class' => $anotherClass = uniqid(),
+							'method' => $anotherMethod = uniqid(),
+							'exitCode' => $anotherExitCode = rand(1, PHP_INT_MAX),
+							'output' => ''
 						)
 					)
-				->and($defaultField = new tests\uncompleted\cli())
-				->then
-					->castToString($defaultField)->isEmpty()
-				->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-				->then
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
-				->then
-					->castToString($defaultField)->isEmpty()
-				->if($customField->handleEvent(atoum\runner::runStart, $runner))
-				->then
-					->castToString($customField)->isEmpty()
-				->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
-							sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
-							'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
-							sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
-							'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
-							$otherOutputLine2 . '"' . PHP_EOL .
-							sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
-							'output(0) ""' . PHP_EOL
-						)
-				->if($customField->handleEvent(atoum\runner::runStop, $runner))
-				->then
-					->castToString($customField)->isEqualTo(
-						$titlePrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
-						) .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $class, $method, $exitCode))
-						) .
-						PHP_EOL .
-						$outputPrompt .
-						'output(' . strlen($output) . ') "' . $output . '"' .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $otherClass, $otherMethod, $otherExitCode))
-						) .
-						PHP_EOL .
-						$outputPrompt .
-						'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 .
-						PHP_EOL .
-						$outputPrompt .
-						$otherOutputLine2 . '"' .
-						PHP_EOL .
-						$methodPrompt .
-						sprintf(
-							$locale->_('%s:'),
-							$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $anotherClass, $anotherMethod, $anotherExitCode))
-						) .
-						PHP_EOL .
-						$outputPrompt .
-						'output(0) ""' .
-						PHP_EOL
+				)
+			->and($defaultField = new tests\uncompleted\cli())
+			->then
+				->castToString($defaultField)->isEmpty()
+			->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->then
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
+			->then
+				->castToString($defaultField)->isEmpty()
+			->if($customField->handleEvent(atoum\runner::runStart, $runner))
+			->then
+				->castToString($customField)->isEmpty()
+			->if($defaultField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($defaultField)->isEqualTo(sprintf('There are %d uncompleted methods:', sizeof($allUncompletedMethods)) . PHP_EOL .
+						sprintf('%s::%s() with exit code %d:', $class, $method, $exitCode) . PHP_EOL .
+						'output(' . strlen($output) . ') "' . $output . '"' . PHP_EOL .
+						sprintf('%s::%s() with exit code %d:', $otherClass, $otherMethod, $otherExitCode) . PHP_EOL .
+						'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 . PHP_EOL .
+						$otherOutputLine2 . '"' . PHP_EOL .
+						sprintf('%s::%s() with exit code %d:', $anotherClass, $anotherMethod, $anotherExitCode) . PHP_EOL .
+						'output(0) ""' . PHP_EOL
 					)
+			->if($customField->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($customField)->isEqualTo(
+					$titlePrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$titleColorizer->colorize(sprintf($locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', sizeof($allUncompletedMethods)), sizeof($allUncompletedMethods)))
+					) .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $class, $method, $exitCode))
+					) .
+					PHP_EOL .
+					$outputPrompt .
+					'output(' . strlen($output) . ') "' . $output . '"' .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $otherClass, $otherMethod, $otherExitCode))
+					) .
+					PHP_EOL .
+					$outputPrompt .
+					'output(' . (strlen($otherOutputLine1 . PHP_EOL . $otherOutputLine2)) . ') "' . $otherOutputLine1 .
+					PHP_EOL .
+					$outputPrompt .
+					$otherOutputLine2 . '"' .
+					PHP_EOL .
+					$methodPrompt .
+					sprintf(
+						$locale->_('%s:'),
+						$methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $anotherClass, $anotherMethod, $anotherExitCode))
+					) .
+					PHP_EOL .
+					$outputPrompt .
+					'output(0) ""' .
+					PHP_EOL
+				)
 		;
 	}
 }
