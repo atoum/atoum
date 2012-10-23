@@ -767,8 +767,8 @@ class runner extends atoum\script
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$report = $script->getFactory()->build('mageekguy\atoum\reports\realtime\cli\light', array($script->getFactory()));
-						$report->addWriter($script->getFactory()->build('mageekguy\atoum\writers\std\out'));
+						$report = new atoum\reports\realtime\cli\light();
+						$report->addWriter($script->getOutputWriter());
 
 						$script->getRunner()->addReport($report);
 					},
