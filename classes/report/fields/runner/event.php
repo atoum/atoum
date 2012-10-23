@@ -20,6 +20,7 @@ abstract class event extends report\fields\event
 				test::error,
 				test::void,
 				test::uncompleted,
+				test::skipped,
 				test::exception,
 				test::success,
 				runner::runStop

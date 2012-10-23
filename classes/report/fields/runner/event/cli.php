@@ -57,15 +57,19 @@ class cli extends report\fields\runner\event
 						break;
 
 					case test::error:
-						$this->progressBar->refresh('e');
+						$this->progressBar->refresh('E');
 						break;
 
 					case test::exception:
-						$this->progressBar->refresh('E');
+						$this->progressBar->refresh('X');
 						break;
 
 					case test::uncompleted:
 						$this->progressBar->refresh('U');
+						break;
+
+					case test::skipped:
+						$this->progressBar->refresh('-');
 						break;
 
 					case runner::runStop:

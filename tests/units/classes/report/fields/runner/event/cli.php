@@ -115,16 +115,22 @@ class cli extends atoum\test
 					->castToString($field)->isEqualTo((string) $progressBar->refresh('F'))
 				->if($field->handleEvent(atoum\test::error, $this))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('e'))
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('E'))
 				->if($field->handleEvent(atoum\test::exception, $this))
 				->then
-					->castToString($field)->isEqualTo((string) $progressBar->refresh('E'))
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('X'))
 				->if($field->handleEvent(atoum\test::success, $this))
 				->then
 					->castToString($field)->isEqualTo((string) $progressBar->refresh('S'))
 				->if($field->handleEvent(atoum\test::uncompleted, $this))
 				->then
 					->castToString($field)->isEqualTo((string) $progressBar->refresh('U'))
+				->if($field->handleEvent(atoum\test::void, $this))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('0'))
+				->if($field->handleEvent(atoum\test::skipped, $this))
+				->then
+					->castToString($field)->isEqualTo((string) $progressBar->refresh('-'))
 				->if($field->handleEvent(atoum\test::afterTestMethod, $this))
 				->then
 					->castToString($field)->isEqualTo((string) $progressBar)
