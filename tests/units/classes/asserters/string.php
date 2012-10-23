@@ -178,7 +178,7 @@ class string extends atoum\test
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Value is undefined')
-			->if($asserter->setWith($string = uniqid()))
+			->if($asserter->setWith($string = __METHOD__))
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter, & $fragment) { $asserter->contains($fragment = uniqid()); })
