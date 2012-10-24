@@ -18,13 +18,12 @@ class phing extends \mageekguy\atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\field')
-		;
+		$this->testedClass->extends('mageekguy\atoum\report\field');
 	}
 
 	public function test__construct()
 	{
-		$this->assert
+		$this
 			->if($field = new atoum\phing())
 			->then
 				->object($field->getPrompt())->isEqualTo(new prompt())
@@ -34,88 +33,76 @@ class phing extends \mageekguy\atoum\test
 				->variable($field->getPath())->isNull()
 				->variable($field->getVersion())->isNull()
 				->array($field->getEvents())->isEqualTo(array(runner::runStart))
-			->if($field = new atoum\phing($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale()))
-			->then
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getColorizer())->isIdenticalTo($colorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->variable($field->getAuthor())->isNull()
-				->variable($field->getPath())->isNull()
-				->variable($field->getVersion())->isNull()
-				->array($field->getEvents())->isEqualTo(array(runner::runStart))
 		;
 	}
 
 	public function testSetPrompt()
 	{
-		$field = new atoum\phing();
-
-		$this->assert
-			->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-			->object($field->getPrompt())->isIdenticalTo($prompt)
+		$this
+			->if($field = new atoum\phing())
+			->then
+				->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
+				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->setPrompt())->isIdenticalTo($field)
+				->object($field->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
 	public function testSetColorizer()
 	{
-		$field = new atoum\phing();
-
-		$this->assert
-			->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-			->object($field->getColorizer())->isIdenticalTo($colorizer)
+		$this
+			->if($field = new atoum\phing())
+			->then
+				->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
+				->object($field->getColorizer())->isIdenticalTo($colorizer)
+				->object($field->setColorizer())->isIdenticalTo($field)
+				->object($field->getColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
 	public function testHandleEvent()
 	{
-		$score = new score();
-		$score
-			->setAtoumPath($atoumPath = uniqid())
-			->setAtoumVersion($atoumVersion = uniqid())
-		;
-
-		$runner = new runner();
-		$runner->setScore($score);
-
-		$field = new atoum\phing();
-
-		$this->assert
-			->variable($field->getAuthor())->isNull()
-			->variable($field->getPath())->isNull()
-			->variable($field->getVersion())->isNull()
-			->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-			->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
-			->string($field->getPath())->isEqualTo($atoumPath)
-			->string($field->getVersion())->isEqualTo($atoumVersion)
+		$this
+			->if($score = new score())
+			->and($score
+				->setAtoumPath($atoumPath = uniqid())
+				->setAtoumVersion($atoumVersion = uniqid())
+			)
+			->and($runner = new runner())
+			->and($runner->setScore($score))
+			->and($field = new atoum\phing())
+			->then
+				->variable($field->getAuthor())->isNull()
+				->variable($field->getPath())->isNull()
+				->variable($field->getVersion())->isNull()
+				->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
+				->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+				->string($field->getPath())->isEqualTo($atoumPath)
+				->string($field->getVersion())->isEqualTo($atoumVersion)
 		;
 	}
 
 	public function test__toString()
 	{
-		$score = new score();
-		$score
-			->setAtoumPath($atoumPath = uniqid())
-			->setAtoumVersion($atoumVersion = uniqid())
-		;
-
-		$runner = new runner();
-		$runner->setScore($score);
-
-		$this->assert
-			->if($field = new atoum\phing())
+		$this
+			->if($score = new score())
+			->and($score
+				->setAtoumPath($atoumPath = uniqid())
+				->setAtoumVersion($atoumVersion = uniqid())
+			)
+			->and($runner = new runner())
+			->and($runner->setScore($score))
+			->and($field = new atoum\phing())
 			->and($field->handleEvent(runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(runner::runStart, $runner))
 			->then
 				->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \mageekguy\atoum\author)))
-			->if($field = new atoum\phing($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), null, $locale = new locale()))
-			->and($field->handleEvent(runner::runStop, $runner))
-			->then
-				->castToString($field)->isEmpty()
-			->if($field->handleEvent(runner::runStart, $runner))
-			->then
-				->castToString($field)->isEqualTo($field->getPrompt() . $colorizer->colorize(sprintf($field->getLocale()->_("Atoum version: %s \nAtoum path: %s \nAtoum author: %s"), $atoumVersion, $atoumPath, \mageekguy\atoum\author)))
 		;
 	}
 }

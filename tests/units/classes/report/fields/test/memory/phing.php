@@ -17,7 +17,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\memory\cli');
+		$this->testedClass->extends('mageekguy\atoum\report\fields\test\memory\cli');
 	}
 
 	public function test__construct()
@@ -31,22 +31,6 @@ class phing extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getValue())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
-			->if($field = new test\memory\phing(null, null, null, null))
-			->then
-				->object($field->getPrompt())->isEqualTo(new prompt())
-				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-				->object($field->getMemoryColorizer())->isEqualTo(new colorizer())
-				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
-			->if($field = new test\memory\phing($prompt = new prompt(), $titleColorizer = new colorizer(), $memoryColorizer = new colorizer(), $locale = new locale()))
-			->then
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getMemoryColorizer())->isIdenticalTo($memoryColorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
 		;
 	}
 
@@ -57,10 +41,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getPrompt())->isIdenticalTo($prompt)
-			->if($field = new test\memory\phing(new prompt()))
-			->then
-				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
-				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->setPrompt())->isIdenticalTo($field)
+				->object($field->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -71,10 +55,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-			->if($field = new test\memory\phing(null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -85,10 +69,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setMemoryColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getMemoryColorizer())->isIdenticalTo($colorizer)
-			->if($field = new test\memory\phing(null, null, new colorizer()))
-			->then
-				->object($field->setMemoryColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getMemoryColorizer())->isIdenticalTo($colorizer)
+				->object($field->setMemoryColorizer())->isIdenticalTo($field)
+				->object($field->getMemoryColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -124,7 +108,11 @@ class phing extends atoum\test
 			->and($test = new \mock\mageekguy\atoum\test($adapter))
 			->and($test->getMockController()->getScore = $score)
 			->and($defaultField = new test\memory\phing())
-			->and($customField = new test\memory\phing($prompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $memoryColorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+			->and($customField = new test\memory\phing())
+			->and($customField->setPrompt($prompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMemoryColorizer($memoryColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new locale()))
 			->then
 				->castToString($defaultField)->isEqualTo($defaultField->getPrompt() . $defaultField->getLocale()->_('unknown'))
 				->castToString($customField)->isEqualTo(

@@ -20,7 +20,7 @@ class html extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\coverage\cli');
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\coverage\cli');
 	}
 
 	public function test__construct()
@@ -42,22 +42,6 @@ class html extends atoum\test
 				->variable($field->getCoverage())->isNull()
 				->array($field->getSrcDirectories())->isEmpty()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new coverage\html($projectName = uniqid(), $destinationDirectory = uniqid(), $templatesDirectory = uniqid(), $prompt = new prompt(), $titleColorizer = new colorizer(), $coverageColorizer = new colorizer(), $urlPrompt = new prompt(), $urlColorizer = new colorizer(), $templateParser = new template\parser(), $adapter = new atoum\adapter(), $locale = new atoum\locale()))
-			->then
-				->string($field->getProjectName())->isEqualTo($projectName)
-				->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
-				->string($field->getTemplatesDirectory())->isEqualTo($templatesDirectory)
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getCoverageColorizer())->isIdenticalTo($coverageColorizer)
-				->object($field->getUrlPrompt())->isIdenticalTo($urlPrompt)
-				->object($field->getUrlColorizer())->isIdenticalTo($urlColorizer)
-				->object($field->getAdapter())->isIdenticalTo($adapter)
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->object($field->getTemplateParser())->isIdenticalTo($templateParser)
-				->variable($field->getCoverage())->isNull()
-				->array($field->getSrcDirectories())->isEmpty()
-				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
 		;
 	}
 
@@ -68,10 +52,10 @@ class html extends atoum\test
 			->then
 				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
 				->object($field->getAdapter())->isIdenticalTo($adapter)
-			->if($field = new coverage\html(uniqid(), uniqid(), null, null, null, null, null, null, null, new atoum\adapter()))
-			->then
-				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
-				->object($field->getAdapter())->isIdenticalTo($adapter)
+				->object($field->setAdapter())->isIdenticalTo($field)
+				->object($field->getAdapter())
+					->isNotIdenticalTo($adapter)
+					->isEqualTo(new atoum\adapter())
 		;
 	}
 
@@ -82,6 +66,10 @@ class html extends atoum\test
 			->then
 				->object($field->setUrlPrompt($urlPrompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getUrlPrompt())->isIdenticalTo($urlPrompt)
+				->object($field->setUrlPrompt())->isIdenticalTo($field)
+				->object($field->getUrlPrompt())
+					->isNotIdenticalTo($urlPrompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -92,12 +80,15 @@ class html extends atoum\test
 			->then
 				->object($field->setUrlColorizer($urlColorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getUrlColorizer())->isIdenticalTo($urlColorizer)
+				->object($field->setUrlColorizer())->isIdenticalTo($field)
+				->object($field->getUrlColorizer())
+					->isNotIdenticalTo($urlColorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
 	public function testSetTemplatesDirectory()
 	{
-
 		$this
 			->if($field = new coverage\html(uniqid(), uniqid()))
 			->then
@@ -144,7 +135,6 @@ class html extends atoum\test
 
 	public function testGetDestinationDirectoryIterator()
 	{
-
 		$this
 			->if($field = new coverage\html(uniqid(), __DIR__))
 			->then
@@ -214,7 +204,8 @@ class html extends atoum\test
 			->and($destinationDirectory->readdir[4] = $file = stream::getSubStream($destinationDirectory))
 			->and($file->unlink = true)
 			->and($destinationDirectory->readdir[5] = false)
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), (string) $destinationDirectory, uniqid(), null, null, null, null, null, null, $adapter = new test\adapter()))
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html(uniqid(), (string) $destinationDirectory))
+			->and($field->setAdapter($adapter = new test\adapter()))
 			->and($adapter->rmdir = function() {})
 			->and($adapter->unlink = function() {})
 			->then
@@ -319,7 +310,7 @@ class html extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
+			->if($field = new coverage\html(uniqid(), uniqid()))
 			->then
 				->castToString($field)->isEqualTo('Code coverage: unknown.' . PHP_EOL)
 			->if($coverage = new \mock\mageekguy\atoum\score\coverage())
@@ -437,9 +428,10 @@ class html extends atoum\test
 			->and($reflectedMethod4 = new \mock\reflectionMethod(uniqid(), uniqid(), $reflectedMethod4Controller))
 			->and($reflectedClassController->getMethods = array($reflectedMethod1, $reflectedMethod2, $reflectedMethod3, $reflectedMethod4))
 			->and($templateParser = new \mock\mageekguy\atoum\template\parser())
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid(), $templatesDirectory = uniqid()))
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\coverage\html($projectName = uniqid(), $destinationDirectory = uniqid()))
 			->and($field
 					->setTemplateParser($templateParser)
+					->setTemplatesDirectory($templatesDirectory = uniqid())
 					->setAdapter($adapter = new test\adapter())
 				)
 			->and($fieldController = $field->getMockController())

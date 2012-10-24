@@ -17,9 +17,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures')
-		;
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures');
 	}
 
 	public function test__construct()
@@ -34,24 +32,6 @@ class cli extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getRunner())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new runner\failures\cli(null, null, null, null, null))
-			->then
-				->object($field->getTitlePrompt())->isEqualTo(new prompt())
-				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-				->object($field->getMethodPrompt())->isEqualTo(new prompt())
-				->object($field->getMethodColorizer())->isEqualTo(new colorizer())
-				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getRunner())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $locale = new atoum\locale()))
-			->then
-				->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
-				->object($field->getMethodColorizer())->isIdenticalTo($methodColorizer)
-				->variable($field->getRunner())->isNull()
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
 		;
 	}
 
@@ -62,10 +42,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getTitlePrompt())->isIdenticalTo($prompt)
-			->if($field = new runner\failures\cli(new prompt(uniqid())))
-			->then
-				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-				->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+				->object($field->setTitlePrompt())->isIdenticalTo($field)
+				->object($field->getTitlePrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -76,10 +56,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-			->if($field = new runner\failures\cli(null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -90,10 +70,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getMethodPrompt())->isIdenticalTo($prompt)
-			->if($field = new runner\failures\cli(null, null, new prompt()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setMethodPrompt())->isIdenticalTo($field)
+				->object($field->getMethodPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -104,10 +84,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
-			->if($field = new runner\failures\cli(null, null, null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -131,7 +111,12 @@ class cli extends atoum\test
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))
 			->and($defaultField = new runner\failures\cli())
-			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->and($customField = new runner\failures\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
 				->castToString($customField)->isEmpty()
@@ -169,7 +154,12 @@ class cli extends atoum\test
 					)
 				)
 			->and($defaultField = new runner\failures\cli())
-			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->and($customField = new runner\failures\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
 				->castToString($customField)->isEmpty()
@@ -230,7 +220,12 @@ class cli extends atoum\test
 					)
 				)
 			->and($defaultField = new runner\failures\cli())
-			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->and($customField = new runner\failures\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
 				->castToString($customField)->isEmpty()
@@ -293,7 +288,12 @@ class cli extends atoum\test
 					)
 				)
 			->and($defaultField = new runner\failures\cli())
-			->and($customField = new runner\failures\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
+			->and($customField = new runner\failures\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
 				->castToString($customField)->isEmpty()

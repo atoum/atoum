@@ -15,13 +15,13 @@ class execute extends runner\failures
 {
 	protected $command = '';
 
-	public function __construct($command, adapter $adapter = null, locale $locale = null)
+	public function __construct($command)
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
 			->setCommand($command)
-			->setAdapter($adapter ?: new adapter())
+			->setAdapter()
 		;
 	}
 
@@ -37,9 +37,9 @@ class execute extends runner\failures
 		return $this->command;
 	}
 
-	public function setAdapter(adapter $adapter)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->adapter = $adapter;
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}

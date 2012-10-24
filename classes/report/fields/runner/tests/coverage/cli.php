@@ -18,22 +18,22 @@ class cli extends report\fields\runner\tests\coverage
 	protected $titleColorizer = null;
 	protected $coverageColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, prompt $classPrompt = null, prompt $methodPrompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setTitlePrompt($titlePrompt ?: new prompt())
-			->setClassPrompt($classPrompt ?: new prompt())
-			->setMethodPrompt($methodPrompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setCoverageColorizer($coverageColorizer ?: new colorizer())
+			->setTitlePrompt()
+			->setClassPrompt()
+			->setMethodPrompt()
+			->setTitleColorizer()
+			->setCoverageColorizer()
 		;
 	}
 
-	public function setTitlePrompt(prompt $prompt)
+	public function setTitlePrompt(prompt $prompt = null)
 	{
-		$this->titlePrompt = $prompt;
+		$this->titlePrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -43,9 +43,9 @@ class cli extends report\fields\runner\tests\coverage
 		return $this->titlePrompt;
 	}
 
-	public function setClassPrompt($prompt)
+	public function setClassPrompt(prompt $prompt = null)
 	{
-		$this->classPrompt = $prompt;
+		$this->classPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -55,9 +55,9 @@ class cli extends report\fields\runner\tests\coverage
 		return $this->classPrompt;
 	}
 
-	public function setMethodPrompt($prompt)
+	public function setMethodPrompt(prompt $prompt = null)
 	{
-		$this->methodPrompt = $prompt;
+		$this->methodPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -67,9 +67,9 @@ class cli extends report\fields\runner\tests\coverage
 		return $this->methodPrompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -79,9 +79,9 @@ class cli extends report\fields\runner\tests\coverage
 		return $this->titleColorizer;
 	}
 
-	public function setCoverageColorizer(colorizer $colorizer)
+	public function setCoverageColorizer(colorizer $colorizer = null)
 	{
-		$this->coverageColorizer = $colorizer;
+		$this->coverageColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -94,7 +94,6 @@ class cli extends report\fields\runner\tests\coverage
 	public function __toString()
 	{
 		$string = '';
-
 
 		if ($this->coverage !== null && sizeof($this->coverage) > 0)
 		{

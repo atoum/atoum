@@ -17,20 +17,20 @@ class cli extends report\fields\runner\coverage
 	protected $titleColorizer = null;
 	protected $coverageColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setCoverageColorizer($coverageColorizer ?: new colorizer())
+			->setPrompt()
+			->setTitleColorizer()
+			->setCoverageColorizer()
 		;
 	}
 
-	public function setPrompt(prompt $prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -40,9 +40,9 @@ class cli extends report\fields\runner\coverage
 		return $this->prompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -52,9 +52,9 @@ class cli extends report\fields\runner\coverage
 		return $this->titleColorizer;
 	}
 
-	public function setCoverageColorizer(colorizer $colorizer)
+	public function setCoverageColorizer(colorizer $colorizer = null)
 	{
-		$this->coverageColorizer = $colorizer;
+		$this->coverageColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

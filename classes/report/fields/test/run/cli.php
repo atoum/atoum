@@ -15,19 +15,19 @@ class cli extends report\fields\test\run
 	protected $prompt = null;
 	protected $colorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $colorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setColorizer($colorizer ?: new colorizer())
+			->setPrompt()
+			->setColorizer()
 		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -37,9 +37,9 @@ class cli extends report\fields\test\run
 		return $this->prompt;
 	}
 
-	public function setColorizer(colorizer $colorizer)
+	public function setColorizer(colorizer $colorizer = null)
 	{
-		$this->colorizer = $colorizer;
+		$this->colorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

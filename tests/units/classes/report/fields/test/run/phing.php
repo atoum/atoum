@@ -18,7 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\run\cli');
+		$this->testedClass->extends('mageekguy\atoum\report\fields\test\run\cli');
 	}
 
 	public function test__construct()
@@ -26,14 +26,10 @@ class phing extends atoum\test
 		$this
 			->if($field = new test\run\phing())
 			->then
+				->object($field->getPrompt())->isEqualTo(new prompt())
+				->object($field->getColorizer())->isEqualTo(new colorizer())
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getTestClass())->isNull()
-				->object($field->getLocale())->isEqualTo(new atoum\locale())
-			->if($field = new test\run\phing($prompt = new prompt(), $colorizer = new colorizer(), $locale = new locale()))
-			->then
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getColorizer())->isIdenticalTo($colorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
@@ -44,10 +40,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getPrompt())->isIdenticalTo($prompt)
-			->if($field = new test\run\phing(new prompt()))
-			->then
-				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
-				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->setPrompt())->isIdenticalTo($field)
+				->object($field->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -58,10 +54,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getColorizer())->isIdenticalTo($colorizer)
-			->if($field = new test\run\phing(null, new colorizer()))
-			->then
-				->object($field->setColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getColorizer())->isIdenticalTo($colorizer)
+				->object($field->setColorizer())->isIdenticalTo($field)
+				->object($field->getColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -149,7 +145,10 @@ class phing extends atoum\test
 			->if($defaultField->handleEvent(atoum\test::runStart, $test))
 			->then
 				->castToString($defaultField)->isEqualTo(sprintf('%s : ', $test->getClass()))
-			->if($customField = new test\run\phing($prompt = new prompt(uniqid()), $colorizer = new colorizer(uniqid(), uniqid()), $locale = new locale()))
+			->if($customField = new test\run\phing())
+			->and($customField->setPrompt($prompt = new prompt(uniqid())))
+			->and($customField->setColorizer($colorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new locale()))
 			->then
 				->castToString($customField)->isEqualTo($prompt . $colorizer->colorize($locale->_('There is currently no test running.')))
 			->if($customField->handleEvent(atoum\test::runStop, $test))

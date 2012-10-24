@@ -29,55 +29,20 @@ class html extends report\fields\runner\coverage\cli
 	protected $templateParser = null;
 	protected $reflectionClassInjector = null;
 
-	public function __construct($projectName, $destinationDirectory, $templatesDirectory = null, prompt $prompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, prompt $urlPrompt = null, colorizer $urlColorizer = null, template\parser $parser = null, atoum\adapter $adapter = null, locale $locale = null)
+	public function __construct($projectName, $destinationDirectory)
 	{
-		parent::__construct($prompt, $titleColorizer, $coverageColorizer, $locale);
+		parent::__construct();
 
 		$this
-			->setUrlPrompt($urlPrompt ?: new prompt())
-			->setUrlColorizer($urlColorizer ?: new colorizer())
 			->setProjectName($projectName)
-			->setTemplatesDirectory($templatesDirectory ?: atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage')
 			->setDestinationDirectory($destinationDirectory)
-			->setTemplateParser($parser ?: new template\parser())
-			->setAdapter($adapter ?: new atoum\adapter())
+			->setAdapter()
+			->setUrlPrompt()
+			->setUrlColorizer()
+			->setTemplatesDirectory()
+			->setTemplateParser()
 			->setRootUrl('/')
 		;
-	}
-
-	public function setReflectionClassInjector(\closure $reflectionClassInjector)
-	{
-		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
-
-		if ($closure->getNumberOfParameters() != 1)
-		{
-			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
-		}
-
-		$this->reflectionClassInjector = $reflectionClassInjector;
-
-		return $this;
-	}
-
-	public function getReflectionClass($class)
-	{
-		$reflectionClass = null;
-
-		if ($this->reflectionClassInjector === null)
-		{
-			$reflectionClass = new \reflectionClass($class);
-		}
-		else
-		{
-			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
-
-			if ($reflectionClass instanceof \reflectionClass === false)
-			{
-				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
-			}
-		}
-
-		return $reflectionClass;
 	}
 
 	public function __toString()
@@ -328,9 +293,68 @@ class html extends report\fields\runner\coverage\cli
 		return $string;
 	}
 
-	public function setAdapter(atoum\adapter $adapter)
+	public function setReflectionClassInjector(\closure $reflectionClassInjector)
 	{
-		$this->adapter = $adapter;
+		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
+
+		if ($closure->getNumberOfParameters() != 1)
+		{
+			throw new exceptions\logic\invalidArgument('Reflection class injector must take one argument');
+		}
+
+		$this->reflectionClassInjector = $reflectionClassInjector;
+
+		return $this;
+	}
+
+	public function getReflectionClass($class)
+	{
+		$reflectionClass = null;
+
+		if ($this->reflectionClassInjector === null)
+		{
+			$reflectionClass = new \reflectionClass($class);
+		}
+		else
+		{
+			$reflectionClass = $this->reflectionClassInjector->__invoke($class);
+
+			if ($reflectionClass instanceof \reflectionClass === false)
+			{
+				throw new exceptions\runtime\unexpectedValue('Reflection class injector must return a \reflectionClass instance');
+			}
+		}
+
+		return $reflectionClass;
+	}
+
+	public function setProjectName($projectName)
+	{
+		$this->projectName = (string) $projectName;
+
+		return $this;
+	}
+
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
+	public function setDestinationDirectory($path)
+	{
+		$this->destinationDirectory = (string) $path;
+
+		return $this;
+	}
+
+	public function getDestinationDirectory()
+	{
+		return $this->destinationDirectory;
+	}
+
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
 
 		return $this;
 	}
@@ -340,9 +364,9 @@ class html extends report\fields\runner\coverage\cli
 		return $this->adapter;
 	}
 
-	public function setUrlPrompt(prompt $prompt)
+	public function setUrlPrompt(prompt $prompt = null)
 	{
-		$this->urlPrompt = $prompt;
+		$this->urlPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -352,9 +376,9 @@ class html extends report\fields\runner\coverage\cli
 		return $this->urlPrompt;
 	}
 
-	public function setUrlColorizer(colorizer $colorizer)
+	public function setUrlColorizer(colorizer $colorizer = null)
 	{
-		$this->urlColorizer = $colorizer;
+		$this->urlColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -362,6 +386,42 @@ class html extends report\fields\runner\coverage\cli
 	public function getUrlColorizer()
 	{
 		return $this->urlColorizer;
+	}
+
+	public function setTemplatesDirectory($path = null)
+	{
+		$this->templatesDirectory = ($path !== null ? (string) $path : atoum\directory . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'templates' . DIRECTORY_SEPARATOR . 'coverage');
+
+		return $this;
+	}
+
+	public function getTemplatesDirectory()
+	{
+		return $this->templatesDirectory;
+	}
+
+	public function setTemplateParser(template\parser $parser = null)
+	{
+		$this->templateParser = $parser ?: new template\parser();
+
+		return $this;
+	}
+
+	public function getTemplateParser()
+	{
+		return $this->templateParser;
+	}
+
+	public function setRootUrl($rootUrl)
+	{
+		$this->rootUrl = rtrim((string) $rootUrl, '/') . '/';
+
+		return $this;
+	}
+
+	public function getRootUrl()
+	{
+		return $this->rootUrl;
 	}
 
 	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
@@ -383,66 +443,6 @@ class html extends report\fields\runner\coverage\cli
 	public function getSrcDirectories()
 	{
 		return $this->srcDirectories;
-	}
-
-	public function setTemplatesDirectory($path)
-	{
-		$this->templatesDirectory = (string) $path;
-
-		return $this;
-	}
-
-	public function getTemplatesDirectory()
-	{
-		return $this->templatesDirectory;
-	}
-
-	public function setDestinationDirectory($path)
-	{
-		$this->destinationDirectory = (string) $path;
-
-		return $this;
-	}
-
-	public function getDestinationDirectory()
-	{
-		return $this->destinationDirectory;
-	}
-
-	public function setTemplateParser(template\parser $parser)
-	{
-		$this->templateParser = $parser;
-
-		return $this;
-	}
-
-	public function getTemplateParser()
-	{
-		return $this->templateParser;
-	}
-
-	public function setProjectName($projectName)
-	{
-		$this->projectName = (string) $projectName;
-
-		return $this;
-	}
-
-	public function getProjectName()
-	{
-		return $this->projectName;
-	}
-
-	public function setRootUrl($rootUrl)
-	{
-		$this->rootUrl = rtrim((string) $rootUrl, '/') . '/';
-
-		return $this;
-	}
-
-	public function getRootUrl()
-	{
-		return $this->rootUrl;
 	}
 
 	public function getDestinationDirectoryIterator()

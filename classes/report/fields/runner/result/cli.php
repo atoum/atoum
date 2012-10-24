@@ -16,20 +16,20 @@ class cli extends fields\runner\result
 	protected $successColorizer = null;
 	protected $failureColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $successColorizer = null, colorizer $failureColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setSuccessColorizer($successColorizer ?: new colorizer())
-			->setFailureColorizer($failureColorizer ?: new colorizer())
+			->setPrompt()
+			->setSuccessColorizer()
+			->setFailureColorizer()
 		;
 	}
 
-	public function setPrompt(prompt $prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -39,9 +39,9 @@ class cli extends fields\runner\result
 		return $this->prompt;
 	}
 
-	public function setSuccessColorizer(colorizer $colorizer)
+	public function setSuccessColorizer(colorizer $colorizer = null)
 	{
-		$this->successColorizer = $colorizer;
+		$this->successColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -51,9 +51,9 @@ class cli extends fields\runner\result
 		return $this->successColorizer;
 	}
 
-	public function setFailureColorizer(colorizer $colorizer)
+	public function setFailureColorizer(colorizer $colorizer = null)
 	{
-		$this->failureColorizer = $colorizer;
+		$this->failureColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

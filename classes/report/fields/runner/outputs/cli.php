@@ -19,23 +19,23 @@ class cli extends outputs
 	protected $outputPrompt = null;
 	protected $outputColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $outputPrompt = null, colorizer $outputColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setTitlePrompt($titlePrompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setMethodPrompt($methodPrompt ?: new prompt())
-			->setMethodColorizer($methodColorizer ?: new colorizer())
-			->setOutputPrompt($outputPrompt ?: new prompt())
-			->setOutputColorizer($outputColorizer ?: new colorizer())
+			->setTitlePrompt()
+			->setTitleColorizer()
+			->setMethodPrompt()
+			->setMethodColorizer()
+			->setOutputPrompt()
+			->setOutputColorizer()
 		;
 	}
 
-	public function setTitlePrompt($prompt)
+	public function setTitlePrompt(prompt $prompt = null)
 	{
-		$this->titlePrompt = $prompt;
+		$this->titlePrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -45,9 +45,9 @@ class cli extends outputs
 		return $this->titlePrompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -57,9 +57,9 @@ class cli extends outputs
 		return $this->titleColorizer;
 	}
 
-	public function setMethodPrompt($prompt)
+	public function setMethodPrompt(prompt $prompt = null)
 	{
-		$this->methodPrompt = $prompt;
+		$this->methodPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -69,9 +69,9 @@ class cli extends outputs
 		return $this->methodPrompt;
 	}
 
-	public function setMethodColorizer(colorizer $colorizer)
+	public function setMethodColorizer(colorizer $colorizer = null)
 	{
-		$this->methodColorizer = $colorizer;
+		$this->methodColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -81,9 +81,9 @@ class cli extends outputs
 		return $this->methodColorizer;
 	}
 
-	public function setOutputPrompt($prompt)
+	public function setOutputPrompt(prompt $prompt = null)
 	{
-		$this->outputPrompt = $prompt;
+		$this->outputPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -93,9 +93,9 @@ class cli extends outputs
 		return $this->outputPrompt;
 	}
 
-	public function setOutputColorizer(colorizer $colorizer)
+	public function setOutputColorizer(colorizer $colorizer = null)
 	{
-		$this->outputColorizer = $colorizer;
+		$this->outputColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -132,17 +132,12 @@ class cli extends outputs
 
 					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
 					{
-						$string .= $this->outputPrompt . $this->colorize($line, $this->outputColorizer) . PHP_EOL;
+						$string .= $this->outputPrompt . $this->outputColorizer->colorize($line) . PHP_EOL;
 					}
 				}
 			}
 		}
 
 		return $string;
-	}
-
-	private function colorize($string, $colorizer)
-	{
-		return $colorizer === null ? $string : $colorizer->colorize($string);
 	}
 }

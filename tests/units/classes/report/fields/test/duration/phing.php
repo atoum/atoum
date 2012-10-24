@@ -19,7 +19,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-	  $this->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\duration\cli');
+	  $this->testedClass->extends('mageekguy\atoum\report\fields\test\duration\cli');
 	}
 
 	public function test__construct()
@@ -33,22 +33,6 @@ class phing extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getValue())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
-			->if($field = new test\duration\phing(null, null, null, null))
-			->then
-				->object($field->getPrompt())->isEqualTo(new prompt())
-				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-				->object($field->getDurationColorizer())->isEqualTo(new colorizer())
-				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
-			->if($field = new test\duration\phing($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
-			->then
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getDurationColorizer())->isIdenticalTo($durationColorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\test::runStop))
 		;
 	}
 
@@ -59,10 +43,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getPrompt())->isIdenticalTo($prompt)
-			->if($field = new test\duration\phing(new prompt()))
-			->then
-				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
-				->object($field->getPrompt())->isIdenticalTo($prompt)
+				->object($field->setPrompt())->isIdenticalTo($field)
+				->object($field->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -73,10 +57,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-			->if($field = new test\duration\phing(null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -87,10 +71,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setDurationColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getDurationColorizer())->isIdenticalTo($colorizer)
-			->if($field = new test\duration\phing(null, null, new colorizer()))
-			->then
-				->object($field->setDurationColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getDurationColorizer())->isIdenticalTo($colorizer)
+				->object($field->setDurationColorizer())->isIdenticalTo($field)
+				->object($field->getDurationColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -101,10 +85,10 @@ class phing extends atoum\test
 			->then
 				->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
 				->object($field->getLocale())->isIdenticalTo($locale)
-			->if($field = new test\duration\phing(null, null, null, new atoum\locale()))
-			->then
-				->object($field->setLocale($locale = new atoum\locale()))->isIdenticalTo($field)
-				->object($field->getLocale())->isIdenticalTo($locale)
+				->object($field->setLocale())->isIdenticalTo($field)
+				->object($field->getLocale())
+					->isNotIdenticalTo($locale)
+					->isEqualTo(new atoum\locale())
 		;
 	}
 
@@ -140,7 +124,11 @@ class phing extends atoum\test
 			->and($testController->getScore = $score)
 			->and($test = new \mock\mageekguy\atoum\test($adapter))
 			->and($defaultField = new test\duration\phing())
-			->and($customField = new test\duration\phing($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
+			->and($customField = new test\duration\phing())
+			->and($customField->setPrompt($prompt = new prompt()))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer()))
+			->and($customField->setDurationColorizer($durationColorizer = new colorizer()))
+			->and($customField->setLocale($locale = new locale()))
 			->then
 				->castToString($defaultField)->isEqualTo('unknown')
 				->castToString($customField)->isEqualTo(
@@ -176,7 +164,11 @@ class phing extends atoum\test
 					)
 			->if($score->getMockController()->getTotalDuration = $runningDuration = rand(2, PHP_INT_MAX))
 			->and($defaultField = new test\duration\phing())
-			->and($customField = new test\duration\phing($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
+			->and($customField = new test\duration\phing())
+			->and($customField->setPrompt($prompt = new prompt()))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer()))
+			->and($customField->setDurationColorizer($durationColorizer = new colorizer()))
+			->and($customField->setLocale($locale = new locale()))
 			->then
 				->castToString($defaultField)->isEqualTo('unknown')
 				->castToString($customField)->isEqualTo(

@@ -13,9 +13,7 @@ class macvim extends atoum\test
 {
 	public function testClass()
 	{
-		$this
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures\execute')
-		;
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures\execute');
 	}
 
 	public function test__construct()
@@ -26,18 +24,14 @@ class macvim extends atoum\test
 				->string($field->getCommand())->isEqualTo('mvim --remote-silent +%2$s %1$s')
 				->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($field->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-			->if($field = new testedClass($adapter = new atoum\adapter(), $locale = new atoum\locale()))
-			->then
-				->string($field->getCommand())->isEqualTo('mvim --remote-silent +%2$s %1$s')
-				->object($field->getAdapter())->isIdenticalTo($adapter)
-				->object($field->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->if($field = new testedClass($adapter = new atoum\test\adapter()))
+			->if($field = new testedClass())
+			->and($field->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->system = function() {})
 			->then
 				->castToString($field)->isEmpty()
@@ -102,6 +96,10 @@ class macvim extends atoum\test
 			->then
 				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
 				->object($field->getAdapter())->isEqualTo($adapter)
+				->object($field->setAdapter())->isIdenticalTo($field)
+				->object($field->getAdapter())
+					->isNotIdenticalTo($adapter)
+					->isEqualTo(new atoum\adapter())
 		;
 	}
 
@@ -109,6 +107,8 @@ class macvim extends atoum\test
 	{
 		$this
 			->if($field = new testedClass())
+			->and($field->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->system = function() {})
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
 				->variable($field->getRunner())->isNull()

@@ -16,20 +16,20 @@ class cli extends report\fields\runner\tests\memory
 	protected $memoryColorizer = null;
 	protected $titleColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $memoryColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setMemoryColorizer($memoryColorizer ?: new colorizer())
+			->setPrompt()
+			->setTitleColorizer()
+			->setMemoryColorizer()
 		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -39,9 +39,9 @@ class cli extends report\fields\runner\tests\memory
 		return $this->prompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -51,9 +51,9 @@ class cli extends report\fields\runner\tests\memory
 		return $this->titleColorizer;
 	}
 
-	public function setMemoryColorizer(colorizer $colorizer)
+	public function setMemoryColorizer(colorizer $colorizer = null)
 	{
-		$this->memoryColorizer = $colorizer;
+		$this->memoryColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

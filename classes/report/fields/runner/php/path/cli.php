@@ -16,20 +16,20 @@ class cli extends report\fields\runner\php\path
 	protected $titleColorizer = null;
 	protected $pathColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $pathColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setPathColorizer($pathColorizer ?: new colorizer())
+			->setPrompt()
+			->setTitleColorizer()
+			->setPathColorizer()
 		;
 	}
 
-	public function setPrompt($prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -39,9 +39,9 @@ class cli extends report\fields\runner\php\path
 		return $this->prompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -51,9 +51,9 @@ class cli extends report\fields\runner\php\path
 		return $this->titleColorizer;
 	}
 
-	public function setPathColorizer(colorizer $colorizer)
+	public function setPathColorizer(colorizer $colorizer = null)
 	{
-		$this->pathColorizer = $colorizer;
+		$this->pathColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

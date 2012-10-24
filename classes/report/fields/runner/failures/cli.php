@@ -17,21 +17,21 @@ class cli extends runner\failures
 	protected $methodPrompt = null;
 	protected $methodColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setTitlePrompt($titlePrompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setMethodPrompt($methodPrompt ?: new prompt())
-			->setMethodColorizer($methodColorizer ?: new colorizer())
+			->setTitlePrompt()
+			->setTitleColorizer()
+			->setMethodPrompt()
+			->setMethodColorizer()
 		;
 	}
 
-	public function setTitlePrompt(prompt $prompt)
+	public function setTitlePrompt(prompt $prompt = null)
 	{
-		$this->titlePrompt = $prompt;
+		$this->titlePrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -41,9 +41,9 @@ class cli extends runner\failures
 		return $this->titlePrompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -53,9 +53,9 @@ class cli extends runner\failures
 		return $this->titleColorizer;
 	}
 
-	public function setMethodPrompt(prompt $prompt)
+	public function setMethodPrompt(prompt $prompt = null)
 	{
-		$this->methodPrompt = $prompt;
+		$this->methodPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -65,9 +65,9 @@ class cli extends runner\failures
 		return $this->methodPrompt;
 	}
 
-	public function setMethodColorizer(colorizer $colorizer)
+	public function setMethodColorizer(colorizer $colorizer = null)
 	{
-		$this->methodColorizer = $colorizer;
+		$this->methodColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

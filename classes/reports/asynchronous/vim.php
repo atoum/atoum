@@ -21,99 +21,115 @@ class vim extends reports\asynchronous
 		$secondLevelPrompt = new prompt('=> ');
 		$thirdLevelPrompt = new prompt('==> ');
 
-		$this
-			->addField(new runner\atoum\cli(
-						$firstLevelPrompt
-					)
-				)
-			->addField(new runner\php\path\cli(
-						$firstLevelPrompt
-					)
-				)
-			->addField(new runner\php\version\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt
-					)
-				)
-			->addField(new runner\tests\duration\cli(
-						$firstLevelPrompt
-					)
-				)
-			->addField(new runner\tests\memory\cli(
-						$firstLevelPrompt
-					)
-				)
-			->addField(new runner\tests\coverage\cli(
-						$firstLevelPrompt,
-						$secondLevelPrompt,
-						$thirdLevelPrompt
-					)
-				)
-			->addField(new runner\duration\cli(
-						$firstLevelPrompt
-					)
-				)
-			->addField(new runner\result\cli(
-					)
-				)
-			->addField(new runner\failures\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt
-					)
-				)
-			->addField(new runner\errors\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt
-					)
-				)
-			->addField(new runner\exceptions\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt
-					)
-				)
-			->addField(new runner\tests\uncompleted\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt
-					)
-				)
-			->addField(new runner\tests\void\cli(
-						$firstLevelPrompt,
-						null,
-						$secondLevelPrompt,
-						null,
-						$thirdLevelPrompt
-					)
-				)
-			->addField(
-				new runner\outputs\cli(
-					$firstLevelPrompt,
-					null,
-					$secondLevelPrompt
-				)
-			)
-			->addField(new test\run\cli(
-					$firstLevelPrompt
-				)
-			)
-			->addField(new test\duration\cli(
-					$secondLevelPrompt
-				)
-			)
-			->addField(new test\memory\cli(
-					$secondLevelPrompt
-				)
-			)
+		$atoumField = new runner\atoum\cli();
+		$atoumField->setPrompt($firstLevelPrompt);
+
+		$this->addField($atoumField);
+
+		$phpPathField = new runner\php\path\cli();
+		$phpPathField->setPrompt($firstLevelPrompt);
+
+		$this->addField($phpPathField);
+
+		$phpVersionField = new runner\php\version\cli();
+		$phpVersionField
+			->setTitlePrompt($firstLevelPrompt)
+			->setVersionPrompt($secondLevelPrompt)
 		;
+
+		$this->addField($phpVersionField);
+
+		$testsDurationField = new runner\tests\duration\cli();
+		$testsDurationField->setPrompt($firstLevelPrompt);
+
+		$this->addField($testsDurationField);
+
+		$memoryField = new runner\tests\memory\cli();
+		$memoryField->setPrompt($firstLevelPrompt);
+
+		$this->addField($memoryField);
+
+		$coverageField = new runner\tests\coverage\cli();
+		$coverageField
+			->setTitlePrompt($firstLevelPrompt)
+			->setClassPrompt($secondLevelPrompt)
+			->setMethodPrompt($thirdLevelPrompt)
+		;
+
+		$runnerDurationField = new runner\duration\cli();
+		$runnerDurationField->setPrompt($firstLevelPrompt);
+
+		$this->addField($runnerDurationField);
+
+		$resultField = new runner\result\cli();
+
+		$this->addField($resultField);
+
+		$failuresField = new runner\failures\cli();
+		$failuresField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addfield($failuresField);
+
+		$errorsField = new runner\errors\cli();
+		$errorsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+			->setErrorPrompt($thirdLevelPrompt)
+		;
+
+		$this->addField($errorsField);
+
+		$exceptionsField = new runner\exceptions\cli();
+		$exceptionsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+			->setExceptionPrompt($thirdLevelPrompt)
+		;
+
+		$this->addField($exceptionsField);
+
+		$uncompletedField = new runner\tests\uncompleted\cli();
+		$uncompletedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+			->setOutputPrompt($thirdLevelPrompt)
+		;
+
+		$this->addField($uncompletedField);
+
+		$voidField = new runner\tests\void\cli();
+		$voidField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+			->setOutputPrompt($thirdLevelPrompt)
+		;
+
+		$this->addField($voidField);
+
+		$outputField = new runner\outputs\cli();
+		$outputField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($outputField);
+
+		$testRunField = new test\run\cli();
+		$testRunField->setPrompt($firstLevelPrompt);
+
+		$this->addField($testRunField);
+
+		$testDurationField = new test\duration\cli();
+		$testDurationField->setPrompt($secondLevelPrompt);
+
+		$this->addField($testDurationField);
+
+		$testMemoryField = new test\memory\cli();
+		$testMemoryField->setPrompt($secondLevelPrompt);
+
+		$this->addField($testMemoryField);
 	}
 }

@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\locale,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\duration
+	mageekguy\atoum\report\fields\runner\duration\phing as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -17,34 +17,18 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\duration\cli') ;
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\duration\cli') ;
 	}
 
 	public function test__construct()
 	{
-		$this->assert
-			->if($field = new duration\phing())
+		$this
+			->if($field = new testedClass())
 			->then
 				->object($field->getPrompt())->isEqualTo(new prompt())
 				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
 				->object($field->getDurationColorizer())->isEqualTo(new colorizer())
 				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(runner::runStop))
-			->if($field = new duration\phing(null, null, null, null))
-			->then
-				->object($field->getPrompt())->isEqualTo(new prompt())
-				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-				->object($field->getDurationColorizer())->isEqualTo(new colorizer())
-				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getValue())->isNull()
-				->array($field->getEvents())->isEqualTo(array(runner::runStop))
-			->if($field = new duration\phing($prompt = new prompt(), $titleColorizer = new colorizer(), $durationColorizer = new colorizer(), $locale = new locale()))
-			->then
-				->object($field->getPrompt())->isIdenticalTo($prompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getDurationColorizer())->isIdenticalTo($durationColorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
 				->variable($field->getValue())->isNull()
 				->array($field->getEvents())->isEqualTo(array(runner::runStop))
 		;
@@ -52,87 +36,89 @@ class phing extends atoum\test
 
 	public function testSetPrompt()
 	{
-		$this->assert
-			->if($field = new duration\phing())
+		$this
+			->if($field = new testedClass())
 			->then
 				->object($field->setPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getPrompt())->isIdenticalTo($prompt)
-			->if($field = new duration\phing(new prompt(uniqid())))
-			->then
-				->object($field->setPrompt($otherPrompt = new prompt(uniqid())))->isIdenticalTo($field)
-				->object($field->getPrompt())->isIdenticalTo($otherPrompt)
+				->object($field->setPrompt())->isIdenticalTo($field)
+				->object($field->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
 	public function testSetTitleColorizer()
 	{
-		$this->assert
-			->if($field = new duration\phing())
+		$this
+			->if($field = new testedClass())
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-			->if($field = new duration\phing(null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
 	public function testSetDurationColorizer()
 	{
-		$this->assert
-			->if($field = new duration\phing())
+		$this
+			->if($field = new testedClass())
 			->then
 				->object($field->setDurationColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getDurationColorizer())->isIdenticalTo($colorizer)
-			->if($field = new duration\phing(null, null, new colorizer()))
-			->then
-				->object($field->setDurationColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getDurationColorizer())->isIdenticalTo($colorizer)
+				->object($field->setDurationColorizer())->isIdenticalTo($field)
+				->object($field->getDurationColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
 	public function testHandleEvent()
 	{
 		$this
-			->assert
-				->if($field = new duration\phing())
-				->then
-					->boolean($field->handleEvent(runner::runStart, new atoum\runner()))->isFalse()
-					->variable($field->getValue())->isNull()
-				->if($runner = new \mock\mageekguy\atoum\runner())
-				->and($runner->getMockController()->getRunningDuration = $runningDuration = rand(0, PHP_INT_MAX))
-				->then
-					->boolean($field->handleEvent(runner::runStop, $runner))->isTrue()
-					->integer($field->getValue())->isEqualTo($runningDuration)
+			->if($field = new testedClass())
+			->then
+				->boolean($field->handleEvent(runner::runStart, new atoum\runner()))->isFalse()
+				->variable($field->getValue())->isNull()
+			->if($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner->getMockController()->getRunningDuration = $runningDuration = rand(0, PHP_INT_MAX))
+			->then
+				->boolean($field->handleEvent(runner::runStop, $runner))->isTrue()
+				->integer($field->getValue())->isEqualTo($runningDuration)
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->assert
-				->if($runner = new \mock\mageekguy\atoum\runner())
-				->and($runner->getMockController()->getRunningDuration = 1)
-				->and($prompt = new \mock\mageekguy\atoum\cli\prompt())
-				->and($prompt->getMockController()->__toString = $promptString = uniqid())
-				->and($titleColorizer = new \mock\mageekguy\atoum\cli\colorizer())
-				->and($titleColorizer->getMockController()->colorize = $colorizedTitle = uniqid())
-				->and($durationColorizer = new \mock\mageekguy\atoum\cli\colorizer())
-				->and($durationColorizer->getMockController()->colorize = $colorizedDuration = uniqid())
-				->and($locale = new \mock\mageekguy\atoum\locale())
-				->and($locale->getMockController()->_ = function($string) { return $string; })
-				->and($field = new duration\phing($prompt, $titleColorizer, $durationColorizer, $locale))
-				->then
-					->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.')
-					->mock($locale)
-						->call('_')->withArguments('Running duration')->once()
-						->call('_')->withArguments('unknown')->once()
-						->call('_')->withArguments('%1$s: %2$s.')->once()
-					->mock($titleColorizer)
-						->call('colorize')->withArguments('Running duration')->once()
-					->mock($durationColorizer)
-						->call('colorize')->withArguments('unknown')->once()
+			->if($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner->getMockController()->getRunningDuration = 1)
+			->and($prompt = new \mock\mageekguy\atoum\cli\prompt())
+			->and($prompt->getMockController()->__toString = $promptString = uniqid())
+			->and($titleColorizer = new \mock\mageekguy\atoum\cli\colorizer())
+			->and($titleColorizer->getMockController()->colorize = $colorizedTitle = uniqid())
+			->and($durationColorizer = new \mock\mageekguy\atoum\cli\colorizer())
+			->and($durationColorizer->getMockController()->colorize = $colorizedDuration = uniqid())
+			->and($locale = new \mock\mageekguy\atoum\locale())
+			->and($locale->getMockController()->_ = function($string) { return $string; })
+			->and($field = new testedClass())
+			->and($field->setPrompt($prompt))
+			->and($field->setTitleColorizer($titleColorizer))
+			->and($field->setDurationColorizer($durationColorizer))
+			->and($field->setLocale($locale))
+			->then
+				->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.')
+				->mock($locale)
+					->call('_')->withArguments('Running duration')->once()
+					->call('_')->withArguments('unknown')->once()
+					->call('_')->withArguments('%1$s: %2$s.')->once()
+				->mock($titleColorizer)
+					->call('colorize')->withArguments('Running duration')->once()
+				->mock($durationColorizer)
+					->call('colorize')->withArguments('unknown')->once()
 			->assert
 				->if($field->handleEvent(runner::runStart, $runner))
 				->then
@@ -159,7 +145,11 @@ class phing extends atoum\test
 						->call('colorize')->withArguments('1.00 second')->once()
 			->assert
 				->if($runner->getMockController()->getRunningDuration = $runningDuration = rand(2, PHP_INT_MAX))
-				->and($field = new duration\phing($prompt, $titleColorizer, $durationColorizer, $locale))
+				->and($field = new testedClass())
+				->and($field->setPrompt($prompt))
+				->and($field->setTitleColorizer($titleColorizer))
+				->and($field->setDurationColorizer($durationColorizer))
+				->and($field->setLocale($locale))
 				->and($field->handleEvent(runner::runStart, $runner))
 				->then
 					->castToString($field)->isEqualTo($promptString . $colorizedTitle . ': ' . $colorizedDuration . '.')

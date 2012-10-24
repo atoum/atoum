@@ -13,9 +13,7 @@ class execute extends atoum\test
 {
 	public function testClass()
 	{
-		$this
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures')
-		;
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures');
 	}
 
 	public function test__construct()
@@ -26,18 +24,14 @@ class execute extends atoum\test
 				->string($field->getCommand())->isEqualTo($command)
 				->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($field->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-			->if($field = new testedClass($command = uniqid(), $adapter = new atoum\adapter(), $locale = new atoum\locale()))
-			->then
-				->string($field->getCommand())->isEqualTo($command)
-				->object($field->getAdapter())->isIdenticalTo($adapter)
-				->object($field->getLocale())->isIdenticalTo($locale)
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->if($field = new testedClass($command = '%1$s %2$s', $adapter = new atoum\test\adapter()))
+			->if($field = new testedClass($command = '%1$s %2$s'))
+			->and($field->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->system = function() {})
 			->then
 				->castToString($field)->isEmpty()

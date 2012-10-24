@@ -14,13 +14,6 @@ class phing extends report\fields\runner\tests\coverage\cli
 {
 	protected $showMissingCodeCoverage = true;
 
-	public function __construct(prompt $titlePrompt = null, prompt $classPrompt = null, prompt $methodPrompt = null, colorizer $titleColorizer = null, colorizer $coverageColorizer = null, locale $locale = null, $showMissingCodeCoverage = true)
-	{
-		parent::__construct($titlePrompt, $classPrompt, $methodPrompt, $titleColorizer, $coverageColorizer, $locale);
-
-		$this->showMissingCodeCoverage($showMissingCodeCoverage);
-	}
-
 	public function showMissingCodeCoverage($showMissingCodeCoverage)
 	{
 		$this->showMissingCodeCoverage = ($showMissingCodeCoverage == true);

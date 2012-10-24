@@ -13,9 +13,9 @@ abstract class duration extends report\field
 {
 	protected $value = null;
 
-	public function __construct(locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStop), $locale);
+		parent::__construct(array(runner::runStop));
 	}
 
 	public function getValue()

@@ -11,8 +11,8 @@ use
 
 class macvim extends failures\execute
 {
-	public function __construct(adapter $adapter = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct('mvim --remote-silent +%2$s %1$s', $adapter, $locale);
+		parent::__construct('mvim --remote-silent +%2$s %1$s');
 	}
 }

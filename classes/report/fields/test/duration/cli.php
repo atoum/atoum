@@ -16,20 +16,20 @@ class cli extends report\fields\test\duration
 	protected $titleColorizer = null;
 	protected $durationColorizer = null;
 
-	public function __construct(prompt $prompt = null, colorizer $titleColorizer = null, colorizer $durationColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setPrompt($prompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setDurationColorizer($durationColorizer ?: new colorizer())
+			->setPrompt()
+			->setTitleColorizer()
+			->setDurationColorizer()
 		;
 	}
 
-	public function setPrompt(prompt $prompt)
+	public function setPrompt(prompt $prompt = null)
 	{
-		$this->prompt = $prompt;
+		$this->prompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -39,9 +39,9 @@ class cli extends report\fields\test\duration
 		return $this->prompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -51,9 +51,9 @@ class cli extends report\fields\test\duration
 		return $this->titleColorizer;
 	}
 
-	public function setDurationColorizer(colorizer $colorizer)
+	public function setDurationColorizer(colorizer $colorizer = null)
 	{
-		$this->durationColorizer = $colorizer;
+		$this->durationColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

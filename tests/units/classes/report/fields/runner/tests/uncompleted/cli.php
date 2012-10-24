@@ -35,28 +35,6 @@ class cli extends atoum\test
 				->object($field->getLocale())->isEqualTo(new locale())
 				->variable($field->getRunner())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new tests\uncompleted\cli(null, null, null, null, null, null, null))
-			->then
-				->object($field->getTitlePrompt())->isEqualTo(new prompt())
-				->object($field->getTitleColorizer())->isEqualTo(new colorizer())
-				->object($field->getMethodPrompt())->isEqualTo(new prompt())
-				->object($field->getMethodColorizer())->isEqualTo(new colorizer())
-				->object($field->getOutputPrompt())->isEqualTo(new prompt())
-				->object($field->getOutputColorizer())->isEqualTo(new colorizer())
-				->object($field->getLocale())->isEqualTo(new locale())
-				->variable($field->getRunner())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
-			->if($field = new tests\uncompleted\cli ($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(), $locale = new atoum\locale()))
-			->then
-				->object($field->getTitlePrompt())->isIdenticalTo($titlePrompt)
-				->object($field->getTitleColorizer())->isIdenticalTo($titleColorizer)
-				->object($field->getMethodPrompt())->isIdenticalTo($methodPrompt)
-				->object($field->getMethodColorizer())->isIdenticalTo($methodColorizer)
-				->object($field->getOutputPrompt())->isIdenticalTo($outputPrompt)
-				->object($field->getOutputColorizer())->isIdenticalTo($outputColorizer)
-				->object($field->getLocale())->isIdenticalTo($locale)
-				->variable($field->getRunner())->isNull()
-				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
 		;
 	}
 
@@ -67,10 +45,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getTitlePrompt())->isIdenticalTo($prompt)
-			->if($field = new tests\uncompleted\cli(new prompt()))
-			->then
-				->object($field->setTitlePrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-				->object($field->getTitlePrompt())->isIdenticalTo($prompt)
+				->object($field->setTitlePrompt())->isIdenticalTo($field)
+				->object($field->getTitlePrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -81,10 +59,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
-			->if($field = new tests\uncompleted\cli(null, new colorizer()))
-			->then
-				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
+				->object($field->setTitleColorizer())->isIdenticalTo($field)
+				->object($field->getTitleColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -95,10 +73,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getMethodPrompt())->isIdenticalTo($prompt)
-			->if($field = new tests\uncompleted\cli(null, null, new prompt()))
-			->then
-				->object($field->setMethodPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-				->object($field->getMethodPrompt())->isIdenticalTo($prompt)
+				->object($field->setMethodPrompt())->isIdenticalTo($field)
+				->object($field->getMethodPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -109,10 +87,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
-			->if($field = new tests\uncompleted\cli(null, null, null, new colorizer()))
-			->then
-				->object($field->setMethodColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getMethodColorizer())->isIdenticalTo($colorizer)
+				->object($field->setMethodColorizer())->isIdenticalTo($field)
+				->object($field->getMethodColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -123,10 +101,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setOutputPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
 				->object($field->getOutputPrompt())->isIdenticalTo($prompt)
-			->if($field = new tests\uncompleted\cli(null, null, null, null, new prompt()))
-			->then
-				->object($field->setOutputPrompt($prompt = new prompt(uniqid())))->isIdenticalTo($field)
-				->object($field->getOutputPrompt())->isIdenticalTo($prompt)
+				->object($field->setOutputPrompt())->isIdenticalTo($field)
+				->object($field->getOutputPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
 		;
 	}
 
@@ -137,10 +115,10 @@ class cli extends atoum\test
 			->then
 				->object($field->setOutputColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getOutputColorizer())->isIdenticalTo($colorizer)
-			->if($field = new tests\uncompleted\cli(null, null, null, null, null, new colorizer()))
-			->then
-				->object($field->setOutputColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
-				->object($field->getOutputColorizer())->isIdenticalTo($colorizer)
+				->object($field->setOutputColorizer())->isIdenticalTo($field)
+				->object($field->getOutputColorizer())
+					->isNotIdenticalTo($colorizer)
+					->isEqualTo(new colorizer())
 		;
 	}
 
@@ -175,14 +153,20 @@ class cli extends atoum\test
 	{
 		$this
 			->if($score = new \mock\mageekguy\atoum\runner\score())
-			->and($score->getMockController()->getUncompletedMethods = array())
+			->and($this->calling($score)->getUncompletedMethods = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))
 			->and($defaultField = new tests\uncompleted\cli())
+			->and($customField = new tests\uncompleted\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setOutputPrompt($outputPrompt = new prompt(uniqid())))
+			->and($customField->setOutputColorizer($outputColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
-			->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-			->then
 				->castToString($customField)->isEmpty()
 			->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
 			->then
@@ -218,10 +202,16 @@ class cli extends atoum\test
 					)
 				)
 			->and($defaultField = new tests\uncompleted\cli())
+			->and($customField = new tests\uncompleted\cli())
+			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
+			->and($customField->setTitleColorizer($titleColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
+			->and($customField->setMethodColorizer($methodColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setOutputPrompt($outputPrompt = new prompt(uniqid())))
+			->and($customField->setOutputColorizer($outputColorizer = new colorizer(uniqid(), uniqid())))
+			->and($customField->setLocale($locale = new atoum\locale()))
 			->then
 				->castToString($defaultField)->isEmpty()
-			->if($customField = new tests\uncompleted\cli($titlePrompt = new prompt(uniqid()), $titleColorizer = new colorizer(uniqid(), uniqid()), $methodPrompt = new prompt(uniqid()), $methodColorizer = new colorizer(uniqid(), uniqid()), $outputPrompt = new prompt(uniqid()), $outputColorizer = new colorizer(uniqid(), uniqid()), $locale = new atoum\locale()))
-			->then
 				->castToString($customField)->isEmpty()
 			->if($defaultField->handleEvent(atoum\runner::runStart, $runner))
 			->then

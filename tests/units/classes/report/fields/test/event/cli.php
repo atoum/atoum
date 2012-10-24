@@ -14,7 +14,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\report\fields\test\event');
+		$this->testedClass->extends('mageekguy\atoum\report\fields\test\event');
 	}
 
 	public function test__construct()

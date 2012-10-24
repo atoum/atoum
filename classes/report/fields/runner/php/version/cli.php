@@ -16,21 +16,21 @@ class cli extends report\fields\runner\php\version
 	protected $versionPrompt = null;
 	protected $versionColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $versionPrompt = null, colorizer $versionColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setTitlePrompt($titlePrompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setVersionPrompt($versionPrompt ?: new prompt())
-			->setVersionColorizer($versionColorizer ?: new colorizer())
+			->setTitlePrompt()
+			->setTitleColorizer()
+			->setVersionPrompt()
+			->setVersionColorizer()
 		;
 	}
 
-	public function setTitlePrompt($prompt)
+	public function setTitlePrompt(prompt $prompt = null)
 	{
-		$this->titlePrompt = $prompt;
+		$this->titlePrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -40,9 +40,9 @@ class cli extends report\fields\runner\php\version
 		return $this->titlePrompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -52,9 +52,9 @@ class cli extends report\fields\runner\php\version
 		return $this->titleColorizer;
 	}
 
-	public function setVersionPrompt($prompt)
+	public function setVersionPrompt(prompt $prompt = null)
 	{
-		$this->versionPrompt = $prompt;
+		$this->versionPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -64,9 +64,9 @@ class cli extends report\fields\runner\php\version
 		return $this->versionPrompt;
 	}
 
-	public function setVersionColorizer(colorizer $colorizer)
+	public function setVersionColorizer(colorizer $colorizer = null)
 	{
-		$this->versionColorizer = $colorizer;
+		$this->versionColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -82,26 +82,16 @@ class cli extends report\fields\runner\php\version
 			$this->titlePrompt .
 			sprintf(
 				'%s:',
-				$this->colorizeTitle($this->locale->_('PHP version'))
+				$this->titleColorizer->colorize($this->locale->_('PHP version'))
 			) .
 			PHP_EOL
 		;
 
 		foreach (explode(PHP_EOL, $this->version) as $line)
 		{
-			$string .= $this->versionPrompt . $this->colorizeVersion(rtrim($line)) . PHP_EOL;
+			$string .= $this->versionPrompt . $this->versionColorizer->colorize(rtrim($line)) . PHP_EOL;
 		}
 
 		return $string;
-	}
-
-	public function colorizeTitle($title)
-	{
-		return ($this->titleColorizer === null ? $title : $this->titleColorizer->colorize($title));
-	}
-
-	public function colorizeVersion($version)
-	{
-		return ($this->versionColorizer === null ? $version : $this->versionColorizer->colorize($version));
 	}
 }
