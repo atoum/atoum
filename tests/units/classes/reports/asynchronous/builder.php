@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\cli\colorizer,
 	mageekguy\atoum\report\fields\test,
 	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\reports\asynchronous as reports
+	mageekguy\atoum\reports\asynchronous\builder as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -23,57 +23,56 @@ class builder extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($report = new reports\builder())
+			->if($phpVersionField = new runner\php\version\cli())
+			->and($phpVersionField->setVersionPrompt(new prompt('   ')))
+			->and($failuresField = new runner\failures\cli())
+			->and($failuresField->setMethodPrompt(new prompt('   ')))
+			->and($outputsField = new runner\outputs\cli())
+			->and($outputsField->setMethodPrompt(new prompt('   ')))
+			->and($errorsField = new runner\errors\cli())
+			->and($errorsField
+				->setMethodPrompt(new prompt('   '))
+				->setErrorPrompt(new prompt('      '))
+			)
+			->and($exceptionsField = new runner\exceptions\cli())
+			->and($exceptionsField
+				->setMethodPrompt(new prompt('   '))
+				->setExceptionPrompt(new prompt('      '))
+			)
+			->and($uncompletedField = new runner\tests\uncompleted\cli())
+			->and($uncompletedField
+				->setMethodPrompt(new prompt('   '))
+				->setOutputPrompt(new prompt('      '))
+			)
+			->and($coverageField = new runner\tests\coverage\cli())
+			->and($coverageField
+				->setClassPrompt(new prompt('   '))
+				->setMethodPrompt(new prompt('      '))
+			)
+			->and($durationField = new test\duration\cli())
+			->and($durationField->setPrompt(new prompt('   ')))
+			->and($memoryField = new test\memory\cli())
+			->and($memoryField->setPrompt(new prompt('   ')))
+			->and($report = new testedClass())
 			->then
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isEqualTo(new atoum\locale())
+				->object($report->getAdapter())->isEqualTo(new atoum\adapter())
 				->array($report->getFields())->isEqualTo(array(
-						new runner\atoum\cli(),
 						new runner\php\path\cli(),
-						new runner\php\version\cli(
-							null,
-							null,
-							new prompt('   ')
-						),
+						$phpVersionField,
 						new runner\duration\cli(),
 						new runner\result\cli(),
-						new runner\failures\cli(
-							null,
-							null,
-							new prompt('   ')
-						),
-						new runner\outputs\cli(
-							null,
-							null,
-							new prompt('   ')
-						),
-						new runner\errors\cli(
-							null,
-							null,
-							new prompt('   '),
-							null,
-							new prompt('      ')
-						),
-						new runner\exceptions\cli(
-							null,
-							null,
-							new prompt('   '),
-							null,
-							new prompt('      ')
-						),
-						new runner\tests\uncompleted\cli(
-							null,
-							null,
-							new prompt('   '),
-							null,
-							new prompt('      ')
-						),
+						$failuresField,
+						$outputsField,
+						$errorsField,
+						$exceptionsField,
+						$uncompletedField,
 						new runner\tests\duration\cli(),
 						new runner\tests\memory\cli(),
-						new runner\tests\coverage\cli(null, new prompt('   '), new prompt('      ')),
+						$coverageField,
 						new test\run\cli(),
-						new test\duration\cli(new prompt('   ')),
-						new test\memory\cli(new prompt('   '))
+						$durationField,
+						$memoryField
 					)
 				)
 		;

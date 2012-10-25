@@ -75,9 +75,10 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->successColorizer->colorize(
 					sprintf(
-						$this->locale->_('Success (%s, %s, %s, %s) !'),
+						$this->locale->_('Success (%s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->skippedMethodNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s void method', '%s void methods', $this->voidMethodNumber), $this->voidMethodNumber),
 						sprintf($this->locale->__('%s skipped method', '%s skipped methods', $this->skippedMethodNumber), $this->skippedMethodNumber),
 						sprintf($this->locale->__('%s assertion', '%s assertions', $this->assertionNumber), $this->assertionNumber)
 					)
@@ -88,9 +89,10 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->failureColorizer->colorize(
 					sprintf(
-						$this->locale->_('Failure (%s, %s, %s, %s, %s, %s, %s) !'),
+						$this->locale->_('Failure (%s, %s, %s, %s, %s, %s, %s, %s) !'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
-						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->skippedMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
+						sprintf($this->locale->__('%s void method', '%s void methods', $this->voidMethodNumber), $this->voidMethodNumber),
 						sprintf($this->locale->__('%s skipped method', '%s skipped methods', $this->skippedMethodNumber), $this->skippedMethodNumber),
 						sprintf($this->locale->__('%s uncompleted method', '%s uncompleted methods', $this->uncompletedMethodNumber), $this->uncompletedMethodNumber),
 						sprintf($this->locale->__('%s failure', '%s failures', $this->failNumber), $this->failNumber),

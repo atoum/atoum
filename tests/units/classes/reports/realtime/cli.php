@@ -17,92 +17,119 @@ class cli extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($report = new reports\realtime\cli())
+			->if($phpPathField = new fields\runner\php\path\cli())
+			->and($phpPathField
+				->setPrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+			)
+			->and($phpVersionField = new fields\runner\php\version\cli())
+			->and($phpVersionField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+				->setVersionPrompt(new prompt('=> ', new colorizer('1;36')))
+			)
+			->and($runnerTestsDurationField = new fields\runner\tests\duration\cli())
+			->and($runnerTestsDurationField
+				->setPrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+			)
+			->and($runnerTestsMemoryField = new fields\runner\tests\memory\cli())
+			->and($runnerTestsMemoryField
+				->setPrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+			)
+			->and($runnerTestsCoverageField = new fields\runner\tests\coverage\cli())
+			->and($runnerTestsCoverageField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+				->setClassPrompt(new prompt('=> ', new colorizer('1;36')))
+				->setMethodPrompt(new prompt('==> ', new colorizer('1;36')))
+			)
+			->and($runnerDurationField = new fields\runner\duration\cli())
+			->and($runnerDurationField
+				->setPrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+			)
+			->and($runnerResultField = new fields\runner\result\cli())
+			->and($runnerResultField
+				->setSuccessColorizer(new colorizer('0;37', '42'))
+				->setFailureColorizer(new colorizer('0;37', '41'))
+			)
+			->and($runnerFailuresField = new fields\runner\failures\cli())
+			->and($runnerFailuresField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('0;31'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('0;31')))
+			)
+			->and($runnerOutputsField = new fields\runner\outputs\cli())
+			->and($runnerOutputsField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('1;36'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('1;36')))
+			)
+			->and($runnerErrorsField = new fields\runner\errors\cli())
+			->and($runnerErrorsField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('0;33'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('0;33')))
+				->setErrorPrompt(new prompt('==> ', new colorizer('0;33')))
+			)
+			->and($runnerExceptionsField = new fields\runner\exceptions\cli())
+			->and($runnerExceptionsField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('0;35'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('0;35')))
+				->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
+			)
+			->and($runnerUncompletedField = new fields\runner\tests\uncompleted\cli())
+			->and($runnerUncompletedField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('0;37'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
+				->setOutputPrompt(new prompt('==> ', new colorizer('0;37')))
+			)
+			->and($runnerVoidField = new fields\runner\tests\void\cli())
+			->and($runnerVoidField
+				->setTitlePrompt(new prompt('> '))
+				->setTitleColorizer(new colorizer('0;34'))
+				->setMethodPrompt(new prompt('=> ', new colorizer('0;34')))
+				->setOutputPrompt(new prompt('==> ', new colorizer('0;34')))
+			)
+			->and($testRunField = new fields\test\run\cli())
+			->and($testRunField
+				->setPrompt(new prompt('> '))
+				->setColorizer(new colorizer('1;36'))
+			)
+			->and($testDurationField = new fields\test\duration\cli())
+			->and($testDurationField
+				->setPrompt(new prompt('=> ', new colorizer('1;36')))
+			)
+			->and($testMemoryField = new fields\test\memory\cli())
+			->and($testMemoryField
+				->setPrompt(new prompt('=> ', new colorizer('1;36')))
+			)
+			->and($report = new reports\realtime\cli())
 			->then
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isEqualTo(new atoum\locale())
+				->object($report->getAdapter())->isEqualTo(new atoum\adapter())
 				->array($report->getFields())->isEqualTo(array(
-						new fields\runner\php\path\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
-						new fields\runner\php\version\cli(
-							new prompt('> '),
-							new colorizer('1;36'),
-							new prompt('=> ', new colorizer('1;36'))
-						),
-						new fields\runner\tests\duration\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
-						new fields\runner\tests\memory\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
-						new fields\runner\tests\coverage\cli(
-							new prompt('> '),
-							new prompt('=> ', new colorizer('1;36')),
-							new prompt('==> ', new colorizer('1;36')),
-							new colorizer('1;36')
-						),
-						new fields\runner\duration\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
-						new fields\runner\result\cli(
-							null,
-							new colorizer('0;37', '42'),
-							new colorizer('0;37', '41')
-						),
-						new fields\runner\failures\cli(
-							new prompt('> '),
-							new colorizer('0;31'),
-							new prompt('=> ', new colorizer('0;31'))
-						),
-						new fields\runner\outputs\cli(
-							new prompt('> '),
-							new colorizer('1;36'),
-							new prompt('=> ', new colorizer('1;36'))
-						),
-						new fields\runner\errors\cli(
-							new prompt('> '),
-							new colorizer('0;33'),
-							new prompt('=> ', new colorizer('0;33')),
-							null,
-							new prompt('==> ', new colorizer('0;33'))
-						),
-						new fields\runner\exceptions\cli(
-							new prompt('> '),
-							new colorizer('0;35'),
-							new prompt('=> ', new colorizer('0;35')),
-							null,
-							new prompt('==> ', new colorizer('0;35'))
-						),
-						new fields\runner\tests\uncompleted\cli(
-							new prompt('> '),
-							new colorizer('0;37'),
-							new prompt('=> ', new colorizer('0;37')),
-							null,
-							new prompt('==> ', new colorizer('0;37'))
-						),
-						new fields\runner\tests\void\cli(
-							new prompt('> '),
-							new colorizer('0;34'),
-							new prompt('=> ', new colorizer('0;34')),
-							null,
-							new prompt('==> ', new colorizer('0;34'))
-						),
-						new fields\test\run\cli(
-							new prompt('> '),
-							new colorizer('1;36')
-						),
+						$phpPathField,
+						$phpVersionField,
+						$runnerTestsDurationField,
+						$runnerTestsMemoryField,
+						$runnerTestsCoverageField,
+						$runnerDurationField,
+						$runnerResultField,
+						$runnerFailuresField,
+						$runnerOutputsField,
+						$runnerErrorsField,
+						$runnerExceptionsField,
+						$runnerUncompletedField,
+						$runnerVoidField,
+						$testRunField,
 						new fields\test\event\cli(),
-						new fields\test\duration\cli(
-							new prompt('=> ', new colorizer('1;36'))
-						),
-						new fields\test\memory\cli(
-							new prompt('=> ', new colorizer('1;36'))
-						)
+						$testDurationField,
+						$testMemoryField
 					)
 				)
 		;

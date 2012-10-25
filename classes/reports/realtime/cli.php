@@ -23,10 +23,86 @@ class cli extends realtime
 		$secondLevelPrompt = new prompt('=> ', $defaultColorizer);
 		$thirdLevelPrompt = new prompt('==> ', $defaultColorizer);
 
+		$phpPathField = new runner\php\path\cli();
+		$phpPathField
+			->setPrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+		;
+
+		$this->addField($phpPathField);
+
+		$phpVersionField = new runner\php\version\cli();
+		$phpVersionField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+			->setVersionPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($phpVersionField);
+
+		$runnerTestsDurationField = new runner\tests\duration\cli();
+		$runnerTestsDurationField
+			->setPrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+		;
+
+		$this->addField($runnerTestsDurationField);
+
+		$runnerTestsMemoryField = new runner\tests\memory\cli();
+		$runnerTestsMemoryField
+			->setPrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+		;
+
+		$this->addField($runnerTestsMemoryField);
+
+		$runnerTestsCoverageField = new runner\tests\coverage\cli();
+		$runnerTestsCoverageField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+			->setClassPrompt($secondLevelPrompt)
+			->setMethodPrompt(new prompt('==> ', $defaultColorizer))
+		;
+
+		$this->addField($runnerTestsCoverageField);
+
+		$runnerDurationField = new runner\duration\cli();
+		$runnerDurationField
+			->setPrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+		;
+
+		$this->addField($runnerDurationField);
+
+		$runnerResultField = new runner\result\cli();
+		$runnerResultField
+			->setSuccessColorizer(new colorizer('0;37', '42'))
+			->setFailureColorizer(new colorizer('0;37', '41'))
+		;
+
+		$this->addField($runnerResultField);
 
 		$failureColorizer = new colorizer('0;31');
 		$failurePrompt = clone $secondLevelPrompt;
 		$failurePrompt->setColorizer($failureColorizer);
+
+		$runnerFailuresField = new runner\failures\cli();
+		$runnerFailuresField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($failureColorizer)
+			->setMethodPrompt($failurePrompt)
+		;
+
+		$this->addField($runnerFailuresField);
+
+		$runnerOutputsField = new runner\outputs\cli();
+		$runnerOutputsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($defaultColorizer)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($runnerOutputsField);
 
 		$errorColorizer = new colorizer('0;33');
 		$errorMethodPrompt = clone $secondLevelPrompt;
@@ -34,11 +110,31 @@ class cli extends realtime
 		$errorPrompt = clone $thirdLevelPrompt;
 		$errorPrompt->setColorizer($errorColorizer);
 
+		$runnerErrorsField = new runner\errors\cli();
+		$runnerErrorsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($errorColorizer)
+			->setMethodPrompt($errorMethodPrompt)
+			->setErrorPrompt($errorPrompt)
+		;
+
+		$this->addField($runnerErrorsField);
+
 		$exceptionColorizer = new colorizer('0;35');
 		$exceptionMethodPrompt = clone $secondLevelPrompt;
 		$exceptionMethodPrompt->setColorizer($exceptionColorizer);
 		$exceptionPrompt = clone $thirdLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
+
+		$runnerExceptionsField = new runner\exceptions\cli();
+		$runnerExceptionsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($exceptionColorizer)
+			->setMethodPrompt($exceptionMethodPrompt)
+			->setExceptionPrompt($exceptionPrompt)
+		;
+
+		$this->addField($runnerExceptionsField);
 
 		$uncompletedTestColorizer = new colorizer('0;37');
 		$uncompletedTestMethodPrompt = clone $secondLevelPrompt;
@@ -46,111 +142,54 @@ class cli extends realtime
 		$uncompletedTestOutputPrompt = clone $thirdLevelPrompt;
 		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
 
+		$runnerUncompletedField = new runner\tests\uncompleted\cli();
+		$runnerUncompletedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($uncompletedTestColorizer)
+			->setMethodPrompt($uncompletedTestMethodPrompt)
+			->setOutputPrompt($uncompletedTestOutputPrompt)
+		;
+
+		$this->addField($runnerUncompletedField);
+
 		$voidTestColorizer = new colorizer('0;34');
 		$voidTestMethodPrompt = clone $secondLevelPrompt;
 		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
 		$voidTestOutputPrompt = clone $thirdLevelPrompt;
 		$voidTestOutputPrompt->setColorizer($voidTestColorizer);
 
-		$this
-			->addField(new runner\php\path\cli(
-						$firstLevelPrompt,
-						$defaultColorizer
-					)
-				)
-			->addField(new runner\php\version\cli(
-						$firstLevelPrompt,
-						$defaultColorizer,
-						$secondLevelPrompt
-					)
-				)
-			->addField(new runner\tests\duration\cli(
-						$firstLevelPrompt,
-						$defaultColorizer
-					)
-				)
-			->addField(new runner\tests\memory\cli(
-						$firstLevelPrompt,
-						$defaultColorizer
-					)
-				)
-			->addField(new runner\tests\coverage\cli(
-						$firstLevelPrompt,
-						$secondLevelPrompt,
-						new prompt('==> ', $defaultColorizer),
-						$defaultColorizer
-					)
-				)
-			->addField(new runner\duration\cli(
-						$firstLevelPrompt,
-						$defaultColorizer
-					)
-				)
-			->addField(new runner\result\cli(
-						null,
-						new colorizer('0;37', '42'),
-						new colorizer('0;37', '41')
-					)
-				)
-			->addField(new runner\failures\cli(
-						$firstLevelPrompt,
-						$failureColorizer,
-						$failurePrompt
-					)
-				)
-			->addField(
-				new runner\outputs\cli(
-						$firstLevelPrompt,
-						$defaultColorizer,
-						$secondLevelPrompt
-					)
-				)
-			->addField(new runner\errors\cli(
-						$firstLevelPrompt,
-						$errorColorizer,
-						$errorMethodPrompt,
-						null,
-						$errorPrompt
-					)
-				)
-			->addField(new runner\exceptions\cli(
-						$firstLevelPrompt,
-						$exceptionColorizer,
-						$exceptionMethodPrompt,
-						null,
-						$exceptionPrompt
-					)
-				)
-			->addField(new runner\tests\uncompleted\cli(
-						$firstLevelPrompt,
-						$uncompletedTestColorizer,
-						$uncompletedTestMethodPrompt,
-						null,
-						$uncompletedTestOutputPrompt
-					)
-				)
-			->addField(new runner\tests\void\cli(
-						$firstLevelPrompt,
-						$voidTestColorizer,
-						$voidTestMethodPrompt,
-						null,
-						$voidTestOutputPrompt
-					)
-				)
-			->addField(new test\run\cli(
-						$firstLevelPrompt,
-						$defaultColorizer
-					)
-				)
-			->addField(new test\event\cli())
-			->addField(new test\duration\cli(
-						$secondLevelPrompt
-					)
-				)
-			->addField(new test\memory\cli(
-						$secondLevelPrompt
-					)
-				)
+		$runnerVoidField = new runner\tests\void\cli();
+		$runnerVoidField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($voidTestColorizer)
+			->setMethodPrompt($voidTestMethodPrompt)
+			->setOutputPrompt($voidTestOutputPrompt)
 		;
+
+		$this->addField($runnerVoidField);
+
+		$testRunField = new test\run\cli();
+		$testRunField
+			->setPrompt($firstLevelPrompt)
+			->setColorizer($defaultColorizer)
+		;
+
+		$this->addField($testRunField);
+
+		$this->addField(new test\event\cli());
+
+		$testDurationField = new test\duration\cli();
+		$testDurationField
+			->setPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($testDurationField);
+
+		$testMemoryField = new test\memory\cli();
+		$testMemoryField
+			->SetPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($testMemoryField);
 	}
 }

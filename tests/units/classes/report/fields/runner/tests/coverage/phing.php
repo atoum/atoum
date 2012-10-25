@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\locale,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests
+	mageekguy\atoum\report\fields\runner\tests\coverage\phing as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -24,7 +24,7 @@ class phing extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->getTitlePrompt())->isEqualTo(new prompt())
 				->object($field->getClassPrompt())->isEqualTo(new prompt())
@@ -41,7 +41,7 @@ class phing extends atoum\test
 	public function testSetTitlePrompt()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->setTitlePrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getTitlePrompt())->isEqualTo($prompt)
@@ -55,7 +55,7 @@ class phing extends atoum\test
 	public function testSetClassPrompt()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->setMethodPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getMethodPrompt())->isEqualTo($prompt)
@@ -69,7 +69,7 @@ class phing extends atoum\test
 	public function testSetMethodPrompt()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->setClassPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getClassPrompt())->isEqualTo($prompt)
@@ -83,7 +83,7 @@ class phing extends atoum\test
 	public function testSetTitleColorizer()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->setTitleColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getTitleColorizer())->isIdenticalTo($colorizer)
@@ -97,7 +97,7 @@ class phing extends atoum\test
 	public function testSetTitleCoverageColorizer()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->object($field->setCoverageColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getCoverageColorizer())->isIdenticalTo($colorizer)
@@ -111,11 +111,27 @@ class phing extends atoum\test
 	public function testShowMissingCodeCoverage()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
-				->object($field->showMissingCodeCoverage(true))->isIdenticalTo($field)
+				->object($field->showMissingCodeCoverage())->isIdenticalTo($field)
 				->boolean($field->missingCodeCoverageIsShowed())->isTrue()
-				->object($field->showMissingCodeCoverage(false))->isIdenticalTo($field)
+			->if($field->hideMissingCodeCoverage())
+			->then
+				->object($field->showMissingCodeCoverage())->isIdenticalTo($field)
+				->boolean($field->missingCodeCoverageIsShowed())->isTrue()
+		;
+	}
+
+	public function testHideMissingCodeCoverage()
+	{
+		$this
+			->if($field = new testedClass())
+			->then
+				->object($field->hideMissingCodeCoverage())->isIdenticalTo($field)
+				->boolean($field->missingCodeCoverageIsShowed())->isFalse()
+			->if($field->showMissingCodeCoverage())
+			->then
+				->object($field->hideMissingCodeCoverage())->isIdenticalTo($field)
 				->boolean($field->missingCodeCoverageIsShowed())->isFalse()
 		;
 	}
@@ -123,7 +139,7 @@ class phing extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->if($field = new tests\coverage\phing())
+			->if($field = new testedClass())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
 				->variable($field->getCoverage())->isNull()
@@ -140,8 +156,8 @@ class phing extends atoum\test
 			->and($score->getMockController()->getCoverage = function() use ($scoreCoverage) { return $scoreCoverage; })
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))
-			->and($defaultField = new tests\coverage\phing())
-			->and($customField = new tests\coverage\phing())
+			->and($defaultField = new testedClass())
+			->and($customField = new testedClass())
 			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
 			->and($customField->setClassPrompt($classPrompt = new prompt(uniqid())))
 			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))
@@ -202,8 +218,8 @@ class phing extends atoum\test
 						)
 					)
 				)
-			->and($defaultField = new tests\coverage\phing())
-			->and($customField = new tests\coverage\phing())
+			->and($defaultField = new testedClass())
+			->and($customField = new testedClass())
 			->and($customField->setTitlePrompt($titlePrompt = new prompt(uniqid())))
 			->and($customField->setClassPrompt($classPrompt = new prompt(uniqid())))
 			->and($customField->setMethodPrompt($methodPrompt = new prompt(uniqid())))

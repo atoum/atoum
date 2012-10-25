@@ -17,16 +17,43 @@ class light extends realtime
 	{
 		parent::__construct();
 
-		$firstLevelPrompt = new prompt('> ');
 		$firstLevelColorizer = new colorizer('1;36');
 
+		$firstLevelPrompt = new prompt('> ');
 		$secondLevelPrompt = new prompt('=> ', $firstLevelColorizer);
-
 		$thirdLevelPrompt = new prompt('==> ', $firstLevelColorizer);
+
+		$this->addField(new runner\event\cli());
+
+		$resultField = new runner\result\cli();
+		$resultField
+			->setSuccessColorizer(new colorizer('0;37', '42'))
+			->setFailureColorizer(new colorizer('0;37', '41'))
+		;
+
+		$this->addField($resultField);
 
 		$failureColorizer = new colorizer('0;31');
 		$failurePrompt = clone $secondLevelPrompt;
 		$failurePrompt->setColorizer($failureColorizer);
+
+		$failuresField = new runner\failures\cli();
+		$failuresField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($firstLevelColorizer)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($failuresField);
+
+		$outputsField = new runner\outputs\cli();
+		$outputsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($firstLevelColorizer)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($outputsField);
 
 		$errorColorizer = new colorizer('0;33');
 		$errorMethodPrompt = clone $secondLevelPrompt;
@@ -34,11 +61,31 @@ class light extends realtime
 		$errorPrompt = clone $thirdLevelPrompt;
 		$errorPrompt->setColorizer($errorColorizer);
 
+		$errorsField = new runner\errors\cli();
+		$errorsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($errorColorizer)
+			->setMethodPrompt($errorMethodPrompt)
+			->setErrorPrompt($errorPrompt)
+		;
+
+		$this->addField($errorsField);
+
 		$exceptionColorizer = new colorizer('0;35');
 		$exceptionMethodPrompt = clone $secondLevelPrompt;
 		$exceptionMethodPrompt->setColorizer($exceptionColorizer);
 		$exceptionPrompt = clone $thirdLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
+
+		$exceptionsField = new runner\exceptions\cli();
+		$exceptionsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($exceptionColorizer)
+			->setMethodPrompt($exceptionMethodPrompt)
+			->setExceptionPrompt($exceptionPrompt)
+		;
+
+		$this->addField($exceptionsField);
 
 		$uncompletedTestColorizer = new colorizer('0;37');
 		$uncompletedTestMethodPrompt = clone $secondLevelPrompt;
@@ -46,51 +93,30 @@ class light extends realtime
 		$uncompletedTestOutputPrompt = clone $thirdLevelPrompt;
 		$uncompletedTestOutputPrompt->setColorizer($uncompletedTestColorizer);
 
-		$this
-			->addField(new runner\event\cli())
-			->addField(new runner\result\cli(
-						null,
-						new colorizer('0;37', '42'),
-						new colorizer('0;37', '41')
-					)
-				)
-			->addField(new runner\failures\cli(
-						$firstLevelPrompt,
-						$failureColorizer,
-						$failurePrompt
-					)
-				)
-			->addField(
-				new runner\outputs\cli(
-						$firstLevelPrompt,
-						$firstLevelColorizer,
-						$secondLevelPrompt
-					)
-				)
-			->addField(new runner\errors\cli(
-						$firstLevelPrompt,
-						$errorColorizer,
-						$errorMethodPrompt,
-						null,
-						$errorPrompt
-					)
-				)
-			->addField(new runner\exceptions\cli(
-						$firstLevelPrompt,
-						$exceptionColorizer,
-						$exceptionMethodPrompt,
-						null,
-						$exceptionPrompt
-					)
-				)
-			->addField(new runner\tests\uncompleted\cli(
-						$firstLevelPrompt,
-						$uncompletedTestColorizer,
-						$uncompletedTestMethodPrompt,
-						null,
-						$uncompletedTestOutputPrompt
-					)
-				)
+		$uncompletedTestField = new runner\tests\uncompleted\cli();
+		$uncompletedTestField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($uncompletedTestColorizer)
+			->setMethodPrompt($uncompletedTestMethodPrompt)
+			->setOutputPrompt($uncompletedTestOutputPrompt)
 		;
+
+		$this->addField($uncompletedTestField);
+
+		$voidTestColorizer = new colorizer('0;34');
+		$voidTestMethodPrompt = clone $secondLevelPrompt;
+		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
+		$voidTestOutputPrompt = clone $thirdLevelPrompt;
+		$voidTestOutputPrompt->setColorizer($voidTestColorizer);
+
+		$voidTestField = new runner\tests\void\cli();
+		$voidTestField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($voidTestColorizer)
+			->setMethodPrompt($voidTestMethodPrompt)
+			->setOutputPrompt($voidTestOutputPrompt)
+		;
+
+		$this->addField($voidTestField);
 	}
 }

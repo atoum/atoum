@@ -14,16 +14,23 @@ class phing extends report\fields\runner\tests\coverage\cli
 {
 	protected $showMissingCodeCoverage = true;
 
-	public function showMissingCodeCoverage($showMissingCodeCoverage)
+	public function showMissingCodeCoverage()
 	{
-		$this->showMissingCodeCoverage = ($showMissingCodeCoverage == true);
+		$this->showMissingCodeCoverage = true;
+
+		return $this;
+	}
+
+	public function hideMissingCodeCoverage()
+	{
+		$this->showMissingCodeCoverage = false;
 
 		return $this;
 	}
 
 	public function missingCodeCoverageIsShowed()
 	{
-		return ($this->showMissingCodeCoverage === true);
+		return $this->showMissingCodeCoverage;
 	}
 
 	public function __toString()

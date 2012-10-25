@@ -74,6 +74,13 @@ class report implements observer, adapter\aggregator
 		return $this;
 	}
 
+	public function resetFields()
+	{
+		$this->fields = array();
+
+		return $this;
+	}
+
 	public function getFields()
 	{
 		return $this->fields;

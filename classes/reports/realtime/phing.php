@@ -20,18 +20,149 @@ class phing extends realtime
 	protected $showCodeCoverage = true;
 	protected $codeCoverageReportPath = null;
 	protected $codeCoverageReportUrl = null;
+	protected $codeCoverageReportProjectName = null;
 
-	public function __construct($showProgress = true, $showCodeCoverage = true, $showMissingCodeCoverage = true, $showDuration = true, $showMemory = true, $codeCoverageReportPath = null, $codeCoverageReportUrl = null)
+	public function __construct()
 	{
 		parent::__construct();
 
-		$this->showProgress = ($showProgress == true);
-		$this->showCodeCoverage = ($showCodeCoverage == true);
-		$this->showMissingCodeCoverage = ($showMissingCodeCoverage == true);
-		$this->showDuration = ($showDuration == true);
-		$this->showMemory = ($showMemory == true);
-		$this->codeCoverageReportPath = ($codeCoverageReportPath === null ? null : (string) $codeCoverageReportPath);
-		$this->codeCoverageReportUrl = ($codeCoverageReportUrl === null ? null : (string) $codeCoverageReportUrl);
+		$this->build();
+	}
+
+	public function showProgress()
+	{
+		$this->showProgress = true;
+
+		return $this->build();
+	}
+
+	public function hideProgress()
+	{
+		$this->showProgress = false;
+
+		return $this->build();
+	}
+
+	public function progressIsShowed()
+	{
+		return $this->showProgress;
+	}
+
+	public function showCodeCoverage()
+	{
+		$this->showCodeCoverage = true;
+
+		return $this->build();
+	}
+
+	public function hideCodeCoverage()
+	{
+		$this->showCodeCoverage = false;
+
+		return $this->build();
+	}
+
+	public function codeCoverageIsShowed()
+	{
+		return $this->showCodeCoverage;
+	}
+
+	public function showMissingCodeCoverage()
+	{
+		$this->showMissingCodeCoverage = true;
+
+		return $this->build();
+	}
+
+	public function hideMissingCodeCoverage()
+	{
+		$this->showMissingCodeCoverage = false;
+
+		return $this->build();
+	}
+
+	public function missingCodeCoverageIsShowed()
+	{
+		return $this->showMissingCodeCoverage;
+	}
+
+	public function showDuration()
+	{
+		$this->showDuration = true;
+
+		return $this->build();
+	}
+
+	public function hideDuration()
+	{
+		$this->showDuration = false;
+
+		return $this->build();
+	}
+
+	public function durationIsShowed()
+	{
+		return $this->showDuration;
+	}
+
+	public function showMemory()
+	{
+		$this->showMemory = true;
+
+		return $this->build();
+	}
+
+	public function hideMemory()
+	{
+		$this->showMemory = false;
+
+		return $this->build();
+	}
+
+	public function memoryIsShowed()
+	{
+		return $this->showMemory;
+	}
+
+	public function setCodeCoverageReportPath($path = null)
+	{
+		$this->codeCoverageReportPath = $path;
+
+		return $this;
+	}
+
+	public function getCodeCoverageReportPath()
+	{
+		return $this->codeCoverageReportPath;
+	}
+
+	public function setCodeCoverageReportProjectName($url = null)
+	{
+		$this->codeCoverageReportProjectName = $url;
+
+		return $this;
+	}
+
+	public function getCodeCoverageReportProjectName()
+	{
+		return $this->codeCoverageReportProjectName;
+	}
+
+	public function setCodeCoverageReportUrl($url = null)
+	{
+		$this->codeCoverageReportUrl = $url;
+
+		return $this;
+	}
+
+	public function getCodeCoverageReportUrl()
+	{
+		return $this->codeCoverageReportUrl;
+	}
+
+	protected function build()
+	{
+		$this->resetFields();
 
 		$firstLevelPrompt = new prompt(PHP_EOL);
 		$firstLevelColorizer = new colorizer('1;36');
@@ -50,167 +181,150 @@ class phing extends realtime
 		$exceptionPrompt = clone $secondLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
 
-		$this
-			 ->addField(new runner\atoum\phing(
-					$firstLevelPrompt,
-					$firstLevelColorizer
-				)
-			)
-			->addField(new runner\php\path\cli(
-					$firstLevelPrompt,
-					$firstLevelColorizer
-				)
-			)
-			->addField(new runner\php\version\cli(
-					$firstLevelPrompt,
-					$firstLevelColorizer,
-					$secondLevelPrompt
-				)
-			)
+		$phpPathField = new runner\php\path\cli();
+		$phpPathField
+			->setPrompt($firstLevelPrompt)
+			->setTitleColorizer($firstLevelColorizer)
 		;
+
+		$this->addField($phpPathField);
+
+		$phpVersionField = new runner\php\version\cli();
+		$phpVersionField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($firstLevelColorizer)
+			->setVersionPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($phpVersionField);
 
 		if ($this->showDuration === true)
 		{
-			$this->addField(new runner\duration\cli(
-					$firstLevelPrompt,
-					$firstLevelColorizer
-				)
-			);
+			$runnerDurationField = new runner\duration\cli();
+			$runnerDurationField
+				->setPrompt($firstLevelPrompt)
+				->setTitleColorizer($firstLevelColorizer)
+			;
+
+			$this->addField($runnerDurationField);
 		}
 
 		if ($this->showMemory === true)
 		{
-			$this->addField(new runner\tests\memory\phing(
-					$firstLevelPrompt,
-					$firstLevelColorizer
-				)
-			);
+			$runnerTestsMemoryField = new runner\tests\memory\phing();
+			$runnerTestsMemoryField
+				->setPrompt($firstLevelPrompt)
+				->setTitleColorizer($firstLevelColorizer)
+			;
+
+			$this->addField($runnerTestsMemoryField);
 		}
 
 		if ($this->showCodeCoverage === true)
 		{
-			$this->addField(new runner\tests\coverage\cli(
-					$firstLevelPrompt,
-					$secondLevelPrompt,
-					new prompt('  ', $firstLevelColorizer),
-					$firstLevelColorizer,
-					null,
-					null,
-					$this->showMissingCodeCoverage
-				)
-			);
+			$runnerTestsCoverageField = new runner\tests\coverage\phing();
+			$runnerTestsCoverageField
+				->setTitlePrompt($firstLevelPrompt)
+				->setClassPrompt($secondLevelPrompt)
+				->setMethodPrompt(new prompt('  ', $firstLevelColorizer))
+				->setTitleColorizer($firstLevelColorizer)
+			;
+
+			if ($this->showMissingCodeCoverage === false)
+			{
+				$runnerTestsCoverageField->hideMissingCodeCoverage();
+			}
+
+			$this->addField($runnerTestsCoverageField);
 		}
 
-		$this
-			->addField(new runner\result\cli(
-					$firstLevelPrompt,
-					new colorizer('0;37', '42'),
-					new colorizer('0;37', '41')
-				)
-			)
-			->addField(new runner\failures\cli(
-					$firstLevelPrompt,
-					$failureColorizer,
-					$failurePrompt
-				)
-			)
-			->addField(new runner\outputs\cli(
-					$firstLevelPrompt,
-					$firstLevelColorizer,
-					$secondLevelPrompt
-				)
-			)
-			->addField(new runner\errors\cli(
-					$firstLevelPrompt,
-					$errorColorizer,
-					$errorPrompt
-				)
-			)
-			->addField(new runner\exceptions\cli(
-					$firstLevelPrompt,
-					$exceptionColorizer,
-					$exceptionPrompt
-				)
-			)
+		$resultField = new runner\result\cli();
+		$resultField
+			->setPrompt($firstLevelPrompt)
+			->setSuccessColorizer(new colorizer('0;37', '42'))
+			->setFailureColorizer(new colorizer('0;37', '41'))
 		;
+
+		$this->addField($resultField);
+
+		$failuresField = new runner\failures\cli();
+		$failuresField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($failureColorizer)
+			->setMethodPrompt($failurePrompt)
+		;
+
+		$this->addField($failuresField);
+
+		$outputsField = new runner\outputs\cli();
+		$outputsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($firstLevelColorizer)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($outputsField);
+
+		$errorsField = new runner\errors\cli();
+		$errorsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($errorColorizer)
+			->setMethodPrompt($errorPrompt)
+		;
+
+		$this->addField($errorsField);
+
+		$exceptionsField = new runner\exceptions\cli();
+		$exceptionsField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($exceptionColorizer)
+			->setMethodPrompt($exceptionPrompt)
+		;
+
+		$this->addField($exceptionsField);
 
 		if ($this->showProgress === true)
 		{
+			$runField = new test\run\phing();
+			$runField
+				->setPrompt($firstLevelPrompt)
+				->setColorizer($firstLevelColorizer)
+			;
+
 			$this
-				->addField(new test\run\phing(
-						$firstLevelPrompt,
-						$firstLevelColorizer
-					)
-				)
-			  ->addField(new test\event\phing())
+				->addField($runField)
+				->addField(new test\event\phing())
 			;
 		}
 
 		if ($this->showDuration === true)
 		{
-			$this->addField(new test\duration\phing(
-					$secondLevelPrompt
-				)
-			);
+			$durationField = new test\duration\phing();
+			$durationField
+				->setPrompt($secondLevelPrompt)
+			;
+
+			$this->addField($durationField);
 		}
 
 		if ($this->showMemory === true)
 		{
-			$this->addField(new test\memory\phing(
-					$secondLevelPrompt
-				)
-			);
+			$memoryField = new test\memory\phing();
+			$memoryField
+				->setPrompt($secondLevelPrompt)
+			;
+
+			$this->addField($memoryField);
 		}
 
-		if ($codeCoverageReportPath = $this->getCodecoverageReportPath())
+		if ($this->codeCoverageReportPath !== null)
 		{
-			$coverageField = new atoum\report\fields\runner\coverage\html('', $codeCoverageReportPath);
-
-			if ($this->codeCoverageReportUrl === null)
-			{
-				$coverageField->setRootUrl("file:////" . realpath($this->getCodeCoverageReportPath()));
-			}
-			else
-			{
-				$coverageField->setRootUrl($this->getCodecoveragereporturl());
-			}
+			$coverageField = new atoum\report\fields\runner\coverage\html($this->codeCoverageReportProjectName ?: '', $this->codeCoverageReportPath);
+			$coverageField->setRootUrl($this->codeCoverageReportUrl ?: 'file:////' . realpath($this->codeCoverageReportPath));
 
 			$this->addField($coverageField);
 		}
-	}
 
-	public function codeCoverageIsShowed()
-	{
-		return ($this->showCodeCoverage === true);
-	}
-
-	public function durationIsShowed()
-	{
-		return ($this->showDuration === true);
-	}
-
-	public function memoryIsShowed()
-	{
-		return ($this->showMemory === true);
-	}
-
-	public function missingCodeCoverageIsShowed()
-	{
-		return ($this->showMissingCodeCoverage === true);
-	}
-
-	public function progressIsShowed()
-	{
-		return ($this->showProgress === true);
-	}
-
-	public function getCodeCoverageReportPath()
-	{
-		return $this->codeCoverageReportPath;
-	}
-
-	public function getCodecoveragereporturl()
-	{
-		return $this->codeCoverageReportUrl;
+		return $this;
 	}
 }

@@ -17,6 +17,7 @@ abstract class result extends report\field
 	protected $failNumber = null;
 	protected $errorNumber = null;
 	protected $exceptionNumber = null;
+	protected $voidMethodNumber = null;
 	protected $uncompletedMethodNumber = null;
 	protected $skippedMethodNumber = null;
 
@@ -55,6 +56,11 @@ abstract class result extends report\field
 		return $this->exceptionNumber;
 	}
 
+	public function getVoidMethodNumber()
+	{
+		return $this->voidMethodNumber;
+	}
+
 	public function getUncompletedMethodNumber()
 	{
 		return $this->uncompletedMethodNumber;
@@ -81,6 +87,7 @@ abstract class result extends report\field
 			$this->failNumber = $score->getFailNumber();
 			$this->errorNumber = $score->getErrorNumber();
 			$this->exceptionNumber = $score->getExceptionNumber();
+			$this->voidMethodNumber = $score->getVoidMethodNumber();
 			$this->uncompletedMethodNumber = $score->getUncompletedMethodNumber();
 			$this->skippedMethodNumber = $score->getSkippedMethodNumber();
 

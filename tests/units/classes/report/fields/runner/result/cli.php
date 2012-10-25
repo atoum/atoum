@@ -134,10 +134,10 @@ class cli extends atoum\test
 				case 'No test running.':
 					return $noTestRunningString = uniqid();
 
-				case 'Success (%s, %s, %s, %s) !':
+				case 'Success (%s, %s, %s, %s, %s) !':
 					return $successString = uniqid();
 
-				case 'Failure (%s, %s, %s, %s, %s, %s, %s) !':
+				case 'Failure (%s, %s, %s, %s, %s, %s, %s, %s) !':
 					return $failureString = uniqid();
 
 				default:
@@ -212,7 +212,7 @@ class cli extends atoum\test
 					->call('__')->withArguments('%s/%s method', '%s/%s methods', 1)->once()
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
-					->call('_')->withArguments('Success (%s, %s, %s, %s) !')->once()
+					->call('_')->withArguments('Success (%s, %s, %s, %s, %s) !')->once()
 				->mock($successColorizer)
 					->call('colorize')->withArguments($noTestRunningString)->never()
 					->call('colorize')->withArguments($successString)->once()
@@ -256,7 +256,7 @@ class cli extends atoum\test
 					->call('__')->withArguments('%s/%s method', '%s/%s methods', $testMethodNumber)->once()
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
-					->call('_')->withArguments('Success (%s, %s, %s, %s) !')->once()
+					->call('_')->withArguments('Success (%s, %s, %s, %s, %s) !')->once()
 				->mock($successColorizer)
 					->call('colorize')->withArguments($noTestRunningString)->never()
 					->call('colorize')->withArguments($successString)->once()
@@ -305,7 +305,7 @@ class cli extends atoum\test
 					->call('__')->withArguments('%s failure', '%s failures', 1)->once()
 					->call('__')->withArguments('%s error', '%s errors', 1)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
-					->call('_')->withArguments('Failure (%s, %s, %s, %s, %s, %s, %s) !')->once()
+					->call('_')->withArguments('Failure (%s, %s, %s, %s, %s, %s, %s, %s) !')->once()
 				->mock($failureColorizer)
 					->call('colorize')->withArguments($noTestRunningString)->never()
 					->call('colorize')->withArguments($failureString)->once()
@@ -352,7 +352,7 @@ class cli extends atoum\test
 					->call('__')->withArguments('%s failure', '%s failures', $failNumber)->once()
 					->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
-					->call('_')->withArguments('Failure (%s, %s, %s, %s, %s, %s, %s) !')->once()
+					->call('_')->withArguments('Failure (%s, %s, %s, %s, %s, %s, %s, %s) !')->once()
 				->mock($failureColorizer)
 					->call('colorize')->withArguments($noTestRunningString)->never()
 					->call('colorize')->withArguments($failureString)->once()
