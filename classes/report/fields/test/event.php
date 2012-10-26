@@ -12,7 +12,7 @@ use
 
 abstract class event extends report\fields\event
 {
-	public function __construct(atoum\locale $locale = null)
+	public function __construct()
 	{
 		parent::__construct(array(
 				test::runStart,
@@ -25,8 +25,7 @@ abstract class event extends report\fields\event
 				test::runtimeException,
 				test::success,
 				test::runStop
-			),
-			$locale
+			)
 		);
 	}
 }

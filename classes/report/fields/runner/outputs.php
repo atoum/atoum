@@ -4,7 +4,6 @@ namespace mageekguy\atoum\report\fields\runner;
 
 use
 	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
 	mageekguy\atoum\observable,
 	mageekguy\atoum\report\field
 ;
@@ -13,9 +12,9 @@ abstract class outputs extends field
 {
 	protected $runner = null;
 
-	public function __construct(locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStop), $locale);
+		parent::__construct(array(runner::runStop));
 	}
 
 	public function getRunner()

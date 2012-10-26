@@ -12,9 +12,9 @@ abstract class memory extends report\field
 {
 	protected $value = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(test::runStop), $locale);
+		parent::__construct(array(test::runStop));
 	}
 
 	public function getValue()

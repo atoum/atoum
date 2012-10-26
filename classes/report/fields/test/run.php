@@ -12,9 +12,9 @@ abstract class run extends report\field
 {
 	protected $testClass = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(test::runStart), $locale);
+		parent::__construct(array(test::runStart));
 	}
 
 	public function getTestClass()

@@ -13,11 +13,18 @@ class cli extends report\fields\test\event
 {
 	protected $progressBar = null;
 
-	public function __construct(progressBar $progressBar = null, atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
+		$this->setProgressBar();
+	}
+
+	public function setProgressBar(progressBar $progressBar = null)
+	{
 		$this->progressBar = $progressBar ?: new progressBar();
+
+		return $this;
 	}
 
 	public function getProgressBar()

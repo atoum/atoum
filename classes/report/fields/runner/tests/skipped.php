@@ -1,25 +1,25 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test;
+namespace mageekguy\atoum\report\fields\runner\tests;
 
 use
-	mageekguy\atoum\test,
+	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
 	mageekguy\atoum\observable
 ;
 
-abstract class duration extends report\field
+abstract class skipped extends report\field
 {
-	protected $value = null;
+	protected $runner = null;
 
 	public function __construct()
 	{
-		parent::__construct(array(test::runStop));
+		parent::__construct(array(runner::runStop));
 	}
 
-	public function getValue()
+	public function getRunner()
 	{
-		return $this->value;
+		return $this->runner;
 	}
 
 	public function handleEvent($event, observable $observable)
@@ -30,7 +30,7 @@ abstract class duration extends report\field
 		}
 		else
 		{
-			$this->value = $observable->getScore()->getTotalDuration();
+			$this->runner = $observable;
 
 			return true;
 		}

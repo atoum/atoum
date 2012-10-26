@@ -4,7 +4,6 @@ namespace mageekguy\atoum\report\fields\runner\tests\void;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\locale,
 	mageekguy\atoum\report,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer
@@ -19,23 +18,23 @@ class cli extends report\fields\runner\tests\void
 	protected $outputPrompt = null;
 	protected $outputColorizer = null;
 
-	public function __construct(prompt $titlePrompt = null, colorizer $titleColorizer = null, prompt $methodPrompt = null, colorizer $methodColorizer = null, prompt $outputPrompt = null, colorizer $outputColorizer = null, locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this
-			->setTitlePrompt($titlePrompt ?: new prompt())
-			->setTitleColorizer($titleColorizer ?: new colorizer())
-			->setMethodPrompt($methodPrompt ?: new prompt())
-			->setMethodColorizer($methodColorizer ?: new colorizer())
-			->setOutputPrompt($outputPrompt ?: new prompt())
-			->setOutputColorizer($outputColorizer ?: new colorizer())
+			->setTitlePrompt()
+			->setTitleColorizer()
+			->setMethodPrompt()
+			->setMethodColorizer()
+			->setOutputPrompt()
+			->setOutputColorizer()
 		;
 	}
 
-	public function setTitlePrompt(prompt $prompt)
+	public function setTitlePrompt(prompt $prompt = null)
 	{
-		$this->titlePrompt = $prompt;
+		$this->titlePrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -45,9 +44,9 @@ class cli extends report\fields\runner\tests\void
 		return $this->titlePrompt;
 	}
 
-	public function setTitleColorizer(colorizer $colorizer)
+	public function setTitleColorizer(colorizer $colorizer = null)
 	{
-		$this->titleColorizer = $colorizer;
+		$this->titleColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -57,9 +56,9 @@ class cli extends report\fields\runner\tests\void
 		return $this->titleColorizer;
 	}
 
-	public function setMethodPrompt(prompt $prompt)
+	public function setMethodPrompt(prompt $prompt = null)
 	{
-		$this->methodPrompt = $prompt;
+		$this->methodPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -69,9 +68,9 @@ class cli extends report\fields\runner\tests\void
 		return $this->methodPrompt;
 	}
 
-	public function setMethodColorizer(colorizer $colorizer)
+	public function setMethodColorizer(colorizer $colorizer = null)
 	{
-		$this->methodColorizer = $colorizer;
+		$this->methodColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}
@@ -81,9 +80,9 @@ class cli extends report\fields\runner\tests\void
 		return $this->methodColorizer;
 	}
 
-	public function setOutputPrompt(prompt $prompt)
+	public function setOutputPrompt(prompt $prompt = null)
 	{
-		$this->outputPrompt = $prompt;
+		$this->outputPrompt = $prompt ?: new prompt();
 
 		return $this;
 	}
@@ -93,9 +92,9 @@ class cli extends report\fields\runner\tests\void
 		return $this->outputPrompt;
 	}
 
-	public function setOutputColorizer(colorizer $colorizer)
+	public function setOutputColorizer(colorizer $colorizer = null)
 	{
-		$this->outputColorizer = $colorizer;
+		$this->outputColorizer = $colorizer ?: new colorizer();
 
 		return $this;
 	}

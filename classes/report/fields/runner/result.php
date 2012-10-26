@@ -3,7 +3,6 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
-	mageekguy\atoum\locale,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
 	mageekguy\atoum\observable
@@ -21,9 +20,9 @@ abstract class result extends report\field
 	protected $uncompletedMethodNumber = null;
 	protected $skippedMethodNumber = null;
 
-	public function __construct(locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStop), $locale);
+		parent::__construct(array(runner::runStop));
 	}
 
 	public function getTestNumber()

@@ -28,6 +28,20 @@ class cli extends atoum\test
 		;
 	}
 
+	public function testSetProgressBar()
+	{
+		$this
+			->if($field = new test\event\cli())
+			->then
+				->object($field->setProgressBar($progressBar = new atoum\cli\progressBar()))->isIdenticalTo($field)
+				->object($field->getProgressBar())->isIdenticalTo($progressBar)
+				->object($field->setProgressBar())->isIdenticalTo($field)
+				->object($field->getProgressBar())
+					->isNotIdenticalTo($progressBar)
+					->isEqualTo(new atoum\cli\progressBar())
+		;
+	}
+
 	public function testHandleEvent()
 	{
 		$this

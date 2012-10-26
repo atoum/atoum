@@ -12,9 +12,9 @@ abstract class coverage extends report\field
 {
 	protected $coverage = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStop), $locale);
+		parent::__construct(array(runner::runStop));
 	}
 
 	public function getCoverage()

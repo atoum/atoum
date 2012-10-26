@@ -12,9 +12,9 @@ abstract class version extends report\field
 {
 	protected $version = null;
 
-	public function __construct(atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStart), $locale);
+		parent::__construct(array(runner::runStart));
 	}
 
 	public function getVersion()

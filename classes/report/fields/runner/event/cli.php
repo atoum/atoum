@@ -14,9 +14,9 @@ class cli extends report\fields\runner\event
 {
 	protected $progressBar = null;
 
-	public function __construct(progressBar $progressBar = null, atoum\locale $locale = null)
+	public function __construct(progressBar $progressBar = null)
 	{
-		parent::__construct($locale);
+		parent::__construct();
 
 		$this->progressBar = $progressBar ?: new progressBar();
 	}

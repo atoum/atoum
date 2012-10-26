@@ -15,9 +15,9 @@ abstract class atoum extends report\field
 	protected $path = null;
 	protected $version = null;
 
-	public function __construct(\mageekguy\atoum\locale $locale = null)
+	public function __construct()
 	{
-		parent::__construct(array(runner::runStart), $locale);
+		parent::__construct(array(runner::runStart));
 	}
 
 	public function getAuthor()
