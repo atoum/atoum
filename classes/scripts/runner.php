@@ -316,9 +316,21 @@ class runner extends atoum\script
 
 	public function addDefaultReport()
 	{
-		$this->runner->addReport($report = call_user_func($this->defaultReportFactory, $this));
+		$this->addReport($report = call_user_func($this->defaultReportFactory, $this));
 
 		return $report;
+	}
+
+	public function addReport(atoum\report $report)
+	{
+		$this->runner->addReport($report);
+
+		return $this;
+	}
+
+	public function getReports()
+	{
+		return $this->runner->getReports();
 	}
 
 	public static function autorunMustBeEnabled()

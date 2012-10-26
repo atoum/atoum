@@ -28,16 +28,17 @@ class runner extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($scriptRunner = new scripts\runner($name = uniqid()))
+			->if($runner = new scripts\runner($name = uniqid()))
 			->then
-				->string($scriptRunner->getName())->isEqualTo($name)
-				->object($scriptRunner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($scriptRunner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($scriptRunner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($scriptRunner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
-				->variable($scriptRunner->getScoreFile())->isNull()
-				->array($scriptRunner->getArguments())->isEmpty()
-				->array($scriptRunner->getHelp())->isEqualTo(array(
+				->string($runner->getName())->isEqualTo($name)
+				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+				->variable($runner->getScoreFile())->isNull()
+				->array($runner->getReports())->isEmpty()
+				->array($runner->getArguments())->isEmpty()
+				->array($runner->getHelp())->isEqualTo(array(
 						array(
 							array('-h', '--help'),
 							null,
@@ -165,16 +166,16 @@ class runner extends atoum\test
 						)
 					)
 				)
-			->if($scriptRunner = new scripts\runner($name = uniqid(), $adapter = new atoum\adapter()))
+			->if($runner = new scripts\runner($name = uniqid(), $adapter = new atoum\adapter()))
 			->then
-				->string($scriptRunner->getName())->isEqualTo($name)
-				->object($scriptRunner->getAdapter())->isIdenticalTo($adapter)
-				->object($scriptRunner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($scriptRunner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($scriptRunner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
-				->variable($scriptRunner->getScoreFile())->isNull()
-				->array($scriptRunner->getArguments())->isEmpty()
-				->array($scriptRunner->getHelp())->isEqualTo(array(
+				->string($runner->getName())->isEqualTo($name)
+				->object($runner->getAdapter())->isIdenticalTo($adapter)
+				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+				->variable($runner->getScoreFile())->isNull()
+				->array($runner->getArguments())->isEmpty()
+				->array($runner->getHelp())->isEqualTo(array(
 						array(
 							array('-h', '--help'),
 							null,
@@ -414,6 +415,18 @@ class runner extends atoum\test
 			->then
 				->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
 				->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
+		;
+	}
+
+	public function testAddReport()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->addReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report))
+				->object($runner->addReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report, $otherReport))
 		;
 	}
 }
