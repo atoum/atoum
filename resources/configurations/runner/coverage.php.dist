@@ -17,7 +17,7 @@ Please replace in next line http://url/of/web/site by the root url of your code 
 */
 $coverageField->setRootUrl('http://url/of/web/site');
 
-$runner
+$script
 	->addDefaultReport()
 		->addField($coverageField)
 ;
