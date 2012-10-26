@@ -114,7 +114,6 @@ class light extends realtime
 			->setTitlePrompt($firstLevelPrompt)
 			->setTitleColorizer($voidTestColorizer)
 			->setMethodPrompt($voidTestMethodPrompt)
-			->setOutputPrompt($voidTestOutputPrompt)
 		;
 
 		$this->addField($voidTestField);

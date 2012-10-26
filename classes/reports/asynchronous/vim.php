@@ -104,7 +104,6 @@ class vim extends reports\asynchronous
 		$voidField
 			->setTitlePrompt($firstLevelPrompt)
 			->setMethodPrompt($secondLevelPrompt)
-			->setOutputPrompt($thirdLevelPrompt)
 		;
 
 		$this->addField($voidField);

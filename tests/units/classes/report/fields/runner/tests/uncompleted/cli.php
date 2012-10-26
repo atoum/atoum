@@ -138,7 +138,6 @@ class cli extends atoum\test
 
 	public function testHandleEvent()
 	{
-
 		$this
 			->if($field = new tests\uncompleted\cli())
 			->then

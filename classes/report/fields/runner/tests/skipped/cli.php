@@ -1,20 +1,21 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests\void;
+namespace mageekguy\atoum\report\fields\runner\tests\skipped;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
 	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\tests\skipped
 ;
 
-class cli extends report\fields\runner\tests\void
+class cli extends skipped
 {
 	protected $titlePrompt = null;
 	protected $titleColorizer = null;
 	protected $methodPrompt = null;
 	protected $methodColorizer = null;
+	protected $messagePrompt = null;
+	protected $messageColorizer = null;
 
 	public function __construct()
 	{
@@ -25,6 +26,7 @@ class cli extends report\fields\runner\tests\void
 			->setTitleColorizer()
 			->setMethodPrompt()
 			->setMethodColorizer()
+			->setMessageColorizer()
 		;
 	}
 
@@ -76,30 +78,42 @@ class cli extends report\fields\runner\tests\void
 		return $this->methodColorizer;
 	}
 
+	public function setMessageColorizer(colorizer $colorizer = null)
+	{
+		$this->messageColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getMessageColorizer()
+	{
+		return $this->messageColorizer;
+	}
+
 	public function __toString()
 	{
 		$string = '';
 
 		if ($this->runner !== null)
 		{
-			$voidMethods = $this->runner->getScore()->getVoidMethods();
+			$skippedMethods = $this->runner->getScore()->getSkippedMethods();
 
-			$sizeOfVoidMethod = sizeof($voidMethods);
+			$sizeOfSkippedMethod = sizeof($skippedMethods);
 
-			if ($sizeOfVoidMethod > 0)
+			if ($sizeOfSkippedMethod > 0)
 			{
 				$string .=
 					$this->titlePrompt .
 					sprintf(
 						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d void method', 'There are %d void methods', $sizeOfVoidMethod), $sizeOfVoidMethod))
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d skipped method', 'There are %d skipped methods', $sizeOfSkippedMethod), $sizeOfSkippedMethod))
 					) .
 					PHP_EOL
 				;
 
-				foreach ($voidMethods as $voidMethod)
+				foreach ($skippedMethods as $skippedMethod)
 				{
-					$string .= $this->methodPrompt . $this->methodColorizer->colorize(sprintf('%s::%s()', $voidMethod['class'], $voidMethod['method'])) .  PHP_EOL;
+					$string .= $this->methodPrompt . sprintf($this->locale->_('%s: %s'), $this->methodColorizer->colorize(sprintf('%s::%s()', $skippedMethod['class'], $skippedMethod['method'])), $this->messageColorizer->colorize($skippedMethod['message'])) . PHP_EOL;
 				}
 			}
 		}

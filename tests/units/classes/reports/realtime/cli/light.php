@@ -66,7 +66,6 @@ class light extends atoum\test
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;34'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;34')))
-					->setOutputPrompt(new prompt('==> ', new colorizer('0;34')))
 			)
 			->and($report = new testedClass())
 			->then
