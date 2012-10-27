@@ -165,7 +165,7 @@ class helloWorld extends atoum\test
 
 ## To go further
 
-[*atoum*'s documentation](https://github.com/geraldcroes/atoum-s-documentation) is still being written.  
+[*atoum*'s documentation](https://github.com/marmotz/atoum-s-documentation) is still being written.  
 It's a github repository, so some pull requests are welcome to improve it.  
 However, if you want to further explore immediately *atoum*'s possibilities, we recommend :
 
