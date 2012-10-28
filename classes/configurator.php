@@ -24,22 +24,20 @@ class configurator
 
 	public function __call($method, $arguments)
 	{
-		if (isset($this->methods[$method]) === false)
+		if (isset($this->methods[$method]) === true)
+		{
+			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$method], $arguments);
+
+			return $this;
+		}
+		else
 		{
 			if (method_exists($this->script, $method) === false)
 			{
 				throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
 			}
 
-			call_user_func_array(array($this->script, $method), $arguments);
-
-			return $this;
-		}
-		else
-		{
-			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$method], $arguments);
-
-			return $this;
+			return call_user_func_array(array($this->script, $method), $arguments);
 		}
 	}
 
