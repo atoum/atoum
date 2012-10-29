@@ -13,6 +13,11 @@ require_once __DIR__ . '/../../../runner.php';
 
 class clover extends Atoum\test
 {
+	public function beforeTestMethod($method)
+	{
+		$this->extension('libxml')->isLoaded();
+	}
+
 	public function testClass()
 	{
 		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');

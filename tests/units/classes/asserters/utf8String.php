@@ -15,7 +15,7 @@ class utf8String extends atoum\test
 {
 	public function beforeTestMethod($method)
 	{
-		$this->extension('foo')->isLoaded();
+		$this->extension('mbstring')->isLoaded();
 	}
 
 	public function testClass()
