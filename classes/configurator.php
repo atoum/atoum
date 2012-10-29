@@ -37,7 +37,9 @@ class configurator
 				throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
 			}
 
-			return call_user_func_array(array($this->script, $method), $arguments);
+			$return = call_user_func_array(array($this->script, $method), $arguments);
+
+			return ($return === $this->script ? $this : $return);
 		}
 	}
 
