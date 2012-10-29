@@ -13,6 +13,11 @@ require_once __DIR__ . '/../../runner.php';
 
 class utf8String extends atoum\test
 {
+	public function beforeTestMethod($method)
+	{
+		$this->extension('foo')->isLoaded();
+	}
+
 	public function testClass()
 	{
 		$this->testedClass->extends('mageekguy\atoum\asserters\string');
