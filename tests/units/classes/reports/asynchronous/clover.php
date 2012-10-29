@@ -6,7 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\score,
 	mageekguy\atoum\mock,
-	mageekguy\atoum\reports\asynchronous as reports
+	mageekguy\atoum\reports\asynchronous\clover as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -21,18 +21,18 @@ class clover extends Atoum\test
 	public function testClassConstants()
 	{
 		$this
-			->string(reports\clover::defaultTitle)->isEqualTo('atoum code coverage')
-			->string(reports\clover::defaultPackage)->isEqualTo('atoumCodeCoverage')
-			->string(reports\clover::lineTypeMethod)->isEqualTo('method')
-			->string(reports\clover::lineTypeStatement)->isEqualTo('stmt')
-			->string(reports\clover::lineTypeConditional)->isEqualTo('cond')
+			->string(testedClass::defaultTitle)->isEqualTo('atoum code coverage')
+			->string(testedClass::defaultPackage)->isEqualTo('atoumCodeCoverage')
+			->string(testedClass::lineTypeMethod)->isEqualTo('method')
+			->string(testedClass::lineTypeStatement)->isEqualTo('stmt')
+			->string(testedClass::lineTypeConditional)->isEqualTo('cond')
 		;
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($report = new reports\clover($adapter = new atoum\test\adapter()))
+			->if($report = new testedClass($adapter = new atoum\test\adapter()))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
@@ -42,7 +42,7 @@ class clover extends Atoum\test
 			->if($adapter->extension_loaded = false)
 			->then
 				->exception(function() use ($adapter) {
-								new reports\clover($adapter);
+								new testedClass($adapter);
 							}
 						)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
@@ -55,7 +55,7 @@ class clover extends Atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->if($adapter->extension_loaded = true)
-			->and($report = new reports\clover($adapter))
+			->and($report = new testedClass($adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
 			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
 			->and($writer = new \mock\mageekguy\atoum\writers\file())
@@ -80,7 +80,7 @@ class clover extends Atoum\test
 					'1.xml'
 				)
 			))
-			->and($report = new reports\clover($adapter))
+			->and($report = new testedClass($adapter))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
@@ -139,9 +139,9 @@ class clover extends Atoum\test
 	public function testGetTitle()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($report = new testedClass())
 			->then
-				->string($report->getTitle())->isEqualTo(reports\clover::defaultTitle)
+				->string($report->getTitle())->isEqualTo(testedClass::defaultTitle)
 			->if($report->setTitle($title = uniqid()))
 			->then
 				->string($report->getTitle())->isEqualTo($title)
@@ -151,7 +151,7 @@ class clover extends Atoum\test
 	public function testSetTitle()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($report = new testedClass())
 			->then
 				->object($report->setTitle($title = uniqid()))->isIdenticalTo($report)
 				->string($report->getTitle())->isEqualTo($title)
@@ -161,9 +161,9 @@ class clover extends Atoum\test
 	public function testGetPackage()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($report = new testedClass())
 			->then
-				->string($report->getPackage())->isEqualTo(reports\clover::defaultPackage)
+				->string($report->getPackage())->isEqualTo(testedClass::defaultPackage)
 			->if($report->setPackage($package = uniqid()))
 			->then
 				->string($report->getPackage())->isEqualTo($package)
@@ -173,7 +173,7 @@ class clover extends Atoum\test
 	public function testSetPackage()
 	{
 		$this
-			->if($report = new reports\clover())
+			->if($report = new testedClass())
 			->then
 				->object($report->setPackage($package = uniqid()))->isIdenticalTo($report)
 				->string($report->getPackage())->isEqualTo($package)
