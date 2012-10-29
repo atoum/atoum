@@ -13,41 +13,39 @@ class out extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\writers\std')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
-				->hasInterface('mageekguy\atoum\report\writers\realtime')
-				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
+				->implements('mageekguy\atoum\adapter\aggregator')
+				->implements('mageekguy\atoum\report\writers\realtime')
+				->implements('mageekguy\atoum\report\writers\asynchronous')
 		;
 	}
 
 	public function test__construct()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->fopen = null;
-		$adapter->fwrite = null;
-
-		$stdout = new std\out($adapter);
-
-		$this->assert
-			->object($stdout->getAdapter())->isIdenticalTo($adapter)
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fopen = null)
+			->and($adapter->fwrite = null)
+			->and($stdout = new std\out($adapter))
+			->then
+				->object($stdout->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
 	public function testWrite()
 	{
-		$adapter = new atoum\test\adapter();
-		$adapter->fopen = null;
-		$adapter->fwrite = null;
-
-		$stdout = new std\out($adapter);
-
-		$this->assert
-			->object($stdout->write($string = uniqid()))->isIdenticalTo($stdout)
-			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
-			->object($stdout->write($string = (uniqid() . "\n")))->isIdenticalTo($stdout)
-			->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fopen = null)
+			->and($adapter->fwrite = null)
+			->and($stdout = new std\out($adapter))
+			->then
+				->object($stdout->write($string = uniqid()))->isIdenticalTo($stdout)
+				->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
+				->object($stdout->write($string = (uniqid() . "\n")))->isIdenticalTo($stdout)
+				->adapter($adapter)->call('fwrite')->withArguments(null, $string)->once()
 		;
 	}
 }
