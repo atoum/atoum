@@ -276,7 +276,7 @@ augroup atoumdev
 	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository | cs add GTAGS
 augroup end
 syntax/atoum.vim	[[[1
-178
+189
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Licence:					BSD
@@ -380,6 +380,17 @@ if !exists('b:current_syntax')
 
 	syntax match atoumVoidMethodPrompt '^=> ' contained
 	highlight default atoumVoidMethodPrompt guifg=Blue ctermfg=Blue
+
+	syntax region atoumSkippedDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ skipped methods\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumSkippedTitle,atoumSkippedMethodPrompt,atoumSkippedMethod,atoumSkippedDescriptionPrompt
+
+	syntax match atoumSkippedMethod '.\+::.\+()$' contained
+	highlight default atoumSkippedMethod guifg=DarkGrey ctermfg=White
+
+	syntax match atoumSkippedTitle 'There \(is\|are\) \d\+ skipped methods\?:$' contained
+	highlight default atoumSkippedTitle guifg=DarkGrey ctermfg=DarkGrey
+
+	syntax match atoumSkippedMethodPrompt '^=> ' contained
+	highlight default atoumSkippedMethodPrompt guifg=DarkGrey ctermfg=DarkGrey
 
 	syntax region atoumExceptionDetails matchgroup=atoumFirstLevelPrompt start='^> There \(is\|are\) \d\+ exceptions\?:$'rs=s+2 end="^\(> \|/\*\)"me=s-2 contains=atoumFirstLevelPrompt,atoumExceptionTitle,atoumExceptionMethodPrompt,atoumExceptionMethod,atoumExceptionDescriptionPrompt,atoumExceptionDescription
 
