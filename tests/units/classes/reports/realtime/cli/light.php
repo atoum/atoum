@@ -22,52 +22,58 @@ class light extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($eventField = new fields\runner\event\cli())
-			->and($resultField = new fields\runner\result\cli())
-			->and($resultField
+			->define($eventField = new fields\runner\event\cli())
+			->define($resultField = new fields\runner\result\cli())
+			->define($resultField
 				->setSuccessColorizer(new colorizer('0;37', '42'))
 				->setFailureColorizer(new colorizer('0;37', '41'))
 			)
-			->and($failuresField = new fields\runner\failures\cli())
-			->and($failuresField
+			->define($failuresField = new fields\runner\failures\cli())
+			->define($failuresField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('1;36'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('1;36')))
 			)
-			->and($outputsField = new fields\runner\outputs\cli())
-			->and($outputsField
+			->define($outputsField = new fields\runner\outputs\cli())
+			->define($outputsField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('1;36'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('1;36')))
 			)
-			->and($errorsField = new fields\runner\errors\cli())
-			->and($errorsField
+			->define($errorsField = new fields\runner\errors\cli())
+			->define($errorsField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;33'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;33')))
 					->setErrorPrompt(new prompt('==> ', new colorizer('0;33')))
 			)
-			->and($exceptionsField = new fields\runner\exceptions\cli())
-			->and($exceptionsField
+			->define($exceptionsField = new fields\runner\exceptions\cli())
+			->define($exceptionsField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;35'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;35')))
 					->setExceptionPrompt(new prompt('==> ', new colorizer('0;35')))
 			)
-			->and($uncompletedTestField = new fields\runner\tests\uncompleted\cli())
-			->and($uncompletedTestField
+			->define($uncompletedTestField = new fields\runner\tests\uncompleted\cli())
+			->define($uncompletedTestField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;37'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;37')))
 					->setOutputPrompt(new prompt('==> ', new colorizer('0;37')))
 			)
-			->and($voidTestField = new fields\runner\tests\void\cli())
-			->and($voidTestField
+			->define($voidTestField = new fields\runner\tests\void\cli())
+			->define($voidTestField
 					->setTitlePrompt(new prompt('> '))
 					->setTitleColorizer(new colorizer('0;34'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;34')))
 			)
-			->and($report = new testedClass())
+			->define($skippedTestField = new fields\runner\tests\skipped\cli())
+				->and($skippedTestField
+					->setTitlePrompt(new prompt('> '))
+					->setTitleColorizer(new colorizer('0;90'))
+					->setMethodPrompt(new prompt('=> ', new colorizer('0;90')))
+				)
+			->if($report = new testedClass())
 			->then
 				->object($report->getLocale())->isEqualTo(new atoum\locale())
 				->object($report->getAdapter())->isEqualTo(new atoum\adapter())
@@ -79,7 +85,8 @@ class light extends atoum\test
 						$errorsField,
 						$exceptionsField,
 						$uncompletedTestField,
-						$voidTestField
+						$voidTestField,
+						$skippedTestField
 					)
 				)
 		;

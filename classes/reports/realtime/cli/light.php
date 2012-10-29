@@ -117,5 +117,18 @@ class light extends realtime
 		;
 
 		$this->addField($voidTestField);
+
+		$skippedTestColorizer = new colorizer('0;90');
+		$skippedTestMethodPrompt = clone $secondLevelPrompt;
+		$skippedTestMethodPrompt->setColorizer($skippedTestColorizer);
+
+		$skippedTestField = new runner\tests\skipped\cli();
+		$skippedTestField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($skippedTestColorizer)
+			->setMethodPrompt($skippedTestMethodPrompt)
+		;
+
+		$this->addField($skippedTestField);
 	}
 }

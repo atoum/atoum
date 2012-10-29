@@ -99,6 +99,12 @@ class cli extends atoum\test
 					->setTitleColorizer(new colorizer('0;34'))
 					->setMethodPrompt(new prompt('=> ', new colorizer('0;34')))
 				)
+			->define($runnerSkippedField = new fields\runner\tests\skipped\cli())
+				->and($runnerSkippedField
+					->setTitlePrompt(new prompt('> '))
+					->setTitleColorizer(new colorizer('0;90'))
+					->setMethodPrompt(new prompt('=> ', new colorizer('0;90')))
+				)
 			->define($testRunField = new fields\test\run\cli())
 				->and($testRunField
 					->setPrompt(new prompt('> '))
@@ -130,6 +136,7 @@ class cli extends atoum\test
 						$runnerExceptionsField,
 						$runnerUncompletedField,
 						$runnerVoidField,
+						$runnerSkippedField,
 						$testRunField,
 						new fields\test\event\cli(),
 						$testDurationField,

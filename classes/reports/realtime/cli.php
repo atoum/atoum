@@ -155,8 +155,6 @@ class cli extends realtime
 		$voidTestColorizer = new colorizer('0;34');
 		$voidTestMethodPrompt = clone $secondLevelPrompt;
 		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
-		$voidTestOutputPrompt = clone $thirdLevelPrompt;
-		$voidTestOutputPrompt->setColorizer($voidTestColorizer);
 
 		$runnerVoidField = new runner\tests\void\cli();
 		$runnerVoidField
@@ -166,6 +164,19 @@ class cli extends realtime
 		;
 
 		$this->addField($runnerVoidField);
+
+		$skippedTestColorizer = new colorizer('0;90');
+		$skippedTestMethodPrompt = clone $secondLevelPrompt;
+		$skippedTestMethodPrompt->setColorizer($skippedTestColorizer);
+
+		$runnerSkippedField = new runner\tests\skipped\cli();
+		$runnerSkippedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($skippedTestColorizer)
+			->setMethodPrompt($skippedTestMethodPrompt)
+		;
+
+		$this->addField($runnerSkippedField);
 
 		$testRunField = new test\run\cli();
 		$testRunField

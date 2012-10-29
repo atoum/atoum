@@ -21,8 +21,8 @@ class vim extends atoum\test
 		$this
 			->if($report = new asynchronous\vim())
 			->then
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isEqualTo(new atoum\locale())
+				->object($report->getAdapter())->isEqualTo(new atoum\adapter())
 		;
 	}
 }

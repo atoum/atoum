@@ -108,6 +108,14 @@ class vim extends reports\asynchronous
 
 		$this->addField($voidField);
 
+		$skippedField = new runner\tests\skipped\cli();
+		$skippedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setMethodPrompt($secondLevelPrompt)
+		;
+
+		$this->addField($skippedField);
+
 		$outputField = new runner\outputs\cli();
 		$outputField
 			->setTitlePrompt($firstLevelPrompt)
