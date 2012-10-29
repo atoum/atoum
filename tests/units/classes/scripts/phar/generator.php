@@ -210,7 +210,9 @@ class generator extends atoum\test
 	public function testRun()
 	{
 		$this
-			->if($originDirectory = stream::get())
+			->if
+				->extension('phar')->isLoaded()
+			->and($originDirectory = stream::get())
 			->and($originDirectory->opendir = true)
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->php_sapi_name = function() { return 'cli'; })
