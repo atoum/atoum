@@ -14,7 +14,7 @@ class generator
 
 	public function __construct(atoum\locale $locale = null)
 	{
-		$this->setLocale($locale ?: new atoum\locale());
+		$this->setLocale($locale);
 	}
 
 	public function __set($asserter, $class)
@@ -32,9 +32,9 @@ class generator
 		return $this->getAsserterInstance($method, $arguments);
 	}
 
-	public function setLocale(atoum\locale $locale)
+	public function setLocale(atoum\locale $locale = null)
 	{
-		$this->locale = $locale;
+		$this->locale = $locale ?: new atoum\locale();
 
 		return $this;
 	}

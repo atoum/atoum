@@ -66,6 +66,10 @@ class generator extends atoum\test
 			->then
 				->object($generator->setLocale($locale = new atoum\locale()))->isIdenticalTo($generator)
 				->object($generator->getLocale())->isIdenticalTo($locale)
+				->object($generator->setLocale())->isIdenticalTo($generator)
+				->object($generator->getLocale())
+					->isNotIdenticalTo($locale)
+					->isEqualTo(new atoum\locale())
 		;
 	}
 
