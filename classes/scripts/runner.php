@@ -293,11 +293,19 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function testNamespaces(array $namespace)
+	public function testNamespaces(array $namespaces)
 	{
-		$this->namespaces = $namespace;
+		foreach ($namespaces as $namespace)
+		{
+			$this->namespaces[] = trim($namespace, '\\');
+		}
 
 		return $this;
+	}
+
+	public function getTestedNamespaces()
+	{
+		return $this->namespaces;
 	}
 
 	public function testTags(array $tags)

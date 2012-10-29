@@ -429,4 +429,16 @@ class runner extends atoum\test
 				->array($runner->getReports())->isEqualTo(array($report, $otherReport))
 		;
 	}
+
+	public function testSetNamespaces()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->testNamespaces(array()))->isIdenticalTo($runner)
+				->array($runner->getTestedNamespaces())->isEmpty()
+				->object($runner->testNamespaces(array('foo', '\bar', 'foo\bar\\', '\this\is\a\namespace\\')))->isIdenticalTo($runner)
+				->array($runner->getTestedNamespaces())->isEqualTo(array('foo', 'bar', 'foo\bar', 'this\is\a\namespace'))
+		;
+	}
 }
