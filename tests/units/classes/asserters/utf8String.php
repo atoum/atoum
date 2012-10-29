@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\utF8String as testedClass
+	mageekguy\atoum\asserters,
+	mageekguy\atoum\tools\diffs
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,13 +20,13 @@ class utf8String extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserters\string');
+		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -36,7 +36,7 @@ class utf8String extends atoum\test
 
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
-			->and($asserter = new testedClass($generator = new asserter\generator(), $adapter))
+			->and($asserter = new asserters\utf8String($generator = new asserter\generator(), $adapter))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -46,7 +46,7 @@ class utf8String extends atoum\test
 
 			->if($adapter->extension_loaded = false)
 			->then
-				->exception(function() use ($adapter) { new testedClass(new asserter\generator(), $adapter); })
+				->exception(function() use ($adapter) { new asserters\utf8String(new asserter\generator(), $adapter); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('mbstring PHP extension is mandatory to use utf8String asserter')
 		;
@@ -55,7 +55,7 @@ class utf8String extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->and($asserter->setWith($value = $this->getRandomUtf8String()))
 			->then
 				->castToString($asserter)->isEqualTo('string(' . mb_strlen($value, 'UTF-8') . ') \'' . $value . '\'')
@@ -68,7 +68,7 @@ class utf8String extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -87,7 +87,7 @@ class utf8String extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualTo(uniqid()); })
@@ -107,7 +107,7 @@ class utf8String extends atoum\test
 	public function testIsEqualToFileContents()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualToContentsOfFile(uniqid()); })
@@ -134,7 +134,7 @@ class utf8String extends atoum\test
 	public function testIsEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -154,7 +154,7 @@ class utf8String extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -174,7 +174,7 @@ class utf8String extends atoum\test
 	public function testHasLength()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLength(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -195,7 +195,7 @@ class utf8String extends atoum\test
 	public function testContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
