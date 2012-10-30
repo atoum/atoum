@@ -33,7 +33,7 @@ class mail extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('mageekguy\atoum\writer')
+				->extends('mageekguy\atoum\writer')
 				->implements('mageekguy\atoum\report\writers\asynchronous')
 		;
 	}

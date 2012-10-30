@@ -15,7 +15,7 @@ class err extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubClassOf('mageekguy\atoum\writers\std')
+				->extends('mageekguy\atoum\writers\std')
 				->implements('mageekguy\atoum\adapter\aggregator')
 				->implements('mageekguy\atoum\report\writers\realtime')
 				->implements('mageekguy\atoum\report\writers\asynchronous')
