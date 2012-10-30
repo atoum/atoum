@@ -17,7 +17,7 @@ class source implements \outerIterator
 	{
 		$this->sourceDirectory = (string) $sourceDirectory;
 		$this->pharDirectory = $pharDirectory === null ? null : (string) $pharDirectory;
-		$this->innerIterator = new \recursiveIteratorIterator(new iterators\filters\recursives\dot($this->sourceDirectory));
+		$this->innerIterator = new \recursiveIteratorIterator(new iterators\filters\recursives\atoum\source($this->sourceDirectory));
 
 		$this->innerIterator->rewind();
 	}
