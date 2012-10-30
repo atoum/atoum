@@ -230,6 +230,15 @@ class extractor extends atoum\test
 					)
 						->isIdenticalTo($extractor)
 					->string($ignore)->isEqualTo('on')
+				->object($extractor->extract(
+						 '/**
+						  * @tags ManySetGetPredis
+						  * @dataProvider manySetGetDataProvider
+						  */')
+					)
+						->isIdenticalTo($extractor)
+					->string($tags)->isEqualTo('ManySetGetPredis')
+					->string($dataProvider)->isEqualTo('manySetGetDataProvider')
 		;
 	}
 
