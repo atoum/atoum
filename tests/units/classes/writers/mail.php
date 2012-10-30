@@ -95,6 +95,7 @@ class mail extends atoum\test
 				->string($mailer->getSubject())->isEqualTo($title)
 				->mock($locale)->call('_')->never()
 			->if($mailer->setSubject($mailerSubject = uniqid()))
+			->and(atoum\test\adapter::resetCallsForAllInstances())
 			->then
 				->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)
 				->mock($writer)->call('write')->withArguments((string) $report)->once()
