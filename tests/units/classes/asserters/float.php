@@ -62,6 +62,72 @@ class float extends atoum\test
 		;
 	}
 
+	public function testIsGreaterThan()
+	{
+		$this
+			->if($asserter = new asserters\float($generator = new asserter\generator()))
+			->and($asserter->setWith($value = 1.2))
+			->then
+				->object($asserter->isGreaterThan(1.1))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $notFloat) { $asserter->isGreaterThan($notFloat = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of ' . get_class($asserter) . '::isGreaterThan() must be a float')
+				->exception(function() use ($asserter, & $greaterValue) { $asserter->isGreaterThan($greaterValue = 1.3); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not greater than %s'), $asserter, $asserter->getTypeOf($greaterValue)))
+		;
+	}
+
+	public function testIsLessThan()
+	{
+		$this
+			->if($asserter = new asserters\float($generator = new asserter\generator()))
+			->and($asserter->setWith($value = 1.2))
+			->then
+				->object($asserter->isLessThan(1.3))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $notFloat) { $asserter->isLessThan($notFloat = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of ' . get_class($asserter) . '::isLessThan() must be a float')
+				->exception(function() use ($asserter, & $lessValue) { $asserter->isLessThan($lessValue = 1.1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than %s'), $asserter, $asserter->getTypeOf($lessValue)))
+		;
+	}
+
+	public function testIsGreaterThanOrEqualTo()
+	{
+		$this
+			->if($asserter = new asserters\float($generator = new asserter\generator()))
+			->and($asserter->setWith($value = 1.2))
+			->then
+				->object($asserter->isGreaterThanOrEqualTo(1.1))->isIdenticalTo($asserter)
+				->object($asserter->isGreaterThanOrEqualTo($value))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $notFloat) { $asserter->isGreaterThanOrEqualTo($notFloat = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of ' . get_class($asserter) . '::isGreaterThanOrEqualTo() must be a float')
+				->exception(function() use ($asserter, & $greaterValue) { $asserter->isGreaterThanOrEqualTo($greaterValue = 1.3); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not greater than or equal to %s'), $asserter, $asserter->getTypeOf($greaterValue)))
+		;
+	}
+
+	public function testIsLessThanOrEqualTo()
+	{
+		$this
+			->if($asserter = new asserters\float($generator = new asserter\generator()))
+			->and($asserter->setWith($value = 1.2))
+			->then
+				->object($asserter->isLessThanOrEqualTo(1.3))->isIdenticalTo($asserter)
+				->object($asserter->isLessThanOrEqualTo($value))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $notFloat) { $asserter->isLessThanOrEqualTo($notFloat = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Argument of ' . get_class($asserter) . '::isLessThanOrEqualTo() must be a float')
+				->exception(function() use ($asserter, & $lessValue) { $asserter->isLessThanOrEqualTo($lessValue = 1.1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than or equal to %s'), $asserter, $asserter->getTypeOf($lessValue)))
+		;
+	}
+
 	/**
 	 * @dataProvider dataProviderNearlyEqualTo
 	 */
@@ -86,7 +152,7 @@ class float extends atoum\test
 		;
 	}
 
-	public function dataProviderNearlyEqualTo()
+	protected function dataProviderNearlyEqualTo()
 	{
 		return array(
 			array((float) 100, (float) 100, 1, true),
