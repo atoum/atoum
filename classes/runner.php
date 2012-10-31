@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class runner implements observable, adapter\aggregator
+class runner implements observable
 {
 	const atoumVersionConstant = 'mageekguy\atoum\version';
 	const atoumDirectoryConstant = 'mageekguy\atoum\directory';

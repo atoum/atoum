@@ -10,7 +10,7 @@ use
 	mageekguy\atoum\annotations
 ;
 
-abstract class test implements observable, adapter\aggregator, \countable
+abstract class test implements observable, \countable
 {
 	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';

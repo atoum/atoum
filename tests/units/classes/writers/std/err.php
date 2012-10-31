@@ -16,7 +16,6 @@ class err extends atoum\test
 		$this->assert
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\writers\std')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
 				->hasInterface('mageekguy\atoum\report\writers\realtime')
 				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
 		;

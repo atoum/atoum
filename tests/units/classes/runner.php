@@ -16,7 +16,6 @@ class runner extends atoum\test
 		$this->assert
 			->testedClass
 				->hasInterface('mageekguy\atoum\observable')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
 			->string(atoum\runner::atoumVersionConstant)->isEqualTo('mageekguy\atoum\version')
 			->string(atoum\runner::atoumDirectoryConstant)->isEqualTo('mageekguy\atoum\directory')
 			->string(atoum\runner::runStart)->isEqualTo('runnerStart')

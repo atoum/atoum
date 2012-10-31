@@ -12,13 +12,9 @@ require_once __DIR__ . '/../../../runner.php';
 
 class engine extends atoum\test
 {
-	public function testClass()
+	public function testClassConstants()
 	{
-		$this->assert
-			->testedClass
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
-			->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/')
-		;
+		$this->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/');
 	}
 
 	public function test__construct()

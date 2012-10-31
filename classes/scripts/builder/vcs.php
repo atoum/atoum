@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-abstract class vcs implements atoum\adapter\aggregator
+abstract class vcs
 {
 	protected $adapter = null;
 	protected $repositoryUrl = null;

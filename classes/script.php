@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-abstract class script implements atoum\adapter\aggregator
+abstract class script
 {
 	const padding = '   ';
 

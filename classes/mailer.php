@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-abstract class mailer implements atoum\adapter\aggregator
+abstract class mailer
 {
 	protected $to = null;
 	protected $from = null;

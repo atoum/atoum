@@ -60,11 +60,6 @@ namespace mageekguy\atoum\tests\units
 
 	class test extends atoum\test
 	{
-		public function testClass()
-		{
-			$this->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator');
-		}
-
 		public function testClassConstants()
 		{
 			$this

@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\template\parser
 ;
 
-class parser implements atoum\adapter\aggregator
+class parser
 {
 	const eol = "\n";
 	const defaultNamespace = 'tpl';

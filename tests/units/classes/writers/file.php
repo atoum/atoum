@@ -15,7 +15,6 @@ class file extends atoum\test
 	{
 		$this->assert
 			->testedClass
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
 				->hasInterface('mageekguy\atoum\report\writers\realtime')
 				->hasInterface('mageekguy\atoum\report\writers\asynchronous')
 		;
