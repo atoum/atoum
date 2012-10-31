@@ -17,6 +17,7 @@ class generator
 	protected $reflectionClassFactory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
+	protected $shuntParentClassCalls = false;
 
 	private $defaultNamespace = null;
 
@@ -27,6 +28,25 @@ class generator
 			->setPhpMethodFactory()
 			->setReflectionClassFactory()
 		;
+	}
+
+	public function callsToParentClassAreShunted()
+	{
+		return $this->shuntParentClassCalls;
+	}
+
+	public function shuntParentClassCalls()
+	{
+		$this->shuntParentClassCalls = true;
+
+		return $this;
+	}
+
+	public function unshuntParentClassCalls()
+	{
+		$this->shuntParentClassCalls = false;
+
+		return $this;
 	}
 
 	public function setAdapter(atoum\adapter $adapter = null)
@@ -286,7 +306,12 @@ class generator
 							}
 
 							$methodCode .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
+
+							if ($this->shuntParentClassCalls === false)
+							{
+								$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
+							}
+
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 						}
 
