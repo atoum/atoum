@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\scripts\builder
 ;
 
-class svn extends builder\vcs implements atoum\adapter\aggregator
+class svn extends builder\vcs
 {
 	public function __construct(atoum\adapter $adapter = null)
 	{

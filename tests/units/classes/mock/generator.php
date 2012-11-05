@@ -18,6 +18,7 @@ class generator extends atoum\test
 			->if($generator = new testedClass())
 			->then
 				->object($generator->getAdapter())->isEqualTo(new atoum\adapter())
+				->boolean($generator->callsToParentClassAreShunted())->isFalse()
 				->object($defaultPhpMethodFactory = $generator->getPhpMethodFactory())->isInstanceOf('\closure')
 				->object($defaultPhpMethodFactory($method = uniqid()))->isEqualTo(new mock\php\method($method))
 		;
@@ -81,6 +82,30 @@ class generator extends atoum\test
 				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
 				->object($generator->setDefaultNamespace($namespace . '\\'))->isIdenticalTo($generator)
 				->string($generator->getDefaultNamespace())->isEqualTo('\\' . $namespace)
+		;
+	}
+
+	public function testShuntCallsToParentClass()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->shuntParentClassCalls())->isIdenticalTo($generator)
+				->boolean($generator->callsToParentClassAreShunted())->isTrue()
+		;
+	}
+
+	public function testUnshuntParentClassCalls()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->unshuntParentClassCalls())->isIdenticalTo($generator)
+				->boolean($generator->callsToParentClassAreShunted())->isFalse()
+			->if($generator->shuntParentClassCalls())
+			->then
+				->object($generator->unshuntParentClassCalls())->isIdenticalTo($generator)
+				->boolean($generator->callsToParentClassAreShunted())->isFalse()
 		;
 	}
 
@@ -303,6 +328,117 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->addCall(\'__construct\', $arguments);' . PHP_EOL .
 					"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					'}' . PHP_EOL .
+					'}'
+				)
+		;
+	}
+
+	public function testGetMockedClassCodeForRealClassWithCallsToParentClassShunted()
+	{
+		$this
+			->if($generator = new testedClass())
+			->and($reflectionMethodController = new mock\controller())
+			->and($reflectionMethodController->__construct = function() {})
+			->and($reflectionMethodController->getName = '__construct')
+			->and($reflectionMethodController->isConstructor = true)
+			->and($reflectionMethodController->getParameters = array())
+			->and($reflectionMethodController->isPublic = true)
+			->and($reflectionMethodController->isProtected = false)
+			->and($reflectionMethodController->isFinal = false)
+			->and($reflectionMethodController->isStatic = false)
+			->and($reflectionMethodController->isAbstract = false)
+			->and($reflectionMethodController->returnsReference = false)
+			->and($reflectionMethod = new \mock\reflectionMethod(null, null))
+			->and($otherReflectionMethodController = new mock\controller())
+			->and($otherReflectionMethodController->__construct = function() {})
+			->and($otherReflectionMethodController->getName = $otherMethod = uniqid())
+			->and($otherReflectionMethodController->isConstructor = false)
+			->and($otherReflectionMethodController->getParameters = array())
+			->and($otherReflectionMethodController->isPublic = true)
+			->and($otherReflectionMethodController->isProtected = false)
+			->and($otherReflectionMethodController->isFinal = false)
+			->and($otherReflectionMethodController->isStatic = false)
+			->and($otherReflectionMethodController->isAbstract = false)
+			->and($otherReflectionMethodController->returnsReference = false)
+			->and($otherReflectionMethod = new \mock\reflectionMethod(null, null))
+			->and($reflectionClassController = new mock\controller())
+			->and($reflectionClassController->__construct = function() {})
+			->and($reflectionClassController->getName = function() use (& $realClass) { return $realClass; })
+			->and($reflectionClassController->isFinal = false)
+			->and($reflectionClassController->isInterface = false)
+			->and($reflectionClassController->getMethods = array($reflectionMethod, $otherReflectionMethod))
+			->and($reflectionClass = new \mock\reflectionClass(null))
+			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->class_exists = function($class) use (& $realClass) { return ($class == '\\' . $realClass); })
+			->and($generator->setAdapter($adapter))
+			->and($generator->shuntParentClassCalls())
+			->then
+				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+					'namespace mock {' . PHP_EOL .
+					'final class ' . $realClass . ' extends \\' . $realClass . ' implements \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'{' . PHP_EOL .
+					"\t" . 'private $mockController = null;' . PHP_EOL .
+					"\t" . 'public function getMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function resetMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = $this->mockController;' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = null;' . PHP_EOL .
+					"\t\t\t" . '$mockController->reset();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0, -1));' . PHP_EOL .
+					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall(\'__construct\', $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function ' . $otherMethod . '()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->' . $otherMethod . ') === true)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . 'return $this->mockController->invoke(\'' . $otherMethod . '\', $arguments);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'else' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->getMockController()->addCall(\'' . $otherMethod . '\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .

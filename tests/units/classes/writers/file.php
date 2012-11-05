@@ -15,7 +15,6 @@ class file extends atoum\test
 	{
 		$this
 			->testedClass
-				->implements('mageekguy\atoum\adapter\aggregator')
 				->implements('mageekguy\atoum\report\writers\realtime')
 				->implements('mageekguy\atoum\report\writers\asynchronous')
 		;

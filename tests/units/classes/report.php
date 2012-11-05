@@ -15,7 +15,6 @@ class report extends atoum\test
 	{
 		$this->testedClass
 			->implements('mageekguy\atoum\observer')
-			->implements('mageekguy\atoum\adapter\aggregator')
 		;
 	}
 

@@ -26,7 +26,7 @@ class svn extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\adapter\aggregator');
+		$this->testedClass->isSubclassOf('mageekguy\atoum\scripts\builder\vcs');
 	}
 
 	public function test__construct()

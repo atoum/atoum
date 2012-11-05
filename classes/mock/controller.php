@@ -145,7 +145,6 @@ class controller extends test\adapter
 					$this->invokers[$method] = null;
 				}
 			}
-
 		}
 
 		$mock->setMockController($this);
@@ -208,18 +207,15 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockClass !== null && $this->disableMethodChecking === false)
+		if ($this->mockClass !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
 		{
-			if (array_key_exists(strtolower($method), $this->invokers) === false)
+			if (array_key_exists('__call', $this->invokers) === true)
 			{
-				if (array_key_exists('__call', $this->invokers) === false)
-				{
-					throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
-				}
-				else if (isset($this->__call) === false)
-				{
-					$this->set__call();
-				}
+				$this->set__call();
+			}
+			else if (isset($this->__call) === false)
+			{
+				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
 			}
 		}
 

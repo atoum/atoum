@@ -16,7 +16,6 @@ class mail extends atoum\test
 		$this->assert
 			->class($this->getTestedClassName())
 				->isSubClassOf('mageekguy\atoum\mailer')
-				->hasInterface('mageekguy\atoum\adapter\aggregator')
 			->string(mailers\mail::eol)->isEqualTo("\r\n")
 		;
 	}
@@ -31,7 +30,6 @@ class mail extends atoum\test
 			->variable($mail->getSubject())->isNull()
 			->variable($mail->getReplyTo())->isNull()
 			->variable($mail->getXMailer())->isNull()
-			->object($mail)->isInstanceOf('mageekguy\atoum\adapter\aggregator')
 		;
 
 		$adapter = new atoum\test\adapter();

@@ -2,10 +2,6 @@
 
 namespace mageekguy\atoum\iterators\filters\recursives;
 
-use
-	mageekguy\atoum
-;
-
 class dot extends \recursiveFilterIterator
 {
 	public function __construct($mixed, \closure $iteratorFactory = null)
@@ -22,6 +18,6 @@ class dot extends \recursiveFilterIterator
 
 	public function accept()
 	{
-		return (substr(basename((string) $this->getInnerIterator()->current()), 0, 1) != '.');
+		return (substr($this->getInnerIterator()->current()->getBasename(), 0, 1) != '.');
 	}
 }

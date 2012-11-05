@@ -39,7 +39,7 @@ class integer extends asserters\variable
 
 	public function isGreaterThan($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
+		static::check($value, __FUNCTION__);
 
 		if ($this->value > $value)
 		{
@@ -55,7 +55,7 @@ class integer extends asserters\variable
 
 	public function isLessThan($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
+		static::check($value, __FUNCTION__);
 
 		if ($this->value < $value)
 		{
@@ -71,7 +71,7 @@ class integer extends asserters\variable
 
 	public function isGreaterThanOrEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
+		static::check($value, __FUNCTION__);
 
 		if ($this->value >= $value)
 		{
@@ -87,7 +87,7 @@ class integer extends asserters\variable
 
 	public function isLessThanOrEqualTo($value, $failMessage = null)
 	{
-		self::check($value, __FUNCTION__);
+		static::check($value, __FUNCTION__);
 
 		if ($this->value <= $value)
 		{

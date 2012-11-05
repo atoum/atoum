@@ -12,13 +12,6 @@ require_once __DIR__ . '/../../runner.php';
 
 class parser extends atoum\test
 {
-	public function testClass()
-	{
-		$this->assert
-			->testedClass->hasInterface('mageekguy\atoum\adapter\aggregator')
-		;
-	}
-
 	public function test__construct()
 	{
 		$parser = new template\parser();
