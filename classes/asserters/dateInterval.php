@@ -49,6 +49,22 @@ class dateInterval extends asserters\object
 		return $this;
 	}
 
+	public function isGreaterThanOrEqualTo(\dateInterval $interval, $failMessage = null)
+	{
+		list($date1, $date2) = $this->getDates($interval);
+
+		if ($date1 >= $date2)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not greater than or equal to %s'), $this, $this->format($interval)));
+		}
+
+		return $this;
+	}
+
 	public function isLessThan(\dateInterval $interval, $failMessage = null)
 	{
 		list($date1, $date2) = $this->getDates($interval);
@@ -60,6 +76,22 @@ class dateInterval extends asserters\object
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not less than %s'), $this, $this->format($interval)));
+		}
+
+		return $this;
+	}
+
+	public function isLessThanOrEqualTo(\dateInterval $interval, $failMessage = null)
+	{
+		list($date1, $date2) = $this->getDates($interval);
+
+		if ($date1 <= $date2)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('Interval %s is not less than or equal to %s'), $this, $this->format($interval)));
 		}
 
 		return $this;
