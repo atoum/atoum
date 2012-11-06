@@ -770,7 +770,9 @@ abstract class test implements observable, \countable
 			{
 				foreach ($this->executeOnFailure as $closure)
 				{
+					ob_start();
 					$closure();
+					$this->score->addOutput($this->path, $this->class, $this->currentMethod, ob_get_clean());
 				}
 
 				if ($this->score->failExists($exception) === false)
