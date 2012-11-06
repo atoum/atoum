@@ -66,6 +66,23 @@ class dateInterval extends atoum\test
 		;
 	}
 
+	public function testIsGreaterThanOrEqualTo()
+	{
+		$this
+			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+				->exception(function() use ($asserter) { $asserter->isGreaterThanOrEqualTo(new \DateInterval('P1D')); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Interval is undefined')
+			->if($asserter->setWith(new \DateInterval('P1Y')))
+			->then
+				->object($asserter->isGreaterThanOrEqualTo(new \DateInterval('P1M')))->isIdenticalTo($asserter)
+				->object($asserter->isGreaterThanOrEqualTo(new \DateInterval('P1Y')))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $interval) { $asserter->isGreaterThanOrEqualTo($interval = new \DateInterval('P2Y')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('Interval ' . $asserter . ' is not greater than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
+		;
+	}
+
 	public function testIsZero()
 	{
 		$this
@@ -101,6 +118,23 @@ class dateInterval extends atoum\test
 				->exception(function() use ($asserter, & $interval) { $asserter->isLessThan($interval = new \dateInterval('P2D')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
+		;
+	}
+
+	public function testIsLessThanOrEqualTo()
+	{
+		$this
+			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+				->exception(function() use ($asserter) { $asserter->isLessThanOrEqualTo(new \DateInterval('P1D')); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->hasMessage('Interval is undefined')
+			->if($asserter->setWith(new \dateInterval('P2D')))
+			->then
+				->object($asserter->isLessThanOrEqualTo(new \dateInterval('P1M')))->isIdenticalTo($asserter)
+				->object($asserter->isLessThanOrEqualTo(new \dateInterval('P2D')))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $interval) { $asserter->isLessThanOrEqualTo($interval = new \dateInterval('P1D')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('Interval ' . $asserter . ' is not less than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}
 
