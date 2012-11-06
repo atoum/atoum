@@ -321,6 +321,197 @@ class parser extends atoum\test
 					->hasErrorLine(strlen($eols) + 1)
 					->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
 		;
+
+		$adapter->file_get_contents = '<' . uniqid() . ':' . uniqid() . ' />';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace;
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid());
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . '/>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . ($tag = uniqid()) . ' id="" />';
+
+		$this->assert
+			->parserException(function() use ($parser, $tag) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id must not be empty')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . uniqid() . '" />';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '   ' . "\t" . '   ></' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . '></' . template\parser::defaultNamespace . ':' . $tag . '  ' . "\t" . '    >';
+
+		$this->assert
+			->object($parser->checkFile(uniqid()))->isIdenticalTo($parser)
+		;
+
+		$tagWithId = '<' . template\parser::defaultNamespace . ':' . $tag . ' id="' . ($id = uniqid()) . '" />';
+
+		$adapter->file_get_contents = $tagWithId . $tagWithId;
+
+		$this->assert
+			->parserException(function() use ($parser, $tagWithId) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Id \'' . $id . '\' is already defined in line 1 at offset 1')
+				->hasErrorLine(1)
+				->hasErrorOffset(41)
+		;
+
+		$adapter->file_get_contents = '<' . template\parser::defaultNamespace . ':' . $tag . ' foo="bar" />';
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Attribute \'foo\' is unknown')
+				->hasErrorLine(1)
+				->hasErrorOffset(1)
+		;
+
+		$adapter->file_get_contents = $firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = ($eols = str_repeat("\n", rand(1, 10))) . ($firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>');
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = ($eols = str_repeat("\n", rand(1, 10))) . ($spaces = str_repeat(' ', rand(1, 10))) . ($firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>');
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $tag . '\' must be closed')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+		;
+
+		$firstTag = '<' . template\parser::defaultNamespace . ':' . $tag . '>';
+		$secondTag = '</' . template\parser::defaultNamespace . ':' . ($notOpenTag = uniqid()) . '  ' . "\t" . '    >';
+
+		$adapter->file_get_contents = $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = $eols . $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser) {
+					$parser->checkFile(uniqid());
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + 1)
+		;
+
+		$adapter->file_get_contents = $eols . $spaces . $firstTag . $secondTag;
+
+		$this->assert
+			->parserException(function() use ($parser, $firstTag, $secondTag, $eols, $spaces) {
+					$parser->checkFile($eols . $spaces . $firstTag . $secondTag);
+				}
+			)
+				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('mageekguy\atoum\template\parser\exception')
+				->hasMessage('Tag \'' . $notOpenTag . '\' is not open')
+				->hasErrorLine(strlen($eols) + 1)
+				->hasErrorOffset(strlen($firstTag) + strlen($spaces) + 1)
+		;
 	}
 
 	public function testParseString()
