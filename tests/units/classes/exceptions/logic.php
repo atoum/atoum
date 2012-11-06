@@ -13,12 +13,12 @@ class logic extends atoum\test
 {
 	public function test__construct()
 	{
-		$logicExcepion = new exceptions\logic();
-
-		$this->assert
-			->object($logicExcepion)
-				->isInstanceOf('logicException')
-				->isInstanceOf('mageekguy\atoum\exception')
+		$this
+			->if($logicExcepion = new exceptions\logic())
+			->then
+				->object($logicExcepion)
+					->isInstanceOf('logicException')
+					->isInstanceOf('mageekguy\atoum\exception')
 		;
 	}
 }
