@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
+namespace mageekguy\atoum\tests\units\report\fields\runner\failures\execute\unix;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\failures\phpstorm as testedClass
+	mageekguy\atoum\report\fields\runner\failures\execute\unix\phpstorm as testedClass
 ;
 
-require_once __DIR__ . '/../../../../../runner.php';
+require_once __DIR__ . '/../../../../../../../runner.php';
 
 class phpstorm extends atoum\test
 {
@@ -32,7 +32,7 @@ class phpstorm extends atoum\test
 		$this
 			->if($field = new testedClass($command = uniqid()))
 			->then
-				->string($field->getCommand())->isEqualTo($command . ' --line %2$s %1$s &')
+				->string($field->getCommand())->isEqualTo($command . ' --line %2$d %1$s &> /dev/null &')
 		;
 	}
 }
