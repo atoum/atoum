@@ -69,7 +69,7 @@ class execute extends runner\failures
 
 			foreach ($fails as $file => $line)
 			{
-				$this->adapter->system(sprintf($this->command, $file, $line));
+				$this->adapter->system(sprintf($this->getCommand(), $file, $line));
 			}
 		}
 
