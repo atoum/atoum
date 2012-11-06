@@ -14,8 +14,14 @@ class mail extends atoum\test
 	public function testClass()
 	{
 		$this
-			->class($this->getTestedClassName())
+			->testedClass
 				->extends('mageekguy\atoum\mailer')
+		;
+	}
+
+	public function testClassConstants()
+	{
+		$this
 			->string(mailers\mail::eol)->isEqualTo("\r\n")
 		;
 	}

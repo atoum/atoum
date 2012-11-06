@@ -11,14 +11,12 @@ require_once __DIR__ . '/../../runner.php';
 
 class logic extends atoum\test
 {
-	public function test__construct()
+	public function testClass()
 	{
 		$this
-			->if($logicExcepion = new exceptions\logic())
-			->then
-				->object($logicExcepion)
-					->isInstanceOf('logicException')
-					->isInstanceOf('mageekguy\atoum\exception')
+			->testedClass
+				->extends('logicException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
 }

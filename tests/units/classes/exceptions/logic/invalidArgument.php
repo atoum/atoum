@@ -15,7 +15,6 @@ class invalidArgument extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('logicException')
 				->extends('invalidArgumentException')
 				->implements('mageekguy\atoum\exception')
 		;

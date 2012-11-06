@@ -11,11 +11,17 @@ require_once __DIR__ . '/../../runner.php';
 
 class tag extends atoum\test
 {
-	public function test__construct()
+	public function testClass()
 	{
 		$this
 			->testedClass
 				->isSubClassOf('mageekguy\atoum\template')
+		;
+	}
+
+	public function test__construct()
+	{
+		$this
 			->exception(function() {
 					$template = new template\tag('');
 					}

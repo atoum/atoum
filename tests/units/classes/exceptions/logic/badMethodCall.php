@@ -15,7 +15,6 @@ class badMethodCall extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('logicException')
 				->extends('badMethodCallException')
 				->implements('mageekguy\atoum\exception')
 		;

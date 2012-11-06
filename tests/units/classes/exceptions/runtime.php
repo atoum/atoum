@@ -11,14 +11,13 @@ require_once __DIR__ . '/../../runner.php';
 
 class runtime extends atoum\test
 {
-	public function test__construct()
+	public function testClass()
 	{
 		$this
-			->if($runtimeExcepion = new exceptions\runtime())
-			->then
-				->object($runtimeExcepion)
-					->isInstanceOf('runtimeException')
-					->isInstanceOf('mageekguy\atoum\exception')
+			->testedClass
+				->extends('runtimeException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
+
 }
