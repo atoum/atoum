@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class testedClass extends asserters\phpClass
+class currentlyTestedClass extends asserters\phpClass
 {
 	public function setWith($class)
 	{
