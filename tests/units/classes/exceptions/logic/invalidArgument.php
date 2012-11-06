@@ -13,11 +13,11 @@ class invalidArgument extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert
+		$this
 			->testedClass
 				->isSubclassOf('logicException')
-				->isSubclassOf('invalidArgumentException')
-				->isSubclassOf('mageekguy\atoum\exception')
+				->extends('invalidArgumentException')
+				->implements('mageekguy\atoum\exception')
 		;
 	}
 }

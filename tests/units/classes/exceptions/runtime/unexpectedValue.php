@@ -13,13 +13,13 @@ class unexpectedValue extends atoum\test
 {
 	public function test__construct()
 	{
-		$unexpectedValueException = new runtime\unexpectedValue();
-
-		$this->assert
-			->object($unexpectedValueException)
-				->isInstanceOf('runtimeException')
-				->isInstanceOf('unexpectedValueException')
-				->isInstanceOf('mageekguy\atoum\exception')
+		$this
+			->if($unexpectedValueException = new runtime\unexpectedValue())
+			->then
+				->object($unexpectedValueException)
+					->isInstanceOf('runtimeException')
+					->extends('unexpectedValueException')
+					->implements('mageekguy\atoum\exception')
 		;
 	}
 }

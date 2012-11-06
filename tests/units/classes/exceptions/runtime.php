@@ -13,12 +13,12 @@ class runtime extends atoum\test
 {
 	public function test__construct()
 	{
-		$runtimeExcepion = new exceptions\runtime();
-
-		$this->assert
-			->object($runtimeExcepion)
-				->isInstanceOf('runtimeException')
-				->isInstanceOf('mageekguy\atoum\exception')
+		$this
+			->if($runtimeExcepion = new exceptions\runtime())
+			->then
+				->object($runtimeExcepion)
+					->extends('runtimeException')
+					->implements('mageekguy\atoum\exception')
 		;
 	}
 }
