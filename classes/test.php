@@ -259,6 +259,7 @@ abstract class test implements observable, \countable
 
 		$this->assertionManager
 			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
+			->setHandler('testedClass', function() use ($asserterGenerator) { return $asserterGenerator->currentlyTestedClass; })
 			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
 		;
 

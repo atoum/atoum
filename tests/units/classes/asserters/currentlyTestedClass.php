@@ -10,7 +10,7 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
-class testedClass extends atoum\test
+class currentlyTestedClass extends atoum\test
 {
 	public function testClass()
 	{
@@ -20,7 +20,7 @@ class testedClass extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\testedClass(new asserter\generator()))
+			->if($asserter = new asserters\currentlyTestedClass(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->setWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\badMethodCall')
