@@ -110,7 +110,7 @@ class autoloader
 			require $path;
 		}
 
-		if ($realClass != $class)
+		if (class_exists($realClass, false) === true && $realClass != $class)
 		{
 			class_alias($realClass, $class);
 		}
