@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\extension as testedClass
+	mageekguy\atoum\asserters\extension as sut // use sut here instead of testedClass because atoum\asserters\testedClass exists !
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,7 +20,7 @@ class extension extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -32,7 +32,7 @@ class extension extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->castToString($asserter)->isEmpty()
 			->if($asserter->setWith($extensionName = uniqid()))
@@ -44,7 +44,7 @@ class extension extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->object($asserter->setWith($extensionName = uniqid()))->isIdenticalTo($asserter)
 				->string($asserter->getName())->isEqualTo($extensionName)
@@ -54,7 +54,7 @@ class extension extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
@@ -68,7 +68,7 @@ class extension extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->variable($asserter->getName())->isNull()
@@ -82,7 +82,7 @@ class extension extends atoum\test
 	public function testIsLoaded()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) {
 						$asserter->isLoaded();
