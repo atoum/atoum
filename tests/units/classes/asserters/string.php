@@ -170,6 +170,48 @@ class string extends atoum\test
 		;
 	}
 
+	public function testHasLengthGreaterThan()
+	{
+		$this
+			->if($asserter = new asserters\string($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith('Chuck Norris'))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $requiredLength) { $asserter->hasLengthGreaterThan($requiredLength = rand(1, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not greater than %d'), $asserter->getTypeOf('Chuck Norris'), $requiredLength))
+				->object($asserter->hasLengthGreaterThan(0))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = uniqid()))
+			->then
+				->object($asserter->hasLengthGreaterThan(strlen($string)-1))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasLengthLessThan()
+	{
+		$this
+			->if($asserter = new asserters\string($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith('Chuck Norris'))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $requiredLength) { $asserter->hasLengthLessThan($requiredLength = 10); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not less than %d'), $asserter->getTypeOf('Chuck Norris'), $requiredLength))
+				->object($asserter->hasLengthLessThan(20))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = uniqid()))
+			->then
+				->object($asserter->hasLengthLessThan(strlen($string)+1))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testContains()
 	{
 		$this

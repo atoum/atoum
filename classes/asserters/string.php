@@ -113,6 +113,34 @@ class string extends asserters\variable
 		return $this;
 	}
 
+	public function hasLengthGreaterThan($length, $failMessage = null)
+	{
+		if (strlen($this->valueIsSet()->value) > $length)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not greater than %d'), $this, $length));
+		}
+
+		return $this;
+	}
+
+	public function hasLengthLessThan($length, $failMessage = null)
+	{
+		if (strlen($this->valueIsSet()->value) < $length)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not less than %d'), $this, $length));
+		}
+
+		return $this;
+	}
+
 	public function contains($fragment, $failMessage = null)
 	{
 		if (strpos($this->valueIsSet()->value, $fragment) !== false)
