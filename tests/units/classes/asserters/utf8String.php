@@ -192,6 +192,48 @@ class utf8String extends atoum\test
 		;
 	}
 
+	public function testHasLengthGreaterThan()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->hasLengthGreaterThan(mb_strlen($string, 'UTF-8')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not greater than %d'), $asserter->getTypeOf($string), mb_strlen($string, 'UTF-8')))
+				->object($asserter->hasLengthGreaterThan(0))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->then
+				->object($asserter->hasLengthGreaterThan(mb_strlen($string, 'UTF-8') - 1))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasLengthLessThan()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->hasLengthLessThan(mb_strlen($string, 'UTF-8')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not less than %d'), $asserter->getTypeOf($string), mb_strlen($string, 'UTF-8')))
+				->object($asserter->hasLengthLessThan(20))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->then
+				->object($asserter->hasLengthLessThan(mb_strlen($string, 'UTF-8') + 1))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testContains()
 	{
 		$this
