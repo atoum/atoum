@@ -105,14 +105,26 @@ class autoloader
 
 		$realClass = $this->resolveAlias($class);
 
-		if (class_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
+		if (class_exists($realClass, false) === false && interface_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
 		{
 			require $path;
 		}
 
-		if (class_exists($realClass, false) === true && $realClass != $class)
+		if (class_exists($realClass, false) === true || interface_exists($realClass, false) === true)
 		{
-			class_alias($realClass, $class);
+			if ($realClass !== $class)
+			{
+				class_alias($realClass, $class);
+			}
+			else
+			{
+				$alias = $this->getAlias($realClass);
+
+				if ($alias !== null)
+				{
+					class_alias($realClass, $alias);
+				}
+			}
 		}
 	}
 
@@ -143,6 +155,19 @@ class autoloader
 		}
 
 		return $class;
+	}
+
+	protected function getAlias($class)
+	{
+		foreach ($this->aliases as $alias => $target)
+		{
+			if (strpos($class, $target) === 0)
+			{
+				return $alias . substr($class, strlen($target));
+			}
+		}
+
+		return null;
 	}
 }
 
