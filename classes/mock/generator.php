@@ -291,6 +291,14 @@ class generator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 						}
+						else if ($isConstructor === true && $methodName === $className && $this->isShunted('__construct') === true)
+						{
+							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
+							$methodCode .= "\t\t" . '{' . PHP_EOL;
+							$methodCode .= "\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL;
+							$methodCode .= "\t\t" . '}' . PHP_EOL;
+							$methodCode .=	"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL;
+						}
 						else
 						{
 							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
