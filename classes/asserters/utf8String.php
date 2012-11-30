@@ -26,6 +26,25 @@ class utf8String extends asserters\string
 		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($this->value, 'UTF-8'), addcslashes($this->value, $this->charlist)));
 	}
 
+	public function setWith($value, $label = null, $charlist = null, $checkType = true)
+	{
+		parent::setWith($value, $label, $charlist, $checkType);
+
+		if ($checkType === true)
+		{
+			if (preg_match('/^.*$/us', $this->value) === 1)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail(sprintf($this->getLocale()->_('\'%s\' is not an UTF-8 string'), $value));
+			}
+		}
+
+		return $this;
+	}
+
 	public function hasLength($length, $failMessage = null)
 	{
 		if (mb_strlen($this->valueIsSet()->value, 'UTF-8') == $length)

@@ -43,13 +43,13 @@ class string extends asserters\variable
 
 		if ($checkType === true)
 		{
-			if (self::isString($this->value) === false)
+			if (self::isString($this->value) === true)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
+				$this->pass();
 			}
 			else
 			{
-				$this->pass();
+				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
 			}
 		}
 
