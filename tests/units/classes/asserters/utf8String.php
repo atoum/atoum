@@ -255,6 +255,12 @@ class utf8String extends atoum\test
 				->exception(function() use ($asserter, $string, & $fragment) { $asserter->contains($fragment = mb_strtoupper($string, 'UTF-8')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+				->exception(function() use ($asserter) {
+							$asserter->contains("\xf0\x28\x8c\xbc");
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Fragment \'' . "\xf0\x28\x8c\xbc" . '\' is not an UTF-8 string')
 		;
 	}
 

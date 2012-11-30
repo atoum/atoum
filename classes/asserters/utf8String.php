@@ -32,7 +32,7 @@ class utf8String extends asserters\string
 
 		if ($checkType === true)
 		{
-			if (preg_match('/^.*$/us', $this->value) === 1)
+			if (static::isUtf8($this->value) === true)
 			{
 				$this->pass();
 			}
@@ -89,6 +89,11 @@ class utf8String extends asserters\string
 
 	public function contains($fragment, $failMessage = null)
 	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
 		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') !== false)
 		{
 			$this->pass();
@@ -104,5 +109,10 @@ class utf8String extends asserters\string
 	public function getTypeOf($mixed)
 	{
 		return (is_string($mixed) === false ? parent::getTypeOf($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed));
+	}
+
+	protected static function isUtf8($string)
+	{
+		return (preg_match('/^.*$/us', $string) === 1);
 	}
 }
