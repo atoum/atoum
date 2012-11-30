@@ -84,13 +84,6 @@ class utf8String extends asserters\string
 
 	public function getTypeOf($mixed)
 	{
-		if(is_string($mixed))
-		{
-			return sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed);
-		}
-		else
-		{
-			return parent::getTypeOf($mixed);
-		}
+		return (is_string($mixed) === false ? parent::getTypeOf($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed));
 	}
 }
