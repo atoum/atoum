@@ -174,15 +174,15 @@ class adapter extends atoum\asserter
 		return $this->exactly(1, $failMessage);
 	}
 
-    public function twice($failMessage = null)
-    {
-        return $this->exactly(2, $failMessage);
-    }
+	public function twice($failMessage = null)
+	{
+		return $this->exactly(2, $failMessage);
+	}
 
-    public function thrice($failMessage = null)
-    {
-        return $this->exactly(3, $failMessage);
-    }
+	public function thrice($failMessage = null)
+	{
+		return $this->exactly(3, $failMessage);
+	}
 
 	public function atLeastOnce($failMessage = null)
 	{
