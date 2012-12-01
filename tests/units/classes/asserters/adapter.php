@@ -329,6 +329,7 @@ class adapter extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
+            ->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()))
@@ -353,6 +354,105 @@ class adapter extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 		;
 	}
+
+    public function testTwice()
+    {
+        $this
+            ->if($asserter = new asserters\adapter($generator = new asserter\generator()))
+            ->then
+                ->exception(function() use ($asserter) { $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Adapter is undefined')
+            ->if($asserter->setWith($adapter = new test\adapter()))
+            ->then
+                ->exception(function() use ($asserter) { $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Called function is undefined')
+            ->if($asserter->call('md5'))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
+            ->if($call = new php\call('md5'))
+            ->and($adapter->md5($firstArgument = uniqid()))
+            ->then
+                ->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+            ->if($adapter->md5($secondArgument = uniqid()))
+            ->then
+                ->object($asserter->twice())->isIdenticalTo($asserter)
+            ->if($adapter->md5($thirdArgument = uniqid()))
+            ->then
+                ->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)))
+            ->if($adapter->resetCalls())
+            ->and($asserter->withArguments($arg = uniqid()))
+            ->and($adapter->md5($arg))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                     ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+            ->if($asserter->withArguments(uniqid()))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+        ;
+    }
+
+    public function testThrice()
+    {
+        $this
+            ->if($asserter = new asserters\adapter($generator = new asserter\generator()))
+            ->then
+                ->exception(function() use ($asserter) { $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Adapter is undefined')
+            ->if($asserter->setWith($adapter = new test\adapter()))
+            ->then
+                ->exception(function() use ($asserter) { $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+                    ->hasMessage('Called function is undefined')
+            ->if($asserter->call('md5'))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 3'), $asserter->getCall()))
+            ->if($call = new php\call('md5'))
+            ->and($adapter->md5($firstArgument = uniqid()))
+            ->then
+                ->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
+            ->if($adapter->md5($secondArgument = uniqid()))
+            ->then
+                ->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 2 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
+            ->if($adapter->md5($thirdArgument = uniqid()))
+            ->then
+                ->object($asserter->thrice())->isIdenticalTo($asserter)
+            ->if($adapter->md5($fourthArgument = uniqid()))
+            ->then
+                ->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 4 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)) . PHP_EOL . '[4] ' . $call->setArguments(array($fourthArgument)))
+            ->if($adapter->resetCalls())
+            ->and($asserter->withArguments($arg = uniqid()))
+            ->and($adapter->md5($arg))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+            ->if($asserter->withArguments(uniqid()))
+            ->then
+                ->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
+                    ->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
+        ;
+    }
 
 	public function testAtLeastOnce()
 	{
