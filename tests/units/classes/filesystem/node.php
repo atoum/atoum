@@ -12,7 +12,8 @@ use mageekguy\atoum\mock\stream;
 
 class node extends atoum\test
 {
-	public function test__construct() {
+	public function test__construct()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node())
 			->then
@@ -39,7 +40,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function testGetName() {
+	public function testGetName()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node($name = uniqid()))
 			->then
@@ -47,7 +49,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function testGetStream() {
+	public function testGetStream()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node())
 			->then
@@ -55,7 +58,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function testGetParent() {
+	public function testGetParent()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node())
 			->then
@@ -69,7 +73,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function testEnd() {
+	public function testEnd()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node())
 			->then
@@ -83,7 +88,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function testReferencedBy() {
+	public function testReferencedBy()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node())
 			->and($reference = null)
@@ -93,7 +99,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function test__call() {
+	public function test__call()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -108,7 +115,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function test__get() {
+	public function test__get()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -120,7 +128,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function test__set() {
+	public function test__set()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -132,7 +141,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function test__isset() {
+	public function test__isset()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -144,7 +154,8 @@ class node extends atoum\test
 		;
 	}
 
-	public function test__toString() {
+	public function test__toString()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\node($name = uniqid()))
 			->then

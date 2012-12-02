@@ -10,13 +10,15 @@ class filesystem extends directory
 {
 	private $test;
 
-	public function __construct(atoum\test $test, $name = null) {
+	public function __construct(atoum\test $test, $name = null)
+	{
 		parent::__construct($name);
 
 		$this->test = $test;
 	}
 
-	public function getParent() {
+	public function getParent()
+	{
 		return $this->test;
 	}
 }

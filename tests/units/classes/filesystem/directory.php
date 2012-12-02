@@ -12,7 +12,8 @@ use mageekguy\atoum\mock\stream;
 
 class directory extends atoum\test
 {
-	public function test__construct() {
+	public function test__construct()
+	{
 		$this
 			->testedClass
 				->isSubClassOf('\\mageekguy\\atoum\\filesystem\\node')
@@ -45,7 +46,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testGetName() {
+	public function testGetName()
+	{
 		$this
 			->if($object = new testedClass($name = uniqid()))
 			->then
@@ -53,7 +55,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testGetStream() {
+	public function testGetStream()
+	{
 		$this
 			->if($object = new testedClass())
 			->then
@@ -61,7 +64,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testGetParent() {
+	public function testGetParent()
+	{
 		$this
 			->if($object = new testedClass())
 			->then
@@ -75,7 +79,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testEnd() {
+	public function testEnd()
+	{
 		$this
 			->if($object = new testedClass())
 			->then
@@ -89,7 +94,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testGetNewDirectory() {
+	public function testGetNewDirectory()
+	{
 		$this
 			->if($object = new testedClass())
 			->then
@@ -117,7 +123,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testGetNewFile() {
+	public function testGetNewFile()
+	{
 		$this
 			->if($object = new testedClass())
 			->then
@@ -132,7 +139,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testReferencedBy() {
+	public function testReferencedBy()
+	{
 		$this
 			->if($object = new testedClass())
 			->and($reference = null)
@@ -142,7 +150,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function test__call() {
+	public function test__call()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -157,7 +166,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function test__get() {
+	public function test__get()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -169,7 +179,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function test__set() {
+	public function test__set()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -181,7 +192,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function test__isset() {
+	public function test__isset()
+	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
 			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
@@ -193,7 +205,8 @@ class directory extends atoum\test
 		;
 	}
 
-	public function test__toString() {
+	public function test__toString()
+	{
 		$this
 			->if($object = new testedClass($name = uniqid()))
 			->then

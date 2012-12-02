@@ -11,7 +11,8 @@ class directory extends node
 {
 	private $itemsCount = 0;
 
-	public function __construct($name = null, node $parent = null) {
+	public function __construct($name = null, node $parent = null)
+	{
 		parent::__construct($name, $parent);
 
 		$this->dir_opendir = true;
@@ -31,14 +32,16 @@ class directory extends node
 		return $this;
 	}
 
-	public function getNewDirectory($name = null) {
+	public function getNewDirectory($name = null)
+	{
 		$directory = new directory($name, $this);
 		$this->getStream()->readdir[++$this->itemsCount] = $directory->getStream();
 
 		return $directory;
 	}
 
-	public function getNewFile($name = null) {
+	public function getNewFile($name = null)
+	{
 		$file = new file($name, $this);
 		$this->getStream()->readdir[++$this->itemsCount] = $file->getStream();
 

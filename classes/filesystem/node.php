@@ -15,7 +15,8 @@ abstract class node
 	private $stream;
 	protected $assertionManager;
 
-	public function __construct($name = null, node $parent = null) {
+	public function __construct($name = null, node $parent = null)
+	{
 		$this->name = $name ?: uniqid();
 		$this->parent = $parent;
 
@@ -49,7 +50,8 @@ abstract class node
 		return $this;
 	}
 
-	protected function setStream($name, node $parent = null) {
+	protected function setStream($name, node $parent = null)
+	{
 		if($parent !== null)
 		{
 			$this->stream = stream::getSubStream($parent->getStream(), $name);
@@ -77,7 +79,8 @@ abstract class node
 		return $this->name;
 	}
 
-	public function referencedBy(& $reference) {
+	public function referencedBy(& $reference)
+	{
 		return $reference = $this;
 	}
 
