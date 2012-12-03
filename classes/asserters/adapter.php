@@ -171,30 +171,17 @@ class adapter extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		return $this->exactly(1, $failMessage);
+	}
 
-		if (($callsNumber = sizeof($calls)) === 1)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail(
-				$failMessage !== null
-				? $failMessage
-				: sprintf(
-						$this->getLocale()->__(
-							'function %s is called %d time instead of 1',
-							'function %s is called %d times instead of 1',
-							$callsNumber
-						),
-						$this->call,
-						$callsNumber
-					) .  $this->getCallsAsString()
-			);
-		}
+	public function twice($failMessage = null)
+	{
+		return $this->exactly(2, $failMessage);
+	}
 
-		return $this;
+	public function thrice($failMessage = null)
+	{
+		return $this->exactly(3, $failMessage);
 	}
 
 	public function atLeastOnce($failMessage = null)
