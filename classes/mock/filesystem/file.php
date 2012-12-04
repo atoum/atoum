@@ -1,5 +1,5 @@
 <?php
-namespace mageekguy\atoum\filesystem;
+namespace mageekguy\atoum\mock\filesystem;
 
 use
 	mageekguy\atoum\test,

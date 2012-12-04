@@ -1,73 +1,49 @@
 <?php
-namespace mageekguy\atoum\tests\units\filesystem;
+namespace mageekguy\atoum\tests\units\mock\filesystem;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\filesystem\file as testedClass
+	mageekguy\atoum\mock\filesystem\node as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
 
 use mageekguy\atoum\mock\stream;
 
-class file extends atoum\test
+class node extends atoum\test
 {
 	public function test__construct()
 	{
 		$this
-			->testedClass
-				->isSubClassOf('\\mageekguy\\atoum\\filesystem\\node')
-			->if($object = new testedClass())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->then
 				->string($object->getName())->isNotEmpty()
 				->variable($object->getParent())->isNull()
 				->object($object->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
-				->boolean(is_file($object))->isTrue()
-				->string(file_get_contents($object))->isEmpty()
-			->if($object = new testedClass($name = uniqid()))
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
 			->then
 				->string($object->getName())->isEqualTo($name)
 				->variable($object->getParent())->isNull()
 				->object($object->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
-				->boolean(is_file($object))->isTrue()
-				->string(file_get_contents($object))->isEmpty()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new testedClass($name, $node))
+			->and($object = new \mock\mageekguy\atoum\mock\filesystem\node($name, $node))
 			->then
 				->string($object->getName())->isIdenticalTo($name)
 				->object($object->getParent())->isIdenticalTo($node)
 				->object($object->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
-				->boolean(is_file($object))->isTrue()
-				->string(file_get_contents($object))->isEmpty()
-			->if($object = new testedClass($name, $node))
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name, $node))
 			->then
 				->string($object->getName())->isIdenticalTo($name)
 				->object($object->getParent())->isIdenticalTo($node)
-				->boolean(is_file($object))->isTrue()
-				->string(file_get_contents($object))->isEmpty()
-		;
-	}
-
-	public function testGetContent()
-	{
-		$this
-			->if($object = new testedClass())
-			->then
-				->object($object->setContent($content = uniqid()))->isIdenticalTo($object)
-				->string(file_get_contents($object))->isEqualTo($content)
-			->if($object = new testedClass())
-			->then
-				->object($object->content($content = uniqid()))->isIdenticalTo($object)
-				->string(file_get_contents($object))->isEqualTo($content)
 		;
 	}
 
 	public function testGetName()
 	{
 		$this
-			->if($object = new testedClass($name = uniqid()))
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
 			->then
 				->string($object->getName())->isEqualTo($name)
 		;
@@ -76,7 +52,7 @@ class file extends atoum\test
 	public function testGetStream()
 	{
 		$this
-			->if($object = new testedClass())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->then
 				->object($object->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
 		;
@@ -85,13 +61,13 @@ class file extends atoum\test
 	public function testGetParent()
 	{
 		$this
-			->if($object = new testedClass())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->then
 				->variable($object->getParent())->isNull()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new testedClass(uniqid(), $node))
+			->and($object = new \mock\mageekguy\atoum\mock\filesystem\node(uniqid(), $node))
 			->then
 				->object($object->getParent())->isIdenticalTo($node)
 		;
@@ -100,26 +76,22 @@ class file extends atoum\test
 	public function testEnd()
 	{
 		$this
-			->if($object = new testedClass())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->then
 				->variable($object->end())->isNull()
-				->variable($object->close())->isNull()
-				->variable($object->parent())->isNull()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new testedClass(uniqid(), $node))
+			->and($object = new \mock\mageekguy\atoum\mock\filesystem\node(uniqid(), $node))
 			->then
 				->object($object->end())->isIdenticalTo($node)
-				->object($object->close())->isIdenticalTo($node)
-				->object($object->parent())->isIdenticalTo($node)
 		;
 	}
 
 	public function testReferencedBy()
 	{
 		$this
-			->if($object = new testedClass())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($reference = null)
 			->then
 				->object($object->referencedBy($reference))->isIdenticalTo($object)
@@ -130,8 +102,8 @@ class file extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\file(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->invoke = function() {})
 			->then
 				->variable($object->foo())
@@ -146,8 +118,8 @@ class file extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\file(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->__get = function() {})
 			->then
 				->variable($object->foo)
@@ -159,8 +131,8 @@ class file extends atoum\test
 	public function test__set()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\file(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->__set = function() {})
 			->then
 				->variable($object->foo = $arg = uniqid())
@@ -172,9 +144,9 @@ class file extends atoum\test
 	public function test__isset()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\file(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
-			->and($stream->getMockController()->__set = function() {})
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
+			->and($stream->getMockController()->__isset = function() {})
 			->then
 				->boolean(isset($object->foo))->isFalse()
 				->mock($stream)
@@ -185,7 +157,7 @@ class file extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($object = new testedClass($name = uniqid()))
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node($name = uniqid()))
 			->then
 				->castToString($object)->isEqualTo('atoum://' . $name)
 		;

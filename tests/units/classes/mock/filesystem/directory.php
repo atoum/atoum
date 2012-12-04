@@ -1,9 +1,9 @@
 <?php
-namespace mageekguy\atoum\tests\units\filesystem;
+namespace mageekguy\atoum\tests\units\mock\filesystem;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\filesystem\directory as testedClass
+	mageekguy\atoum\mock\filesystem\directory as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -16,7 +16,7 @@ class directory extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubClassOf('\\mageekguy\\atoum\\filesystem\\node')
+				->isSubClassOf('\\mageekguy\\atoum\\mock\\filesystem\\node')
 			->if($object = new testedClass())
 			->then
 				->string($object->getName())->isNotEmpty()
@@ -30,7 +30,7 @@ class directory extends atoum\test
 				->object($object->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
 				->boolean(is_dir($object->getStream()))->isTrue()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
 			->and($object = new testedClass($name, $node))
 			->then
@@ -71,7 +71,7 @@ class directory extends atoum\test
 			->then
 				->variable($object->getParent())->isNull()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
 			->and($object = new testedClass(uniqid(), $node))
 			->then
@@ -86,7 +86,7 @@ class directory extends atoum\test
 			->then
 				->variable($object->end())->isNull()
 			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\filesystem\node())
+			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($node->getMockController()->getStream = stream::get())
 			->and($object = new testedClass(uniqid(), $node))
 			->then
@@ -99,7 +99,7 @@ class directory extends atoum\test
 		$this
 			->if($object = new testedClass())
 			->then
-				->object($directory = $object->getNewDirectory())->isInstanceOf('\\mageekguy\\atoum\\filesystem\\directory')
+				->object($directory = $object->getNewDirectory())->isInstanceOf('\\mageekguy\\atoum\\mock\\filesystem\\directory')
 				->string($directory->getName())->isNotEmpty()
 				->object($directory->getParent())->isIdenticalTo($object)
 				->object($directory->getStream())->isInstanceOf('\\mageekguy\\atoum\\mock\\stream\\controller')
@@ -115,9 +115,9 @@ class directory extends atoum\test
 				->string($directory->getName())->isIdenticalTo($name)
 				->object($directory->getParent())->isIdenticalTo($object)
 				->variable(opendir($directory->getStream()))->isNotNull()
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory())
 			->then
-				->object($directory = $object->directory())->isInstanceOf('\\mageekguy\\atoum\\filesystem\\directory')
+				->object($directory = $object->directory())->isInstanceOf('\\mageekguy\\atoum\\mock\\filesystem\\directory')
 				->mock($object)
 					->call('getNewDirectory')->once()
 		;
@@ -128,12 +128,12 @@ class directory extends atoum\test
 		$this
 			->if($object = new testedClass())
 			->then
-				->object($file = $object->getNewFile())->isInstanceOf('\\mageekguy\\atoum\\filesystem\\file')
+				->object($file = $object->getNewFile())->isInstanceOf('\\mageekguy\\atoum\\mock\\filesystem\\file')
 				->object($file->getParent())->isIdenticalTo($object)
 				->boolean(is_file($file))->isTrue()
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory())
 			->then
-				->object($directory = $object->file())->isInstanceOf('\\mageekguy\\atoum\\filesystem\\file')
+				->object($directory = $object->file())->isInstanceOf('\\mageekguy\\atoum\\mock\\filesystem\\file')
 				->mock($object)
 				->call('getNewFile')->once()
 		;
@@ -153,8 +153,8 @@ class directory extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->invoke = function() {})
 			->then
 				->variable($object->foo())
@@ -169,8 +169,8 @@ class directory extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->__get = function() {})
 			->then
 				->variable($object->foo)
@@ -182,8 +182,8 @@ class directory extends atoum\test
 	public function test__set()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
 			->and($stream->getMockController()->__set = function() {})
 			->then
 				->variable($object->foo = $arg = uniqid())
@@ -195,9 +195,9 @@ class directory extends atoum\test
 	public function test__isset()
 	{
 		$this
-			->if($object = new \mock\mageekguy\atoum\filesystem\directory(uniqid()))
-			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\stream\controller())
-			->and($stream->getMockController()->__set = function() {})
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\directory($name = uniqid()))
+			->and($object->getMockController()->getStream = $stream = new \mock\mageekguy\atoum\mock\stream\controller($name))
+			->and($stream->getMockController()->__isset = function() {})
 			->then
 				->boolean(isset($object->foo))->isFalse()
 				->mock($stream)
