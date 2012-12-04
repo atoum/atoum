@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\mock;
 use
 	mageekguy\atoum\test,
 	mageekguy\atoum\adapter,
+	mageekguy\atoum\mock,
 	mageekguy\atoum\mock\stream as testedClass
 ;
 
@@ -101,6 +102,65 @@ class stream extends test
 			->string(testedClass::setDirectorySeparator('foo\bar', '\\'))->isEqualTo('foo\bar')
 			->string(testedClass::setDirectorySeparator('foo' . DIRECTORY_SEPARATOR . 'bar'))->isEqualTo('foo' . DIRECTORY_SEPARATOR . 'bar')
 			->string(testedClass::setDirectorySeparator('foo' . (DIRECTORY_SEPARATOR == '/' ? '\\' : '/') . 'bar'))->isEqualTo('foo' . DIRECTORY_SEPARATOR . 'bar')
+		;
+	}
+
+	public function testMkdir()
+	{
+		$this
+			->if($object = new mock\stream())
+			->and($filesystem = mock\stream::get())
+			->and($directory = $filesystem . DIRECTORY_SEPARATOR . uniqid())
+			->then
+				->boolean($object->mkdir($directory, 0777, 0))->isTrue()
+				->boolean(is_dir($directory))->isTrue()
+				->boolean(is_file($directory))->isFalse()
+			->if($otherDirectory = $filesystem . DIRECTORY_SEPARATOR . uniqid())
+			->and(mock\stream::get($otherDirectory))
+			->then
+				->exception(function() use ($object, $otherDirectory) {
+						$object->mkdir($otherDirectory, 0777, 0);
+					})
+					->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic')
+					->hasMessage('Stream \'' . $otherDirectory . '\' already exists')
+			->if($rootDir = 'atoum://' . uniqid())
+			->then
+				->boolean($object->mkdir($rootDir, 0777, 0))->isTrue()
+				->boolean(is_dir($rootDir))->isTrue()
+				->boolean(is_file($rootDir))->isFalse()
+		;
+	}
+
+	public function testRmdir()
+	{
+		$this
+			->if($object = new mock\stream())
+			->and($filesystem = mock\stream::get())
+			->then
+				->boolean($object->rmdir($filesystem, 0))
+				->exception(function() use ($object, $filesystem) {
+						$object->rmdir($filesystem, 0);
+					})
+					->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic')
+					->hasMessage('Stream \'' . $filesystem . '\' is undefined')
+		;
+	}
+
+	public function testUnlink()
+	{
+		$this
+			->if($object = new mock\stream())
+			->and($filesystem = mock\stream::get())
+			->if($file = $filesystem . DIRECTORY_SEPARATOR . uniqid())
+			->then
+				->exception(function() use($file) {
+						unlink($file);
+					})
+					->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic')
+					->hasMessage('Stream \'' . $file . '\' is undefined')
+			->if(mock\stream::get($file))
+			->then
+				->boolean($object->unlink($file))->isTrue()
 		;
 	}
 }

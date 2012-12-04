@@ -56,11 +56,6 @@ class stream
 						return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
 
 					case 'mkdir':
-						if (isset(self::$streams[$stream]) === true)
-						{
-							throw new logic('Stream \'' . $arguments[0] . '\' already exists');
-						}
-
 						$directory = pathinfo($stream, PATHINFO_DIRNAME);
 						if (preg_match('/:$/', $directory) == false)
 						{
@@ -142,6 +137,89 @@ class stream
 		}
 
 		return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
+	}
+
+	public function mkdir($path, $mode, $option)
+	{
+		$stream = self::setDirectorySeparator($path);
+
+		if (isset(self::$streams[$stream]) === true)
+		{
+			throw new logic('Stream \'' . $path . '\' already exists');
+		}
+
+		$directory = pathinfo($stream, PATHINFO_DIRNAME);
+		if (preg_match('/:$/', $directory) == false)
+		{
+			$parent = self::get($directory);
+			self::$streams[$stream] = self::getSubStream(
+				$parent,
+				preg_replace('/^' . preg_quote($directory, '/') . '\//', '', $stream)
+			);
+			self::$streamsSize[$stream] = 0;
+
+			if (isset(stream::$streamsSize[(string) $parent]) === false)
+			{
+				stream::$streamsSize[(string) $parent] = 0;
+			}
+
+			$parent->dir_readdir[++self::$streamsSize[(string) $parent]] = self::$streams[$stream];
+		}
+		else
+		{
+			self::$streams[$stream] = self::get($stream);
+		}
+
+		self::$streams[$stream]->dir_opendir = true;
+		self::$streams[$stream]->mkdir = true;
+
+		return $this->__call(__FUNCTION__, func_get_args());
+	}
+
+	public function rmdir($path, $options)
+	{
+		$stream = self::setDirectorySeparator($path);
+
+		if (isset(self::$streams[$stream]) === false)
+		{
+			throw new logic('Stream \'' . $path . '\' is undefined');
+		}
+
+		self::$streams[$stream]->rmdir = true;
+		self::$streams[$stream]->url_stat = false;
+		$streamController = self::$streams[$stream];
+		unset(self::$streams[$stream]);
+
+		return $streamController->invoke(__FUNCTION__, func_get_args());
+	}
+
+	public function unlink($path)
+	{
+		$stream = self::setDirectorySeparator($path);
+
+		if (isset(self::$streams[$stream]) === false)
+		{
+			throw new logic('Stream \'' . $path . '\' is undefined');
+		}
+
+		self::$streams[$stream]->unlink = true;
+		self::$streams[$stream]->url_stat = false;
+		$streamController = self::$streams[$stream];
+		unset(self::$streams[$stream]);
+
+		return $streamController->invoke(__FUNCTION__, func_get_args());
+	}
+
+	public function url_stat($path, $flags)
+	{
+		$stream = self::setDirectorySeparator($path);
+
+		if (isset(self::$streams[$stream]) === false && ($flags & STREAM_URL_STAT_QUIET) == STREAM_URL_STAT_QUIET)
+		{
+			return false;
+		}
+
+		return $this->__call(__FUNCTION__, func_get_args());
 	}
 
 	public static function getAdapter()
