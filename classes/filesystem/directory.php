@@ -9,8 +9,6 @@ use
 
 class directory extends node
 {
-	private $itemsCount = 0;
-
 	public function __construct($name = null, node $parent = null)
 	{
 		parent::__construct($name, $parent);
@@ -35,7 +33,13 @@ class directory extends node
 	public function getNewDirectory($name = null)
 	{
 		$directory = new directory($name, $this);
-		$this->getStream()->readdir[++$this->itemsCount] = $directory->getStream();
+
+		if (isset(stream::$streamsSize[(string) $this->getStream()]) === false)
+		{
+			stream::$streamsSize[(string) $this->getStream()] = 0;
+		}
+
+		$this->addChild($directory);
 
 		return $directory;
 	}
@@ -43,8 +47,21 @@ class directory extends node
 	public function getNewFile($name = null)
 	{
 		$file = new file($name, $this);
-		$this->getStream()->readdir[++$this->itemsCount] = $file->getStream();
+
+		if (isset(stream::$streamsSize[(string) $this->getStream()]) === false)
+		{
+			stream::$streamsSize[(string) $this->getStream()] = 0;
+		}
+
+		$this->addChild($file);
 
 		return $file;
+	}
+
+	protected function addChild(node $child)
+	{
+		$this->getStream()->readdir[++stream::$streamsSize[(string) $this->getStream()]] = $child->getStream();
+
+		return $this;
 	}
 }

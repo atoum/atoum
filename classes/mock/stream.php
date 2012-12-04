@@ -17,10 +17,130 @@ class stream
 
 	protected static $adapter = null;
 	protected static $streams = array();
+	public static $streamsSize = array();
 	protected static $protocols = array();
 
 	public function __call($method, array $arguments)
 	{
+		switch ($method)
+		{
+			case 'dir_opendir':
+			case 'mkdir':
+			case 'rename':
+			case 'rmdir':
+			case 'stream_metadata':
+			case 'stream_open':
+			case 'unlink':
+			case 'url_stat':
+				if (isset($arguments[0]) === false)
+				{
+					throw new logic('Argument 0 is not set for function ' . $method . '()');
+				}
+
+				$stream = self::setDirectorySeparator($arguments[0]);
+
+				switch ($method)
+				{
+					case 'unlink':
+					case 'rmdir':
+						if (isset(self::$streams[$stream]) === false)
+						{
+							throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
+						}
+
+						$this->streamController = self::$streams[$stream];
+						$this->streamController->unlink = true;
+						$this->streamController->rmdir = true;
+						$this->streamController->url_stat = false;
+
+						return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
+
+					case 'mkdir':
+						if (isset(self::$streams[$stream]) === true)
+						{
+							throw new logic('Stream \'' . $arguments[0] . '\' already exists');
+						}
+
+						$directory = pathinfo($stream, PATHINFO_DIRNAME);
+						if (preg_match('/:$/', $directory) == false)
+						{
+							$parent = self::get($directory);
+							self::$streams[$stream] = self::getSubStream(
+								$parent,
+								preg_replace('/^' . preg_quote($directory, '/') . '\//', '', $stream)
+							);
+							self::$streamsSize[$stream] = 0;
+
+							if (isset(stream::$streamsSize[(string) $parent]) === false)
+							{
+								stream::$streamsSize[(string) $parent] = 0;
+							}
+
+							$parent->dir_readdir[++self::$streamsSize[(string) $parent]] = self::$streams[$stream];
+						}
+						else
+						{
+							self::$streams[$stream] = self::get($stream);
+						}
+
+						self::$streams[$stream]->dir_opendir = true;
+						self::$streams[$stream]->mkdir = true;
+						break;
+
+					case 'url_stat':
+						if(isset(self::$streams[$stream]) === false && ($arguments[1] & STREAM_URL_STAT_QUIET) == STREAM_URL_STAT_QUIET)
+						{
+							return false;
+						}
+						break;
+					case 'stream_open':
+						switch (true) {
+							case preg_match('/a|w|c|x\+?/', $arguments[1]) && isset(static::$streams[$stream]) === false:
+								$directory = pathinfo($stream, PATHINFO_DIRNAME);
+								if (preg_match('/:$/', $directory) == false)
+								{
+									$parent = self::get($directory);
+									self::$streams[$stream] = static::getSubStream(
+										$parent,
+										preg_replace('/^' . preg_quote($directory, '/') . '\//', '', $stream)
+									);
+
+									if (isset(stream::$streamsSize[(string) $parent]) === false)
+									{
+										stream::$streamsSize[(string) $parent] = 0;
+									}
+
+									$parent->dir_readdir[++static::$streamsSize[(string) $parent]] = static::$streams[$stream];
+								}
+								else
+								{
+									static::$streams[$stream] = static::get($stream);
+								}
+
+								static::$streams[$stream]->file_get_contents = '';
+								break;
+
+							case preg_match('/x\+?/', $arguments[1]) && isset(static::$streams[$stream]):
+								throw new logic('Stream \'' . $arguments[0] . '\' already exists');
+								break;
+
+							case isset(static::$streams[$stream]) === false:
+								throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
+								break;
+						}
+
+						break;
+				}
+
+				if (isset(static::$streams[$stream]) === false)
+				{
+					throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
+				}
+
+				$this->streamController = self::$streams[$stream];
+				break;
+		}
+
 		return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
 	}
 
