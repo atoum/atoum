@@ -178,10 +178,10 @@ class cli extends atoum\test
 			->then
 				->castToString($field)->isEqualTo(sprintf('There are %d exceptions:', sizeof($exceptions)) . PHP_EOL .
 					$class . '::' . $method . '():' . PHP_EOL .
-					sprintf('Exception throwed in file %s on line %d:', $file, $line) . PHP_EOL .
+					sprintf('An exception has been thrown in file %s on line %d:', $file, $line) . PHP_EOL .
 					$value . PHP_EOL .
 					$otherClass . '::' . $otherMethod . '():' . PHP_EOL .
-					sprintf('Exception throwed in file %s on line %d:', $otherFile, $otherLine) . PHP_EOL .
+					sprintf('An exception has been thrown in file %s on line %d:', $otherFile, $otherLine) . PHP_EOL .
 					$firstOtherValue . PHP_EOL .
 					$secondOtherValue . PHP_EOL
 				)
@@ -216,7 +216,7 @@ class cli extends atoum\test
 					$exceptionPrompt .
 					sprintf(
 						$locale->_('%s:'),
-						$exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d'), $file, $line))
+						$exceptionColorizer->colorize(sprintf($locale->_('An exception has been thrown in file %s on line %d'), $file, $line))
 					) .
 					PHP_EOL .
 					$exceptionPrompt . $value . PHP_EOL .
@@ -229,7 +229,7 @@ class cli extends atoum\test
 					$exceptionPrompt .
 					sprintf(
 						$locale->_('%s:'),
-						$exceptionColorizer->colorize(sprintf($locale->_('Exception throwed in file %s on line %d'), $otherFile, $otherLine))
+						$exceptionColorizer->colorize(sprintf($locale->_('An exception has been thrown in file %s on line %d'), $otherFile, $otherLine))
 					) .
 					PHP_EOL .
 					$exceptionPrompt . $firstOtherValue . PHP_EOL .
