@@ -11,11 +11,6 @@ class template extends template\data
 {
 	protected $children = array();
 
-	public function __construct($data = null)
-	{
-		parent::__construct($data);
-	}
-
 	public function __set($tag, $data)
 	{
 		foreach ($this->getByTag($tag) as $child)
