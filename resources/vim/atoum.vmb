@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-149
+148
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -41,8 +41,7 @@ function atoum#run(file, bang, args)
 
 		execute 'silent! %!' . _ . ' ' . a:args
 		execute 'resize ' . line('$')
-		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''', '''')<CR>'
-		execute 'nnoremap <silent> <buffer> <C-CR> :call atoum#run(''' . a:file . ''', '''', '' --debug'')<CR>'
+		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''', ''' . a:args . ''')<CR>'
 		execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
 
 		nnoremap <silent> <buffer> <C-W>_ :execute 'resize ' . line('$')<CR>

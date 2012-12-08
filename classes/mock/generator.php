@@ -240,7 +240,7 @@ class generator
 
 						if ($overload === null)
 						{
-							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
+							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . ($isConstructor ? '__construct' : $methodName) . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
 							$methodCode .= "\t" . '{' . PHP_EOL;
 
 							$parameters = array();
@@ -291,12 +291,29 @@ class generator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 						}
+						else if ($isConstructor === true && $methodName === $className && $this->isShunted('__construct') === true)
+						{
+							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
+							$methodCode .= "\t\t" . '{' . PHP_EOL;
+							$methodCode .= "\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL;
+							$methodCode .= "\t\t" . '}' . PHP_EOL;
+							$methodCode .=	"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL;
+						}
 						else
 						{
 							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
+
+							if ($isConstructor === true && $methodName === $className)
+							{
+								$methodCode .= "\t\t" . 'else if (isset($this->getMockController()->__construct) === true)' . PHP_EOL;
+								$methodCode .= "\t\t" . '{' . PHP_EOL;
+								$methodCode .= "\t\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL;
+								$methodCode .= "\t\t" . '}' . PHP_EOL;
+							}
+
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 

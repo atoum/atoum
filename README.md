@@ -173,7 +173,7 @@ However, if you want to further explore immediately *atoum*'s possibilities, we 
 * Exploring the contents of the `configurations` directory in *atoum*'s source, as it contains configuration file samples ;
 * Exploring the contents of the `tests/unit/classes` directory in *atoum*'s source, as it contains all of the unit tests ;
 * Read the [conference supports](http://www.slideshare.net/impossiblium/atoum-le-framework-de-tests-unitaires-pour-php-53-simple-moderne-et-intuitif) about it, available online ;
-* Read the (french) [wiki](https://github.com/mageekguy/atoum/wiki) ;
+* Read the (french) [wiki](https://github.com/atoum/atoum/wiki) ;
 * Join the IRC channel *##atoum* on the *freenode* network ;
 * Ask questions by e-mail at the address *support[AT]atoum(DOT)org* ;
 

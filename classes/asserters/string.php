@@ -43,13 +43,13 @@ class string extends asserters\variable
 
 		if ($checkType === true)
 		{
-			if (self::isString($this->value) === false)
+			if (self::isString($this->value) === true)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
+				$this->pass();
 			}
 			else
 			{
-				$this->pass();
+				$this->fail(sprintf($this->getLocale()->_('%s is not a string'), $this));
 			}
 		}
 
@@ -108,6 +108,34 @@ class string extends asserters\variable
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not %d'), $this, $length));
+		}
+
+		return $this;
+	}
+
+	public function hasLengthGreaterThan($length, $failMessage = null)
+	{
+		if (strlen($this->valueIsSet()->value) > $length)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not greater than %d'), $this, $length));
+		}
+
+		return $this;
+	}
+
+	public function hasLengthLessThan($length, $failMessage = null)
+	{
+		if (strlen($this->valueIsSet()->value) < $length)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('length of %s is not less than %d'), $this, $length));
 		}
 
 		return $this;
