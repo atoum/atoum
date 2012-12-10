@@ -70,6 +70,17 @@ class generator
 
 	public function asserterFail(atoum\asserter $asserter, $reason)
 	{
+            
+                if(is_object($reason) && method_exists($reason, '__toString'))
+                {
+                    $reason = (string) $reason;
+                }
+                
+                if(!is_string($reason)) {
+                    throw new exception('Assertion custom message should be either a string or an object implementing __toString()');
+                }
+                    
+            
 		throw new exception($reason);
 	}
 
