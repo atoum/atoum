@@ -18,7 +18,7 @@ class plan extends report\field
 
 	public function __toString()
 	{
-		return ($this->testMethodNumber <= 0 ? '' : '1..' . $this->testMethodNumber);
+		return ($this->testMethodNumber <= 0 ? '' : '1..' . $this->testMethodNumber . PHP_EOL);
 	}
 
 	public function handleEvent($event, \mageekguy\atoum\observable $observable)
