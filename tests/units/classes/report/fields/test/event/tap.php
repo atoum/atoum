@@ -87,7 +87,61 @@ class tap extends atoum\test
 	{
 		$this
 			->mockGenerator->shunt('__construct')
-			->if($test = new \mock\mageekguy\atoum\test())
+			->if($score = new \mock\atoum\test\score())
+			->and($this->calling($score)->getFailAssertions[1] = array(
+					array(
+						'case' => null,
+						'dataSetKey' => null,
+						'class' => $class = uniqid(),
+						'method' => $method = uniqid(),
+						'file' => $file = uniqid(),
+						'line' => $line = uniqid(),
+						'asserter' => $asserter = uniqid(),
+						'fail' => $fail1 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getFailAssertions[2] = array(
+					array(
+						'case' => null,
+						'dataSetKey' => null,
+						'class' => $class = uniqid(),
+						'method' => $method = uniqid(),
+						'file' => $file = uniqid(),
+						'line' => $line = uniqid(),
+						'asserter' => $asserter = uniqid(),
+						'fail' => $fail2 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getFailAssertions[3] = array(
+					array(
+						'case' => null,
+						'dataSetKey' => null,
+						'class' => $class = uniqid(),
+						'method' => $method = uniqid(),
+						'file' => $file = uniqid(),
+						'line' => $line = uniqid(),
+						'asserter' => $asserter = uniqid(),
+						'fail' => $fail3 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getFailAssertions[4] = array(
+					array(
+						'case' => null,
+						'dataSetKey' => null,
+						'class' => $class = uniqid(),
+						'method' => $method = uniqid(),
+						'file' => $file = uniqid(),
+						'line' => $line = uniqid(),
+						'asserter' => $asserter = uniqid(),
+						'fail' => $fail4 = uniqid()
+					)
+				)
+			)
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
 			->and($field = new testedClass())
 			->then
 				->castToString($field)->isEmpty()
@@ -96,16 +150,17 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $fail1 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $fail2 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 3' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 4' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 4 - ' . $fail4 . PHP_EOL)
+			/*
 			->if($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
@@ -121,6 +176,7 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 4' . PHP_EOL)
+			*/
 		;
 	}
 }
