@@ -7,18 +7,39 @@ class autoloader
 	protected static $autoloader = null;
 
 	protected $directories = array();
-	protected $aliases = array();
+	protected $classAliases = array();
+	protected $namespaceAliases = array();
 
-	public function __construct(array $namespaces = array(__NAMESPACE__ => __DIR__), array $aliases = array('atoum' => __NAMESPACE__))
+	public function __construct(array $namespaces = null, array $namespaceAliases = null, $classAliases = null)
 	{
+		if ($namespaces === null)
+		{
+			$namespaces = array(__NAMESPACE__ => __DIR__);
+		}
+
 		foreach ($namespaces as $namespace => $directory)
 		{
 			$this->addDirectory($namespace, $directory);
 		}
 
-		foreach ($aliases as $alias => $target)
+		if ($namespaceAliases === null)
 		{
-			$this->addAlias($alias, $target);
+			$namespaceAliases = array('atoum' => __NAMESPACE__);
+		}
+
+		foreach ($namespaceAliases as $alias => $target)
+		{
+			$this->addNamespaceAlias($alias, $target);
+		}
+
+		if ($classAliases === null)
+		{
+			$classAliases = array('atoum' => __NAMESPACE__ . '\test');
+		}
+
+		foreach ($classAliases as $alias => $target)
+		{
+			$this->addClassAlias($alias, $target);
 		}
 	}
 
@@ -59,16 +80,28 @@ class autoloader
 		return $this->directories;
 	}
 
-	public function addAlias($alias, $target)
+	public function addNamespaceAlias($alias, $target)
 	{
-		$this->aliases[trim($alias, '\\') . '\\'] = trim($target, '\\') . '\\';
+		$this->namespaceAliases[trim($alias, '\\') . '\\'] = trim($target, '\\') . '\\';
 
 		return $this;
 	}
 
-	public function getAliases()
+	public function getNamespaceAliases()
 	{
-		return $this->aliases;
+		return $this->namespaceAliases;
+	}
+
+	public function addClassAlias($alias, $target)
+	{
+		$this->classAliases[trim($alias, '\\')] = trim($target, '\\');
+
+		return $this;
+	}
+
+	public function getClassAliases()
+	{
+		return $this->classAliases;
 	}
 
 	public function getPath($class)
@@ -103,7 +136,7 @@ class autoloader
 	{
 		$class = preg_replace_callback('/(^.|\\\.)/', function($matches) { return strtolower($matches[0]); }, $class);
 
-		$realClass = $this->resolveAlias($class);
+		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
 
 		if (class_exists($realClass, false) === false && interface_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
 		{
@@ -118,7 +151,12 @@ class autoloader
 			}
 			else
 			{
-				$alias = $this->getAlias($realClass);
+				$alias = $this->getClassAlias($realClass);
+
+				if ($alias === null)
+				{
+					$alias = $this->getNamespaceAlias($realClass);
+				}
 
 				if ($alias !== null)
 				{
@@ -144,9 +182,9 @@ class autoloader
 		return static::$autoloader;
 	}
 
-	protected function resolveAlias($class)
+	protected function resolveNamespaceAlias($class)
 	{
-		foreach ($this->aliases as $alias => $target)
+		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $alias) === 0)
 			{
@@ -157,13 +195,39 @@ class autoloader
 		return $class;
 	}
 
-	protected function getAlias($class)
+	protected function getNamespaceAlias($class)
 	{
-		foreach ($this->aliases as $alias => $target)
+		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $target) === 0)
 			{
 				return $alias . substr($class, strlen($target));
+			}
+		}
+
+		return null;
+	}
+
+	protected function resolveClassAlias($class)
+	{
+		foreach ($this->classAliases as $alias => $target)
+		{
+			if ($alias === $class)
+			{
+				return $target;
+			}
+		}
+
+		return $class;
+	}
+
+	protected function getClassAlias($class)
+	{
+		foreach ($this->classAliases as $alias => $target)
+		{
+			if ($target === $class)
+			{
+				return $alias;
 			}
 		}
 
