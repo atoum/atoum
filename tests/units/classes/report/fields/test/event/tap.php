@@ -97,7 +97,7 @@ class tap extends atoum\test
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
-						'fail' => null
+						'fail' => $fail1 = uniqid()
 					)
 				)
 			)
@@ -156,7 +156,7 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $fail1 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 - ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $fail2 . PHP_EOL)
@@ -175,7 +175,7 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $fail1 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 - ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $fail2 . PHP_EOL)
@@ -208,15 +208,6 @@ class tap extends atoum\test
 					)
 				)
 			)
-			->and($this->calling($score)->getVoidMethods[3] = array(
-					$void1,
-					$void2,
-					array(
-						'class' => null,
-						'method' => null
-					)
-				)
-			)
 			->and($test = new \mock\mageekguy\atoum\test())
 			->and($this->calling($test)->getScore = $score)
 			->and($field = new testedClass())
@@ -231,9 +222,6 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL)
-			->if($field->handleEvent(atoum\test::void, $test))
-			->then
-				->castToString($field)->isEqualTo('not ok 3 # TODO' . PHP_EOL)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
 			->then
@@ -244,9 +232,6 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL)
-			->if($field->handleEvent(atoum\test::void, $test))
-			->then
-				->castToString($field)->isEqualTo('not ok 3 # TODO' . PHP_EOL)
 		;
 	}
 
@@ -272,16 +257,6 @@ class tap extends atoum\test
 					)
 				)
 			)
-			->and($this->calling($score)->getSkippedMethods[3] = array(
-					$skip1,
-					$skip2,
-					array(
-						'class' => null,
-						'method' => null,
-						'message' => null
-					)
-				)
-			)
 			->and($test = new \mock\mageekguy\atoum\test())
 			->and($this->calling($test)->getScore = $score)
 			->and($field = new testedClass())
@@ -303,9 +278,6 @@ class tap extends atoum\test
 					'# ' . $anotherMessage2 .
 					PHP_EOL
 				)
-			->if($field->handleEvent(atoum\test::skipped, $test))
-			->then
-				->castToString($field)->isEqualTo('ok 3 # SKIP' . PHP_EOL)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
 			->then
@@ -323,9 +295,6 @@ class tap extends atoum\test
 					'# ' . $anotherMessage2 .
 					PHP_EOL
 				)
-			->if($field->handleEvent(atoum\test::skipped, $test))
-			->then
-				->castToString($field)->isEqualTo('ok 3 # SKIP' . PHP_EOL)
 		;
 	}
 }
