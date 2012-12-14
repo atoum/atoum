@@ -162,6 +162,18 @@ class score
 		return self::sort(self::cleanAssertions($this->failAssertions));
 	}
 
+	public function getLastFailAssertion()
+	{
+		$lastFailAssertion = end($this->failAssertions) ?: null;
+
+		if ($lastFailAssertion !== null)
+		{
+			$lastFailAssertion = self::cleanAssertion($lastFailAssertion);
+		}
+
+		return $lastFailAssertion;
+	}
+
 	public function getFailNumber()
 	{
 		return sizeof($this->getFailAssertions());
@@ -428,7 +440,14 @@ class score
 
 	private static function cleanAssertions(array $assertions)
 	{
-		return array_map(function ($assertion) { unset($assertion['id']); return $assertion; }, array_values($assertions));
+		return array_map(array(__CLASS__, 'cleanAssertion'), array_values($assertions));
+	}
+
+	private static function cleanAssertion(array $assertion)
+	{
+		unset($assertion['id']);
+
+		return $assertion;
 	}
 
 	private static function sort(array $array)

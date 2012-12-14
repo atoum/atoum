@@ -48,13 +48,15 @@ class tap extends report\fields\event
 					$this->testLine = 'ok ' . ++$this->testPoint . PHP_EOL;
 					break;
 
-				case test::fail:
 				case test::error:
 				case test::exception:
 				case test::runtimeException:
 				case test::uncompleted:
-					$lastFailure = self::getLast($observable->getScore()->getFailAssertions());
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastFailure['class']) . '::' . trim($lastFailure['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastFailure['fail'])) . PHP_EOL;
+					break;
+
+				case test::fail:
+					$lastFailAssertion = $observable->getScore()->getLastFailAssertion();
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastFailAssertion['class']) . '::' . trim($lastFailAssertion['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastFailAssertion['fail'])) . PHP_EOL;
 					break;
 
 				case test::void:

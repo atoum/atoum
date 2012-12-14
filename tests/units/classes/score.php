@@ -624,6 +624,32 @@ class score extends atoum\test
 		;
 	}
 
+	public function testGetLastFailAssertion()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastFailAssertion())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastFailAssertion())->isNull()
+			->if($score->addFail($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $asserter = new atoum\asserters\integer(new atoum\asserter\generator()), $reason = uniqid()))
+			->then
+				->array($score->getLastFailAssertion())->isEqualTo(array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'asserter' => $asserter,
+						'fail' => $reason
+					)
+				)
+		;
+	}
+
 	public function testGetPassAssertions()
 	{
 		$this

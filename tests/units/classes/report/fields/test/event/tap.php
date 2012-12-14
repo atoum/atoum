@@ -88,62 +88,48 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getFailAssertions[1] = array(
-					$failure1 = array(
-						'case' => null,
-						'dataSetKey' => null,
-						'class' => $class1 = uniqid(),
-						'method' => $method1 = uniqid(),
-						'file' => $file = uniqid(),
-						'line' => $line = uniqid(),
-						'asserter' => $asserter = uniqid(),
-						'fail' => $fail1 = uniqid()
-					)
+			->and($this->calling($score)->getLastFailAssertion[1] = $failure1 = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'class' => $class1 = uniqid(),
+					'method' => $method1 = uniqid(),
+					'file' => $file1 = uniqid(),
+					'line' => $line1 = uniqid(),
+					'asserter' => $asserter1 = uniqid(),
+					'fail' => $fail1 = uniqid()
 				)
 			)
-			->and($this->calling($score)->getFailAssertions[2] = array(
-					$failure1,
-					$failure2 = array(
-						'case' => null,
-						'dataSetKey' => null,
-						'class' => $class2 = uniqid(),
-						'method' => $method2 = uniqid(),
-						'file' => $file = uniqid(),
-						'line' => $line = uniqid(),
-						'asserter' => $asserter = uniqid(),
-						'fail' => $fail2 = uniqid()
-					)
+			->and($this->calling($score)->getLastFailAssertion[2] = $failure2 = array(
+					'case' => $case2 = uniqid(),
+					'dataSetKey' => null,
+					'class' => $class2 = uniqid(),
+					'method' => $method2 = uniqid(),
+					'file' => $file2 = uniqid(),
+					'line' => $line2 = uniqid(),
+					'asserter' => $asserter2 = uniqid(),
+					'fail' => $fail2 = uniqid()
 				)
 			)
-			->and($this->calling($score)->getFailAssertions[3] = array(
-					$failure1,
-					$failure2,
-					$failure3 = array(
-						'case' => null,
-						'dataSetKey' => null,
-						'class' => $class3 = uniqid(),
-						'method' => $method3 = uniqid(),
-						'file' => $file = uniqid(),
-						'line' => $line = uniqid(),
-						'asserter' => $asserter = uniqid(),
-						'fail' => ($fail3 = uniqid()) . PHP_EOL . ($otherFail3 = uniqid()) . PHP_EOL . ($anotherFail3 = uniqid()) . PHP_EOL
-					)
+			->and($this->calling($score)->getLastFailAssertion[3] = $failure3 = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'class' => $class3 = uniqid(),
+					'method' => $method3 = uniqid(),
+					'file' => $file3 = uniqid(),
+					'line' => $line3 = uniqid(),
+					'asserter' => $asserter3 = uniqid(),
+					'fail' => ($fail3 = uniqid()) . PHP_EOL . ($otherFail3 = uniqid()) . PHP_EOL . ($anotherFail3 = uniqid()) . PHP_EOL
 				)
 			)
-			->and($this->calling($score)->getFailAssertions[4] = array(
-					$failure1,
-					$failure2,
-					$failure3,
-					$failure4 = array(
-						'case' => null,
-						'dataSetKey' => null,
-						'class' => $class4 = uniqid(),
-						'method' => $method4 = uniqid(),
-						'file' => $file = uniqid(),
-						'line' => $line = uniqid(),
-						'asserter' => $asserter = uniqid(),
-						'fail' => $fail4 = uniqid()
-					)
+			->and($this->calling($score)->getLastFailAssertion[4] = $failure4 = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'class' => $class4 = uniqid(),
+					'method' => $method4 = uniqid(),
+					'file' => $file4 = uniqid(),
+					'line' => $line4 = uniqid(),
+					'asserter' => $asserter4 = uniqid(),
+					'fail' => $fail4 = uniqid()
 				)
 			)
 			->and($test = new \mock\mageekguy\atoum\test())
