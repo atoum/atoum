@@ -92,8 +92,8 @@ class tap extends atoum\test
 					$failure1 = array(
 						'case' => null,
 						'dataSetKey' => null,
-						'class' => $class = uniqid(),
-						'method' => $method = uniqid(),
+						'class' => $class1 = uniqid(),
+						'method' => $method1 = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
@@ -106,8 +106,8 @@ class tap extends atoum\test
 					$failure2 = array(
 						'case' => null,
 						'dataSetKey' => null,
-						'class' => $class = uniqid(),
-						'method' => $method = uniqid(),
+						'class' => $class2 = uniqid(),
+						'method' => $method2 = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
@@ -121,8 +121,8 @@ class tap extends atoum\test
 					$failure3 = array(
 						'case' => null,
 						'dataSetKey' => null,
-						'class' => $class = uniqid(),
-						'method' => $method = uniqid(),
+						'class' => $class3 = uniqid(),
+						'method' => $method3 = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
@@ -137,8 +137,8 @@ class tap extends atoum\test
 					$failure4 = array(
 						'case' => null,
 						'dataSetKey' => null,
-						'class' => $class = uniqid(),
-						'method' => $method = uniqid(),
+						'class' => $class4 = uniqid(),
+						'method' => $method4 = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
@@ -156,32 +156,35 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 - ' . $fail2 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $fail2 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 3 - ' . $class3 . '::' . $method3 . '()' . PHP_EOL . '# ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 4 - ' . $fail4 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 4 - ' . $class4 . '::' . $method4 . '()' . PHP_EOL . '# ' . $fail4 . PHP_EOL)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 - ' . $fail2 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $fail2 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 3 - ' . $class3 . '::' . $method3 . '()' . PHP_EOL . '# ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 4 - ' . $fail4 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 4 - ' . $class4 . '::' . $method4 . '()' . PHP_EOL . '# ' . $fail4 . PHP_EOL)
 		;
 	}
 

@@ -49,9 +49,14 @@ class tap extends report\fields\event
 					break;
 
 				case test::fail:
-					$lastFailures = current(array_slice($observable->getScore()->getFailAssertions(), -1));
+					$lastFailure = current(array_slice($observable->getScore()->getFailAssertions(), -1));
 					$this->testPointNumber++;
-					$this->description = trim($lastFailures['fail']);
+					$this->description = ($lastFailure['class'] === null || $lastFailure['method'] === null ? '' : trim($lastFailure['class']) . '::' . trim($lastFailure['method']) . '()');
+
+					if ($lastFailure['fail'] !== null)
+					{
+						$this->description .= PHP_EOL . trim($lastFailure['fail']);
+					}
 					break;
 
 				case test::void:
@@ -67,7 +72,7 @@ class tap extends report\fields\event
 
 					if ($lastSkippedMethod['message'] !== null)
 					{
-						$this->description .= PHP_EOL . $lastSkippedMethod['message'];
+						$this->description .= PHP_EOL . trim($lastSkippedMethod['message']);
 					}
 					break;
 			}
