@@ -2,7 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-148
+150
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -22,7 +22,7 @@ function atoum#run(file, bang, args)
 		let g:atoum#_ = _
 		let g:atoum#cursorline = &cursorline
 		let bufnr = bufnr('%')
-		let winnr = bufwinnr('^' . _ . '$')
+		let winnr = bufwinnr('^' . fnameescape(_) . '$')
 
 		execute  winnr < 0 ? 'new ' . fnameescape(_) : winnr . 'wincmd w'
 
@@ -31,7 +31,7 @@ function atoum#run(file, bang, args)
 
 		%d _
 
-		let message = 'Execute ' . _ . '...'
+		let message = 'Execute ' . _ . ' ' . a:args . '…'
 
 		call append(0, message)
 
@@ -79,6 +79,8 @@ function atoum#run(file, bang, args)
 		endif
 
 		call atoum#highlightStatusLine()
+
+		echo ''
 	endif
 endfunction
 "defineConfiguration {{{1
