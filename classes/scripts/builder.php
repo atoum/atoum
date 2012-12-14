@@ -309,7 +309,7 @@ class builder extends atoum\script\configurable
 
 			try
 			{
-				$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+				$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
 
 				if ($php === false)
 				{
@@ -447,7 +447,7 @@ class builder extends atoum\script\configurable
 								;
 							}
 
-							$php = $this->adapter->invoke('proc_open', array($command, $descriptors, & $pipes));
+							$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
 
 							if ($php === false)
 							{
