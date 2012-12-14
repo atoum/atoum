@@ -2,7 +2,11 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
+<<<<<<< HEAD
 153
+=======
+150
+>>>>>>> Improve vim plugin.
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
