@@ -359,7 +359,7 @@ class runner implements observable
 				2 => array('pipe', 'w'),
 			);
 
-			$php = @$this->adapter->invoke('proc_open', array(escapeshellarg($phpPath) . ' --version', $descriptors, & $pipes));
+			$php = @call_user_func_array(array($this->adapter, 'proc_open'), array(escapeshellarg($phpPath) . ' --version', $descriptors, & $pipes));
 
 			if ($php === false)
 			{

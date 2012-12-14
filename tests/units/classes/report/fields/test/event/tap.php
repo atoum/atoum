@@ -83,13 +83,13 @@ class tap extends atoum\test
 		;
 	}
 
-	public function test__toString()
+	public function test__toStringWithFailures()
 	{
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
 			->and($this->calling($score)->getFailAssertions[1] = array(
-					array(
+					$failure1 = array(
 						'case' => null,
 						'dataSetKey' => null,
 						'class' => $class = uniqid(),
@@ -97,12 +97,13 @@ class tap extends atoum\test
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
-						'fail' => $fail1 = uniqid()
+						'fail' => null
 					)
 				)
 			)
 			->and($this->calling($score)->getFailAssertions[2] = array(
-					array(
+					$failure1,
+					$failure2 = array(
 						'case' => null,
 						'dataSetKey' => null,
 						'class' => $class = uniqid(),
@@ -115,7 +116,9 @@ class tap extends atoum\test
 				)
 			)
 			->and($this->calling($score)->getFailAssertions[3] = array(
-					array(
+					$failure1,
+					$failure2,
+					$failure3 = array(
 						'case' => null,
 						'dataSetKey' => null,
 						'class' => $class = uniqid(),
@@ -123,12 +126,15 @@ class tap extends atoum\test
 						'file' => $file = uniqid(),
 						'line' => $line = uniqid(),
 						'asserter' => $asserter = uniqid(),
-						'fail' => $fail3 = uniqid()
+						'fail' => ($fail3 = uniqid()) . PHP_EOL . ($otherFail3 = uniqid()) . PHP_EOL . ($anotherFail3 = uniqid()) . PHP_EOL
 					)
 				)
 			)
 			->and($this->calling($score)->getFailAssertions[4] = array(
-					array(
+					$failure1,
+					$failure2,
+					$failure3,
+					$failure4 = array(
 						'case' => null,
 						'dataSetKey' => null,
 						'class' => $class = uniqid(),
@@ -150,18 +156,18 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $fail1 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1' . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 - ' . $fail2 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 4 - ' . $fail4 . PHP_EOL)
-			/*
-			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->if($score->getMockController()->resetCalls())
+			->and($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::fail, $test))
@@ -169,14 +175,154 @@ class tap extends atoum\test
 				->castToString($field)->isEqualTo('not ok 1' . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $fail2 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 3' . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 3 - ' . $fail3 . PHP_EOL . '# ' . $otherFail3 . PHP_EOL . '# ' . $anotherFail3 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::fail, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 4' . PHP_EOL)
-			*/
+				->castToString($field)->isEqualTo('not ok 4 - ' . $fail4 . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithVoid()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($this->calling($score)->getVoidMethods[1] = array(
+					$void1 = array(
+						'class' => $class1 = uniqid(),
+						'method' => $method1 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getVoidMethods[2] = array(
+					$void1,
+					$void2 = array(
+						'class' => $class2 = uniqid(),
+						'method' => $method2 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getVoidMethods[3] = array(
+					$void1,
+					$void2,
+					array(
+						'class' => null,
+						'method' => null
+					)
+				)
+			)
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL)
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 3 # TODO' . PHP_EOL)
+			->if($score->getMockController()->resetCalls())
+			->and($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL)
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL)
+			->if($field->handleEvent(atoum\test::void, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 3 # TODO' . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithSkip()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($this->calling($score)->getSkippedMethods[1] = array(
+					$skip1 = array(
+						'class' => $class1 = uniqid(),
+						'method' => $method1 = uniqid(),
+						'message' => $message1 = uniqid()
+					)
+				)
+			)
+			->and($this->calling($score)->getSkippedMethods[2] = array(
+					$skip1,
+					$skip2 = array(
+						'class' => $class2 = uniqid(),
+						'method' => $method2 = uniqid(),
+						'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
+					)
+				)
+			)
+			->and($this->calling($score)->getSkippedMethods[3] = array(
+					$skip1,
+					$skip2,
+					array(
+						'class' => null,
+						'method' => null,
+						'message' => null
+					)
+				)
+			)
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
+					'# ' . $message1 . PHP_EOL
+				)
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
+					'# ' . $message2 . PHP_EOL .
+					'# ' . $otherMessage2 . PHP_EOL .
+					'# ' . $anotherMessage2 .
+					PHP_EOL
+				)
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 3 # SKIP' . PHP_EOL)
+			->if($score->getMockController()->resetCalls())
+			->and($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
+					'# ' . $message1 . PHP_EOL
+				)
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
+					'# ' . $message2 . PHP_EOL .
+					'# ' . $otherMessage2 . PHP_EOL .
+					'# ' . $anotherMessage2 .
+					PHP_EOL
+				)
+			->if($field->handleEvent(atoum\test::skipped, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 3 # SKIP' . PHP_EOL)
 		;
 	}
 }
