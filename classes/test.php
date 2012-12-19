@@ -253,6 +253,11 @@ abstract class test implements observable, \countable
 		$this->assertionManager
 			->setHandler('calling', $mockControllerExtractor)
 			->setHandler('ƒ', $mockControllerExtractor)
+			->setHandler('resetMock', function(mock\aggregator $mock) { return $mock->getMockController()->resetCalls(); })
+		;
+
+		$this->assertionManager
+			->setHandler('resetAdapter', function(test\adapter $adapter) { return $adapter->resetCalls(); })
 		;
 
 		$asserterGenerator = $this->asserterGenerator;

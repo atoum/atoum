@@ -674,5 +674,49 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getDataProviders())->isEqualTo(array('testMethod1' => 'aDataProvider'))
 			;
 		}
+
+		public function testCalling()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($mock = new \mock\foo())
+				->and($test->calling($mock)->bar = $value = uniqid())
+				->then
+					->string($mock->bar())->isEqualTo($value)
+				->and($test->ƒ($mock)->bar = $otherValue = uniqid())
+				->then
+					->string($mock->bar())->isEqualTo($otherValue)
+			;
+		}
+
+		public function testResetMock()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($mock = new \mock\foo())
+				->then
+					->object($test->resetMock($mock))->isIdenticalTo($mock->getMockController())
+					->array($mock->getMockController()->getCalls())->isEmpty()
+				->if($mock->bar())
+				->then
+					->object($test->resetMock($mock))->isIdenticalTo($mock->getMockController())
+					->array($mock->getMockController()->getCalls())->isEmpty()
+			;
+		}
+
+		public function testResetAdapter()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($adapter = new atoum\test\adapter())
+				->then
+					->object($test->resetAdapter($adapter))->isIdenticalTo($adapter)
+					->array($adapter->getCalls())->isEmpty()
+				->if($adapter->md5(uniqid()))
+				->then
+					->object($test->resetAdapter($adapter))->isIdenticalTo($adapter)
+					->array($adapter->getCalls())->isEmpty()
+			;
+		}
 	}
 }
