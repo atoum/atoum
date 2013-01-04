@@ -4,8 +4,9 @@ namespace mageekguy\atoum\tests\units\reports\asynchronous;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
-	ageekguy\atoum\asserter\exception,
+	mageekguy\atoum\asserter\exception,
 	mageekguy\atoum\reports\asynchronous as reports
 ;
 
@@ -61,6 +62,44 @@ class xunit extends atoum\test
 			->then
 				->when(function() use ($report, $writer) { $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner()); })
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
+		;
+	}
+
+	public function testBuild()
+	{
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->extension_loaded = true)
+			->and($runner = new atoum\runner())
+			->and($score = new runner\score())
+			->and($report = new reports\xunit($adapter))
+			->and($runner->setScore($score))
+			->and($path = join(
+				DIRECTORY_SEPARATOR,
+				array(
+					__DIR__,
+					'xunit',
+					'resources'
+				)
+			))
+			->and($score->addDuration($file = 'file', $class = 'class', $method = 'method', $duration = 1))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '1.xml')))
+			->if($score->addFail($otherFile = 'otherFile', $otherClass = 'otherClass', $otherMethod = 'otherMethod', 1, $asserter = 'asserter', $reason = 'reason'))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '2.xml')))
+			->if($exception = new \mock\Exception())
+			->and($exception->getMockController()->__toString = $trace = 'trace')
+			->and($score->addException($otherFile, $otherClass, $thirdMethod = 'thirdMethod', 1, $exception))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '3.xml')))
+			->if($score->addError($thirdFile = 'thirdFile', $thirdClassFqn = 'package\\thirdClass', $fourthMethod = 'fourthMethod', rand(0, PHP_INT_MAX), $type = E_ERROR, $message = 'message'))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '4.xml')))
 		;
 	}
 }
