@@ -17,7 +17,7 @@ class configurator
 
 			foreach ($arguments as $argument)
 			{
-				$this->methods[preg_replace('/-(.)/e', 'ucfirst(\'\1\')', ltrim($argument, '-'))] = $argument;
+				$this->methods[preg_replace_callback('/-(.)/', function($matches) { return ucfirst($matches[1]); }, ltrim($argument, '-'))] = $argument;
 			}
 		}
 	}
