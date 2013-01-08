@@ -895,6 +895,14 @@ abstract class test implements observable, \countable
 		return true;
 	}
 
+	public function setUp() {}
+
+	public function beforeTestMethod($testMethod) {}
+
+	public function afterTestMethod($testMethod) {}
+
+	public function tearDown() {}
+
 	public static function setNamespace($namespace)
 	{
 		self::$namespace = self::cleanNamespace($namespace);
@@ -919,14 +927,6 @@ abstract class test implements observable, \countable
 	{
 		return self::$defaultEngine ?: self::defaultEngine;
 	}
-
-	protected function setUp() {}
-
-	protected function beforeTestMethod($testMethod) {}
-
-	protected function afterTestMethod($testMethod) {}
-
-	protected function tearDown() {}
 
 	protected function setClassAnnotations(annotations\extractor $extractor)
 	{
