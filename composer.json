@@ -32,13 +32,12 @@
 	"require":
 	{
 		"php": ">=5.3.3",
-        "ext-hash": "*",
-        "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-posix": "*",
-        "ext-session": "*",
-        "ext-tokenizer": "*",
-        "ext-xml": "*"
+		"ext-hash": "*",
+		"ext-json": "*",
+		"ext-posix": "*",
+		"ext-session": "*",
+		"ext-tokenizer": "*",
+		"ext-xml": "*"
 	},
 	"replace": {
         "mageekguy/atoum": "*"
