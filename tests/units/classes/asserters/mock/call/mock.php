@@ -18,6 +18,11 @@ class dummy
 
 class mock extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\php\call');
+	}
+
 	public function test__construct()
 	{
 		$this
@@ -57,6 +62,20 @@ class mock extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownMethod . '() does not exist')
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->if($call = new call\mock(
+					new asserters\mock(new asserter\generator()),
+					$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
+					$function = uniqid()
+				)
+			)
+			->then
+				->castToString($call)->isEqualTo(get_class($mockAggregator) . '::' . $function . '()')
 		;
 	}
 

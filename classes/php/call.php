@@ -12,7 +12,7 @@ class call
 
 	public function __construct($function, array $arguments = null, $object = null)
 	{
-		$this->function = $function;
+		$this->function = (string) $function;
 		$this->arguments = $arguments;
 		$this->object = $object;
 
