@@ -17,7 +17,7 @@ class configurator
 
 			foreach ($arguments as $argument)
 			{
-				$this->methods[preg_replace('/-(.)/', '$1', ltrim($argument, '-'))] = $argument;
+				$this->methods[strtolower(str_replace('-', '', $argument))] = $argument;
 			}
 		}
 	}
