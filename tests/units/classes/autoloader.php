@@ -126,6 +126,17 @@ class autoloader extends atoum\test
 						$otherNamespace => array($otherDirectory)
 					)
 				)
+				->object($autoloader->addDirectory($mixedCaseNamespace = 'a\MiXED\CASE\NameSPACE', $mixedCaseDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
+				->array($autoloader->getDirectories())->isEqualTo(array(
+						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
+						$namespace . '\\' => array(
+							$directory . DIRECTORY_SEPARATOR,
+							$secondDirectory
+						),
+						$otherNamespace => array($otherDirectory),
+						strtolower($mixedCaseNamespace) . '\\' => array($mixedCaseDirectory)
+					)
+				)
 		;
 	}
 }

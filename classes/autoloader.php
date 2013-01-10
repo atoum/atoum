@@ -65,8 +65,9 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
-		$namespace = trim($namespace, '\\') . '\\';
+		$namespace = strtolower(trim($namespace, '\\') . '\\');
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
 		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
 			$this->directories[$namespace][] = $directory;
@@ -108,6 +109,8 @@ class autoloader
 
 	public function getPath($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->directories as $namespace => $directories)
 		{
 			if ($class !== $namespace)
