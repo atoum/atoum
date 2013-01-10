@@ -65,9 +65,11 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
+		$namespace = trim($namespace, '\\') . '\\';
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
-			$this->directories[trim($namespace, '\\') . '\\'][] = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+			$this->directories[$namespace][] = $directory;
 
 			krsort($this->directories, \SORT_STRING);
 		}

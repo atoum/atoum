@@ -109,6 +109,13 @@ class autoloader extends atoum\test
 						$otherNamespace => array($otherDirectory)
 					)
 				)
+				->object($autoloader->addDirectory($otherNamespace, rtrim($otherDirectory, DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
+				->array($autoloader->getDirectories())->isEqualTo(array(
+						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
+						$namespace . '\\' => array($directory . DIRECTORY_SEPARATOR),
+						$otherNamespace => array($otherDirectory)
+					)
+				)
 				->object($autoloader->addDirectory($namespace, $secondDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
 				->array($autoloader->getDirectories())->isEqualTo(array(
 						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
