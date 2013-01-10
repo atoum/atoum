@@ -109,15 +109,15 @@ class autoloader
 
 	public function getPath($class)
 	{
-		$class = strtolower($class);
+		$caseInsentiveClass = strtolower($class);
 
 		foreach ($this->directories as $namespace => $directories)
 		{
-			if ($class !== $namespace)
+			if ($caseInsentiveClass !== $namespace)
 			{
 				$namespaceLength = strlen($namespace);
 
-				if (substr($class, 0, $namespaceLength) == $namespace)
+				if (substr($caseInsentiveClass, 0, $namespaceLength) == $namespace)
 				{
 					$classFile = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, $namespaceLength)) . '.php';
 
