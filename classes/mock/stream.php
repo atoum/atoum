@@ -36,14 +36,14 @@ class stream
 					throw new logic('Argument 0 is not set for function ' . $method . '()');
 				}
 
-				$stream = self::setDirectorySeparator($arguments[0]);
+				$stream = static::setDirectorySeparator($arguments[0]);
 
-				if (isset(self::$streams[$stream]) === false)
+				if (isset(static::$streams[$stream]) === false)
 				{
 					throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
 				}
 
-				$this->streamController = self::$streams[$stream];
+				$this->streamController = static::$streams[$stream];
 				break;
 		}
 
@@ -52,24 +52,24 @@ class stream
 
 	public static function getAdapter()
 	{
-		return (self::$adapter = self::$adapter ?: new adapter());
+		return (static::$adapter = static::$adapter ?: new adapter());
 	}
 
 	public static function setAdapter(adapter $adapter)
 	{
-		self::$adapter = $adapter;
+		static::$adapter = $adapter;
 	}
 
 	public static function get($stream = null)
 	{
-		$stream = self::setDirectorySeparator($stream ?: uniqid());
+		$stream = static::setDirectorySeparator($stream ?: uniqid());
 
-		$adapter = self::getAdapter();
+		$adapter = static::getAdapter();
 
-		if (($protocol = self::getProtocol($stream)) === null)
+		if (($protocol = static::getProtocol($stream)) === null)
 		{
-			$protocol = self::defaultProtocol;
-			$stream = $protocol . self::protocolSeparator . $stream;
+			$protocol = static::defaultProtocol;
+			$stream = $protocol . static::protocolSeparator . $stream;
 		}
 
 		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
@@ -77,24 +77,24 @@ class stream
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
-		if (isset(self::$streams[$stream]) === false)
+		if (isset(static::$streams[$stream]) === false)
 		{
-			self::$streams[$stream] = new stream\controller($stream);
+			static::$streams[$stream] = new stream\controller($stream);
 		}
 
-		return self::$streams[$stream];
+		return static::$streams[$stream];
 	}
 
 	public static function getSubStream(stream\controller $controller, $stream = null)
 	{
-		return static::get($controller . DIRECTORY_SEPARATOR . self::setDirectorySeparator($stream ?: uniqid()));
+		return static::get($controller . DIRECTORY_SEPARATOR . static::setDirectorySeparator($stream ?: uniqid()));
 	}
 
 	public static function getProtocol($stream)
 	{
 		$scheme = null;
 
-		$schemeSeparator = strpos($stream, self::protocolSeparator);
+		$schemeSeparator = strpos($stream, static::protocolSeparator);
 
 		if ($schemeSeparator !== false)
 		{
