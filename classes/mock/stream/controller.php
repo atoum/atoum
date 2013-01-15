@@ -32,7 +32,7 @@ class controller extends test\adapter
 
 	public function __set($method, $value)
 	{
-		switch ($method)
+		switch (strtolower($method))
 		{
 			case 'file_get_contents':
 				if ($value === false)
@@ -114,6 +114,8 @@ class controller extends test\adapter
 
 	protected static function mapMethod($method)
 	{
+		$method = strtolower($method);
+
 		switch ($method)
 		{
 			case 'mkdir':

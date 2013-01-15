@@ -33,7 +33,7 @@ class stream
 			case 'url_stat':
 				if (isset($arguments[0]) === false)
 				{
-					throw new logic('Argument 0 is not set for function ' . $method . '()');
+					throw new logic('Argument 0 is undefined for function ' . $method . '()');
 				}
 
 				$stream = static::setDirectorySeparator($arguments[0]);
@@ -72,14 +72,14 @@ class stream
 			$stream = $protocol . static::protocolSeparator . $stream;
 		}
 
-		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__) === false)
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__, 0) === false)
 		{
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
 		if (isset(static::$streams[$stream]) === false)
 		{
-			static::$streams[$stream] = new stream\controller($stream);
+			static::$streams[$stream] = static::getController($stream);
 		}
 
 		return static::$streams[$stream];
@@ -118,5 +118,10 @@ class stream
 		}
 
 		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
+	}
+
+	protected static function getController($stream)
+	{
+		return new stream\controller($stream);
 	}
 }
