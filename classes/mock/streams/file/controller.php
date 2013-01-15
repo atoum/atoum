@@ -17,4 +17,24 @@ class controller extends stream\controller
 	{
 		return parent::__set('fopen', true);
 	}
+
+	public function canNotBeRead()
+	{
+		return parent::__set('stat', array('mode' => 32768));
+	}
+
+	public function canBeRead()
+	{
+		return parent::__set('stat', array('mode' => 33188));
+	}
+
+	public function canNotBeWrited()
+	{
+		return parent::__set('stat', array('uid' => getmyuid(), 'mode' => 33060));
+	}
+
+	public function canBeWrited()
+	{
+		return parent::__set('stat', array('uid' => getmyuid(), 'mode' => 33188));
+	}
 }

@@ -65,4 +65,46 @@ class file extends atoum\test
 				->variable(@fopen($file, 'r'))->isNotFalse()
 		;
 	}
+
+	public function testCanNotBeRead()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->object($file->canNotBeRead())->isIdenticalTo($file)
+				->boolean(is_readable($file))->isFalse()
+		;
+	}
+
+	public function testCanBeRead()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($file->canNotBeRead())
+			->then
+				->object($file->canBeRead())->isIdenticalTo($file)
+				->boolean(is_readable($file))->isTrue()
+		;
+	}
+
+	public function testCanNotBeWrited()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->object($file->canNotBeWrited())->isIdenticalTo($file)
+				->boolean(is_writable($file))->isFalse()
+		;
+	}
+
+	public function testCanBeWrited()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($file->canNotBeWrited())
+			->then
+				->object($file->canBeWrited())->isIdenticalTo($file)
+				->boolean(is_writable($file))->isTrue()
+		;
+	}
 }
