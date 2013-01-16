@@ -28,18 +28,18 @@ class file extends atoum\test
 				->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)
 				->boolean(is_readable($file))->isTrue()
 				->boolean(is_writable($file))->isFalse()
-				->boolean(rename($file, stream::defaultProtocol . '://' . uniqid()))->isTrue()
+				->boolean(rename($file, testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->boolean(fclose($fileResource))->isTrue()
 				->boolean(unlink($file))->isTrue()
 			->if($file = testedClass::get($path = uniqid()))
 			->then
 				->object($file)->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->castToString($file)->isEqualTo(stream::defaultProtocol . '://' . $path)
+				->castToString($file)->isEqualTo(testedClass::defaultProtocol . '://' . $path)
 				->string(file_get_contents($file))->isEmpty()
 				->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)
 				->boolean(is_readable($file))->isTrue()
 				->boolean(is_writable($file))->isFalse()
-				->boolean(rename($file, stream::defaultProtocol . '://' . uniqid()))->isTrue()
+				->boolean(rename($file, testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->boolean(fclose($fileResource))->isTrue()
 				->boolean(unlink($file))->isTrue()
 		;
@@ -105,6 +105,22 @@ class file extends atoum\test
 			->then
 				->object($file->canBeWrited())->isIdenticalTo($file)
 				->boolean(is_writable($file))->isTrue()
+		;
+	}
+
+	public function testContains()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($file->contains($data = 'abcdefghijklmnopqrstuvwxyz'))
+			->and($resource = fopen($file, 'r'))
+			->then
+				->string(fread($resource, 1))->isEqualTo('a')
+				->string(fread($resource, 1))->isEqualTo('b')
+				->string(fread($resource, 2))->isEqualTo('cd')
+				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->string(fread($resource, 1))->isEmpty()
+				->string(file_get_contents($file))->isEqualTo($data)
 		;
 	}
 }

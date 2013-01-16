@@ -16,6 +16,54 @@ class controller extends atoum\test
 		$this->testedClass->extends('mageekguy\atoum\mock\stream\controller');
 	}
 
+	public function test__construct()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->string($controller->getContents())->isEmpty()
+				->integer($controller->getPointer())->isZero()
+				->string($controller->getMode())->isEqualTo('644')
+		;
+	}
+
+	public function testLinkContentsTo()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($otherController = new testedClass(uniqid()))
+			->then
+				->object($controller->linkContentsTo($otherController))->isIdenticalTo($controller)
+				->string($controller->getContents())->isEqualTo($otherController->getContents())
+			->if($controller->contains($data = uniqid()))
+			->then
+				->string($controller->getContents())
+					->isEqualTo($data)
+					->isEqualTo($otherController->getContents())
+			->if($controller->contains($otherData = uniqid()))
+			->then
+				->string($controller->getContents())
+					->isEqualTo($otherData)
+					->isEqualTo($otherController->getContents())
+		;
+	}
+
+	public function testLinkModeTo()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($otherController = new testedClass(uniqid()))
+			->then
+				->object($controller->linkModeTo($otherController))->isIdenticalTo($controller)
+				->string($controller->getMode())->isEqualTo($otherController->getMode())
+			->if($controller->canNotBeRead())
+			->then
+				->string($controller->getMode())
+					->isEqualTo('000')
+					->isEqualTo($otherController->getMode())
+		;
+	}
+
 	public function testCanNotBeOpened()
 	{
 		$this
@@ -47,7 +95,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canNotBeRead())->isIdenticalTo($controller)
-				->array($controller->invoke('stat'))->isEqualTo(array('mode' => 32768))
+				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100000))
 		;
 	}
 
@@ -57,7 +105,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canBeRead())->isIdenticalTo($controller)
-				->array($controller->invoke('stat'))->isEqualTo(array('mode' => 33188))
+				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
@@ -67,7 +115,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canNotBeWrited())->isIdenticalTo($controller)
-				->array($controller->invoke('stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 33060))
+				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
@@ -78,8 +126,21 @@ class controller extends atoum\test
 			->and($controller->canNotBeWrited())
 			->then
 				->object($controller->canBeWrited())->isIdenticalTo($controller)
-				->array($controller->invoke('stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 33188))
+				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100644))
 		;
 	}
 
+	public function testContains()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->object($controller->contains('abcdefghijklmnopqrstuvwxyz'))->isIdenticalTo($controller)
+				->string($controller->invoke('stream_read', array(1)))->isEqualTo('a')
+				->string($controller->invoke('stream_read', array(1)))->isEqualTo('b')
+				->string($controller->invoke('stream_read', array(2)))->isEqualTo('cd')
+				->string($controller->invoke('stream_read', array(8192)))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->string($controller->invoke('stream_read', array(1)))->isEmpty()
+		;
+	}
 }

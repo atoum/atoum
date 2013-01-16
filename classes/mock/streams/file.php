@@ -8,19 +8,24 @@ use
 
 class file extends stream
 {
-	public static function get($stream = null)
+	const defaultProtocol = 'atoumfile';
+
+	protected function setControllerForMethod($method, array $arguments)
 	{
-		$file = parent::get($stream);
+		parent::setControllerForMethod($method, $arguments);
 
-		$file->stat = array('mode' => 33188);
-		$file->fopen = true;
-		$file->fread[1] = '';
-		$file->fread[2] = false;
-		$file->fclose = true;
-		$file->rename = true;
-		$file->unlink = true;
+		if (strtolower($method) === 'stream_open')
+		{
+			$stream = static::getStreamFromArguments($arguments);
 
-		return $file;
+			$this->streamController
+				->resetPointer()
+				->linkModeTo($stream)
+				->linkContentsTo($stream)
+			;
+		}
+
+		return $this;
 	}
 
 	protected static function getController($stream)

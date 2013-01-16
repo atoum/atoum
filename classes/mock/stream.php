@@ -19,35 +19,9 @@ class stream
 	protected static $streams = array();
 	protected static $protocols = array();
 
-	public function __call($method, $arguments)
+	public function __call($method, array $arguments)
 	{
-		switch ($method)
-		{
-			case 'dir_opendir':
-			case 'mkdir':
-			case 'rename':
-			case 'rmdir':
-			case 'stream_metadata':
-			case 'stream_open':
-			case 'unlink':
-			case 'url_stat':
-				if (isset($arguments[0]) === false)
-				{
-					throw new logic('Argument 0 is undefined for function ' . $method . '()');
-				}
-
-				$stream = static::setDirectorySeparator($arguments[0]);
-
-				if (isset(static::$streams[$stream]) === false)
-				{
-					throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
-				}
-
-				$this->streamController = static::$streams[$stream];
-				break;
-		}
-
-		return $this->streamController->invoke($method, $arguments);
+		return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
 	}
 
 	public static function getAdapter()
@@ -72,7 +46,7 @@ class stream
 			$stream = $protocol . static::protocolSeparator . $stream;
 		}
 
-		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, __CLASS__, 0) === false)
+		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, get_called_class(), 0) === false)
 		{
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
@@ -118,6 +92,44 @@ class stream
 		}
 
 		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
+	}
+
+	protected function setControllerForMethod($method, array $arguments)
+	{
+		switch (strtolower($method))
+		{
+			case 'dir_opendir':
+			case 'mkdir':
+			case 'rename':
+			case 'rmdir':
+			case 'stream_metadata':
+			case 'stream_open':
+			case 'unlink':
+			case 'url_stat':
+				$streamController = static::getStreamFromArguments($arguments);
+				$this->streamController = clone $streamController;
+				$this->streamController->linkCallsTo($streamController);
+				break;
+		}
+
+		return $this;
+	}
+
+	protected static function getStreamFromArguments(array $arguments)
+	{
+		if (isset($arguments[0]) === false)
+		{
+			throw new logic('Argument 0 is undefined for function ' . $method . '()');
+		}
+
+		$stream = static::setDirectorySeparator($arguments[0]);
+
+		if (isset(static::$streams[$stream]) === false)
+		{
+			throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
+		}
+
+		return static::$streams[$stream];
 	}
 
 	protected static function getController($stream)
