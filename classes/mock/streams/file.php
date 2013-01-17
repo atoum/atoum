@@ -19,9 +19,9 @@ class file extends stream
 			$stream = static::getStreamFromArguments($arguments);
 
 			$this->streamController
-				->resetPointer()
 				->linkModeTo($stream)
 				->linkContentsTo($stream)
+				->linkLockTo($stream)
 			;
 		}
 

@@ -165,6 +165,10 @@ class controller extends test\adapter
 			case 'stream_flush':
 				return 'stream_flush';
 
+			case 'ftruncate':
+			case 'stream_truncate':
+				return 'stream_truncate';
+
 			case 'flock':
 			case 'stream_lock':
 				return 'stream_lock';

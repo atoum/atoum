@@ -24,6 +24,7 @@ class controller extends atoum\test
 				->string($controller->getContents())->isEmpty()
 				->integer($controller->getPointer())->isZero()
 				->string($controller->getMode())->isEqualTo('644')
+				->boolean($controller->stream_eof())->isFalse()
 		;
 	}
 
@@ -64,6 +65,22 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testLinkLockTo()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($otherController = new testedClass(uniqid()))
+			->then
+				->object($controller->linkLockTo($otherController))->isIdenticalTo($controller)
+				->variable($controller->getLock())->isEqualTo($otherController->getLock())
+			->if($controller->stream_lock(LOCK_EX))
+			->then
+				->integer($controller->getLock())
+					->isEqualTo(LOCK_EX)
+					->isEqualTo($otherController->getLock())
+		;
+	}
+
 	public function testCanNotBeOpened()
 	{
 		$this
@@ -72,7 +89,7 @@ class controller extends atoum\test
 				->object($controller->canNotBeOpened())->isIdenticalTo($controller)
 				->object($controller->fopen)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
 				->object($controller->FOPEN)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->boolean($controller->invoke('fopen', array('r')))->isFalse()
+				->boolean($controller->fopen('r'))->isFalse()
 		;
 	}
 
@@ -85,7 +102,7 @@ class controller extends atoum\test
 				->object($controller->canBeOpened())->isIdenticalTo($controller)
 				->object($controller->fopen)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
 				->object($controller->FOPEN)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->variable($controller->invoke('fopen', array('r')))->isNotFalse()
+				->variable($controller->fopen('r'))->isNotFalse()
 		;
 	}
 
@@ -95,7 +112,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canNotBeRead())->isIdenticalTo($controller)
-				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100000))
+				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100000))
 		;
 	}
 
@@ -105,7 +122,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canBeRead())->isIdenticalTo($controller)
-				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
+				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
@@ -115,7 +132,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->canNotBeWrited())->isIdenticalTo($controller)
-				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
+				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
@@ -126,7 +143,7 @@ class controller extends atoum\test
 			->and($controller->canNotBeWrited())
 			->then
 				->object($controller->canBeWrited())->isIdenticalTo($controller)
-				->array($controller->invoke('url_stat'))->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100644))
+				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100644))
 		;
 	}
 
@@ -136,11 +153,71 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->contains('abcdefghijklmnopqrstuvwxyz'))->isIdenticalTo($controller)
-				->string($controller->invoke('stream_read', array(1)))->isEqualTo('a')
-				->string($controller->invoke('stream_read', array(1)))->isEqualTo('b')
-				->string($controller->invoke('stream_read', array(2)))->isEqualTo('cd')
-				->string($controller->invoke('stream_read', array(8192)))->isEqualTo('efghijklmnopqrstuvwxyz')
-				->string($controller->invoke('stream_read', array(1)))->isEmpty()
+				->string($controller->stream_read(1))->isEqualTo('a')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(1))->isEqualTo('b')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(2))->isEqualTo('cd')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(4096))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->boolean($controller->stream_eof())->isTrue()
+				->string($controller->stream_read(1))->isEmpty()
+		;
+	}
+
+	public function testIsEmpty()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->object($controller->isEmpty())->isIdenticalTo($controller)
+				->string($controller->getContents())->isEmpty()
+		;
+	}
+
+	public function testSeek()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->seek(0))->isFalse()
+				->boolean($controller->seek(1))->isFalse()
+			->if($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->boolean($controller->seek(0))->isTrue()
+				->boolean($controller->seek(1))->isTrue()
+				->string($controller->read(1))->isEqualTo('b')
+				->boolean($controller->seek(25))->isTrue()
+				->string($controller->read(1))->isEqualTo('z')
+				->boolean($controller->seek(26))->isFalse()
+				->string($controller->read(1))->isEmpty()
+				->boolean($controller->seek(0))->isTrue()
+				->string($controller->read(1))->isEqualTo('a')
+				->boolean($controller->seek(-1, SEEK_END))->isTrue()
+				->string($controller->read(1))->isEqualTo('z')
+				->boolean($controller->seek(-26, SEEK_END))->isTrue()
+				->string($controller->read(1))->isEqualTo('a')
+				->boolean($controller->seek(-27, SEEK_END))->isFalse()
+				->string($controller->read(1))->isEmpty()
+		;
+	}
+
+	public function testEof()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->eof())->isFalse()
+			->if($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->boolean($controller->eof())->isFalse()
+			->if($controller->seek(26))
+			->then
+				->boolean($controller->eof())->isFalse()
+			->if($controller->seek(27))
+			->then
+				->boolean($controller->eof())->isTrue()
 		;
 	}
 }

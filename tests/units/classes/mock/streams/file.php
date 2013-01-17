@@ -45,70 +45,46 @@ class file extends atoum\test
 		;
 	}
 
-	public function testCanNotBeOpened()
-	{
-		$this
-			->if($file = testedClass::get())
-			->then
-				->object($file->canNotBeOpened())->isIdenticalTo($file)
-				->boolean(@fopen($file, 'r'))->isFalse()
-		;
-	}
-
-	public function testCanBeOpened()
+	public function testFopen()
 	{
 		$this
 			->if($file = testedClass::get())
 			->and($file->canNotBeOpened())
 			->then
-				->object($file->canBeOpened())->isIdenticalTo($file)
+				->boolean(@fopen($file, 'r'))->isFalse()
+			->if($file->canBeOpened())
+			->then
 				->variable(@fopen($file, 'r'))->isNotFalse()
 		;
 	}
 
-	public function testCanNotBeRead()
-	{
-		$this
-			->if($file = testedClass::get())
-			->then
-				->object($file->canNotBeRead())->isIdenticalTo($file)
-				->boolean(is_readable($file))->isFalse()
-		;
-	}
-
-	public function testCanBeRead()
+	public function testIsReadable()
 	{
 		$this
 			->if($file = testedClass::get())
 			->and($file->canNotBeRead())
 			->then
-				->object($file->canBeRead())->isIdenticalTo($file)
+				->boolean(is_readable($file))->isFalse()
+			->if($file->canBeRead())
+			->then
 				->boolean(is_readable($file))->isTrue()
 		;
 	}
 
-	public function testCanNotBeWrited()
-	{
-		$this
-			->if($file = testedClass::get())
-			->then
-				->object($file->canNotBeWrited())->isIdenticalTo($file)
-				->boolean(is_writable($file))->isFalse()
-		;
-	}
-
-	public function testCanBeWrited()
+	public function testIsWritable()
 	{
 		$this
 			->if($file = testedClass::get())
 			->and($file->canNotBeWrited())
 			->then
-				->object($file->canBeWrited())->isIdenticalTo($file)
+				->boolean(is_writable($file))->isFalse()
+			->if($file->canBeWrited())
+			->then
 				->boolean(is_writable($file))->isTrue()
 		;
 	}
 
-	public function testContains()
+	public function testFreadAndFileGetContents()
 	{
 		$this
 			->if($file = testedClass::get())
@@ -118,9 +94,66 @@ class file extends atoum\test
 				->string(fread($resource, 1))->isEqualTo('a')
 				->string(fread($resource, 1))->isEqualTo('b')
 				->string(fread($resource, 2))->isEqualTo('cd')
+				->string(fread($resource, 4096))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->string(fread($resource, 1))->isEmpty()
+				->string(file_get_contents($file))->isEqualTo($data)
+				->string(fread($resource, 1))->isEmpty()
+			->if(fseek($resource, 0))
+			->then
+				->string(fread($resource, 1))->isEqualTo('a')
+				->string(fread($resource, 1))->isEqualTo('b')
+				->string(fread($resource, 2))->isEqualTo('cd')
 				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz')
 				->string(fread($resource, 1))->isEmpty()
 				->string(file_get_contents($file))->isEqualTo($data)
+				->string(fread($resource, 1))->isEmpty()
+			->if($file->isEmpty())
+			->and($resource = fopen($file, 'r'))
+			->then
+				->string(fread($resource, 1))->isEmpty()
+				->string(fread($resource, 1))->isEmpty()
+				->string(fread($resource, 2))->isEmpty()
+				->string(fread($resource, 8192))->isEmpty()
+				->string(fread($resource, 1))->isEmpty()
+				->string(file_get_contents($file))->isEmpty()
+				->string(fread($resource, 1))->isEmpty()
+		;
+	}
+
+	public function testFeof()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($resource = fopen($file, 'r'))
+			->then
+				->boolean(feof($resource))->isFalse()
+			->if(fread($resource, 1))
+			->then
+				->boolean(feof($resource))->isTrue()
+			->if($file->contains('abcdefghijklmnopqrstuvwxyz'))
+			->and($resource = fopen($file, 'r'))
+			->then
+				->boolean(feof($resource))->isFalse()
+			->if(fread($resource, 1))
+			->then
+				->boolean(feof($resource))->isFalse()
+			->if(fread($resource, 4096))
+			->then
+				->boolean(feof($resource))->isTrue()
+		;
+	}
+
+	public function testFlock()
+	{
+		$this
+			->if($file = testedClass::get($file = uniqid()))
+			->and($resource = fopen($file, 'w'))
+			->then
+				->boolean(flock($resource, LOCK_EX))->isTrue()
+			->if($otherResource = fopen($file, 'w'))
+			->then
+				->boolean(flock($resource, LOCK_EX))->isFalse()
+				->boolean(flock($otherResource, LOCK_EX))->isFalse()
 		;
 	}
 }
