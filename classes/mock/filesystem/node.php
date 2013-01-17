@@ -32,14 +32,6 @@ abstract class node
 
 		$node = $this;
 
-		$returnParentHandler = function() use ($node) { return $node->getParent(); };
-
-		$this->assertionManager
-			->setHandler('parent', $returnParentHandler)
-			->setHandler('end', $returnParentHandler)
-			->setHandler('close', $returnParentHandler)
-		;
-
 		$returnNameHandler = function() use ($node) { return $node->getName(); };
 
 		$this->assertionManager
@@ -79,9 +71,11 @@ abstract class node
 		return $this->name;
 	}
 
-	public function referencedBy(& $reference)
+	public function create(& $reference = null)
 	{
-		return $reference = $this;
+		$reference = $this;
+
+		return $this->getParent();
 	}
 
 	public function __call($method, array $arguments = array())

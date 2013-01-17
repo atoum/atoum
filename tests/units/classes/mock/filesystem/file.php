@@ -3,12 +3,11 @@ namespace mageekguy\atoum\tests\units\mock\filesystem;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\mock\filesystem\file as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
-
-use mageekguy\atoum\mock\stream;
 
 class file extends atoum\test
 {
@@ -97,33 +96,17 @@ class file extends atoum\test
 		;
 	}
 
-	public function testEnd()
-	{
-		$this
-			->if($object = new testedClass())
-			->then
-				->variable($object->end())->isNull()
-				->variable($object->close())->isNull()
-				->variable($object->parent())->isNull()
-			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
-			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new testedClass(uniqid(), $node))
-			->then
-				->object($object->end())->isIdenticalTo($node)
-				->object($object->close())->isIdenticalTo($node)
-				->object($object->parent())->isIdenticalTo($node)
-		;
-	}
-
-	public function testReferencedBy()
+	public function testCreate()
 	{
 		$this
 			->if($object = new testedClass())
 			->and($reference = null)
 			->then
-				->object($object->referencedBy($reference))->isIdenticalTo($object)
+				->variable($object->create($reference))->isNull()
 				->object($reference)->isIdenticalTo($object)
+			->if($object = new testedClass(uniqid(), $parent = new testedClass()))
+			->then
+				->object($object->create())->isIdenticalTo($parent)
 		;
 	}
 

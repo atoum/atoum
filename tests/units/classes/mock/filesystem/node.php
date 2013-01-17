@@ -73,29 +73,17 @@ class node extends atoum\test
 		;
 	}
 
-	public function testEnd()
-	{
-		$this
-			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
-			->then
-				->variable($object->end())->isNull()
-			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
-			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new \mock\mageekguy\atoum\mock\filesystem\node(uniqid(), $node))
-			->then
-				->object($object->end())->isIdenticalTo($node)
-		;
-	}
-
-	public function testReferencedBy()
+	public function testCreate()
 	{
 		$this
 			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node())
 			->and($reference = null)
 			->then
-				->object($object->referencedBy($reference))->isIdenticalTo($object)
+				->variable($object->create($reference))->isNull()
 				->object($reference)->isIdenticalTo($object)
+			->if($object = new \mock\mageekguy\atoum\mock\filesystem\node(uniqid(), $parent = new \mock\mageekguy\atoum\mock\filesystem\node()))
+			->then
+				->object($object->create($reference))->isIdenticalTo($parent)
 		;
 	}
 

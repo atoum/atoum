@@ -79,21 +79,6 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testEnd()
-	{
-		$this
-			->if($object = new testedClass())
-			->then
-				->variable($object->end())->isNull()
-			->if($this->mockGenerator->shunt('__construct'))
-			->and($node = new \mock\mageekguy\atoum\mock\filesystem\node())
-			->and($node->getMockController()->getStream = stream::get())
-			->and($object = new testedClass(uniqid(), $node))
-			->then
-				->object($object->end())->isIdenticalTo($node)
-		;
-	}
-
 	public function testGetNewDirectory()
 	{
 		$this
@@ -139,14 +124,17 @@ class directory extends atoum\test
 		;
 	}
 
-	public function testReferencedBy()
+	public function testCreate()
 	{
 		$this
 			->if($object = new testedClass())
 			->and($reference = null)
 			->then
-				->object($object->referencedBy($reference))->isIdenticalTo($object)
+				->variable($object->create($reference))->isNull()
 				->object($reference)->isIdenticalTo($object)
+			->if($object = new testedClass(uniqid(), $parent = new testedClass()))
+			->then
+				->object($object->create())->isIdenticalTo($parent)
 		;
 	}
 

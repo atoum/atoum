@@ -41,10 +41,8 @@ class directory extends atoum\test
 		$this
 			->if($directory = null)
 			->mockFilesystem()
-				->directory()
-					->referencedBy($directory)
-				->end()
-			->end()
+				->directory()->create($directory)
+			->create()
 			->and($asserter = new asserters\directory($generator = new asserter\generator()))
 			->then
 				->object($asserter->setWith((string) $directory))->isIdenticalTo($asserter)
