@@ -77,7 +77,7 @@ class controller extends stream\controller
 		};
 
 		$this->rename = function($from, $to) use (& $self) {
-			return $this->setStream($to);
+			return $self->setStream($to);
 		};
 
 		$this->setMode('644');
