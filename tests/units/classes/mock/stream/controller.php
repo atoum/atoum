@@ -54,21 +54,6 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testGetBasename()
-	{
-		$this
-			->if($streamController = new testedClass($basename = uniqid()))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new testedClass(uniqid() . '://' . ($basename = uniqid())))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new testedClass(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
-		;
-	}
-
 	public function test__toString()
 	{
 		$this
@@ -699,6 +684,31 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testSetStream()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($streamController->setStream($newName = uniqid()))->isIdenticalTo($streamController)
+				->string($streamController->getStream())->isEqualTo($newName)
+		;
+	}
+
+	public function testGetBasename()
+	{
+		$this
+			->if($streamController = new testedClass($basename = uniqid()))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+			->if($streamController = new testedClass(uniqid() . '://' . ($basename = uniqid())))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+			->if($streamController = new testedClass(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+		;
+	}
+
 	public function testInvoke()
 	{
 		$this
@@ -755,6 +765,20 @@ class controller extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
+		;
+	}
+
+	public function testLinkStreamTo()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->and($otherStreamController = new testedClass(uniqid()))
+			->then
+				->object($streamController->linkStreamTo($otherStreamController))->isIdenticalTo($streamController)
+				->string($streamController->getStream())->isEqualTo($otherStreamController->getStream())
+			->if($streamController->setStream(uniqid()))
+			->then
+				->string($streamController->getStream())->isEqualTo($otherStreamController->getStream())
 		;
 	}
 }

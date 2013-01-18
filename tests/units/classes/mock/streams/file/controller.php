@@ -219,4 +219,14 @@ class controller extends atoum\test
 				->integer($controller->tell())->isEqualTo($offset)
 		;
 	}
+
+	public function testSetStream()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->setStream($newName = uniqid()))->isTrue()
+				->string($controller->getStream())->isEqualTo($newName)
+		;
+	}
 }

@@ -34,16 +34,16 @@ class stream
 		static::$adapter = $adapter;
 	}
 
-	public static function get($stream = null)
+	public static function get($name = null)
 	{
-		$stream = static::setDirectorySeparator($stream ?: uniqid());
+		$name = static::setDirectorySeparator($name ?: uniqid());
 
 		$adapter = static::getAdapter();
 
-		if (($protocol = static::getProtocol($stream)) === null)
+		if (($protocol = static::getProtocol($name)) === null)
 		{
 			$protocol = static::defaultProtocol;
-			$stream = $protocol . static::protocolSeparator . $stream;
+			$name = $protocol . static::protocolSeparator . $name;
 		}
 
 		if (in_array($protocol, $adapter->stream_get_wrappers()) === false && $adapter->stream_wrapper_register($protocol, get_called_class(), 0) === false)
@@ -51,12 +51,14 @@ class stream
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
-		if (isset(static::$streams[$stream]) === false)
+		$stream = static::findStream($name);
+
+		if ($stream === null)
 		{
-			static::$streams[$stream] = static::getController($stream);
+			static::$streams[] = $stream = static::getController($name);
 		}
 
-		return static::$streams[$stream];
+		return $stream;
 	}
 
 	public static function getSubStream(stream\controller $controller, $stream = null)
@@ -109,7 +111,10 @@ class stream
 			case 'stat':
 				$streamController = static::getStreamFromArguments($arguments);
 				$this->streamController = clone $streamController;
-				$this->streamController->linkCallsTo($streamController);
+				$this->streamController
+					->linkStreamTo($streamController)
+					->linkCallsTo($streamController)
+				;
 				break;
 		}
 
@@ -123,18 +128,31 @@ class stream
 			throw new logic('Argument 0 is undefined for function ' . $method . '()');
 		}
 
-		$stream = static::setDirectorySeparator($arguments[0]);
+		$stream = static::findStream(static::setDirectorySeparator($arguments[0]));
 
-		if (isset(static::$streams[$stream]) === false)
+		if ($stream === null)
 		{
 			throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
 		}
 
-		return static::$streams[$stream];
+		return $stream;
 	}
 
 	protected static function getController($stream)
 	{
 		return new stream\controller($stream);
+	}
+
+	protected static function findStream($name)
+	{
+		foreach (static::$streams as $stream)
+		{
+			if ($stream->getStream() === $name)
+			{
+				return $stream;
+			}
+		}
+
+		return null;
 	}
 }

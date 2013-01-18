@@ -85,9 +85,23 @@ class controller extends test\adapter
 		return parent::__isset(self::mapMethod($method));
 	}
 
-	public function linkCallsTo(controller $controller)
+	public function linkStreamTo(self $controller)
+	{
+		$this->stream = & $controller->stream;
+
+		return $this;
+	}
+
+	public function linkCallsTo(self $controller)
 	{
 		$this->calls = & $controller->calls;
+
+		return $this;
+	}
+
+	public function setStream($stream)
+	{
+		$this->stream = $stream;
 
 		return $this;
 	}

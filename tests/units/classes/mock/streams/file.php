@@ -75,6 +75,24 @@ class file extends atoum\test
 		;
 	}
 
+	public function testFileOwner()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->integer(fileowner($file))->isEqualTo(getmyuid())
+		;
+	}
+
+	public function testFileGroup()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->integer(filegroup($file))->isEqualTo(getmygid())
+		;
+	}
+
 	public function testIsFile()
 	{
 		$this
@@ -211,7 +229,7 @@ class file extends atoum\test
 	public function testFlock()
 	{
 		$this
-			->if($file = testedClass::get($file = uniqid()))
+			->if($file = testedClass::get(uniqid()))
 			->and($resource = fopen($file, 'w'))
 			->then
 				->boolean(flock($resource, LOCK_EX))->isTrue()
@@ -225,7 +243,7 @@ class file extends atoum\test
 	public function testFtell()
 	{
 		$this
-			->if($file = testedClass::get($file = uniqid()))
+			->if($file = testedClass::get(uniqid()))
 			->and($resource = fopen($file, 'w'))
 			->then
 				->integer(ftell($resource))->isZero()
@@ -239,7 +257,7 @@ class file extends atoum\test
 	public function testFseek()
 	{
 		$this
-			->if($file = testedClass::get($file = uniqid()))
+			->if($file = testedClass::get(uniqid()))
 			->and($resource = fopen($file, 'w'))
 			->then
 				->integer(fseek($resource, 4096))->isZero()
@@ -249,7 +267,7 @@ class file extends atoum\test
 	public function testFtruncate()
 	{
 		$this
-			->if($file = testedClass::get($file = uniqid()))
+			->if($file = testedClass::get(uniqid()))
 			->and($resource = fopen($file, 'w'))
 			->then
 				->boolean(ftruncate($resource, 0))->isTrue()
@@ -262,6 +280,16 @@ class file extends atoum\test
 				->string(file_get_contents($file))->isEqualTo('abcd' . "\0\0\0\0")
 				->boolean(ftruncate($resource, 0))->isTrue()
 				->string(file_get_contents($file))->isEmpty()
+		;
+	}
+
+	public function testRename()
+	{
+		$this
+			->if($file = testedClass::get('bar'))
+			->dump((string) $file)
+			->then
+				->boolean(rename($file, $newName = testedClass::defaultProtocol . '://foo'))->isTrue()
 		;
 	}
 }

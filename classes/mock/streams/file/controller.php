@@ -36,7 +36,6 @@ class controller extends stream\controller
 		$self = & $this;
 
 		$this->stream_close = true;
-		$this->rename = true;
 		$this->unlink = true;
 
 		$this->stream_open = function($path , $mode , $options , & $opened_path) use (& $self) {
@@ -77,6 +76,10 @@ class controller extends stream\controller
 			return true;
 		};
 
+		$this->rename = function($from, $to) use (& $self) {
+			return $this->setStream($to);
+		};
+
 		$this->setMode('644');
 	}
 
@@ -114,6 +117,7 @@ class controller extends stream\controller
 	public function setContents($contents)
 	{
 		$this->contents = $contents;
+		$this->stats['size'] = ($contents == '' ? 0 : strlen($contents) + 1);
 
 		return true;
 	}
@@ -235,8 +239,7 @@ class controller extends stream\controller
 
 	public function contains($contents)
 	{
-		$this->contents = $contents;
-		$this->stats['size'] = ($contents == '' ? 0 : strlen($contents) + 1);
+		$this->setContents($contents);
 		$this->pointer = 0;
 
 		return $this;
@@ -245,5 +248,12 @@ class controller extends stream\controller
 	public function isEmpty()
 	{
 		return $this->contains('');
+	}
+
+	public function setStream($stream)
+	{
+		parent::setStream($stream);
+
+		return true;
 	}
 }
