@@ -27,7 +27,7 @@ class file extends atoum\test
 				->string(file_get_contents($file))->isEmpty()
 				->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)
 				->boolean(is_readable($file))->isTrue()
-				->boolean(is_writable($file))->isFalse()
+				->boolean(is_writable($file))->isTrue()
 				->boolean(rename($file, testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->boolean(fclose($fileResource))->isTrue()
 				->boolean(unlink($file))->isTrue()
@@ -38,23 +38,76 @@ class file extends atoum\test
 				->string(file_get_contents($file))->isEmpty()
 				->variable($fileResource = fopen($file, 'r'))->isNotEqualTo(false)
 				->boolean(is_readable($file))->isTrue()
-				->boolean(is_writable($file))->isFalse()
+				->boolean(is_writable($file))->isTrue()
 				->boolean(rename($file, testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->boolean(fclose($fileResource))->isTrue()
 				->boolean(unlink($file))->isTrue()
 		;
 	}
 
-	public function testFopen()
+	public function testFileSize()
 	{
 		$this
 			->if($file = testedClass::get())
-			->and($file->canNotBeOpened())
 			->then
-				->boolean(@fopen($file, 'r'))->isFalse()
-			->if($file->canBeOpened())
+				->integer(filesize($file))->isEqualTo(0)
+			->if($file->contains('abcdefghijklmnopqrstuvwxyz'))
 			->then
-				->variable(@fopen($file, 'r'))->isNotFalse()
+				->integer(filesize($file))->isEqualTo(27)
+		;
+	}
+
+	public function testFilePerms()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->integer(fileperms($file))->isEqualTo(0100644)
+		;
+	}
+
+	public function testFileType()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->string(filetype($file))->isEqualTo('file')
+		;
+	}
+
+	public function testIsFile()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->boolean(is_file($file))->isTrue()
+		;
+	}
+
+	public function testIsDir()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->boolean(is_dir($file))->isFalse()
+		;
+	}
+
+	public function testIsLink()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->boolean(is_link($file))->isFalse()
+		;
+	}
+
+	public function testFileExists()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->boolean(file_exists($file))->isTrue()
 		;
 	}
 
@@ -84,6 +137,19 @@ class file extends atoum\test
 		;
 	}
 
+	public function testFopen()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($file->canNotBeOpened())
+			->then
+				->boolean(@fopen($file, 'r'))->isFalse()
+			->if($file->canBeOpened())
+			->then
+				->variable(@fopen($file, 'r'))->isNotFalse()
+		;
+	}
+
 	public function testFreadAndFileGetContents()
 	{
 		$this
@@ -103,9 +169,8 @@ class file extends atoum\test
 				->string(fread($resource, 1))->isEqualTo('a')
 				->string(fread($resource, 1))->isEqualTo('b')
 				->string(fread($resource, 2))->isEqualTo('cd')
-				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz')
-				->string(fread($resource, 1))->isEmpty()
 				->string(file_get_contents($file))->isEqualTo($data)
+				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz')
 				->string(fread($resource, 1))->isEmpty()
 			->if($file->isEmpty())
 			->and($resource = fopen($file, 'r'))
@@ -150,10 +215,53 @@ class file extends atoum\test
 			->and($resource = fopen($file, 'w'))
 			->then
 				->boolean(flock($resource, LOCK_EX))->isTrue()
-			->if($otherResource = fopen($file, 'w'))
+				->boolean(flock($resource, LOCK_EX|LOCK_NB))->isTrue()
+				->boolean(flock($resource, LOCK_SH))->isTrue()
+				->boolean(flock($resource, LOCK_SH|LOCK_NB))->isTrue()
+				->boolean(flock($resource, LOCK_UN))->isTrue()
+		;
+	}
+
+	public function testFtell()
+	{
+		$this
+			->if($file = testedClass::get($file = uniqid()))
+			->and($resource = fopen($file, 'w'))
 			->then
-				->boolean(flock($resource, LOCK_EX))->isFalse()
-				->boolean(flock($otherResource, LOCK_EX))->isFalse()
+				->integer(ftell($resource))->isZero()
+			->if(fseek($resource, $offset = rand(1, 4096)))
+			->then
+				->integer(ftell($resource))->isEqualTo($offset)
+				->boolean(feof($resource))->isFalse()
+		;
+	}
+
+	public function testFseek()
+	{
+		$this
+			->if($file = testedClass::get($file = uniqid()))
+			->and($resource = fopen($file, 'w'))
+			->then
+				->integer(fseek($resource, 4096))->isZero()
+		;
+	}
+
+	public function testFtruncate()
+	{
+		$this
+			->if($file = testedClass::get($file = uniqid()))
+			->and($resource = fopen($file, 'w'))
+			->then
+				->boolean(ftruncate($resource, 0))->isTrue()
+				->string(file_get_contents($file))->isEmpty()
+			->if($file->contains($data = 'abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->boolean(ftruncate($resource, 4))->isTrue()
+				->string(file_get_contents($file))->isEqualTo('abcd')
+				->boolean(ftruncate($resource, 8))->isTrue()
+				->string(file_get_contents($file))->isEqualTo('abcd' . "\0\0\0\0")
+				->boolean(ftruncate($resource, 0))->isTrue()
+				->string(file_get_contents($file))->isEmpty()
 		;
 	}
 }

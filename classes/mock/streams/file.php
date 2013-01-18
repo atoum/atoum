@@ -14,15 +14,15 @@ class file extends stream
 	{
 		parent::setControllerForMethod($method, $arguments);
 
-		if (strtolower($method) === 'stream_open')
+		switch (strtolower($method))
 		{
-			$stream = static::getStreamFromArguments($arguments);
+			case 'stream_open':
+				$stream = static::getStreamFromArguments($arguments);
 
-			$this->streamController
-				->linkModeTo($stream)
-				->linkContentsTo($stream)
-				->linkLockTo($stream)
-			;
+				$this->streamController
+					->linkStatsTo($stream)
+					->linkContentsTo($stream)
+				;
 		}
 
 		return $this;

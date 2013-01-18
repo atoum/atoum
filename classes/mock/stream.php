@@ -106,6 +106,7 @@ class stream
 			case 'stream_open':
 			case 'unlink':
 			case 'url_stat':
+			case 'stat':
 				$streamController = static::getStreamFromArguments($arguments);
 				$this->streamController = clone $streamController;
 				$this->streamController->linkCallsTo($streamController);

@@ -8,22 +8,33 @@ use
 
 class controller extends stream\controller
 {
-	const defaultMode = 33188;
-
+	protected $eof = false;
 	protected $pointer = 0;
 	protected $contents = '';
-	protected $mode = 0;
-	protected $lock = null;
+	protected $stats = array();
 
 	public function __construct($stream)
 	{
 		parent::__construct($stream);
 
+		$this->stats = array(
+			'dev' => 0,
+			'ino' => 0,
+			'mode' => 0,
+			'nlink' => 0,
+			'uid' => getmyuid(),
+			'gid' => getmygid(),
+			'rdev' => 0,
+			'size' => 0,
+			'atime' => time(),
+			'mtime' => time(),
+			'ctime' => time(),
+			'blksize' => 0,
+			'blocks' => 0
+		);
+
 		$self = & $this;
 
-		$this->mode = static::defaultMode;
-
-		$this->url_stat = array('mode' => $this->mode);
 		$this->stream_close = true;
 		$this->rename = true;
 		$this->unlink = true;
@@ -32,6 +43,18 @@ class controller extends stream\controller
 			$self->seek(0);
 
 			return true;
+		};
+
+		$this->stat = function() use (& $self) {
+			return $self->stat();
+		};
+
+		$this->url_stat = function($path, $flags) use (& $self) {
+			return $self->stat();
+		};
+
+		$this->stream_tell = function() use (& $self) {
+			return $self->tell();
 		};
 
 		$this->stream_read = function($length) use (& $self) {
@@ -51,25 +74,36 @@ class controller extends stream\controller
 		};
 
 		$this->stream_lock = function($operation) use (& $self) {
-			return $self->lock($operation);
+			return true;
 		};
+
+		$this->setMode('644');
+	}
+
+	public function linkContentsTo(self $controller)
+	{
+		$this->contents = & $controller->contents;
+
+		return $this;
+	}
+
+	public function linkStatsTo(self $controller)
+	{
+		$this->stats = & $controller->stats;
+
+		return $this;
 	}
 
 	public function setMode($mode)
 	{
-		$this->mode = 0100000 | octdec($mode);
+		$this->stats['mode'] = 0100000 | octdec($mode);
 
-		return parent::__set('url_stat', array('uid' => getmyuid(), 'mode' => $this->mode));
+		return $this;
 	}
 
 	public function getMode()
 	{
-		return sprintf('%03o', $this->mode & 07777);
-	}
-
-	public function getLock()
-	{
-		return $this->lock;
+		return sprintf('%03o', $this->stats['mode'] & 07777);
 	}
 
 	public function getPointer()
@@ -89,42 +123,24 @@ class controller extends stream\controller
 		return $this->contents;
 	}
 
-	public function lock($lock)
-	{
-		switch ($lock)
-		{
-			case LOCK_UN:
-				$this->lock = null;
-				return true;
-
-			case LOCK_SH:
-			case LOCK_SH | LOCK_NB:
-			case LOCK_EX:
-			case LOCK_EX | LOCK_NB:
-				if ($this->lock !== null)
-				{
-					return false;
-				}
-				else
-				{
-					$this->lock = $lock;
-
-					return true;
-				}
-		}
-	}
-
 	public function read($length)
 	{
 		$data = '';
 
-		if ($this->pointer >= 0 && $this->pointer < strlen($this->contents))
+		$contentsLength = strlen($this->contents);
+
+		if ($this->pointer >= 0 && $this->pointer < $contentsLength)
 		{
 			$data = substr($this->contents, $this->pointer, $length);
-
 		}
 
 		$this->pointer += $length;
+
+		if ($this->pointer >= $contentsLength)
+		{
+			$this->eof = true;
+			$this->pointer = $contentsLength;
+		}
 
 		return $data;
 	}
@@ -142,7 +158,7 @@ class controller extends stream\controller
 			$contents = str_pad($contents, $newSize, "\0");
 		}
 
-		return $self->setContents($contents);
+		return $this->setContents($contents);
 	}
 
 	public function seek($offset, $whence = SEEK_SET)
@@ -158,35 +174,28 @@ class controller extends stream\controller
 				break;
 		}
 
-		$this->pointer = $offset;
+		$this->eof = false;
 
-		return ($this->pointer >= 0 && $this->pointer < strlen($this->contents));
+		if ($this->pointer === $offset)
+		{
+			return false;
+		}
+		else
+		{
+			$this->pointer = $offset;
+
+			return true;
+		}
+	}
+
+	public function tell()
+	{
+		return $this->pointer;
 	}
 
 	public function eof()
 	{
-		return ($this->pointer > strlen($this->contents));
-	}
-
-	public function linkContentsTo(self $controller)
-	{
-		$this->contents = & $controller->contents;
-
-		return $this;
-	}
-
-	public function linkModeTo(self $controller)
-	{
-		$this->mode = & $controller->mode;
-
-		return $this;
-	}
-
-	public function linkLockTo(self $controller)
-	{
-		$this->lock = & $controller->lock;
-
-		return $this;
+		return $this->eof;
 	}
 
 	public function canNotBeOpened()
@@ -219,9 +228,15 @@ class controller extends stream\controller
 		return $this->setMode('644');
 	}
 
+	public function stat()
+	{
+		return $this->stats;
+	}
+
 	public function contains($contents)
 	{
 		$this->contents = $contents;
+		$this->stats['size'] = ($contents == '' ? 0 : strlen($contents) + 1);
 		$this->pointer = 0;
 
 		return $this;

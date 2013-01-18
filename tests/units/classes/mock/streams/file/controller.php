@@ -55,7 +55,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->and($otherController = new testedClass(uniqid()))
 			->then
-				->object($controller->linkModeTo($otherController))->isIdenticalTo($controller)
+				->object($controller->linkStatsTo($otherController))->isIdenticalTo($controller)
 				->string($controller->getMode())->isEqualTo($otherController->getMode())
 			->if($controller->isNotReadable())
 			->then
@@ -65,19 +65,32 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testLinkLockTo()
+	public function testContains()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
-			->and($otherController = new testedClass(uniqid()))
 			->then
-				->object($controller->linkLockTo($otherController))->isIdenticalTo($controller)
-				->variable($controller->getLock())->isEqualTo($otherController->getLock())
-			->if($controller->stream_lock(LOCK_EX))
+				->object($controller->contains('abcdefghijklmnopqrstuvwxyz'))->isIdenticalTo($controller)
+				->string($controller->stream_read(1))->isEqualTo('a')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(1))->isEqualTo('b')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(2))->isEqualTo('cd')
+				->boolean($controller->stream_eof())->isFalse()
+				->string($controller->stream_read(4096))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->boolean($controller->stream_eof())->isTrue()
+				->string($controller->stream_read(1))->isEmpty()
+		;
+	}
+
+	public function testIsEmpty()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->contains('abcdefghijklmnopqrstuvwxyz'))
 			->then
-				->integer($controller->getLock())
-					->isEqualTo(LOCK_EX)
-					->isEqualTo($otherController->getLock())
+				->object($controller->isEmpty())->isIdenticalTo($controller)
+				->string($controller->getContents())->isEmpty()
 		;
 	}
 
@@ -112,7 +125,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100000))
+				->string($controller->getMode())->isEqualTo('000')
 		;
 	}
 
@@ -122,7 +135,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
+				->string($controller->getMode())->isEqualTo('444')
 		;
 	}
 
@@ -132,7 +145,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
+				->string($controller->getMode())->isEqualTo('444')
 		;
 	}
 
@@ -143,36 +156,7 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->then
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100644))
-		;
-	}
-
-	public function testContains()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->object($controller->contains('abcdefghijklmnopqrstuvwxyz'))->isIdenticalTo($controller)
-				->string($controller->stream_read(1))->isEqualTo('a')
-				->boolean($controller->stream_eof())->isFalse()
-				->string($controller->stream_read(1))->isEqualTo('b')
-				->boolean($controller->stream_eof())->isFalse()
-				->string($controller->stream_read(2))->isEqualTo('cd')
-				->boolean($controller->stream_eof())->isFalse()
-				->string($controller->stream_read(4096))->isEqualTo('efghijklmnopqrstuvwxyz')
-				->boolean($controller->stream_eof())->isTrue()
-				->string($controller->stream_read(1))->isEmpty()
-		;
-	}
-
-	public function testIsEmpty()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->and($controller->contains('abcdefghijklmnopqrstuvwxyz'))
-			->then
-				->object($controller->isEmpty())->isIdenticalTo($controller)
-				->string($controller->getContents())->isEmpty()
+				->string($controller->getMode())->isEqualTo('644')
 		;
 	}
 
@@ -182,10 +166,10 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->seek(0))->isFalse()
-				->boolean($controller->seek(1))->isFalse()
+				->boolean($controller->seek(1))->isTrue()
 			->if($controller->contains('abcdefghijklmnopqrstuvwxyz'))
 			->then
-				->boolean($controller->seek(0))->isTrue()
+				->boolean($controller->seek(0))->isFalse()
 				->boolean($controller->seek(1))->isTrue()
 				->string($controller->read(1))->isEqualTo('b')
 				->boolean($controller->seek(25))->isTrue()
@@ -198,7 +182,7 @@ class controller extends atoum\test
 				->string($controller->read(1))->isEqualTo('z')
 				->boolean($controller->seek(-26, SEEK_END))->isTrue()
 				->string($controller->read(1))->isEqualTo('a')
-				->boolean($controller->seek(-27, SEEK_END))->isFalse()
+				->boolean($controller->seek(-27, SEEK_END))->isTrue()
 				->string($controller->read(1))->isEmpty()
 		;
 	}
@@ -217,7 +201,22 @@ class controller extends atoum\test
 				->boolean($controller->eof())->isFalse()
 			->if($controller->seek(27))
 			->then
+				->boolean($controller->eof())->isFalse()
+			->if($controller->read(1))
+			->then
 				->boolean($controller->eof())->isTrue()
+		;
+	}
+
+	public function testTell()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->integer($controller->tell())->isZero()
+			->if($controller->seek($offset = rand(1, 4096)))
+			->then
+				->integer($controller->tell())->isEqualTo($offset)
 		;
 	}
 }
