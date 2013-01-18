@@ -57,7 +57,7 @@ class controller extends atoum\test
 			->then
 				->object($controller->linkModeTo($otherController))->isIdenticalTo($controller)
 				->string($controller->getMode())->isEqualTo($otherController->getMode())
-			->if($controller->canNotBeRead())
+			->if($controller->isNotReadable())
 			->then
 				->string($controller->getMode())
 					->isEqualTo('000')
@@ -106,43 +106,43 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testCanNotBeRead()
+	public function testIsNotReadable()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->object($controller->canNotBeRead())->isIdenticalTo($controller)
+				->object($controller->isNotReadable())->isIdenticalTo($controller)
 				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100000))
 		;
 	}
 
-	public function testCanRead()
+	public function testIsReadable()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->object($controller->canBeRead())->isIdenticalTo($controller)
+				->object($controller->isReadable())->isIdenticalTo($controller)
 				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
-	public function testCanNotBeWrited()
+	public function testIsNotWritable()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->object($controller->canNotBeWrited())->isIdenticalTo($controller)
+				->object($controller->isNotWritable())->isIdenticalTo($controller)
 				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100444))
 		;
 	}
 
-	public function testCanBeWrited()
+	public function testIsWritable()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
-			->and($controller->canNotBeWrited())
+			->and($controller->isNotWritable())
 			->then
-				->object($controller->canBeWrited())->isIdenticalTo($controller)
+				->object($controller->isWritable())->isIdenticalTo($controller)
 				->array($controller->url_stat())->isEqualTo(array('uid' => getmyuid(), 'mode' => 0100644))
 		;
 	}

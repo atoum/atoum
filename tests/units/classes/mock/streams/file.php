@@ -62,10 +62,10 @@ class file extends atoum\test
 	{
 		$this
 			->if($file = testedClass::get())
-			->and($file->canNotBeRead())
+			->and($file->isNotReadable())
 			->then
 				->boolean(is_readable($file))->isFalse()
-			->if($file->canBeRead())
+			->if($file->isReadable())
 			->then
 				->boolean(is_readable($file))->isTrue()
 		;
@@ -75,10 +75,10 @@ class file extends atoum\test
 	{
 		$this
 			->if($file = testedClass::get())
-			->and($file->canNotBeWrited())
+			->and($file->isNotWritable())
 			->then
 				->boolean(is_writable($file))->isFalse()
-			->if($file->canBeWrited())
+			->if($file->isWritable())
 			->then
 				->boolean(is_writable($file))->isTrue()
 		;

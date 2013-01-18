@@ -199,22 +199,22 @@ class controller extends stream\controller
 		return parent::__set('fopen', true);
 	}
 
-	public function canNotBeRead()
+	public function isNotReadable()
 	{
 		return $this->setMode('0');
 	}
 
-	public function canBeRead()
+	public function isReadable()
 	{
 		return $this->setMode('444');
 	}
 
-	public function canNotBeWrited()
+	public function isNotWritable()
 	{
 		return $this->setMode('444');
 	}
 
-	public function canBeWrited()
+	public function isWritable()
 	{
 		return $this->setMode('644');
 	}
