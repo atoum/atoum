@@ -25,6 +25,7 @@ class controller extends atoum\test
 				->integer($controller->getPointer())->isZero()
 				->string($controller->getMode())->isEqualTo('644')
 				->boolean($controller->stream_eof())->isFalse()
+				->array($controller->stat())->isNotEmpty()
 		;
 	}
 
@@ -94,6 +95,30 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testExists()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->object($controller->exists())->isIdenticalTo($controller)
+				->array($controller->stat())->isNotEmpty()
+			->if($controller->notExists())
+			->then
+				->object($controller->exists())->isIdenticalTo($controller)
+				->array($controller->stat())->isNotEmpty()
+		;
+	}
+
+	public function testNotExists()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->object($controller->notExists())->isIdenticalTo($controller)
+				->boolean($controller->stat())->isFalse()
+		;
+	}
+
 	public function testCanNotBeOpened()
 	{
 		$this
@@ -160,6 +185,36 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testIsExecutable()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->object($controller->isExecutable())->isIdenticalTo($controller)
+				->string($controller->getMode())->isEqualTo('744')
+		;
+	}
+
+	public function testIsNotExecutable()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->isExecutable())
+			->then
+				->object($controller->isNotExecutable())->isIdenticalTo($controller)
+				->string($controller->getMode())->isEqualTo('644')
+		;
+	}
+
+	public function testOpen()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->open('r', array()))->isTrue()
+		;
+	}
+
 	public function testSeek()
 	{
 		$this
@@ -217,6 +272,16 @@ class controller extends atoum\test
 			->if($controller->seek($offset = rand(1, 4096)))
 			->then
 				->integer($controller->tell())->isEqualTo($offset)
+		;
+	}
+
+	public function testMetadata()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->metadata(STREAM_META_ACCESS, 755))->isTrue()
+				->string($controller->getMode())->isEqualTo('755')
 		;
 	}
 

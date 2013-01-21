@@ -66,6 +66,17 @@ class file extends atoum\test
 		;
 	}
 
+	public function testChmod()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and(chmod($file, 755))
+			->then
+				->dump($file->getMode())
+				->integer(fileperms($file))->isEqualTo(0100755)
+		;
+	}
+
 	public function testFileType()
 	{
 		$this
@@ -99,6 +110,9 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->then
 				->boolean(is_file($file))->isTrue()
+			->if($file->notExists())
+			->then
+				->boolean(is_file($file))->isFalse()
 		;
 	}
 
@@ -152,6 +166,15 @@ class file extends atoum\test
 			->if($file->isWritable())
 			->then
 				->boolean(is_writable($file))->isTrue()
+		;
+	}
+
+	public function testIsExecutable()
+	{
+		$this
+			->if($file = testedClass::get())
+			->then
+				->boolean(is_executable($file))->isFalse()
 		;
 	}
 
@@ -288,13 +311,26 @@ class file extends atoum\test
 		;
 	}
 
+	public function testFwriteAndFilePutContents()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($resource = fopen($file, 'r'))
+			->then
+				->integer(fwrite($resource, 'a'))->isZero()
+			->if($resource = fopen($file, 'w'))
+			->then
+				->integer(fwrite($resource, 'a'))->isEqualTo(1)
+				->string(file_get_contents($file))->isEqualTo('a')
+		;
+	}
+
 	public function testRename()
 	{
 		$this
-			->if($file = testedClass::get('bar'))
-			->dump((string) $file)
+			->if($file = testedClass::get(uniqid()))
 			->then
-				->boolean(rename($file, $newName = testedClass::defaultProtocol . '://foo'))->isTrue()
+				->boolean(rename($file, $newName = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 		;
 	}
 }
