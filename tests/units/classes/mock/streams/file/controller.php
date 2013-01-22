@@ -512,7 +512,7 @@ class controller extends atoum\test
 
 	public function testMetadata()
 	{
-		if (version_compare(phpversion(), '5.4.0', '<') === true)
+		if (PHP_VERSION_ID < 50400)
 		{
 			$this->skip('It\'s not possible to manage stream\'s metadata before PHP 5.4.0');
 		}
