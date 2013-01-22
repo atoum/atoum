@@ -119,31 +119,6 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testCanNotBeOpened()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->object($controller->canNotBeOpened())->isIdenticalTo($controller)
-				->object($controller->fopen)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->object($controller->FOPEN)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->boolean($controller->fopen('r'))->isFalse()
-		;
-	}
-
-	public function testCanBeOpened()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->and($controller->canNotBeOpened())
-			->then
-				->object($controller->canBeOpened())->isIdenticalTo($controller)
-				->object($controller->fopen)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->object($controller->FOPEN)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->variable($controller->fopen('r'))->isNotFalse()
-		;
-	}
-
 	public function testIsNotReadable()
 	{
 		$this

@@ -187,10 +187,10 @@ class file extends atoum\test
 	{
 		$this
 			->if($file = testedClass::get())
-			->and($file->canNotBeOpened())
+			->and($file->notExists())
 			->then
 				->boolean(@fopen($file, 'r'))->isFalse()
-			->if($file->canBeOpened())
+			->if($file->exists())
 			->then
 				->variable(@fopen($file, 'r'))->isNotFalse()
 		;

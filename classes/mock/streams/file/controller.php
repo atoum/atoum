@@ -383,16 +383,6 @@ class controller extends stream\controller
 		return $this;
 	}
 
-	public function canNotBeOpened()
-	{
-		return parent::__set('fopen', false);
-	}
-
-	public function canBeOpened()
-	{
-		return parent::__set('fopen', true);
-	}
-
 	public function isNotReadable()
 	{
 		return $this->removePermissions(0444);
