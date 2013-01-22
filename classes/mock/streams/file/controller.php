@@ -129,7 +129,7 @@ class controller extends stream\controller
 
 	public function getMode()
 	{
-		return sprintf('%03o', $this->stats['mode'] & 07777);
+		return (int) sprintf('%03o', $this->stats['mode'] & 07777);
 	}
 
 	public function getPointer()
@@ -156,7 +156,7 @@ class controller extends stream\controller
 
 		$reportErrors = ($options & STREAM_REPORT_ERRORS) == STREAM_REPORT_ERRORS;
 
-		if (self::checkMode($mode) === false)
+		if (self::checkOpenMode($mode) === false)
 		{
 			if ($reportErrors === true)
 			{
@@ -166,22 +166,26 @@ class controller extends stream\controller
 		{
 			$this->setOpenMode($mode);
 
-			if ($this->read === true)
+			switch (true)
 			{
-				$isOpened = $this->checkIfReadable();
+				case $this->read === true && $this->write === false:
+					$isOpened = $this->checkIfReadable();
 
-				if ($reportErrors === true && $isOpened === false)
-				{
-				}
-			}
+					if ($reportErrors === true && $isOpened === false)
+					{
+					}
+					break;
 
-			if ($this->write === true)
-			{
-				$isOpened = $this->checkIfWritable();
+				case $this->read === false && $this->write === true:
+					$isOpened = $this->checkIfWritable();
 
-				if ($reportErrors === true && $isOpened === false)
-				{
-				}
+					if ($reportErrors === true && $isOpened === false)
+					{
+					}
+					break;
+
+				default:
+					$isOpened = $this->checkIfReadable() && $this->checkIfWritable();
 			}
 
 			if ($isOpened === true)
@@ -189,11 +193,20 @@ class controller extends stream\controller
 				switch (self::getRawOpenMode($mode))
 				{
 					case 'w':
+						$this->exists = true;
 						$this->truncate(0);
 						break;
 
 					case 'r':
-						$this->seek(0);
+						$isOpened = $this->exists;
+
+						if ($reportErrors === true && $isOpened === false)
+						{
+						}
+						else
+						{
+							$this->seek(0);
+						}
 						break;
 
 					case 'c':
@@ -221,6 +234,13 @@ class controller extends stream\controller
 						break;
 				}
 			}
+		}
+
+		$openedPath = null;
+
+		if ($isOpened === true && $options & STREAM_USE_PATH)
+		{
+			$openedPath = $this->getStream();
 		}
 
 		return $isOpened;
@@ -373,32 +393,32 @@ class controller extends stream\controller
 
 	public function isNotReadable()
 	{
-		return $this->setMode('0');
+		return $this->removePermissions(0444);
 	}
 
 	public function isReadable()
 	{
-		return $this->setMode('444');
+		return $this->addPermission(0444);
 	}
 
 	public function isNotWritable()
 	{
-		return $this->setMode('444');
+		return $this->removePermissions(0222);
 	}
 
 	public function isWritable()
 	{
-		return $this->setMode('644');
-	}
-
-	public function isExecutable()
-	{
-		return $this->setMode('744');
+		return $this->addPermission(0222);
 	}
 
 	public function isNotExecutable()
 	{
-		return $this->setMode('644');
+		return $this->removePermissions(0111);
+	}
+
+	public function isExecutable()
+	{
+		return $this->addPermission(0111);
 	}
 
 	public function contains($contents)
@@ -419,6 +439,20 @@ class controller extends stream\controller
 		parent::setStream($stream);
 
 		return true;
+	}
+
+	protected function addPermission($permissions)
+	{
+		$this->stats['mode'] = $this->stats['mode'] | $permissions;
+
+		return $this;
+	}
+
+	protected function removePermissions($permissions)
+	{
+		$this->stats['mode'] = $this->stats['mode'] & ~ $permissions;
+
+		return $this;
 	}
 
 	private function setOpenMode($mode)
@@ -450,10 +484,6 @@ class controller extends stream\controller
 		return $this;
 	}
 
-	private function getPermissions()
-	{
-	}
-
 	private function checkIfReadable()
 	{
 		return $this->checkPermission(0400, 0040, 0004);
@@ -481,7 +511,12 @@ class controller extends stream\controller
 		}
 	}
 
-	private static function checkMode($mode)
+	private static function getRawOpenMode($mode)
+	{
+		return rtrim($mode, 'bt+');
+	}
+
+	private static function checkOpenMode($mode)
 	{
 		switch (self::getRawOpenMode($mode))
 		{
@@ -495,10 +530,5 @@ class controller extends stream\controller
 			default:
 				return false;
 		}
-	}
-
-	private static function getRawOpenMode($mode)
-	{
-		return rtrim($mode, 'bt+');
 	}
 }

@@ -23,7 +23,7 @@ class controller extends atoum\test
 			->then
 				->string($controller->getContents())->isEmpty()
 				->integer($controller->getPointer())->isZero()
-				->string($controller->getMode())->isEqualTo('644')
+				->integer($controller->getMode())->isEqualTo(644)
 				->boolean($controller->stream_eof())->isFalse()
 				->array($controller->stat())->isNotEmpty()
 		;
@@ -57,11 +57,11 @@ class controller extends atoum\test
 			->and($otherController = new testedClass(uniqid()))
 			->then
 				->object($controller->linkStatsTo($otherController))->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo($otherController->getMode())
+				->integer($controller->getMode())->isEqualTo($otherController->getMode())
 			->if($controller->isNotReadable())
 			->then
-				->string($controller->getMode())
-					->isEqualTo('000')
+				->integer($controller->getMode())
+					->isEqualTo(200)
 					->isEqualTo($otherController->getMode())
 		;
 	}
@@ -150,7 +150,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('000')
+				->integer($controller->getMode())->isEqualTo(200)
+				->object($controller->isNotReadable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(200)
 		;
 	}
 
@@ -160,7 +162,15 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('444')
+				->integer($controller->getMode())->isEqualTo(644)
+				->object($controller->isReadable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(644)
+			->if($controller->isNotReadable())
+			->then
+				->object($controller->isReadable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(644)
+				->object($controller->isReadable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(644)
 		;
 	}
 
@@ -170,7 +180,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('444')
+				->integer($controller->getMode())->isEqualTo(444)
+				->object($controller->isNotWritable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(444)
 		;
 	}
 
@@ -181,7 +193,9 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->then
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('644')
+				->integer($controller->getMode())->isEqualTo(666)
+				->object($controller->isWritable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(666)
 		;
 	}
 
@@ -191,7 +205,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isExecutable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('744')
+				->integer($controller->getMode())->isEqualTo(755)
+				->object($controller->isExecutable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(755)
 		;
 	}
 
@@ -202,16 +218,188 @@ class controller extends atoum\test
 			->and($controller->isExecutable())
 			->then
 				->object($controller->isNotExecutable())->isIdenticalTo($controller)
-				->string($controller->getMode())->isEqualTo('644')
+				->integer($controller->getMode())->isEqualTo(644)
+				->object($controller->isNotExecutable())->isIdenticalTo($controller)
+				->integer($controller->getMode())->isEqualTo(644)
 		;
 	}
 
 	public function testOpen()
 	{
 		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->boolean($controller->open('r', array()))->isTrue()
+			->assert('Use r and r+ mode')
+				->if($controller = new testedClass(uniqid()))
+				->then
+					->boolean($controller->open('r', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isZero()
+					->boolean($controller->open('r+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
+				->then
+					->boolean($controller->open('r', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isZero()
+					->boolean($controller->open('r+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->open('r', 0))->isFalse()
+					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isFalse()
+					->variable($path)->isNull()
+					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
+					->variable($path)->isNull()
+				->if($controller->exists())
+				->and($controller->isNotReadable())
+				->then
+					->boolean($controller->open('r', 0))->isFalse()
+					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isFalse()
+					->variable($path)->isNull()
+					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
+					->variable($path)->isNull()
+				->if($controller->isReadable())
+				->and($controller->isNotWritable())
+					->boolean($controller->open('r', 0))->isTrue()
+					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
+					->variable($path)->isNull()
+			->assert('Use w and w+ mode')
+				->if($controller = new testedClass(uniqid()))
+				->then
+					->boolean($controller->open('w', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('w+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('w', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+					->boolean($controller->open('w+', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
+				->then
+					->boolean($controller->open('w', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('w+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->isNotWritable())
+				->then
+					->boolean($controller->open('w', 0))->isFalse()
+					->boolean($controller->open('w+', 0))->isFalse()
+			->assert('Use c and c+ mode')
+				->if($controller = new testedClass(uniqid()))
+				->then
+					->boolean($controller->open('c', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('c+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('c', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+					->boolean($controller->open('c+', STREAM_USE_PATH, $path))->isTrue()
+					->string($path)->isEqualTo($controller->getStream())
+				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
+				->then
+					->boolean($controller->open('c', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('c+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->isNotWritable())
+				->then
+					->boolean($controller->open('c', 0))->isFalse()
+					->boolean($controller->open('c+', 0))->isFalse()
+			->assert('Use a and a+ mode')
+				->if($controller = new testedClass(uniqid()))
+				->then
+					->boolean($controller->open('a', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+					->boolean($controller->open('a+', 0))->isTrue()
+					->integer($controller->tell())->isEqualTo(1)
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
+				->then
+					->boolean($controller->open('a', 0))->isTrue()
+					->integer($controller->tell())->isEqualTo(26)
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->isNotWritable())
+				->then
+					->boolean($controller->open('a', 0))->isFalse()
+					->boolean($controller->open('a+', 0))->isFalse()
+				->if($controller = new testedClass(uniqid()))
+				->if($controller->isWritable())
+				->and($controller->isNotReadable())
+				->then
+					->boolean($controller->open('a', 0))->isTrue()
+					->boolean($controller->open('a+', 0))->isFalse()
+			->assert('Use x and x+ mode')
+				->if($controller = new testedClass(uniqid()))
+				->then
+					->boolean($controller->open('x', 0))->isFalse()
+					->boolean($controller->open('x+', 0))->isFalse()
+				->if($controller->notExists())
+				->then
+					->boolean($controller->open('x', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(0)
+					->boolean($controller->open('x+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEmpty()
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
+				->then
+					->boolean($controller->open('x', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(0)
+					->boolean($controller->open('x+', 0))->isTrue()
+					->integer($controller->tell())->isZero()
+					->string($controller->read(1))->isEqualTo('a')
+					->integer($controller->write('a'))->isEqualTo(1)
+				->if($controller->isNotReadable())
+				->then
+					->boolean($controller->open('x', 0))->isFalse()
+					->boolean($controller->open('x+', 0))->isFalse()
+				->if($controller->isReadable())
+				->and($controller->isNotWritable())
+				->then
+					->boolean($controller->open('x', 0))->isTrue()
+					->boolean($controller->open('x+', 0))->isFalse()
 		;
 	}
 
@@ -281,7 +469,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->metadata(STREAM_META_ACCESS, 755))->isTrue()
-				->string($controller->getMode())->isEqualTo('755')
+				->integer($controller->getMode())->isEqualTo(755)
 		;
 	}
 
