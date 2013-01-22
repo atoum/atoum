@@ -68,6 +68,11 @@ class file extends atoum\test
 
 	public function testChmod()
 	{
+		if (version_compare(phpversion(), '5.4.0', '<') === true)
+		{
+			$this->skip('It\'s not possible to use chmod() on a stream before PHP 5.4.0');
+		}
+
 		$this
 			->if($file = testedClass::get())
 			->and(chmod($file, 755))
