@@ -195,6 +195,7 @@ class controller extends stream\controller
 					case 'w':
 						$this->exists = true;
 						$this->truncate(0);
+						$this->seek(0);
 						break;
 
 					case 'r':
@@ -276,6 +277,7 @@ class controller extends stream\controller
 		{
 			$this->contents .= $data;
 			$bytesWrited = strlen($data);
+			$this->pointer += $bytesWrited;
 		}
 
 		return $bytesWrited;
@@ -425,6 +427,7 @@ class controller extends stream\controller
 	{
 		$this->setContents($contents);
 		$this->pointer = 0;
+		$this->eof = false;
 
 		return $this;
 	}

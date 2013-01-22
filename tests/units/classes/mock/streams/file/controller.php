@@ -427,6 +427,13 @@ class controller extends atoum\test
 				->string($controller->read(1))->isEqualTo('a')
 				->boolean($controller->seek(-27, SEEK_END))->isTrue()
 				->string($controller->read(1))->isEmpty()
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->and($controller->read(4096))
+			->then
+				->boolean($controller->eof())->isTrue()
+				->boolean($controller->seek(0))->isTrue()
+				->boolean($controller->eof())->isFalse()
 		;
 	}
 
@@ -463,8 +470,53 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testRead()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->string($controller->read(1))->isEmpty()
+				->boolean($controller->eof())->isTrue()
+			->if($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->string($controller->read(1))->isEqualTo('a')
+				->boolean($controller->eof())->isFalse()
+			->if($controller->seek(6))
+			->then
+				->string($controller->read(1))->isEqualTo('g')
+				->string($controller->read(4096))->isEqualTo('hijklmnopqrstuvwxyz')
+				->boolean($controller->eof())->isTrue()
+				->string($controller->read(1))->isEmpty()
+		;
+	}
+
+	public function testWrite()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->integer($controller->write('a'))->isZero()
+				->integer($controller->tell())->isZero()
+			->if($controller->open('r', 0))
+			->then
+				->integer($controller->write('a'))->isZero()
+				->integer($controller->tell())->isZero()
+			->if($controller->open('w', 0))
+			->then
+				->integer($controller->write('a'))->isEqualTo(1)
+				->integer($controller->tell())->isEqualTo(1)
+				->integer($controller->write('bcdefghijklmnopqrstuvwxyz'))->isEqualTo(25)
+				->integer($controller->tell())->isEqualTo(26)
+		;
+	}
+
 	public function testMetadata()
 	{
+		if (version_compare(phpversion(), '5.4.0', '<') === true)
+		{
+			$this->skip('It\'s not possible to manage stream\'s metadata before PHP 5.4.0');
+		}
+
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
