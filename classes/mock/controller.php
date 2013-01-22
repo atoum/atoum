@@ -116,6 +116,17 @@ class controller extends test\adapter
 				}
 			);
 
+			$parentClass = $class->getParentClass();
+
+			if ($parentClass !== false)
+			{
+				$methods = array_merge($methods, array_filter($parentClass->getMethods(\reflectionMethod::IS_PROTECTED), function ($value) {
+							return ($value->isAbstract() === true);
+						}
+					)
+				);
+			}
+
 			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
 
 			if ($this->disableMethodChecking === false)

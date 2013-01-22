@@ -194,17 +194,39 @@ class controller extends atoum\test
 
 		$bMethodController = new testedClass();
 		$bMethodController->__construct = function() {};
-		$bMethodController->getName = function() { return 'b'; };
+		$bMethodController->getName = 'b';
 		$bMethodController->getPrototype = function() { throw new \exception(); };
 
 		$methods[\reflectionMethod::IS_PUBLIC][] = new \mock\reflectionMethod('b');
 
+		$parentClassMethods = array();
+
+		$notAbstractProtectedMethodController = new testedClass();
+		$notAbstractProtectedMethodController->__construct = function() {};
+		$notAbstractProtectedMethodController->getName = 'notAbstractProtectedMethod';
+		$notAbstractProtectedMethodController->isAbstract = false;
+
+		$parentClassMethods[] = new \mock\reflectionMethod('notAbstractProtectedMethod');
+
+		$abstractProtectedMethodController = new testedClass();
+		$abstractProtectedMethodController->__construct = function() {};
+		$abstractProtectedMethodController->getName = 'abstractProtectedMethod';
+		$abstractProtectedMethodController->isAbstract = true;
+
+		$parentClassMethods[] = new \mock\reflectionMethod('abstractProtectedMethod');
+
+		$parentClassController = new testedClass();
+		$parentClassController->__construct = function() {};
+		$parentClassController->getMethods = $parentClassMethods;
+
+		$parentClass = new \mock\reflectionClass(uniqid());
+
 		$reflectionClassController = new testedClass();
 		$reflectionClassController->__construct = function() {};
 		$reflectionClassController->getMethods = function($modifier) use ($methods) { return $methods[$modifier]; };
+		$reflectionClassController->getParentClass = $parentClass;
 
 		$reflectionClass = new \mock\reflectionClass(uniqid(), $reflectionClassController);
-
 
 		$aMockController = new testedClass();
 		$aMockController->__construct = function() {};
@@ -221,7 +243,8 @@ class controller extends atoum\test
 				->string($mockController->getMockClass())->isEqualTo(get_class($aMock))
 				->array($mockController->getInvokers())->isEqualTo(array(
 						'a' => null,
-						'b' => null
+						'b' => null,
+						'abstractprotectedmethod' => null
 					)
 				)
 				->array($mockController->getCalls())->isEmpty()
