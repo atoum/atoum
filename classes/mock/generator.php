@@ -230,7 +230,22 @@ class generator
 				switch (true)
 				{
 					case $method->isProtected() && $method->isAbstract():
-						$methodCode = "\t" . 'protected function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method) . ') {}' . PHP_EOL;
+						$parameters = array();
+
+						foreach ($method->getParameters() as $parameter)
+						{
+							$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
+						}
+
+						$methodCode = "\t" . 'protected function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method) . ')' . PHP_EOL;
+						$methodCode .= "\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+						$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
+						$methodCode .= "\t\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . PHP_EOL;
+						$methodCode .= "\t\t" . '}' . PHP_EOL;
+						$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+						$methodCode .= "\t" . '}' . PHP_EOL;
 						break;
 
 					case $method->isPublic():
@@ -242,8 +257,6 @@ class generator
 						{
 							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . ($isConstructor ? '__construct' : $methodName) . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
 							$methodCode .= "\t" . '{' . PHP_EOL;
-
-							$parameters = array();
 
 							foreach ($method->getParameters() as $parameter)
 							{
