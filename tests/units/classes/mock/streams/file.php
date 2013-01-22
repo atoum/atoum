@@ -68,7 +68,7 @@ class file extends atoum\test
 
 	public function testChmod()
 	{
-		if (version_compare(phpversion(), '5.4.0', '<') === true)
+		if (PHP_VERSION_ID < 50400)
 		{
 			$this->skip('It\'s not possible to use chmod() on a stream before PHP 5.4.0');
 		}
@@ -294,7 +294,7 @@ class file extends atoum\test
 
 	public function testFtruncate()
 	{
-		if (version_compare(phpversion(), '5.4.0', '<') === true)
+		if (PHP_VERSION_ID < 50400)
 		{
 			$this->skip('It\'s not possible to truncate a stream before PHP 5.4.0, see https://bugs.php.net/bug.php?id=53888');
 		}
