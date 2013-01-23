@@ -192,16 +192,13 @@ class generator
 		return $this;
 	}
 
-	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
+	protected function getNamespace($class)
 	{
-		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
-			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
-			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
-			$this->generateClassMethodCode($class) .
-			'}' . PHP_EOL .
-			'}'
-		;
+		$class = ltrim($class, '\\');
+
+		$lastAntiSlash = strrpos($class, '\\');
+
+		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected function generateClassMethodCode(\reflectionClass $class)
@@ -211,6 +208,8 @@ class generator
 		$hasConstructor = false;
 
 		$className = $class->getName();
+
+		$mockedMethodNames = array();
 
 		foreach ($class->getMethods() as $method)
 		{
@@ -246,6 +245,8 @@ class generator
 						$methodCode .= "\t\t" . '}' . PHP_EOL;
 						$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 						$methodCode .= "\t" . '}' . PHP_EOL;
+
+						$mockedMethodNames[] = strtolower($methodName);
 						break;
 
 					case $method->isPublic():
@@ -346,6 +347,8 @@ class generator
 						}
 
 						$methodCode .= "\t" . '}' . PHP_EOL;
+
+						$mockedMethodNames[] = strtolower($methodName);
 						break;
 				}
 
@@ -356,18 +359,27 @@ class generator
 		if ($hasConstructor === false)
 		{
 			$mockedMethods .= self::generateDefaultConstructor();
+			$mockedMethodNames[] = '__construct';
 		}
+
+		$mockedMethods .= "\t" . 'public static function getMockedMethods()' . PHP_EOL;
+		$mockedMethods .= "\t" . '{' . PHP_EOL;
+		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
+		$mockedMethods .= "\t" . '}' . PHP_EOL;
 
 		return $mockedMethods;
 	}
 
-	protected function getNamespace($class)
+	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		$class = ltrim($class, '\\');
-
-		$lastAntiSlash = strrpos($class, '\\');
-
-		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
+			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
+			'{' . PHP_EOL .
+			self::generateMockControllerMethod() .
+			$this->generateClassMethodCode($class) .
+			'}' . PHP_EOL .
+			'}'
+		;
 	}
 
 	protected static function getClassName($class)
@@ -495,6 +507,10 @@ class generator
 			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .
+			"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+			"\t" . '{' . PHP_EOL .
+			"\t\t" . 'return ' . var_export(array('__call'), true) . ';' . PHP_EOL .
+			"\t" . '}' . PHP_EOL .
 			'}' . PHP_EOL .
 			'}'
 		;
@@ -504,6 +520,8 @@ class generator
 	{
 		$mockedMethods = '';
 
+		$mockedMethodNames = array();
+
 		$hasConstructor = false;
 
 		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
@@ -511,6 +529,9 @@ class generator
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
 				$methodName = $method->getName();
+
+				$mockedMethodNames[] = strtolower($methodName);
+
 				$isConstructor = $methodName === '__construct';
 
 				if ($isConstructor === true)
@@ -557,7 +578,13 @@ class generator
 		if ($hasConstructor === false)
 		{
 			$mockedMethods .= self::generateDefaultConstructor();
+			$mockedMethodNames[] = '__construct';
 		}
+
+		$mockedMethods .= "\t" . 'public static function getMockedMethods()' . PHP_EOL;
+		$mockedMethods .= "\t" . '{' . PHP_EOL;
+		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
+		$mockedMethods .= "\t" . '}' . PHP_EOL;
 
 		return $mockedMethods;
 	}

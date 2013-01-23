@@ -12,20 +12,16 @@ use
 class controller extends test\adapter
 {
 	protected $mockClass = null;
-	protected $reflectionClassFactory = null;
 
 	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 
-	public function __construct(\closure $reflectionClassFactory = null)
+	public function __construct()
 	{
 		parent::__construct();
 
-		$this
-			->setReflectionClassFactory($reflectionClassFactory)
-			->controlNextNewMock()
-		;
+		$this->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -60,18 +56,6 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	public function setReflectionClassFactory(\closure $factory = null)
-	{
-		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
-
-		return $this;
-	}
-
-	public function getReflectionClassFactory()
-	{
-		return $this->reflectionClassFactory;
-	}
-
 	public function disableMethodChecking()
 	{
 		$this->disableMethodChecking = true;
@@ -102,32 +86,7 @@ class controller extends test\adapter
 		{
 			$this->mockClass = $mockClass;
 
-			$class = call_user_func($this->reflectionClassFactory, $this->mockClass);
-
-			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
-					try
-					{
-						return ($value->getPrototype()->getName() != __NAMESPACE__ . '\aggregator');
-					}
-					catch (\exception $exception)
-					{
-						return true;
-					}
-				}
-			);
-
-			$parentClass = $class->getParentClass();
-
-			if ($parentClass !== false)
-			{
-				$methods = array_merge($methods, array_filter($parentClass->getMethods(\reflectionMethod::IS_PROTECTED), function ($value) {
-							return ($value->isAbstract() === true);
-						}
-					)
-				);
-			}
-
-			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
+			$methods = call_user_func(array($mock, 'getMockedMethods'));
 
 			if ($this->disableMethodChecking === false)
 			{
