@@ -143,11 +143,11 @@ class stream
 		return new stream\controller($stream);
 	}
 
-	protected static function findStream($name)
+	protected static function findStream($path)
 	{
 		foreach (static::$streams as $stream)
 		{
-			if ($stream->getStream() === $name)
+			if ($stream->getPath() === $path)
 			{
 				return $stream;
 			}

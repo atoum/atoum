@@ -27,7 +27,7 @@ class controller extends atoum\test
 		$this
 			->if($streamController = new testedClass($stream = uniqid()))
 			->then
-				->string($streamController->getStream())->isEqualTo($stream)
+				->string($streamController->getPath())->isEqualTo($stream)
 				->variable($streamController->invoke('__construct'))->isNull()
 				->variable($streamController->invoke('dir_closedir'))->isNull()
 				->variable($streamController->invoke('dir_opendir'))->isNull()
@@ -684,13 +684,13 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testSetStream()
+	public function testSetPath()
 	{
 		$this
 			->if($streamController = new testedClass(uniqid()))
 			->then
-				->object($streamController->setStream($newName = uniqid()))->isIdenticalTo($streamController)
-				->string($streamController->getStream())->isEqualTo($newName)
+				->object($streamController->setPath($newName = uniqid()))->isIdenticalTo($streamController)
+				->string($streamController->getPath())->isEqualTo($newName)
 		;
 	}
 
@@ -775,10 +775,10 @@ class controller extends atoum\test
 			->and($otherStreamController = new testedClass(uniqid()))
 			->then
 				->object($streamController->linkStreamTo($otherStreamController))->isIdenticalTo($streamController)
-				->string($streamController->getStream())->isEqualTo($otherStreamController->getStream())
-			->if($streamController->setStream(uniqid()))
+				->string($streamController->getPath())->isEqualTo($otherStreamController->getPath())
+			->if($streamController->setPath(uniqid()))
 			->then
-				->string($streamController->getStream())->isEqualTo($otherStreamController->getStream())
+				->string($streamController->getPath())->isEqualTo($otherStreamController->getPath())
 		;
 	}
 }

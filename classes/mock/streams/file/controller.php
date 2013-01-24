@@ -16,9 +16,9 @@ class controller extends stream\controller
 	protected $contents = '';
 	protected $stats = array();
 
-	public function __construct($stream)
+	public function __construct($path)
 	{
-		parent::__construct($stream);
+		parent::__construct($path);
 
 		$this->stats = array(
 			'dev' => 0,
@@ -100,7 +100,7 @@ class controller extends stream\controller
 		};
 
 		$this->rename = function($from, $to) use (& $self) {
-			return $self->setStream($to);
+			return $self->setPath($to);
 		};
 
 		$this->setMode('644');
@@ -243,7 +243,7 @@ class controller extends stream\controller
 
 		if ($isOpened === true && $options & STREAM_USE_PATH)
 		{
-			$openedPath = $this->getStream();
+			$openedPath = $this->getPath();
 		}
 
 		return $isOpened;
@@ -429,9 +429,9 @@ class controller extends stream\controller
 		return $this->contains('');
 	}
 
-	public function setStream($stream)
+	public function setPath($path)
 	{
-		parent::setStream($stream);
+		parent::setPath($path);
 
 		return true;
 	}

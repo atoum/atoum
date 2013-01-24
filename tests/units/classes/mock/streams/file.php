@@ -335,7 +335,7 @@ class file extends atoum\test
 		$this
 			->if($file = testedClass::get(uniqid()))
 			->then
-				->boolean(rename($file, $newName = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
+				->boolean(rename($file, $nePath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 		;
 	}
 }

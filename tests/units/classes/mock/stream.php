@@ -38,13 +38,13 @@ class stream extends test
 			->and($adapter->stream_wrapper_register = true)
 			->then
 				->object($streamController = testedClass::get($stream = uniqid()))->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->string($streamController->getStream())->isEqualTo(testedClass::defaultProtocol . '://' . testedClass::setDirectorySeparator($stream))
+				->string($streamController->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . testedClass::setDirectorySeparator($stream))
 				->adapter($adapter)
 					->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
 			->if($adapter->stream_get_wrappers = array(testedClass::defaultProtocol))
 			->then
 				->object($streamController = testedClass::get())->isInstanceOf('mageekguy\atoum\mock\stream\controller')
-				->string($streamController->getStream())->match('#^' . testedClass::defaultProtocol . '://\w+$#')
+				->string($streamController->getPath())->match('#^' . testedClass::defaultProtocol . '://\w+$#')
 				->adapter($adapter)
 					->call('stream_wrapper_register')->withArguments(testedClass::defaultProtocol, 'mageekguy\atoum\mock\stream')->once()
 				->object(testedClass::get($stream))->isIdenticalTo($streamController = testedClass::get($stream))

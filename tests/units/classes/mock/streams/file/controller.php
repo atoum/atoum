@@ -217,9 +217,9 @@ class controller extends atoum\test
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('r', 0))->isTrue()
@@ -231,9 +231,9 @@ class controller extends atoum\test
 					->string($controller->read(1))->isEqualTo('a')
 					->integer($controller->write('a'))->isEqualTo(1)
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 				->if($controller->notExists())
 				->then
 					->boolean($controller->open('r', 0))->isFalse()
@@ -267,7 +267,7 @@ class controller extends atoum\test
 					->boolean($controller->open('r+', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
 					->variable($path)->isNull()
 			->assert('Use w and w+ mode')
@@ -282,9 +282,9 @@ class controller extends atoum\test
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
 					->boolean($controller->open('w', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 					->boolean($controller->open('w+', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('w', 0))->isTrue()
@@ -315,9 +315,9 @@ class controller extends atoum\test
 					->string($controller->read(1))->isEqualTo('a')
 					->integer($controller->write('a'))->isEqualTo(1)
 					->boolean($controller->open('c', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 					->boolean($controller->open('c+', STREAM_USE_PATH, $path))->isTrue()
-					->string($path)->isEqualTo($controller->getStream())
+					->string($path)->isEqualTo($controller->getPath())
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('c', 0))->isTrue()
@@ -534,13 +534,13 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testSetStream()
+	public function testSetPath()
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->boolean($controller->setStream($newName = uniqid()))->isTrue()
-				->string($controller->getStream())->isEqualTo($newName)
+				->boolean($controller->setPath($newPath = uniqid()))->isTrue()
+				->string($controller->getPath())->isEqualTo($newPath)
 		;
 	}
 }

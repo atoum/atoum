@@ -9,18 +9,18 @@ use
 
 class controller extends test\adapter
 {
-	protected $stream = '';
+	protected $path = '';
 
-	public function __construct($stream)
+	public function __construct($path)
 	{
 		parent::__construct();
 
-		$this->stream = (string) $stream;
+		$this->path = (string) $path;
 	}
 
 	public function __toString()
 	{
-		return $this->getStream();
+		return $this->getPath();
 	}
 
 	public function __get($method)
@@ -87,7 +87,7 @@ class controller extends test\adapter
 
 	public function linkStreamTo(self $controller)
 	{
-		$this->stream = & $controller->stream;
+		$this->path = & $controller->path;
 
 		return $this;
 	}
@@ -99,21 +99,21 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	public function setStream($stream)
+	public function setPath($path)
 	{
-		$this->stream = $stream;
+		$this->path = $path;
 
 		return $this;
 	}
 
-	public function getStream()
+	public function getPath()
 	{
-		return $this->stream;
+		return $this->path;
 	}
 
 	public function getBasename()
 	{
-		return basename($this->stream);
+		return basename($this->path);
 	}
 
 	public function invoke($method, array $arguments = array())
