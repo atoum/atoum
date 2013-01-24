@@ -333,9 +333,13 @@ class file extends atoum\test
 	public function testRename()
 	{
 		$this
-			->if($file = testedClass::get(uniqid()))
+			->if($file = testedClass::get($path = uniqid()))
 			->then
-				->boolean(rename($file, $nePath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
+				->boolean(rename($file, $newPath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
+				->string($file->getPath())->isEqualTo($newPath)
+				->object($file)
+					->isIdenticalTo(testedClass::get($newPath))
+					->isNotIdenticalTo(testedClass::get($path))
 		;
 	}
 }
