@@ -342,4 +342,24 @@ class file extends atoum\test
 					->isNotIdenticalTo(testedClass::get($path))
 		;
 	}
+
+	public function testCopy()
+	{
+		$this
+			->if($file = testedClass::get($path = uniqid()))
+			->then
+				->boolean(copy($file, $newPath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
+				->string($file->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . $path)
+				->array($file->stat())->isEqualTo(testedClass::get($newPath)->stat())
+				->string($file->getContents())->isEqualTo(testedClass::get($newPath)->getContents())
+			->if($file->contains(uniqid()))
+			->then
+				->boolean(copy($file, $otherNewPath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
+				->string($file->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . $path)
+				->string($file->getContents())->isNotEqualTo(testedClass::get($newPath)->getContents())
+				->string($file->getContents())->isEqualTo(testedClass::get($otherNewPath)->getContents())
+				->array($file->stat())->isNotEqualTo(testedClass::get($newPath)->stat())
+				->array($file->stat())->isEqualTo(testedClass::get($otherNewPath)->stat())
+		;
+	}
 }

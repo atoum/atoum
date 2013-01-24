@@ -280,6 +280,7 @@ class controller extends stream\controller
 			$this->contents .= $data;
 			$bytesWrited = strlen($data);
 			$this->pointer += $bytesWrited;
+			$this->stats['size'] = ($this->contents == '' ? 0 : strlen($this->contents) + 1);
 		}
 
 		return $bytesWrited;

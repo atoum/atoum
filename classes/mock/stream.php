@@ -132,7 +132,7 @@ class stream
 
 		if ($stream === null)
 		{
-			throw new logic('Stream \'' . $arguments[0] . '\' is undefined');
+			$stream = static::get($arguments[0]);
 		}
 
 		return $stream;
