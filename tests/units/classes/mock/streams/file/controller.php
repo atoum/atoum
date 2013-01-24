@@ -205,6 +205,9 @@ class controller extends atoum\test
 			->assert('Use r and r+ mode')
 				->if($controller = new testedClass(uniqid()))
 				->then
+					->boolean($controller->open('z', 0))->isFalse()
+					->boolean($controller->open('z', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Operation timed out', E_USER_WARNING)->exists()
 					->boolean($controller->open('r', 0))->isTrue()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
@@ -235,6 +238,11 @@ class controller extends atoum\test
 				->then
 					->boolean($controller->open('r', 0))->isFalse()
 					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r', STREAM_REPORT_ERRORS))->isFalse()
+					->error('No such file or directory', E_USER_WARNING)->exists()
+					->boolean($controller->open('r+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('No such file or directory', E_USER_WARNING)->exists()
+					->boolean($controller->open('r+', 0))->isFalse()
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isFalse()
 					->variable($path)->isNull()
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
@@ -244,6 +252,10 @@ class controller extends atoum\test
 				->then
 					->boolean($controller->open('r', 0))->isFalse()
 					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
+					->boolean($controller->open('r+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isFalse()
 					->variable($path)->isNull()
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
@@ -252,6 +264,8 @@ class controller extends atoum\test
 				->and($controller->isNotWritable())
 					->boolean($controller->open('r', 0))->isTrue()
 					->boolean($controller->open('r+', 0))->isFalse()
+					->boolean($controller->open('r+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('r', STREAM_USE_PATH, $path))->isTrue()
 					->string($path)->isEqualTo($controller->getStream())
 					->boolean($controller->open('r+', STREAM_USE_PATH, $path))->isFalse()
@@ -284,7 +298,11 @@ class controller extends atoum\test
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->open('w', 0))->isFalse()
+					->boolean($controller->open('w', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('w+', 0))->isFalse()
+					->boolean($controller->open('w+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 			->assert('Use c and c+ mode')
 				->if($controller = new testedClass(uniqid()))
 				->then
@@ -313,7 +331,11 @@ class controller extends atoum\test
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->open('c', 0))->isFalse()
+					->boolean($controller->open('c', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('c+', 0))->isFalse()
+					->boolean($controller->open('c+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 			->assert('Use a and a+ mode')
 				->if($controller = new testedClass(uniqid()))
 				->then
@@ -341,11 +363,17 @@ class controller extends atoum\test
 				->then
 					->boolean($controller->open('a', 0))->isTrue()
 					->boolean($controller->open('a+', 0))->isFalse()
+					->boolean($controller->open('a+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 			->assert('Use x and x+ mode')
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('x', 0))->isFalse()
+					->boolean($controller->open('x', STREAM_REPORT_ERRORS))->isFalse()
+					->error('File exists', E_USER_WARNING)->exists()
 					->boolean($controller->open('x+', 0))->isFalse()
+					->boolean($controller->open('x+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('File exists', E_USER_WARNING)->exists()
 				->if($controller->notExists())
 				->then
 					->boolean($controller->open('x', 0))->isTrue()
@@ -369,12 +397,18 @@ class controller extends atoum\test
 				->if($controller->isNotReadable())
 				->then
 					->boolean($controller->open('x', 0))->isFalse()
+					->boolean($controller->open('x', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('x+', 0))->isFalse()
+					->boolean($controller->open('x+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 				->if($controller->isReadable())
 				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->open('x', 0))->isTrue()
 					->boolean($controller->open('x+', 0))->isFalse()
+					->boolean($controller->open('x+', STREAM_REPORT_ERRORS))->isFalse()
+					->error('Permission denied', E_USER_WARNING)->exists()
 		;
 	}
 

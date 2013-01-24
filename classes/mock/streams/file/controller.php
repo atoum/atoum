@@ -160,6 +160,7 @@ class controller extends stream\controller
 		{
 			if ($reportErrors === true)
 			{
+				trigger_error('Operation timed out', E_USER_WARNING);
 			}
 		}
 		else
@@ -170,25 +171,24 @@ class controller extends stream\controller
 			{
 				case $this->read === true && $this->write === false:
 					$isOpened = $this->checkIfReadable();
-
-					if ($reportErrors === true && $isOpened === false)
-					{
-					}
 					break;
 
 				case $this->read === false && $this->write === true:
 					$isOpened = $this->checkIfWritable();
-
-					if ($reportErrors === true && $isOpened === false)
-					{
-					}
 					break;
 
 				default:
 					$isOpened = $this->checkIfReadable() && $this->checkIfWritable();
 			}
 
-			if ($isOpened === true)
+			if ($isOpened === false)
+			{
+				if ($reportErrors === true)
+				{
+					trigger_error('Permission denied', E_USER_WARNING);
+				}
+			}
+			else
 			{
 				switch (self::getRawOpenMode($mode))
 				{
@@ -201,12 +201,13 @@ class controller extends stream\controller
 					case 'r':
 						$isOpened = $this->exists;
 
-						if ($reportErrors === true && $isOpened === false)
-						{
-						}
-						else
+						if ($isOpened === true)
 						{
 							$this->seek(0);
+						}
+						else if ($reportErrors === true)
+						{
+							trigger_error('No such file or directory', E_USER_WARNING);
 						}
 						break;
 
@@ -226,6 +227,7 @@ class controller extends stream\controller
 
 							if ($reportErrors === true)
 							{
+								trigger_error('File exists', E_USER_WARNING);
 							}
 						}
 						break;
