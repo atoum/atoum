@@ -521,17 +521,17 @@ class runner implements observable
 			{
 				$paths[] = $path;
 			}
-
-			natcasesort($paths);
-
-			foreach ($paths as $path)
-			{
-				$this->addTest($path);
-			}
 		}
 		catch (\UnexpectedValueException $exception)
 		{
 			throw new exceptions\runtime('Unable to read test directory \'' . $directory . '\'');
+		}
+
+		natcasesort($paths);
+
+		foreach ($paths as $path)
+		{
+			$this->addTest($path);
 		}
 
 		return $this;
@@ -541,21 +541,30 @@ class runner implements observable
 	{
 		try
 		{
+			$paths = array();
+
 			foreach (call_user_func($this->globIteratorFactory, rtrim($pattern, DIRECTORY_SEPARATOR)) as $path)
 			{
-				if ($path->isDir() === true)
-				{
-					$this->addTestsFromDirectory($path);
-				}
-				else
-				{
-					$this->addTest($path);
-				}
+				$paths[] = $path;
 			}
 		}
 		catch (\UnexpectedValueException $exception)
 		{
 			throw new exceptions\runtime('Unable to read test from pattern \'' . $pattern . '\'');
+		}
+
+		natcasesort($paths);
+
+		foreach ($paths as $path)
+		{
+			if ($path->isDir() === true)
+			{
+				$this->addTestsFromDirectory($path);
+			}
+			else
+			{
+				$this->addTest($path);
+			}
 		}
 
 		return $this;
