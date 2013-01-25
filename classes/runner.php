@@ -515,7 +515,16 @@ class runner implements observable
 	{
 		try
 		{
+			$paths = array();
+
 			foreach (new \recursiveIteratorIterator($this->testDirectoryIterator->getIterator($directory)) as $path)
+			{
+				$paths[] = $path;
+			}
+
+			natcasesort($paths);
+
+			foreach ($paths as $path)
 			{
 				$this->addTest($path);
 			}
