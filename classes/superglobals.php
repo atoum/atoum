@@ -44,7 +44,15 @@ class superglobals
 				return $_COOKIE;
 
 			case '_SESSION':
-				return $_SESSION;
+				if (isset($_SESSION))
+				{
+					return $_SESSION;
+				}
+				else
+				{
+					$this->superglobals[$superglobal] = array();
+					return $this->superglobals[$superglobal];
+				}
 
 			case '_REQUEST':
 				return $_REQUEST;
