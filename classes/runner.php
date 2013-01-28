@@ -557,13 +557,13 @@ class runner implements observable
 
 		foreach ($paths as $path)
 		{
-			if ($path->isDir() === true)
+			if ($path->isDir() === false)
 			{
-				$this->addTestsFromDirectory($path);
+				$this->addTest($path);
 			}
 			else
 			{
-				$this->addTest($path);
+				$this->addTestsFromDirectory($path);
 			}
 		}
 
