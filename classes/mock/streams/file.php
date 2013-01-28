@@ -8,8 +8,6 @@ use
 
 class file extends stream
 {
-	const defaultProtocol = 'atoumfile';
-
 	protected function setControllerForMethod($method, array $arguments)
 	{
 		parent::setControllerForMethod($method, $arguments);
