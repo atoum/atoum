@@ -29,9 +29,9 @@ class controller extends stream\controller
 			'gid' => getmygid(),
 			'rdev' => 0,
 			'size' => 0,
-			'atime' => time(),
-			'mtime' => time(),
-			'ctime' => time(),
+			'atime' => 507769200,
+			'mtime' => 507769200,
+			'ctime' => 507769200,
 			'blksize' => 0,
 			'blocks' => 0
 		);
@@ -53,7 +53,6 @@ class controller extends stream\controller
 		$self = & $this;
 
 		$this->stream_close = true;
-		$this->unlink = true;
 
 		$this->stream_open = function($path , $mode , $options , & $openedPath = null) use (& $self) {
 			return $self->open($mode, $options, $openedPath);
@@ -101,6 +100,10 @@ class controller extends stream\controller
 
 		$this->rename = function($from, $to) use (& $self) {
 			return $self->setPath($to);
+		};
+
+		$this->unlink = function($path) use (& $self) {
+			return $self->unlink();
 		};
 
 		$this->setMode('644');
@@ -369,6 +372,20 @@ class controller extends stream\controller
 
 			default:
 				return false;
+		}
+	}
+
+	public function unlink()
+	{
+		if ($this->exists === false || $this->checkIfWritable() === false)
+		{
+			return false;
+		}
+		else
+		{
+			$this->exists = false;
+
+			return true;
 		}
 	}
 

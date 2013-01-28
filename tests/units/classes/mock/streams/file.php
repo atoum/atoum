@@ -362,4 +362,25 @@ class file extends atoum\test
 				->array($file->stat())->isEqualTo(testedClass::get($otherNewPath)->stat())
 		;
 	}
+
+	public function testUnlink()
+	{
+		$this
+			->if($file = testedClass::get(uniqid()))
+			->then
+				->boolean(unlink($file))->isTrue()
+				->boolean(is_file($file))->isFalse()
+			->if($file = testedClass::get(uniqid()))
+			->and($file->notExists())
+			->then
+				->boolean(unlink($file))->isFalse()
+			->if($file->exists())
+			->and($file->isNotWritable())
+			->then
+				->boolean(unlink($file))->isFalse()
+			->and($file->isWritable())
+			->then
+				->boolean(unlink($file))->isTrue()
+		;
+	}
 }

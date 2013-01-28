@@ -534,6 +534,75 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testStat()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($stats = array(
+					'dev' => 0,
+					'ino' => 0,
+					'mode' => 33188,
+					'nlink' => 0,
+					'uid' => getmyuid(),
+					'gid' => getmygid(),
+					'rdev' => 0,
+					'size' => 0,
+					'atime' => 507769200,
+					'mtime' => 507769200,
+					'ctime' => 507769200,
+					'blksize' => 0,
+					'blocks' => 0,
+				)
+			)
+			->and($stats[0] = & $stats['dev'])
+			->and($stats[1] = & $stats['ino'])
+			->and($stats[2] = & $stats['mode'])
+			->and($stats[3] = & $stats['nlink'])
+			->and($stats[4] = & $stats['uid'])
+			->and($stats[5] = & $stats['gid'])
+			->and($stats[6] = & $stats['rdev'])
+			->and($stats[7] = & $stats['size'])
+			->and($stats[8] = & $stats['atime'])
+			->and($stats[9] = & $stats['mtime'])
+			->and($stats[10] = & $stats['ctime'])
+			->and($stats[11] = & $stats['blksize'])
+			->and($stats[12] = & $stats['blocks'])
+			->then
+				->array($controller->stat())->isEqualTo($stats)
+			->if($controller->notExists())
+			->then
+				->boolean($controller->stat())->isFalse()
+		;
+	}
+
+	public function testUnlink()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->unlink())->isTrue()
+				->boolean($controller->stat())->isFalse()
+				->boolean($controller->unlink())->isFalse()
+				->boolean($controller->stat())->isFalse()
+			->if($controller->exists())
+			->then
+				->boolean($controller->unlink())->isTrue()
+				->boolean($controller->stat())->isFalse()
+				->boolean($controller->unlink())->isFalse()
+				->boolean($controller->stat())->isFalse()
+			->if($controller->exists())
+			->and($controller->isNotWritable())
+			->then
+				->boolean($controller->unlink())->isFalse()
+				->array($controller->stat())->isNotEmpty()
+			->if($controller->isWritable())
+				->boolean($controller->unlink())->isTrue()
+				->boolean($controller->stat())->isFalse()
+				->boolean($controller->unlink())->isFalse()
+				->boolean($controller->stat())->isFalse()
+		;
+	}
+
 	public function testSetPath()
 	{
 		$this
