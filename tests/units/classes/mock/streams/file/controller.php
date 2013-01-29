@@ -29,43 +29,6 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testLinkContentsTo()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->and($otherController = new testedClass(uniqid()))
-			->then
-				->object($controller->linkContentsTo($otherController))->isIdenticalTo($controller)
-				->string($controller->getContents())->isEqualTo($otherController->getContents())
-			->if($controller->contains($data = uniqid()))
-			->then
-				->string($controller->getContents())
-					->isEqualTo($data)
-					->isEqualTo($otherController->getContents())
-			->if($controller->contains($otherData = uniqid()))
-			->then
-				->string($controller->getContents())
-					->isEqualTo($otherData)
-					->isEqualTo($otherController->getContents())
-		;
-	}
-
-	public function testLinkModeTo()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->and($otherController = new testedClass(uniqid()))
-			->then
-				->object($controller->linkStatsTo($otherController))->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo($otherController->getMode())
-			->if($controller->isNotReadable())
-			->then
-				->integer($controller->getMode())
-					->isEqualTo(200)
-					->isEqualTo($otherController->getMode())
-		;
-	}
-
 	public function testContains()
 	{
 		$this

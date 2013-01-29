@@ -51,59 +51,64 @@ class controller extends stream\controller
 		$this->stats[12] = & $this->stats['blocks'];
 
 		$this->setMode('644');
+	}
 
-		$self = & $this;
+	public function invoke($method, array $arguments = array())
+	{
+		if (isset($this->{$method}) === true)
+		{
+			return parent::invoke($method, $arguments);
+		}
+		else
+		{
+			$method = static::mapMethod($method);
 
-		$this->stream_close = true;
-		$this->stream_lock = true;
+			$this->addCall($method, $arguments);
 
-		$this->stream_open = function($path , $mode , $options , & $openedPath = null) use (& $self) {
-			return $self->open($mode, $options, $openedPath);
-		};
+			switch ($method)
+			{
+				case 'stream_close':
+				case 'stream_lock':
+					return true;
 
-		$this->stream_stat = function() use (& $self) {
-			return $self->stat();
-		};
+				case 'stream_open':
+					return $this->open($arguments[1], $arguments[2], $arguments[3]);
 
-		$this->url_stat = function($path, $flags) use (& $self) {
-			return $self->stat();
-		};
+				case 'stream_stat':
+				case 'url_stat':
+					return $this->stat();
 
-		$this->stream_metadata = function($path, $option, $var) use (& $self) {
-			return $self->metadata($option, $var);
-		};
+				case 'stream_metadata':
+					return $this->metadata($arguments[1], $arguments[2]);
 
-		$this->stream_tell = function() use (& $self) {
-			return $self->tell();
-		};
+				case 'stream_tell':
+					return $this->tell();
 
-		$this->stream_read = function($length) use (& $self) {
-			return $self->read($length);
-		};
+				case 'stream_read':
+					return $this->read($arguments[0]);
 
-		$this->stream_write = function($data) use (& $self) {
-			return $self->write($data);
-		};
+				case 'stream_write':
+					return $this->write($arguments[0]);
 
-		$this->stream_seek = function($offset, $whence = SEEK_SET) use (& $self) {
-			return $self->seek($offset, $whence);
-		};
+				case 'stream_seek':
+					return $this->seek($arguments[0], $arguments[1]);
 
-		$this->stream_eof = function() use (& $self) {
-			return $self->eof();
-		};
+				case 'stream_eof':
+					return $this->eof();
 
-		$this->stream_truncate = function($newSize) use (& $self) {
-			return $self->truncate($newSize);
-		};
+				case 'stream_truncate':
+					return $this->truncate($arguments[0]);
 
-		$this->rename = function($from, $to) use (& $self) {
-			return $self->setPath($to);
-		};
+				case 'rename':
+					return $this->setPath($arguments[1]);
 
-		$this->unlink = function($path) use (& $self) {
-			return $self->unlink();
-		};
+				case 'unlink':
+					return $this->unlink();
+
+				default:
+					return parent::invoke($method, $arguments);
+			}
+		}
 	}
 
 	public function linkContentsTo(self $controller)
@@ -116,6 +121,7 @@ class controller extends stream\controller
 	public function linkStatsTo(self $controller)
 	{
 		$this->stats = & $controller->stats;
+		$this->exists = & $controller->exists;
 
 		return $this;
 	}

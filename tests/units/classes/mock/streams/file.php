@@ -42,6 +42,15 @@ class file extends atoum\test
 				->boolean(rename($file, testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->boolean(fclose($fileResource))->isTrue()
 				->boolean(unlink($file))->isTrue()
+			->if($file = testedClass::get($path = uniqid()))
+			->and($otherFile = testedClass::get($path))
+			->then
+				->object($otherFile)->isIdenticalTo($file)
+			->if($resource = fopen($file, 'r'))
+			->and($otherResource = fopen($otherFile, 'w'))
+			->then
+				->integer(fwrite($resource, uniqid()))->isZero()
+				->integer(fwrite($otherResource, 'abcdefghijklmnopqrstuvwxyz'))->isEqualTo(26)
 		;
 	}
 

@@ -14,7 +14,15 @@ class file extends stream
 
 		switch (strtolower($method))
 		{
+			case 'dir_opendir':
+			case 'mkdir':
+			case 'rename':
+			case 'rmdir':
+			case 'stream_metadata':
 			case 'stream_open':
+			case 'unlink':
+			case 'url_stat':
+			case 'stat':
 				$stream = static::getStreamFromArguments($arguments);
 
 				$this->streamController
