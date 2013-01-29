@@ -169,6 +169,7 @@ class controller extends atoum\test
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('z', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('z', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Operation timed out', E_USER_WARNING)->exists()
 					->boolean($controller->open('r', 0))->isTrue()
@@ -186,6 +187,7 @@ class controller extends atoum\test
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('r', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEqualTo('a')
 					->integer($controller->write('a'))->isZero()
@@ -200,6 +202,7 @@ class controller extends atoum\test
 				->if($controller->notExists())
 				->then
 					->boolean($controller->open('r', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('r+', 0))->isFalse()
 					->boolean($controller->open('r', STREAM_REPORT_ERRORS))->isFalse()
 					->error('No such file or directory', E_USER_WARNING)->exists()
@@ -214,6 +217,7 @@ class controller extends atoum\test
 				->and($controller->isNotReadable())
 				->then
 					->boolean($controller->open('r', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('r+', 0))->isFalse()
 					->boolean($controller->open('r', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
@@ -226,6 +230,7 @@ class controller extends atoum\test
 				->if($controller->isReadable())
 				->and($controller->isNotWritable())
 					->boolean($controller->open('r', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('r+', 0))->isFalse()
 					->boolean($controller->open('r+', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
@@ -237,6 +242,7 @@ class controller extends atoum\test
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('w', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
@@ -251,6 +257,7 @@ class controller extends atoum\test
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('w', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
@@ -261,6 +268,7 @@ class controller extends atoum\test
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->open('w', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('w', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('w+', 0))->isFalse()
@@ -270,6 +278,7 @@ class controller extends atoum\test
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('c', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
@@ -284,6 +293,7 @@ class controller extends atoum\test
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('c', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEqualTo('a')
 					->integer($controller->write('a'))->isEqualTo(1)
@@ -294,6 +304,7 @@ class controller extends atoum\test
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->open('c', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('c', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('c+', 0))->isFalse()
@@ -303,6 +314,7 @@ class controller extends atoum\test
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('a', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
@@ -313,18 +325,21 @@ class controller extends atoum\test
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('a', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isEqualTo(26)
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(1)
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->open('a', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('a+', 0))->isFalse()
 				->if($controller = new testedClass(uniqid()))
 				->if($controller->isWritable())
 				->and($controller->isNotReadable())
 				->then
 					->boolean($controller->open('a', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('a+', 0))->isFalse()
 					->boolean($controller->open('a+', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
@@ -332,6 +347,7 @@ class controller extends atoum\test
 				->if($controller = new testedClass(uniqid()))
 				->then
 					->boolean($controller->open('x', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('x', STREAM_REPORT_ERRORS))->isFalse()
 					->error('File exists', E_USER_WARNING)->exists()
 					->boolean($controller->open('x+', 0))->isFalse()
@@ -340,6 +356,7 @@ class controller extends atoum\test
 				->if($controller->notExists())
 				->then
 					->boolean($controller->open('x', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEmpty()
 					->integer($controller->write('a'))->isEqualTo(0)
@@ -350,6 +367,7 @@ class controller extends atoum\test
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->open('x', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->integer($controller->tell())->isZero()
 					->string($controller->read(1))->isEqualTo('a')
 					->integer($controller->write('a'))->isEqualTo(0)
@@ -360,6 +378,7 @@ class controller extends atoum\test
 				->if($controller->isNotReadable())
 				->then
 					->boolean($controller->open('x', 0))->isFalse()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('x', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
 					->boolean($controller->open('x+', 0))->isFalse()
@@ -369,6 +388,7 @@ class controller extends atoum\test
 				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->open('x', 0))->isTrue()
+					->array($controller->getCalls())->isEmpty()
 					->boolean($controller->open('x+', 0))->isFalse()
 					->boolean($controller->open('x+', STREAM_REPORT_ERRORS))->isFalse()
 					->error('Permission denied', E_USER_WARNING)->exists()
@@ -579,29 +599,57 @@ class controller extends atoum\test
 	public function testDuplicate()
 	{
 		$this
-			->if($streamController = new testedClass(uniqid()))
+			->if($controller = new testedClass(uniqid()))
 			->then
-				->object($duplicatedController = $streamController->duplicate())->isEqualTo($streamController)
-			->if($streamController->setPath($path = uniqid()))
+				->object($duplicatedController = $controller->duplicate())->isEqualTo($controller)
+			->if($controller->setPath($path = uniqid()))
 			->then
 				->string($duplicatedController->getPath())->isEqualTo($path)
-			->if($streamController->stream_lock())
+			->if($controller->stream_lock())
 			->then
-				->array($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
-			->if($streamController->stream_lock = function() {})
+				->array($duplicatedController->getCalls())->isEqualTo($controller->getCalls())
+			->if($controller->stream_lock = function() {})
 			->then
-				->array($duplicatedController->getInvokers())->isEqualTo($streamController->getInvokers())
-			->if($streamController->setContents(uniqid()))
+				->array($duplicatedController->getInvokers())->isEqualTo($controller->getInvokers())
+			->if($controller->setContents(uniqid()))
 			->then
-				->string($duplicatedController->getContents())->isEqualTo($streamController->getContents())
-			->if($streamController->isNotReadable())
-			->and($streamController->isNotWritable())
-			->and($streamController->isNotExecutable())
+				->string($duplicatedController->getContents())->isEqualTo($controller->getContents())
+			->if($controller->isNotReadable())
+			->and($controller->isNotWritable())
+			->and($controller->isNotExecutable())
 			->then
-				->integer($duplicatedController->getMode())->isEqualTo($streamController->getMode())
-			->if($streamController->notExists())
+				->integer($duplicatedController->getMode())->isEqualTo($controller->getMode())
+			->if($controller->notExists())
 			->then
-				->boolean($duplicatedController->stat())->isEqualTo($streamController->stat())
+				->boolean($duplicatedController->stat())->isEqualTo($controller->stat())
+		;
+	}
+
+	public function testInvoke()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->then
+				->boolean($controller->invoke('stream_open', $arguments = array(uniqid(), 'z', 0)))->isFalse()
+				->array($controller->getCalls('stream_open'))->isEqualTo(array(
+						1 => $arguments
+					)
+				)
+				->boolean($controller->invoke('stream_open', $otherArguments = array(uniqid(), 'r', 0)))->isTrue()
+				->array($controller->getCalls('stream_open'))->isEqualTo(array(
+						1 => $arguments,
+						2 => $otherArguments
+					)
+				)
+			->if($controller->stream_open = $return = uniqid())
+			->then
+				->string($controller->invoke('stream_open', $anotherArguments = array(uniqid(), 'r', 0)))->isEqualTo($return)
+				->array($controller->getCalls('stream_open'))->isEqualTo(array(
+						1 => $arguments,
+						2 => $otherArguments,
+						3 => $anotherArguments
+					)
+				)
 		;
 	}
 }
