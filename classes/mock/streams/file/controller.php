@@ -111,19 +111,15 @@ class controller extends stream\controller
 		}
 	}
 
-	public function linkContentsTo(self $controller)
+	public function duplicate()
 	{
-		$this->contents = & $controller->contents;
+		$controller = parent::duplicate();
 
-		return $this;
-	}
+		$controller->contents = & $this->contents;
+		$controller->stats = & $this->stats;
+		$controller->exists = & $this->exists;
 
-	public function linkStatsTo(self $controller)
-	{
-		$this->stats = & $controller->stats;
-		$this->exists = & $controller->exists;
-
-		return $this;
+		return $controller;
 	}
 
 	public function setMode($mode)

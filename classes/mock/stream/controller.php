@@ -85,18 +85,15 @@ class controller extends test\adapter
 		return parent::__isset(self::mapMethod($method));
 	}
 
-	public function linkStreamTo(self $controller)
+	public function duplicate()
 	{
-		$this->path = & $controller->path;
+		$controller = clone $this;
 
-		return $this;
-	}
+		$controller->path = & $this->path;
+		$controller->calls = & $this->calls;
+		$controller->invokers = & $this->invokers;
 
-	public function linkCallsTo(self $controller)
-	{
-		$this->calls = & $controller->calls;
-
-		return $this;
+		return $controller;
 	}
 
 	public function setPath($path)

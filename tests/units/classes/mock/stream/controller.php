@@ -767,18 +767,4 @@ class controller extends atoum\test
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
-
-	public function testLinkStreamTo()
-	{
-		$this
-			->if($streamController = new testedClass(uniqid()))
-			->and($otherStreamController = new testedClass(uniqid()))
-			->then
-				->object($streamController->linkStreamTo($otherStreamController))->isIdenticalTo($streamController)
-				->string($streamController->getPath())->isEqualTo($otherStreamController->getPath())
-			->if($streamController->setPath(uniqid()))
-			->then
-				->string($streamController->getPath())->isEqualTo($otherStreamController->getPath())
-		;
-	}
 }

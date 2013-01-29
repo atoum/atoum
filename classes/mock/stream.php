@@ -109,12 +109,7 @@ class stream
 			case 'unlink':
 			case 'url_stat':
 			case 'stat':
-				$streamController = static::getStreamFromArguments($arguments);
-				$this->streamController = clone $streamController;
-				$this->streamController
-					->linkStreamTo($streamController)
-					->linkCallsTo($streamController)
-				;
+				$this->streamController = static::getStreamFromArguments($arguments)->duplicate();
 				break;
 		}
 
