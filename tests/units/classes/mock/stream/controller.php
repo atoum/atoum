@@ -767,4 +767,22 @@ class controller extends atoum\test
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
 		;
 	}
+
+	public function testDuplicate()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($duplicatedController = $streamController->duplicate())->isEqualTo($streamController)
+			->if($streamController->setPath($path = uniqid()))
+			->then
+				->string($duplicatedController->getPath())->isEqualTo($path)
+			->if($streamController->stream_lock())
+			->then
+				->array($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
+			->if($streamController->stream_lock = function() {})
+			->then
+				->array($duplicatedController->getInvokers())->isEqualTo($streamController->getInvokers())
+		;
+	}
 }

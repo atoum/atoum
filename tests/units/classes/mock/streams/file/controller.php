@@ -575,4 +575,33 @@ class controller extends atoum\test
 				->string($controller->getPath())->isEqualTo($newPath)
 		;
 	}
+
+	public function testDuplicate()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($duplicatedController = $streamController->duplicate())->isEqualTo($streamController)
+			->if($streamController->setPath($path = uniqid()))
+			->then
+				->string($duplicatedController->getPath())->isEqualTo($path)
+			->if($streamController->stream_lock())
+			->then
+				->array($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
+			->if($streamController->stream_lock = function() {})
+			->then
+				->array($duplicatedController->getInvokers())->isEqualTo($streamController->getInvokers())
+			->if($streamController->setContents(uniqid()))
+			->then
+				->string($duplicatedController->getContents())->isEqualTo($streamController->getContents())
+			->if($streamController->isNotReadable())
+			->and($streamController->isNotWritable())
+			->and($streamController->isNotExecutable())
+			->then
+				->integer($duplicatedController->getMode())->isEqualTo($streamController->getMode())
+			->if($streamController->notExists())
+			->then
+				->boolean($duplicatedController->stat())->isEqualTo($streamController->stat())
+		;
+	}
 }
