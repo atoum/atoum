@@ -51,7 +51,7 @@ class stream
 			throw new runtime('Unable to register ' . $protocol . ' stream');
 		}
 
-		$stream = static::findStream($name);
+		$stream = static::findControllerForStream($name);
 
 		if ($stream === null)
 		{
@@ -109,21 +109,26 @@ class stream
 			case 'unlink':
 			case 'url_stat':
 			case 'stat':
-				$this->streamController = static::getStreamFromArguments($arguments)->duplicate();
+				$this->streamController = static::getControllerFromArguments($arguments)->duplicate();
 				break;
 		}
 
 		return $this;
 	}
 
-	protected static function getStreamFromArguments(array $arguments)
+	protected static function getController($stream)
+	{
+		return new stream\controller($stream);
+	}
+
+	protected static function getControllerFromArguments(array $arguments)
 	{
 		if (isset($arguments[0]) === false)
 		{
 			throw new logic('Argument 0 is undefined for function ' . $method . '()');
 		}
 
-		$stream = static::findStream(static::setDirectorySeparator($arguments[0]));
+		$stream = static::findControllerForStream(static::setDirectorySeparator($arguments[0]));
 
 		if ($stream === null)
 		{
@@ -133,12 +138,7 @@ class stream
 		return $stream;
 	}
 
-	protected static function getController($stream)
-	{
-		return new stream\controller($stream);
-	}
-
-	protected static function findStream($path)
+	protected static function findControllerForStream($path)
 	{
 		foreach (static::$streams as $stream)
 		{
