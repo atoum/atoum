@@ -50,9 +50,12 @@ class controller extends stream\controller
 		$this->stats[11] = & $this->stats['blksize'];
 		$this->stats[12] = & $this->stats['blocks'];
 
+		$this->setMode('644');
+
 		$self = & $this;
 
 		$this->stream_close = true;
+		$this->stream_lock = true;
 
 		$this->stream_open = function($path , $mode , $options , & $openedPath = null) use (& $self) {
 			return $self->open($mode, $options, $openedPath);
@@ -94,10 +97,6 @@ class controller extends stream\controller
 			return $self->truncate($newSize);
 		};
 
-		$this->stream_lock = function($operation) use (& $self) {
-			return true;
-		};
-
 		$this->rename = function($from, $to) use (& $self) {
 			return $self->setPath($to);
 		};
@@ -105,8 +104,6 @@ class controller extends stream\controller
 		$this->unlink = function($path) use (& $self) {
 			return $self->unlink();
 		};
-
-		$this->setMode('644');
 	}
 
 	public function linkContentsTo(self $controller)
