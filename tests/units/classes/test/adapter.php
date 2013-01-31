@@ -88,6 +88,13 @@ class adapter extends test
 			->then
 				->boolean(isset($adapter->{$function}))->isTrue()
 				->boolean(isset($adapter->{strtolower($function)}))->isTrue()
+			->if($adapter->{$function = uniqid()}[2] = uniqid())
+			->then
+				->boolean(isset($adapter->{$function}))->isFalse()
+				->boolean(isset($adapter->{$function}[0]))->isFalse()
+				->boolean(isset($adapter->{$function}[1]))->isFalse()
+				->boolean(isset($adapter->{$function}[2]))->isTrue()
+				->boolean(isset($adapter->{$function}[3]))->isFalse()
 		;
 	}
 
@@ -178,6 +185,12 @@ class adapter extends test
 				->integer($adapter->MD5())->isEqualTo(1)
 				->integer($adapter->MD5())->isEqualTo(2)
 				->integer($adapter->MD5())->isEqualTo(0)
+			->if($adapter = new testedClass())
+			->and($adapter->sha1[2] = $sha1 = uniqid())
+			->then
+				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
+				->string($adapter->sha1(uniqid()))->isEqualTo($sha1)
+				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
 		;
 	}
 

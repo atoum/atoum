@@ -111,7 +111,7 @@ class invoker implements \arrayAccess
 
 	public function offsetExists($call)
 	{
-		return $this->closureIsSetForCall($call);
+		return $this->closureIsSetForCall($call) ?: $this->closureIsSetForCall(0);
 	}
 
 	public function invoke(array $arguments = array(), $call = 0)

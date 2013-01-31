@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\mock\streams\file;
 
 use
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\mock\stream
 ;
 
@@ -55,59 +56,71 @@ class controller extends stream\controller
 
 	public function invoke($method, array $arguments = array())
 	{
-		if (isset($this->{$method}) === true)
+		$method = static::mapMethod($method);
+
+		switch ($method)
 		{
-			return parent::invoke($method, $arguments);
-		}
-		else
-		{
-			$method = static::mapMethod($method);
+			case 'mkdir':
+			case 'rmdir':
+			case 'dir_closedir':
+			case 'dir_opendir':
+			case 'dir_readdir':
+			case 'dir_rewinddir':
+				return false;
 
-			$this->addCall($method, $arguments);
-
-			switch ($method)
-			{
-				case 'stream_close':
-				case 'stream_lock':
-					return true;
-
-				case 'stream_open':
-					return $this->open($arguments[1], $arguments[2], $arguments[3]);
-
-				case 'stream_stat':
-				case 'url_stat':
-					return $this->stat();
-
-				case 'stream_metadata':
-					return $this->metadata($arguments[1], $arguments[2]);
-
-				case 'stream_tell':
-					return $this->tell();
-
-				case 'stream_read':
-					return $this->read($arguments[0]);
-
-				case 'stream_write':
-					return $this->write($arguments[0]);
-
-				case 'stream_seek':
-					return $this->seek($arguments[0], $arguments[1]);
-
-				case 'stream_eof':
-					return $this->eof();
-
-				case 'stream_truncate':
-					return $this->truncate($arguments[0]);
-
-				case 'rename':
-					return $this->setPath($arguments[1]);
-
-				case 'unlink':
-					return $this->unlink();
-
-				default:
+			default:
+				if ($this->nextCallIsOverloaded($method) === true)
+				{
 					return parent::invoke($method, $arguments);
-			}
+				}
+				else
+				{
+					$this->addCall($method, $arguments);
+
+					switch ($method)
+					{
+						case 'stream_close':
+						case 'stream_lock':
+							return true;
+
+						case 'stream_open':
+							return $this->open($arguments[1], $arguments[2], $arguments[3]);
+
+						case 'stream_stat':
+						case 'url_stat':
+							return $this->stat();
+
+						case 'stream_metadata':
+							return $this->metadata($arguments[1], $arguments[2]);
+
+						case 'stream_tell':
+							return $this->tell();
+
+						case 'stream_read':
+							return $this->read($arguments[0]);
+
+						case 'stream_write':
+							return $this->write($arguments[0]);
+
+						case 'stream_seek':
+							return $this->seek($arguments[0], $arguments[1]);
+
+						case 'stream_eof':
+							return $this->eof();
+
+						case 'stream_truncate':
+							return $this->truncate($arguments[0]);
+
+						case 'rename':
+							return $this->setPath($arguments[1]);
+
+						case 'unlink':
+							return $this->unlink();
+
+						default:
+							return parent::invoke($method, $arguments);
+					}
+				}
 		}
 	}
 

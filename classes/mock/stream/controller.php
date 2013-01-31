@@ -25,7 +25,7 @@ class controller extends test\adapter
 
 	public function __get($method)
 	{
-		$method = self::mapMethod($method);
+		$method = static::mapMethod($method);
 
 		return $this->setInvoker($method, function() use ($method) { return new invoker($method); });
 	}
@@ -57,7 +57,7 @@ class controller extends test\adapter
 				return $this;
 
 			default:
-				$method = self::mapMethod($method);
+				$method = static::mapMethod($method);
 
 				switch ($method)
 				{
@@ -82,7 +82,7 @@ class controller extends test\adapter
 
 	public function __isset($method)
 	{
-		return parent::__isset(self::mapMethod($method));
+		return parent::__isset(static::mapMethod($method));
 	}
 
 	public function duplicate()
@@ -115,14 +115,14 @@ class controller extends test\adapter
 
 	public function invoke($method, array $arguments = array())
 	{
-		$method = self::mapMethod($method);
+		$method = static::mapMethod($method);
 
 		if ($method === 'dir_rewinddir' && isset($this->{$method}) === true)
 		{
 			$this->resetCalls('dir_readdir');
 		}
 
-		return (isset($this->{$method}) === false ? null : parent::invoke($method, $arguments));
+		return ($this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments));
 	}
 
 	protected function buildInvoker()

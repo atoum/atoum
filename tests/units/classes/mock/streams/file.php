@@ -392,4 +392,14 @@ class file extends atoum\test
 				->boolean(unlink($file))->isTrue()
 		;
 	}
+
+	public function testOpendir()
+	{
+		$this
+			->if($file = testedClass::get(uniqid()))
+			->then
+				->boolean(opendir($file))->isFalse()
+				->error->withType(E_WARNING)->exists()
+		;
+	}
 }

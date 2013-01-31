@@ -555,6 +555,12 @@ class controller extends atoum\test
 			->if($controller->notExists())
 			->then
 				->boolean($controller->stat())->isFalse()
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->stream_stat[2] = false)
+			->then
+				->array($controller->stream_stat())->isNotEmpty()
+				->boolean($controller->stream_stat())->isFalse()
+				->array($controller->stream_stat())->isNotEmpty()
 		;
 	}
 
