@@ -54,6 +54,23 @@ class controller extends stream\controller
 		$this->setMode('644');
 	}
 
+	public function __set($method, $value)
+	{
+		switch ($method = static::mapMethod($method))
+		{
+			case 'mkdir':
+			case 'rmdir':
+			case 'dir_closedir':
+			case 'dir_opendir':
+			case 'dir_readdir':
+			case 'dir_rewinddir':
+				throw new exceptions\logic\invalidArgument('Unable to override streamWrapper::' . $method . '() for file');
+
+			default:
+				return parent::__set($method, $value);
+		}
+	}
+
 	public function invoke($method, array $arguments = array())
 	{
 		$method = static::mapMethod($method);
@@ -480,7 +497,7 @@ class controller extends stream\controller
 		return $this;
 	}
 
-	private function setOpenMode($mode)
+	protected function setOpenMode($mode)
 	{
 		$this->read = false;
 		$this->write = false;
@@ -509,17 +526,17 @@ class controller extends stream\controller
 		return $this;
 	}
 
-	private function checkIfReadable()
+	protected function checkIfReadable()
 	{
 		return $this->checkPermission(0400, 0040, 0004);
 	}
 
-	private function checkIfWritable()
+	protected function checkIfWritable()
 	{
 		return $this->checkPermission(0200, 0020, 0002);
 	}
 
-	private function checkPermission($user, $group, $other)
+	protected function checkPermission($user, $group, $other)
 	{
 		$permissions = $this->stats['mode'] & 07777;
 
@@ -536,12 +553,12 @@ class controller extends stream\controller
 		}
 	}
 
-	private static function getRawOpenMode($mode)
+	protected static function getRawOpenMode($mode)
 	{
 		return rtrim($mode, 'bt+');
 	}
 
-	private static function checkOpenMode($mode)
+	protected static function checkOpenMode($mode)
 	{
 		switch (self::getRawOpenMode($mode))
 		{

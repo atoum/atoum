@@ -29,6 +29,19 @@ class controller extends atoum\test
 		;
 	}
 
+	public function test__set()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->stream_open = false)
+			->then
+				->boolean($controller->stream_open(uniqid(), 'r', uniqid()))->isFalse()
+				->exception(function() use ($controller) { $controller->mkdir = true; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Unable to override streamWrapper::mkdir() for file')
+		;
+	}
+
 	public function testContains()
 	{
 		$this
