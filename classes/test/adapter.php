@@ -198,7 +198,9 @@ class adapter extends atoum\adapter
 
 	protected function callIsOverloaded($functionName, $call)
 	{
-		return (isset($this->invokers[strtolower($functionName)]) === true && isset($this->invokers[strtolower($functionName)][$call]) === true);
+		$functionName = strtolower($functionName);
+
+		return (isset($this->invokers[$functionName]) === true && isset($this->invokers[$functionName][$call]) === true);
 	}
 
 	protected function nextCallIsOverloaded($functionName)

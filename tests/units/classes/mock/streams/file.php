@@ -86,7 +86,6 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->and(chmod($file, 755))
 			->then
-				->dump($file->getMode())
 				->integer(fileperms($file))->isEqualTo(0100755)
 		;
 	}
@@ -201,7 +200,7 @@ class file extends atoum\test
 				->boolean(@fopen($file, 'r'))->isFalse()
 			->if($file->exists())
 			->then
-				->variable(@fopen($file, 'r'))->isNotFalse()
+				->variable(fopen($file, 'r'))->isNotFalse()
 		;
 	}
 
@@ -359,7 +358,7 @@ class file extends atoum\test
 			->then
 				->boolean(copy($file, $newPath = testedClass::defaultProtocol . '://' . uniqid()))->isTrue()
 				->string($file->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . $path)
-				->array($file->stat())->isEqualTo(testedClass::get($newPath)->stat())
+				->array(stat($file))->isEqualTo(stat(testedClass::get($newPath)))
 				->string($file->getContents())->isEqualTo(testedClass::get($newPath)->getContents())
 			->if($file->contains(uniqid()))
 			->then
@@ -367,8 +366,8 @@ class file extends atoum\test
 				->string($file->getPath())->isEqualTo(testedClass::defaultProtocol . '://' . $path)
 				->string($file->getContents())->isNotEqualTo(testedClass::get($newPath)->getContents())
 				->string($file->getContents())->isEqualTo(testedClass::get($otherNewPath)->getContents())
-				->array($file->stat())->isNotEqualTo(testedClass::get($newPath)->stat())
-				->array($file->stat())->isEqualTo(testedClass::get($otherNewPath)->stat())
+				->array(stat($file))->isNotEqualTo(stat(testedClass::get($newPath)))
+				->array(stat($file))->isEqualTo(stat(testedClass::get($otherNewPath)))
 		;
 	}
 

@@ -21,7 +21,7 @@ class stream
 
 	public function __call($method, array $arguments)
 	{
-		return $this->setControllerForMethod($method, $arguments)->streamController->invoke($method, $arguments);
+		return call_user_func_array(array($this->setControllerForMethod($method, $arguments)->streamController, $method), $arguments);
 	}
 
 	public static function getAdapter()

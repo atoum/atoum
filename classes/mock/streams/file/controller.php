@@ -71,76 +71,6 @@ class controller extends stream\controller
 		}
 	}
 
-	public function invoke($method, array $arguments = array())
-	{
-		$method = static::mapMethod($method);
-
-		switch ($method)
-		{
-			case 'mkdir':
-			case 'rmdir':
-			case 'dir_closedir':
-			case 'dir_opendir':
-			case 'dir_readdir':
-			case 'dir_rewinddir':
-				return false;
-
-			default:
-				if ($this->nextCallIsOverloaded($method) === true)
-				{
-					return parent::invoke($method, $arguments);
-				}
-				else
-				{
-					$this->addCall($method, $arguments);
-
-					switch ($method)
-					{
-						case 'stream_close':
-						case 'stream_lock':
-							return true;
-
-						case 'stream_open':
-							return $this->open($arguments[1], $arguments[2], $arguments[3]);
-
-						case 'stream_stat':
-						case 'url_stat':
-							return $this->stat();
-
-						case 'stream_metadata':
-							return $this->metadata($arguments[1], $arguments[2]);
-
-						case 'stream_tell':
-							return $this->tell();
-
-						case 'stream_read':
-							return $this->read($arguments[0]);
-
-						case 'stream_write':
-							return $this->write($arguments[0]);
-
-						case 'stream_seek':
-							return $this->seek($arguments[0], $arguments[1]);
-
-						case 'stream_eof':
-							return $this->eof();
-
-						case 'stream_truncate':
-							return $this->truncate($arguments[0]);
-
-						case 'rename':
-							return $this->setPath($arguments[1]);
-
-						case 'unlink':
-							return $this->unlink();
-
-						default:
-							return parent::invoke($method, $arguments);
-					}
-				}
-		}
-	}
-
 	public function duplicate()
 	{
 		$controller = parent::duplicate();
@@ -180,242 +110,6 @@ class controller extends stream\controller
 	public function getContents()
 	{
 		return $this->contents;
-	}
-
-	public function open($mode, $options, & $openedPath = null)
-	{
-		$isOpened = false;
-
-		$reportErrors = ($options & STREAM_REPORT_ERRORS) == STREAM_REPORT_ERRORS;
-
-		if (self::checkOpenMode($mode) === false)
-		{
-			if ($reportErrors === true)
-			{
-				trigger_error('Operation timed out', E_USER_WARNING);
-			}
-		}
-		else
-		{
-			$this->setOpenMode($mode);
-
-			switch (true)
-			{
-				case $this->read === true && $this->write === false:
-					$isOpened = $this->checkIfReadable();
-					break;
-
-				case $this->read === false && $this->write === true:
-					$isOpened = $this->checkIfWritable();
-					break;
-
-				default:
-					$isOpened = $this->checkIfReadable() && $this->checkIfWritable();
-			}
-
-			if ($isOpened === false)
-			{
-				if ($reportErrors === true)
-				{
-					trigger_error('Permission denied', E_USER_WARNING);
-				}
-			}
-			else
-			{
-				switch (self::getRawOpenMode($mode))
-				{
-					case 'w':
-						$this->exists = true;
-						$this->truncate(0);
-						$this->seek(0);
-						break;
-
-					case 'r':
-						$isOpened = $this->exists;
-
-						if ($isOpened === true)
-						{
-							$this->seek(0);
-						}
-						else if ($reportErrors === true)
-						{
-							trigger_error('No such file or directory', E_USER_WARNING);
-						}
-						break;
-
-					case 'c':
-						$this->exists = true;
-						$this->seek(0);
-						break;
-
-					case 'x':
-						if ($this->exists === false)
-						{
-							$this->seek(0);
-						}
-						else
-						{
-							$isOpened = false;
-
-							if ($reportErrors === true)
-							{
-								trigger_error('File exists', E_USER_WARNING);
-							}
-						}
-						break;
-
-					case 'a':
-						$this->seek(0, SEEK_END);
-						break;
-				}
-			}
-		}
-
-		$openedPath = null;
-
-		if ($isOpened === true && $options & STREAM_USE_PATH)
-		{
-			$openedPath = $this->getPath();
-		}
-
-		return $isOpened;
-	}
-
-	public function read($length)
-	{
-		$data = '';
-
-		$contentsLength = strlen($this->contents);
-
-		if ($this->pointer >= 0 && $this->pointer < $contentsLength)
-		{
-			$data = substr($this->contents, $this->pointer, $length);
-		}
-
-		$this->pointer += $length;
-
-		if ($this->pointer >= $contentsLength)
-		{
-			$this->eof = true;
-			$this->pointer = $contentsLength;
-		}
-
-		return $data;
-	}
-
-	public function write($data)
-	{
-		$bytesWrited = 0;
-
-		if ($this->write === true)
-		{
-			$this->contents .= $data;
-			$bytesWrited = strlen($data);
-			$this->pointer += $bytesWrited;
-			$this->stats['size'] = ($this->contents == '' ? 0 : strlen($this->contents) + 1);
-		}
-
-		return $bytesWrited;
-	}
-
-	public function truncate($newSize)
-	{
-		$contents = $this->contents;
-
-		if ($newSize < strlen($this->contents))
-		{
-			$contents = substr($contents, 0, $newSize);
-		}
-		else
-		{
-			$contents = str_pad($contents, $newSize, "\0");
-		}
-
-		return $this->setContents($contents);
-	}
-
-	public function seek($offset, $whence = SEEK_SET)
-	{
-		switch ($whence)
-		{
-			case SEEK_CUR:
-				$offset = $this->pointer + $offset;
-				break;
-
-			case SEEK_END:
-				$offset = strlen($this->contents) + $offset;
-				break;
-		}
-
-		$this->eof = false;
-
-		if ($this->pointer === $offset)
-		{
-			return false;
-		}
-		else
-		{
-			$this->pointer = $offset;
-
-			return true;
-		}
-	}
-
-	public function tell()
-	{
-		return $this->pointer;
-	}
-
-	public function eof()
-	{
-		return $this->eof;
-	}
-
-	public function stat()
-	{
-		return ($this->exists === false ? false : $this->stats);
-	}
-
-	public function metadata($option, $value)
-	{
-		switch ($option)
-		{
-			case STREAM_META_TOUCH:
-				return true;
-
-			case STREAM_META_OWNER_NAME:
-				return true;
-
-			case STREAM_META_OWNER:
-				return true;
-
-			case STREAM_META_GROUP_NAME:
-				return true;
-
-			case STREAM_META_GROUP:
-				return true;
-
-			case STREAM_META_ACCESS:
-				$this->setMode($value);
-				return true;
-
-			default:
-				return false;
-		}
-	}
-
-	public function unlink()
-	{
-		if ($this->exists === false || $this->checkIfWritable() === false)
-		{
-			return false;
-		}
-		else
-		{
-			$this->exists = false;
-
-			return true;
-		}
 	}
 
 	public function exists()
@@ -476,11 +170,442 @@ class controller extends stream\controller
 		return $this->contains('');
 	}
 
-	public function setPath($path)
+	public function stream_open($path, $mode, $options, & $openedPath = null)
 	{
-		parent::setPath($path);
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
 
+			$isOpened = false;
+
+			$reportErrors = ($options & STREAM_REPORT_ERRORS) == STREAM_REPORT_ERRORS;
+
+			if (self::checkOpenMode($mode) === false)
+			{
+				if ($reportErrors === true)
+				{
+					trigger_error('Operation timed out', E_USER_WARNING);
+				}
+			}
+			else
+			{
+				$this->setOpenMode($mode);
+
+				switch (true)
+				{
+					case $this->read === true && $this->write === false:
+						$isOpened = $this->checkIfReadable();
+						break;
+
+					case $this->read === false && $this->write === true:
+						$isOpened = $this->checkIfWritable();
+						break;
+
+					default:
+						$isOpened = $this->checkIfReadable() && $this->checkIfWritable();
+				}
+
+				if ($isOpened === false)
+				{
+					if ($reportErrors === true)
+					{
+						trigger_error('Permission denied', E_USER_WARNING);
+					}
+				}
+				else
+				{
+					switch (self::getRawOpenMode($mode))
+					{
+						case 'w':
+							$this->exists = true;
+							$this->truncate(0);
+							$this->seek(0);
+							break;
+
+						case 'r':
+							$isOpened = $this->exists;
+
+							if ($isOpened === true)
+							{
+								$this->seek(0);
+							}
+							else if ($reportErrors === true)
+							{
+								trigger_error('No such file or directory', E_USER_WARNING);
+							}
+							break;
+
+						case 'c':
+							$this->exists = true;
+							$this->seek(0);
+							break;
+
+						case 'x':
+							if ($this->exists === false)
+							{
+								$this->seek(0);
+							}
+							else
+							{
+								$isOpened = false;
+
+								if ($reportErrors === true)
+								{
+									trigger_error('File exists', E_USER_WARNING);
+								}
+							}
+							break;
+
+						case 'a':
+							$this->seek(0, SEEK_END);
+							break;
+					}
+				}
+			}
+
+			$openedPath = null;
+
+			if ($isOpened === true && $options & STREAM_USE_PATH)
+			{
+				$openedPath = $this->getPath();
+			}
+
+			return $isOpened;
+		}
+	}
+
+	public function stream_seek($offset, $whence = SEEK_SET)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			return $this->seek($offset, $whence);
+		}
+	}
+
+	public function stream_eof()
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, array());
+
+			return $this->eof;
+		}
+	}
+
+	public function stream_tell()
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, array());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, array());
+
+			return $this->pointer;
+		}
+	}
+
+	public function stream_read($count)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			$data = '';
+
+			$contentsLength = strlen($this->contents);
+
+			if ($this->pointer >= 0 && $this->pointer < $contentsLength)
+			{
+				$data = substr($this->contents, $this->pointer, $count);
+			}
+
+			$this->pointer += $count;
+
+			if ($this->pointer >= $contentsLength)
+			{
+				$this->eof = true;
+				$this->pointer = $contentsLength;
+			}
+
+			return $data;
+		}
+	}
+
+	public function stream_write($data)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			$bytesWrited = 0;
+
+			if ($this->write === true)
+			{
+				$this->contents .= $data;
+				$bytesWrited = strlen($data);
+				$this->pointer += $bytesWrited;
+				$this->stats['size'] = ($this->contents == '' ? 0 : strlen($this->contents) + 1);
+			}
+
+			return $bytesWrited;
+		}
+	}
+
+	public function stream_flush()
+	{
 		return true;
+	}
+
+	public function stream_metadata($path, $option, $value)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			switch ($option)
+			{
+				case STREAM_META_TOUCH:
+					return true;
+
+				case STREAM_META_OWNER_NAME:
+					return true;
+
+				case STREAM_META_OWNER:
+					return true;
+
+				case STREAM_META_GROUP_NAME:
+					return true;
+
+				case STREAM_META_GROUP:
+					return true;
+
+				case STREAM_META_ACCESS:
+					$this->setMode($value);
+					return true;
+
+				default:
+					return false;
+			}
+		}
+	}
+
+	public function stream_stat()
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, array());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, array());
+
+			return $this->stat();
+		}
+	}
+
+	public function stream_truncate($newSize)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			return $this->truncate($newSize);
+		}
+	}
+
+	public function stream_lock($mode)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			return true;
+		}
+	}
+
+	public function stream_close()
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, array());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, array());
+
+			return true;
+		}
+	}
+
+	public function url_stat($path, $flags)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			return $this->stat();
+		}
+	}
+
+	public function unlink($path)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			if ($this->exists === false || $this->checkIfWritable() === false)
+			{
+				return false;
+			}
+			else
+			{
+				$this->exists = false;
+
+				return true;
+			}
+		}
+	}
+
+	public function rename($from, $to)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return parent::invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			$this->setPath($to);
+
+			return true;
+		}
+	}
+
+	public function mkdir($path, $mode, $options)
+	{
+		return false;
+	}
+
+	public function dir_opendir($path, $options)
+	{
+		return false;
+	}
+
+	public function dir_readdir()
+	{
+		return false;
+	}
+
+	public function dir_rewinddir()
+	{
+		return false;
+	}
+
+	public function dir_closedir()
+	{
+		return false;
+	}
+
+	public function rmdir($path, $options)
+	{
+		return false;
+	}
+
+	public function invoke($method, array $arguments = array())
+	{
+		return call_user_func_array(array($this, static::mapMethod($method)), $arguments);
+	}
+
+	protected function stat()
+	{
+		return ($this->exists === false ? false : $this->stats);
+	}
+
+	protected function truncate($newSize)
+	{
+		$contents = $this->contents;
+
+		if ($newSize < strlen($this->contents))
+		{
+			$contents = substr($contents, 0, $newSize);
+		}
+		else
+		{
+			$contents = str_pad($contents, $newSize, "\0");
+		}
+
+		return $this->setContents($contents);
+	}
+
+	protected function seek($offset, $whence = SEEK_SET)
+	{
+		switch ($whence)
+		{
+			case SEEK_CUR:
+				$offset = $this->pointer + $offset;
+				break;
+
+			case SEEK_END:
+				$offset = strlen($this->contents) + $offset;
+		}
+
+		$this->eof = false;
+
+		if ($this->pointer === $offset)
+		{
+			return false;
+		}
+		else
+		{
+			$this->pointer = $offset;
+
+			return true;
+		}
 	}
 
 	protected function addPermission($permissions)
