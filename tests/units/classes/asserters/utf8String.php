@@ -11,13 +11,9 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
+/** @extension mbstring */
 class utf8String extends atoum\test
 {
-	public function beforeTestMethod($method)
-	{
-		$this->extension('mbstring')->isLoaded();
-	}
-
 	public function testClass()
 	{
 		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
