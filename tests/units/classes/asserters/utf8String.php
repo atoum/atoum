@@ -11,7 +11,7 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
-/** @extension mbstring */
+/** @extensions mbstring */
 class utf8String extends atoum\test
 {
 	public function testClass()

@@ -1011,7 +1011,7 @@ abstract class test implements observable, \countable
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
 			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
-			->setHandler('extension', function($value) use ($test) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryClassExtension($mandatoryExtension); }})
+			->setHandler('extensions', function($value) use ($test) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryClassExtension($mandatoryExtension); }})
 		;
 
 		return $this;
@@ -1040,7 +1040,7 @@ abstract class test implements observable, \countable
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
 			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
 			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
-			->setHandler('extension', function($value) use ($test, & $methodName) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryMethodExtension($methodName, $mandatoryExtension); }})
+			->setHandler('extensions', function($value) use ($test, & $methodName) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryMethodExtension($methodName, $mandatoryExtension); }})
 		;
 
 		return $this;
