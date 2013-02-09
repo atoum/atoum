@@ -101,6 +101,7 @@ namespace mageekguy\atoum\tests\units
 					->string($test->getTestNamespace())->isEqualTo(atoum\test::defaultNamespace)
 					->integer($test->getMaxChildrenNumber())->isEqualTo(666)
 					->variable($test->getBootstrapFile())->isNull()
+					->array($test->getClassPhpVersions())->isEmpty()
 					->array($test->getMandatoryClassExtensions())->isEmpty()
 					->array($test->getMandatoryMethodExtensions())->isEmpty()
 			;
@@ -592,6 +593,43 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($classExtension, $extension, $otherExtension), 'testMethod2' => array($classExtension, $anOtherExtension)))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($classExtension, $extension, $otherExtension))
 					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array($classExtension, $anOtherExtension))
+			;
+		}
+
+		public function testAddClassPhpVersion()
+		{
+			$this
+				->if($test = new notEmptyTest())
+				->then
+					->object($test->addClassPhpVersion('5.3'))->isIdenticalTo($test)
+					->array($test->getClassPhpVersions())->isEqualTo(array('5.3' => '>='))
+					->object($test->addClassPhpVersion('5.4', '<='))->isIdenticalTo($test)
+					->array($test->getClassPhpVersions())->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
+			;
+		}
+
+		public function testAddMethodPhpVersion()
+		{
+			$this
+				->if($test = new notEmptyTest())
+				->then
+					->object($test->addMethodPhpVersion('testMethod1', '5.3'))->isIdenticalTo($test)
+					->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>='), 'testMethod2' => array()))
+					->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>='))
+					->array($test->getMethodPhpVersions('testMethod2'))->isEmpty()
+					->object($test->addMethodPhpVersion('testMethod1', '5.4', '<='))->isIdenticalTo($test)
+					->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>=', '5.4' => '<='), 'testMethod2' => array()))
+					->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
+					->array($test->getMethodPhpVersions('testMethod2'))->isEmpty()
+					->object($test->addMethodPhpVersion('testMethod2', '5.4', '>='))->isIdenticalTo($test)
+					->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>=', '5.4' => '<='), 'testMethod2' => array('5.4' => '>=')))
+					->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>=', '5.4' => '<='))
+					->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(array('5.4' => '>='))
+				->if($test->addClassPhpVersion('5.5'))
+				->then
+					->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.5' => '>=', '5.3' => '>=', '5.4' => '<='), 'testMethod2' => array('5.5' => '>=', '5.4' => '>=')))
+					->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.5' => '>=', '5.3' => '>=', '5.4' => '<='))
+					->array($test->getMethodPhpVersions('testMethod2'))->isEqualTo(array('5.5' => '>=', '5.4' => '>='))
 			;
 		}
 

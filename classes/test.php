@@ -47,6 +47,7 @@ abstract class test implements observable, \countable
 	private $testedClass = null;
 	private $observers = array();
 	private $tags = array();
+	private $phpVersions = array();
 	private $mandatoryExtensions = array();
 	private $ignore = false;
 	private $dataProviders = array();
@@ -271,11 +272,75 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
+	public function addClassPhpVersion($version, $operator = null)
+	{
+		$this->phpVersions[$version] = $operator ?: '>=';
+
+		return $this;
+	}
+
+	public function getClassPhpVersions()
+	{
+		return $this->phpVersions;
+	}
+
 	public function addMandatoryClassExtension($extension)
 	{
 		$this->mandatoryExtensions[] = $extension;
 
 		return $this;
+	}
+
+	public function addMethodPhpVersion($testMethodName, $version, $operator = '>=')
+	{
+		if (isset($this->testMethods[$testMethodName]) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+		}
+
+		$this->testMethods[$testMethodName]['php'][$version] = $operator;
+
+		return $this;
+	}
+
+	public function getMethodPhpVersions($testMethodName = null)
+	{
+		$versions = array();
+
+		$classVersions = $this->getClassPhpVersions();
+
+		if ($testMethodName === null)
+		{
+			foreach ($this->testMethods as $testMethodName => $annotations)
+			{
+				if (isset($annotations['php']) === false)
+				{
+					$versions[$testMethodName] = $classVersions;
+				}
+				else
+				{
+					$versions[$testMethodName] = array_merge($classVersions, $annotations['php']);
+				}
+			}
+		}
+		else
+		{
+			if (isset($this->testMethods[$testMethodName]) === false)
+			{
+				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
+			}
+
+			if (isset($this->testMethods[$testMethodName]['php']) === false)
+			{
+				$versions = $classVersions;
+			}
+			else
+			{
+				$versions = array_merge($classVersions, $this->testMethods[$testMethodName]['php']);
+			}
+		}
+
+		return $versions;
 	}
 
 	public function getMandatoryClassExtensions()
@@ -753,6 +818,14 @@ abstract class test implements observable, \countable
 
 			try
 			{
+				foreach ($this->getMethodPhpVersions($testMethod) as $phpVersion => $operator)
+				{
+					if (version_compare(PHP_VERSION, $phpVersion, $operator) === false)
+					{
+						throw new test\exceptions\skip('PHP version ' . PHP_VERSION . ' is not ' . $operator . ' to ' . $phpVersion);
+					}
+				}
+
 				foreach ($this->getMandatoryMethodExtensions($testMethod) as $mandatoryExtension)
 				{
 					$this->extension($mandatoryExtension)->isLoaded();
@@ -1011,6 +1084,37 @@ abstract class test implements observable, \countable
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
 			->setHandler('hasNotVoidMethods', function($value) use ($test) { $test->classHasNotVoidMethods(); })
+			->setHandler('php', function($value) use ($test) {
+					$value = annotations\extractor::toArray($value);
+
+					if (isset($value[0]) === true)
+					{
+						$operator = null;
+
+						if (isset($value[1]) === false)
+						{
+							$version = $value[0];
+						}
+						else
+						{
+							$version = $value[1];
+
+							switch ($value[0])
+							{
+								case '<':
+								case '<=':
+								case '=':
+								case '==':
+								case '>=':
+								case '>':
+									$operator = $value[0];
+							}
+						}
+
+						$test->addClassPhpVersion($version, $operator);
+					}
+				}
+			)
 			->setHandler('extensions', function($value) use ($test) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryClassExtension($mandatoryExtension); }})
 		;
 
@@ -1040,6 +1144,37 @@ abstract class test implements observable, \countable
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
 			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
 			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
+			->setHandler('php', function($value) use ($test, & $methodName) {
+					$value = annotations\extractor::toArray($value);
+
+					if (isset($value[0]) === true)
+					{
+						$operator = null;
+
+						if (isset($value[1]) === false)
+						{
+							$version = $value[0];
+						}
+						else
+						{
+							$version = $value[1];
+
+							switch ($value[0])
+							{
+								case '<':
+								case '<=':
+								case '=':
+								case '==':
+								case '>=':
+								case '>':
+									$operator = $value[0];
+							}
+						}
+
+						$test->addMethodPhpVersion($methodName, $version, $operator);
+					}
+				}
+			)
 			->setHandler('extensions', function($value) use ($test, & $methodName) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryMethodExtension($methodName, $mandatoryExtension); }})
 		;
 
