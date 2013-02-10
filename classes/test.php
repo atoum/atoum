@@ -293,12 +293,7 @@ abstract class test implements observable, \countable
 
 	public function addMethodPhpVersion($testMethodName, $version, $operator = '>=')
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-		}
-
-		$this->testMethods[$testMethodName]['php'][$version] = $operator;
+		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['php'][$version] = $operator;
 
 		return $this;
 	}
@@ -325,12 +320,7 @@ abstract class test implements observable, \countable
 		}
 		else
 		{
-			if (isset($this->testMethods[$testMethodName]) === false)
-			{
-				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-			}
-
-			if (isset($this->testMethods[$testMethodName]['php']) === false)
+			if (isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['php']) === false)
 			{
 				$versions = $classVersions;
 			}
@@ -350,12 +340,7 @@ abstract class test implements observable, \countable
 
 	public function addMandatoryMethodExtension($testMethodName, $extension)
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-		}
-
-		$this->testMethods[$testMethodName]['mandatoryExtensions'][] = $extension;
+		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['mandatoryExtensions'][] = $extension;
 
 		return $this;
 	}
@@ -382,12 +367,7 @@ abstract class test implements observable, \countable
 		}
 		else
 		{
-			if (isset($this->testMethods[$testMethodName]) === false)
-			{
-				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-			}
-
-			if (isset($this->testMethods[$testMethodName]['mandatoryExtensions']) === false)
+			if (isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['mandatoryExtensions']) === false)
 			{
 				$extensions = $mandatoryClassExtensions;
 			}
@@ -590,12 +570,7 @@ abstract class test implements observable, \countable
 
 	public function setMethodTags($testMethodName, array $tags)
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-		}
-
-		$this->testMethods[$testMethodName]['tags'] = $tags;
+		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['tags'] = $tags;
 
 		return $this;
 	}
@@ -615,12 +590,7 @@ abstract class test implements observable, \countable
 		}
 		else
 		{
-			if (isset($this->testMethods[$testMethodName]) === false)
-			{
-				throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-			}
-
-			$tags = isset($this->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
+			$tags = isset($this->checkMethod($testMethodName)->testMethods[$testMethodName]['tags']) === false ? $classTags : $this->testMethods[$testMethodName]['tags'];
 		}
 
 		return $tags;
@@ -1011,12 +981,7 @@ abstract class test implements observable, \countable
 
 	public function setDataProvider($testMethodName, $dataProvider)
 	{
-		if (isset($this->testMethods[$testMethodName]) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $testMethodName . '() is unknown');
-		}
-
-		if (method_exists($this, $dataProvider) === false)
+		if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 		{
 			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . $dataProvider . '() is unknown');
 		}
@@ -1208,7 +1173,7 @@ abstract class test implements observable, \countable
 	{
 		if (isset($this->testMethods[$methodName]) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() is unknown');
+			throw new exceptions\logic\invalidArgument('Test method ' . $this->class . '::' . $methodName . '() does not exist');
 		}
 
 		return $this;

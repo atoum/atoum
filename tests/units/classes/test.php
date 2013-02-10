@@ -520,7 +520,7 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->exception(function() use ($test, & $method) { $test->methodIsIgnored($method = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 			;
 		}
 
@@ -543,7 +543,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMethodTags('testMethod1'))->isEqualTo($tags)
 					->exception(function() use ($test, & $method) { $test->setMethodTags($method = uniqid(), array()); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 			;
 		}
 
@@ -555,7 +555,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMethodTags('testMethod1'))->isEqualTo(array('test', 'method', 'one'))
 					->exception(function() use ($test, & $method) { $test->getMethodTags($method = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 			;
 		}
 
@@ -576,6 +576,9 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new notEmptyTest())
 				->then
+					->exception(function() use ($test, & $method) { $test->addMandatoryMethodExtension($method = uniqid(), uniqid()); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 					->object($test->addMandatoryMethodExtension('testMethod1', $extension = uniqid()))->isIdenticalTo($test)
 					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension), 'testMethod2' => array()))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension))
@@ -613,6 +616,9 @@ namespace mageekguy\atoum\tests\units
 			$this
 				->if($test = new notEmptyTest())
 				->then
+					->exception(function() use ($test, & $method) { $test->addMethodPhpVersion($method, '6.0'); })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 					->object($test->addMethodPhpVersion('testMethod1', '5.3'))->isIdenticalTo($test)
 					->array($test->getMethodPhpVersions())->isEqualTo(array('testMethod1' => array('5.3' => '>='), 'testMethod2' => array()))
 					->array($test->getMethodPhpVersions('testMethod1'))->isEqualTo(array('5.3' => '>='))
@@ -741,7 +747,7 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->exception(function() use ($test, & $method) { $test->setDataProvider($method = uniqid(), uniqid()); })
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() is unknown')
+						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 				->if($test = new notEmptyTest())
 				->then
 					->exception(function() use ($test, & $dataProvider) { $test->setDataProvider('testMethod1', $dataProvider = uniqid()); })
