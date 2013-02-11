@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\locale,
+	mageekguy\atoum\test\adapter,
 	mageekguy\atoum\report\fields\runner\result\notifier\libnotify as testedClass
 ;
 
@@ -14,7 +15,7 @@ class libnotify extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result');
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result\notifier');
 	}
 
 	public function test__construct()
@@ -67,7 +68,9 @@ class libnotify extends atoum\test
 	public function testNotify()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\score())
+			->if($adapter = new adapter())
+			->and($adapter->system = function() {})
+			->and($score = new \mock\mageekguy\atoum\score())
 			->and($runner = new \mock\mageekguy\atoum\runner())
 			->and($this->calling($runner)->getScore = $score)
 			->and($locale = new \mock\mageekguy\atoum\locale())
@@ -121,8 +124,7 @@ class libnotify extends atoum\test
 			->and($this->calling($score)->getFailNumber = 0)
 			->and($this->calling($score)->getErrorNumber = 0)
 			->and($this->calling($score)->getExceptionNumber = 0)
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\libnotify())
-			->and($this->calling($field)->execute = function() {})
+			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -133,14 +135,13 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s/%s method', '%s/%s methods', 1)->once()
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
-				->mock($field)
-					->call('execute')->withArguments('notify-send -i %3$s %1$s %2$s', array('Success !', $successString, realpath(__DIR__ . '/../../../../../../../../resources/images/logo_success.png')))->once()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('notify-send -i %3$s %1$s %2$s', escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo_success.png'))))->once()
 			->assert('Success with several tests, several methods and several assertions,  no fail, no error, no exception')
 			->if($this->calling($runner)->getTestNumber = $testNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\libnotify())
-			->and($this->calling($field)->execute = function() {})
+			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -152,15 +153,14 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s void method', '%s void methods', 0)->once()
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
-				->mock($field)
-					->call('execute')->withArguments('notify-send -i %3$s %1$s %2$s', array('Success !', $successString, realpath(__DIR__ . '/../../../../../../../../resources/images/logo_success.png')))->once()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('notify-send -i %3$s %1$s %2$s', escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo_success.png'))))->once()
 			->assert('Failure with several tests, several methods and several assertions, one fail, one error, one exception')
 			->if($this->calling($score)->getFailNumber = 1)
 			->and($this->calling($score)->getErrorNumber = 1)
 			->and($this->calling($score)->getExceptionNumber = 1)
 			->and($this->calling($score)->getUncompletedMethodNumber = 1)
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\libnotify())
-			->and($this->calling($field)->execute = function() {})
+			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -174,15 +174,14 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s failure', '%s failures', 1)->once()
 					->call('__')->withArguments('%s error', '%s errors', 1)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
-				->mock($field)
-					->call('execute')->withArguments('notify-send -i %3$s %1$s %2$s', array('Failure !', $failureString, realpath(__DIR__ . '/../../../../../../../../resources/images/logo_fail.png')))->once()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('notify-send -i %3$s %1$s %2$s', escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo_fail.png'))))->once()
 			->assert('Failure with several tests, several methods and several assertions, several fails, several errors, several exceptions')
 			->if($this->calling($score)->getFailNumber = $failNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\libnotify())
-			->and($this->calling($field)->execute = function() {})
+			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -194,8 +193,8 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s failure', '%s failures', $failNumber)->once()
 					->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
-				->mock($field)
-					->call('execute')->withArguments('notify-send -i %3$s %1$s %2$s', array('Failure !', $failureString, realpath(__DIR__ . '/../../../../../../../../resources/images/logo_fail.png')))->once()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf('notify-send -i %3$s %1$s %2$s', escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo_fail.png'))))->once()
 		;
 	}
 }

@@ -4,7 +4,9 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\locale
+	mageekguy\atoum\locale,
+	mageekguy\atoum\adapter,
+	mageekguy\atoum\test
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -22,12 +24,17 @@ class notifier extends atoum\test
 			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier())
 			->then
 				->object($field->getLocale())->isEqualTo(new locale())
+				->object($field->getAdapter())->isEqualTo(new adapter())
 				->variable($field->getTestNumber())->isNull()
 				->variable($field->getTestMethodNumber())->isNull()
 				->variable($field->getFailNumber())->isNull()
 				->variable($field->getErrorNumber())->isNull()
 				->variable($field->getExceptionNumber())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+			->if($adapter = new adapter())
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->then
+				->object($field->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 
@@ -183,6 +190,26 @@ class notifier extends atoum\test
 					->call('__')->withArguments('%s failure', '%s failures', $failNumber)->once()
 					->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
+		;
+	}
+
+	public function testExecute()
+	{
+		$this
+			->if($adapter = new test\adapter())
+			->and($adapter->system = function() {})
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->then
+				->variable($field->execute($command = uniqid(), array()))->isNull()
+				->adapter($adapter)
+					->call('system')->withArguments($command)->once()
+			->if($command = uniqid() . ' %s ' . ' %s ')
+			->and($arguments = array($arg = uniqid(), $otherArg = uniqid()))
+			->then
+				->variable($field->execute($command, $arguments))->isNull()
+				->adapter($adapter)
+					->call('system')->withArguments(sprintf($command, escapeshellarg($arg), escapeshellarg($otherArg)))->once()
+
 		;
 	}
 }

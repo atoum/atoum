@@ -4,11 +4,21 @@ namespace mageekguy\atoum\report\fields\runner\result;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\adapter,
 	mageekguy\atoum\report\fields\runner\result
 ;
 
 abstract class notifier extends result
 {
+	private $adapter;
+
+	public function __construct(adapter $adapter = null)
+	{
+		parent::__construct();
+
+		$this->adapter = $adapter ?: new adapter();
+	}
+
 	public function __toString()
 	{
 		return $this->notify() ?: '';
@@ -54,9 +64,13 @@ abstract class notifier extends result
 		$output = null;
 		array_walk($args, function(& $arg) { $arg = escapeshellarg($arg); });
 		array_unshift($args, $command);
-		exec(call_user_func_array('sprintf', $args), $output);
 
-		return $output;
+		$this->getAdapter()->system(call_user_func_array('sprintf', $args));
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
 	}
 
 	protected abstract function send($title, $message, $success);
