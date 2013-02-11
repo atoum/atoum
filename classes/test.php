@@ -293,7 +293,7 @@ abstract class test implements observable, \countable
 
 	public function addMethodPhpVersion($testMethodName, $version, $operator = '>=')
 	{
-		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['php'][$version] = $operator;
+		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['php'][$version] = $operator ?: '>=';
 
 		return $this;
 	}
@@ -790,7 +790,7 @@ abstract class test implements observable, \countable
 			{
 				foreach ($this->getMethodPhpVersions($testMethod) as $phpVersion => $operator)
 				{
-					if (version_compare(PHP_VERSION, $phpVersion, $operator) === false)
+					if (version_compare(phpversion(), $phpVersion, $operator) === false)
 					{
 						throw new test\exceptions\skip('PHP version ' . PHP_VERSION . ' is not ' . $operator . ' to ' . $phpVersion);
 					}

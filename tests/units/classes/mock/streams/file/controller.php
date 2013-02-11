@@ -550,13 +550,9 @@ class controller extends atoum\test
 		;
 	}
 
+	/** @php 5.4 */
 	public function testStreamMetadata()
 	{
-		if (PHP_VERSION_ID < 50400)
-		{
-			$this->skip('It\'s not possible to manage stream\'s metadata before PHP 5.4.0');
-		}
-
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
