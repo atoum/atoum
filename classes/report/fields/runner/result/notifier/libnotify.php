@@ -7,26 +7,20 @@ use
 	mageekguy\atoum\report\fields\runner\result\notifier
 ;
 
-class terminal extends notifier
+class libnotify extends notifier
 {
-	protected static function notify($title, $message, $success)
+	public function send($title, $message, $success)
 	{
-		$output = null;
-		exec(
-			sprintf(
-				static::getCommand(),
-				escapeshellarg(__DIR__ . '/../../../../../../resources/images/logo_' . ($success ? 'success' : 'fail') . '.png'),
-				escapeshellarg($title),
-				escapeshellarg($message)
-			),
-			$output
-		);
-
-		return $output ?: '';
+		return $this->execute(static::getCommand(), array($title, $message, static::getImage($success)));
 	}
 
 	private static function getCommand()
 	{
-		return 'notify-send -t %s %s %s';
+		return 'notify-send -i %3$s %1$s %2$s';
+	}
+
+	private static function getImage($success)
+	{
+		return realpath(__DIR__ . '/../../../../../../resources/images/logo_' . ($success ? 'success' : 'fail') . '.png');
 	}
 }

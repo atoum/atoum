@@ -9,24 +9,21 @@ use
 
 class growl extends notifier
 {
-	protected static function notify($title, $message, $success)
+	protected function send($title, $message, $success)
 	{
 		$output = null;
-		exec(
-			sprintf(
-				static::getCommand(),
-				escapeshellarg($title),
-				escapeshellarg($message),
-				escapeshellarg(__DIR__ . '/../../../../../../resources/images/logo_' . ($success ? 'success' : 'fail') . '.png')
-			),
-			$output
-		);
+		$this->execute(static::getCommand(), array($title, $message, static::getImage($success)));
 
-		return $output ?: '';
+		return $output;
 	}
 
 	private static function getCommand()
 	{
 		return 'growlnotify --title %s --name atoum --message %s --image %s';
+	}
+
+	private static function getImage($success)
+	{
+		return realpath(__DIR__ . '/../../../../../../resources/images/logo_' . ($success ? 'success' : 'fail') . '.png');
 	}
 }

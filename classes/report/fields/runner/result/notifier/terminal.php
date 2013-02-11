@@ -9,19 +9,9 @@ use
 
 class terminal extends notifier
 {
-	protected static function notify($title, $message, $success)
+	public function send($title, $message, $success)
 	{
-		$output = null;
-		exec(
-			sprintf(
-				static::getCommand(),
-				escapeshellarg($title),
-				escapeshellarg($message)
-			),
-			$output
-		);
-
-		return $output ?: '';
+		return $this->execute(static::getCommand(), array($title, $message));
 	}
 
 	private static function getCommand()
