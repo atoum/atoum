@@ -291,7 +291,7 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function addMethodPhpVersion($testMethodName, $version, $operator = '>=')
+	public function addMethodPhpVersion($testMethodName, $version, $operator = null)
 	{
 		$this->checkMethod($testMethodName)->testMethods[$testMethodName]['php'][$version] = $operator ?: '>=';
 
