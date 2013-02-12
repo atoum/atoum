@@ -9,13 +9,10 @@ use
 
 class terminal extends notifier
 {
+	const command = 'terminal-notifier -title %s -message %s';
+
 	public function send($title, $message, $success)
 	{
-		return $this->execute(static::getCommand(), array($title, $message));
-	}
-
-	private static function getCommand()
-	{
-		return 'terminal-notifier -title %s -message %s';
+		return $this->execute(static::command, array($title, $message));
 	}
 }

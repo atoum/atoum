@@ -9,14 +9,11 @@ use
 
 class libnotify extends notifier
 {
+	const command = 'notify-send -i %3$s %1$s %2$s';
+
 	public function send($title, $message, $success)
 	{
-		return $this->execute(static::getCommand(), array($title, $message, static::getImage($success)));
-	}
-
-	private static function getCommand()
-	{
-		return 'notify-send -i %3$s %1$s %2$s';
+		return $this->execute(static::command, array($title, $message, static::getImage($success)));
 	}
 
 	private static function getImage($success)

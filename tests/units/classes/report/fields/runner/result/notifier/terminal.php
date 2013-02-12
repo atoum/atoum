@@ -15,7 +15,11 @@ class terminal extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result\notifier');
+		$this
+			->testedClass
+				->extends('mageekguy\atoum\report\fields\runner\result\notifier')
+				->string(testedClass::command)->isEqualTo('terminal-notifier -title %s -message %s')
+		;
 	}
 
 	public function test__construct()
@@ -136,7 +140,7 @@ class terminal extends atoum\test
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s', escapeshellarg('Success !'), escapeshellarg($successString)))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString)))->once()
 			->assert('Success with several tests, several methods and several assertions,  no fail, no error, no exception')
 			->if($this->calling($runner)->getTestNumber = $testNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX))
@@ -154,7 +158,7 @@ class terminal extends atoum\test
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s', escapeshellarg('Success !'), escapeshellarg($successString)))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString)))->once()
 			->assert('Failure with several tests, several methods and several assertions, one fail, one error, one exception')
 			->if($this->calling($score)->getFailNumber = 1)
 			->and($this->calling($score)->getErrorNumber = 1)
@@ -175,7 +179,7 @@ class terminal extends atoum\test
 					->call('__')->withArguments('%s error', '%s errors', 1)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s', escapeshellarg('Failure !'), escapeshellarg($failureString)))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString)))->once()
 			->assert('Failure with several tests, several methods and several assertions, several fails, several errors, several exceptions')
 			->if($this->calling($score)->getFailNumber = $failNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX))
@@ -194,7 +198,7 @@ class terminal extends atoum\test
 					->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf('terminal-notifier -title %s -message %s', escapeshellarg('Failure !'), escapeshellarg($failureString)))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString)))->once()
 		;
 	}
 }

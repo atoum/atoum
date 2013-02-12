@@ -9,17 +9,14 @@ use
 
 class growl extends notifier
 {
+	const command = 'growlnotify --title %s --name atoum --message %s --image %s';
+
 	protected function send($title, $message, $success)
 	{
 		$output = null;
-		$this->execute(static::getCommand(), array($title, $message, static::getImage($success)));
+		$this->execute(static::command, array($title, $message, static::getImage($success)));
 
 		return $output;
-	}
-
-	private static function getCommand()
-	{
-		return 'growlnotify --title %s --name atoum --message %s --image %s';
 	}
 
 	private static function getImage($success)
