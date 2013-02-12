@@ -18,6 +18,6 @@ class libnotify extends notifier
 
 	private static function getImage($success)
 	{
-		return realpath(__DIR__ . '/../../../../../../resources/images/logo_' . ($success ? 'success' : 'fail') . '.png');
+		return realpath(__DIR__ . '/../../../../../../resources/images/logo/' . ($success ? 'success' : 'fail') . '.png');
 	}
 }
