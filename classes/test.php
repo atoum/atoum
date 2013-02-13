@@ -726,7 +726,7 @@ abstract class test implements observable, \countable
 
 	public function isIgnored()
 	{
-		return (sizeof($this) <=0 || $this->ignore === true);
+		return (sizeof($this) <= 0 || $this->ignore === true);
 	}
 
 	public function ignoreMethod($methodName, $boolean)
@@ -1080,7 +1080,13 @@ abstract class test implements observable, \countable
 					}
 				}
 			)
-			->setHandler('extensions', function($value) use ($test) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryClassExtension($mandatoryExtension); }})
+			->setHandler('extensions', function($value) use ($test) {
+					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
+					{
+						$test->addMandatoryClassExtension($mandatoryExtension);
+					}
+				}
+			)
 		;
 
 		return $this;
@@ -1140,7 +1146,13 @@ abstract class test implements observable, \countable
 					}
 				}
 			)
-			->setHandler('extensions', function($value) use ($test, & $methodName) { foreach (annotations\extractor::toArray($value) as $mandatoryExtension) { $test->addMandatoryMethodExtension($methodName, $mandatoryExtension); }})
+			->setHandler('extensions', function($value) use ($test, & $methodName) {
+					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
+					{
+						$$test->addMandatoryMethodExtension($methodName, $mandatoryExtension);
+					}
+				}
+			)
 		;
 
 		return $this;
