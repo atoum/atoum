@@ -55,8 +55,6 @@ class stream extends atoum\asserter
 		return $this;
 	}
 
-
-
 	protected function streamIsSet()
 	{
 		if ($this->streamController === null)
