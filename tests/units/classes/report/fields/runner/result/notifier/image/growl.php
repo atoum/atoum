@@ -1,24 +1,24 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
+namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier\image;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\locale,
 	mageekguy\atoum\test\adapter,
-	mageekguy\atoum\report\fields\runner\result\notifier\libnotify as testedClass
+	mageekguy\atoum\report\fields\runner\result\notifier\image\growl as testedClass
 ;
 
-require_once __DIR__ . '/../../../../../runner.php';
+require_once __DIR__ . '/../../../../../../runner.php';
 
-class libnotify extends atoum\test
+class growl extends atoum\test
 {
 	public function testClass()
 	{
 		$this
 			->testedClass
-				->extends('mageekguy\atoum\report\fields\runner\result\notifier')
-				->string(testedClass::command)->isEqualTo('notify-send -i %3$s %1$s %2$s')
+				->extends('mageekguy\atoum\report\fields\runner\result\notifier\image')
+				->string(testedClass::command)->isEqualTo('growlnotify --title %s --name atoum --message %s --image %s')
 		;
 	}
 
@@ -49,10 +49,11 @@ class libnotify extends atoum\test
 			->and($runner->setScore($score))
 			->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 			->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\libnotify())
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image\growl())
 			->and($this->calling($field)->execute = function() {})
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isFalse()
+				->variable($field->getDirectory())->isNull()
 				->variable($field->getTestNumber())->isNull()
 				->variable($field->getTestMethodNumber())->isNull()
 				->variable($field->getAssertionNumber())->isNull()
@@ -218,8 +219,8 @@ class libnotify extends atoum\test
 				->variable($field->getDirectory())->isNull()
 				->object($field->setDirectory($directory = uniqid()))->isIdenticalTo($field)
 				->string($field->getDirectory())->isEqualTo($directory)
-				->if($adapter->is_dir = false)
-				->then
+			->if($adapter->is_dir = false)
+			->then
 				->exception(function() use(& $directory, $field) {
 							$field->setDirectory($directory = uniqid());
 						}

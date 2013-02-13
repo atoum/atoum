@@ -8,19 +8,9 @@ use
 	mageekguy\atoum\report\fields\runner\result\notifier
 ;
 
-class growl extends notifier
+abstract class image extends notifier
 {
-	const command = 'growlnotify --title %s --name atoum --message %s --image %s';
-
 	protected $directory = null;
-
-	protected function send($title, $message, $success)
-	{
-		$output = null;
-		$this->execute(static::command, array($title, $message, $this->getImage($success)));
-
-		return $output;
-	}
 
 	public function setDirectory($directory)
 	{
@@ -39,8 +29,5 @@ class growl extends notifier
 		return $this->directory;
 	}
 
-	protected function getImage($success)
-	{
-		return $this->directory . DIRECTORY_SEPARATOR . ($success ? 'success' : 'fail') . '.png';
-	}
+	abstract protected function getImage($success);
 }
