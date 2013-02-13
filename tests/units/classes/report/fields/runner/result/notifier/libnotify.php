@@ -74,6 +74,7 @@ class libnotify extends atoum\test
 		$this
 			->if($adapter = new adapter())
 			->and($adapter->system = function() {})
+			->and($adapter->is_dir = true)
 			->and($score = new \mock\mageekguy\atoum\score())
 			->and($runner = new \mock\mageekguy\atoum\runner())
 			->and($this->calling($runner)->getScore = $score)
@@ -130,6 +131,7 @@ class libnotify extends atoum\test
 			->and($this->calling($score)->getExceptionNumber = 0)
 			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
+			->and($field->setDirectory($directory = uniqid()))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
@@ -140,13 +142,14 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', 1)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo/success.png'))))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg($directory . DIRECTORY_SEPARATOR . 'success.png')))->once()
 			->assert('Success with several tests, several methods and several assertions,  no fail, no error, no exception')
 			->if($this->calling($runner)->getTestNumber = $testNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX))
 			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
+			->and($field->setDirectory($directory = uniqid()))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
@@ -158,7 +161,7 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s skipped method', '%s skipped methods', 0)->once()
 					->call('__')->withArguments('%s assertion', '%s assertions', $assertionNumber)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo/success.png'))))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Success !'), escapeshellarg($successString), escapeshellarg($directory . DIRECTORY_SEPARATOR . 'success.png')))->once()
 			->assert('Failure with several tests, several methods and several assertions, one fail, one error, one exception')
 			->if($this->calling($score)->getFailNumber = 1)
 			->and($this->calling($score)->getErrorNumber = 1)
@@ -166,6 +169,7 @@ class libnotify extends atoum\test
 			->and($this->calling($score)->getUncompletedMethodNumber = 1)
 			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
+			->and($field->setDirectory($directory = uniqid()))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
@@ -179,7 +183,7 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s error', '%s errors', 1)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', 1)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo/fail.png'))))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg($directory . DIRECTORY_SEPARATOR . 'fail.png')))->once()
 			->assert('Failure with several tests, several methods and several assertions, several fails, several errors, several exceptions')
 			->if($this->calling($score)->getFailNumber = $failNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX))
@@ -187,6 +191,7 @@ class libnotify extends atoum\test
 			->and($this->calling($score)->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX))
 			->and($field = new testedClass($adapter))
 			->and($field->setLocale($locale))
+			->and($field->setDirectory($directory = uniqid()))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($field)->isEmpty()
@@ -198,7 +203,29 @@ class libnotify extends atoum\test
 					->call('__')->withArguments('%s error', '%s errors', $errorNumber)->once()
 					->call('__')->withArguments('%s exception', '%s exceptions', $exceptionNumber)->once()
 				->adapter($adapter)
-					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg(realpath(__DIR__ . '/../../../../../../../../resources/images/logo/fail.png'))))->once()
+					->call('system')->withArguments(sprintf(testedClass::command, escapeshellarg('Failure !'), escapeshellarg($failureString), escapeshellarg($directory . DIRECTORY_SEPARATOR . 'fail.png')))->once()
+		;
+	}
+
+	public function testGetSetDirectory()
+	{
+		$this
+			->if($adapter = new adapter())
+			->if($adapter->is_dir = true)
+			->if($adapter->file_exists = true)
+			->and($field = new testedClass($adapter))
+			->then
+				->variable($field->getDirectory())->isNull()
+				->object($field->setDirectory($directory = uniqid()))->isIdenticalTo($field)
+				->string($field->getDirectory())->isEqualTo($directory)
+				->if($adapter->is_dir = false)
+				->then
+				->exception(function() use(& $directory, $field) {
+							$field->setDirectory($directory = uniqid());
+						}
+					)
+						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
+						->hasMessage(sprintf('Directory %s does not exist', $directory))
 		;
 	}
 }
