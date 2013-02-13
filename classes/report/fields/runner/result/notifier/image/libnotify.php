@@ -15,9 +15,4 @@ class libnotify extends image
 	{
 		return $this->execute(static::command, array($title, $message, $this->getImage($success)));
 	}
-
-	protected function getImage($success)
-	{
-		return $this->directory . DIRECTORY_SEPARATOR . ($success ? 'success' : 'fail') . '.png';
-	}
 }

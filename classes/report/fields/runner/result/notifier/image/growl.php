@@ -19,9 +19,4 @@ class growl extends image
 
 		return $output;
 	}
-
-	protected function getImage($success)
-	{
-		return $this->directory . DIRECTORY_SEPARATOR . ($success ? 'success' : 'fail') . '.png';
-	}
 }

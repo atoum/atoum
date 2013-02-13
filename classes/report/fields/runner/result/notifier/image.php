@@ -11,23 +11,45 @@ use
 abstract class image extends notifier
 {
 	protected $directory = null;
+	protected $successImage = null;
+	protected $failureImage = null;
 
-	public function setDirectory($directory)
+	public function setSuccessImage($path)
 	{
-		if ($this->getAdapter()->is_dir($directory) === false)
+		if ($this->getAdapter()->file_exists($path) === false)
 		{
-			throw new logic\invalidArgument(sprintf('Directory %s does not exist', $directory));
+			throw new logic\invalidArgument(sprintf('File %s does not exist', $path));
 		}
 
-		$this->directory = $directory;
+		$this->successImage = $path;
 
 		return $this;
 	}
 
-	public function getDirectory()
+	public function getSuccessImage()
 	{
-		return $this->directory;
+		return $this->successImage;
 	}
 
-	abstract protected function getImage($success);
+	public function setFailureImage($path)
+	{
+		if ($this->getAdapter()->file_exists($path) === false)
+		{
+			throw new logic\invalidArgument(sprintf('File %s does not exist', $path));
+		}
+
+		$this->failureImage = $path;
+
+		return $this;
+	}
+
+	public function getFailureImage()
+	{
+		return $this->failureImage;
+	}
+
+	protected function getImage($success)
+	{
+		return $success ? $this->getSuccessImage() : $this->getFailureImage();
+	}
 }

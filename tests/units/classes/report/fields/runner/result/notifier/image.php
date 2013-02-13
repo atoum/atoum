@@ -21,24 +21,45 @@ class image extends atoum\test
 		;
 	}
 
-	public function testGetSetDirectory()
+	public function testGetSetSuccessImage()
 	{
 		$this
 			->if($adapter = new adapter())
-			->if($adapter->is_dir = true)
+			->if($adapter->file_exists = true)
 			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image($adapter))
 			->then
-				->variable($field->getDirectory())->isNull()
-				->object($field->setDirectory($directory = uniqid()))->isIdenticalTo($field)
-				->string($field->getDirectory())->isEqualTo($directory)
-			->if($adapter->is_dir = false)
+			->variable($field->getSuccessImage())->isNull()
+			->object($field->setSuccessImage($path = uniqid()))->isIdenticalTo($field)
+			->string($field->getSuccessImage())->isEqualTo($path)
+			->if($adapter->file_exists = false)
 			->then
-				->exception(function() use(& $directory, $field) {
-							$field->setDirectory($directory = uniqid());
+				->exception(function() use(& $path, $field) {
+							$field->setSuccessImage($path = uniqid());
 						}
 					)
 						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
-						->hasMessage(sprintf('Directory %s does not exist', $directory))
+						->hasMessage(sprintf('File %s does not exist', $path))
+		;
+	}
+
+	public function testGetSetFailureImage()
+	{
+		$this
+			->if($adapter = new adapter())
+			->if($adapter->file_exists = true)
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image($adapter))
+			->then
+			->variable($field->getFailureImage())->isNull()
+			->object($field->setFailureImage($path = uniqid()))->isIdenticalTo($field)
+			->string($field->getFailureImage())->isEqualTo($path)
+			->if($adapter->file_exists = false)
+			->then
+				->exception(function() use(& $path, $field) {
+							$field->setFailureImage($path = uniqid());
+						}
+					)
+						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
+						->hasMessage(sprintf('File %s does not exist', $path))
 		;
 	}
 }
