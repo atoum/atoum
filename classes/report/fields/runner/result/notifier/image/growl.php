@@ -14,9 +14,6 @@ class growl extends image
 
 	protected function send($title, $message, $success)
 	{
-		$output = null;
 		$this->execute(static::command, array($title, $message, $this->getImage($success)));
-
-		return $output;
 	}
 }

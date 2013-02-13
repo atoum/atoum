@@ -13,6 +13,6 @@ class libnotify extends image
 
 	public function send($title, $message, $success)
 	{
-		return $this->execute(static::command, array($title, $message, $this->getImage($success)));
+		$this->execute(static::command, array($title, $message, $this->getImage($success)));
 	}
 }

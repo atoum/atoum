@@ -65,7 +65,7 @@ abstract class notifier extends result
 		array_walk($args, function(& $arg) { $arg = escapeshellarg($arg); });
 		array_unshift($args, $command);
 
-		$this->getAdapter()->system(call_user_func_array('sprintf', $args));
+		return $this->getAdapter()->system(call_user_func_array('sprintf', $args));
 	}
 
 	public function getAdapter()
