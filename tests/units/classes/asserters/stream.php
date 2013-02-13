@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\stream as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,13 +14,13 @@ class stream extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->extends('mageekguy\atoum\asserter');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\stream($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->variable($asserter->getStreamController())->isNull()
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -31,7 +31,7 @@ class stream extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\stream($generator = new asserter\generator()))
+			->if($asserter = new testedClass(new asserter\generator()))
 			->then
 				->object($asserter->setWith($stream = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getStreamController())->isEqualTo(atoum\mock\stream::get($stream))
@@ -45,7 +45,7 @@ class stream extends atoum\test
 	public function testIsRead()
 	{
 		$this
-			->if($asserter = new asserters\stream($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isRead(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -65,7 +65,7 @@ class stream extends atoum\test
 	public function testIsWrited()
 	{
 		$this
-			->if($asserter = new asserters\stream($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isWrited(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
