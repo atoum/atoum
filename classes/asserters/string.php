@@ -155,6 +155,20 @@ class string extends asserters\variable
 		return $this;
 	}
 
+	public function wasWrittenTo(atoum\mock\stream\controller $streamController, $failMessage = null)
+	{
+		if ($this->valueIsSet()->searchValueInWriteCallsOf($streamController) === false)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s'), $streamController));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	protected static function check($value, $method)
 	{
 		if (self::isString($value) === false)
@@ -166,5 +180,24 @@ class string extends asserters\variable
 	protected static function isString($value)
 	{
 		return (is_string($value) === true);
+	}
+
+	private function searchValueInWriteCallsOf(atoum\mock\stream\controller $streamController)
+	{
+		$valueWasWritten = true;
+
+		if ($this->value !== '')
+		{
+			$writtenData = '';
+
+			foreach ($streamController->getCalls('stream_write') ?: array() as $writeCall)
+			{
+				$writtenData .= $writeCall[0];
+			}
+
+			$valueWasWritten = (substr_count($writtenData, $this->value) > 0);
+		}
+
+		return $valueWasWritten;
 	}
 }
