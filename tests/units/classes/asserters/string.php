@@ -266,4 +266,28 @@ class string extends atoum\test
 				->object($asserter->wasWrittenTo($stream))->isIdenticalTo($asserter)
 		;
 	}
+
+	public function testAtOffset()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->atOffset(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = uniqid()))
+			->then
+				->exception(function() use ($asserter) { $asserter->atOffset(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Stream is undefined')
+			->if($stream = atoum\mock\streams\file::get(uniqid()))
+			->and(file_put_contents($stream, $string))
+			->and($asserter->wasWrittenTo($stream))
+			->then
+				->object($asserter->atOffset(0))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $stream) { $asserter->atOffset(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String was not written to %s at offset %d'), $stream, 1))
+		;
+	}
 }

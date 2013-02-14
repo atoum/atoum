@@ -12,6 +12,7 @@ use
 class string extends asserters\variable
 {
 	protected $charlist = null;
+	protected $streamController = null;
 
 	public function __construct(asserter\generator $generator, atoum\adapter $adapter = null)
 	{
@@ -157,13 +158,43 @@ class string extends asserters\variable
 
 	public function wasWrittenTo(atoum\mock\stream\controller $streamController, $failMessage = null)
 	{
+		$this->streamController = $streamController;
+
 		if ($this->valueIsSet()->searchValueInWriteCallsOf($streamController) === false)
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s'), $streamController));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s'), $this->streamController));
 		}
 		else
 		{
 			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function atOffset($offset, $failMessage = null)
+	{
+		if ($this->valueIsSet()->streamController === null)
+		{
+			throw new exceptions\logic('Stream is undefined');
+		}
+		else
+		{
+			$writtenData = '';
+
+			foreach ($this->streamController->getCalls('stream_write') ?: array() as $writeCall)
+			{
+				$writtenData .= $writeCall[0];
+			}
+
+			if (strpos($writtenData, $this->value) === $offset)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s at offset %d'), $this->streamController, $offset));
+			}
 		}
 
 		return $this;
@@ -182,7 +213,7 @@ class string extends asserters\variable
 		return (is_string($value) === true);
 	}
 
-	private function searchValueInWriteCallsOf(atoum\mock\stream\controller $streamController)
+	private function searchValueInWriteCallsOf()
 	{
 		$valueWasWritten = true;
 
@@ -190,7 +221,7 @@ class string extends asserters\variable
 		{
 			$writtenData = '';
 
-			foreach ($streamController->getCalls('stream_write') ?: array() as $writeCall)
+			foreach ($this->streamController->getCalls('stream_write') ?: array() as $writeCall)
 			{
 				$writtenData .= $writeCall[0];
 			}
