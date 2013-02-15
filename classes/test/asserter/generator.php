@@ -49,6 +49,15 @@ class generator extends asserter\generator
 
 	public function asserterFail(atoum\asserter $asserter, $reason)
 	{
+                if(is_object($reason) && method_exists($reason, '__toString'))
+                {
+                    $reason = (string) $reason;
+                }
+                
+                if(!is_string($reason)) {
+                    throw new asserter\exception('Assertion custom message should be either a string or an object implementing __toString()');
+                }
+                
 		$file = $this->test->getPath();
 		$line = null;
 		$class = $this->test->getClass();

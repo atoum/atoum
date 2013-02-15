@@ -96,4 +96,45 @@ class generator extends atoum\test
 				->array($generator->getAliases())->isEmpty()
 		;
 	}
+    
+    public function testPreviousAsserterIsFilled()
+    {
+        $var = 'test';
+        $this
+			->if($generator = new asserter\generator())
+                ->then
+                    ->variable($generator->getPreviousAsserter())->isNull()
+            ->and($generator->variable($var))
+			->then
+				->string($generator->getPreviousAsserter())->isEqualTo('variable');
+		;
+    }
+    
+    public function testAssertersCanSetExpectedAsserter()
+    {
+        $array = array('a' => 'value');
+        $this
+			->if($generator = new asserter\generator())
+                ->then
+                    ->array($generator->getExpectedAsserter())->isEmpty()
+            ->if($generator->setExpectedAsserter('asserter'))
+			->then
+				->array($generator->getExpectedAsserter())->isEqualTo(array('asserter'))
+            ->if($generator->setExpectedAsserter(array('asserter', 'otherAsserter')))
+			->then
+				->array($generator->getExpectedAsserter())->isEqualTo(array('asserter', 'otherAsserter'))
+		;
+    }
+    
+    public function testAssertionIsThrownIfAsserterIsDifferentFromExpected()
+    {
+        $this
+            ->if($generator = new asserter\generator)
+            ->and($generator->setExpectedAsserter('non-existing-asserter'))
+            ->then
+                ->exception(function() use ($generator) {
+                    $generator->variable($generator);
+                })->isInstanceOf('\mageekguy\atoum\exceptions\logic')
+                        ->hasMessage(sprintf('asserter %s is expected to be called just after asserter %s', implode(' or ', $generator->getExpectedAsserter()), $generator->getPreviousAsserter()));
+    }
 }
