@@ -364,4 +364,44 @@ class phpArray extends atoum\test
 			->object($asserter->hasKeys(array(0, 2, 4)))->isIdenticalTo($asserter)
 		;
 	}
+    
+    public function testContainsAt()
+	{
+		$this
+			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->containsAt(uniqid(), uniqid()); })
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array('key' => 'value')))
+			->then
+				->exception(function() use ($asserter, & $unexistentKey, & $notInArray) { $asserter->containsAt($unexistentKey = uniqid(), $notInArray = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain %s at key %s'), $asserter, $asserter->getTypeOf($notInArray), $asserter->getTypeOf($unexistentKey)))
+				->object($asserter->containsAt('key', 'value'))->isIdenticalTo($asserter)
+        ;
+	}
+    
+    public function testStrictlyContainsAt()
+	{
+		$this
+			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->strictlyContainsAt(uniqid(), uniqid()); })
+                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array('key' => $value = uniqid())))
+			->then
+				->exception(function() use ($asserter, & $unexistentKey, & $notInArray) { $asserter->strictlyContainsAt($unexistentKey = uniqid(), $notInArray = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly %s at key %s'), $asserter, $asserter->getTypeOf($notInArray), $asserter->getTypeOf($unexistentKey)))
+				->exception(function() use ($asserter, $value) { $asserter->strictlyContainsAt('key', (int) $value); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly %s at key %s'), $asserter, $asserter->getTypeOf((int) $value), "string(3) 'key'"))
+				->object($asserter->strictlyContainsAt('key', $value))->isIdenticalTo($asserter)
+        ;
+	}
+
 }

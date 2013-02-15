@@ -91,6 +91,16 @@ class phpArray extends asserters\variable
 	{
 		return $this->notContainsValue($value, $failMessage, false);
 	}
+    
+    public function containsAt($key, $value, $failMessage = null)
+    {
+        return $this->containsValueAt($key, $value, $failMessage, false);
+    }
+    
+    public function strictlyContainsAt($key, $value, $failMessage = null)
+    {
+        return $this->containsValueAt($key, $value, $failMessage, true);
+    }
 
 	public function hasKeys(array $keys, $failMessage = null)
 	{
@@ -204,6 +214,25 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
+    public function containsValueAt($key, $value, $failMessage, $strict)
+    {
+        if(isset($this->valueIsSet()->value[$key]) && (($strict && $this->valueIsSet()->value[$key] === $value) || (!$strict && $this->valueIsSet()->value[$key] == $value)))
+        {
+            $this->pass();
+        }
+		else if ($strict === false)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key)));
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain strictly %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key)));
+		}
+        
+        return $this;
+
+    }
+    
 	protected function intersect(array $values, $failMessage, $strict)
 	{
 		$unknownValues = array();
