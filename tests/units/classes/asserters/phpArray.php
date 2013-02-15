@@ -56,6 +56,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, & $size) { $asserter->hasSize($size = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has not size %d'), $asserter, $size))
+				->exception(function() use ($asserter, & $size, & $message) { $asserter->hasSize($size = rand(1, PHP_INT_MAX), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->hasSize(0))->isIdenticalTo($asserter)
 		;
 	}
@@ -74,6 +77,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not empty'), $asserter))
+				->exception(function() use ($asserter, & $message) { $asserter->isEmpty($message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 			->if($asserter->setWith(array()))
 			->then
 				->object($asserter->isEmpty())->isIdenticalTo($asserter)
@@ -94,6 +100,9 @@ class phpArray extends atoum\test
 					->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s is empty'), $asserter))
+					->exception(function() use ($asserter, & $message) { $asserter->isNotEmpty($message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
 				->if($asserter->setWith(array(uniqid())))
 				->then
 					->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
@@ -133,9 +142,15 @@ class phpArray extends atoum\test
 					->exception(function() use ($asserter) { $asserter->containsValues(array(6)); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array(6))))
+					->exception(function() use ($asserter, & $message) { $asserter->containsValues(array(6), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
 					->exception(function() use ($asserter) { $asserter->containsValues(array('6')); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s does not contain values %s'), $asserter, $asserter->getTypeOf(array('6'))))
+					->exception(function() use ($asserter, & $message) { $asserter->containsValues(array('6'), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
 					->object($asserter->containsValues(array(1)))->isIdenticalTo($asserter)
 					->object($asserter->containsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
 					->object($asserter->containsValues(array('1', 2, '4')))->isIdenticalTo($asserter)
@@ -156,9 +171,12 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->notContainsValues(array(1, 6)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array(1))))
-				->exception(function() use ($asserter) { $asserter->notContainsValues(array('1', '6')); })
+				->exception(function() use ($asserter, & $message) { $asserter->notContainsValues(array(1, 6), $message = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s should not contain values %s'), $asserter, $asserter->getTypeOf(array('1'))))
+					->hasMessage($message)
+				->exception(function() use ($asserter, & $message) { $asserter->notContainsValues(array('1', '6'), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->containsValues(array(1)))->isIdenticalTo($asserter)
 				->object($asserter->containsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
 				->object($asserter->containsValues(array('1', 2, '4')))->isIdenticalTo($asserter)
@@ -179,17 +197,23 @@ class phpArray extends atoum\test
 					->exception(function() use ($asserter) { $asserter->strictlyContainsValues(array(6)); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly values %s'), $asserter, $asserter->getTypeOf(array(6))))
-            ->exception(function() use ($asserter) { $asserter->strictlyContainsValues(array('6')); })
-                ->isInstanceOf('mageekguy\atoum\asserter\exception')
-                ->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly values %s'), $asserter, $asserter->getTypeOf(array('6'))))
-            ->exception(function() use ($asserter) { $asserter->strictlyContainsValues(array('1')); })
-                ->isInstanceOf('mageekguy\atoum\asserter\exception')
-                ->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly values %s'), $asserter, $asserter->getTypeOf(array('1'))))
-            ->object($asserter->strictlyContainsValues(array(1)))->isIdenticalTo($asserter)
-            ->object($asserter->strictlyContainsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
-				 ->exception(function() use ($asserter) { $asserter->strictlyContainsValues(array('1', 2, '4')); })
-					  ->isInstanceOf('mageekguy\atoum\asserter\exception')
-					  ->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly values %s'), $asserter, $asserter->getTypeOf(array('1', '4'))))
+					->exception(function() use ($asserter, & $message) { $asserter->strictlyContainsValues(array(6), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
+					->exception(function() use ($asserter) { $asserter->strictlyContainsValues(array('6')); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly values %s'), $asserter, $asserter->getTypeOf(array('6'))))
+					->exception(function() use ($asserter, & $message) { $asserter->strictlyContainsValues(array('6'), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
+					->exception(function() use ($asserter, & $message) { $asserter->strictlyContainsValues(array('1'), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
+					->object($asserter->strictlyContainsValues(array(1)))->isIdenticalTo($asserter)
+					->object($asserter->strictlyContainsValues(array(1, 2, 4)))->isIdenticalTo($asserter)
+					 ->exception(function() use ($asserter, & $message) { $asserter->strictlyContainsValues(array('1', 2, '4'), $message = uniqid()); })
+						 ->isInstanceOf('mageekguy\atoum\asserter\exception')
+						 ->hasMessage($message)
 		;
 	}
 
@@ -207,9 +231,12 @@ class phpArray extends atoum\test
 					->exception(function() use ($asserter) { $asserter->strictlyNotContainsValues(array(1)); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s should not contain strictly values %s'), $asserter, $asserter->getTypeOf(array(1))))
-					->exception(function() use ($asserter) { $asserter->strictlyNotContainsValues(array(1, '2', 3)); })
+					->exception(function() use ($asserter, & $message) { $asserter->strictlyNotContainsValues(array(1), $message = uniqid()); })
 						->isInstanceOf('mageekguy\atoum\asserter\exception')
-						->hasMessage(sprintf($generator->getLocale()->_('%s should not contain strictly values %s'), $asserter, $asserter->getTypeOf(array(1, 3))))
+						->hasMessage($message)
+					->exception(function() use ($asserter, & $message) { $asserter->strictlyNotContainsValues(array(1, '2', 3), $message = uniqid()); })
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($message)
 					->object($asserter->strictlyNotContainsValues(array('1')))->isIdenticalTo($asserter)
 					->object($asserter->strictlyNotContainsValues(array(6, 7, '2', 8)))->isIdenticalTo($asserter)
 		;
@@ -229,6 +256,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) {$asserter->strictlyContains('1'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s does not strictly contain %s'), $asserter, $asserter->getTypeOf('1')))
+				->exception(function() use ($asserter, & $message) {$asserter->strictlyContains('1', $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
 		;
 	}
@@ -247,6 +277,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) {$asserter->strictlyNotContains(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s contains strictly %s'), $asserter, $asserter->getTypeOf(1)))
+				->exception(function() use ($asserter, & $message) {$asserter->strictlyNotContains(1, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->strictlyNotContains('1'))->isIdenticalTo($asserter)
 		;
 	}
@@ -266,9 +299,15 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, $inArray) { $asserter->notContains($inArray); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf($inArray)))
+				->exception(function() use ($asserter, $inArray, & $message) { $asserter->notContains($inArray, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->exception(function() use($asserter, $inArray){ $asserter->notContains((string) $inArray); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf((string) $inArray)))
+				->exception(function() use($asserter, $inArray, & $message){ $asserter->notContains((string) $inArray, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
         ;
 	}
 
@@ -286,6 +325,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter, & $key) { $asserter->hasKey($key = rand(1, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key)))
+				->exception(function() use ($asserter, & $key, & $message) { $asserter->hasKey($key = rand(1, PHP_INT_MAX), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 			->if($asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid())))
 			->then
 				->object($asserter->hasKey(0))->isIdenticalTo($asserter)
@@ -296,6 +338,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->hasKey(5); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf(5)))
+				->exception(function() use ($asserter, & $message) { $asserter->hasKey(5, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 		;
 	}
 
@@ -316,6 +361,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->notHasKey(0); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s has a key %s'), $asserter, $asserter->getTypeOf(0)))
+				->exception(function() use ($asserter, & $message) { $asserter->notHasKey(0, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->notHasKey(5))->isIdenticalTo($asserter)
 		;
 	}
@@ -338,6 +386,9 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->notHasKeys(array(0, 'premier', 2)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s should not have keys %s'), $asserter, $asserter->getTypeOf(array(0, 2))))
+				->exception(function() use ($asserter, & $message) { $asserter->notHasKeys(array(0, 'premier', 2), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 				->object($asserter->notHasKeys(array(5, '6')))->isIdenticalTo($asserter)
 		;
 	}
@@ -356,12 +407,18 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->hasKeys(array(0)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array(0))))
+				->exception(function() use ($asserter, & $message) { $asserter->hasKeys(array(0), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
 			->if($asserter->setWith(array(uniqid(), uniqid(), uniqid(), uniqid(), uniqid())))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasKeys(array(0, 'first', 2, 'second')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s should have keys %s'), $asserter, $asserter->getTypeOf(array('first', 'second'))))
-			->object($asserter->hasKeys(array(0, 2, 4)))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $message) { $asserter->hasKeys(array(0, 'first', 2, 'second'), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+				->object($asserter->hasKeys(array(0, 2, 4)))->isIdenticalTo($asserter)
 		;
 	}
 }

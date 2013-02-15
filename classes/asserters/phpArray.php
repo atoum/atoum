@@ -34,7 +34,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
 		}
 
 		return $this;
@@ -48,9 +48,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$diff = new diffs\variable();
-
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not empty'), $this)));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is not empty'), $this));
 		}
 
 		return $this;
@@ -64,9 +62,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$diff = new diffs\variable();
-
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is empty'), $this)));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is empty'), $this));
 		}
 
 		return $this;
@@ -100,7 +96,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should have keys %s'), $this, $this->getTypeOf($undefinedKeys))));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s should have keys %s'), $this, $this->getTypeOf($undefinedKeys)));
 		}
 
 		return $this;
@@ -114,7 +110,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should not have keys %s'), $this, $this->getTypeOf($definedKeys))));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s should not have keys %s'), $this, $this->getTypeOf($definedKeys)));
 		}
 
 		return $this;
@@ -128,7 +124,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($key))));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has no key %s'), $this, $this->getTypeOf($key)));
 		}
 
 		return $this;
@@ -142,7 +138,7 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has a key %s'), $this, $this->getTypeOf($key))));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s has a key %s'), $this, $this->getTypeOf($key)));
 		}
 
 		return $this;
