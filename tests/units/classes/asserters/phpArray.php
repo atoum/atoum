@@ -221,7 +221,7 @@ class phpArray extends atoum\test
 			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
+				->exception(function() use ($asserter) { $asserter->strictlyContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
 			->and($asserter->setWith(array(1)))
@@ -383,7 +383,7 @@ class phpArray extends atoum\test
                     ->boolean($asserter->valueWasChecked())->isTrue();
     }
     
-    public function testAtKey()
+    public function testAtKeyAfterContains()
 	{
 		$this
 			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
@@ -392,19 +392,15 @@ class phpArray extends atoum\test
 				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
-			->then($asserter->setWith(array('key' => $value = uniqid())))
-            ->then
-               ->boolean($asserter->valueWasChecked())->isFalse()
-				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
-                ->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage('No value was previously checked on array')
-
+			->then($asserter->setWith(array('key' => $value = uniqid(), 'wrong-key' => 'other value')))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->contains($value)->atKey('non-existing-key'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s associated to key %s, not %s'), $asserter, $asserter->getTypeOf($value), $asserter->getTypeOf(array_search($value, array('key' => $value))), $asserter->getTypeOf('non-existing-key')))
-				->object($asserter->contains($value)->atKey('key'))->isIdenticalTo($asserter)
-                ->boolean($asserter->valueWasChecked())->isFalse()
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s at key %s, but %s has no key %s'), $asserter, $asserter->getTypeOf($value), $asserter->getTypeOf('key'), $asserter, $asserter->getTypeOf('non-existing-key')))
+                ->exception(function() use ($asserter, $value) { $asserter->contains($value)->atKey('wrong-key'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s at key %s, not %s'), $asserter, $asserter->getTypeOf($value), $asserter->getTypeOf(array_search($value, array('key' => $value))), $asserter->getTypeOf('wrong-key')))
+				->object($asserter->contains($value)->atKey('key'))->isIdenticalTo($asserter);
         ;
 	}
 
