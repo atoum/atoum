@@ -49,8 +49,7 @@ class libnotify extends atoum\test
 			->and($runner->setScore($score))
 			->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 			->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image\libnotify())
-			->and($this->calling($field)->execute = function() {})
+			->and($field = new testedClass())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isFalse()
 				->variable($field->getSuccessImage())->isNull()
