@@ -10,6 +10,9 @@ use
 
 class phpArray extends asserters\variable
 {
+    
+    protected $lastContainedValueChecked;
+    
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
@@ -92,16 +95,6 @@ class phpArray extends asserters\variable
 		return $this->notContainsValue($value, $failMessage, false);
 	}
     
-    public function containsAt($key, $value, $failMessage = null)
-    {
-        return $this->containsValueAt($key, $value, $failMessage, false);
-    }
-    
-    public function strictlyContainsAt($key, $value, $failMessage = null)
-    {
-        return $this->containsValueAt($key, $value, $failMessage, true);
-    }
-
 	public function hasKeys(array $keys, $failMessage = null)
 	{
 		if (sizeof($undefinedKeys = array_diff($keys, array_keys($this->value))) <= 0)
@@ -182,6 +175,7 @@ class phpArray extends asserters\variable
 	{
 		if (in_array($value, $this->valueIsSet()->value, $strict) === true)
 		{
+            $this->lastContainedValueChecked = $value;
 			$this->pass();
 		}
 		else if ($strict === false)
@@ -214,24 +208,31 @@ class phpArray extends asserters\variable
 		return $this;
 	}
 
-    public function containsValueAt($key, $value, $failMessage, $strict)
-    {
-        if(isset($this->valueIsSet()->value[$key]) && (($strict && $this->valueIsSet()->value[$key] === $value) || (!$strict && $this->valueIsSet()->value[$key] == $value)))
-        {
-            $this->pass();
-        }
-		else if ($strict === false)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key)));
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain strictly %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key)));
-		}
-        
-        return $this;
+   public function atKey($key, $failMessage = null)
+   {
+       
+       $array = $this->valueIsSet()->value;
+       if(!$this->valueWasChecked())
+       {
+           $this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('No value was previously checked on array'))));
+       } 
+       else 
+       {
+       
+            if(isset($array[$key]) && $array[$key] == $this->lastContainedValueChecked)
+            {
+                $this->pass();
+            } else 
+            {
+                 $this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s associated to key %s, not %s'), $this, $this->getTypeOf($this->lastContainedValueChecked), $this->getTypeOf(array_search($this->lastContainedValueChecked, $array)), $this->getTypeOf($key)));
+            }    
 
-    }
+       }
+       
+       $this->lastContainedValueChecked = null;
+       
+       return $this;
+   }
     
 	protected function intersect(array $values, $failMessage, $strict)
 	{
@@ -300,4 +301,10 @@ class phpArray extends asserters\variable
 	{
 		return (is_array($value) === true);
 	}
+    
+    public function valueWasChecked()
+    {
+        $this->valueIsSet();
+        return (bool) $this->lastContainedValueChecked;
+    }
 }

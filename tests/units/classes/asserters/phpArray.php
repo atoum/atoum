@@ -365,42 +365,46 @@ class phpArray extends atoum\test
 		;
 	}
     
-    public function testContainsAt()
-	{
-		$this
+    public function testValueWasChecked()
+    {
+        $this
 			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
-			->then
+            ->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->containsAt(uniqid(), uniqid()); })
+				->exception(function() use ($asserter) { $asserter->valueWasChecked(); })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array('key' => 'value')))
+            ->then($asserter->setWith(array('key' => 'value')))
 			->then
-				->exception(function() use ($asserter, & $unexistentKey, & $notInArray) { $asserter->containsAt($unexistentKey = uniqid(), $notInArray = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain %s at key %s'), $asserter, $asserter->getTypeOf($notInArray), $asserter->getTypeOf($unexistentKey)))
-				->object($asserter->containsAt('key', 'value'))->isIdenticalTo($asserter)
-        ;
-	}
+                ->boolean($asserter->valueWasChecked())->isFalse()
+            ->then
+                ->if($asserter->contains('value'))
+                ->then
+                    ->boolean($asserter->valueWasChecked())->isTrue();
+    }
     
-    public function testStrictlyContainsAt()
+    public function testAtKey()
 	{
 		$this
 			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
-				->exception(function() use ($asserter) { $asserter->strictlyContainsAt(uniqid(), uniqid()); })
+				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array('key' => $value = uniqid())))
+			->then($asserter->setWith(array('key' => $value = uniqid())))
+            ->then
+               ->boolean($asserter->valueWasChecked())->isFalse()
+				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
+                ->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('No value was previously checked on array')
+
 			->then
-				->exception(function() use ($asserter, & $unexistentKey, & $notInArray) { $asserter->strictlyContainsAt($unexistentKey = uniqid(), $notInArray = uniqid()); })
+				->exception(function() use ($asserter, $value) { $asserter->contains($value)->atKey('non-existing-key'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly %s at key %s'), $asserter, $asserter->getTypeOf($notInArray), $asserter->getTypeOf($unexistentKey)))
-				->exception(function() use ($asserter, $value) { $asserter->strictlyContainsAt('key', (int) $value); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain strictly %s at key %s'), $asserter, $asserter->getTypeOf((int) $value), "string(3) 'key'"))
-				->object($asserter->strictlyContainsAt('key', $value))->isIdenticalTo($asserter)
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s associated to key %s, not %s'), $asserter, $asserter->getTypeOf($value), $asserter->getTypeOf(array_search($value, array('key' => $value))), $asserter->getTypeOf('non-existing-key')))
+				->object($asserter->contains($value)->atKey('key'))->isIdenticalTo($asserter)
+                ->boolean($asserter->valueWasChecked())->isFalse()
         ;
 	}
 
