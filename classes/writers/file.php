@@ -5,6 +5,7 @@ namespace mageekguy\atoum\writers;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\reports,
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\report\writers
 ;
 
@@ -12,7 +13,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 {
 	protected $filename = null;
 
-	private $handler = null;
+	private $resource = null;
 
 	const defaultFileName = 'atoum.log';
 
@@ -25,32 +26,27 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function __destruct()
 	{
-		if ($this->handler !== null)
-		{
-			$this->adapter->fclose($this->handler);
-		}
+		$this->closeFile();
 	}
 
 	public function write($something)
 	{
-		if ($this->handler === null)
+		if (strlen($something) != $this->openFile()->adapter->fwrite($this->resource, $something))
 		{
-			$dir = $this->adapter->dirname($this->filename);
-
-			if ($this->adapter->is_writable($dir))
-			{
-				$this->handler = $this->adapter->fopen($this->filename, 'w');
-			}
+			throw  new exceptions\runtime('Unable to write in file \'' . $this->filename . '\'');
 		}
 
-		$this->adapter->fwrite($this->handler, $something);
+		$this->adapter->fflush($this->resource);
 
 		return $this;
 	}
 
 	public function clear()
 	{
-		$this->adapter->ftruncate($this->handler, 0);
+		if ($this->openFile()->adapter->ftruncate($this->resource, 0) === false)
+		{
+			throw  new exceptions\runtime('Unable to truncate file \'' . $this->filename . '\'');
+		}
 
 		return $this;
 	}
@@ -67,10 +63,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function setFilename($filename)
 	{
-		if ($this->handler === null)
-		{
-			$this->filename = $filename;
-		}
+		$this->closeFile()->filename = $filename;
 
 		return $this;
 	}
@@ -78,5 +71,32 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	public function getFilename()
 	{
 		return $this->filename;
+	}
+
+	private function openFile()
+	{
+		if ($this->resource === null)
+		{
+			$this->resource = $this->adapter->fopen($this->filename, 'w') ?: null;
+
+			if ($this->resource === null)
+			{
+				throw  new exceptions\runtime('Unable to open file \'' . $this->filename . '\'');
+			}
+		}
+
+		return $this;
+	}
+
+	private function closeFile()
+	{
+		if ($this->resource !== null)
+		{
+			$this->adapter->fclose($this->resource);
+
+			$this->resource = null;
+		}
+
+		return $this;
 	}
 }
