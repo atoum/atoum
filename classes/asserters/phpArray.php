@@ -170,13 +170,21 @@ class phpArray extends asserters\variable
 		{
 			$this->pass();
 		}
-		else if ($strict === false)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value)));
-		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not strictly contain %s'), $this, $this->getTypeOf($value)));
+			if ($failMessage === null)
+			{
+				if ($strict === false)
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s does not contain %s'), $this, $this->getTypeOf($value));
+				}
+				else
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s'), $this, $this->getTypeOf($value));
+				}
+			}
+
+			$this->fail($failMessage);
 		}
 
 		return $this;
@@ -188,13 +196,22 @@ class phpArray extends asserters\variable
 		{
 			$this->pass();
 		}
-		else if ($strict === false)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value)));
-		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s contains strictly %s'), $this, $this->getTypeOf($value)));
+			if ($failMessage === null)
+			{
+				if ($strict === false)
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value));
+				}
+				else
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s contains strictly %s'), $this, $this->getTypeOf($value));
+				}
+
+			}
+
+			$this->fail($failMessage);
 		}
 
 		return $this;
@@ -213,13 +230,21 @@ class phpArray extends asserters\variable
 		{
 			$this->pass();
 		}
-		else if ($strict === false)
-		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain values %s'), $this, $this->getTypeOf($unknownValues))));
-		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s does not contain strictly values %s'), $this, $this->getTypeOf($unknownValues))));
+			if ($failMessage === null)
+			{
+				if ($strict === false)
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s does not contain values %s'), $this, $this->getTypeOf($unknownValues));
+				}
+				else
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s does not contain strictly values %s'), $this, $this->getTypeOf($unknownValues));
+				}
+			}
+
+			$this->fail($failMessage);
 		}
 
 		return $this;
@@ -238,13 +263,21 @@ class phpArray extends asserters\variable
 		{
 			$this->pass();
 		}
-		else if ($strict === false)
-		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should not contain values %s'), $this, $this->getTypeOf($knownValues))));
-		}
 		else
 		{
-			$this->fail(($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s should not contain strictly values %s'), $this, $this->getTypeOf($knownValues))));
+			if ($failMessage === null)
+			{
+				if ($strict === false)
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s should not contain values %s'), $this, $this->getTypeOf($knownValues));
+				}
+				else
+				{
+					$failMessage = sprintf($this->getLocale()->_('%s should not contain strictly values %s'), $this, $this->getTypeOf($knownValues));
+				}
+			}
+
+			$this->fail($failMessage);
 		}
 
 		return $this;
