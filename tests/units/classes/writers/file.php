@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units\writers;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\writers
+	mageekguy\atoum\writers\file as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -23,18 +23,18 @@ class file extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($file = new writers\file())
+			->if($file = new testedClass())
 			->then
 				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->string($file->getFilename())->isEqualTo('atoum.log')
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->fopen = function() {})
 			->and($adapter->fclose = function() {})
-			->and($file = new writers\file(null, $adapter))
+			->and($file = new testedClass(null, $adapter))
 			->then
 				->object($file->getAdapter())->isIdenticalTo($adapter)
 				->string($file->getFilename())->isEqualTo('atoum.log')
-			->if($file = new writers\file('test.log'))
+			->if($file = new testedClass('test.log'))
 			->then
 				->string($file->getFilename())->isEqualTo('test.log')
 		;
@@ -43,7 +43,7 @@ class file extends atoum\test
 	public function testClassConstants()
 	{
 		$this
-			->string(writers\file::defaultFileName)->isEqualTo('atoum.log')
+			->string(testedClass::defaultFileName)->isEqualTo('atoum.log')
 		;
 	}
 
@@ -55,7 +55,7 @@ class file extends atoum\test
 			->and($adapter->fwrite = function() {})
 			->and($adapter->fclose = function() {})
 			->and($adapter->is_writable = function() { return true; })
-			->and($file = new writers\file(null, $adapter))
+			->and($file = new testedClass(null, $adapter))
 			->and($file->write('something'))
 			->then
 				->when(function() use ($file) { $file->__destruct(); })
@@ -73,7 +73,7 @@ class file extends atoum\test
 			->and($adapter->fclose = function() {})
 			->and($adapter->fwrite = function() {})
 			->and($adapter->is_writable = function() { return true; })
-			->and($file = new writers\file(null, $adapter))
+			->and($file = new testedClass(null, $adapter))
 			->and($adapter->resetCalls())
 			->then
 				->object($file->write($string = uniqid()))->isIdenticalTo($file)
@@ -103,7 +103,7 @@ class file extends atoum\test
 			->and($adapter->fwrite = function() {})
 			->and($adapter->is_writable = function() { return true; })
 			->and($adapter->is_null = function() { return true; })
-			->and($file = new writers\file(null,$adapter))
+			->and($file = new testedClass(null,$adapter))
 			->then
 				->string($file->getFilename())->isEqualTo('atoum.log')
 			->if($file->setFilename('anotherName'))
@@ -120,7 +120,7 @@ class file extends atoum\test
 	public function testGetFilename()
 	{
 		$this
-			->if($file = new writers\file())
+			->if($file = new testedClass())
 			->then
 				->string($file->getFilename())->isEqualTo('atoum.log')
 			->if($file->setFilename('anotherName'))
