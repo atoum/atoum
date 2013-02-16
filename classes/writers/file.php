@@ -25,7 +25,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function __destruct()
 	{
-		if($this->handler !== null)
+		if ($this->handler !== null)
 		{
 			$this->adapter->fclose($this->handler);
 		}
@@ -33,11 +33,11 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function write($something)
 	{
-		if($this->handler === null)
+		if ($this->handler === null)
 		{
 			$dir = $this->adapter->dirname($this->filename);
 
-			if($this->adapter->is_writable($dir))
+			if ($this->adapter->is_writable($dir))
 			{
 				$this->handler = $this->adapter->fopen($this->filename, 'w');
 			}
@@ -67,7 +67,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function setFilename($filename)
 	{
-		if($this->handler === null)
+		if ($this->handler === null)
 		{
 			$this->filename = $filename;
 		}
