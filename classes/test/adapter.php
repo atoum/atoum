@@ -119,6 +119,33 @@ class adapter extends atoum\adapter
 		return $calls;
 	}
 
+	public function getTimeline($functionName = null)
+	{
+		$timeline = array();
+
+		foreach ($this->calls as $calledFunctionName => $calls)
+		{
+			if ($functionName === null)
+			{
+				foreach ($calls as $number => $arguments)
+				{
+					$timeline[$number] = array($calledFunctionName => $arguments);
+				}
+			}
+			else if ($calledFunctionName === $functionName)
+			{
+				foreach ($calls as $number => $arguments)
+				{
+					$timeline[$number] = $arguments;
+				}
+			}
+		}
+
+		ksort($timeline, SORT_NUMERIC);
+
+		return $timeline;
+	}
+
 	public function resetCalls($functionName = null)
 	{
 		if ($functionName === null)

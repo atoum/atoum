@@ -254,6 +254,55 @@ class adapter extends test
 		;
 	}
 
+	public function testGetTimeline()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->getTimeline())->isEmpty()
+			->if($adapter->md5($md5arg1 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1))
+					)
+				)
+			->if($adapter->md5($md5arg2 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2))
+					)
+				)
+			->if($adapter->sha1($sha1arg1 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2)),
+						3 => array('sha1' => array($sha1arg1))
+					)
+				)
+			->if($adapter->md5($md5arg3 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2)),
+						3 => array('sha1' => array($sha1arg1)),
+						4 => array('md5' => array($md5arg3))
+					)
+				)
+				->array($adapter->getTimeline('md5'))->isEqualTo(array(
+						1 => array($md5arg1),
+						2 => array($md5arg2),
+						4 => array($md5arg3)
+					)
+				)
+				->array($adapter->getTimeline('sha1'))->isEqualTo(array(
+						3 => array($sha1arg1)
+					)
+				)
+		;
+	}
+
 	public function testAddCall()
 	{
 		$this
