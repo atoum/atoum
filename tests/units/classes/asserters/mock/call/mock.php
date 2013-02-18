@@ -8,7 +8,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\asserters\mock\call
+	mageekguy\atoum\asserters\mock\call\mock as testedClass
 ;
 
 class dummy
@@ -26,7 +26,7 @@ class mock extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					$mockAsserter = new asserters\mock(new asserter\generator()),
 					$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					$function = uniqid()
@@ -43,7 +43,7 @@ class mock extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
@@ -68,7 +68,7 @@ class mock extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					new asserters\mock(new asserter\generator()),
 					$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					$function = uniqid()
@@ -82,7 +82,7 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					new asserters\mock(new asserter\generator()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
@@ -99,7 +99,7 @@ class mock extends atoum\test
 	public function testOn()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					new asserters\mock(new asserter\generator()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
@@ -115,7 +115,7 @@ class mock extends atoum\test
 	public function testGetFirstCall()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					new asserters\mock(new asserter\generator()),
 					$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					'foo'
@@ -137,7 +137,7 @@ class mock extends atoum\test
 	public function testGetLastCall()
 	{
 		$this
-			->if($call = new call\mock(
+			->if($call = new testedClass(
 					new asserters\mock(new asserter\generator()),
 					$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					'foo'
