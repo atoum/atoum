@@ -32,15 +32,17 @@ class file extends atoum\test
 		$this
 			->if($file = new testedClass())
 			->then
-				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->string($file->getFilename())->isEqualTo('atoum.log')
-			->if($file = new testedClass(null, $adapter = new atoum\adapter()))
+				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			->if($file = new testedClass(null, $adapter = new atoum\test\adapter()))
 			->then
 				->object($file->getAdapter())->isIdenticalTo($adapter)
 				->string($file->getFilename())->isEqualTo('atoum.log')
+				->adapter($file->getAdapter())->call('fopen')->never()
 			->if($file = new testedClass($filename = uniqid()))
 			->then
 				->string($file->getFilename())->isEqualTo($filename)
+				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 		;
 	}
 
@@ -49,6 +51,8 @@ class file extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->fopen = $resource = uniqid())
+			->and($adapter->flock = true)
+			->and($adapter->ftruncate = true)
 			->and($adapter->fwrite = function($resource, $data) { return strlen($data); })
 			->and($adapter->fflush = function() {})
 			->and($adapter->fclose = function() {})
@@ -66,38 +70,81 @@ class file extends atoum\test
 		;
 	}
 
+	public function testSetFilename()
+	{
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fopen = $resource = uniqid())
+			->and($adapter->flock = true)
+			->and($adapter->ftruncate = true)
+			->and($adapter->fflush = function() {})
+			->and($adapter->fclose = function() {})
+			->and($file = new testedClass(null, $adapter))
+			->then
+				->object($file->setFilename($filename = uniqid()))->isIdenticalTo($file)
+				->string($file->getFilename())->isEqualTo($filename)
+			->then
+				->object($file->setFilename())->isIdenticalTo($file)
+				->string($file->getFilename())->isEqualTo(testedClass::defaultFileName)
+			->if($adapter->fwrite = function($resource, $data) { return strlen($data); })
+			->and($obj = $file->write($string = uniqid()))
+			->and($file->setFilename('anotherNameAgain'))
+			->then
+				->string($file->getFilename())->isEqualTo('anotherNameAgain')
+				->adapter($adapter)
+					->afterFunctionCall('flock')->withArguments($resource, LOCK_UN)
+						->call('fclose')->withArguments($resource)->once()
+		;
+	}
+
 	public function testWrite()
 	{
 		$this
 			->if($adapter = new atoum\test\adapter())
-			->if($adapter->fopen = false)
+			->if($adapter->fopen = function() { trigger_error(uniqid()); return false; })
 			->and($file = new testedClass(null, $adapter))
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->write(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to open file \'' . $file->getFilename() . '\'')
+				->error->notExists()
 			->if($adapter->fopen = $resource = uniqid())
+			->and($adapter->flock = false)
+			->and($adapter->resetCalls())
+			->then
+				->exception(function() use ($file) { $file->write(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to lock file \'' . $file->getFilename() . '\'')
+			->if($file = new testedClass(null, $adapter))
+			->and($adapter->flock = true)
+			->and($adapter->ftruncate = true)
 			->and($adapter->fclose = function() {})
 			->and($adapter->fwrite = false)
 			->and($adapter->fflush = function() {})
+			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->write(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to write in file \'' . $file->getFilename() . '\'')
+				->adapter($adapter)
+					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
+					->call('flock')->withArguments($resource, LOCK_SH)->once()
 			->if($adapter->fwrite = function($resource, $data) { return strlen($data); })
 			->and($file = new testedClass(null, $adapter))
 			->and($adapter->resetCalls())
 			->then
 				->object($file->write($string = uniqid()))->isIdenticalTo($file)
 				->adapter($adapter)
-					->call('fopen')->withArguments($file->getFilename(), 'w')->once()
+					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
+					->call('flock')->withArguments($resource, LOCK_SH)->once()
 					->call('fwrite')->withArguments($resource, $string)->once()
 					->call('fflush')->withArguments($resource)->once()
 				->object($file->write($string = (uniqid() . "\n")))->isIdenticalTo($file)
 				->adapter($adapter)
-					->call('fopen')->withArguments($file->getFilename(), 'w')->once()
-					->call('fwrite')->withArguments($resource, $string)->once()
+					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
+					->afterFunctionCall('flock')->withArguments($resource, LOCK_SH)
+						->call('fwrite')->withArguments($resource, $string)->once()
 					->call('fflush')->withArguments($resource)->twice()
 		;
 	}
@@ -114,6 +161,7 @@ class file extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to open file \'' . $file->getFilename() . '\'')
 			->if($adapter->fopen = $resource = uniqid())
+			->and($adapter->flock = true)
 			->and($adapter->ftruncate = false)
 			->and($adapter->fclose = function() {})
 			->and($adapter->resetCalls())
@@ -122,33 +170,15 @@ class file extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to truncate file \'' . $file->getFilename() . '\'')
 				->adapter($adapter)
-					->call('fopen')->withArguments($file->getFilename(), 'w')->once()
+					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
+					->call('flock')->withArguments($resource, LOCK_SH)->once()
 			->if($adapter->ftruncate = true)
+			->then
 				->object($file->clear())->isIdenticalTo($file)
 				->adapter($adapter)
-					->call('fopen')->withArguments($file->getFilename(), 'w')->once()
-		;
-	}
-
-	public function testSetFilename()
-	{
-		$this
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->fopen = $resource = uniqid())
-			->and($adapter->fclose = function() {})
-			->and($adapter->fwrite = function() {})
-			->and($adapter->fflush = function() {})
-			->and($file = new testedClass(null, $adapter))
-			->then
-				->object($file->setFilename($filename = uniqid()))->isIdenticalTo($file)
-				->string($file->getFilename())->isEqualTo($filename)
-			->if($adapter->fwrite = function($resource, $data) { return strlen($data); })
-			->and($obj = $file->write($string = uniqid()))
-			->and($file->setFilename('anotherNameAgain'))
-			->then
-				->string($file->getFilename())->isEqualTo('anotherNameAgain')
-				->adapter($adapter)
-					->call('fclose')->withArguments($resource)->once()
+					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
+					->afterFunctionCall('flock')->withArguments($resource, LOCK_SH)
+						->call('ftruncate')->withArguments($resource, 0)->twice()
 		;
 	}
 }

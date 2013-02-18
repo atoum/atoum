@@ -21,7 +21,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		parent::__construct($adapter);
 
-		$this->setFilename($filename ?: self::defaultFileName);
+		$this->setFilename($filename);
 	}
 
 	public function __destruct()
@@ -61,9 +61,9 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this->write((string) $report);
 	}
 
-	public function setFilename($filename)
+	public function setFilename($filename = null)
 	{
-		$this->closeFile()->filename = $filename;
+		$this->closeFile()->filename = $filename ?: self::defaultFileName;
 
 		return $this;
 	}
@@ -77,12 +77,19 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		if ($this->resource === null)
 		{
-			$this->resource = $this->adapter->fopen($this->filename, 'w') ?: null;
+			$this->resource = @$this->adapter->fopen($this->filename, 'c') ?: null;
 
 			if ($this->resource === null)
 			{
 				throw  new exceptions\runtime('Unable to open file \'' . $this->filename . '\'');
 			}
+
+			if ($this->adapter->flock($this->resource, LOCK_SH) === false)
+			{
+				throw  new exceptions\runtime('Unable to lock file \'' . $this->filename . '\'');
+			}
+
+			$this->clear();
 		}
 
 		return $this;
@@ -92,6 +99,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		if ($this->resource !== null)
 		{
+			$this->adapter->flock($this->resource, LOCK_UN);
 			$this->adapter->fclose($this->resource);
 
 			$this->resource = null;
