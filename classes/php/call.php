@@ -16,7 +16,7 @@ class call
 		$this->arguments = $arguments;
 		$this->object = $object;
 
-		$this->setDecorator(new call\decorator());
+		$this->setDecorator();
 	}
 
 	public function __toString()
@@ -86,9 +86,9 @@ class call
 		return $this->object;
 	}
 
-	public function setDecorator(call\decorator $decorator)
+	public function setDecorator(call\decorator $decorator = null)
 	{
-		$this->decorator = $decorator;
+		$this->decorator = $decorator ?: new call\decorator();
 
 		return $this;
 	}
