@@ -98,13 +98,13 @@ class adapter extends atoum\adapter
 						if ($identical === false)
 						{
 							$filter = function($callArguments) use ($arguments) {
-								return ($arguments  == array_slice($callArguments, 0, sizeof($arguments)));
+								return ($arguments == array_slice($callArguments, 0, sizeof($arguments)));
 							};
 						}
 						else
 						{
 							$filter = function($callArguments) use ($arguments) {
-								return ($arguments  === array_slice($callArguments, 0, sizeof($arguments)));
+								return ($arguments === array_slice($callArguments, 0, sizeof($arguments)));
 							};
 						}
 

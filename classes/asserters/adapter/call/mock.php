@@ -46,13 +46,13 @@ class mock extends php\call
 	{
 		$calls = $this->object->getMockController()->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key($calls);
+		return ($calls === null ? null : key($calls));
 	}
 
 	public function getLastCall()
 	{
 		$calls = $this->object->getMockController()->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key(array_reverse($calls, true));
+		return ($calls === null ? null : key(array_reverse($calls, true)));
 	}
 }
