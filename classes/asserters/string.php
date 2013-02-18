@@ -156,50 +156,6 @@ class string extends asserters\variable
 		return $this;
 	}
 
-	public function wasWrittenTo(atoum\mock\stream\controller $streamController, $failMessage = null)
-	{
-		$this->streamController = $streamController;
-
-		if ($this->valueIsSet()->searchValueInWriteCallsOf($streamController) === false)
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s'), $this->streamController));
-		}
-		else
-		{
-			$this->pass();
-		}
-
-		return $this;
-	}
-
-	public function atOffset($offset, $failMessage = null)
-	{
-		if ($this->valueIsSet()->streamController === null)
-		{
-			throw new exceptions\logic('Stream is undefined');
-		}
-		else
-		{
-			$writtenData = '';
-
-			foreach ($this->streamController->getCalls('stream_write') ?: array() as $writeCall)
-			{
-				$writtenData .= $writeCall[0];
-			}
-
-			if (strpos($writtenData, $this->value) === $offset)
-			{
-				$this->pass();
-			}
-			else
-			{
-				$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String was not written to %s at offset %d'), $this->streamController, $offset));
-			}
-		}
-
-		return $this;
-	}
-
 	protected static function check($value, $method)
 	{
 		if (self::isString($value) === false)
@@ -211,24 +167,5 @@ class string extends asserters\variable
 	protected static function isString($value)
 	{
 		return (is_string($value) === true);
-	}
-
-	private function searchValueInWriteCallsOf()
-	{
-		$valueWasWritten = true;
-
-		if ($this->value !== '')
-		{
-			$writtenData = '';
-
-			foreach ($this->streamController->getCalls('stream_write') ?: array() as $writeCall)
-			{
-				$writtenData .= $writeCall[0];
-			}
-
-			$valueWasWritten = (substr_count($writtenData, $this->value) > 0);
-		}
-
-		return $valueWasWritten;
 	}
 }
