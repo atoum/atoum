@@ -14,6 +14,8 @@ class controller extends stream\controller
 	protected $write = false;
 	protected $eof = false;
 	protected $pointer = 0;
+	protected $offset = null;
+	protected $append = false;
 	protected $contents = '';
 	protected $stats = array();
 
@@ -180,6 +182,9 @@ class controller extends stream\controller
 		{
 			$this->addCall(__FUNCTION__, func_get_args());
 
+			$this->offset = null;
+			$this->append = false;
+
 			$isOpened = false;
 
 			$reportErrors = ($options & STREAM_REPORT_ERRORS) == STREAM_REPORT_ERRORS;
@@ -261,7 +266,19 @@ class controller extends stream\controller
 							break;
 
 						case 'a':
-							$this->seek(0, SEEK_END);
+							$this->exists = true;
+
+							if ($this->read === true)
+							{
+								$this->seek(0);
+							}
+							else
+							{
+								$this->seek(0, SEEK_END);
+								$this->offset = $this->pointer;
+							}
+
+							$this->append = true;
 							break;
 					}
 				}
@@ -316,7 +333,7 @@ class controller extends stream\controller
 		{
 			$this->addCall(__FUNCTION__, array());
 
-			return $this->pointer;
+			return ($this->offset === null ? $this->pointer : $this->pointer - $this->offset);
 		}
 	}
 
@@ -332,19 +349,22 @@ class controller extends stream\controller
 
 			$data = '';
 
-			$contentsLength = strlen($this->contents);
-
-			if ($this->pointer >= 0 && $this->pointer < $contentsLength)
+			if ($this->read === true)
 			{
-				$data = substr($this->contents, $this->pointer, $count);
-			}
+				$contentsLength = strlen($this->contents);
 
-			$this->pointer += $count;
+				if ($this->pointer >= 0 && $this->pointer < $contentsLength)
+				{
+					$data = substr($this->contents, $this->pointer, $count);
+				}
 
-			if ($this->pointer >= $contentsLength)
-			{
-				$this->eof = true;
-				$this->pointer = $contentsLength;
+				$this->pointer += $count;
+
+				if ($this->pointer >= $contentsLength)
+				{
+					$this->eof = true;
+					$this->pointer = $contentsLength;
+				}
 			}
 
 			return $data;
@@ -365,9 +385,23 @@ class controller extends stream\controller
 
 			if ($this->write === true)
 			{
+				if ($this->append === true)
+				{
+					if ($this->contents !== '')
+					{
+						$this->contents .= PHP_EOL;
+						$this->pointer++;
+					}
+
+					$this->append = false;
+				}
+
 				$this->contents .= $data;
+
 				$bytesWrited = strlen($data);
+
 				$this->pointer += $bytesWrited;
+
 				$this->stats['size'] = ($this->contents == '' ? 0 : strlen($this->contents) + 1);
 			}
 
@@ -594,18 +628,15 @@ class controller extends stream\controller
 				$offset = strlen($this->contents) + $offset;
 		}
 
+		if ($this->offset !== null && $offset < $this->offset)
+		{
+			$offset = $this->offset;
+		}
+
 		$this->eof = false;
+		$this->pointer = $offset;
 
-		if ($this->pointer === $offset)
-		{
-			return false;
-		}
-		else
-		{
-			$this->pointer = $offset;
-
-			return true;
-		}
+		return true;
 	}
 
 	protected function addPermission($permissions)
@@ -627,7 +658,7 @@ class controller extends stream\controller
 		$this->read = false;
 		$this->write = false;
 
-		switch (rtrim($mode, 'bt'))
+		switch (str_replace(array('b', 't'), '', $mode))
 		{
 			case 'r':
 			case 'x':
@@ -680,7 +711,7 @@ class controller extends stream\controller
 
 	protected static function getRawOpenMode($mode)
 	{
-		return rtrim($mode, 'bt+');
+		return str_replace(array('b', 't', '+'), '', $mode);
 	}
 
 	protected static function checkOpenMode($mode)

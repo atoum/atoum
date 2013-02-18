@@ -193,10 +193,34 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->and($file->notExists())
 			->then
-				->boolean(@fopen($file, 'r'))->isFalse()
+				->boolean(fopen($file, 'r'))->isFalse()
+				->error->withType(E_WARNING)->exists()
 			->if($file->exists())
 			->then
 				->variable(fopen($file, 'r'))->isNotFalse()
+				->variable($resource = fopen($file, 'a'))->isNotFalse()
+				->integer(fseek($resource, 0))->isZero()
+				->integer(ftell($resource))->isZero()
+			->if($file->contains('abcdefghijklmnopqrstuvwxyz'))
+			->then
+				->variable($resource = fopen($file, 'a'))->isNotFalse()
+				->integer(ftell($resource))->isZero()
+				->string(fread($resource, 1))->isEmpty()
+				->integer(fseek($resource, 0))->isZero()
+				->integer(ftell($resource))->isZero()
+				->string(fread($resource, 1))->isEmpty()
+				->integer(fwrite($resource, 'A'))->isEqualTo(1)
+				->integer(fseek($resource, 0))->isZero()
+				->integer(ftell($resource))->isZero()
+				->string(fread($resource, 1))->isEmpty()
+				->string($file->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A')
+			->then
+				->variable($resource = fopen($file, 'r'))->isNotFalse()
+				->integer(ftell($resource))->isZero()
+				->string(fread($resource, 1))->isEqualTo('a')
+				->integer(fseek($resource, 0))->isZero()
+				->integer(ftell($resource))->isZero()
+				->string(fread($resource, 1))->isEqualTo('a')
 		;
 	}
 

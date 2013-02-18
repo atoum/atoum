@@ -77,6 +77,8 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->contains('abcdefghijklmnopqrstuvwxyz'))->isIdenticalTo($controller)
+			->if($controller->stream_open(uniqid(), 'r', 0))
+			->then
 				->string($controller->stream_read(1))->isEqualTo('a')
 				->boolean($controller->stream_eof())->isFalse()
 				->string($controller->stream_read(1))->isEqualTo('b')
@@ -337,7 +339,7 @@ class controller extends atoum\test
 					->boolean($controller->stream_open(uniqid(), 'c', 0))->isTrue()
 					->array($controller->getCalls())->isNotEmpty()
 					->integer($controller->stream_tell())->isZero()
-					->string($controller->stream_read(1))->isEqualTo('a')
+					->string($controller->stream_read(1))->isEmpty()
 					->integer($controller->stream_write('a'))->isEqualTo(1)
 					->boolean($controller->stream_open(uniqid(), 'c+', 0))->isTrue()
 					->integer($controller->stream_tell())->isZero()
@@ -360,17 +362,38 @@ class controller extends atoum\test
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEmpty()
 					->integer($controller->stream_write('a'))->isEqualTo(1)
-					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
-					->integer($controller->stream_tell())->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('a')
+					->integer($controller->stream_write('b'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('ab')
+					->boolean($controller->stream_open(uniqid(), 'a', 0))->isTrue()
+					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEmpty()
-					->integer($controller->stream_write('a'))->isEqualTo(1)
+					->integer($controller->stream_write('c'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'c')
+					->integer($controller->stream_write('d'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'cd')
+
+					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
+					->integer($controller->stream_tell())->isZero()
+					->string($controller->stream_read(1))->isEqualTo('a')
+					->integer($controller->stream_write('e'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'cd' . PHP_EOL . 'e')
 				->if($controller->setContents('abcdefghijklmnopqrstuvwxyz'))
 				->then
 					->boolean($controller->stream_open(uniqid(), 'a', 0))->isTrue()
 					->array($controller->getCalls())->isNotEmpty()
-					->integer($controller->stream_tell())->isEqualTo(26)
+					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEmpty()
-					->integer($controller->stream_write('a'))->isEqualTo(1)
+					->integer($controller->stream_write('A'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A')
+					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
+					->array($controller->getCalls())->isNotEmpty()
+					->integer($controller->stream_tell())->isZero()
+					->string($controller->stream_read(1))->isEqualTo('a')
+					->integer($controller->stream_write('B'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'B')
+					->integer($controller->stream_write('C'))->isEqualTo(1)
+					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'BC')
 				->if($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'a', 0))->isFalse()
@@ -448,16 +471,17 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->boolean($controller->stream_seek(0))->isFalse()
+				->boolean($controller->stream_seek(0))->isTrue()
 				->boolean($controller->stream_seek(1))->isTrue()
 			->if($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->and($controller->stream_open(uniqid(), 'r', 0))
 			->then
-				->boolean($controller->stream_seek(0))->isFalse()
+				->boolean($controller->stream_seek(0))->isTrue()
 				->boolean($controller->stream_seek(1))->isTrue()
 				->string($controller->stream_read(1))->isEqualTo('b')
 				->boolean($controller->stream_seek(25))->isTrue()
 				->string($controller->stream_read(1))->isEqualTo('z')
-				->boolean($controller->stream_seek(26))->isFalse()
+				->boolean($controller->stream_seek(26))->isTrue()
 				->string($controller->stream_read(1))->isEmpty()
 				->boolean($controller->stream_seek(0))->isTrue()
 				->string($controller->stream_read(1))->isEqualTo('a')
@@ -469,6 +493,7 @@ class controller extends atoum\test
 				->string($controller->stream_read(1))->isEmpty()
 			->if($controller = new testedClass(uniqid()))
 			->and($controller->contains('abcdefghijklmnopqrstuvwxyz'))
+			->and($controller->stream_open(uniqid(), 'r', 0))
 			->and($controller->stream_read(4096))
 			->then
 				->boolean($controller->stream_eof())->isTrue()
@@ -492,7 +517,9 @@ class controller extends atoum\test
 			->if($controller->stream_seek(27))
 			->then
 				->boolean($controller->stream_eof())->isFalse()
-			->if($controller->stream_read(1))
+			->if($controller->stream_open(uniqid(), 'r', 0))
+			->and($controller->stream_seek(27))
+			->and($controller->stream_read(1))
 			->then
 				->boolean($controller->stream_eof())->isTrue()
 		;
@@ -514,6 +541,7 @@ class controller extends atoum\test
 	{
 		$this
 			->if($controller = new testedClass(uniqid()))
+			->and($controller->stream_open(uniqid(), 'r', 0))
 			->then
 				->string($controller->stream_read(1))->isEmpty()
 				->boolean($controller->stream_eof())->isTrue()
