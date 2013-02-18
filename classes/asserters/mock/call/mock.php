@@ -40,6 +40,11 @@ class mock extends php\call
 		return parent::setArguments(func_get_args());
 	}
 
+	public function withAtLeastArguments(array $arguments)
+	{
+		return parent::setArguments(array($arguments));
+	}
+
 	public function on(atoum\mock\aggregator $mockAggregator)
 	{
 		return $this->setObject($mockAggregator);

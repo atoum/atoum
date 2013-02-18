@@ -96,6 +96,23 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testWithAtLeastArguments()
+	{
+		$this
+			->if($call = new testedClass(
+					new asserters\mock(new asserter\generator()),
+					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
+					uniqid()
+				)
+			)
+			->then
+				->object($call->withAtLeastArguments($arguments = array(1 => uniqid(), 3 => uniqid())))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($arguments))
+				->object($call->withAtLeastArguments($otherArguments = array(1 => uniqid(), 3 => uniqid())))->isIdenticalTo($call)
+				->array($call->getArguments())->isEqualTo(array($otherArguments))
+		;
+	}
+
 	public function testOn()
 	{
 		$this

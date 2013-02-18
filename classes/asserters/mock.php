@@ -180,7 +180,7 @@ class mock extends atoum\asserter
 
 	public function withArguments()
 	{
-		$this->calledMethodNameIsSet()->call->setArguments(func_get_args());
+		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->notIdentical();
 
 		return $this;
 	}
@@ -188,6 +188,20 @@ class mock extends atoum\asserter
 	public function withIdenticalArguments()
 	{
 		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->identical();
+
+		return $this;
+	}
+
+	public function withAtLeastArguments(array $arguments)
+	{
+		$this->calledMethodNameIsSet()->call->setArguments($arguments)->notIdentical();
+
+		return $this;
+	}
+
+	public function withAtLeastIdenticalArguments(array $arguments)
+	{
+		$this->calledMethodNameIsSet()->call->setArguments($arguments)->identical();
 
 		return $this;
 	}

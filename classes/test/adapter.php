@@ -85,6 +85,26 @@ class adapter extends atoum\adapter
 		{
 			$functionName = strtolower($functionName);
 
+			if ($arguments !== null)
+			{
+				$callback = function($a, $b) {
+					return ($a == $b ? 0 : -1);
+				};
+
+				if ($identical === false)
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+				else
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+			}
+
 			foreach ($this->calls as $callName => $callArguments)
 			{
 				if ($functionName == strtolower($callName))
@@ -95,19 +115,6 @@ class adapter extends atoum\adapter
 					}
 					else
 					{
-						if ($identical === false)
-						{
-							$filter = function($callArguments) use ($arguments) {
-								return ($arguments == array_slice($callArguments, 0, sizeof($arguments)));
-							};
-						}
-						else
-						{
-							$filter = function($callArguments) use ($arguments) {
-								return ($arguments === array_slice($callArguments, 0, sizeof($arguments)));
-							};
-						}
-
 						$calls = array_filter($callArguments, $filter);
 					}
 

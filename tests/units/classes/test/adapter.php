@@ -251,6 +251,33 @@ class adapter extends test
 				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
 				->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
 				->array($adapter->getCalls('STRPOS'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
+			->if($adapter->foo = function($a, $b, $c, $d, $e) {})
+			->and($adapter->foo(1, 2, 3, 4, 5))
+			->then
+				->array($adapter->getCalls('foo'))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3, 4, 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3, 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1 => 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(2 => 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(3 => 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => rand(6, PHP_INT_MAX))))->isEmpty()
+			->if($adapter->foo(1, 2, 3, 4, 6))
+			->then
+				->array($adapter->getCalls('foo'))->isEqualTo(array(
+						5 => array(1, 2, 3, 4, 5),
+						6 => array(1, 2, 3, 4, 6)
+					)
+				)
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(2 => 3, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+				->array($adapter->getCalls('foo', array(2 => 3, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
 		;
 	}
 
