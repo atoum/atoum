@@ -112,16 +112,45 @@ class phpArray extends atoum\test
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
-                ->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array(uniqid(), uniqid(), $value = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
+			->if($asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
 			->then
 				->exception(function() use ($asserter, & $notInArray) { $asserter->contains($notInArray = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain %s'), $asserter, $asserter->getTypeOf($notInArray)))
-				->object($asserter->contains($value))->isIdenticalTo($asserter)
-				->object($asserter->contains((string) $value))->isIdenticalTo($asserter)
+				->object($asserter->contains($data))->isIdenticalTo($asserter)
+				->object($asserter->contains((string) $data))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $data) { $asserter->atKey(0)->contains($data); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not contain %s at key %s'), $asserter, $asserter->getTypeOf($data), 0))
+				->object($asserter->contains($data))->isIdenticalTo($asserter)
+				->object($asserter->atKey(2)->contains($data))->isIdenticalTo($asserter)
         ;
+	}
+
+	public function testAtKey()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
+				->object($asserter->atKey(0))->isIdenticalTo($asserter)
+				->object($asserter->atKey('0'))->isIdenticalTo($asserter)
+				->object($asserter->atKey(1))->isIdenticalTo($asserter)
+				->object($asserter->atKey(2))->isIdenticalTo($asserter)
+				->object($asserter->atKey(3))->isIdenticalTo($asserter)
+				->object($asserter->atKey(4))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $key) { $asserter->atKey($key = rand(5, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key)))
+				->exception(function() use ($asserter, & $key, & $message) { $asserter->atKey($key = rand(5, PHP_INT_MAX), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+		;
 	}
 
 	public function testContainsValues()
@@ -305,7 +334,7 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->hasKey(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
 			->if($asserter->setWith(array()))

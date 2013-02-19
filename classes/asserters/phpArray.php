@@ -10,6 +10,8 @@ use
 
 class phpArray extends asserters\variable
 {
+	private $key = null;
+
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
@@ -88,6 +90,13 @@ class phpArray extends asserters\variable
 		return $this->notContainsValue($value, $failMessage, false);
 	}
 
+	public function atKey($key, $failMessage = null)
+	{
+		$this->hasKey($key, $failMessage)->key = $key;
+
+		return $this;
+	}
+
 	public function hasKeys(array $keys, $failMessage = null)
 	{
 		if (sizeof($undefinedKeys = array_diff($keys, array_keys($this->value))) <= 0)
@@ -118,7 +127,7 @@ class phpArray extends asserters\variable
 
 	public function hasKey($key, $failMessage = null)
 	{
-		if (array_key_exists($key, $this->value))
+		if (array_key_exists($key, $this->valueIsSet()->value))
 		{
 			$this->pass();
 		}
@@ -168,7 +177,39 @@ class phpArray extends asserters\variable
 	{
 		if (in_array($value, $this->valueIsSet()->value, $strict) === true)
 		{
-			$this->pass();
+			if ($this->key === null)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$pass = false;
+
+				if ($strict === false)
+				{
+					$pass = ($this->value[$this->key] == $value);
+				}
+				else
+				{
+					$pass = ($this->value[$this->key] === $value);
+				}
+
+				if ($pass === false)
+				{
+					$key = $this->key;
+				}
+
+				$this->key = null;
+
+				if ($pass === true)
+				{
+					$this->pass();
+				}
+				else
+				{
+					$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $key));
+				}
+			}
 		}
 		else
 		{
