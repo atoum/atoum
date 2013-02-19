@@ -251,6 +251,7 @@ class adapter extends atoum\adapter
 			case 'empty':
 			case 'eval':
 			case 'exit':
+			case 'die':
 			case 'isset':
 			case 'list':
 			case 'print':
