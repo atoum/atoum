@@ -105,7 +105,7 @@ class controller extends test\adapter
 		return $this->iterator;
 	}
 
-	public function methodsWhichMatch($regex)
+	public function methodsMatching($regex)
 	{
 		return $this->iterator->resetFilters()->addFilter(function($name) use ($regex) { return preg_match($regex, $name); });
 	}

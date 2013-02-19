@@ -202,15 +202,15 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testMethodsWitchMatch()
+	public function testMethodsMatching()
 	{
 		$this
 			->if($mockController = new testedClass())
 			->and($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
 			->then
-				->object($mockController->methodsWhichMatch('/Else$/i'))->isEqualTo($mockController->getIterator())
+				->object($mockController->methodsMatching('/Else$/i'))->isEqualTo($mockController->getIterator())
 				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomethingelse'))
-				->object($mockController->methodsWhichMatch('/^doSomething/i'))->isEqualTo($mockController->getIterator())
+				->object($mockController->methodsMatching('/^doSomething/i'))->isEqualTo($mockController->getIterator())
 				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
 		;
 	}
