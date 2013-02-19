@@ -207,7 +207,16 @@ class phpArray extends asserters\variable
 				}
 				else
 				{
-					$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $key));
+					if ($strict === false)
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $key);
+					}
+					else
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s at key %s'), $this, $this->getTypeOf($value), $key);
+					}
+
+					$this->fail($failMessage);
 				}
 			}
 		}

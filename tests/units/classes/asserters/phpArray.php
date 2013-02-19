@@ -104,7 +104,31 @@ class phpArray extends atoum\test
 				->then
 					->object($asserter->isNotEmpty())->isIdenticalTo($asserter)
 		;
-    }
+	}
+
+	public function testAtKey()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
+				->object($asserter->atKey(0))->isIdenticalTo($asserter)
+				->object($asserter->atKey('0'))->isIdenticalTo($asserter)
+				->object($asserter->atKey(1))->isIdenticalTo($asserter)
+				->object($asserter->atKey(2))->isIdenticalTo($asserter)
+				->object($asserter->atKey(3))->isIdenticalTo($asserter)
+				->object($asserter->atKey(4))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $key) { $asserter->atKey($key = rand(5, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key)))
+				->exception(function() use ($asserter, & $key, & $message) { $asserter->atKey($key = rand(5, PHP_INT_MAX), $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+		;
+	}
 
 	public function testContains()
 	{
@@ -129,27 +153,77 @@ class phpArray extends atoum\test
         ;
 	}
 
-	public function testAtKey()
+	public function testNotContains()
 	{
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
+				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array(uniqid(), uniqid(), $data = rand(1, PHP_INT_MAX), uniqid(), uniqid())))
-				->object($asserter->atKey(0))->isIdenticalTo($asserter)
-				->object($asserter->atKey('0'))->isIdenticalTo($asserter)
-				->object($asserter->atKey(1))->isIdenticalTo($asserter)
-				->object($asserter->atKey(2))->isIdenticalTo($asserter)
-				->object($asserter->atKey(3))->isIdenticalTo($asserter)
-				->object($asserter->atKey(4))->isIdenticalTo($asserter)
-				->exception(function() use ($asserter, & $key) { $asserter->atKey($key = rand(5, PHP_INT_MAX)); })
+			->if($asserter->setWith(array(uniqid(), uniqid(), $inArray = uniqid(), uniqid(), uniqid())))
+			->then
+				->object($asserter->notContains(uniqid()))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $inArray) { $asserter->notContains($inArray); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter, $asserter->getTypeOf($key)))
-				->exception(function() use ($asserter, & $key, & $message) { $asserter->atKey($key = rand(5, PHP_INT_MAX), $message = uniqid()); })
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf($inArray)))
+				->exception(function() use ($asserter, $inArray, & $message) { $asserter->notContains($inArray, $message = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage($message)
+				->exception(function() use($asserter, $inArray){ $asserter->notContains((string) $inArray); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf((string) $inArray)))
+				->exception(function() use($asserter, $inArray, & $message){ $asserter->notContains((string) $inArray, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+        ;
+	}
+
+	public function testStrictlyContains()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->and($asserter->setWith(array(1, 2, 3, 4, 5, '3')))
+			->then
+				->exception(function() use ($asserter) {$asserter->strictlyContains('1'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not strictly contain %s'), $asserter, $asserter->getTypeOf('1')))
+				->exception(function() use ($asserter, & $message) {$asserter->strictlyContains('1', $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+				->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->atKey(0)->strictlyContains(2); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not strictly contain %s at key %s'), $asserter, $asserter->getTypeOf(2), 0))
+				->object($asserter->strictlyContains(2))->isIdenticalTo($asserter)
+				->object($asserter->atKey(2)->strictlyContains(3))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->atKey(2)->strictlyContains('3'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s does not strictly contain %s at key %s'), $asserter, $asserter->getTypeOf('3'), 2))
+		;
+	}
+
+	public function testStrictlyNotContains()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array(1)))
+			->then
+				->exception(function() use ($asserter) {$asserter->strictlyNotContains(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s contains strictly %s'), $asserter, $asserter->getTypeOf(1)))
+				->exception(function() use ($asserter, & $message) {$asserter->strictlyNotContains(1, $message = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage($message)
+				->object($asserter->strictlyNotContains('1'))->isIdenticalTo($asserter)
 		;
 	}
 
@@ -261,72 +335,6 @@ class phpArray extends atoum\test
 					->object($asserter->strictlyNotContainsValues(array('1')))->isIdenticalTo($asserter)
 					->object($asserter->strictlyNotContainsValues(array(6, 7, '2', 8)))->isIdenticalTo($asserter)
 		;
-	}
-
-	public function testStrictlyContains()
-	{
-		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
-			->then
-				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Array is undefined')
-			->and($asserter->setWith(array(1)))
-			->then
-				->exception(function() use ($asserter) {$asserter->strictlyContains('1'); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s does not strictly contain %s'), $asserter, $asserter->getTypeOf('1')))
-				->exception(function() use ($asserter, & $message) {$asserter->strictlyContains('1', $message = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($message)
-				->object($asserter->strictlyContains(1))->isIdenticalTo($asserter)
-		;
-	}
-
-	public function testStrictlyNotContains()
-	{
-		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
-			->then
-				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array(1)))
-			->then
-				->exception(function() use ($asserter) {$asserter->strictlyNotContains(1); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s contains strictly %s'), $asserter, $asserter->getTypeOf(1)))
-				->exception(function() use ($asserter, & $message) {$asserter->strictlyNotContains(1, $message = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($message)
-				->object($asserter->strictlyNotContains('1'))->isIdenticalTo($asserter)
-		;
-	}
-
-	public function testNotContains()
-	{
-		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
-			->then
-				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Array is undefined')
-			->if($asserter->setWith(array(uniqid(), uniqid(), $inArray = uniqid(), uniqid(), uniqid())))
-			->then
-				->object($asserter->notContains(uniqid()))->isIdenticalTo($asserter)
-				->exception(function() use ($asserter, $inArray) { $asserter->notContains($inArray); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf($inArray)))
-				->exception(function() use ($asserter, $inArray, & $message) { $asserter->notContains($inArray, $message = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($message)
-				->exception(function() use($asserter, $inArray){ $asserter->notContains((string) $inArray); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s contains %s'), $asserter, $asserter->getTypeOf((string) $inArray)))
-				->exception(function() use($asserter, $inArray, & $message){ $asserter->notContains((string) $inArray, $message = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($message)
-        ;
 	}
 
 	public function testHasKey()
