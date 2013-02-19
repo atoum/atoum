@@ -11,7 +11,8 @@ use
 
 class controller extends test\adapter
 {
-	protected $mockClass = null;
+	protected $mock = null;
+	protected $iterator = null;
 
 	protected static $controlNextNewMock = null;
 
@@ -21,7 +22,7 @@ class controller extends test\adapter
 	{
 		parent::__construct();
 
-		$this->controlNextNewMock();
+		$this->setIterator()->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -56,6 +57,20 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function setIterator(controller\iterator $iterator = null)
+	{
+		$this->iterator = $iterator ?: new controller\iterator();
+
+		$this->iterator->setMockController($this);
+
+		return $this;
+	}
+
+	public function getIterator()
+	{
+		return $this->iterator;
+	}
+
 	public function disableMethodChecking()
 	{
 		$this->disableMethodChecking = true;
@@ -63,9 +78,36 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function getMock()
+	{
+		return $this->mock;
+	}
+
 	public function getMockClass()
 	{
-		return $this->mockClass;
+		return ($this->mock === null ? null : get_class($this->mock));
+	}
+
+	public function getMethods()
+	{
+		return ($this->mock === null ? array() : $this->mock->getMockedMethods());
+	}
+
+	public function methods(\closure $filter = null)
+	{
+		$this->iterator->resetFilters();
+
+		if ($filter !== null)
+		{
+			$this->iterator->addFilter($filter);
+		}
+
+		return $this->iterator;
+	}
+
+	public function methodsWhichMatch($regex)
+	{
+		return $this->iterator->resetFilters()->addFilter(function($name) use ($regex) { return preg_match($regex, $name); });
 	}
 
 	public function getCalls($method = null, array $arguments = null, $identical = false)
@@ -82,11 +124,11 @@ class controller extends test\adapter
 	{
 		$mockClass = get_class($mock);
 
-		if ($this->mockClass !== $mockClass)
+		if ($this->mock !== $mock)
 		{
-			$this->mockClass = $mockClass;
+			$this->mock = $mock;
 
-			$methods = call_user_func(array($mock, 'getMockedMethods'));
+			$methods = $this->getMethods();
 
 			if ($this->disableMethodChecking === false)
 			{
@@ -96,7 +138,7 @@ class controller extends test\adapter
 					{
 						if (in_array('__call', $methods) === false)
 						{
-							throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 						}
 						else if (isset($this->invokers['__call']) === false)
 						{
@@ -146,7 +188,7 @@ class controller extends test\adapter
 
 	public function reset()
 	{
-		$this->mockClass = null;
+		$this->mock = null;
 
 		return parent::reset();
 	}
@@ -177,7 +219,7 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockClass !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
+		if ($this->mock !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
 		{
 			if (array_key_exists('__call', $this->invokers) === true)
 			{
@@ -185,7 +227,7 @@ class controller extends test\adapter
 			}
 			else if (isset($this->__call) === false)
 			{
-				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+				throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 			}
 		}
 
