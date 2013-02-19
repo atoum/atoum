@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\phpArray as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,13 +14,13 @@ class phpArray extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+		$this->testedClass->extends('mageekguy\atoum\asserters\variable');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -32,7 +32,7 @@ class phpArray extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -45,7 +45,7 @@ class phpArray extends atoum\test
 	public function testHasSize()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
@@ -66,7 +66,7 @@ class phpArray extends atoum\test
 	public function testIsEmpty()
 	{
 		$this->assert
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
@@ -89,7 +89,7 @@ class phpArray extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
@@ -112,7 +112,7 @@ class phpArray extends atoum\test
 	public function testContains()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -131,7 +131,7 @@ class phpArray extends atoum\test
 	public function testContainsValues()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -160,7 +160,7 @@ class phpArray extends atoum\test
 	public function testNotContainsValues()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -186,7 +186,7 @@ class phpArray extends atoum\test
 	public function testStrictlyContainsValues()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -220,7 +220,7 @@ class phpArray extends atoum\test
 	public function testStrictlyNotContainsValues()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -242,10 +242,10 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testStrictlyContains ()
+	public function testStrictlyContains()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -263,10 +263,10 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testStrictlyNotContains ()
+	public function testStrictlyNotContains()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
@@ -287,7 +287,7 @@ class phpArray extends atoum\test
 	public function testNotContains()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
@@ -311,10 +311,10 @@ class phpArray extends atoum\test
         ;
 	}
 
-	public function testHasKey ()
+	public function testHasKey()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
@@ -344,10 +344,10 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testNotHasKey ()
+	public function testNotHasKey()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
@@ -368,10 +368,10 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testNotHasKeys ()
+	public function testNotHasKeys()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
@@ -393,10 +393,10 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testHasKeys ()
+	public function testHasKeys()
 	{
 		$this
-			->if($asserter = new asserters\phpArray($generator = new asserter\generator()))
+			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
