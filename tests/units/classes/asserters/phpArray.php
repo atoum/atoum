@@ -47,7 +47,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -68,7 +67,6 @@ class phpArray extends atoum\test
 		$this->assert
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -91,7 +89,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -114,7 +111,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
                 ->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -133,7 +129,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -162,7 +157,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -188,7 +182,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -222,7 +215,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -247,7 +239,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -268,7 +259,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -289,7 +279,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -316,7 +305,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -349,7 +337,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -373,7 +360,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
@@ -398,7 +384,6 @@ class phpArray extends atoum\test
 		$this
 			->if($asserter = new testedClass($generator = new asserter\generator()))
 			->then
-				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
