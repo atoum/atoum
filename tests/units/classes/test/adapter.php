@@ -194,6 +194,27 @@ class adapter extends test
 		;
 	}
 
+	public function test__sleep()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->__sleep())->isEmpty()
+		;
+	}
+
+	public function testSerialize()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->string(serialize($adapter))->isNotEmpty()
+			->if($adapter->md5 = function() {})
+			->then
+				->string(serialize($adapter))->isNotEmpty()
+		;
+	}
+
 	public function testGetCallsNumber()
 	{
 		$this

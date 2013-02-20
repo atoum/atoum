@@ -68,6 +68,11 @@ class adapter extends atoum\adapter
 		return $this;
 	}
 
+	public function __sleep()
+	{
+		return array();
+	}
+
 	public function getInvokers()
 	{
 		return $this->invokers;
