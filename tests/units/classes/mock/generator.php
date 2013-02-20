@@ -162,7 +162,7 @@ class generator extends atoum\test
 			->if($generator = new testedClass())
 			->then
 				->object($generator->orphanize($method = uniqid()))->isIdenticalTo($generator)
-				->boolean($generator->isOverloaded($method))->isTrue()
+				->boolean($generator->isOrphanized($method))->isTrue()
 				->boolean($generator->isShunted($method))->isTrue()
 		;
 	}
