@@ -209,11 +209,11 @@ class phpArray extends asserters\variable
 				{
 					if ($strict === false)
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $key);
+						$failMessage = sprintf($this->getLocale()->_('%s does not contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
 					}
 					else
 					{
-						$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s at key %s'), $this, $this->getTypeOf($value), $key);
+						$failMessage = sprintf($this->getLocale()->_('%s does not strictly contain %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
 					}
 
 					$this->fail($failMessage);
@@ -248,20 +248,60 @@ class phpArray extends asserters\variable
 		}
 		else
 		{
-			if ($failMessage === null)
+			if ($this->key === null)
 			{
+				if ($failMessage === null)
+				{
+					if ($strict === false)
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value));
+					}
+					else
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s strictly contains %s'), $this, $this->getTypeOf($value));
+					}
+				}
+
+				$this->fail($failMessage);
+			}
+			else
+			{
+				$pass = false;
+
 				if ($strict === false)
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s contains %s'), $this, $this->getTypeOf($value));
+					$pass = ($this->value[$this->key] != $value);
 				}
 				else
 				{
-					$failMessage = sprintf($this->getLocale()->_('%s contains strictly %s'), $this, $this->getTypeOf($value));
+					$pass = ($this->value[$this->key] !== $value);
 				}
 
-			}
+				if ($pass === false)
+				{
+					$key = $this->key;
+				}
 
-			$this->fail($failMessage);
+				$this->key = null;
+
+				if ($pass === true)
+				{
+					$this->pass();
+				}
+				else
+				{
+					if ($strict === false)
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
+					}
+					else
+					{
+						$failMessage = sprintf($this->getLocale()->_('%s strictly contains %s at key %s'), $this, $this->getTypeOf($value), $this->getTypeOf($key));
+					}
+
+					$this->fail($failMessage);
+				}
+			}
 		}
 
 		return $this;
