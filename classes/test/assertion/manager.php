@@ -21,11 +21,6 @@ class manager
 		return $this->invoke($event, $arguments);
 	}
 
-	public function getDefaultHandler()
-	{
-		return $this->defaultHandler;
-	}
-
 	public function getHandlers()
 	{
 		return $this->handlers;
@@ -43,6 +38,11 @@ class manager
 		$this->defaultHandler = $handler;
 
 		return $this;
+	}
+
+	public function getDefaultHandler()
+	{
+		return $this->defaultHandler;
 	}
 
 	public function invoke($event, array $arguments = array())
