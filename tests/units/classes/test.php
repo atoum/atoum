@@ -658,6 +658,7 @@ namespace mageekguy\atoum\tests\units
 					->boolean(function_exists(__NAMESPACE__ . '\given'))->isTrue('Function ' . __NAMESPACE__ . '\given() does not exist')
 					->boolean(function_exists(__NAMESPACE__ . '\calling'))->isTrue('Function ' . __NAMESPACE__ . '\calling() does not exist')
 					->boolean(function_exists(__NAMESPACE__ . '\resetMock'))->isTrue('Function ' . __NAMESPACE__ . '\resetMock() does not exist')
+					->boolean(function_exists(__NAMESPACE__ . '\resetAdapter'))->isTrue('Function ' . __NAMESPACE__ . '\resetAdapter() does not exist')
 					->mock($test)
 						->call('callObservers')
 							->withArguments(\mageekguy\atoum\test::runStart)->never()

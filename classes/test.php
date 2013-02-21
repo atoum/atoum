@@ -274,6 +274,7 @@ abstract class test implements observable, \countable
 			->createFunctionFromAssertion('given')
 			->createFunctionFromAssertion('calling')
 			->createFunctionFromAssertion('resetMock')
+			->createFunctionFromAssertion('resetAdapter')
 		;
 
 		return $this;
