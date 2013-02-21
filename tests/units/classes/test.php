@@ -132,6 +132,15 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testCreateFunctionFromAssertion()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->createFunctionFromAssertion($assertion = uniqid()))->isIdenticalTo($test)
+			;
+		}
+
 		public function testEnableDebugMode()
 		{
 			$this
@@ -646,6 +655,9 @@ namespace mageekguy\atoum\tests\units
 				->if($test = new \mock\tests\units\test())
 				->then
 					->object($test->run())->isIdenticalTo($test)
+					->boolean(function_exists(__NAMESPACE__ . '\given'))->isTrue('Function ' . __NAMESPACE__ . '\given() does not exist')
+					->boolean(function_exists(__NAMESPACE__ . '\calling'))->isTrue('Function ' . __NAMESPACE__ . '\calling() does not exist')
+					->boolean(function_exists(__NAMESPACE__ . '\resetMock'))->isTrue('Function ' . __NAMESPACE__ . '\resetMock() does not exist')
 					->mock($test)
 						->call('callObservers')
 							->withArguments(\mageekguy\atoum\test::runStart)->never()
