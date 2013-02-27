@@ -279,6 +279,38 @@ class file extends atoum\test
 			->if(fread($resource, 4096))
 			->then
 				->boolean(feof($resource))->isTrue()
+			->if($file = testedClass::get())
+			->and($file->contains(
+					($line1 = uniqid() . PHP_EOL) .
+					($line2 = uniqid() . PHP_EOL) .
+					($line3 = uniqid() . PHP_EOL) .
+					($line4 = uniqid() . PHP_EOL) .
+					($line5 = uniqid() . PHP_EOL)
+				)
+			)
+			->and($resource = fopen($file, 'r'))
+			->then
+				->boolean(feof($resource))->isFalse()
+			->if($line = fgets($resource))
+			->then
+				->boolean(feof($resource))->isFalse()
+				->string($line)->isEqualTo($line1)
+			->if($line = fgets($resource))
+			->then
+				->boolean(feof($resource))->isFalse()
+				->string($line)->isEqualTo($line2)
+			->if($line = fgets($resource))
+			->then
+				->boolean(feof($resource))->isFalse()
+				->string($line)->isEqualTo($line3)
+			->if($line = fgets($resource))
+			->then
+				->boolean(feof($resource))->isFalse()
+				->string($line)->isEqualTo($line4)
+			->if($line = fgets($resource))
+			->then
+				->boolean(feof($resource))->isTrue()
+				->string($line)->isEqualTo($line5)
 		;
 	}
 
@@ -317,6 +349,48 @@ class file extends atoum\test
 			->and($resource = fopen($file, 'w'))
 			->then
 				->integer(fseek($resource, 4096))->isZero()
+			->if($file = testedClass::get())
+			->and($file->contains(
+					($line1 = uniqid() . PHP_EOL) .
+					($line2 = uniqid() . PHP_EOL) .
+					($line3 = uniqid() . PHP_EOL) .
+					($line4 = uniqid() . PHP_EOL) .
+					($line5 = uniqid() . PHP_EOL)
+				)
+			)
+			->and($fileObject = new \splFileObject($file))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(1))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(2))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(3))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(4))
+			->then
+				->boolean($fileObject->eof())->isTrue()
+			->if($fileObject->seek(0))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(6))
+			->then
+				->boolean($fileObject->eof())->isTrue()
+			->if($fileObject->seek(5))
+			->then
+				->boolean($fileObject->eof())->isTrue()
+			->if($fileObject->seek(4))
+			->then
+				->boolean($fileObject->eof())->isTrue()
+			->if($fileObject->seek(3))
+			->then
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->seek(4))
+			->then
+				->boolean($fileObject->eof())->isTrue()
 		;
 	}
 
