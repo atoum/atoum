@@ -12,17 +12,19 @@ class adapter extends atoum
 {
 	public function test__construct()
 	{
-		given($asserter = new \mock\mageekguy\atoum\asserter($generator = new atoum\asserter\generator()))
-		->then
-			->object($asserter->getGenerator())->isIdenticalTo($generator)
+		$this
+			->given($asserter = new \mock\mageekguy\atoum\asserter($generator = new atoum\asserter\generator()))
+			->then
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
 		;
 	}
 
 	public function test__call()
 	{
-		given($adapter = new atoum\adapter())
-		->then
-			->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash))
+		$this
+			->given($adapter = new atoum\adapter())
+			->then
+				->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash))
 		;
 	}
 }

@@ -51,7 +51,6 @@ abstract class test implements observable, \countable
 	private $path = '';
 	private $class = '';
 	private $classNamespace = '';
-	private $assertionsAsFunction = array();
 	private $observers = array();
 	private $tags = array();
 	private $phpVersions = array();
@@ -68,7 +67,6 @@ abstract class test implements observable, \countable
 	private $codeCoverage = false;
 	private $classHasNotVoidMethods = false;
 
-	private static $currentTest = null;
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
 
@@ -269,20 +267,6 @@ abstract class test implements observable, \countable
 			->setHandler('define', function() use ($asserterGenerator) { return $asserterGenerator; })
 			->setDefaultHandler(function($asserter, $arguments) use ($asserterGenerator) { return $asserterGenerator->getAsserterInstance($asserter, $arguments); })
 		;
-
-		$this
-			->createFunctionFromAssertion('given')
-			->createFunctionFromAssertion('calling')
-			->createFunctionFromAssertion('resetMock')
-			->createFunctionFromAssertion('resetAdapter')
-		;
-
-		return $this;
-	}
-
-	public function createFunctionFromAssertion($assertion)
-	{
-		$this->assertionsAsFunction[] = $assertion;
 
 		return $this;
 	}
@@ -792,24 +776,11 @@ abstract class test implements observable, \countable
 				throw new \runtimeException('Unable to register mock autoloader');
 			}
 
-			foreach ($this->assertionsAsFunction as $assertion)
-			{
-				if (function_exists('\\' . $this->classNamespace . '\\' . $assertion) === false)
-				{
-					if (@eval('namespace ' . $this->classNamespace . ' { function ' . $assertion . '() { return call_user_func_array(array(\\' . __CLASS__ . '::getCurrentTest(), \'' . $assertion . '\'), func_get_args()); } return true; }') !== true)
-					{
-						throw new \runtimeException('Unable to create function with assertion \'' . $assertion . '\'');
-					}
-				}
-			}
-
 			set_error_handler(array($this, 'errorHandler'));
 
 			ini_set('display_errors', 'stderr');
 			ini_set('log_errors', 'Off');
 			ini_set('log_errors_max_len', '0');
-
-			self::$currentTest = $this;
 
 			$this->currentMethod = $testMethod;
 			$this->executeOnFailure = array();
@@ -946,8 +917,6 @@ abstract class test implements observable, \countable
 
 			$this->currentMethod = null;
 
-			self::$currentTest = null;
-
 			restore_error_handler();
 
 			ini_restore('display_errors');
@@ -1064,11 +1033,6 @@ abstract class test implements observable, \countable
 	public static function getDefaultEngine()
 	{
 		return self::$defaultEngine ?: self::defaultEngine;
-	}
-
-	public static function getCurrentTest()
-	{
-		return self::$currentTest;
 	}
 
 	protected function setClassAnnotations(annotations\extractor $extractor)
