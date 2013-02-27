@@ -76,7 +76,7 @@ class cli extends report\fields\runner\errors
 
 					$string .= $this->errorPrompt;
 
-					$type = self::getType($error['type']);
+					$type = static::getType($error['type']);
 
 					if ($error['case'] === null)
 					{
