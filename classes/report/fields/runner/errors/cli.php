@@ -33,78 +33,6 @@ class cli extends report\fields\runner\errors
 		;
 	}
 
-	public function setTitlePrompt(prompt $prompt = null)
-	{
-		$this->titlePrompt = $prompt ?: new prompt();
-
-		return $this;
-	}
-
-	public function getTitlePrompt()
-	{
-		return $this->titlePrompt;
-	}
-
-	public function setTitleColorizer(colorizer $colorizer = null)
-	{
-		$this->titleColorizer = $colorizer ?: new colorizer();
-
-		return $this;
-	}
-
-	public function getTitleColorizer()
-	{
-		return $this->titleColorizer;
-	}
-
-	public function setMethodPrompt(prompt $prompt = null)
-	{
-		$this->methodPrompt = $prompt ?: new prompt();
-
-		return $this;
-	}
-
-	public function getMethodPrompt()
-	{
-		return $this->methodPrompt;
-	}
-
-	public function setMethodColorizer(colorizer $colorizer = null)
-	{
-		$this->methodColorizer = $colorizer ?: new colorizer();
-
-		return $this;
-	}
-
-	public function getMethodColorizer()
-	{
-		return $this->methodColorizer;
-	}
-
-	public function setErrorPrompt(prompt $prompt = null)
-	{
-		$this->errorPrompt = $prompt ?: new prompt();
-
-		return $this;
-	}
-
-	public function getErrorPrompt()
-	{
-		return $this->errorPrompt;
-	}
-
-	public function setErrorColorizer(colorizer $colorizer = null)
-	{
-		$this->errorColorizer = $colorizer ?: new colorizer();
-
-		return $this;
-	}
-
-	public function getErrorColorizer()
-	{
-		return $this->errorColorizer;
-	}
-
 	public function __toString()
 	{
 		$string = '';
@@ -279,5 +207,77 @@ class cli extends report\fields\runner\errors
 		}
 
 		return $string;
+	}
+
+	public function setTitlePrompt(prompt $prompt = null)
+	{
+		$this->titlePrompt = $prompt ?: new prompt();
+
+		return $this;
+	}
+
+	public function getTitlePrompt()
+	{
+		return $this->titlePrompt;
+	}
+
+	public function setTitleColorizer(colorizer $colorizer = null)
+	{
+		$this->titleColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getTitleColorizer()
+	{
+		return $this->titleColorizer;
+	}
+
+	public function setMethodPrompt(prompt $prompt = null)
+	{
+		$this->methodPrompt = $prompt ?: new prompt();
+
+		return $this;
+	}
+
+	public function getMethodPrompt()
+	{
+		return $this->methodPrompt;
+	}
+
+	public function setMethodColorizer(colorizer $colorizer = null)
+	{
+		$this->methodColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getMethodColorizer()
+	{
+		return $this->methodColorizer;
+	}
+
+	public function setErrorPrompt(prompt $prompt = null)
+	{
+		$this->errorPrompt = $prompt ?: new prompt();
+
+		return $this;
+	}
+
+	public function getErrorPrompt()
+	{
+		return $this->errorPrompt;
+	}
+
+	public function setErrorColorizer(colorizer $colorizer = null)
+	{
+		$this->errorColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getErrorColorizer()
+	{
+		return $this->errorColorizer;
 	}
 }
