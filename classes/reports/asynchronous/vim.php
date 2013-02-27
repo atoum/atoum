@@ -21,11 +21,6 @@ class vim extends reports\asynchronous
 		$secondLevelPrompt = new prompt('=> ');
 		$thirdLevelPrompt = new prompt('==> ');
 
-		$atoumField = new runner\atoum\cli();
-		$atoumField->setPrompt($firstLevelPrompt);
-
-		$this->addField($atoumField);
-
 		$phpPathField = new runner\php\path\cli();
 		$phpPathField->setPrompt($firstLevelPrompt);
 
