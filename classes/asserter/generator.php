@@ -96,11 +96,9 @@ class generator
 		{
 			throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');
 		}
-		else
-		{
-			$asserterInstance = new $asserterClass($this);
 
-			return $asserterInstance->setWithArguments($arguments);
-		}
+		$asserterInstance = new $asserterClass($this);
+
+		return $asserterInstance->setWithArguments($arguments);
 	}
 }
