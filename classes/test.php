@@ -175,13 +175,13 @@ abstract class test implements observable, \countable
 
 	public function setMockGenerator(test\mock\generator $generator = null)
 	{
-		if ($generator === null)
+		if ($generator !== null)
 		{
-			$generator = new test\mock\generator($this);
+			$generator->setTest($this);
 		}
 		else
 		{
-			$generator->setTest($this);
+			$generator = new test\mock\generator($this);
 		}
 
 		$this->mockGenerator = $generator;
