@@ -16,11 +16,6 @@ abstract class image extends notifier
 
 	public function setSuccessImage($path)
 	{
-		if ($this->getAdapter()->file_exists($path) === false)
-		{
-			throw new logic\invalidArgument(sprintf('File %s does not exist', $path));
-		}
-
 		$this->successImage = $path;
 
 		return $this;
@@ -33,11 +28,6 @@ abstract class image extends notifier
 
 	public function setFailureImage($path)
 	{
-		if ($this->getAdapter()->file_exists($path) === false)
-		{
-			throw new logic\invalidArgument(sprintf('File %s does not exist', $path));
-		}
-
 		$this->failureImage = $path;
 
 		return $this;
@@ -48,8 +38,15 @@ abstract class image extends notifier
 		return $this->failureImage;
 	}
 
-	protected function getImage($success)
+	public function getImage($success)
 	{
-		return $success ? $this->getSuccessImage() : $this->getFailureImage();
+		$image = $success ? $this->getSuccessImage() : $this->getFailureImage();
+
+		if ($this->getAdapter()->file_exists($image) === false)
+		{
+			throw new logic\invalidArgument(sprintf('File %s does not exist', $image));
+		}
+
+		return $image;
 	}
 }

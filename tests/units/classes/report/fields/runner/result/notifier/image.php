@@ -4,7 +4,6 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\locale,
 	mageekguy\atoum\test\adapter,
 	mageekguy\atoum\report\fields\runner\result\notifier\image as testedClass
 ;
@@ -33,12 +32,8 @@ class image extends atoum\test
 			->string($field->getSuccessImage())->isEqualTo($path)
 			->if($adapter->file_exists = false)
 			->then
-				->exception(function() use(& $path, $field) {
-							$field->setSuccessImage($path = uniqid());
-						}
-					)
-						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
-						->hasMessage(sprintf('File %s does not exist', $path))
+				->object($field->setSuccessImage($path = uniqid()))->isIdenticalTo($field)
+				->string($field->getSuccessImage())->isEqualTo($path)
 		;
 	}
 
@@ -46,7 +41,7 @@ class image extends atoum\test
 	{
 		$this
 			->if($adapter = new adapter())
-			->if($adapter->file_exists = true)
+			->and($adapter->file_exists = true)
 			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image($adapter))
 			->then
 				->variable($field->getFailureImage())->isNull()
@@ -54,12 +49,40 @@ class image extends atoum\test
 				->string($field->getFailureImage())->isEqualTo($path)
 			->if($adapter->file_exists = false)
 			->then
-				->exception(function() use(& $path, $field) {
-							$field->setFailureImage($path = uniqid());
+				->object($field->setFailureImage($path = uniqid()))->isIdenticalTo($field)
+				->string($field->getFailureImage())->isEqualTo($path)
+		;
+	}
+
+	public function testGetImage()
+	{
+		$this
+			->if($adapter = new adapter())
+			->and($adapter->file_exists = true)
+			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image($adapter))
+			->and($field->setSuccessImage($successImage = uniqid()))
+			->then
+				->string($field->getImage(true))->isEqualTo($successImage)
+			->if($adapter->file_exists = false)
+			->then
+				->exception(function() use($field) {
+							$field->getImage(true);
 						}
 					)
 						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
-						->hasMessage(sprintf('File %s does not exist', $path))
+						->hasMessage(sprintf('File %s does not exist', $successImage))
+			->if($field->setFailureImage($failureImage = uniqid()))
+			->and($adapter->file_exists = true)
+			->then
+				->string($field->getImage(false))->isEqualTo($failureImage)
+			->if($adapter->file_exists = false)
+			->then
+				->exception(function() use($field) {
+							$field->getImage(false);
+						}
+					)
+						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
+						->hasMessage(sprintf('File %s does not exist', $failureImage))
 		;
 	}
 }
