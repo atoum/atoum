@@ -14,9 +14,12 @@ class file extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream');
-		$this->testedClass->extends('mageekguy\atoum\mock\stream');
-		$this->testedClass->extends('mageekguy\atoum\mock\stream');
+		$this
+			->testedClass
+				->extends('mageekguy\atoum\mock\stream')
+				->extends('mageekguy\atoum\mock\stream')
+				->extends('mageekguy\atoum\mock\stream')
+		;
 	}
 
 	public function testGet()
