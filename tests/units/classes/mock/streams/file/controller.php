@@ -86,8 +86,9 @@ class controller extends atoum\test
 				->string($controller->stream_read(2))->isEqualTo('cd')
 				->boolean($controller->stream_eof())->isFalse()
 				->string($controller->stream_read(4096))->isEqualTo('efghijklmnopqrstuvwxyz')
-				->boolean($controller->stream_eof())->isTrue()
+				->boolean($controller->stream_eof())->isFalse()
 				->string($controller->stream_read(1))->isEmpty()
+				->boolean($controller->stream_eof())->isTrue()
 		;
 	}
 
@@ -496,6 +497,9 @@ class controller extends atoum\test
 			->and($controller->stream_open(uniqid(), 'r', 0))
 			->and($controller->stream_read(4096))
 			->then
+				->boolean($controller->stream_eof())->isFalse()
+			->if($controller->stream_read(4096))
+			->then
 				->boolean($controller->stream_eof())->isTrue()
 				->boolean($controller->stream_seek(0))->isTrue()
 				->boolean($controller->stream_eof())->isFalse()
@@ -553,8 +557,9 @@ class controller extends atoum\test
 			->then
 				->string($controller->stream_read(1))->isEqualTo('g')
 				->string($controller->stream_read(4096))->isEqualTo('hijklmnopqrstuvwxyz')
-				->boolean($controller->stream_eof())->isTrue()
+				->boolean($controller->stream_eof())->isFalse()
 				->string($controller->stream_read(1))->isEmpty()
+				->boolean($controller->stream_eof())->isTrue()
 		;
 	}
 

@@ -348,11 +348,13 @@ class controller extends stream\controller
 
 			$data = '';
 
-			if ($this->read === true && $this->pointer >= 0)
+			$this->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
+
+			if ($this->read === true && $this->pointer >= 0 && $this->eof === false)
 			{
 				$data = substr($this->contents, $this->pointer, $count) ?: '';
 
-				$this->movePointer($count);
+				$this->movePointer(strlen($data) ?: $count);
 			}
 
 			return $data;
@@ -696,9 +698,7 @@ class controller extends stream\controller
 
 	protected function movePointer($offset)
 	{
-		$this->setPointer($this->pointer + $offset)->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
-
-		return $this;
+		return $this->setPointer($this->pointer + $offset);
 	}
 
 	protected static function getRawOpenMode($mode)

@@ -413,10 +413,11 @@ class file extends atoum\test
 			->if($fileObject->seek(6))
 			->then
 				->boolean($fileObject->eof())->isTrue()
-				->boolean($fileObject->current())->isFalse()
+				->boolean($fileObject->valid())->isFalse()
+				->string($fileObject->current())->isEmpty()
 			->if($fileObject->seek(5))
 			->then
-				->boolean($fileObject->eof())->isTrue()
+				->boolean($fileObject->eof())->isFalse()
 				->string($fileObject->current())->isEqualTo(PHP_EOL)
 			->if($fileObject->seek(4))
 			->then
@@ -432,7 +433,7 @@ class file extends atoum\test
 				->string($fileObject->current())->isEqualTo($line4)
 			->if($fileObject->seek(5))
 			->then
-				->boolean($fileObject->eof())->isTrue()
+				->boolean($fileObject->eof())->isFalse()
 				->string($fileObject->current())->isEqualTo(PHP_EOL)
 			->if($fileObject = new \splFileObject($file))
 			->then
@@ -463,7 +464,27 @@ class file extends atoum\test
 			->then
 				->integer($fileObject->key())->isEqualTo(5)
 				->string($fileObject->current())->isEqualTo(PHP_EOL)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(6)
+				->string($fileObject->current())->isEmpty()
 				->boolean($fileObject->eof())->isTrue()
+			->if($file = testedClass::get())
+			->and($file->contains(
+					($line0 = 'un' . PHP_EOL) .
+					($line1 = 'deux' . PHP_EOL) .
+					($line2 = 'trois' . PHP_EOL) .
+					($line3 = 'quatre' . PHP_EOL) .
+					($line4 = 'cinq' . PHP_EOL)
+				)
+			)
+			->and($fileObject = new \splFileObject($file))
+			->and($fileObject->seek(4))
+			->then
+				->string($fileObject->current())->isEqualTo($line4)
+				->boolean($fileObject->eof())->isFalse()
+				->boolean($fileObject->valid())->isTrue()
 		;
 	}
 
