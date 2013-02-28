@@ -9,10 +9,8 @@ use
 
 class libnotify extends image
 {
-	const command = 'notify-send -i %3$s %1$s %2$s';
-
-	public function send($title, $message, $success)
+	public function getCommand()
 	{
-		$this->execute(static::command, array($title, $message, $this->getImage($success)));
+		return 'notify-send -i %3$s %1$s %2$s';
 	}
 }

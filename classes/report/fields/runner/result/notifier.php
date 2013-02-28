@@ -60,14 +60,6 @@ abstract class notifier extends result
 		return $this->send($title, $message, $success);
 	}
 
-	public function execute($command, array $args)
-	{
-		array_walk($args, function(& $arg) { $arg = escapeshellarg($arg); });
-		array_unshift($args, $command);
-
-		return $this->getAdapter()->system(call_user_func_array('sprintf', $args));
-	}
-
 	public function setAdapter(atoum\adapter $adapter = null)
 	{
 		$this->adapter = $adapter ?: new atoum\adapter();
@@ -80,5 +72,15 @@ abstract class notifier extends result
 		return $this->adapter;
 	}
 
-	protected abstract function send($title, $message, $success);
+	public function send($title, $message, $success)
+	{
+		return $this->getAdapter()->system(sprintf(
+			$this->getCommand(),
+			escapeshellarg($title),
+			escapeshellarg($message),
+			escapeshellarg($success)
+		));
+	}
+
+	protected abstract function getCommand();
 }

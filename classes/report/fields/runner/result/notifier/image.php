@@ -49,4 +49,9 @@ abstract class image extends notifier
 
 		return $image;
 	}
+
+	public function send($title, $message, $success)
+	{
+		return parent::send($title, $message, $this->getImage($success));
+	}
 }

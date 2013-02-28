@@ -10,10 +10,8 @@ use
 
 class growl extends image
 {
-	const command = 'growlnotify --title %s --name atoum --message %s --image %s';
-
-	protected function send($title, $message, $success)
+	protected function getCommand()
 	{
-		$this->execute(static::command, array($title, $message, $this->getImage($success)));
+		return 'growlnotify --title %s --name atoum --message %s --image %s';
 	}
 }
