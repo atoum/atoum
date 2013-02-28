@@ -41,14 +41,14 @@ class growl extends atoum\test
 	{
 		$this
 			->if($score = new \mock\mageekguy\atoum\runner\score())
-			->and($score->getMockController()->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
-			->and($score->getMockController()->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
-			->and($score->getMockController()->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
-			->and($score->getMockController()->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($score)->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
 			->and($runner = new \mock\mageekguy\atoum\runner())
 			->and($runner->setScore($score))
-			->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
-			->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($runner)->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
+			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
 			->and($field = new testedClass())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isFalse()

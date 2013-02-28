@@ -4,19 +4,18 @@ namespace mageekguy\atoum\report\fields\runner\result;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\adapter,
 	mageekguy\atoum\report\fields\runner\result
 ;
 
 abstract class notifier extends result
 {
-	private $adapter;
+	protected $adapter;
 
-	public function __construct(adapter $adapter = null)
+	public function __construct(atoum\adapter $adapter = null)
 	{
 		parent::__construct();
 
-		$this->adapter = $adapter ?: new adapter();
+		$this->setAdapter($adapter);
 	}
 
 	public function __toString()
@@ -26,7 +25,9 @@ abstract class notifier extends result
 
 	public function notify()
 	{
-		if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0)
+		$success = ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0);
+
+		if ($success === true)
 		{
 			$success = true;
 			$title = 'Success !';
@@ -61,11 +62,17 @@ abstract class notifier extends result
 
 	public function execute($command, array $args)
 	{
-		$output = null;
 		array_walk($args, function(& $arg) { $arg = escapeshellarg($arg); });
 		array_unshift($args, $command);
 
 		return $this->getAdapter()->system(call_user_func_array('sprintf', $args));
+	}
+
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
 	}
 
 	public function getAdapter()
