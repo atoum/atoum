@@ -106,7 +106,7 @@ class controller extends stream\controller
 		$this->contents = $contents;
 		$this->stats['size'] = strlen($this->contents);
 
-		return true;
+		return $this;
 	}
 
 	public function getContents()
@@ -160,11 +160,10 @@ class controller extends stream\controller
 
 	public function contains($contents)
 	{
-		$this->setContents($contents);
-		$this->pointer = 0;
-		$this->eof = false;
-
-		return $this;
+		return $this
+			->setContents($contents)
+			->setPointer(0)
+		;
 	}
 
 	public function isEmpty()
@@ -349,13 +348,11 @@ class controller extends stream\controller
 
 			$data = '';
 
-			if ($this->setEof()->eof === false && $this->read === true)
+			if ($this->read === true && $this->pointer >= 0)
 			{
-				$data = substr($this->contents, $this->pointer, $count);
+				$data = substr($this->contents, $this->pointer, $count) ?: '';
 
-				$this->pointer += $count;
-
-				$this->setEof();
+				$this->movePointer($count);
 			}
 
 			return $data;
@@ -383,15 +380,16 @@ class controller extends stream\controller
 					if ($contents !== '')
 					{
 						$contents .= PHP_EOL;
-						$this->pointer++;
+						$this->movePointer(1);
 					}
 
 					$this->append = false;
 				}
 
-				$this->setContents($contents . $data);
-
-				$this->pointer += ($bytesWrited = strlen($data));
+				$this
+					->setContents($contents . $data)
+					->movePointer($bytesWrited = strlen($data))
+				;
 			}
 
 			return $bytesWrited;
@@ -591,7 +589,9 @@ class controller extends stream\controller
 
 	protected function truncate($newSize)
 	{
-		return $this->setContents(str_pad(substr($this->contents, 0, $newSize), $newSize, "\0"));
+		$this->setContents(str_pad(substr($this->contents, 0, $newSize), $newSize, "\0"));
+
+		return true;
 	}
 
 	protected function seek($offset, $whence = SEEK_SET)
@@ -611,8 +611,7 @@ class controller extends stream\controller
 			$offset = $this->offset;
 		}
 
-		$this->eof = false;
-		$this->pointer = $offset;
+		$this->setPointer($offset);
 
 		return true;
 	}
@@ -687,9 +686,17 @@ class controller extends stream\controller
 		}
 	}
 
-	protected function setEof()
+	protected function setPointer($pointer)
 	{
-		$this->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
+		$this->pointer = $pointer;
+		$this->eof = false;
+
+		return $this;
+	}
+
+	protected function movePointer($offset)
+	{
+		$this->setPointer($this->pointer + $offset)->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
 
 		return $this;
 	}
