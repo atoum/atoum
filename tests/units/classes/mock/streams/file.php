@@ -15,6 +15,8 @@ class file extends atoum\test
 	public function testClass()
 	{
 		$this->testedClass->extends('mageekguy\atoum\mock\stream');
+		$this->testedClass->extends('mageekguy\atoum\mock\stream');
+		$this->testedClass->extends('mageekguy\atoum\mock\stream');
 	}
 
 	public function testGet()
@@ -60,7 +62,7 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->then
 				->integer(filesize($file))->isEqualTo(0)
-			->if($file->contains('abcdefghijklmnopqrstuvwxyz'))
+			->if($file->contains('abcdefghijklmnopqrstuvwxyz' . PHP_EOL))
 			->then
 				->integer(filesize($file))->isEqualTo(27)
 		;
@@ -228,13 +230,13 @@ class file extends atoum\test
 	{
 		$this
 			->if($file = testedClass::get())
-			->and($file->contains($data = 'abcdefghijklmnopqrstuvwxyz'))
+			->and($file->contains($data = 'abcdefghijklmnopqrstuvwxyz' . PHP_EOL))
 			->and($resource = fopen($file, 'r'))
 			->then
 				->string(fread($resource, 1))->isEqualTo('a')
 				->string(fread($resource, 1))->isEqualTo('b')
 				->string(fread($resource, 2))->isEqualTo('cd')
-				->string(fread($resource, 4096))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->string(fread($resource, 4096))->isEqualTo('efghijklmnopqrstuvwxyz' . PHP_EOL)
 				->string(fread($resource, 1))->isEmpty()
 				->string(file_get_contents($file))->isEqualTo($data)
 				->string(fread($resource, 1))->isEmpty()
@@ -244,7 +246,7 @@ class file extends atoum\test
 				->string(fread($resource, 1))->isEqualTo('b')
 				->string(fread($resource, 2))->isEqualTo('cd')
 				->string(file_get_contents($file))->isEqualTo($data)
-				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz')
+				->string(fread($resource, 8192))->isEqualTo('efghijklmnopqrstuvwxyz' . PHP_EOL)
 				->string(fread($resource, 1))->isEmpty()
 			->if($file->isEmpty())
 			->and($resource = fopen($file, 'r'))
@@ -281,11 +283,12 @@ class file extends atoum\test
 				->boolean(feof($resource))->isTrue()
 			->if($file = testedClass::get())
 			->and($file->contains(
-					($line1 = uniqid() . PHP_EOL) .
-					($line2 = uniqid() . PHP_EOL) .
-					($line3 = uniqid() . PHP_EOL) .
-					($line4 = uniqid() . PHP_EOL) .
-					($line5 = uniqid() . PHP_EOL)
+					($line1 = 'un' . PHP_EOL) .
+					($line2 = 'deux' . PHP_EOL) .
+					($line3 = 'trois' . PHP_EOL) .
+					($line4 = 'quatre' . PHP_EOL) .
+					($line5 = 'cinq' . PHP_EOL) .
+					PHP_EOL
 				)
 			)
 			->and($resource = fopen($file, 'r'))
@@ -309,8 +312,8 @@ class file extends atoum\test
 				->string($line)->isEqualTo($line4)
 			->if($line = fgets($resource))
 			->then
-				->boolean(feof($resource))->isTrue()
 				->string($line)->isEqualTo($line5)
+				->boolean(feof($resource))->isFalse()
 		;
 	}
 
@@ -342,6 +345,31 @@ class file extends atoum\test
 		;
 	}
 
+	public function testFgets()
+	{
+		$this
+			->if($file = testedClass::get())
+			->and($file->contains(
+					($line0 = 'un' . PHP_EOL) .
+					($line1 = 'deux' . PHP_EOL) .
+					($line2 = 'trois' . PHP_EOL) .
+					($line3 = 'quatre' . PHP_EOL) .
+					($line4 = 'cinq' . PHP_EOL) .
+					PHP_EOL
+				)
+			)
+			->and($resource = fopen($file, 'r'))
+			->then
+				->string(fgets($resource))->isEqualTo($line0)
+				->string(fgets($resource))->isEqualTo($line1)
+				->string(fgets($resource))->isEqualTo($line2)
+				->string(fgets($resource))->isEqualTo($line3)
+				->string(fgets($resource))->isEqualTo($line4)
+				->string(fgets($resource))->isEqualTo(PHP_EOL)
+				->boolean(fgets($resource))->isFalse()
+		;
+	}
+
 	public function testFseek()
 	{
 		$this
@@ -351,11 +379,12 @@ class file extends atoum\test
 				->integer(fseek($resource, 4096))->isZero()
 			->if($file = testedClass::get())
 			->and($file->contains(
-					($line1 = uniqid() . PHP_EOL) .
-					($line2 = uniqid() . PHP_EOL) .
-					($line3 = uniqid() . PHP_EOL) .
-					($line4 = uniqid() . PHP_EOL) .
-					($line5 = uniqid() . PHP_EOL)
+					($line0 = 'un' . PHP_EOL) .
+					($line1 = 'deux' . PHP_EOL) .
+					($line2 = 'trois' . PHP_EOL) .
+					($line3 = 'quatre' . PHP_EOL) .
+					($line4 = 'cinq' . PHP_EOL) .
+					PHP_EOL
 				)
 			)
 			->and($fileObject = new \splFileObject($file))
@@ -364,32 +393,76 @@ class file extends atoum\test
 			->if($fileObject->seek(1))
 			->then
 				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line1)
 			->if($fileObject->seek(2))
 			->then
 				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line2)
 			->if($fileObject->seek(3))
 			->then
 				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line3)
 			->if($fileObject->seek(4))
 			->then
-				->boolean($fileObject->eof())->isTrue()
+				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line4)
 			->if($fileObject->seek(0))
 			->then
 				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line0)
 			->if($fileObject->seek(6))
 			->then
 				->boolean($fileObject->eof())->isTrue()
+				->boolean($fileObject->current())->isFalse()
 			->if($fileObject->seek(5))
 			->then
 				->boolean($fileObject->eof())->isTrue()
+				->string($fileObject->current())->isEqualTo(PHP_EOL)
 			->if($fileObject->seek(4))
 			->then
-				->boolean($fileObject->eof())->isTrue()
+				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line4)
 			->if($fileObject->seek(3))
 			->then
 				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line3)
 			->if($fileObject->seek(4))
 			->then
+				->boolean($fileObject->eof())->isFalse()
+				->string($fileObject->current())->isEqualTo($line4)
+			->if($fileObject->seek(5))
+			->then
+				->boolean($fileObject->eof())->isTrue()
+				->string($fileObject->current())->isEqualTo(PHP_EOL)
+			->if($fileObject = new \splFileObject($file))
+			->then
+				->integer($fileObject->key())->isZero()
+				->string($fileObject->current())->isEqualTo($line0)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(1)
+				->string($fileObject->current())->isEqualTo($line1)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(2)
+				->string($fileObject->current())->isEqualTo($line2)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(3)
+				->string($fileObject->current())->isEqualTo($line3)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(4)
+				->string($fileObject->current())->isEqualTo($line4)
+				->boolean($fileObject->eof())->isFalse()
+			->if($fileObject->next())
+			->then
+				->integer($fileObject->key())->isEqualTo(5)
+				->string($fileObject->current())->isEqualTo(PHP_EOL)
 				->boolean($fileObject->eof())->isTrue()
 		;
 	}

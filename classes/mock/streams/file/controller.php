@@ -104,7 +104,7 @@ class controller extends stream\controller
 	public function setContents($contents)
 	{
 		$this->contents = $contents;
-		$this->stats['size'] = ($contents == '' ? 0 : strlen($contents) + 1);
+		$this->stats['size'] = strlen($this->contents);
 
 		return true;
 	}
@@ -349,22 +349,13 @@ class controller extends stream\controller
 
 			$data = '';
 
-			if ($this->read === true)
+			if ($this->setEof()->eof === false && $this->read === true)
 			{
-				$contentsLength = strlen($this->contents);
-
-				if ($this->pointer >= 0 && $this->pointer < $contentsLength)
-				{
-					$data = substr($this->contents, $this->pointer, $count);
-				}
+				$data = substr($this->contents, $this->pointer, $count);
 
 				$this->pointer += $count;
 
-				if ($this->pointer >= $contentsLength)
-				{
-					$this->eof = true;
-					$this->pointer = $contentsLength;
-				}
+				$this->setEof();
 			}
 
 			return $data;
@@ -385,24 +376,22 @@ class controller extends stream\controller
 
 			if ($this->write === true)
 			{
+				$contents = $this->getContents();
+
 				if ($this->append === true)
 				{
-					if ($this->contents !== '')
+					if ($contents !== '')
 					{
-						$this->contents .= PHP_EOL;
+						$contents .= PHP_EOL;
 						$this->pointer++;
 					}
 
 					$this->append = false;
 				}
 
-				$this->contents .= $data;
+				$this->setContents($contents . $data);
 
-				$bytesWrited = strlen($data);
-
-				$this->pointer += $bytesWrited;
-
-				$this->stats['size'] = ($this->contents == '' ? 0 : strlen($this->contents) + 1);
+				$this->pointer += ($bytesWrited = strlen($data));
 			}
 
 			return $bytesWrited;
@@ -602,18 +591,7 @@ class controller extends stream\controller
 
 	protected function truncate($newSize)
 	{
-		$contents = $this->contents;
-
-		if ($newSize < strlen($this->contents))
-		{
-			$contents = substr($contents, 0, $newSize);
-		}
-		else
-		{
-			$contents = str_pad($contents, $newSize, "\0");
-		}
-
-		return $this->setContents($contents);
+		return $this->setContents(str_pad(substr($this->contents, 0, $newSize), $newSize, "\0"));
 	}
 
 	protected function seek($offset, $whence = SEEK_SET)
@@ -625,7 +603,7 @@ class controller extends stream\controller
 				break;
 
 			case SEEK_END:
-				$offset = strlen($this->contents) + $offset;
+				$offset = strlen($this->getContents()) + $offset;
 		}
 
 		if ($this->offset !== null && $offset < $this->offset)
@@ -707,6 +685,13 @@ class controller extends stream\controller
 			default:
 				return ($permissions & $other) > 0;
 		}
+	}
+
+	protected function setEof()
+	{
+		$this->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
+
+		return $this;
 	}
 
 	protected static function getRawOpenMode($mode)
