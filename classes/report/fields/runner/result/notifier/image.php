@@ -4,7 +4,7 @@ namespace mageekguy\atoum\report\fields\runner\result\notifier;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions\logic,
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\report\fields\runner\result\notifier
 ;
 
@@ -44,7 +44,7 @@ abstract class image extends notifier
 
 		if ($this->getAdapter()->file_exists($image) === false)
 		{
-			throw new logic\invalidArgument(sprintf('File %s does not exist', $image));
+			throw new exceptions\runtime(sprintf('File %s does not exist', $image));
 		}
 
 		return $image;
@@ -53,5 +53,14 @@ abstract class image extends notifier
 	public function send($title, $message, $success)
 	{
 		return parent::send($title, $message, $this->getImage($success));
+	}
+
+	public function __toString()
+	{
+		try {
+			return parent::__toString();
+		} catch(exceptions\runtime $exception) {
+			return $exception->getMessage();
+		}
 	}
 }

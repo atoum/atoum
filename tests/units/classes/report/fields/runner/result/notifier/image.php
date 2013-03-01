@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\report\fields\runner\result\notifier;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\test\adapter,
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\report\fields\runner\result\notifier\image as testedClass
 ;
 
@@ -69,7 +70,7 @@ class image extends atoum\test
 							$field->getImage(true);
 						}
 					)
-						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
+						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
 						->hasMessage(sprintf('File %s does not exist', $successImage))
 			->if($field->setFailureImage($failureImage = uniqid()))
 			->and($adapter->file_exists = true)
@@ -81,8 +82,25 @@ class image extends atoum\test
 							$field->getImage(false);
 						}
 					)
-						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
+						->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
 						->hasMessage(sprintf('File %s does not exist', $failureImage))
+		;
+	}
+
+	public function testAsString()
+	{
+		$this
+			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image())
+			->and($this->calling($field)->notify = null)
+			->then
+				->castToString($field)->isEmpty()
+			->if($this->calling($field)->notify = $output = uniqid())
+			->then
+				->castToString($field)->isEqualTo($output)
+			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image())
+			->and($this->calling($field)->notify->throw = new exceptions\runtime($message = uniqid()))
+			->then
+				->castToString($field)->isEqualTo($message)
 		;
 	}
 }
