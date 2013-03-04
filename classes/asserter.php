@@ -12,9 +12,9 @@ abstract class asserter
 {
 	protected $generator = null;
 
-	public function __construct(asserter\generator $generator)
+	public function __construct(asserter\generator $generator = null)
 	{
-		$this->generator = $generator;
+		$this->setGenerator($generator);
 	}
 
 	public function __get($asserter)
@@ -61,6 +61,13 @@ abstract class asserter
 	public function getLocale()
 	{
 		return $this->generator->getLocale();
+	}
+
+	public function setGenerator(asserter\generator $generator = null)
+	{
+		$this->generator = $generator ?: new asserter\generator();
+
+		return $this;
 	}
 
 	public function getGenerator()

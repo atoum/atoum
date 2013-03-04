@@ -13,12 +13,20 @@ class string extends asserters\variable
 {
 	protected $charlist = null;
 	protected $streamController = null;
+	protected $adapter = null;
 
-	public function __construct(asserter\generator $generator, atoum\adapter $adapter = null)
+	public function __construct(asserter\generator $generator = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($generator);
 
+		$this->setAdapter($adapter);
+	}
+
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
 		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
 	}
 
 	public function getAdapter()

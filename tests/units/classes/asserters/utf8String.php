@@ -16,30 +16,35 @@ class utf8String extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
+		$this->testedClass->extends('mageekguy\atoum\asserters\string');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String())
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
 			->and($asserter = new asserters\utf8String($generator = new asserter\generator(), $adapter))
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getAdapter())->isEqualTo($adapter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-
 			->if($adapter->extension_loaded = false)
 			->then
 				->exception(function() use ($adapter) { new asserters\utf8String(new asserter\generator(), $adapter); })

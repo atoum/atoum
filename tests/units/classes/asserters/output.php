@@ -14,16 +14,22 @@ class output extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
+		$this->testedClass->extends('mageekguy\atoum\asserters\string');
 	}
 
 	public function test__construct()
 	{
 		$this
+			->if($asserter = new asserters\output())
+			->then
+				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
+				->string($asserter->getValue())->isEmpty()
+				->boolean($asserter->wasSet())->isTrue()
 			->if($asserter = new asserters\output($generator = new asserter\generator()))
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()
 		;

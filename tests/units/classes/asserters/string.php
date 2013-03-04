@@ -15,17 +15,24 @@ class string extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+		$this->testedClass->extends('mageekguy\atoum\asserters\variable');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new testedClass())
+			->then
+				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
+				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+			->if($asserter = new testedClass($generator = new asserter\generator(), $adapter = new atoum\adapter()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
-				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->object($asserter->getAdapter())->isIdenticalTo($adapter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
 		;
@@ -41,6 +48,20 @@ class string extends atoum\test
 			->if($asserter->setWith($value = "\010" . uniqid() . "\010", null, $charlist = "\010"))
 			->then
 				->castToString($asserter)->isEqualTo('string(' . strlen($value) . ') \'' . addcslashes($value, "\010") . '\'')
+		;
+	}
+
+	public function testSetAdapter()
+	{
+		$this
+			->if($asserter = new testedClass())
+			->then
+				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
+				->object($asserter->getAdapter())->isIdenticalTo($adapter)
+				->object($asserter->setAdapter())->isIdenticalTo($asserter)
+				->object($asserter->getAdapter())
+					->isNotIdenticalTo($adapter)
+					->isEqualTo(new atoum\adapter())
 		;
 	}
 

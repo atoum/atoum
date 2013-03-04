@@ -11,7 +11,9 @@ use
 
 class utf8String extends asserters\string
 {
-	public function __construct(asserter\generator $generator, atoum\adapter $adapter = null)
+	protected $adapter = null;
+
+	public function __construct(asserter\generator $generator = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($generator, $adapter);
 

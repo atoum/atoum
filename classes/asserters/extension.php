@@ -13,11 +13,11 @@ class extension extends atoum\asserter
 	protected $name = null;
 	protected $adapter = null;
 
-	public function __construct(atoum\asserter\generator $generator)
+	public function __construct(atoum\asserter\generator $generator = null, atoum\adapter $adapter = null)
 	{
 		parent::__construct($generator);
 
-		$this->setAdapter();
+		$this->setAdapter($adapter);
 	}
 
 	public function __toString()
