@@ -110,8 +110,6 @@ class generator extends atoum\test
 			->then
 				->object($generator->setAlias($alias = uniqid(), $asserter = uniqid()))->isIdenticalTo($generator)
 				->array($generator->getAliases())->isEqualTo(array($alias => $asserter))
-				->object($generator->setAlias(strtoupper($otherAlias = uniqid()), strtoupper($otherAsserter = uniqid())))->isIdenticalTo($generator)
-				->array($generator->getAliases())->isEqualTo(array($alias => $asserter, $otherAlias => $otherAsserter))
 		;
 	}
 
@@ -140,14 +138,10 @@ class generator extends atoum\test
 			->then
 				->string($generator->getAsserterClass($asserter))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
 				->string($generator->getAsserterClass($alias))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
-				->string($generator->getAsserterClass(strtoupper($asserter)))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
-				->string($generator->getAsserterClass(strtoupper($alias)))->isEqualTo(testedClass::defaultAsserterNamespace . '\\' . $asserter)
 			->if($generator->setAsserterNamespace($namespace = uniqid()))
 			->then
 				->string($generator->getAsserterClass($asserter))->isEqualTo($namespace . '\\' . $asserter)
 				->string($generator->getAsserterClass($alias))->isEqualTo($namespace . '\\' . $asserter)
-				->string($generator->getAsserterClass(strtoupper($asserter)))->isEqualTo($namespace . '\\' . $asserter)
-				->string($generator->getAsserterClass(strtoupper($alias)))->isEqualTo($namespace . '\\' . $asserter)
 			->if($adapter->class_exists = false)
 				->variable($generator->getAsserterClass($asserter))->isNull()
 		;
