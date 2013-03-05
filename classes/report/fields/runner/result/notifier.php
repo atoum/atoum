@@ -20,7 +20,8 @@ abstract class notifier extends result
 
 	public function __toString()
 	{
-		return $this->notify() ?: '';
+		$string = $this->notify();
+		return empty($string) === false ? trim($string) . PHP_EOL : '';
 	}
 
 	public function notify()

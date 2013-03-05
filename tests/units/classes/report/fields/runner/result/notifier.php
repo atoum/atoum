@@ -132,7 +132,7 @@ class notifier extends atoum\test
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
-				->castToString($field)->isEqualTo($output)
+				->castToString($field)->isEqualTo($output . PHP_EOL)
 				->mock($locale)
 					->call('_')->withArguments('%s %s %s %s %s')
 					->call('__')->withArguments('%s test', '%s tests', 1)->once()
@@ -147,7 +147,7 @@ class notifier extends atoum\test
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
-				->castToString($field)->isEqualTo($output)
+				->castToString($field)->isEqualTo($output . PHP_EOL)
 				->mock($locale)
 					->call('_')->withArguments('%s %s %s %s %s')->once()
 					->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
@@ -164,7 +164,7 @@ class notifier extends atoum\test
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
-				->castToString($field)->isEqualTo($output)
+				->castToString($field)->isEqualTo($output . PHP_EOL)
 				->mock($locale)
 					->call('_')->withArguments('%s %s %s %s %s %s %s %s')
 					->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()
@@ -183,7 +183,7 @@ class notifier extends atoum\test
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
-				->castToString($field)->isEqualTo($output)
+				->castToString($field)->isEqualTo($output . PHP_EOL)
 				->mock($locale)
 					->call('_')->withArguments('%s %s %s %s %s %s %s %s')
 					->call('__')->withArguments('%s test', '%s tests', $testNumber)->once()

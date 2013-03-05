@@ -96,11 +96,11 @@ class image extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($this->calling($field)->notify = $output = uniqid())
 			->then
-				->castToString($field)->isEqualTo($output)
+				->castToString($field)->isEqualTo($output . PHP_EOL)
 			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier\image())
 			->and($this->calling($field)->notify->throw = new exceptions\runtime($message = uniqid()))
 			->then
-				->castToString($field)->isEqualTo($message)
+				->castToString($field)->isEqualTo($message . PHP_EOL)
 		;
 	}
 }
