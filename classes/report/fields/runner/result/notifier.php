@@ -9,7 +9,7 @@ use
 
 abstract class notifier extends result
 {
-	protected $adapter;
+	protected $adapter = null;
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
@@ -29,7 +29,6 @@ abstract class notifier extends result
 
 		if ($success === true)
 		{
-			$success = true;
 			$title = 'Success !';
 			$message = sprintf(
 				$this->locale->_('%s %s %s %s %s'),
@@ -42,7 +41,6 @@ abstract class notifier extends result
 		}
 		else
 		{
-			$success = false;
 			$title = 'Failure !';
 			$message = sprintf(
 				$this->locale->_('%s %s %s %s %s %s %s %s'),
@@ -74,7 +72,7 @@ abstract class notifier extends result
 
 	public function send($title, $message, $success)
 	{
-		return $this->getAdapter()->system(sprintf(
+		return $this->adapter->system(sprintf(
 			$this->getCommand(),
 			escapeshellarg($title),
 			escapeshellarg($message),
