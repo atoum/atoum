@@ -106,7 +106,7 @@ class controller extends stream\controller
 		$this->contents = $contents;
 		$this->stats['size'] = strlen($this->contents);
 
-		return $this;
+		return $this->clearStat();
 	}
 
 	public function getContents()
@@ -125,7 +125,7 @@ class controller extends stream\controller
 	{
 		$this->exists = false;
 
-		return $this;
+		return $this->clearStat();
 	}
 
 	public function isNotReadable()
@@ -622,14 +622,14 @@ class controller extends stream\controller
 	{
 		$this->stats['mode'] = $this->stats['mode'] | $permissions;
 
-		return $this;
+		return $this->clearStat();
 	}
 
 	protected function removePermissions($permissions)
 	{
 		$this->stats['mode'] = $this->stats['mode'] & ~ $permissions;
 
-		return $this;
+		return $this->clearStat();
 	}
 
 	protected function setOpenMode($mode)
@@ -699,6 +699,13 @@ class controller extends stream\controller
 	protected function movePointer($offset)
 	{
 		return $this->setPointer($this->pointer + $offset);
+	}
+
+	protected function clearStat()
+	{
+		clearstatcache(false, $this->getPath());
+
+		return $this;
 	}
 
 	protected static function getRawOpenMode($mode)
