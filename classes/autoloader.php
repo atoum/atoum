@@ -29,6 +29,17 @@ class autoloader
 		}
 	}
 
+	public static function __set_state(array $array)
+	{
+		$autoloader = new static();
+		$autoloader->classes = $array['classes'];
+		$autoloader->directories = $array['directories'];
+		$autoloader->classAliases = $array['classAliases'];
+		$autoloader->namespaceAliases = $array['namespaceAliases'];
+
+		return $autoloader;
+	}
+
 	public function register($prepend = false)
 	{
 		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
@@ -49,36 +60,32 @@ class autoloader
 		return $this;
 	}
 
-	public function addDirectory($namespace, $directory)
+	public function addDirectory($namespace, $directory, $suffix = '.php')
 	{
-		$namespace = strtolower(trim($namespace, '\\') . '\\');
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
+		if (in_array($directory, $this->directories) === false)
 		{
-			$this->directories[$namespace][] = $directory;
+			$this->directories[] = $directory;
 
-			krsort($this->directories, \SORT_STRING);
-
-			$lengthDirectory = strlen($directory);
+			$namespace = strtolower(trim($namespace, '\\') . '\\');
+			$directoryLength = strlen($directory);
+			$suffixLength = - strlen($suffix);
 
 			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO|\filesystemIterator::UNIX_PATHS), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 			{
-				$this->classes[strtolower($namespace . str_replace(DIRECTORY_SEPARATOR, '\\', substr($file->getPathname(), $lengthDirectory, -4)))] = (string) $file;
+				$path = $file->getPathname();
+
+				$this->classes[$namespace . strtolower(str_replace(DIRECTORY_SEPARATOR, '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
 			}
 		}
 
 		return $this;
 	}
 
-	public function init(autoloader $autoloader)
+	public function getDirectories()
 	{
-		$this->classes = $autolodaer->classes;
-		$this->directories = $autoloader->directories;
-		$this->classAliases = $autoloader->classAliases;
-		$this->namespaceAliases = $autoloader->namespaceAliases;
-
-		return $this;
+		return $this->directories;
 	}
 
 	public function getClasses()
@@ -91,11 +98,6 @@ class autoloader
 		$this->classes = $classes;
 
 		return $this;
-	}
-
-	public function getDirectories()
-	{
-		return $this->directories;
 	}
 
 	public function addNamespaceAlias($alias, $target)
@@ -163,11 +165,11 @@ class autoloader
 		}
 	}
 
-	public static function set()
+	public static function set(autoloader $autoloader = null)
 	{
 		if (static::$autoloader === null)
 		{
-			static::$autoloader = new static();
+			static::$autoloader = $autoloader ?: new static();
 			static::$autoloader->register();
 		}
 
@@ -176,7 +178,7 @@ class autoloader
 
 	public static function get()
 	{
-		return static::$autoloader;
+		return static::set();
 	}
 
 	protected function resolveNamespaceAlias($class)
@@ -231,5 +233,3 @@ class autoloader
 		return null;
 	}
 }
-
-autoloader::set();
