@@ -11,34 +11,19 @@ class autoloader
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
 
-	public function __construct(array $namespaces = null, array $namespaceAliases = null, $classAliases = null)
+	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
-		if ($namespaces === null)
-		{
-			$namespaces = array();
-		}
-
 		foreach ($namespaces as $namespace => $directory)
 		{
 			$this->addDirectory($namespace, $directory);
 		}
 
-		if ($namespaceAliases === null)
-		{
-			$namespaceAliases = array('atoum' => __NAMESPACE__);
-		}
-
-		foreach ($namespaceAliases as $alias => $target)
+		foreach ($namespaceAliases ?: array('atoum' => __NAMESPACE__) as $alias => $target)
 		{
 			$this->addNamespaceAlias($alias, $target);
 		}
 
-		if ($classAliases === null)
-		{
-			$classAliases = array('atoum' => __NAMESPACE__ . '\test');
-		}
-
-		foreach ($classAliases as $alias => $target)
+		foreach ($classAliases ?: array('atoum' => __NAMESPACE__ . '\test') as $alias => $target)
 		{
 			$this->addClassAlias($alias, $target);
 		}
@@ -66,17 +51,14 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
-		if (sizeof($this->classes) <= 0)
+		$namespace = strtolower(trim($namespace, '\\') . '\\');
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
 		{
-			$namespace = strtolower(trim($namespace, '\\') . '\\');
-			$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+			$this->directories[$namespace][] = $directory;
 
-			if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
-			{
-				$this->directories[$namespace][] = $directory;
-
-				krsort($this->directories, \SORT_STRING);
-			}
+			krsort($this->directories, \SORT_STRING);
 
 			$lengthDirectory = strlen($directory);
 
@@ -85,6 +67,16 @@ class autoloader
 				$this->classes[strtolower($namespace . str_replace(DIRECTORY_SEPARATOR, '\\', substr($file->getPathname(), $lengthDirectory, -4)))] = (string) $file;
 			}
 		}
+
+		return $this;
+	}
+
+	public function init(autoloader $autoloader)
+	{
+		$this->classes = $autolodaer->classes;
+		$this->directories = $autoloader->directories;
+		$this->classAliases = $autoloader->classAliases;
+		$this->namespaceAliases = $autoloader->namespaceAliases;
 
 		return $this;
 	}
