@@ -81,7 +81,7 @@ class concurrent extends test\engine
 				'<?php ' .
 				'ob_start();' .
 				'require \'' . atoum\directory . '/classes/autoloader.php\';' .
-				'mageekguy\atoum\autoloader::set(' . var_export(atoum\autoloader::get(), true) . ');'
+				'mageekguy\atoum\autoloader::init(' . var_export(atoum\autoloader::get(), true) . ');'
 			;
 
 			$bootstrapFile = $this->test->getBootstrapFile();

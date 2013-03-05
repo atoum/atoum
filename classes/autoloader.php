@@ -76,7 +76,7 @@ class autoloader
 			{
 				$path = $file->getPathname();
 
-				$this->classes[$namespace . strtolower(str_replace(DIRECTORY_SEPARATOR, '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+				$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
 			}
 		}
 
@@ -165,11 +165,23 @@ class autoloader
 		}
 	}
 
-	public static function set(autoloader $autoloader = null)
+	public static function init(autoloader $autoloader)
+	{
+		if (static::$autoloader !== null)
+		{
+			throw new \runtimeException('Unable to init autoloader because it is already set');
+		}
+
+		static::$autoloader = $autoloader->register();
+
+		return static::$autoloader;
+	}
+
+	public static function set()
 	{
 		if (static::$autoloader === null)
 		{
-			static::$autoloader = $autoloader ?: new static();
+			static::$autoloader = new static();
 			static::$autoloader->register();
 		}
 
