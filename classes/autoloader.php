@@ -6,6 +6,7 @@ class autoloader
 {
 	protected static $autoloader = null;
 
+	protected $classes = array();
 	protected $directories = array();
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
@@ -14,7 +15,7 @@ class autoloader
 	{
 		if ($namespaces === null)
 		{
-			$namespaces = array(__NAMESPACE__ => __DIR__);
+			$namespaces = array();
 		}
 
 		foreach ($namespaces as $namespace => $directory)
@@ -65,15 +66,37 @@ class autoloader
 
 	public function addDirectory($namespace, $directory)
 	{
-		$namespace = strtolower(trim($namespace, '\\') . '\\');
-		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-
-		if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
+		if (sizeof($this->classes) <= 0)
 		{
-			$this->directories[$namespace][] = $directory;
+			$namespace = strtolower(trim($namespace, '\\') . '\\');
+			$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-			krsort($this->directories, \SORT_STRING);
+			if (isset($this->directories[$namespace]) === false || in_array($directory, $this->directories[$namespace]) === false)
+			{
+				$this->directories[$namespace][] = $directory;
+
+				krsort($this->directories, \SORT_STRING);
+			}
+
+			$lengthDirectory = strlen($directory);
+
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO|\filesystemIterator::UNIX_PATHS), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
+			{
+				$this->classes[strtolower($namespace . str_replace(DIRECTORY_SEPARATOR, '\\', substr($file->getPathname(), $lengthDirectory, -4)))] = (string) $file;
+			}
 		}
+
+		return $this;
+	}
+
+	public function getClasses()
+	{
+		return $this->classes;
+	}
+
+	public function setClasses(array $classes)
+	{
+		$this->classes = $classes;
 
 		return $this;
 	}
@@ -109,32 +132,9 @@ class autoloader
 
 	public function getPath($class)
 	{
-		$caseInsentiveClass = strtolower($class);
+		$class = strtolower($class);
 
-		foreach ($this->directories as $namespace => $directories)
-		{
-			if ($caseInsentiveClass !== $namespace)
-			{
-				$namespaceLength = strlen($namespace);
-
-				if (substr($caseInsentiveClass, 0, $namespaceLength) == $namespace)
-				{
-					$classFile = str_replace('\\', DIRECTORY_SEPARATOR, substr($class, $namespaceLength)) . '.php';
-
-					foreach ($directories as $directory)
-					{
-						$path = $directory . $classFile;
-
-						if (is_file($path) === true)
-						{
-							return $path;
-						}
-					}
-				}
-			}
-		}
-
-		return null;
+		return (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
 	}
 
 	public function requireClass($class)
