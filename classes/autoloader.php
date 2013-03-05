@@ -133,7 +133,7 @@ class autoloader
 
 	public function requireClass($class)
 	{
-		$class = preg_replace_callback('/(^.|\\\.)/', function($matches) { return strtolower($matches[0]); }, $class);
+		$class = strtolower($class);
 
 		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
 
