@@ -62,7 +62,7 @@ class autoloader
 
 	public function addDirectory($namespace, $directory, $suffix = '.php')
 	{
-		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+		$directory = static::cleanPath(rtrim($directory, DIRECTORY_SEPARATOR)) . '/';
 
 		if (in_array($directory, $this->directories) === false)
 		{
@@ -74,9 +74,9 @@ class autoloader
 
 			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 			{
-				$path = $file->getPathname();
+				$path = static::cleanPath($file->getPathname());
 
-				$this->classes[$namespace . strtolower(str_replace(DIRECTORY_SEPARATOR, '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+				$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
 			}
 		}
 
@@ -243,5 +243,10 @@ class autoloader
 		}
 
 		return null;
+	}
+
+	protected static function cleanPath($path)
+	{
+		return (DIRECTORY_SEPARATOR == '/' ? $path : str_replace('\\', '/', $path));
 	}
 }
