@@ -72,11 +72,11 @@ class autoloader
 			$directoryLength = strlen($directory);
 			$suffixLength = - strlen($suffix);
 
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO|\filesystemIterator::UNIX_PATHS), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
+			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 			{
 				$path = $file->getPathname();
 
-				$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+				$this->classes[$namespace . strtolower(str_replace(DIRECTORY_SEPARATOR, '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
 			}
 		}
 
