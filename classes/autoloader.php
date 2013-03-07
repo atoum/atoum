@@ -2,7 +2,7 @@
 
 namespace mageekguy\atoum;
 
-class autoloader
+class autoloader implements \serializable
 {
 	protected static $autoloader = null;
 
@@ -29,15 +29,22 @@ class autoloader
 		}
 	}
 
-	public static function __set_state(array $array)
+	public function serialize()
 	{
-		$autoloader = new static();
-		$autoloader->classes = $array['classes'];
-		$autoloader->directories = $array['directories'];
-		$autoloader->classAliases = $array['classAliases'];
-		$autoloader->namespaceAliases = $array['namespaceAliases'];
+		return serialize(array(
+				$this->classes,
+				$this->directories,
+				$this->classAliases,
+				$this->namespaceAliases
+			)
+		);
+	}
 
-		return $autoloader;
+	public function unserialize($string)
+	{
+		list($this->classes, $this->directories, $this->classAliases, $this->namespaceAliases) = unserialize($string);
+
+		return $this;
 	}
 
 	public function register($prepend = false)
