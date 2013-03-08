@@ -33,17 +33,6 @@ class autoloader
 		}
 	}
 
-	public static function __set_state(array $array)
-	{
-		$autoloader = new static();
-		$autoloader->classes = $array['classes'];
-		$autoloader->directories = $array['directories'];
-		$autoloader->classAliases = $array['classAliases'];
-		$autoloader->namespaceAliases = $array['namespaceAliases'];
-
-		return $autoloader;
-	}
-
 	public function register($prepend = false)
 	{
 		if (spl_autoload_register(array($this, 'requireClass'), true, $prepend) === false)
