@@ -2,14 +2,18 @@
 
 namespace mageekguy\atoum;
 
-class autoloader implements \serializable
+class autoloader
 {
+	const defaultCacheFileName = 'autoload.atoum.cache';
+
 	protected static $autoloader = null;
 
 	protected $classes = array();
 	protected $directories = array();
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
+
+	private static $cacheFile = null;
 
 	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
@@ -29,22 +33,15 @@ class autoloader implements \serializable
 		}
 	}
 
-	public function serialize()
+	public static function __set_state(array $array)
 	{
-		return serialize(array(
-				$this->classes,
-				$this->directories,
-				$this->classAliases,
-				$this->namespaceAliases
-			)
-		);
-	}
+		$autoloader = new static();
+		$autoloader->classes = $array['classes'];
+		$autoloader->directories = $array['directories'];
+		$autoloader->classAliases = $array['classAliases'];
+		$autoloader->namespaceAliases = $array['namespaceAliases'];
 
-	public function unserialize($string)
-	{
-		list($this->classes, $this->directories, $this->classAliases, $this->namespaceAliases) = unserialize($string);
-
-		return $this;
+		return $autoloader;
 	}
 
 	public function register($prepend = false)
@@ -69,25 +66,33 @@ class autoloader implements \serializable
 
 	public function addDirectory($namespace, $directory, $suffix = '.php')
 	{
-		$directory = static::cleanPath(rtrim($directory, DIRECTORY_SEPARATOR)) . '/';
+		$namespace = strtolower(trim($namespace, '\\') . '\\');
+		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
 
-		if (in_array($directory, $this->directories) === false)
+		if ($this->directoryIsSet($namespace, $directory) === false)
 		{
-			$this->directories[] = $directory;
+			$this->directories[$namespace][] = array($directory, $suffix);
 
-			$namespace = strtolower(trim($namespace, '\\') . '\\');
-			$directoryLength = strlen($directory);
-			$suffixLength = - strlen($suffix);
-
-			foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
-			{
-				$path = static::cleanPath($file->getPathname());
-
-				$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
-			}
+			krsort($this->directories, \SORT_STRING);
 		}
 
 		return $this;
+	}
+
+	public function directoryIsSet($namespace, $directory)
+	{
+		if (isset($this->directories[$namespace]) === true)
+		{
+			foreach ($this->directories[$namespace] as $directoryData)
+			{
+				if ($directoryData[0] == $directory)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
 	}
 
 	public function getDirectories()
@@ -135,7 +140,42 @@ class autoloader implements \serializable
 	{
 		$class = strtolower($class);
 
-		return (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
+		$path = (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
+
+		if ($path === null)
+		{
+			foreach ($this->directories as $namespace => $directories)
+			{
+				if (strpos($class, $namespace) === 0)
+				{
+					foreach ($directories as $directoryData)
+					{
+						list($directory, $suffix) = $directoryData;
+
+						$directoryLength = strlen($directory);
+						$suffixLength = - strlen($suffix);
+
+						foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
+						{
+							$path = $file->getPathname();
+
+							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+						}
+					}
+
+					$cacheFile = static::getCacheFile();
+
+					if (@file_put_contents($cacheFile, serialize($this)) === false)
+					{
+						throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
+					}
+
+					return (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
+				}
+			}
+		}
+
+		return $path;
 	}
 
 	public function requireClass($class)
@@ -172,23 +212,22 @@ class autoloader implements \serializable
 		}
 	}
 
-	public static function init(autoloader $autoloader)
-	{
-		if (static::$autoloader !== null)
-		{
-			throw new \runtimeException('Unable to init autoloader because it is already set');
-		}
-
-		static::$autoloader = $autoloader->register();
-
-		return static::$autoloader;
-	}
-
 	public static function set()
 	{
 		if (static::$autoloader === null)
 		{
-			static::$autoloader = new static();
+			$cacheContents = @file_get_contents(static::getCacheFile());
+
+			if ($cacheContents !== false)
+			{
+				static::$autoloader = @unserialize($cacheContents) ?: null;
+			}
+
+			if (static::$autoloader === null)
+			{
+				static::$autoloader = new static();
+			}
+
 			static::$autoloader->register();
 		}
 
@@ -198,6 +237,16 @@ class autoloader implements \serializable
 	public static function get()
 	{
 		return static::set();
+	}
+
+	public static function setCacheFile($cacheFile)
+	{
+		self::$cacheFile = $cacheFile;
+	}
+
+	public static function getCacheFile()
+	{
+		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . static::defaultCacheFileName);
 	}
 
 	protected function resolveNamespaceAlias($class)
@@ -251,9 +300,6 @@ class autoloader implements \serializable
 
 		return null;
 	}
-
-	protected static function cleanPath($path)
-	{
-		return (DIRECTORY_SEPARATOR == '/' ? $path : str_replace('\\', '/', $path));
-	}
 }
+
+autoloader::set();
