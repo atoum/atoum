@@ -8,8 +8,6 @@ use
 
 require_once __DIR__ . '/../classes/autoloader.php';
 
-autoloader::get()->addDirectory(__NAMESPACE__, realpath(__DIR__ . '/../classes'));
-
 if (defined(__NAMESPACE__ . '\scripts\runner') === false)
 {
 	define(__NAMESPACE__ . '\scripts\runner', __FILE__);

@@ -17,6 +17,11 @@ class autoloader
 
 	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
+		if (sizeof($namespaces) <= 0)
+		{
+			$namespaces = array(__NAMESPACE__ => __DIR__);
+		}
+
 		foreach ($namespaces as $namespace => $directory)
 		{
 			$this->addDirectory($namespace, $directory);
