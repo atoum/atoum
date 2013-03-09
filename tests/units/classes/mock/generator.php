@@ -162,7 +162,7 @@ class generator extends atoum\test
 			->if($generator = new testedClass())
 			->then
 				->object($generator->orphanize($method = uniqid()))->isIdenticalTo($generator)
-				->boolean($generator->isOverloaded($method))->isTrue()
+				->boolean($generator->isOrphanized($method))->isTrue()
 				->boolean($generator->isShunted($method))->isTrue()
 		;
 	}
@@ -233,6 +233,10 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__call'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -330,6 +334,10 @@ class generator extends atoum\test
 					"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -420,6 +428,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->getMockController()->addCall(\'' . $realClass . '\', $arguments);' . PHP_EOL .
 					"\t\t\t" . 'call_user_func_array(\'parent::' . $realClass . '\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($realClass), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -532,6 +544,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->getMockController()->addCall(\'' . $otherMethod . '\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', $otherMethod), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -622,6 +638,10 @@ class generator extends atoum\test
 					"\t\t\t" . 'call_user_func_array(\'parent::__construct\', $arguments);' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -705,6 +725,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -791,6 +815,10 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -876,6 +904,10 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'' . $realClass . '\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($realClass), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -953,6 +985,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -1048,6 +1084,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($methodName, '__construct'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
 				)
@@ -1135,7 +1175,15 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . 'return $this->mockController->invoke(\'' . $publicMethodName . '\', $arguments);' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'protected function ' . $protectedMethodName . '() {}' . PHP_EOL .
+					"\t" . 'protected function ' . $protectedMethodName . '()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . '$arguments = array_merge(array(), array_slice(func_get_args(), 0));' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->' . $protectedMethodName . ') === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->' . $protectedMethodName . ' = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'' . $protectedMethodName . '\', $arguments);' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
 					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
@@ -1150,6 +1198,10 @@ class generator extends atoum\test
 					"\t\t" . '{' . PHP_EOL .
 					"\t\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array($publicMethodName, $protectedMethodName, '__construct'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
@@ -1234,6 +1286,10 @@ class generator extends atoum\test
 					"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'

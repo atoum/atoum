@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="atoum testsuite">
+  <testsuite name="class" package="class" tests="1" failures="0" errors="0" time="1">
+    <testcase name="method" time="1" file="file" classname="class"/>
+  </testsuite>
+  <testsuite name="otherClass" package="otherClass" tests="1" failures="1" errors="0" time="0">
+    <testcase name="otherMethod" time="0" file="otherFile" classname="otherClass">
+      <failure type="Failure" message="asserter"><![CDATA[reason]]></failure>
+    </testcase>
+  </testsuite>
+</testsuites>

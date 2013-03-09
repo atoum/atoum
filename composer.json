@@ -31,11 +31,16 @@
 	],
 	"require":
 	{
-		"php": ">=5.3.3"
+		"php": ">=5.3.3",
+		"ext-hash": "*",
+		"ext-json": "*",
+		"ext-session": "*",
+		"ext-tokenizer": "*",
+		"ext-xml": "*"
 	},
 	"replace": {
-        "mageekguy/atoum": "*"
-    },
+		"mageekguy/atoum": "*"
+	},
 	"bin":
 	[
 		"bin/atoum"

@@ -165,6 +165,16 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
+	public function isNotFalse($failMessage = null)
+	{
+		return $this->isNotIdenticalTo(false, $failMessage ?: sprintf($this->getLocale()->_('%s is false'), $this));
+	}
+
+	public function isNotTrue($failMessage = null)
+	{
+		return $this->isNotIdenticalTo(true, $failMessage ?: sprintf($this->getLocale()->_('%s is true'), $this));
+	}
+
 	public function isReferenceTo(& $reference, $failMessage = null)
 	{
 		if ($this->valueIsSet()->isSetByReference() === false)

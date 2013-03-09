@@ -88,6 +88,13 @@ class adapter extends test
 			->then
 				->boolean(isset($adapter->{$function}))->isTrue()
 				->boolean(isset($adapter->{strtolower($function)}))->isTrue()
+			->if($adapter->{$function = uniqid()}[2] = uniqid())
+			->then
+				->boolean(isset($adapter->{$function}))->isFalse()
+				->boolean(isset($adapter->{$function}[0]))->isFalse()
+				->boolean(isset($adapter->{$function}[1]))->isFalse()
+				->boolean(isset($adapter->{$function}[2]))->isTrue()
+				->boolean(isset($adapter->{$function}[3]))->isFalse()
 		;
 	}
 
@@ -178,6 +185,33 @@ class adapter extends test
 				->integer($adapter->MD5())->isEqualTo(1)
 				->integer($adapter->MD5())->isEqualTo(2)
 				->integer($adapter->MD5())->isEqualTo(0)
+			->if($adapter = new testedClass())
+			->and($adapter->sha1[2] = $sha1 = uniqid())
+			->then
+				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
+				->string($adapter->sha1(uniqid()))->isEqualTo($sha1)
+				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
+		;
+	}
+
+	public function test__sleep()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->__sleep())->isEmpty()
+		;
+	}
+
+	public function testSerialize()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->string(serialize($adapter))->isNotEmpty()
+			->if($adapter->md5 = function() {})
+			->then
+				->string(serialize($adapter))->isNotEmpty()
 		;
 	}
 
@@ -238,6 +272,82 @@ class adapter extends test
 				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
 				->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
 				->array($adapter->getCalls('STRPOS'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
+			->if($adapter->foo = function($a, $b, $c, $d, $e) {})
+			->and($adapter->foo(1, 2, 3, 4, 5))
+			->then
+				->array($adapter->getCalls('foo'))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3, 4, 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3, 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2, 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1, 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(1 => 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(2 => 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(3 => 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => rand(6, PHP_INT_MAX))))->isEmpty()
+			->if($adapter->foo(1, 2, 3, 4, 6))
+			->then
+				->array($adapter->getCalls('foo'))->isEqualTo(array(
+						5 => array(1, 2, 3, 4, 5),
+						6 => array(1, 2, 3, 4, 6)
+					)
+				)
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(2 => 3, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+				->array($adapter->getCalls('foo', array(2 => 3, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+		;
+	}
+
+	public function testGetTimeline()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->getTimeline())->isEmpty()
+			->if($adapter->md5($md5arg1 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1))
+					)
+				)
+			->if($adapter->md5($md5arg2 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2))
+					)
+				)
+			->if($adapter->sha1($sha1arg1 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2)),
+						3 => array('sha1' => array($sha1arg1))
+					)
+				)
+			->if($adapter->md5($md5arg3 = uniqid()))
+			->then
+				->array($adapter->getTimeline())->isEqualTo(array(
+						1 => array('md5' => array($md5arg1)),
+						2 => array('md5' => array($md5arg2)),
+						3 => array('sha1' => array($sha1arg1)),
+						4 => array('md5' => array($md5arg3))
+					)
+				)
+				->array($adapter->getTimeline('md5'))->isEqualTo(array(
+						1 => array($md5arg1),
+						2 => array($md5arg2),
+						4 => array($md5arg3)
+					)
+				)
+				->array($adapter->getTimeline('sha1'))->isEqualTo(array(
+						3 => array($sha1arg1)
+					)
+				)
 		;
 	}
 

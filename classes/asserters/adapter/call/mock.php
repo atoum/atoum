@@ -4,22 +4,20 @@ namespace mageekguy\atoum\asserters\adapter\call;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\php,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class mock
+class mock extends php\call
 {
 	protected $adapterAsserter = null;
-	protected $mockAggregator = null;
-	protected $methodName = '';
-	protected $arguments = null;
 
-	public function __construct(asserters\adapter $adapterAsserter, atoum\mock\aggregator $mockAggregator, $methodName)
+	public function __construct(asserters\adapter $adapterAsserter, atoum\mock\aggregator $mockAggregator, $function)
 	{
 		$this->adapterAsserter = $adapterAsserter;
-		$this->mockAggregator = $mockAggregator;
-		$this->methodName = (string) $methodName;
+
+		parent::__construct($function, null, $mockAggregator);
 	}
 
 	public function __call($method, $arguments)
@@ -37,16 +35,6 @@ class mock
 		return $this->adapterAsserter;
 	}
 
-	public function getMockAggregator()
-	{
-		return $this->mockAggregator;
-	}
-
-	public function getMethodName()
-	{
-		return $this->methodName;
-	}
-
 	public function withArguments()
 	{
 		$this->arguments = func_get_args();
@@ -54,22 +42,17 @@ class mock
 		return $this;
 	}
 
-	public function getArguments()
-	{
-		return $this->arguments;
-	}
-
 	public function getFirstCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->object->getMockController()->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key($calls);
+		return ($calls === null ? null : key($calls));
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->mockAggregator->getMockController()->getCalls($this->methodName, $this->arguments);
+		$calls = $this->object->getMockController()->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key(array_reverse($calls, true));
+		return ($calls === null ? null : key(array_reverse($calls, true)));
 	}
 }

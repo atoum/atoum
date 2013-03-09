@@ -27,7 +27,7 @@ class controller extends atoum\test
 		$this
 			->if($streamController = new testedClass($stream = uniqid()))
 			->then
-				->string($streamController->getStream())->isEqualTo($stream)
+				->string($streamController->getPath())->isEqualTo($stream)
 				->variable($streamController->invoke('__construct'))->isNull()
 				->variable($streamController->invoke('dir_closedir'))->isNull()
 				->variable($streamController->invoke('dir_opendir'))->isNull()
@@ -51,21 +51,6 @@ class controller extends atoum\test
 				->variable($streamController->invoke('stream_write'))->isNull()
 				->variable($streamController->invoke('unlink'))->isNull()
 				->variable($streamController->invoke('url_stat'))->isNull()
-		;
-	}
-
-	public function testGetBasename()
-	{
-		$this
-			->if($streamController = new testedClass($basename = uniqid()))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new testedClass(uniqid() . '://' . ($basename = uniqid())))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
-			->if($streamController = new testedClass(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
-			->then
-				->string($streamController->getBasename())->isEqualTo($basename)
 		;
 	}
 
@@ -699,6 +684,31 @@ class controller extends atoum\test
 		;
 	}
 
+	public function testSetPath()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($streamController->setPath($newName = uniqid()))->isIdenticalTo($streamController)
+				->string($streamController->getPath())->isEqualTo($newName)
+		;
+	}
+
+	public function testGetBasename()
+	{
+		$this
+			->if($streamController = new testedClass($basename = uniqid()))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+			->if($streamController = new testedClass(uniqid() . '://' . ($basename = uniqid())))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+			->if($streamController = new testedClass(uniqid() . '://' . uniqid() . DIRECTORY_SEPARATOR . ($basename = uniqid())))
+			->then
+				->string($streamController->getBasename())->isEqualTo($basename)
+		;
+	}
+
 	public function testInvoke()
 	{
 		$this
@@ -755,6 +765,24 @@ class controller extends atoum\test
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method streamWrapper::' . $method . '() does not exist')
+		;
+	}
+
+	public function testDuplicate()
+	{
+		$this
+			->if($streamController = new testedClass(uniqid()))
+			->then
+				->object($duplicatedController = $streamController->duplicate())->isEqualTo($streamController)
+			->if($streamController->setPath($path = uniqid()))
+			->then
+				->string($duplicatedController->getPath())->isEqualTo($path)
+			->if($streamController->stream_lock())
+			->then
+				->array($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
+			->if($streamController->stream_lock = function() {})
+			->then
+				->array($duplicatedController->getInvokers())->isEqualTo($streamController->getInvokers())
 		;
 	}
 }

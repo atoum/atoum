@@ -40,12 +40,12 @@ class adapter extends atoum\adapter
 
 	public function __get($functionName)
 	{
-		return $this->setInvoker(strtolower($functionName), function() { return new invoker(); });
+		return $this->setInvoker($functionName, function() { return new invoker(); });
 	}
 
 	public function __isset($functionName)
 	{
-		return (isset($this->invokers[strtolower($functionName)]) === true);
+		return (isset($this->invokers[strtolower($functionName)]) === false ? false : isset($this->invokers[strtolower($functionName)][0]));
 	}
 
 	public function __unset($functionName)
@@ -68,6 +68,11 @@ class adapter extends atoum\adapter
 		return $this;
 	}
 
+	public function __sleep()
+	{
+		return array();
+	}
+
 	public function getInvokers()
 	{
 		return $this->invokers;
@@ -85,6 +90,26 @@ class adapter extends atoum\adapter
 		{
 			$functionName = strtolower($functionName);
 
+			if ($arguments !== null)
+			{
+				$callback = function($a, $b) {
+					return ($a == $b ? 0 : -1);
+				};
+
+				if ($identical === false)
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+				else
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+			}
+
 			foreach ($this->calls as $callName => $callArguments)
 			{
 				if ($functionName == strtolower($callName))
@@ -95,19 +120,6 @@ class adapter extends atoum\adapter
 					}
 					else
 					{
-						if ($identical === false)
-						{
-							$filter = function($callArguments) use ($arguments) {
-								return ($arguments  == array_slice($callArguments, 0, sizeof($arguments)));
-							};
-						}
-						else
-						{
-							$filter = function($callArguments) use ($arguments) {
-								return ($arguments  === array_slice($callArguments, 0, sizeof($arguments)));
-							};
-						}
-
 						$calls = array_filter($callArguments, $filter);
 					}
 
@@ -117,6 +129,33 @@ class adapter extends atoum\adapter
 		}
 
 		return $calls;
+	}
+
+	public function getTimeline($functionName = null)
+	{
+		$timeline = array();
+
+		foreach ($this->calls as $calledFunctionName => $calls)
+		{
+			if ($functionName === null)
+			{
+				foreach ($calls as $number => $arguments)
+				{
+					$timeline[$number] = array($calledFunctionName => $arguments);
+				}
+			}
+			else if ($calledFunctionName === $functionName)
+			{
+				foreach ($calls as $number => $arguments)
+				{
+					$timeline[$number] = $arguments;
+				}
+			}
+		}
+
+		ksort($timeline, SORT_NUMERIC);
+
+		return $timeline;
 	}
 
 	public function resetCalls($functionName = null)
@@ -160,7 +199,7 @@ class adapter extends atoum\adapter
 
 		try
 		{
-			return (isset($this->{$functionName}) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, $call));
+			return ($this->callIsOverloaded($functionName, $call) === false ? parent::invoke($functionName, $arguments) : $this->{$functionName}->invoke($arguments, $call));
 		}
 		catch (exceptions\logic\invalidArgument $exception)
 		{
@@ -186,12 +225,26 @@ class adapter extends atoum\adapter
 
 	protected function setInvoker($name, \closure $factory)
 	{
+		$name = strtolower($name);
+
 		if (isset($this->invokers[$name]) === false)
 		{
 			$this->invokers[$name] = call_user_func($factory);
 		}
 
 		return $this->invokers[$name];
+	}
+
+	protected function callIsOverloaded($functionName, $call)
+	{
+		$functionName = strtolower($functionName);
+
+		return (isset($this->invokers[$functionName]) === true && isset($this->invokers[$functionName][$call]) === true);
+	}
+
+	protected function nextCallIsOverloaded($functionName)
+	{
+		return ($this->callIsOverloaded($functionName, sizeof($this->getCalls($functionName)) + 1) === true);
 	}
 
 	protected static function isLanguageConstruct($functionName)
@@ -203,6 +256,7 @@ class adapter extends atoum\adapter
 			case 'empty':
 			case 'eval':
 			case 'exit':
+			case 'die':
 			case 'isset':
 			case 'list':
 			case 'print':

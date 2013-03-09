@@ -11,21 +11,18 @@ use
 
 class controller extends test\adapter
 {
-	protected $mockClass = null;
-	protected $reflectionClassFactory = null;
+	protected $mock = null;
+	protected $iterator = null;
 
 	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 
-	public function __construct(\closure $reflectionClassFactory = null)
+	public function __construct()
 	{
 		parent::__construct();
 
-		$this
-			->setReflectionClassFactory($reflectionClassFactory)
-			->controlNextNewMock()
-		;
+		$this->setIterator()->controlNextNewMock();
 	}
 
 	public function __set($method, $mixed)
@@ -60,16 +57,18 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	public function setReflectionClassFactory(\closure $factory = null)
+	public function setIterator(controller\iterator $iterator = null)
 	{
-		$this->reflectionClassFactory = $factory ?: function($class) { return new \reflectionClass($class); };
+		$this->iterator = $iterator ?: new controller\iterator();
+
+		$this->iterator->setMockController($this);
 
 		return $this;
 	}
 
-	public function getReflectionClassFactory()
+	public function getIterator()
 	{
-		return $this->reflectionClassFactory;
+		return $this->iterator;
 	}
 
 	public function disableMethodChecking()
@@ -79,9 +78,36 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function getMock()
+	{
+		return $this->mock;
+	}
+
 	public function getMockClass()
 	{
-		return $this->mockClass;
+		return ($this->mock === null ? null : get_class($this->mock));
+	}
+
+	public function getMethods()
+	{
+		return ($this->mock === null ? array() : $this->mock->getMockedMethods());
+	}
+
+	public function methods(\closure $filter = null)
+	{
+		$this->iterator->resetFilters();
+
+		if ($filter !== null)
+		{
+			$this->iterator->addFilter($filter);
+		}
+
+		return $this->iterator;
+	}
+
+	public function methodsMatching($regex)
+	{
+		return $this->iterator->resetFilters()->addFilter(function($name) use ($regex) { return preg_match($regex, $name); });
 	}
 
 	public function getCalls($method = null, array $arguments = null, $identical = false)
@@ -98,25 +124,11 @@ class controller extends test\adapter
 	{
 		$mockClass = get_class($mock);
 
-		if ($this->mockClass !== $mockClass)
+		if ($this->mock !== $mock)
 		{
-			$this->mockClass = $mockClass;
+			$this->mock = $mock;
 
-			$class = call_user_func($this->reflectionClassFactory, $this->mockClass);
-
-			$methods = array_filter($class->getMethods(\reflectionMethod::IS_PUBLIC), function ($value) {
-					try
-					{
-						return ($value->getPrototype()->getName() != __NAMESPACE__ . '\aggregator');
-					}
-					catch (\exception $exception)
-					{
-						return true;
-					}
-				}
-			);
-
-			array_walk($methods, function(& $value) { $value = strtolower($value->getName()); });
+			$methods = $this->getMethods();
 
 			if ($this->disableMethodChecking === false)
 			{
@@ -126,7 +138,7 @@ class controller extends test\adapter
 					{
 						if (in_array('__call', $methods) === false)
 						{
-							throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 						}
 						else if (isset($this->invokers['__call']) === false)
 						{
@@ -176,7 +188,7 @@ class controller extends test\adapter
 
 	public function reset()
 	{
-		$this->mockClass = null;
+		$this->mock = null;
 
 		return parent::reset();
 	}
@@ -207,7 +219,7 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockClass !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
+		if ($this->mock !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
 		{
 			if (array_key_exists('__call', $this->invokers) === true)
 			{
@@ -215,7 +227,7 @@ class controller extends test\adapter
 			}
 			else if (isset($this->__call) === false)
 			{
-				throw new exceptions\logic('Method \'' . $this->mockClass . '::' . $method . '()\' does not exist');
+				throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 			}
 		}
 

@@ -15,8 +15,7 @@ class autoloader extends atoum\test
 		$this
 			->if($autoloader = new atoum\autoloader())
 			->then
-				->array($directories = $autoloader->getDirectories())->hasKey('mageekguy\atoum\\')
-				->array($directories['mageekguy\atoum\\'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR))
+				->array($autoloader->getClasses())->isEmpty()
 				->array($autoloader->getNamespaceAliases())->isEqualTo(array('atoum\\' => 'mageekguy\\atoum\\'))
 		;
 	}
@@ -86,37 +85,6 @@ class autoloader extends atoum\test
 						$alias => $target,
 						$otherAlias => $otherTarget,
 						$anOtherAlias => $anOtherTarget
-					)
-				)
-		;
-	}
-
-	public function testAddDirectory()
-	{
-		$this
-			->if($autoloader = new atoum\autoloader())
-			->then
-				->object($autoloader->addDirectory($namespace = uniqid(), $directory = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array($directory . DIRECTORY_SEPARATOR)
-					)
-				)
-				->object($autoloader->addDirectory($otherNamespace = (uniqid() . '\\'), $otherDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array($directory . DIRECTORY_SEPARATOR),
-						$otherNamespace => array($otherDirectory)
-					)
-				)
-				->object($autoloader->addDirectory($namespace, $secondDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array(
-							$directory . DIRECTORY_SEPARATOR,
-							$secondDirectory
-						),
-						$otherNamespace => array($otherDirectory)
 					)
 				)
 		;

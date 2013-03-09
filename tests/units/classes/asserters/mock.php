@@ -16,6 +16,7 @@ class dummy
 {
 	public function foo($arg) {}
 	public function bar($arg) {}
+	public function fooWithSeveralArguments($arg1, $arg2, $arg3, $arg4, $arg5) {}
 }
 
 class mock extends atoum\test
@@ -334,6 +335,28 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg1), $mock))
 				->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg1, $arg2), $mock))
+		;
+	}
+
+	public function testWithAtLeastArguments()
+	{
+		$this
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+			->if($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+			->if($asserter->call($function = uniqid()))
+			->then
+				->object($asserter->withAtLeastArguments($arguments = array(1 => uniqid())))->isIdenticalTo($asserter)
+				->object($asserter->getCall())->isEqualTo(new php\call($function, $arguments, $mock))
+				->object($asserter->withAtLeastArguments($arguments = array(2 => uniqid(), 5 => uniqid())))->isIdenticalTo($asserter)
+				->object($asserter->getCall())->isEqualTo(new php\call($function, $arguments, $mock))
 		;
 	}
 
@@ -817,7 +840,28 @@ class mock extends atoum\test
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg)) . PHP_EOL . '[4] ' . $call->setArguments(array($arg)))
-
+			->if($call = new php\call('fooWithSeveralArguments', null, $mock))
+			->and($asserter->call('fooWithSeveralArguments'))
+			->then
+				->object($asserter->exactly(0))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->exactly(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()))
+			->if($mock->fooWithSeveralArguments(1, 2, 3, 4, 5))
+				->exception(function() use ($asserter) { $asserter->exactly(0); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array(1, 2, 3, 4, 5)))
+				->object($asserter->exactly(1))->isIdenticalTo($asserter)
+				->object($asserter->withArguments(1, 2, 3, 4, 5)->exactly(1))->isIdenticalTo($asserter)
+				->object($asserter->withAtLeastArguments(array(1 => 2, 3 => 4))->exactly(1))->isIdenticalTo($asserter)
+				->object($asserter->withAtLeastArguments(array(1 => 2, 3 => rand(6, PHP_INT_MAX)))->exactly(0))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->withAtLeastArguments(array(1 => 2, 3 => 4))->exactly(0); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array(1, 2, 3, 4, 5)))
+				->object($asserter->withIdenticalArguments(1, 2, 3, 4, 5)->exactly(1))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) { $asserter->withAtLeastIdenticalArguments(array(1 => '2', 3 => 4))->exactly(1); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('method %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array(1, 2, 3, 4, 5)))
 		;
 	}
 

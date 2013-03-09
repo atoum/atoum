@@ -14,20 +14,25 @@ use
 
 class adapter extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\php\call');
+	}
+
 	public function test__construct()
 	{
 		$this
-			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), $functionName = uniqid()))
+			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), $function = uniqid()))
 			->then
-				->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
 				->object($call->getAdapter())->isIdenticalTo($adapter)
-				->string($call->getFunctionName())->isEqualTo($functionName)
+				->string($call->getFunction())->isEqualTo($function)
 				->variable($call->getArguments())->isNull()
-			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter, $functionName = rand(1, PHP_INT_MAX)))
+			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter, $function = rand(1, PHP_INT_MAX)))
 			->then
-				->object($call->getMockAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
 				->object($call->getAdapter())->isIdenticalTo($adapter)
-				->string($call->getFunctionName())->isEqualTo((string) $functionName)
+				->string($call->getFunction())->isEqualTo((string) $function)
 				->variable($call->getArguments())->isNull()
 		;
 	}
@@ -46,6 +51,15 @@ class adapter extends atoum\test
 				->exception(function() use ($call, $unknownFunction) { $call->{$unknownFunction}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownFunction . '() does not exist')
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), new test\adapter(), $function = uniqid()))
+			->then
+				->castToString($call)->isEqualTo($function . '()')
 		;
 	}
 

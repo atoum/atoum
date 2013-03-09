@@ -20,11 +20,17 @@ class extension extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new sut($generator = new asserter\generator()))
+			->if($asserter = new sut())
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->variable($asserter->getName())->isNull()
+			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+			->then
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getAdapter())->isIdenticalTo($adapter)
 				->variable($asserter->getName())->isNull()
 		;
 	}

@@ -137,7 +137,7 @@ class concurrent extends test\engine
 				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
 			;
 
-			$this->adapter->fwrite($this->pipes[0], $phpCode);
+			$this->adapter->fwrite($this->pipes[0], $phpCode, strlen($phpCode));
 			$this->adapter->fclose($this->pipes[0]);
 			unset($this->pipes[0]);
 

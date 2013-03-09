@@ -27,6 +27,10 @@ class decorator extends atoum\test
 		$this->assert
 			->object($decorator->setArgumentsDecorator($argumentsDecorator = new call\arguments\decorator()))->isIdenticalTo($decorator)
 			->object($decorator->getArgumentsDecorator())->isIdenticalTo($argumentsDecorator)
+			->object($decorator->setArgumentsDecorator())->isIdenticalTo($decorator)
+			->object($decorator->getArgumentsDecorator())
+				->isEqualTo(new call\arguments\decorator())
+				->isNotIdenticalTo($argumentsDecorator)
 		;
 	}
 

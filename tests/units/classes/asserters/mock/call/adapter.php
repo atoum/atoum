@@ -14,6 +14,11 @@ use
 
 class adapter extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\php\call');
+	}
+
 	public function test__construct()
 	{
 		$this
