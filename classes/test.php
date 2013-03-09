@@ -1302,7 +1302,7 @@ abstract class test implements observable, \countable
 		{
 			$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
 
-			if (ltrim($engineClass, '\\') === $engineClass)
+			if (substr($engineClass, 0, 1) !== '\\')
 			{
 				$engineClass = self::enginesNamespace . '\\' . $engineClass;
 			}
