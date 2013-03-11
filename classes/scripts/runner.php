@@ -138,11 +138,16 @@ class runner extends atoum\script
 		return $this;
 	}
 
-	public function setDefaultArguments(array $arguments)
+	public function addDefaultArguments($argument)
 	{
-		$this->defaultArguments = $arguments;
+		$this->defaultArguments = array_merge($this->defaultArguments, func_get_args());
 
 		return $this;
+	}
+
+	public function hasDefaultArguments()
+	{
+		return (sizeof($this->defaultArguments) > 0);
 	}
 
 	public function getDefaultArguments()
@@ -173,7 +178,7 @@ class runner extends atoum\script
 		{
 			$this->useDefaultConfigFiles();
 
-			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false)
+			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false && $this->hasDefaultArguments() === true)
 			{
 				parent::run($this->defaultArguments);
 			}

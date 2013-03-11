@@ -30,6 +30,8 @@ class runner extends atoum\test
 		$this
 			->if($runner = new scripts\runner($name = uniqid()))
 			->then
+				->boolean($runner->hasDefaultArguments())->isFalse()
+				->array($runner->getDefaultArguments())->isEmpty()
 				->string($runner->getName())->isEqualTo($name)
 				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
@@ -439,6 +441,20 @@ class runner extends atoum\test
 				->array($runner->getTestedNamespaces())->isEmpty()
 				->object($runner->testNamespaces(array('foo', '\bar', 'foo\bar\\', '\this\is\a\namespace\\')))->isIdenticalTo($runner)
 				->array($runner->getTestedNamespaces())->isEqualTo(array('foo', 'bar', 'foo\bar', 'this\is\a\namespace'))
+		;
+	}
+
+	public function testAddDefaultArguments()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->addDefaultArguments($arg1 = uniqid()))->isInstanceOf($runner)
+				->boolean($runner->hasDefaultArguments())->isTrue()
+				->array($runner->getDefaultArguments())->isEqualTo(array($arg1))
+				->object($runner->addDefaultArguments($arg2 = uniqid(), $arg3 = uniqid()))->isInstanceOf($runner)
+				->boolean($runner->hasDefaultArguments())->isTrue()
+				->array($runner->getDefaultArguments())->isEqualTo(array($arg1, $arg2, $arg3))
 		;
 	}
 }
