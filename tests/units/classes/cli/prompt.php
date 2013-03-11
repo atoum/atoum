@@ -62,8 +62,8 @@ class prompt extends atoum\test
 			->and($colorizer = new cli\colorizer(uniqid(), uniqid()))
 			->then
 				->castToString($prompt)->isEmpty()
-				->castToString($prompt->setValue($value = uniqid())->isEqualTo($value))
-				->castToString($prompt->setColorizer($colorizer)->isEqualTo($colorizer->colorize($value)))
+				->castToString($prompt->setValue($value = uniqid()))->isEqualTo($value)
+				->castToString($prompt->setColorizer($colorizer))->isEqualTo($colorizer->colorize($value))
 		;
 	}
 }
