@@ -15,8 +15,8 @@ class iterator extends atoum\test
 	{
 		$this
 			->testedClass
-				->hasInterface('Countable')
-				->hasInterface('Iterator')
+				->implements('Countable')
+				->implements('Iterator')
 		;
 	}
 
@@ -74,12 +74,8 @@ class iterator extends atoum\test
 			->and($iterator->{$childTag->getTag()} = $data = uniqid())
 			->then
 				->string($childTag->getData())->isNotEmpty()
-		;
-
-		unset($iterator->{$childTag->getTag()});
-
-		$this
-			->string($childTag->getData())->isEmpty()
+			->when(function() use ($iterator, $childTag) { unset($iterator->{$childTag->getTag()}); })
+				->string($childTag->getData())->isEmpty()
 			->if($iterator->{$childTag->getTag()} = uniqid())
 			->then
 				->string($childTag->getData())->isNotEmpty()
