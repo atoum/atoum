@@ -162,7 +162,7 @@ class cli extends atoum\test
 							'method' => $method = uniqid(),
 							'file' => $file = uniqid(),
 							'line' => $line = rand(1, PHP_INT_MAX),
-							'type' => $type = uniqid(),
+							'type' => $type = 'e_fake_error',
 							'message' => $message = uniqid(),
 							'errorFile' => $errorFile = uniqid(),
 							'errorLine' => $errorLine = rand(1, PHP_INT_MAX),
@@ -173,7 +173,7 @@ class cli extends atoum\test
 							'method' => $otherMethod = uniqid(),
 							'file' => $otherFile = uniqid(),
 							'line' => $otherLine = rand(1, PHP_INT_MAX),
-							'type' => $otherType = uniqid(),
+							'type' => $otherType = 'e_other_fake_error',
 							'message' => ($firstOtherMessage = uniqid()) . PHP_EOL . ($secondOtherMessage = uniqid()),
 							'errorFile' => $otherErrorFile = uniqid(),
 							'errorLine' => $otherErrorLine = rand(1, PHP_INT_MAX),
@@ -251,7 +251,7 @@ class cli extends atoum\test
 						'method' => $method = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => $line = rand(1, PHP_INT_MAX),
-						'type' => $type = uniqid(),
+						'type' => $type = rand(1, PHP_INT_MAX),
 						'message' => $message = uniqid(),
 						'errorFile' => $errorFile = uniqid(),
 						'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -262,7 +262,7 @@ class cli extends atoum\test
 						'method' => $otherMethod = uniqid(),
 						'file' => $otherFile = uniqid(),
 						'line' => $otherLine = rand(1, PHP_INT_MAX),
-						'type' => $otherType = uniqid(),
+						'type' => $otherType = rand(1, PHP_INT_MAX),
 						'message' => ($firstOtherMessage = uniqid()) . PHP_EOL . ($secondOtherMessage = uniqid()),
 						'errorFile' => $otherErrorFile = uniqid(),
 						'errorLine' => $otherErrorLine = rand(1, PHP_INT_MAX)
@@ -339,7 +339,7 @@ class cli extends atoum\test
 							'method' => $method = uniqid(),
 							'file' => null,
 							'line' => null,
-							'type' => $type = uniqid(),
+							'type' => $type = rand(1, PHP_INT_MAX),
 							'message' => $message = uniqid(),
 							'errorFile' => $errorFile = uniqid(),
 							'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -398,7 +398,7 @@ class cli extends atoum\test
 						'method' => $method = uniqid(),
 						'file' => null,
 						'line' => null,
-						'type' => $type = uniqid(),
+						'type' => $type = rand(1, PHP_INT_MAX),
 						'message' => $message = uniqid(),
 						'errorFile' => $errorFile = uniqid(),
 						'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -457,7 +457,7 @@ class cli extends atoum\test
 						'method' => $method = uniqid(),
 						'file' => null,
 						'line' => $line = rand(1, PHP_INT_MAX),
-						'type' => $type = uniqid(),
+						'type' => $type = 'e_fake_error',
 						'message' => $message = uniqid(),
 						'errorFile' => $errorFile = uniqid(),
 						'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -516,7 +516,7 @@ class cli extends atoum\test
 						'method' => $method = uniqid(),
 						'file' => $file = uniqid(),
 						'line' => null,
-						'type' => $type = uniqid(),
+						'type' => $type = 'e_fake_error',
 						'message' => $message = uniqid(),
 						'errorFile' => null,
 						'errorLine' => null
@@ -575,7 +575,7 @@ class cli extends atoum\test
 							'method' => $method = uniqid(),
 							'file' => null,
 							'line' => $line = rand(1, PHP_INT_MAX),
-							'type' => $type = uniqid(),
+							'type' => $type = 'e_fake_error',
 							'message' => $message = uniqid(),
 							'errorFile' => $errorFile = uniqid(),
 							'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -634,7 +634,7 @@ class cli extends atoum\test
 							'method' => $method = uniqid(),
 							'file' => $file = uniqid(),
 							'line' => null,
-							'type' => $type = uniqid(),
+							'type' => $type = 'e_fake_error',
 							'message' => $message = uniqid(),
 							'errorFile' => $errorFile = uniqid(),
 							'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
@@ -693,7 +693,7 @@ class cli extends atoum\test
 							'method' => $method = uniqid(),
 							'file' => $file = uniqid(),
 							'line' => null,
-							'type' => $type = uniqid(),
+							'type' => $type = 'e_fake_error',
 							'message' => $message = uniqid(),
 							'errorFile' => $errorFile = uniqid(),
 							'errorLine' => $errorLine = rand(1, PHP_INT_MAX)

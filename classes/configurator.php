@@ -17,27 +17,29 @@ class configurator
 
 			foreach ($arguments as $argument)
 			{
-				$this->methods[preg_replace('/-(.)/e', 'ucfirst(\'\1\')', ltrim($argument, '-'))] = $argument;
+				$this->methods[strtolower(str_replace('-', '', $argument))] = $argument;
 			}
 		}
 	}
 
 	public function __call($method, $arguments)
 	{
-		if (isset($this->methods[$method]) === true)
+		$keyMethod = strtolower($method);
+
+		if (isset($this->methods[$keyMethod]) === true)
 		{
-			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$method], $arguments);
+			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$keyMethod], $arguments);
 
 			return $this;
 		}
 		else
 		{
-			if (method_exists($this->script, $method) === false)
+			if (method_exists($this->script, $keyMethod) === false)
 			{
 				throw new exceptions\runtime\unexpectedValue('Method \'' . $method . '\' is unavailable');
 			}
 
-			$return = call_user_func_array(array($this->script, $method), $arguments);
+			$return = call_user_func_array(array($this->script, $keyMethod), $arguments);
 
 			return ($return === $this->script ? $this : $return);
 		}

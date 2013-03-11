@@ -9,12 +9,20 @@ use
 
 class generator
 {
-	protected $locale = null;
-	protected $aliases = array();
+	const defaultAsserterNamespace = 'mageekguy\atoum\asserters';
 
-	public function __construct(atoum\locale $locale = null)
+	protected $aliases = array();
+	protected $locale = null;
+	protected $adapter = null;
+	protected $asserterNamespace = '';
+
+	public function __construct(atoum\locale $locale = null, atoum\adapter $adapter = null, $asserterNamespace = null)
 	{
-		$this->setLocale($locale);
+		$this
+			->setAdapter($adapter)
+			->setLocale($locale)
+			->setAsserterNamespace($asserterNamespace)
+		;
 	}
 
 	public function __set($asserter, $class)
@@ -32,6 +40,18 @@ class generator
 		return $this->getAsserterInstance($method, $arguments);
 	}
 
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
 	public function setLocale(atoum\locale $locale = null)
 	{
 		$this->locale = $locale ?: new atoum\locale();
@@ -44,9 +64,21 @@ class generator
 		return $this->locale;
 	}
 
+	public function setAsserterNamespace($namespace = null)
+	{
+		$this->asserterNamespace = ($namespace === null ? static::defaultAsserterNamespace : trim($namespace, '\\')) . '\\';
+
+		return $this;
+	}
+
+	public function getAsserterNamespace()
+	{
+		return trim($this->asserterNamespace, '\\');
+	}
+
 	public function setAlias($alias, $asserterClass)
 	{
-		$this->aliases[$alias] = $asserterClass;
+		$this->aliases[strtolower($alias)] = $asserterClass;
 
 		return $this;
 	}
@@ -75,14 +107,16 @@ class generator
 
 	public function getAsserterClass($asserter)
 	{
+		$asserter = strtolower($asserter);
+
 		$class = (isset($this->aliases[$asserter]) === false ? $asserter : $this->aliases[$asserter]);
 
 		if (substr($class, 0, 1) != '\\')
 		{
-			$class = __NAMESPACE__ . 's\\' . $class;
+			$class = $this->asserterNamespace . $class;
 		}
 
-		if (class_exists($class, true) === false)
+		if ($this->adapter->class_exists($class, true) === false)
 		{
 			$class = null;
 		}
@@ -96,11 +130,9 @@ class generator
 		{
 			throw new exceptions\logic\invalidArgument('Asserter \'' . $asserter . '\' does not exist');
 		}
-		else
-		{
-			$asserterInstance = new $asserterClass($this);
 
-			return $asserterInstance->setWithArguments($arguments);
-		}
+		$asserterInstance = new $asserterClass();
+
+		return $asserterInstance->setGenerator($this)->setWithArguments($arguments);
 	}
 }

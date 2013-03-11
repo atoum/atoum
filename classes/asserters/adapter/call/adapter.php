@@ -3,23 +3,23 @@
 namespace mageekguy\atoum\asserters\adapter\call;
 
 use
+	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
 
-class adapter
+class adapter extends php\call
 {
 	protected $adapterAsserter = null;
 	protected $adapter = null;
-	protected $functionName = '';
-	protected $arguments = null;
 
-	public function __construct(asserters\adapter $adapterAsserter, test\adapter $adapter, $functionName)
+	public function __construct(asserters\adapter $adapterAsserter, test\adapter $adapter, $function)
 	{
 		$this->adapterAsserter = $adapterAsserter;
 		$this->adapter = $adapter;
-		$this->functionName = (string) $functionName;
+
+		parent::__construct($function);
 	}
 
 	public function __call($method, $arguments)
@@ -32,7 +32,7 @@ class adapter
 		return call_user_func_array(array($this->adapterAsserter, $method), $arguments);
 	}
 
-	public function getMockAsserter()
+	public function getAdapterAsserter()
 	{
 		return $this->adapterAsserter;
 	}
@@ -42,11 +42,6 @@ class adapter
 		return $this->adapter;
 	}
 
-	public function getFunctionName()
-	{
-		return $this->functionName;
-	}
-
 	public function withArguments()
 	{
 		$this->arguments = func_get_args();
@@ -54,22 +49,17 @@ class adapter
 		return $this;
 	}
 
-	public function getArguments()
-	{
-		return $this->arguments;
-	}
-
 	public function getFirstCall()
 	{
-		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key($calls);
+		return ($calls === null ? null : key($calls));
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->adapter->getCalls($this->functionName, $this->arguments);
+		$calls = $this->adapter->getCalls($this->function, $this->arguments);
 
-		return $calls === null ? null : key(array_reverse($calls, true));
+		return ($calls === null ? null : key(array_reverse($calls, true)));
 	}
 }

@@ -9,7 +9,7 @@ use
 
 class output extends asserters\string
 {
-	public function __construct(atoum\asserter\generator $generator)
+	public function __construct(atoum\asserter\generator $generator = null)
 	{
 		parent::__construct($generator);
 

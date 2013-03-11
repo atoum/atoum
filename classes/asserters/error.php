@@ -14,11 +14,11 @@ class error extends atoum\asserter
 	protected $type = null;
 	protected $messageIsPattern = false;
 
-	public function __construct(atoum\asserter\generator $generator, atoum\test\score $score = null)
+	public function __construct(atoum\asserter\generator $generator = null, atoum\test\score $score = null)
 	{
 		parent::__construct($generator);
 
-		$this->setScore($score ?: new atoum\test\score());
+		$this->setScore($score);
 	}
 
 	public function setWithTest(atoum\test $test)
@@ -34,9 +34,9 @@ class error extends atoum\asserter
 		;
 	}
 
-	public function setScore(atoum\score $score)
+	public function setScore(atoum\test\score $score = null)
 	{
-		$this->score = $score;
+		$this->score = $score ?: new atoum\test\score();
 
 		return $this;
 	}

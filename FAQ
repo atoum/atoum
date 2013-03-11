@@ -9,7 +9,7 @@ The word "class" is reserved by PHP, so it's not possible to use this name for a
 In this case, the atoum convention is to prefix name with word "php".
 
 * Where is the documentation ?
-There is an english documentation available : https://github.com/geraldcroes/atoum-s-documentation.
+There is an english and a french documentation available : http://docs.atoum.org/
 It's a work in progress and you're welcome to improve it.
 Moreover, atoum's unit test is the documentation.
 You find them in the directory path/to/atoum/tests/units.

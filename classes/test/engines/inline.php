@@ -43,7 +43,7 @@ class inline extends test\engine
 
 			$test
 				->setScore($this->score->reset())
-				->runTestMethod($test->getCurrentMethod())
+				->runTestMethod($currentTestMethod)
 				->setScore($testScore)
 			;
 		}

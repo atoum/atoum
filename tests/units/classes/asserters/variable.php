@@ -289,4 +289,44 @@ class variable extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not a reference to %s'), $asserter, $asserter->getTypeOf($notReference)))
 		;
 	}
+
+	public function testIsNotFalse()
+	{
+		$this
+			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(uniqid()))
+			->then
+				->object($asserter->isNotFalse())->isIdenticalTo($asserter)
+			->if($asserter->setWith(false))
+			->then
+				->exception(function() use ($asserter) { $asserter->isNotFalse(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is false'), $asserter))
+		;
+	}
+
+	public function testIsNotTrue()
+	{
+		$this
+			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->then
+				->boolean($asserter->wasSet())->isFalse()
+				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+					->isInstanceOf('logicException')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(uniqid()))
+			->then
+				->object($asserter->isNotTrue())->isIdenticalTo($asserter)
+			->if($asserter->setWith(true))
+			->then
+				->exception(function() use ($asserter) { $asserter->isNotTrue(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is true'), $asserter))
+		;
+	}
 }

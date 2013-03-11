@@ -11,39 +11,40 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
+/** @extensions mbstring */
 class utf8String extends atoum\test
 {
-	public function beforeTestMethod($method)
-	{
-		$this->extension('mbstring')->isLoaded();
-	}
-
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
+		$this->testedClass->extends('mageekguy\atoum\asserters\string');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->if($asserter = new asserters\utf8String())
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
+				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
+				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
 			->and($asserter = new asserters\utf8String($generator = new asserter\generator(), $adapter))
 			->then
-				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
+				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getAdapter())->isEqualTo($adapter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-
 			->if($adapter->extension_loaded = false)
 			->then
 				->exception(function() use ($adapter) { new asserters\utf8String(new asserter\generator(), $adapter); })
@@ -70,17 +71,16 @@ class utf8String extends atoum\test
 		$this
 			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
 			->then
-				->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a string'), $asserter->getTypeOf($value)))
-				->integer($asserter->getValue())->isEqualTo($value)
-				->variable($asserter->getCharlist())->isNull()
-				->object($asserter->setWith($value = $this->getRandomUtf8String()))->isIdenticalTo($asserter)
-				->string($asserter->getValue())->isEqualTo($value)
-				->variable($asserter->getCharlist())->isNull()
-				->object($asserter->setWith($value = $this->getRandomUtf8String(), null, $charlist = "\010"))->isIdenticalTo($asserter)
-				->string($asserter->getValue())->isEqualTo($value)
-				->string($asserter->getCharlist())->isEqualTo($charlist)
+				->exception(function() use ($asserter, & $value) { $asserter->setwith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
+					->isinstanceof('mageekguy\atoum\asserter\exception')
+					->hasmessage(sprintf($generator->getlocale()->_('%s is not a string'), $asserter->gettypeof($value)))
+				->exception(function() use ($asserter, & $value) { $asserter->setwith("\xf0\x28\x8c\xbc"); })
+					->isinstanceof('mageekguy\atoum\asserter\exception')
+					->hasmessage(sprintf($generator->getlocale()->_('\'%s\' is not an UTF-8 string'), "\xf0\x28\x8c\xbc"))
+				->exception(function() use ($asserter, & $value) { $asserter->setwith("\xf8\xa1\xa1\xa1\xa1"); })
+					->isinstanceof('mageekguy\atoum\asserter\exception')
+					->hasmessage(sprintf($generator->getlocale()->_('\'%s\' is not an UTF-8 string'), "\xf8\xa1\xa1\xa1\xa1"))
+				->object($asserter->setWith(uniqid()))->isIdenticalTo($asserter)
 		;
 	}
 
@@ -192,6 +192,48 @@ class utf8String extends atoum\test
 		;
 	}
 
+	public function testHasLengthGreaterThan()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->hasLengthGreaterThan(mb_strlen($string, 'UTF-8')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not greater than %d'), $asserter->getTypeOf($string), mb_strlen($string, 'UTF-8')))
+				->object($asserter->hasLengthGreaterThan(0))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->then
+				->object($asserter->hasLengthGreaterThan(mb_strlen($string, 'UTF-8') - 1))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHasLengthLessThan()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->hasLengthLessThan(mb_strlen($string, 'UTF-8')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('length of %s is not less than %d'), $asserter->getTypeOf($string), mb_strlen($string, 'UTF-8')))
+				->object($asserter->hasLengthLessThan(20))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string = $this->getRandomUtf8String()))
+			->then
+				->object($asserter->hasLengthLessThan(mb_strlen($string, 'UTF-8') + 1))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testContains()
 	{
 		$this
@@ -214,6 +256,12 @@ class utf8String extends atoum\test
 				->exception(function() use ($asserter, $string, & $fragment) { $asserter->contains($fragment = mb_strtoupper($string, 'UTF-8')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
+				->exception(function() use ($asserter) {
+							$asserter->contains("\xf0\x28\x8c\xbc");
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Fragment \'' . "\xf0\x28\x8c\xbc" . '\' is not an UTF-8 string')
 		;
 	}
 

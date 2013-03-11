@@ -180,6 +180,20 @@ class phing extends realtime
 		$exceptionColorizer = new colorizer('0;35');
 		$exceptionPrompt = clone $secondLevelPrompt;
 		$exceptionPrompt->setColorizer($exceptionColorizer);
+		
+		$uncompletedTestColorizer = new colorizer('0;37');
+		$uncompletedTestMethodPrompt = clone $secondLevelPrompt;
+		$uncompletedTestMethodPrompt->setColorizer($uncompletedTestColorizer);
+		$uncompletedTestOutputPrompt = new prompt('  ', $uncompletedTestColorizer);
+		
+		$voidTestColorizer = new colorizer('0;34');
+		$voidTestMethodPrompt = clone $secondLevelPrompt;
+		$voidTestMethodPrompt->setColorizer($voidTestColorizer);
+
+		$skippedTestColorizer = new colorizer('0;90');
+		$skippedTestMethodPrompt = clone $secondLevelPrompt;
+		$skippedTestMethodPrompt->setColorizer($skippedTestColorizer);
+
 
 		$phpPathField = new runner\php\path\cli();
 		$phpPathField
@@ -282,6 +296,34 @@ class phing extends realtime
 		;
 
 		$this->addField($exceptionsField);
+
+		$runnerUncompletedField = new runner\tests\uncompleted\cli();
+		$runnerUncompletedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($uncompletedTestColorizer)
+			->setMethodPrompt($uncompletedTestMethodPrompt)
+			->setOutputPrompt($uncompletedTestOutputPrompt)
+		;
+
+		$this->addField($runnerUncompletedField);
+
+		$runnerVoidField = new runner\tests\void\cli();
+		$runnerVoidField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($voidTestColorizer)
+			->setMethodPrompt($voidTestMethodPrompt)
+		;
+
+		$this->addField($runnerVoidField);
+		
+		$runnerSkippedField = new runner\tests\skipped\cli();
+		$runnerSkippedField
+			->setTitlePrompt($firstLevelPrompt)
+			->setTitleColorizer($skippedTestColorizer)
+			->setMethodPrompt($skippedTestMethodPrompt)
+		;
+		
+		$this->addField($runnerSkippedField);
 
 		if ($this->showProgress === true)
 		{

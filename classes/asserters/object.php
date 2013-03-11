@@ -77,7 +77,7 @@ class object extends asserters\variable
 	{
 		if ($failMessage === null)
 		{
-			$failMessage = sprintf($this->getLocale()->_('%s is not a clone of %s'), $this, $object);
+			$failMessage = sprintf($this->getLocale()->_('%s is not a clone of %s'), $this, $this->getTypeOf($object));
 		}
 
 		return $this->isEqualTo($object, $failMessage)->isNotIdenticalTo($object, $failMessage);

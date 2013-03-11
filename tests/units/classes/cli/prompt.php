@@ -55,7 +55,7 @@ class prompt extends atoum\test
 		;
 	}
 
-	public function __toString()
+	public function test__toString()
 	{
 		$this
 			->if($prompt = new cli\prompt())
@@ -65,7 +65,5 @@ class prompt extends atoum\test
 				->castToString($prompt->setValue($value = uniqid())->isEqualTo($value))
 				->castToString($prompt->setColorizer($colorizer)->isEqualTo($colorizer->colorize($value)))
 		;
-
-		return '';
 	}
 }

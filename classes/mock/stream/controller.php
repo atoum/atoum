@@ -9,30 +9,30 @@ use
 
 class controller extends test\adapter
 {
-	protected $stream = '';
+	protected $path = '';
 
-	public function __construct($stream)
+	public function __construct($path)
 	{
 		parent::__construct();
 
-		$this->stream = (string) $stream;
+		$this->path = (string) $path;
 	}
 
 	public function __toString()
 	{
-		return $this->getStream();
+		return $this->getPath();
 	}
 
 	public function __get($method)
 	{
-		$method = self::mapMethod($method);
+		$method = static::mapMethod($method);
 
 		return $this->setInvoker($method, function() use ($method) { return new invoker($method); });
 	}
 
 	public function __set($method, $value)
 	{
-		switch ($method)
+		switch (strtolower($method))
 		{
 			case 'file_get_contents':
 				if ($value === false)
@@ -57,7 +57,7 @@ class controller extends test\adapter
 				return $this;
 
 			default:
-				$method = self::mapMethod($method);
+				$method = static::mapMethod($method);
 
 				switch ($method)
 				{
@@ -82,29 +82,47 @@ class controller extends test\adapter
 
 	public function __isset($method)
 	{
-		return parent::__isset(self::mapMethod($method));
+		return parent::__isset(static::mapMethod($method));
 	}
 
-	public function getStream()
+	public function duplicate()
 	{
-		return $this->stream;
+		$controller = clone $this;
+
+		$controller->path = & $this->path;
+		$controller->calls = & $this->calls;
+		$controller->invokers = & $this->invokers;
+
+		return $controller;
+	}
+
+	public function setPath($path)
+	{
+		$this->path = $path;
+
+		return $this;
+	}
+
+	public function getPath()
+	{
+		return $this->path;
 	}
 
 	public function getBasename()
 	{
-		return basename($this->stream);
+		return basename($this->path);
 	}
 
 	public function invoke($method, array $arguments = array())
 	{
-		$method = self::mapMethod($method);
+		$method = static::mapMethod($method);
 
 		if ($method === 'dir_rewinddir' && isset($this->{$method}) === true)
 		{
 			$this->resetCalls('dir_readdir');
 		}
 
-		return (isset($this->{$method}) === false ? null : parent::invoke($method, $arguments));
+		return ($this->nextCallIsOverloaded($method) === false ? null : parent::invoke($method, $arguments));
 	}
 
 	protected function buildInvoker()
@@ -114,6 +132,8 @@ class controller extends test\adapter
 
 	protected static function mapMethod($method)
 	{
+		$method = strtolower($method);
+
 		switch ($method)
 		{
 			case 'mkdir':
@@ -155,6 +175,10 @@ class controller extends test\adapter
 			case 'fflush':
 			case 'stream_flush':
 				return 'stream_flush';
+
+			case 'ftruncate':
+			case 'stream_truncate':
+				return 'stream_truncate';
 
 			case 'flock':
 			case 'stream_lock':

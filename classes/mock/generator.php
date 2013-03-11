@@ -17,6 +17,7 @@ class generator
 	protected $reflectionClassFactory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
+	protected $orphanizedMethods = array();
 	protected $shuntParentClassCalls = false;
 
 	private $defaultNamespace = null;
@@ -131,10 +132,17 @@ class generator
 
 	public function orphanize($method)
 	{
-		return $this
-			->overload(call_user_func($this->phpMethodFactory, $method))
-			->shunt($method)
-		;
+		if ($this->isOrphanized($method) === false)
+		{
+			$this->orphanizedMethods[] = strtolower($method);
+		}
+
+		return $this->shunt($method);
+	}
+
+	public function isOrphanized($method)
+	{
+		return (in_array($method, $this->orphanizedMethods) === true);
 	}
 
 	public function getMockedClassCode($class, $mockNamespace = null, $mockClass = null)
@@ -176,7 +184,7 @@ class generator
 				throw new exceptions\logic('Class \'' . $class . '\' is final, unable to mock it');
 			}
 
-			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : self::generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
+			$code = $reflectionClass->isInterface() === false ? $this->generateClassCode($reflectionClass, $mockNamespace, $mockClass) : $this->generateInterfaceCode($reflectionClass, $mockNamespace, $mockClass);
 		}
 
 		return $code;
@@ -186,22 +194,18 @@ class generator
 	{
 		eval($this->getMockedClassCode($class, $mockNamespace, $mockClass));
 
-		$this->shuntedMethods = array();
-		$this->overloadedMethods = array();
+		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
 
 		return $this;
 	}
 
-	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
+	protected function getNamespace($class)
 	{
-		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
-			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
-			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
-			$this->generateClassMethodCode($class) .
-			'}' . PHP_EOL .
-			'}'
-		;
+		$class = ltrim($class, '\\');
+
+		$lastAntiSlash = strrpos($class, '\\');
+
+		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
 	protected function generateClassMethodCode(\reflectionClass $class)
@@ -211,6 +215,8 @@ class generator
 		$hasConstructor = false;
 
 		$className = $class->getName();
+
+		$mockedMethodNames = array();
 
 		foreach ($class->getMethods() as $method)
 		{
@@ -230,7 +236,24 @@ class generator
 				switch (true)
 				{
 					case $method->isProtected() && $method->isAbstract():
-						$methodCode = "\t" . 'protected function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method) . ') {}' . PHP_EOL;
+						$parameters = array();
+
+						foreach ($method->getParameters() as $parameter)
+						{
+							$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
+						}
+
+						$methodCode = "\t" . 'protected function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParameters($method) . ')' . PHP_EOL;
+						$methodCode .= "\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
+						$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
+						$methodCode .= "\t\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . PHP_EOL;
+						$methodCode .= "\t\t" . '}' . PHP_EOL;
+						$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+						$methodCode .= "\t" . '}' . PHP_EOL;
+
+						$mockedMethodNames[] = strtolower($methodName);
 						break;
 
 					case $method->isPublic():
@@ -240,10 +263,8 @@ class generator
 
 						if ($overload === null)
 						{
-							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
+							$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . ($isConstructor ? '__construct' : $methodName) . '(' . $this->getParameters($method, $isConstructor) . ')' . PHP_EOL;
 							$methodCode .= "\t" . '{' . PHP_EOL;
-
-							$parameters = array();
 
 							foreach ($method->getParameters() as $parameter)
 							{
@@ -291,12 +312,29 @@ class generator
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
 							$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 						}
+						else if ($isConstructor === true && $methodName === $className && $this->isShunted('__construct') === true)
+						{
+							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
+							$methodCode .= "\t\t" . '{' . PHP_EOL;
+							$methodCode .= "\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL;
+							$methodCode .= "\t\t" . '}' . PHP_EOL;
+							$methodCode .=	"\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL;
+						}
 						else
 						{
 							$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 							$methodCode .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
 							$methodCode .= "\t\t" . '}' . PHP_EOL;
+
+							if ($isConstructor === true && $methodName === $className)
+							{
+								$methodCode .= "\t\t" . 'else if (isset($this->getMockController()->__construct) === true)' . PHP_EOL;
+								$methodCode .= "\t\t" . '{' . PHP_EOL;
+								$methodCode .= "\t\t\t" . '$this->mockController->invoke(\'__construct\', $arguments);' . PHP_EOL;
+								$methodCode .= "\t\t" . '}' . PHP_EOL;
+							}
+
 							$methodCode .= "\t\t" . 'else' . PHP_EOL;
 							$methodCode .= "\t\t" . '{' . PHP_EOL;
 
@@ -316,6 +354,8 @@ class generator
 						}
 
 						$methodCode .= "\t" . '}' . PHP_EOL;
+
+						$mockedMethodNames[] = strtolower($methodName);
 						break;
 				}
 
@@ -326,18 +366,27 @@ class generator
 		if ($hasConstructor === false)
 		{
 			$mockedMethods .= self::generateDefaultConstructor();
+			$mockedMethodNames[] = '__construct';
 		}
+
+		$mockedMethods .= "\t" . 'public static function getMockedMethods()' . PHP_EOL;
+		$mockedMethods .= "\t" . '{' . PHP_EOL;
+		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
+		$mockedMethods .= "\t" . '}' . PHP_EOL;
 
 		return $mockedMethods;
 	}
 
-	protected function getNamespace($class)
+	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		$class = ltrim($class, '\\');
-
-		$lastAntiSlash = strrpos($class, '\\');
-
-		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
+		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
+			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
+			'{' . PHP_EOL .
+			self::generateMockControllerMethod() .
+			$this->generateClassMethodCode($class) .
+			'}' . PHP_EOL .
+			'}'
+		;
 	}
 
 	protected static function getClassName($class)
@@ -370,21 +419,25 @@ class generator
 		return $type;
 	}
 
-	protected static function getParameters(\reflectionMethod $method, $addMockController = false)
+	protected function getParameters(\reflectionMethod $method, $addMockController = false)
 	{
 		$parameters = array();
+
+		$mustBeNull = $this->isOrphanized($method->getName());
 
 		foreach ($method->getParameters() as $parameter)
 		{
 			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
 
-			if ($parameter->isDefaultValueAvailable() == true)
+			switch (true)
 			{
-				$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
-			}
-			else if ($parameter->isOptional() === true)
-			{
-				$parameterCode .= '=null';
+				case $parameter->isDefaultValueAvailable():
+					$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+					break;
+
+				case $parameter->isOptional():
+				case $mustBeNull:
+					$parameterCode .= '=null';
 			}
 
 			$parameters[] = $parameterCode;
@@ -396,6 +449,91 @@ class generator
 		}
 
 		return join(', ', $parameters);
+	}
+
+	protected function generateInterfaceMethodCode(\reflectionClass $class)
+	{
+		$mockedMethods = '';
+
+		$mockedMethodNames = array();
+
+		$hasConstructor = false;
+
+		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
+		{
+			if ($method->isFinal() === false && $method->isStatic() === false)
+			{
+				$methodName = $method->getName();
+
+				$mockedMethodNames[] = strtolower($methodName);
+
+				$isConstructor = $methodName === '__construct';
+
+				if ($isConstructor === true)
+				{
+					$hasConstructor = true;
+				}
+
+				$parameters = array();
+
+				foreach ($method->getParameters() as $parameter)
+				{
+					$parameters[] = '$' . $parameter->getName();
+				}
+
+				$parameters = join(', ', $parameters);
+				$mockControllerParameters = ($parameters == '' ? 'func_get_args()' : 'array(' . $parameters . ')');
+
+				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParameters($method, $isConstructor) . ')' . PHP_EOL;
+				$methodCode .= "\t" . '{' . PHP_EOL;
+
+				if ($isConstructor === true)
+				{
+					$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
+					$methodCode .= "\t\t" . '{' . PHP_EOL;
+					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+					$methodCode .= "\t\t" . '}' . PHP_EOL;
+					$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+					$methodCode .= "\t\t" . '{' . PHP_EOL;
+					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+					$methodCode .= "\t\t" . '}' . PHP_EOL;
+				}
+
+				$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
+				$methodCode .= "\t\t" . '{' . PHP_EOL;
+				$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . PHP_EOL;
+				$methodCode .= "\t\t" . '}' . PHP_EOL;
+				$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', ' . $mockControllerParameters . ');' . PHP_EOL;
+				$methodCode .= "\t" . '}' . PHP_EOL;
+
+				$mockedMethods .= $methodCode;
+			}
+		}
+
+		if ($hasConstructor === false)
+		{
+			$mockedMethods .= self::generateDefaultConstructor();
+			$mockedMethodNames[] = '__construct';
+		}
+
+		$mockedMethods .= "\t" . 'public static function getMockedMethods()' . PHP_EOL;
+		$mockedMethods .= "\t" . '{' . PHP_EOL;
+		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
+		$mockedMethods .= "\t" . '}' . PHP_EOL;
+
+		return $mockedMethods;
+	}
+
+	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
+	{
+		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
+			'final class ' . $mockClass . ' implements \\' . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
+			'{' . PHP_EOL .
+			self::generateMockControllerMethod() .
+			$this->generateInterfaceMethodCode($class) .
+			'}' . PHP_EOL .
+			'}'
+		;
 	}
 
 	protected static function generateMockControllerMethod()
@@ -465,80 +603,10 @@ class generator
 			"\t\t\t" . '$this->getMockController()->addCall($methodName, $arguments);' . PHP_EOL .
 			"\t\t" . '}' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .
-			'}' . PHP_EOL .
-			'}'
-		;
-	}
-
-	protected static function generateInterfaceMethodCode(\reflectionClass $class)
-	{
-		$mockedMethods = '';
-
-		$hasConstructor = false;
-
-		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
-		{
-			if ($method->isFinal() === false && $method->isStatic() === false)
-			{
-				$methodName = $method->getName();
-				$isConstructor = $methodName === '__construct';
-
-				if ($isConstructor === true)
-				{
-					$hasConstructor = true;
-				}
-
-				$parameters = array();
-
-				foreach ($method->getParameters() as $parameter)
-				{
-					$parameters[] = '$' . $parameter->getName();
-				}
-
-				$parameters = join(', ', $parameters);
-				$mockControllerParameters = ($parameters == '' ? 'func_get_args()' : 'array(' . $parameters . ')');
-
-				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . self::getParameters($method, $isConstructor) . ')' . PHP_EOL;
-				$methodCode .= "\t" . '{' . PHP_EOL;
-
-				if ($isConstructor === true)
-				{
-					$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
-					$methodCode .= "\t\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
-					$methodCode .= "\t\t" . '}' . PHP_EOL;
-					$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-					$methodCode .= "\t\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-					$methodCode .= "\t\t" . '}' . PHP_EOL;
-				}
-
-				$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
-				$methodCode .= "\t\t" . '{' . PHP_EOL;
-				$methodCode .= "\t\t\t" . '$this->mockController->' . $methodName . ' = function() {};' . PHP_EOL;
-				$methodCode .= "\t\t" . '}' . PHP_EOL;
-				$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->mockController->invoke(\'' . $methodName . '\', ' . $mockControllerParameters . ');' . PHP_EOL;
-				$methodCode .= "\t" . '}' . PHP_EOL;
-
-				$mockedMethods .= $methodCode;
-			}
-		}
-
-		if ($hasConstructor === false)
-		{
-			$mockedMethods .= self::generateDefaultConstructor();
-		}
-
-		return $mockedMethods;
-	}
-
-	protected static function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
-	{
-		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
-			'final class ' . $mockClass . ' implements \\' . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
-			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
-			self::generateInterfaceMethodCode($class) .
+			"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+			"\t" . '{' . PHP_EOL .
+			"\t\t" . 'return ' . var_export(array('__call'), true) . ';' . PHP_EOL .
+			"\t" . '}' . PHP_EOL .
 			'}' . PHP_EOL .
 			'}'
 		;

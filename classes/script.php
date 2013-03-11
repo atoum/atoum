@@ -79,6 +79,11 @@ abstract class script
 		return $this->argumentsParser;
 	}
 
+	public function hasArguments()
+	{
+		return (sizeof($this->argumentsParser->getValues()) > 0);
+	}
+
 	public function setOutputWriter(atoum\writer $writer = null)
 	{
 		$this->outputWriter = $writer ?: new writers\std\out();

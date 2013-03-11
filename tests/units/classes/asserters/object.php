@@ -106,14 +106,14 @@ class object extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isCloneOf($asserter); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Object is undefined')
-			->if($asserter->setWith($asserter))
+			->if($asserter->setWith($test = $this))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCloneOf($asserter); })
+				->exception(function() use ($asserter, $test) { $asserter->isCloneOf($test); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter))
-			->if($clonedAsserter = clone $asserter)
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not a clone of %s'), $asserter, $asserter->getTypeOf($test)))
+			->if($clonedTest = clone $test)
 			->then
-				->object($asserter->isCloneOf($clonedAsserter))->isIdenticalTo($asserter)
+				->object($asserter->isCloneOf($clonedTest))->isIdenticalTo($asserter)
 		;
 	}
 

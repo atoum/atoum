@@ -3,87 +3,136 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\autoloader as testedClass
 ;
 
 require_once __DIR__ . '/../runner.php';
 
 class autoloader extends atoum\test
 {
-	public function test__construct()
+	public function testClassConstants()
 	{
 		$this
-			->if($autoloader = new atoum\autoloader())
-			->then
-				->array($directories = $autoloader->getDirectories())->hasKey('mageekguy\atoum\\')
-				->array($directories['mageekguy\atoum\\'])->isEqualTo(array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR))
-				->array($autoloader->getAliases())->isEqualTo(array('atoum\\' => 'mageekguy\\atoum\\'))
+			->string(testedClass::defaultCacheFileName)->isEqualTo('autoload.atoum.cache')
+			->string(testedClass::defaultFileSuffix)->isEqualTo('.php')
 		;
 	}
 
-	public function testAddAlias()
+	public function test__construct()
 	{
 		$this
-			->if($autoloader = new atoum\autoloader())
+			->if($autoloader = new testedClass())
 			->then
-				->object($autoloader->addAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getAliases())->isEqualTo(array(
+				->array($autoloader->getClasses())->isEmpty()
+				->array($autoloader->getDirectories())->isEqualTo(array(
+						'mageekguy\atoum\\' => array(
+							array(
+								atoum\directory . DIRECTORY_SEPARATOR . 'classes' . DIRECTORY_SEPARATOR,
+								testedClass::defaultFileSuffix
+							)
+						)
+					)
+				)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array('atoum\\' => 'mageekguy\\atoum\\'))
+		;
+	}
+
+	public function testAddNamespaceAlias()
+	{
+		$this
+			->if($autoloader = new testedClass())
+			->then
+				->object($autoloader->addNamespaceAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array(
 						'atoum\\' => 'mageekguy\\atoum\\',
 						$alias . '\\' => $target . '\\'
 					)
 				)
-				->object($autoloader->addAlias($alias, $target))->isIdenticalTo($autoloader)
-				->array($autoloader->getAliases())->isEqualTo(array(
+				->object($autoloader->addNamespaceAlias($alias, $target))->isIdenticalTo($autoloader)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array(
 						'atoum\\' => 'mageekguy\\atoum\\',
 						$alias . '\\' => $target . '\\'
 					)
 				)
-				->object($autoloader->addAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
-				->array($autoloader->getAliases())->isEqualTo(array(
+				->object($autoloader->addNamespaceAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array(
 						'atoum\\' => 'mageekguy\\atoum\\',
 						$alias . '\\' => $target . '\\',
 						$otherAlias . '\\' => $otherTarget . '\\'
 					)
 				)
-				->object($autoloader->addAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
-				->array($autoloader->getAliases())->isEqualTo(array(
+				->object($autoloader->addNamespaceAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array(
 						'atoum\\' => 'mageekguy\\atoum\\',
 						$alias . '\\' => $target . '\\',
 						$otherAlias . '\\' => $otherTarget . '\\',
 						$anOtherAlias . '\\' => $anOtherTarget . '\\'
 					)
 				)
+				->object($autoloader->addNamespaceAlias('FOO', ($fooTarget = uniqid())))->isIdenticalTo($autoloader)
+				->array($autoloader->getNamespaceAliases())->isEqualTo(array(
+						'atoum\\' => 'mageekguy\\atoum\\',
+						$alias . '\\' => $target . '\\',
+						$otherAlias . '\\' => $otherTarget . '\\',
+						$anOtherAlias . '\\' => $anOtherTarget . '\\',
+						'foo\\' => $fooTarget . '\\'
+					)
+				)
 		;
 	}
 
-	public function testAddDirectory()
+	public function testAddClassAlias()
 	{
 		$this
-			->if($autoloader = new atoum\autoloader())
+			->if($autoloader = new testedClass())
 			->then
-				->object($autoloader->addDirectory($namespace = uniqid(), $directory = uniqid()))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array($directory . DIRECTORY_SEPARATOR)
+				->object($autoloader->addClassAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
+				->array($autoloader->getClassAliases())->isEqualTo(array(
+						'atoum' => 'mageekguy\\atoum\\test',
+						$alias => $target
 					)
 				)
-				->object($autoloader->addDirectory($otherNamespace = (uniqid() . '\\'), $otherDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array($directory . DIRECTORY_SEPARATOR),
-						$otherNamespace => array($otherDirectory)
+				->object($autoloader->addClassAlias($alias, $target))->isIdenticalTo($autoloader)
+				->array($autoloader->getClassAliases())->isEqualTo(array(
+						'atoum' => 'mageekguy\\atoum\\test',
+						$alias => $target
 					)
 				)
-				->object($autoloader->addDirectory($namespace, $secondDirectory = (uniqid() . DIRECTORY_SEPARATOR)))->isIdenticalTo($autoloader)
-				->array($autoloader->getDirectories())->isEqualTo(array(
-						'mageekguy\atoum\\' => array(atoum\directory . (\phar::running() ? '/' : DIRECTORY_SEPARATOR) . 'classes' . DIRECTORY_SEPARATOR),
-						$namespace . '\\' => array(
-							$directory . DIRECTORY_SEPARATOR,
-							$secondDirectory
-						),
-						$otherNamespace => array($otherDirectory)
+				->object($autoloader->addClassAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
+				->array($autoloader->getClassAliases())->isEqualTo(array(
+						'atoum' => 'mageekguy\\atoum\\test',
+						$alias => $target,
+						$otherAlias => $otherTarget
 					)
 				)
+				->object($autoloader->addClassAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
+				->array($autoloader->getClassAliases())->isEqualTo(array(
+						'atoum' => 'mageekguy\\atoum\\test',
+						$alias => $target,
+						$otherAlias => $otherTarget,
+						$anOtherAlias => $anOtherTarget
+					)
+				)
+				->object($autoloader->addClassAlias('FOO', '\\' . ($fooTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
+				->array($autoloader->getClassAliases())->isEqualTo(array(
+						'atoum' => 'mageekguy\\atoum\\test',
+						$alias => $target,
+						$otherAlias => $otherTarget,
+						$anOtherAlias => $anOtherTarget,
+						'foo' => $fooTarget
+					)
+				)
+		;
+	}
+
+	public function testGetCacheFile()
+	{
+		$this
+			->string(testedClass::getCacheFile())->isEqualTo(sys_get_temp_dir() . DIRECTORY_SEPARATOR . testedClass::defaultCacheFileName)
+			->if(testedClass::setCacheFile($cacheFile = uniqid()))
+			->then
+				->string(testedClass::getCacheFile())->isEqualTo($cacheFile)
 		;
 	}
 }

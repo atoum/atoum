@@ -100,6 +100,10 @@ class call extends atoum\test
 		$this->assert
 			->object($call->setDecorator($decorator = new php\call\decorator()))->isIdenticalTo($call)
 			->object($call->getDecorator())->isIdenticalTo($decorator)
+			->object($call->setDecorator())->isIdenticalTo($call)
+			->object($call->getDecorator())
+				->isEqualTo(new php\call\decorator())
+				->isNotIdenticalTo($decorator)
 		;
 	}
 

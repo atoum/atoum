@@ -12,12 +12,12 @@ class decorator
 
 	public function __construct()
 	{
-		$this->setArgumentsDecorator(new arguments\decorator());
+		$this->setArgumentsDecorator();
 	}
 
-	public function setArgumentsDecorator(arguments\decorator $decorator)
+	public function setArgumentsDecorator(arguments\decorator $decorator = null)
 	{
-		$this->argumentsDecorator = $decorator;
+		$this->argumentsDecorator = $decorator ?: new arguments\decorator();
 
 		return $this;
 	}

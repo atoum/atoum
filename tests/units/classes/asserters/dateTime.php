@@ -74,10 +74,10 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasYear(1981); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 1981, 1976))
+					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 1976, 1981))
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasYear(76); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Year is %04d instead of %s'), 76, 1976))
+					->hasMessage(sprintf($generator->getLocale()->_('Year is %s instead of %s'), 1976, 76))
 				->object($asserter->hasYear('1976'))->isIdenticalTo($asserter)
 				->object($asserter->hasYear(1976))->isIdenticalTo($asserter)
 		;
@@ -94,7 +94,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasMonth(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Month is %02d instead of %02d'), 1, 9))
+					->hasMessage(sprintf($generator->getLocale()->_('Month is %02d instead of %02d'), 9, 1))
 				->object($asserter->hasMonth(9))->isIdenticalTo($asserter)
 			->if($asserter->setWith($dateTime = new \DateTime('1980-08-14')))
 			->then
@@ -115,7 +115,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDay(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Day is %02d instead of %02d'), 1, 6))
+					->hasMessage(sprintf($generator->getLocale()->_('Day is %02d instead of %02d'), 6, 1))
 				->object($asserter->hasDay('06'))->isIdenticalTo($asserter)
 				->object($asserter->hasDay('6'))->isIdenticalTo($asserter)
 				->object($asserter->hasDay(6))->isIdenticalTo($asserter)
@@ -134,7 +134,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDate(1980, 8, 14); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Date is %s instead of %s'), '1980-08-14', '1976-10-06'))
+					->hasMessage(sprintf($generator->getLocale()->_('Date is %s instead of %s'), '1976-10-06', '1980-08-14'))
 				->object($asserter->hasDate(1976, 10, 6))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '6'))->isIdenticalTo($asserter)
 				->object($asserter->hasDate('1976', '10', '06'))->isIdenticalTo($asserter)
@@ -152,7 +152,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasHours(2); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Hours are %02d instead of %02d'), 2, 1))
+					->hasMessage(sprintf($generator->getLocale()->_('Hours are %02d instead of %02d'), 1, 2))
 				->object($asserter->hasHours('01'))->isIdenticalTo($asserter)
 				->object($asserter->hasHours('1'))->isIdenticalTo($asserter)
 				->object($asserter->hasHours(1))->isIdenticalTo($asserter)
@@ -170,7 +170,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasMinutes(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Minutes are %02d instead of %02d'), 1, 2))
+					->hasMessage(sprintf($generator->getLocale()->_('Minutes are %02d instead of %02d'), 2, 1))
 				->object($asserter->hasMinutes('02'))->isIdenticalTo($asserter)
 				->object($asserter->hasMinutes('2'))->isIdenticalTo($asserter)
 				->object($asserter->hasMinutes(2))->isIdenticalTo($asserter)
@@ -188,7 +188,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasSeconds(1); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Seconds are %02d instead of %02d'), 1, 3))
+					->hasMessage(sprintf($generator->getLocale()->_('Seconds are %02d instead of %02d'), 3, 1))
 				->object($asserter->hasSeconds('03'))->isIdenticalTo($asserter)
 				->object($asserter->hasSeconds('3'))->isIdenticalTo($asserter)
 				->object($asserter->hasSeconds(3))->isIdenticalTo($asserter)
@@ -207,7 +207,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasTime(4, 5, 6); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Time is %s instead of %s'), '04:05:06', '01:02:03'))
+					->hasMessage(sprintf($generator->getLocale()->_('Time is %s instead of %s'), '01:02:03', '04:05:06'))
 				->object($asserter->hasTime('01', '02', '03'))->isIdenticalTo($asserter)
 				->object($asserter->hasTime('1', '2', '3'))->isIdenticalTo($asserter)
 				->object($asserter->hasTime(1, 2, 3))->isIdenticalTo($asserter)
@@ -226,7 +226,7 @@ class dateTime extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->hasDateAndTime(1900, 1, 1, 4, 5, 6); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('Datetime is %s instead of %s'), '1900-01-01 04:05:06', '1981-02-13 01:02:03'))
+					->hasMessage(sprintf($generator->getLocale()->_('Datetime is %s instead of %s'), '1981-02-13 01:02:03', '1900-01-01 04:05:06'))
 				->object($asserter->hasDateAndTime('1981', '02', '13', '01', '02', '03'))->isIdenticalTo($asserter)
 				->object($asserter->hasDateAndTime('1981', '2', '13', '1', '2', '3'))->isIdenticalTo($asserter)
 				->object($asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3))->isIdenticalTo($asserter)

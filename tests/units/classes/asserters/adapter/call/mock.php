@@ -13,20 +13,25 @@ use
 
 class mock extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\php\call');
+	}
+
 	public function test__construct()
 	{
 		$this
 			->if($call = new call\mock($adapterAsserter = new asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy(), $methodName = uniqid()))
 			->then
 				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
-				->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-				->string($call->getMethodName())->isEqualTo($methodName)
+				->object($call->getObject())->isIdenticalTo($mockAggregator)
+				->string($call->getFunction())->isEqualTo($methodName)
 				->variable($call->getArguments())->isNull()
 			->if($call = new call\mock($adapterAsserter = new asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy, $methodName = rand(1, PHP_INT_MAX)))
 			->then
 				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
-				->object($call->getMockAggregator())->isIdenticalTo($mockAggregator)
-				->string($call->getMethodName())->isEqualTo((string) $methodName)
+				->object($call->getObject())->isIdenticalTo($mockAggregator)
+				->string($call->getFunction())->isEqualTo((string) $methodName)
 				->variable($call->getArguments())->isNull()
 		;
 	}
@@ -45,6 +50,15 @@ class mock extends atoum\test
 				->exception(function() use ($call, $unknownMethod) { $call->{$unknownMethod}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownMethod . '() does not exist')
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->if($call = new call\mock(new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy(), $function = uniqid()))
+			->then
+				->castToString($call)->isEqualTo(get_class($mockAggregator) . '::' . $function . '()')
 		;
 	}
 

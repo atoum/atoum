@@ -9,20 +9,13 @@ use
 
 class stream extends atoum\asserter
 {
-	protected $streamName = null;
 	protected $streamController = null;
 
 	public function setWith($stream)
 	{
-		$this->streamName = $stream;
 		$this->streamController = atoum\mock\stream::get($stream);
 
 		return $this;
-	}
-
-	public function getStreamName()
-	{
-		return $this->streamName;
 	}
 
 	public function getStreamController()
@@ -32,15 +25,13 @@ class stream extends atoum\asserter
 
 	public function isRead($failMessage = null)
 	{
-		$calls = $this->streamIsSet()->streamController->getCalls();
-
-		if (isset($calls['stream_read']) === true)
+		if (sizeof($this->streamIsSet()->streamController->getCalls('stream_read')) > 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not read'), $this->streamName));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not read'), $this->streamController));
 		}
 
 		return $this;
@@ -48,15 +39,13 @@ class stream extends atoum\asserter
 
 	public function isWrited($failMessage = null)
 	{
-		$calls = $this->streamIsSet()->streamController->getCalls();
-
-		if (isset($calls['stream_write']) === true)
+		if (sizeof($this->streamIsSet()->streamController->getCalls('stream_write')) > 0)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not writed'), $this->streamName));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('stream %s is not writed'), $this->streamController));
 		}
 
 		return $this;
@@ -64,7 +53,7 @@ class stream extends atoum\asserter
 
 	protected function streamIsSet()
 	{
-		if ($this->streamName === null)
+		if ($this->streamController === null)
 		{
 			throw new exceptions\logic('Stream is undefined');
 		}

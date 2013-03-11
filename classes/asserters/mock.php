@@ -180,7 +180,7 @@ class mock extends atoum\asserter
 
 	public function withArguments()
 	{
-		$this->calledMethodNameIsSet()->call->setArguments(func_get_args());
+		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->notIdentical();
 
 		return $this;
 	}
@@ -188,6 +188,20 @@ class mock extends atoum\asserter
 	public function withIdenticalArguments()
 	{
 		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->identical();
+
+		return $this;
+	}
+
+	public function withAtLeastArguments(array $arguments)
+	{
+		$this->calledMethodNameIsSet()->call->setArguments($arguments)->notIdentical();
+
+		return $this;
+	}
+
+	public function withAtLeastIdenticalArguments(array $arguments)
+	{
+		$this->calledMethodNameIsSet()->call->setArguments($arguments)->identical();
 
 		return $this;
 	}
@@ -201,7 +215,17 @@ class mock extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-        return $this->exactly(1, $failMessage);
+		return $this->exactly(1, $failMessage);
+	}
+
+	public function twice($failMessage = null)
+	{
+		return $this->exactly(2, $failMessage);
+	}
+
+	public function thrice($failMessage = null)
+	{
+		return $this->exactly(3, $failMessage);
 	}
 
 	public function atLeastOnce($failMessage = null)
@@ -300,12 +324,12 @@ class mock extends atoum\asserter
 
 				if ($firstCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $beforeFunctionCall));
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $beforeFunctionCall));
 				}
 
 				if (key($calls) > $firstCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called before function %s'), $$this->call, $beforeFunctionCall));
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called before function %s'), $this->call, $beforeFunctionCall));
 				}
 
 				$this->pass();
@@ -334,7 +358,7 @@ class mock extends atoum\asserter
 
 				if ($lastCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $afterFunctionCall));
+					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $afterFunctionCall));
 				}
 
 				if (key($calls) < $lastCall)

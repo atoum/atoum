@@ -171,30 +171,17 @@ class adapter extends atoum\asserter
 
 	public function once($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		return $this->exactly(1, $failMessage);
+	}
 
-		if (($callsNumber = sizeof($calls)) === 1)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail(
-				$failMessage !== null
-				? $failMessage
-				: sprintf(
-						$this->getLocale()->__(
-							'function %s is called %d time instead of 1',
-							'function %s is called %d times instead of 1',
-							$callsNumber
-						),
-						$this->call,
-						$callsNumber
-					) .  $this->getCallsAsString()
-			);
-		}
+	public function twice($failMessage = null)
+	{
+		return $this->exactly(2, $failMessage);
+	}
 
-		return $this;
+	public function thrice($failMessage = null)
+	{
+		return $this->exactly(3, $failMessage);
 	}
 
 	public function atLeastOnce($failMessage = null)
@@ -274,12 +261,12 @@ class adapter extends atoum\asserter
 
 				if ($firstCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $beforeMethodCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $beforeMethodCall));
 				}
 
 				if (key($calls) > $firstCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called before method %s'), $this->call, $beforeMethodCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called before method %s'), $this->call, $beforeMethodCall));
 				}
 
 				$this->pass();
@@ -296,7 +283,7 @@ class adapter extends atoum\asserter
 
 				if (key($calls) > $firstCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called before function %s'), $$this->call, $beforeFunctionCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called before function %s'), $this->call, $beforeFunctionCall));
 				}
 
 				$this->pass();
@@ -308,12 +295,12 @@ class adapter extends atoum\asserter
 
 				if ($lastCall === null)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $afterMethodCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $afterMethodCall));
 				}
 
 				if (key($calls) < $lastCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called after method %s'), $this->call, $afterMethodCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called after method %s'), $this->call, $afterMethodCall));
 				}
 
 				$this->pass();
@@ -330,7 +317,7 @@ class adapter extends atoum\asserter
 
 				if (key($calls) < $lastCall)
 				{
-					$this->fail(sprintf($this->getLocale()->_('method %s is not called after function %s'), $this->call, $afterFunctionCall));
+					$this->fail(sprintf($this->getLocale()->_('function %s is not called after function %s'), $this->call, $afterFunctionCall));
 				}
 
 				$this->pass();
