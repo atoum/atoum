@@ -22,6 +22,7 @@ class runner extends atoum\script
 	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $arguments = array();
+	protected $defaultArguments = array();
 	protected $namespaces = array();
 	protected $testAllDirectories = array();
 	protected $tags = array();
@@ -137,6 +138,18 @@ class runner extends atoum\script
 		return $this;
 	}
 
+	public function setDefaultArguments(array $arguments)
+	{
+		$this->defaultArguments = $arguments;
+
+		return $this;
+	}
+
+	public function getDefaultArguments()
+	{
+		return $this->defaultArguments;
+	}
+
 	public function addTestAllDirectory($directory)
 	{
 		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
@@ -160,7 +173,12 @@ class runner extends atoum\script
 		{
 			$this->useDefaultConfigFiles();
 
-			if (parent::run($arguments ?: $this->arguments)->runTests === true)
+			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false)
+			{
+				parent::run($this->defaultArguments);
+			}
+
+			if ($this->runTests === true)
 			{
 				if ($this->loop === true)
 				{
