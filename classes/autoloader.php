@@ -7,12 +7,12 @@ class autoloader
 	const defaultFileSuffix = '.php';
 	const defaultCacheFileName = 'autoload.atoum.cache';
 
-	protected static $autoloader = null;
-
 	protected $classes = array();
 	protected $directories = array();
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
+
+	protected static $autoloader = null;
 
 	private static $cacheFile = null;
 
