@@ -60,9 +60,9 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->then
 				->integer(filesize($file))->isEqualTo(0)
-			->if($file->contains('abcdefghijklmnopqrstuvwxyz' . PHP_EOL))
+			->if($file->contains($data = ('abcdefghijklmnopqrstuvwxyz' . PHP_EOL)))
 			->then
-				->integer(filesize($file))->isEqualTo(27)
+				->integer(filesize($file))->isEqualTo(strlen($data))
 		;
 	}
 
