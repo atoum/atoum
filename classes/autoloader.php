@@ -4,6 +4,7 @@ namespace mageekguy\atoum;
 
 class autoloader
 {
+	const defaultFileSuffix = '.php';
 	const defaultCacheFileName = 'autoload.atoum.cache';
 
 	protected static $autoloader = null;
@@ -58,7 +59,7 @@ class autoloader
 		return $this;
 	}
 
-	public function addDirectory($namespace, $directory, $suffix = '.php')
+	public function addDirectory($namespace, $directory, $suffix = self::defaultFileSuffix)
 	{
 		$namespace = strtolower(trim($namespace, '\\') . '\\');
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -108,7 +109,7 @@ class autoloader
 
 	public function addNamespaceAlias($alias, $target)
 	{
-		$this->namespaceAliases[trim($alias, '\\') . '\\'] = trim($target, '\\') . '\\';
+		$this->namespaceAliases[strtolower(trim($alias, '\\')) . '\\'] = trim($target, '\\') . '\\';
 
 		return $this;
 	}
@@ -120,7 +121,7 @@ class autoloader
 
 	public function addClassAlias($alias, $target)
 	{
-		$this->classAliases[trim($alias, '\\')] = trim($target, '\\');
+		$this->classAliases[strtolower(trim($alias, '\\'))] = trim($target, '\\');
 
 		return $this;
 	}
@@ -245,6 +246,8 @@ class autoloader
 
 	protected function resolveNamespaceAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $alias) === 0)
@@ -258,6 +261,8 @@ class autoloader
 
 	protected function getNamespaceAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $target) === 0)
@@ -271,6 +276,8 @@ class autoloader
 
 	protected function resolveClassAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->classAliases as $alias => $target)
 		{
 			if ($alias === $class)
@@ -284,6 +291,8 @@ class autoloader
 
 	protected function getClassAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->classAliases as $alias => $target)
 		{
 			if ($target === $class)

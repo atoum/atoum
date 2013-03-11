@@ -78,7 +78,7 @@ class generator
 
 	public function setAlias($alias, $asserterClass)
 	{
-		$this->aliases[$alias] = $asserterClass;
+		$this->aliases[strtolower($alias)] = $asserterClass;
 
 		return $this;
 	}
@@ -107,6 +107,8 @@ class generator
 
 	public function getAsserterClass($asserter)
 	{
+		$asserter = strtolower($asserter);
+
 		$class = (isset($this->aliases[$asserter]) === false ? $asserter : $this->aliases[$asserter]);
 
 		if (substr($class, 0, 1) != '\\')
