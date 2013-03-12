@@ -129,7 +129,7 @@ class autoloader extends atoum\test
 	public function testGetCacheFile()
 	{
 		$this
-			->string(testedClass::getCacheFile())->isEqualTo(sys_get_temp_dir() . DIRECTORY_SEPARATOR . testedClass::defaultCacheFileName)
+			->string(testedClass::getCacheFile())->isEqualTo(rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . testedClass::defaultCacheFileName)
 			->if(testedClass::setCacheFile($cacheFile = uniqid()))
 			->then
 				->string(testedClass::getCacheFile())->isEqualTo($cacheFile)
