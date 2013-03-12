@@ -5,7 +5,7 @@ namespace mageekguy\atoum;
 class autoloader
 {
 	const defaultFileSuffix = '.php';
-	const defaultCacheFileName = 'autoload.atoum.cache';
+	const defaultCacheFileName = '%s.atoum.cache';
 
 	protected $classes = array();
 	protected $directories = array();
@@ -241,7 +241,7 @@ class autoloader
 
 	public static function getCacheFile()
 	{
-		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . static::defaultCacheFileName);
+		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
 	}
 
 	protected function resolveNamespaceAlias($class)

@@ -14,7 +14,7 @@ class autoloader extends atoum\test
 	public function testClassConstants()
 	{
 		$this
-			->string(testedClass::defaultCacheFileName)->isEqualTo('autoload.atoum.cache')
+			->string(testedClass::defaultCacheFileName)->isEqualTo('%s.atoum.cache')
 			->string(testedClass::defaultFileSuffix)->isEqualTo('.php')
 		;
 	}
@@ -129,7 +129,7 @@ class autoloader extends atoum\test
 	public function testGetCacheFile()
 	{
 		$this
-			->string(testedClass::getCacheFile())->isEqualTo(rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . testedClass::defaultCacheFileName)
+			->string(testedClass::getCacheFile())->isEqualTo(rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(testedClass::defaultCacheFileName, md5($this->getTestedClassPath())))
 			->if(testedClass::setCacheFile($cacheFile = uniqid()))
 			->then
 				->string(testedClass::getCacheFile())->isEqualTo($cacheFile)

@@ -41,7 +41,8 @@ abstract class test implements observable, \countable
 	private $asserterGenerator = null;
 	private $assertionManager = null;
 	private $phpPath = null;
-	private $testedClass = null;
+	private $testedClassName = null;
+	private $testedClassPath = null;
 	private $currentMethod = null;
 	private $testNamespace = null;
 	private $classEngine = null;
@@ -602,7 +603,7 @@ abstract class test implements observable, \countable
 
 	public function getTestedClassName()
 	{
-		if ($this->testedClass === null)
+		if ($this->testedClassName === null)
 		{
 			$testClass = $this->getClass();
 			$testNamespace = $this->getTestNamespace();
@@ -614,7 +615,7 @@ abstract class test implements observable, \countable
 					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
 				}
 
-				$this->testedClass = trim(preg_replace($testNamespace, '\\', $testClass), '\\');
+				$this->testedClassName = trim(preg_replace($testNamespace, '\\', $testClass), '\\');
 			}
 			else
 			{
@@ -625,21 +626,33 @@ abstract class test implements observable, \countable
 					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which contains \'' . $testNamespace . '\'');
 				}
 
-				$this->testedClass = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
+				$this->testedClassName = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
 			}
 		}
 
-		return $this->testedClass;
+		return $this->testedClassName;
+	}
+
+	public function getTestedClassPath()
+	{
+		if ($this->testedClassPath === null)
+		{
+			$testedClass = new \reflectionClass($this->getTestedClassName());
+
+			$this->testedClassPath = $testedClass->getFilename();
+		}
+
+		return $this->testedClassPath;
 	}
 
 	public function setTestedClassName($className)
 	{
-		if ($this->testedClass !== null)
+		if ($this->testedClassName !== null)
 		{
 			throw new exceptions\runtime('Tested class name is already defined');
 		}
 
-		$this->testedClass = $className;
+		$this->testedClassName = $className;
 
 		return $this;
 	}
