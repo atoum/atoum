@@ -8,49 +8,47 @@
 		<link rel="stylesheet" media="screen" type="text/css" href="<tpl:relativeRootUrl />screen.css" title="Screen" />
 	</head>
 	<body>
+        <div id="header">
+            <img id="logo" src="http://docs.atoum.org/fr/images/logo.png"/>
+            <div id="title">
+                <h1>Code coverage of <a href="<tpl:relativeRootUrl />"><tpl:projectName /></a>: <tpl:className /></h1>
+                <h2>
+                    Class code coverage
+                    <tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable>
+                    <tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable>
+                </h2>
+            </div>
+        </div>
+
 		<div id="page">
-			<h1><a href="<tpl:relativeRootUrl />"><tpl:projectName /></a> :  code coverage of <tpl:className /></h1>
 			<div id="content">
-				<ul class="classSummary">
-					<li class="class">
-						<tpl:classCoverageUnavailable>
-							<div class="label">Class code coverage <span>n/a</span></div>
-						</tpl:classCoverageUnavailable>
-						<tpl:classCoverageAvailable>
-							<div class="bar">
-								<div class="background"></div>
-								<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-								<div class="label">Class code coverage <span><tpl:classCoverageValue />%</span></div>
-							</div>
-						</tpl:classCoverageAvailable>
-					</li>
+                <h3>Methods</h3>
+				<ul class="summary">
 					<tpl:methods>
-						<li class="methods">
-							<ul>
-								<tpl:method>
-									<li>
-										<tpl:methodCoverageUnavailable>
-											<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>
-										</tpl:methodCoverageUnavailable>
-										<tpl:methodCoverageAvailable>
-											<div class="bar">
-												<div class="background"></div>
-												<div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
-												<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
-											</div>
-										</tpl:methodCoverageAvailable>
-									</li>
-								</tpl:method>
-							</ul>
-						</li>
+                        <tpl:method>
+                            <li>
+                                <tpl:methodCoverageUnavailable>
+                                    <div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>
+                                </tpl:methodCoverageUnavailable>
+                                <tpl:methodCoverageAvailable>
+                                    <div class="bar">
+                                        <div class="background"></div>
+                                        <div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
+                                        <div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
+                                    </div>
+                                </tpl:methodCoverageAvailable>
+                            </li>
+                        </tpl:method>
 					</tpl:methods>
 				</ul>
+
+                <h3>Source</h3>
 				<table cellpadding="0" cellspacing="0" class="source">
 					<tr><th class="number">Line</th><th>Code</th></tr>
 					<tpl:sourceFile>
 						<tpl:line><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:line>
-						<tpl:coveredLine><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="covered"><pre><tpl:code /></pre></td></tr></tpl:coveredLine>
-						<tpl:notCoveredLine><tr><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td class="notCovered"><pre><tpl:code /></pre></td></tr></tpl:notCoveredLine>
+						<tpl:coveredLine><tr class="covered"><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:coveredLine>
+						<tpl:notCoveredLine><tr class="notCovered"><td class="number"><tpl:anchor><a name="<tpl:method />"></a></tpl:anchor><tpl:lineNumber /></td><td><pre><tpl:code /></pre></td></tr></tpl:notCoveredLine>
 					</tpl:sourceFile>
 				</table>
 			</div>
