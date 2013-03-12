@@ -7,7 +7,8 @@ use
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\progressBar
+	mageekguy\atoum\cli\progressBar,
+    mageekguy\atoum\cli\colorizer
 ;
 
 
@@ -15,54 +16,94 @@ class nyancat extends cli
 {
 	protected $cat = array(
 		array(
-			' ,---------,',
-			'┓|       ^__^ ',
-			'┗|     |｡◕‿‿◕｡| ',
-			' ╰OO----OO  ',
+			'  ,-------,  ',
+			' ┓|       ^__^ ',
+			' ┗|     |｡◕‿‿◕｡| ',
+			'  ╰OO----OO  ',
 		),
 		array(
-			' ,---------,',
-			'┓|        ^__^',
-			'┗|      |｡◕‿‿◕｡|',
-			' ╰O-O----O-O',
+			'  ,---------,',
+			' ┓|        ^__^',
+			' ┗|      |｡◕‿‿◕｡|',
+			'  ╰O-O----O-O',
 		),
 	);
+    protected $curve = "`·.,¸,.·'¯";
 	protected $offset = 0;
-	protected $colors = array(31, 32, 33, 34, 35, 36);
-	protected $events = array(test::success, test::fail, test::error, test::exception, test::void, test::uncompleted, test::skipped, runner::runStop);
+    protected $catColorizer;
+    protected $rainbowColorizers;
 	protected $nyan = '';
 
-	public function __toString()
+    public function __construct(progressBar $progressBar = null)
+    {
+        parent::__construct($progressBar);
+
+        $this->catColorizer = new colorizer(32);
+
+        $this->rainbowColorizers = array(
+            new colorizer(31),
+            new colorizer(32),
+            new colorizer(33),
+            new colorizer(34),
+            new colorizer(35),
+            new colorizer(36)
+        );
+    }
+
+    public function __toString()
 	{
-		if (in_array($this->event, $this->events) === false || $this->event === runner::runStop)
+        $string = PHP_EOL;
+
+        if ($this->event === test::fail)
+        {
+            $this->catColorizer = new colorizer(31);
+        }
+
+		if ($this->event !== runner::runStop)
 		{
-			return '';
-		}
+            $cat = $this->cat[$this->offset % 2];
 
-		$cat = $this->cat[$this->offset % 2];
-		$this->nyan = "\x1b[" . count($cat) . "F";
+            if (empty($this->nyan) === false)
+            {
+                $lines = explode(PHP_EOL, $this->nyan);
+                $string .= "\x1b[" . (count($lines) - 1) . "F";
+            }
 
-		for ($row = 0; $row < count($cat); $row++)
-		{
-			for ($column = 0; $column < count($this->colors); $column++)
-			{
-				$this->nyan .= "\x1b[" . $this->getColor($column - $this->offset) . "m`·.,¸,.·*¯\x1b[0m";
-			}
+            for ($row = 0; $row < count($cat); $row++)
+            {
+                $string .= $this->getRainbowRow() . $this->catColorizer->colorize($cat[$row]) . PHP_EOL;
+            }
 
-			$this->nyan .= "\x1b[34m" . $cat[$row] . PHP_EOL;
-		}
+            $string .= PHP_EOL;
 
-		$this->offset = ($this->offset + 1) == count($this->colors) ? 0 : $this->offset + 1;
+            $this->offset = $this->offset + 1 === count($this->rainbowColorizers)
+                ? 0
+                : $this->offset + 1;
 
-		return $this->nyan;
+            $this->nyan = $string;
+        }
+
+        return $string;
 	}
 
-	protected function getColor($offset)
+    protected function getRainbowRow()
+    {
+        $string = '';
+
+        for ($column = 0; $column < count($this->rainbowColorizers); $column++)
+        {
+            $string .= $this->getColorizer($column - $this->offset)->colorize($this->curve);
+        }
+
+        return $string;
+    }
+
+	protected function getColorizer($offset)
 	{
 		$offset = $offset < 0
-			? count($this->colors) - abs($offset)
+			? count($this->rainbowColorizers) - abs($offset)
 			: $offset;
 
-		return $this->colors[$offset];
+		return $this->rainbowColorizers[$offset];
 	}
 }
