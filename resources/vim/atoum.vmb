@@ -260,7 +260,7 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 		endif
 
 		command -buffer -nargs=* -bang Atoum call atoum#run(expand('%'), '<bang>', '<args>')
-		command -buffer -nargs=0 AtoumDebugSwitch let g:atoum#debug=!g:atoum#debug | echomsg "Atoum debug mode " . (g:atoum#debug ? 'enabled' : 'disabled')
+		command -buffer -nargs=0 AtoumDebugSwitch let g:atoum#debug=!g:atoum#debug | echomsg 'Atoum debug mode ' . (g:atoum#debug ? 'enabled' : 'disabled')
 		command -buffer -nargs=0 AtoumVimball call atoum#makeVimball()
 
 		let &cpo = s:cpo
