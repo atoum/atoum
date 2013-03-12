@@ -135,10 +135,12 @@ class autoloader
 	{
 		$class = strtolower($class);
 
-		$path = (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
+		$path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
 
 		if ($path === null)
 		{
+			$this->classes = array();
+
 			foreach ($this->directories as $namespace => $directories)
 			{
 				if (strpos($class, $namespace) === 0)
@@ -152,9 +154,9 @@ class autoloader
 
 						foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 						{
-							$path = $file->getPathname();
+							$filePath = $file->getPathname();
 
-							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
 						}
 					}
 
