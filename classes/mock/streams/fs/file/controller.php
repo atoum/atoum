@@ -219,9 +219,10 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, func_get_args());
-
-			return $this->seek($offset, $whence);
+			return $this
+				->addCall(__FUNCTION__, func_get_args())
+				->seek($offset, $whence)
+			;
 		}
 	}
 
@@ -233,9 +234,7 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, array());
-
-			return $this->eof;
+			return $this->addCall(__FUNCTION__, array())->eof;
 		}
 	}
 
@@ -365,9 +364,10 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, array());
-
-			return $this->stat();
+			return $this
+				->addCall(__FUNCTION__, array())
+				->stat()
+			;
 		}
 	}
 
@@ -379,9 +379,10 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, func_get_args());
-
-			return $this->truncate($newSize);
+			return $this
+				->addCall(__FUNCTION__, func_get_args())
+				->truncate($newSize)
+			;
 		}
 	}
 
@@ -421,9 +422,11 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, func_get_args());
+			return $this
+				->addCall(__FUNCTION__, func_get_args())
+				->stat()
+			;
 
-			return $this->stat();
 		}
 	}
 
@@ -458,9 +461,10 @@ class controller extends fs\controller
 		}
 		else
 		{
-			$this->addCall(__FUNCTION__, func_get_args());
-
-			$this->setPath($to);
+			$this
+				->addCall(__FUNCTION__, func_get_args())
+				->setPath($to)
+			;
 
 			return true;
 		}
