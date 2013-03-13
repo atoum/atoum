@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams;
+namespace mageekguy\atoum\tests\units\mock\streams\fs;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\mock\streams\file as testedClass
+	mageekguy\atoum\mock\streams\fs\file as testedClass
 ;
 
-require_once __DIR__ . '/../../../runner.php';
+require_once __DIR__ . '/../../../../runner.php';
 
 class file extends atoum\test
 {

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\file;
+namespace mageekguy\atoum\tests\units\mock\streams\fs\file;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock\streams\file\controller as testedClass
+	mageekguy\atoum\mock\streams\fs\file\controller as testedClass
 ;
 
-require_once __DIR__ . '/../../../../runner.php';
+require_once __DIR__ . '/../../../../../runner.php';
 
 class controller extends atoum\test
 {

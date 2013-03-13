@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\file;
+namespace mageekguy\atoum\mock\streams\fs\file;
 
 use
 	mageekguy\atoum\exceptions,
