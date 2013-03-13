@@ -51,7 +51,7 @@ class controller extends stream\controller
 	{
 		$this->exists = true;
 
-		return $this;
+		return $this->clearStat();
 	}
 
 	public function notExists()
