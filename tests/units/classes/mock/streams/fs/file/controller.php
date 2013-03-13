@@ -13,7 +13,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream\controller');
+		$this->testedClass->extends('mageekguy\atoum\mock\streams\fs\controller');
 	}
 
 	public function test__construct()
@@ -831,18 +831,6 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->dir_rewinddir())->isFalse()
-		;
-	}
-
-	public function testInvoke()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->exception(function() use ($controller, & $method) { $controller->invoke($method = uniqid(), array()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Method streamWrapper::' . $method . '() does not exist')
-				->boolean($controller->invoke('unlink', array(uniqid())))->isTrue()
 		;
 	}
 }
