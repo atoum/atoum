@@ -23,7 +23,7 @@ class controller extends atoum\test
 			->then
 				->string($controller->getContents())->isEmpty()
 				->integer($controller->getPointer())->isZero()
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->boolean($controller->stream_eof())->isFalse()
 				->array($controller->stream_stat())->isNotEmpty()
 		;
@@ -133,9 +133,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(200)
+				->integer($controller->getPermissions())->isEqualTo(200)
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(200)
+				->integer($controller->getPermissions())->isEqualTo(200)
 		;
 	}
 
@@ -145,15 +145,15 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 			->if($controller->isNotReadable())
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 		;
 	}
 
@@ -163,9 +163,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(444)
+				->integer($controller->getPermissions())->isEqualTo(444)
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(444)
+				->integer($controller->getPermissions())->isEqualTo(444)
 		;
 	}
 
@@ -176,9 +176,9 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->then
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(666)
+				->integer($controller->getPermissions())->isEqualTo(666)
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(666)
+				->integer($controller->getPermissions())->isEqualTo(666)
 		;
 	}
 
@@ -188,9 +188,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 				->object($controller->isExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 		;
 	}
 
@@ -201,9 +201,9 @@ class controller extends atoum\test
 			->and($controller->isExecutable())
 			->then
 				->object($controller->isNotExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isNotExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 		;
 	}
 
@@ -590,7 +590,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->stream_metadata(uniqid(), STREAM_META_ACCESS, 755))->isTrue()
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 		;
 	}
 
