@@ -3,20 +3,22 @@
 namespace mageekguy\atoum\mock\streams\fs;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\mock\stream
 ;
 
 class controller extends stream\controller
 {
+	protected $adapter = null;
 	protected $exists = true;
 	protected $stats = array();
 
-	public function __construct($path)
+	public function __construct($path, atoum\adapter $adapter = null)
 	{
 		parent::__construct($path);
 
-		$this->stats = array(
+		$this->setAdapter($adapter)->stats = array(
 			'dev' => 0,
 			'ino' => 0,
 			'mode' => 0,
@@ -45,6 +47,18 @@ class controller extends stream\controller
 		$this->stats[10] = & $this->stats['ctime'];
 		$this->stats[11] = & $this->stats['blksize'];
 		$this->stats[12] = & $this->stats['blocks'];
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
 	}
 
 	public function exists()
@@ -100,7 +114,12 @@ class controller extends stream\controller
 
 	public function getMode()
 	{
-		return (int) sprintf('%03o', $this->stats['mode'] & 07777);
+		return ($this->exists === false ? null : $this->stats['mode']);
+	}
+
+	public function getPermissions()
+	{
+		return ($this->exists === false ? null : (int) sprintf('%03o', $this->stats['mode'] & 07777));
 	}
 
 	public function duplicate()
@@ -120,7 +139,7 @@ class controller extends stream\controller
 
 	protected function clearStat()
 	{
-		clearstatcache(false, $this->getPath());
+		$this->adapter->clearstatcache(false, $this->getPath());
 
 		return $this;
 	}

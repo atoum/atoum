@@ -21,7 +21,8 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
+				->array($controller->getContents())->isEmpty()
 		;
 	}
 }

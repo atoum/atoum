@@ -20,4 +20,9 @@ class controller extends fs\controller
 	{
 		return parent::setMode(0400000 | octdec($mode));
 	}
+
+	public function getContents()
+	{
+		return array();
+	}
 }
