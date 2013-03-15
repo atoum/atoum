@@ -27,6 +27,35 @@ class controller extends atoum\test
 			->then
 				->integer($controller->getPermissions())->isZero()
 				->object($controller->getAdapter())->isEqualTo(new atoum\adapter())
+				->array($controller->getStat())->isEqualTo(array(
+						'dev' => 0,
+						'ino' => 0,
+						'mode' => 0,
+						'nlink' => 0,
+						'uid' => getmyuid(),
+						'gid' => getmygid(),
+						'rdev' => 0,
+						'size' => 0,
+						'atime' => 507769200,
+						'mtime' => 507769200,
+						'ctime' => 507769200,
+						'blksize' => 0,
+						'blocks' => 0,
+						0 => 0,
+						1 => 0,
+						2 => 0,
+						3 => 0,
+						4 => getmyuid(),
+						5 => getmygid(),
+						6 => 0,
+						7 => 0,
+						8 => 507769200,
+						9 => 507769200,
+						10 => 507769200,
+						11 => 0,
+						12 => 0
+					)
+				)
 		;
 	}
 
@@ -54,6 +83,18 @@ class controller extends atoum\test
 			->if($controller->notExists())
 			->then
 				->variable($controller->getPermissions())->isNull()
+		;
+	}
+
+	public function testSetPermissions()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->setAdapter($adapter = new atoum\test\adapter()))
+			->then
+				->object($controller->setPermissions($permissions = 444))->isIdenticalTo($controller)
+				->integer($controller->getPermissions())->isEqualTo((int) sprintf('%03o', $permissions & 07777))
+				->adapter($adapter)->call('clearstatcache')->withArguments(false, $controller->getPath())->once()
 		;
 	}
 
