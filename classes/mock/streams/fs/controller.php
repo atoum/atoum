@@ -119,13 +119,14 @@ class controller extends stream\controller
 	{
 		$controller = parent::duplicate();
 
-		$controller->stat = & $this->stat;
+		$controller->adapter = & $this->adapter;
 		$controller->exists = & $this->exists;
+		$controller->stat = & $this->stat;
 
 		return $controller;
 	}
 
-	public function stat()
+	public function getStat()
 	{
 		return ($this->exists === false ? false : $this->stat);
 	}

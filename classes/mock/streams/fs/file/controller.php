@@ -356,7 +356,7 @@ class controller extends fs\controller
 		{
 			return $this
 				->addCall(__FUNCTION__, array())
-				->stat()
+				->getStat()
 			;
 		}
 	}
@@ -414,7 +414,7 @@ class controller extends fs\controller
 		{
 			return $this
 				->addCall(__FUNCTION__, func_get_args())
-				->stat()
+				->getStat()
 			;
 
 		}
