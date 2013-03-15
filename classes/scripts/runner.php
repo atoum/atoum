@@ -271,7 +271,7 @@ class runner extends atoum\script
 		||  $this->promptChoice($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
 		{
 			$this->adapter->copy(
-				$resourceDirectory . '/configurations/runner/.atoum.php',
+				$resourceDirectory . '/configurations/runner/atoum.php.dist',
 				$file
 			);
 
@@ -283,7 +283,7 @@ class runner extends atoum\script
 		||  $this->promptChoice($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
 		{
 			$this->adapter->copy(
-				$resourceDirectory . '/configurations/runner/.bootstrap.php',
+				$resourceDirectory . '/configurations/runner/bootstrap.php.dist',
 				$file
 			);
 
