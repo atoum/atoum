@@ -13,12 +13,12 @@ class controller extends fs\controller
 	{
 		parent::__construct($path);
 
-		$this->setMode('755');
+		$this->setPermissions('755');
 	}
 
-	public function setMode($mode)
+	public function setPermissions($permissions)
 	{
-		return parent::setMode(0400000 | octdec($mode));
+		return parent::setPermissions(0400000 | octdec($permissions));
 	}
 
 	public function getContents()

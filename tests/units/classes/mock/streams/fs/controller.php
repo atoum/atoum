@@ -25,7 +25,6 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->integer($controller->getMode())->isZero()
 				->integer($controller->getPermissions())->isZero()
 				->object($controller->getAdapter())->isEqualTo(new atoum\adapter())
 		;
@@ -42,24 +41,6 @@ class controller extends atoum\test
 				->object($controller->getAdapter())
 					->isEqualTo(new atoum\adapter())
 					->isNotIdenticalTo($controller)
-		;
-	}
-
-	public function testGetMode()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->integer($controller->getMode())->isZero()
-			->if($controller->notExists())
-			->then
-				->variable($controller->getMode())->isNull()
-			->if($controller->setMode($mode = uniqid()))
-			->then
-				->variable($controller->getMode())->isNull()
-			->if($controller->exists())
-			->then
-				->string($controller->getMode())->isEqualTo($mode)
 		;
 	}
 
