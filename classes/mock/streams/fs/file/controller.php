@@ -17,7 +17,6 @@ class controller extends fs\controller
 	protected $offset = null;
 	protected $append = false;
 	protected $contents = '';
-	protected $stats = array();
 
 	public function __construct($path)
 	{
@@ -65,7 +64,7 @@ class controller extends fs\controller
 	public function setContents($contents)
 	{
 		$this->contents = $contents;
-		$this->stats['size'] = strlen($this->contents);
+		$this->stat['size'] = strlen($this->contents);
 
 		return $this->clearStat();
 	}
@@ -264,7 +263,7 @@ class controller extends fs\controller
 
 			$data = '';
 
-			$this->eof = ($this->pointer < 0 || $this->pointer >= $this->stats['size']);
+			$this->eof = ($this->pointer < 0 || $this->pointer >= $this->stat['size']);
 
 			if ($this->read === true && $this->pointer >= 0 && $this->eof === false)
 			{
@@ -332,17 +331,9 @@ class controller extends fs\controller
 			switch ($option)
 			{
 				case STREAM_META_TOUCH:
-					return true;
-
 				case STREAM_META_OWNER_NAME:
-					return true;
-
 				case STREAM_META_OWNER:
-					return true;
-
 				case STREAM_META_GROUP_NAME:
-					return true;
-
 				case STREAM_META_GROUP:
 					return true;
 

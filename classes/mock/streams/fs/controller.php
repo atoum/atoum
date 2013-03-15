@@ -12,13 +12,13 @@ class controller extends stream\controller
 {
 	protected $adapter = null;
 	protected $exists = true;
-	protected $stats = array();
+	protected $stat = array();
 
 	public function __construct($path, atoum\adapter $adapter = null)
 	{
 		parent::__construct($path);
 
-		$this->setAdapter($adapter)->stats = array(
+		$this->setAdapter($adapter)->stat = array(
 			'dev' => 0,
 			'ino' => 0,
 			'mode' => 0,
@@ -34,19 +34,19 @@ class controller extends stream\controller
 			'blocks' => 0
 		);
 
-		$this->stats[0] = & $this->stats['dev'];
-		$this->stats[1] = & $this->stats['ino'];
-		$this->stats[2] = & $this->stats['mode'];
-		$this->stats[3] = & $this->stats['nlink'];
-		$this->stats[4] = & $this->stats['uid'];
-		$this->stats[5] = & $this->stats['gid'];
-		$this->stats[6] = & $this->stats['rdev'];
-		$this->stats[7] = & $this->stats['size'];
-		$this->stats[8] = & $this->stats['atime'];
-		$this->stats[9] = & $this->stats['mtime'];
-		$this->stats[10] = & $this->stats['ctime'];
-		$this->stats[11] = & $this->stats['blksize'];
-		$this->stats[12] = & $this->stats['blocks'];
+		$this->stat[0] = & $this->stat['dev'];
+		$this->stat[1] = & $this->stat['ino'];
+		$this->stat[2] = & $this->stat['mode'];
+		$this->stat[3] = & $this->stat['nlink'];
+		$this->stat[4] = & $this->stat['uid'];
+		$this->stat[5] = & $this->stat['gid'];
+		$this->stat[6] = & $this->stat['rdev'];
+		$this->stat[7] = & $this->stat['size'];
+		$this->stat[8] = & $this->stat['atime'];
+		$this->stat[9] = & $this->stat['mtime'];
+		$this->stat[10] = & $this->stat['ctime'];
+		$this->stat[11] = & $this->stat['blksize'];
+		$this->stat[12] = & $this->stat['blocks'];
 	}
 
 	public function getAdapter()
@@ -107,26 +107,26 @@ class controller extends stream\controller
 
 	public function setMode($mode)
 	{
-		$this->stats['mode'] = $mode;
+		$this->stat['mode'] = $mode;
 
 		return $this;
 	}
 
 	public function getMode()
 	{
-		return ($this->exists === false ? null : $this->stats['mode']);
+		return ($this->exists === false ? null : $this->stat['mode']);
 	}
 
 	public function getPermissions()
 	{
-		return ($this->exists === false ? null : (int) sprintf('%03o', $this->stats['mode'] & 07777));
+		return ($this->exists === false ? null : (int) sprintf('%03o', $this->stat['mode'] & 07777));
 	}
 
 	public function duplicate()
 	{
 		$controller = parent::duplicate();
 
-		$controller->stats = & $this->stats;
+		$controller->stat = & $this->stat;
 		$controller->exists = & $this->exists;
 
 		return $controller;
@@ -134,7 +134,7 @@ class controller extends stream\controller
 
 	protected function stat()
 	{
-		return ($this->exists === false ? false : $this->stats);
+		return ($this->exists === false ? false : $this->stat);
 	}
 
 	protected function clearStat()
@@ -146,14 +146,14 @@ class controller extends stream\controller
 
 	protected function addPermission($permissions)
 	{
-		$this->stats['mode'] = $this->stats['mode'] | $permissions;
+		$this->stat['mode'] = $this->stat['mode'] | $permissions;
 
 		return $this->clearStat();
 	}
 
 	protected function removePermissions($permissions)
 	{
-		$this->stats['mode'] = $this->stats['mode'] & ~ $permissions;
+		$this->stat['mode'] = $this->stat['mode'] & ~ $permissions;
 
 		return $this->clearStat();
 	}
@@ -170,14 +170,14 @@ class controller extends stream\controller
 
 	protected function checkPermission($user, $group, $other)
 	{
-		$permissions = $this->stats['mode'] & 07777;
+		$permissions = $this->stat['mode'] & 07777;
 
 		switch (true)
 		{
-			case getmyuid() === $this->stats['uid']:
+			case getmyuid() === $this->stat['uid']:
 				return ($permissions & $user) > 0;
 
-			case getmygid() === $this->stats['gid']:
+			case getmygid() === $this->stat['gid']:
 				return ($permissions & $group) > 0;
 
 			default:
