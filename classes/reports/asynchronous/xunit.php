@@ -101,7 +101,7 @@ class xunit extends atoum\reports\asynchronous
 
 				$testSuite->setAttribute('name', $clname);
 				$testSuite->setAttribute('package', $package);
-				$testSuite->setAttribute('tests', sizeof($class['durations']) + ($fails = sizeof($class['fails']) + sizeof($class['uncomplete'])) + ($errors = sizeof($class['excepts']) + sizeof($class['errors'])) + sizeof($class['skipped']));
+				$testSuite->setAttribute('tests', sizeof($class['durations']) + ($fails = sizeof($class['fails'])) + ($errors = sizeof($class['excepts']) + sizeof($class['errors']) + sizeof($class['uncomplete'])) + sizeof($class['skipped']));
 				$testSuite->setAttribute('failures', $fails);
 				$testSuite->setAttribute('errors', $errors);
 				$testSuite->setAttribute('skipped', sizeof($class['skipped']));
@@ -126,6 +126,15 @@ class xunit extends atoum\reports\asynchronous
 					$xError->appendChild($document->createCDATASection($error['message']));
 				}
 
+				foreach ($class['uncomplete'] as $uncomplete)
+				{
+					$testCase = static::getTestCase($document, $testSuite, $name, $uncomplete['method'], 0, null);
+					$testCase->appendChild($xFail = $document->createElement('error'));
+
+					$xFail->setAttribute('type', $uncomplete['exitCode']);
+					$xFail->appendChild($document->createCDATASection($uncomplete['output']));
+				}
+
 				foreach ($class['fails'] as $fail)
 				{
 					$testCase = static::getTestCase($document, $testSuite, $name, $fail['method'], 0, $fail['file']);
@@ -144,17 +153,6 @@ class xunit extends atoum\reports\asynchronous
 
 					$xError->setAttribute('type', 'Exception');
 					$xError->appendChild($document->createCDATASection($exc['value']));
-				}
-
-				foreach ($class['uncomplete'] as $uncomplete)
-				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $uncomplete['method'], 0, null);
-					$testCase->appendChild($xFail = $document->createElement('failure'));
-
-					$xFail->setAttribute('type', 'Uncomplete');
-					$xFail->setAttribute('message', $uncomplete['exitCode']);
-
-					$xFail->appendChild($document->createCDATASection($uncomplete['output']));
 				}
 
 				foreach ($class['skipped'] as $skipped)
