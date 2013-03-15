@@ -237,21 +237,8 @@ class script extends atoum\test
 		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->once()
 
 			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets = function() use(&$choices, &$input)
-				{
-					static $cpt = 0;
-					$cpt++;
-
-					if($cpt === 1)
-					{
-						return uniqid();
-					}
-					else
-					{
-						return $input = $choices[array_rand($choices)];
-					}
-				}
-			)
+			->and($adapter->fgets[1] = uniqid())
+			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices))
@@ -279,21 +266,8 @@ class script extends atoum\test
 		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
 
 			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets = function() use(&$choices, &$input)
-				{
-					static $cpt = 0;
-					$cpt++;
-
-					if($cpt === 1)
-					{
-						return uniqid();
-					}
-					else
-					{
-						return $input = $choices[array_rand($choices)];
-					}
-				}
-			)
+			->and($adapter->fgets[1] = uniqid())
+			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))

@@ -340,9 +340,9 @@ class runner extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to write in \'' . $cwd . '\' directory')
 
- 			->if($adapter->resetCalls())
+			->if($adapter->resetCalls())
 			->and($adapter->is_writable = true)
- 			->and($adapter->file_exists = false)
+			->and($adapter->file_exists = false)
 			->and($adapter->copy = function() use($runner) { return $runner; })
 			->and($stdOut = new \mock\mageekguy\atoum\writers\std\out())
 			->and($stdOut->getMockController()->write = function() {})
