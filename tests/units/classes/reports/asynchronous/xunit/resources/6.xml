@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <testsuites name="atoum testsuite">
-  <testsuite name="class" package="class" tests="1" failures="0" errors="0" skipped="0" time="1">
+  <testsuite name="class" package="class" tests="3" failures="1" errors="0" skipped="1" time="1">
     <testcase name="method" time="1" file="file" classname="class"/>
+    <testcase name="otherMethod" time="0" file="" classname="class">
+      <failure type="Uncomplete" message="1"><![CDATA[output]]></failure>
+    </testcase>
+    <testcase name="thirdMethod" time="0" file="" classname="class">
+      <skipped type="Skipped"><![CDATA[message]]></skipped>
+    </testcase>
   </testsuite>
   <testsuite name="thirdClass" package="package" tests="1" failures="0" errors="1" skipped="0" time="0">
     <testcase name="fourthMethod" time="0" file="thirdFile" classname="package\thirdClass">
