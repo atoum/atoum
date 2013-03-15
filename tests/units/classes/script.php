@@ -172,7 +172,7 @@ class script extends atoum\test
 			->and($adapter->fgets = $input = uniqid())
 			->and($script = new mock\script(uniqid(), $adapter))
 			->and($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script->setOutputWriter($stdOut))
 			->then
 				->string($script->prompt($message = uniqid()))->isEqualTo($input)
@@ -189,11 +189,125 @@ class script extends atoum\test
 		;
 	}
 
+	public function testPromptChoice()
+	{
+		if (defined('STDIN') === false)
+		{
+			define('STDIN', rand(1, PHP_INT_MAX));
+		}
+
+		$generateRandomChoice = function()
+		{
+			$choices = array();
+
+			$length = rand(3, 10);
+
+			for($i = 0; $i < $length; $i++)
+			{
+				$choices[] = uniqid();
+			}
+
+			return $choices;
+		};
+
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($adapter->fgets = uniqid())
+			->and($script = new mock\script(uniqid(), $adapter))
+			->and($stdOut = new mock\writers\std\out())
+			->and($stdOut->getMockController()->write = function() {})
+			->and($script->setOutputWriter($stdOut))
+				->exception(
+					function() use($script)
+					{
+						$script->promptChoice(uniqid(), array());
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('You must specify at least one choice to use \'mageekguy\\atoum\\script::promptChoice\'')
+
+
+			->if($choices = $generateRandomChoice())
+			->and($adapter->fgets = $input = $choices[array_rand($choices)])
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->string($script->promptChoice($message = uniqid(), $choices))
+			 		->isEqualTo($input)
+		 		->mock($stdOut)->call('write')
+		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->once()
+
+			->if($choices = $generateRandomChoice())
+			->and($adapter->fgets = function() use(&$choices, &$input)
+				{
+					static $cpt = 0;
+					$cpt++;
+
+					if($cpt === 1)
+					{
+						return uniqid();
+					}
+					else
+					{
+						return $input = $choices[array_rand($choices)];
+					}
+				}
+			)
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->string($script->promptChoice($message = uniqid(), $choices))
+			 		->isEqualTo($input)
+		 		->mock($stdOut)->call('write')
+		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->twice(2)
+
+
+			->if($choices = $generateRandomChoice())
+			->and($adapter->fgets = '')
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
+			 		->isEqualTo($default)
+		 		->mock($stdOut)->call('write')
+		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
+
+			->if($choices = $generateRandomChoice())
+			->and($adapter->fgets = $input = $choices[array_rand($choices)])
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
+			 		->isEqualTo($input)
+		 		->mock($stdOut)->call('write')
+		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
+
+ 			->if($choices = $generateRandomChoice())
+			->and($adapter->fgets = function() use(&$choices, &$input)
+				{
+					static $cpt = 0;
+					$cpt++;
+
+					if($cpt === 1)
+					{
+						return uniqid();
+					}
+					else
+					{
+						return $input = $choices[array_rand($choices)];
+					}
+				}
+			)
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
+			 		->isEqualTo($input)
+		 		->mock($stdOut)->call('write')
+		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->twice()
+		;
+	}
+
 	public function testWriteMessage()
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -221,7 +335,7 @@ class script extends atoum\test
 		$this
 			->if($locale = new mock\locale())
 			->and($stderr = new mock\writers\std\err())
-			->and($stderr->getMockCOntroller()->write = function() {})
+			->and($stderr->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setErrorWriter($stderr))
 			->and($script->setLocale($locale))
@@ -245,7 +359,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -258,7 +372,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -281,7 +395,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then

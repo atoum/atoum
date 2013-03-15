@@ -178,6 +178,31 @@ abstract class script
 		return trim($this->adapter->fgets(STDIN));
 	}
 
+	public function promptChoice($message, array $choices, $default = null)
+	{
+		if(!sizeof($choices))
+		{
+			throw new exceptions\runtime('You must specify at least one choice to use \'' . __METHOD__ . '\'');
+		}
+
+		$message .= ' (' . implode($choices, '/') . ')';
+
+		if($default !== null)
+		{
+			$message .= ' [' . $default . ']';
+		}
+
+		$message .= ' ';
+
+		do
+		{
+			$choice = $this->prompt($message);
+		}
+		while(!(in_array($choice, $choices) || $default !== null && $choice === ''));
+
+		return $choice === '' ? (string) $default : $choice;
+	}
+
 	public function writeMessage($message, $eol = true)
 	{
 		$message = rtrim($message);
