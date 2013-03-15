@@ -278,7 +278,7 @@ class script extends atoum\test
 		 		->mock($stdOut)->call('write')
 		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
 
- 			->if($choices = $generateRandomChoice())
+			->if($choices = $generateRandomChoice())
 			->and($adapter->fgets = function() use(&$choices, &$input)
 				{
 					static $cpt = 0;

@@ -261,7 +261,7 @@ class runner extends atoum\script
 
 		if(!$this->adapter->is_writable($cwd))
 		{
-			throw new exceptions\runtime('Unable to write in \'' . $cwd . '\' directory');
+			throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $cwd . '\' directory'));
 		}
 
 		$resourceDirectory = $this->getResourcesDirectory();
