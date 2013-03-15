@@ -65,14 +65,14 @@ class controller extends stream\controller
 	{
 		$this->exists = true;
 
-		return $this->clearStat();
+		return $this->clearStatCache();
 	}
 
 	public function notExists()
 	{
 		$this->exists = false;
 
-		return $this->clearStat();
+		return $this->clearStatCache();
 	}
 
 	public function isNotReadable()
@@ -105,16 +105,9 @@ class controller extends stream\controller
 		return $this->addPermission(0111);
 	}
 
-	public function setMode($mode)
+	public function setPermissions($permissions)
 	{
-		$this->stat['mode'] = $mode;
-
-		return $this;
-	}
-
-	public function getMode()
-	{
-		return ($this->exists === false ? null : $this->stat['mode']);
+		return $this->setStat('mode', $permissions);
 	}
 
 	public function getPermissions()
@@ -132,12 +125,24 @@ class controller extends stream\controller
 		return $controller;
 	}
 
-	protected function stat()
+	public function stat()
 	{
 		return ($this->exists === false ? false : $this->stat);
 	}
 
-	protected function clearStat()
+	protected function setStat($name, $value)
+	{
+		if (isset($this->stat[$name]) === true)
+		{
+			$this->stat[$name] = $value;
+
+			$this->clearStatCache();
+		}
+
+		return $this;
+	}
+
+	protected function clearStatCache()
 	{
 		$this->adapter->clearstatcache(false, $this->getPath());
 
@@ -146,16 +151,12 @@ class controller extends stream\controller
 
 	protected function addPermission($permissions)
 	{
-		$this->stat['mode'] = $this->stat['mode'] | $permissions;
-
-		return $this->clearStat();
+		return $this->setStat('mode', $this->stat['mode'] | $permissions);
 	}
 
 	protected function removePermissions($permissions)
 	{
-		$this->stat['mode'] = $this->stat['mode'] & ~ $permissions;
-
-		return $this->clearStat();
+		return $this->setStat('mode', $this->stat['mode'] & ~ $permissions);
 	}
 
 	protected function checkIfReadable()

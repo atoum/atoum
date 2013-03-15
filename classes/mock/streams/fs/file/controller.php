@@ -22,7 +22,7 @@ class controller extends fs\controller
 	{
 		parent::__construct($path);
 
-		$this->setMode('644');
+		$this->setPermissions('644');
 	}
 
 	public function __set($method, $value)
@@ -51,9 +51,9 @@ class controller extends fs\controller
 		return $controller;
 	}
 
-	public function setMode($mode)
+	public function setPermissions($permissions)
 	{
-		return parent::setMode(0100000 | octdec($mode));
+		return parent::setPermissions(0100000 | octdec($permissions));
 	}
 
 	public function getPointer()
@@ -64,9 +64,8 @@ class controller extends fs\controller
 	public function setContents($contents)
 	{
 		$this->contents = $contents;
-		$this->stat['size'] = strlen($this->contents);
 
-		return $this->clearStat();
+		return $this->setStat('size', strlen($this->contents));
 	}
 
 	public function getContents()
@@ -338,7 +337,7 @@ class controller extends fs\controller
 					return true;
 
 				case STREAM_META_ACCESS:
-					$this->setMode($value);
+					$this->setPermissions($value);
 					return true;
 
 				default:

@@ -64,7 +64,7 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->and($controller->isNotExecutable())
 			->then
-				->integer($duplicatedController->getMode())->isEqualTo($controller->getMode())
+				->integer($duplicatedController->getPermissions())->isEqualTo($controller->getPermissions())
 			->if($controller->notExists())
 			->then
 				->boolean($duplicatedController->stream_stat())->isEqualTo($controller->stream_stat())
