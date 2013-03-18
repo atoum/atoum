@@ -310,7 +310,16 @@ class controller extends atoum\test
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEmpty()
 					->integer($controller->stream_write('a'))->isEqualTo(1)
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'w', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'w+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'w', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
@@ -346,7 +355,16 @@ class controller extends atoum\test
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEqualTo('a')
 					->integer($controller->stream_write('a'))->isEqualTo(1)
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'c', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'c+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'c', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
@@ -373,7 +391,6 @@ class controller extends atoum\test
 					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'c')
 					->integer($controller->stream_write('d'))->isEqualTo(1)
 					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'cd')
-
 					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEqualTo('a')
@@ -395,7 +412,16 @@ class controller extends atoum\test
 					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'B')
 					->integer($controller->stream_write('C'))->isEqualTo(1)
 					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'BC')
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'a', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'a', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
