@@ -803,7 +803,8 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->boolean($controller->dir_opendir(uniqid(), STREAM_MKDIR_RECURSIVE))->isFalse()
+				->boolean($controller->dir_opendir(uniqid(), 0x00))->isFalse()
+				->boolean($controller->dir_opendir(uniqid(), 0x04))->isFalse()
 		;
 	}
 
