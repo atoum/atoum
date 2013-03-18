@@ -8,41 +8,40 @@
 		<link rel="stylesheet" media="screen" type="text/css" href="<tpl:relativeRootUrl />screen.css" title="Screen" />
 	</head>
 	<body>
-        <div id="header">
-            <img id="logo" src="http://docs.atoum.org/fr/images/logo.png"/>
-            <div id="title">
-                <h1>Code coverage of <a href="<tpl:relativeRootUrl />"><tpl:projectName /></a>: <tpl:className /></h1>
-                <h2>
-                    Class code coverage
-                    <tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable>
-                    <tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable>
-                </h2>
-            </div>
-        </div>
+		<div id="header">
+			<h1>Code coverage of <a href="<tpl:relativeRootUrl />"><tpl:projectName /></a>: <tpl:className /></h1>
+			<h2>
+				Class code coverage
+				<span>
+					<tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable>
+					<tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable>
+				</span>
+			</h2>
+		</div>
 
 		<div id="page">
 			<div id="content">
-                <h3>Methods</h3>
+				<h3>Methods</h3>
 				<ul class="summary">
 					<tpl:methods>
-                        <tpl:method>
-                            <li>
-                                <tpl:methodCoverageUnavailable>
-                                    <div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>
-                                </tpl:methodCoverageUnavailable>
-                                <tpl:methodCoverageAvailable>
-                                    <div class="bar">
-                                        <div class="background"></div>
-                                        <div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
-                                        <div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
-                                    </div>
-                                </tpl:methodCoverageAvailable>
-                            </li>
-                        </tpl:method>
+						<tpl:method>
+							<li>
+								<tpl:methodCoverageUnavailable>
+									<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span>n/a</span></div>
+								</tpl:methodCoverageUnavailable>
+								<tpl:methodCoverageAvailable>
+									<div class="bar">
+										<div class="background"></div>
+										<div class="graph" style="width: <tpl:methodCoverageValue />%"></div>
+										<div class="label"><a href="#<tpl:methodName />"><tpl:methodName /></a> <span><tpl:methodCoverageValue />%</span></div>
+									</div>
+								</tpl:methodCoverageAvailable>
+							</li>
+						</tpl:method>
 					</tpl:methods>
 				</ul>
 
-                <h3>Source</h3>
+				<h3>Source</h3>
 				<table cellpadding="0" cellspacing="0" class="source">
 					<tr><th class="number">Line</th><th>Code</th></tr>
 					<tpl:sourceFile>
@@ -52,6 +51,10 @@
 					</tpl:sourceFile>
 				</table>
 			</div>
+		</div>
+
+		<div id="footer">
+			<p>Code coverage report powered by <a href="http://atoum.org">atoum</a></p>
 		</div>
 	</body>
 </html>

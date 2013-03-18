@@ -1,27 +1,25 @@
 * {margin: 0; padding: 0; font-family:verdana,arial,helvetica,sans-serif;}
-body {font-size: 13px;}
+body {font-size: 13px; min-width: 500px;}
 a {color: #155EA8; text-decoration: none;}
 a:visited {color: #74bff9;}
 a:hover {color: #3d91e7;}
-#header {z-index: 1; padding: 0 0 0 2em; background-color: #3d91e7; border-bottom: 10px solid #74bff9; box-shadow: 0 5px 10px #aaa;}
+#header {z-index: 1; padding: 0 10px 0 100px; min-height: 80px; background-color: #3d91e7; border-bottom: 10px solid #74bff9; box-shadow: 0 5px 10px #aaa; background-size:80px 60px; background-position: 10px 10px; background-repeat:no-repeat; background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALAAAACQCAMAAACfxRFaAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAABhQTFRFAAAAdL/5wrS0PZHnwdPyWlpa////////o/eTdwAAAAh0Uk5T/////////wDeg71ZAAABLklEQVR42uzaUa6CMBBAUZSn7n/HTxNITFNwSkEae+5nE+X4MalpGR5Tw9SjsVLXAAwMDPxj4LRWwYsBAwMD/wj4/uz6rBX47HiZXjZgYGDgXsBzw8m9W4CBgYF7BEebP//3oRwkGjDwt8CXhYCBWwTnhm0NXDN8wMAR8K2wyLCtDd/W5wEDp+DwSXdSZNgiwxdt8SYUGLgGfNkWMPAR4NKD5r3Axc8HBgYG7hT8aeOY11Ncbj23cQADAwMDr0PHqb3B6fcCAwMDA8deOD7qIAUYGBgY2MkPcEfgHS4WgYHPAte+4AEMDAwMvA2c20C+8acHGPhI8BgMGLhF8FgYMHCr4KUfsPXyBRj4LHB0DRjYxgEMXAcuhddCgYGBgYHLDrprD66BgYGBOwH/CzAA6hWUSCPTAz8AAAAASUVORK5CYII=);}
 #header:after {clear: both;}
 #header:before, #header:after {content: " "; display: table;}
 #header a {color: #74bff9;}
-#header a:hover {color: #155EA8;}
-#logo {float: left; height: 50px; margin: 10px;}
-#title { float: left; }
-h1 {font-size: 18px; font-weight: bold; margin: 0.5em 0; color: #fff;}
-h2 {font-size: 14px; font-weight: bold; margin: 0.5em 0; color: #fff;}
+#header a:hover {color: #fff;}
+h1 {font-size: 18px; font-weight: bold; margin: 0.5em 0; color: #fff; float: left;}
+h2 {font-size: 14px; font-weight: bold; margin: 2.5em 0 0.5em 0; color: #fff; float: right;}
+h2 span {font-size: 30px;}
+h3 {font-size: 1.2em; margin: 0.5em 0;}
 #page, #footer {margin: 2em;}
 #footer {text-align: right; color:#74bff9;}
-h3 {font-size: 1.2em; margin: 0.5em 0;}
 .summary {margin: 1em 0 0 0; border: solid 1px #ddd;}
 table {width: 100%; border-collapse: collapse; table-layout: fixed;}
 th, td {padding: 0.2em; border: solid 1px #eee;}
 th {color: #fff; background: #3d91e7;}
 td.bar {padding: 0.2em;}
 td.date {text-align: right;}
-
 div.bar {position: relative; width: 100%; height: 30px; padding: 0;}
 div.bar div.label {position: absolute; top: 0; left: 0; background: none; padding: 6px 0 2px 4px;}
 div.bar div.graph {position: absolute; top: 0; left: 0; background: #8eff9b; height: 30px;}
@@ -33,3 +31,7 @@ table.source td {overflow: hidden; width: 100%;}
 table.source td.number {width: 4em; text-align: right; background: #ddd;}
 table.source tr.notCovered td {background: #ff8c76;}
 table.source tr.covered td {background: #8eff9b;}
+@media (max-width: 900px) {
+    h1 {clear: both;}
+    h2 span {font-size: 20px;}
+}
