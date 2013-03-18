@@ -66,4 +66,24 @@ class controller extends atoum\test
 				->integer($controller->getPermissions())->isEqualTo(0777)
 		;
 	}
+
+	public function testRmdir()
+	{
+		$this
+			->if($controller = new testedClass(uniqid()))
+			->and($controller->exists())
+			->then
+				->boolean($controller->rmdir(uniqid(), STREAM_MKDIR_RECURSIVE))->isTrue()
+				->variable($controller->getPermissions())->isNull()
+			->if($controller->exists())
+			->and($controller->isNotWritable())
+			->then
+				->boolean($controller->rmdir(uniqid(), STREAM_MKDIR_RECURSIVE))->isFalse()
+				->integer($controller->getPermissions())->isNotNull()
+			->if($controller->notExists())
+			->then
+				->boolean($controller->rmdir(uniqid(), STREAM_MKDIR_RECURSIVE))->isFalse()
+				->variable($controller->getPermissions())->isNull()
+		;
+	}
 }
