@@ -232,19 +232,23 @@ class script extends atoum\test
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices))
-			 		->isEqualTo($input)
-		 		->mock($stdOut)->call('write')
-		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->once()
+					->isEqualTo($input)
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->once()
+		;
 
+		unset($adapter->fgets);
+
+		$this
 			->if($choices = $generateRandomChoice())
 			->and($adapter->fgets[1] = uniqid())
 			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices))
-			 		->isEqualTo($input)
-		 		->mock($stdOut)->call('write')
-		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->twice(2)
+					->isEqualTo($input)
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->twice()
 
 
 			->if($choices = $generateRandomChoice())
@@ -252,28 +256,32 @@ class script extends atoum\test
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-			 		->isEqualTo($default)
-		 		->mock($stdOut)->call('write')
-		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
+					->isEqualTo($default)
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
 
 			->if($choices = $generateRandomChoice())
 			->and($adapter->fgets = $input = $choices[array_rand($choices)])
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-			 		->isEqualTo($input)
-		 		->mock($stdOut)->call('write')
-		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
+					->isEqualTo($input)
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
+		;
 
+		unset($adapter->fgets);
+
+		$this
 			->if($choices = $generateRandomChoice())
 			->and($adapter->fgets[1] = uniqid())
 			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
 			->and($stdOut->getMockController()->resetCalls())
 			->then
 				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-			 		->isEqualTo($input)
-		 		->mock($stdOut)->call('write')
-		 			->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->twice()
+					->isEqualTo($input)
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->twice()
 		;
 	}
 
