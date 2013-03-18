@@ -24,12 +24,12 @@ class directory extends atoum\test
 			->and($directory->notExists())
 			->then
 				->boolean(mkdir($directory, 0777))->isTrue()
-				->integer((int) sprintf('%o', fileperms($directory)))->isEqualTo(0777)
+				->integer((int) decoct(fileperms($directory)))->isEqualTo(0777)
 				->boolean(mkdir($directory, 0777))->isFalse()
 			->if($directory->notExists())
 			->then
 				->boolean(mkdir($directory, 0007))->isTrue()
-				->integer((int) sprintf('%o', fileperms($directory)))->isEqualTo(0007)
+				->integer((int) decoct(fileperms($directory)))->isEqualTo(0007)
 		;
 	}
 }
