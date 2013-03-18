@@ -40,6 +40,20 @@ class controller extends fs\controller
 		}
 	}
 
+	public function rmdir($path, $options)
+	{
+		if ($this->exists === false || $this->checkIfWritable() === false)
+		{
+			return false;
+		}
+		else
+		{
+			$this->exists = false;
+
+			return true;
+		}
+	}
+
 	public function dir_opendir($path, $useSafeMode)
 	{
 		return $this->exists;
