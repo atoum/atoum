@@ -346,21 +346,6 @@ class controller extends fs\controller
 		}
 	}
 
-	public function stream_stat()
-	{
-		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
-		{
-			return $this->invoke(__FUNCTION__, array());
-		}
-		else
-		{
-			return $this
-				->addCall(__FUNCTION__, array())
-				->getStat()
-			;
-		}
-	}
-
 	public function stream_truncate($newSize)
 	{
 		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
@@ -401,22 +386,6 @@ class controller extends fs\controller
 			$this->addCall(__FUNCTION__, array());
 
 			return true;
-		}
-	}
-
-	public function url_stat($path, $flags)
-	{
-		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
-		{
-			return $this->invoke(__FUNCTION__, func_get_args());
-		}
-		else
-		{
-			return $this
-				->addCall(__FUNCTION__, func_get_args())
-				->getStat()
-			;
-
 		}
 	}
 

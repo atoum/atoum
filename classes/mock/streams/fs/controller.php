@@ -131,6 +131,36 @@ class controller extends stream\controller
 		return ($this->exists === false ? false : $this->stat);
 	}
 
+	public function stream_stat()
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return $this->invoke(__FUNCTION__, array());
+		}
+		else
+		{
+			return $this
+				->addCall(__FUNCTION__, array())
+				->getStat()
+			;
+		}
+	}
+
+	public function url_stat($path, $flags)
+	{
+		if ($this->nextCallIsOverloaded(__FUNCTION__) === true)
+		{
+			return $this->invoke(__FUNCTION__, func_get_args());
+		}
+		else
+		{
+			return $this
+				->addCall(__FUNCTION__, func_get_args())
+				->getStat()
+			;
+		}
+	}
+
 	protected function setStat($name, $value)
 	{
 		if (isset($this->stat[$name]) === true)

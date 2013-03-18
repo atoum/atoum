@@ -25,4 +25,28 @@ class controller extends fs\controller
 	{
 		return array();
 	}
+
+	public function mkdir($path, $mode, $options)
+	{
+		if ($this->exists === true)
+		{
+			return false;
+		}
+		else
+		{
+			$this->setPermissions($mode)->exists = true;
+
+			return true;
+		}
+	}
+
+	public function dir_opendir($path, $useSafeMode)
+	{
+		return $this->exists;
+	}
+
+	public function dir_closedir()
+	{
+		return $this->exists;
+	}
 }
