@@ -60,7 +60,7 @@ abstract class image extends notifier
 		try {
 			return parent::__toString();
 		} catch(exceptions\runtime $exception) {
-			return $exception->getMessage();
+			return $exception->getMessage() . PHP_EOL;
 		}
 	}
 }
