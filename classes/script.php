@@ -19,6 +19,7 @@ abstract class script
 	protected $adapter = null;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
+	protected $prompt = null;
 
 	private $help = array();
 	private $argumentsParser = null;
@@ -33,6 +34,7 @@ abstract class script
 			->setArgumentsParser()
 			->setOutputWriter()
 			->setErrorWriter()
+			->setPrompt()
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -108,6 +110,18 @@ abstract class script
 		return $this->errorWriter;
 	}
 
+	public function setPrompt(script\prompt $prompt = null)
+	{
+		$this->prompt = $prompt ?: new script\prompt();
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
+
 	public function getName()
 	{
 		return $this->name;
@@ -169,38 +183,6 @@ abstract class script
 		$this->argumentsParser->parse($this, $arguments);
 
 		return $this;
-	}
-
-	public function prompt($message)
-	{
-		$this->outputWriter->write(rtrim($message));
-
-		return trim($this->adapter->fgets(STDIN));
-	}
-
-	public function promptChoice($message, array $choices, $default = null)
-	{
-		if(!sizeof($choices))
-		{
-			throw new exceptions\runtime('You must specify at least one choice to use \'' . __METHOD__ . '\'');
-		}
-
-		$message .= ' (' . implode($choices, '/') . ')';
-
-		if($default !== null)
-		{
-			$message .= ' [' . $default . ']';
-		}
-
-		$message .= ' ';
-
-		do
-		{
-			$choice = $this->prompt($message);
-		}
-		while(!(in_array($choice, $choices) || $default !== null && $choice === ''));
-
-		return $choice === '' ? (string) $default : $choice;
 	}
 
 	public function writeMessage($message, $eol = true)

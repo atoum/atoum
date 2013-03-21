@@ -99,6 +99,16 @@ class script extends atoum\test
 		;
 	}
 
+	public function testSetPrompt()
+	{
+		$this
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->object($script->setPrompt($prompt = new atoum\script\prompt()))->isIdenticalTo($script)
+				->object($script->getPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
 	public function testAddArgumentHandler()
 	{
 		$this
@@ -157,131 +167,6 @@ class script extends atoum\test
 				->adapter($adapter)->call('ini_set')->withArguments('log_errors_max_len', 0)->once()
 				->adapter($adapter)->call('ini_set')->withArguments('log_errors', 'Off')->once()
 				->adapter($adapter)->call('ini_set')->withArguments('display_errors', 'stderr')->once()
-		;
-	}
-
-	public function testPrompt()
-	{
-		if (defined('STDIN') === false)
-		{
-			define('STDIN', rand(1, PHP_INT_MAX));
-		}
-
-		$this
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->fgets = $input = uniqid())
-			->and($script = new mock\script(uniqid(), $adapter))
-			->and($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockController()->write = function() {})
-			->and($script->setOutputWriter($stdOut))
-			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-				->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(2)
-			->if($adapter->fgets = ' ' . ($input = uniqid()) . "\t")
-			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(3)
-		;
-	}
-
-	public function testPromptChoice()
-	{
-		if (defined('STDIN') === false)
-		{
-			define('STDIN', rand(1, PHP_INT_MAX));
-		}
-
-		$generateRandomChoice = function()
-		{
-			$choices = array();
-
-			$length = rand(3, 10);
-
-			for($i = 0; $i < $length; $i++)
-			{
-				$choices[] = uniqid();
-			}
-
-			return $choices;
-		};
-
-		$this
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->fgets = uniqid())
-			->and($script = new mock\script(uniqid(), $adapter))
-			->and($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockController()->write = function() {})
-			->and($script->setOutputWriter($stdOut))
-				->exception(
-					function() use($script)
-					{
-						$script->promptChoice(uniqid(), array());
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('You must specify at least one choice to use \'mageekguy\\atoum\\script::promptChoice\'')
-
-
-			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets = $input = $choices[array_rand($choices)])
-			->and($stdOut->getMockController()->resetCalls())
-			->then
-				->string($script->promptChoice($message = uniqid(), $choices))
-					->isEqualTo($input)
-				->mock($stdOut)->call('write')
-					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->once()
-		;
-
-		unset($adapter->fgets);
-
-		$this
-			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets[1] = uniqid())
-			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
-			->and($stdOut->getMockController()->resetCalls())
-			->then
-				->string($script->promptChoice($message = uniqid(), $choices))
-					->isEqualTo($input)
-				->mock($stdOut)->call('write')
-					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ')')->twice()
-
-
-			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets = '')
-			->and($stdOut->getMockController()->resetCalls())
-			->then
-				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-					->isEqualTo($default)
-				->mock($stdOut)->call('write')
-					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
-
-			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets = $input = $choices[array_rand($choices)])
-			->and($stdOut->getMockController()->resetCalls())
-			->then
-				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-					->isEqualTo($input)
-				->mock($stdOut)->call('write')
-					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->once()
-		;
-
-		unset($adapter->fgets);
-
-		$this
-			->if($choices = $generateRandomChoice())
-			->and($adapter->fgets[1] = uniqid())
-			->and($adapter->fgets[2] = $input = $choices[array_rand($choices)])
-			->and($stdOut->getMockController()->resetCalls())
-			->then
-				->string($script->promptChoice($message = uniqid(), $choices, $default = $choices[array_rand($choices)]))
-					->isEqualTo($input)
-				->mock($stdOut)->call('write')
-					->withIdenticalArguments($message . ' (' . implode($choices, '/') . ') [' . $default . ']')->twice()
 		;
 	}
 

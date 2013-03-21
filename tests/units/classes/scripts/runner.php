@@ -328,7 +328,15 @@ class runner extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($runner = new scripts\runner($name = uniqid(), $adapter))
-			->and($adapter->getcwd = $cwd = '/tmp')
+			->and($runner->getPrompt()->setAdapter($adapter))
+			->and($stdOut = new \mock\mageekguy\atoum\writers\std\out())
+			->and($runner->setOutputWriter($stdOut))
+			->and($runner->getPrompt()->setOutputWriter($stdOut))
+			->then
+				->object($runner->getPrompt()->getAdapter())->isIdenticalTo($adapter)
+				->object($runner->getPrompt()->getOutputWriter())->isIdenticalTo($stdOut)
+
+			->if($adapter->getcwd = $cwd = '/tmp')
 			->and($adapter->is_writable = false)
 			->then
 				->exception(
@@ -344,9 +352,7 @@ class runner extends atoum\test
 			->and($adapter->is_writable = true)
 			->and($adapter->file_exists = false)
 			->and($adapter->copy = function() use($runner) { return $runner; })
-			->and($stdOut = new \mock\mageekguy\atoum\writers\std\out())
 			->and($stdOut->getMockController()->write = function() {})
-			->and($runner->setOutputWriter($stdOut))
 			->then
 				->object($runner->init())
 					->isIdenticalTo($runner)

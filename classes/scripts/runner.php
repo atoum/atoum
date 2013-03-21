@@ -268,7 +268,7 @@ class runner extends atoum\script
 
 		$file = $cwd . '/.atoum.php';
 		if(!$this->adapter->file_exists($file)
-		||  $this->promptChoice($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
+		||  $this->prompt->select($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
 		{
 			$this->adapter->copy(
 				$resourceDirectory . '/configurations/runner/atoum.php.dist',
@@ -280,7 +280,7 @@ class runner extends atoum\script
 
 		$file = $cwd . '/.bootstrap.php';
 		if(!$this->adapter->file_exists($file)
-		||  $this->promptChoice($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
+		||  $this->prompt->select($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
 		{
 			$this->adapter->copy(
 				$resourceDirectory . '/configurations/runner/bootstrap.php.dist',
@@ -899,7 +899,7 @@ class runner extends atoum\script
 
 	protected function runAgain()
 	{
-		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
+		return ($this->prompt->get($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
 	}
 
 	protected function loop()
