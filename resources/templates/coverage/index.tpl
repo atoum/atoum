@@ -8,46 +8,42 @@
 		<link rel="stylesheet" media="screen" type="text/css" href="screen.css" title="Screen" />
 	</head>
 	<body>
-		<div id="page">
+		<div id="header">
 			<h1>Code coverage of <tpl:projectName /></h1>
+			<h2>
+				Global code coverage
+				<span>
+					<tpl:coverageUnavailable>n/a</tpl:coverageUnavailable>
+					<tpl:coverageAvailable><tpl:coverageValue />%</tpl:coverageAvailable>
+				</span>
+			</h2>
+		</div>
+
+		<div id="page">
 			<div id="content">
-				<ul class="projectSummary">
-					<li>
-						<tpl:coverageUnavailable>
-							<div class="bar">
-								<div class="label">Global code coverage <span>n/a</span></div>
-							</div>
-						</tpl:coverageUnavailable>
-						<tpl:coverageAvailable>
+				<ul class="summary">
+					<tpl:classCoverage>
+						<li>
+							<tpl:classCoverageUnavailable>
+								<div class="bar">
+									<div class="label"><tpl:className /> <span>n/a</span></div>
+								</div>
+							</tpl:classCoverageUnavailable>
+							<tpl:classCoverageAvailable>
 							<div class="bar">
 								<div class="background"></div>
-								<div class="graph" style="width: <tpl:coverageValue />%"></div>
-								<div class="label">Global code coverage <span><tpl:coverageValue />%</span></div>
+								<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
+								<div class="label"><a href="<tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
 							</div>
-						</tpl:coverageAvailable>
-					</li>
-					<li class="classes">
-						<ol>
-							<tpl:classCoverage>
-								<li>
-									<tpl:classCoverageUnavailable>
-										<div class="bar">
-											<div class="label"><tpl:className /> <span>n/a</span></div>
-										</div>
-									</tpl:classCoverageUnavailable>
-									<tpl:classCoverageAvailable>
-									<div class="bar">
-										<div class="background"></div>
-										<div class="graph" style="width: <tpl:classCoverageValue />%"></div>
-										<div class="label"><a href="<tpl:classUrl />"><tpl:className /></a> <span><tpl:classCoverageValue />%</span></div>
-									</div>
-									</tpl:classCoverageAvailable>
-								</li>
-							</tpl:classCoverage>
-						</ol>
-					</li>
+							</tpl:classCoverageAvailable>
+						</li>
+					</tpl:classCoverage>
 				</ul>
 			</div>
+		</div>
+
+		<div id="footer">
+			<p>Code coverage report powered by <a href="http://atoum.org">atoum</a></p>
 		</div>
 	</body>
 </html>
