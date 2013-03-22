@@ -2,9 +2,7 @@
 
 namespace mageekguy\atoum;
 
-use
-	mageekguy\atoum\scripts
-;
+use mageekguy\atoum\scripts;
 
 require_once __DIR__ . '/../classes/autoloader.php';
 
