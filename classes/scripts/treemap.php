@@ -233,6 +233,19 @@ class treemap extends atoum\script
 				$this->locale->_('Scan directory <directory>')
 			)
 			->addArgumentHandler(
+				function($script, $argument, $projectName) {
+					if (sizeof($projectName) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->setProjectName(current($projectName));
+				},
+				array('-pn', '--project-name'),
+				'<string>',
+				$this->locale->_('Set project name <string>')
+			)
+			->addArgumentHandler(
 					function($script, $argument, $files) {
 						if (sizeof($files) <= 0)
 						{
