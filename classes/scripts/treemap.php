@@ -9,8 +9,8 @@ use
 
 class treemap extends atoum\script
 {
-	protected $projectName = '';
-	protected $directory = null;
+	protected $projectName = null;
+	protected $directories = array();
 	protected $outputFile = null;
 	protected $analyzers = array();
 	protected $includer = null;
@@ -42,16 +42,19 @@ class treemap extends atoum\script
 		return $this->projectName;
 	}
 
-	public function setDirectory($directory)
+	public function addDirectory($directory)
 	{
-		$this->directory = $directory;
+		if (in_array($directory, $this->directories) === false)
+		{
+			$this->directories[] = $directory;
+		}
 
 		return $this;
 	}
 
-	public function getDirectory()
+	public function getDirectories()
 	{
-		return $this->directory;
+		return $this->directories;
 	}
 
 	public function setOutputFile($file)
@@ -112,9 +115,14 @@ class treemap extends atoum\script
 
 		if ($this->run === true)
 		{
-			if ($this->directory === null)
+			if ($this->projectName === null)
 			{
-				throw new exceptions\runtime($this->locale->_('Directory is undefined'));
+				throw new exceptions\runtime($this->locale->_('Project name is undefined'));
+			}
+
+			if (sizeof($this->directories) <= 0)
+			{
+				throw new exceptions\runtime($this->locale->_('Directories are undefined'));
 			}
 
 			if ($this->outputFile === null)
@@ -122,64 +130,78 @@ class treemap extends atoum\script
 				throw new exceptions\runtime($this->locale->_('Output file is undefined'));
 			}
 
-			try
+			$maxDepth = 0;
+
+			$rootData = array('name' => $this->projectName, 'path' => '', 'children' => array(), 'maxDepth' => & $maxDepth);
+
+			foreach ($this->directories as $directory)
 			{
-				$directory = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->directory));
-			}
-			catch (\exception $exception)
-			{
-				throw new exceptions\runtime($this->locale->_('Directory \'' . $this->directory . '\' does not exist'));
-			}
-
-			$rootData = array('name' => $this->projectName ?: basename($this->directory), 'path' => '', 'children' => array());
-
-			foreach ($directory as $file)
-			{
-				$data = & $rootData;
-
-				$directories = ltrim(substr(dirname($file->getPathname()), strlen($this->directory)), DIRECTORY_SEPARATOR);
-
-				if ($directories !== '')
+				try
 				{
-					foreach (explode(DIRECTORY_SEPARATOR, $directories) as $directory)
+					$directoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($directory));
+				}
+				catch (\exception $exception)
+				{
+					throw new exceptions\runtime($this->locale->_('Directory \'' . $directory . '\' does not exist'));
+				}
+
+				foreach ($directoryIterator as $file)
+				{
+					$data = & $rootData;
+
+					$directories = ltrim(substr(dirname($file->getPathname()), strlen($directory)), DIRECTORY_SEPARATOR);
+
+					if ($directories !== '')
 					{
-						$childFound = false;
+						$directories = explode(DIRECTORY_SEPARATOR, $directories);
 
-						foreach ($data['children'] as $key => $child)
+						$depth = sizeof($directories);
+
+						if ($depth > $maxDepth)
 						{
-							if ($child['name'] === $directory)
+							$maxDepth = $depth;
+						}
+
+						foreach ($directories as $directory)
+						{
+							$childFound = false;
+
+							foreach ($data['children'] as $key => $child)
 							{
-								$childFound = true;
-								break;
+								if ($child['name'] === $directory)
+								{
+									$childFound = true;
+									break;
+								}
 							}
-						}
 
-						if ($childFound === false)
-						{
-							$key = sizeof($data['children']);
-							$data['children'][] = array(
-								'name' => $directory,
-								'path' => $data['path'] . DIRECTORY_SEPARATOR . $directory,
-								'children' => array()
-							);
-						}
+							if ($childFound === false)
+							{
+								$key = sizeof($data['children']);
+								$data['children'][] = array(
+									'name' => $directory,
+									'path' => $data['path'] . DIRECTORY_SEPARATOR . $directory,
+									'children' => array()
+								);
+							}
 
-						$data = & $data['children'][$key];
+							$data = & $data['children'][$key];
+						}
 					}
+
+					$child = array(
+						'name' => $file->getFilename(),
+						'path' => $data['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
+						'metrics' => array()
+					);
+
+					foreach ($this->analyzers as $analyzer)
+					{
+						$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
+					}
+
+					$data['children'][] = $child;
 				}
-
-				$child = array(
-					'name' => $file->getFilename(),
-					'path' => $data['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
-					'metrics' => array()
-				);
-
-				foreach ($this->analyzers as $analyzer)
-				{
-					$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
-				}
-
-				$data['children'][] = $child;
 			}
 
 			if (@file_put_contents($this->outputFile, json_encode($rootData)) === false)
@@ -221,17 +243,20 @@ class treemap extends atoum\script
 				$this->locale->_('Save data in file <file>')
 			)
 			->addArgumentHandler(
-				function($script, $argument, $directory) {
-					if (sizeof($directory) != 1)
+				function($script, $argument, $directories) {
+					if (sizeof($directories) <= 0)
 					{
 						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 					}
 
-					$script->setDirectory(current($directory));
+					foreach ($directories as $directory)
+					{
+						$script->addDirectory($directory);
+					}
 				},
-				array('-d', '--dxirectory'),
-				'<directory>',
-				$this->locale->_('Scan directory <directory>')
+				array('-d', '--directories'),
+				'<directory>...',
+				$this->locale->_('Scan all directories <directory>')
 			)
 			->addArgumentHandler(
 				function($script, $argument, $projectName) {
