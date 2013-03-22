@@ -124,7 +124,7 @@ class treemap extends atoum\script
 
 			try
 			{
-				$directory = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\atoum\source($this->directory));
+				$directory = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->directory));
 			}
 			catch (\exception $exception)
 			{
