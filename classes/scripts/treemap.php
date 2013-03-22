@@ -171,11 +171,12 @@ class treemap extends atoum\script
 				$child = array(
 					'name' => $file->getFilename(),
 					'path' => $data['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
+					'metrics' => array()
 				);
 
 				foreach ($this->analyzers as $analyzer)
 				{
-					$child[$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
+					$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
 				}
 
 				$data['children'][] = $child;
