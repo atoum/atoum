@@ -162,13 +162,13 @@ class treemap extends atoum\script
 							$maxDepth = $depth;
 						}
 
-						foreach ($directories as $directory)
+						foreach ($directories as $subDirectory)
 						{
 							$childFound = false;
 
 							foreach ($data['children'] as $key => $child)
 							{
-								if ($child['name'] === $directory)
+								if ($child['name'] === $subDirectory)
 								{
 									$childFound = true;
 									break;
@@ -179,8 +179,8 @@ class treemap extends atoum\script
 							{
 								$key = sizeof($data['children']);
 								$data['children'][] = array(
-									'name' => $directory,
-									'path' => $data['path'] . DIRECTORY_SEPARATOR . $directory,
+									'name' => $subDirectory,
+									'path' => $data['path'] . DIRECTORY_SEPARATOR . $subDirectory,
 									'children' => array()
 								);
 							}
