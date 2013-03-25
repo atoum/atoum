@@ -13,6 +13,11 @@ class sloc implements analyzer
 		return 'sloc';
 	}
 
+	public function getMetricLabel()
+	{
+		return 'Source Line Of Code';
+	}
+
 	public function getMetricFromFile(\splFileInfo $file)
 	{
 		$codeLines = 0;

@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\scripts;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\scripts\treemap as testedClass,
-	mock\mageekguy\atoum\scripts\treemap\analyzer as analyzer
+	mock\mageekguy\atoum\scripts\treemap\analyzer as analyzer,
+	mock\mageekguy\atoum\scripts\treemap\categorizer as categorizer
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -48,6 +49,26 @@ class treemap extends atoum\test
 			->then
 				->object($treemap->setProjectName($projectName = uniqid()))->isIdenticalTo($treemap)
 				->string($treemap->getProjectName())->isEqualTo($projectName)
+		;
+	}
+
+	public function testSetProjectUrl()
+	{
+		$this
+			->if($treemap = new testedClass(uniqid()))
+			->then
+				->object($treemap->setProjectUrl($projectUrl = uniqid()))->isIdenticalTo($treemap)
+				->string($treemap->getProjectUrl())->isEqualTo($projectUrl)
+		;
+	}
+
+	public function testSetCodeUrl()
+	{
+		$this
+			->if($treemap = new testedClass(uniqid()))
+			->then
+				->object($treemap->setCodeUrl($codeUrl = uniqid()))->isIdenticalTo($treemap)
+				->string($treemap->getCodeUrl())->isEqualTo($codeUrl)
 		;
 	}
 
@@ -98,6 +119,18 @@ class treemap extends atoum\test
 				->array($treemap->getAnalyzers())->isEqualTo(array($analyzer))
 				->object($treemap->addAnalyzer($otherAnalyzer = new analyzer()))->isIdenticalTo($treemap)
 				->array($treemap->getAnalyzers())->isEqualTo(array($analyzer, $otherAnalyzer))
+		;
+	}
+
+	public function testAddCategorizer()
+	{
+		$this
+			->if($treemap = new testedClass(uniqid()))
+			->then
+				->object($treemap->addCategorizer($categorizer = new categorizer(uniqid())))->isIdenticalTo($treemap)
+				->array($treemap->getCategorizers())->isEqualTo(array($categorizer))
+				->object($treemap->addCategorizer($otherCategorizer = new categorizer(uniqid())))->isIdenticalTo($treemap)
+				->array($treemap->getCategorizers())->isEqualTo(array($categorizer, $otherCategorizer))
 		;
 	}
 

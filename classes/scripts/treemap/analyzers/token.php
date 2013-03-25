@@ -13,6 +13,11 @@ class token implements analyzer
 		return 'token';
 	}
 
+	public function getMetricLabel()
+	{
+		return 'PHP tokens';
+	}
+
 	public function getMetricFromFile(\splFileInfo $file)
 	{
 		$tokenFilter = function($token) {

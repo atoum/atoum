@@ -10,9 +10,12 @@ use
 class treemap extends atoum\script
 {
 	protected $projectName = null;
+	protected $projectUrl = null;
+	protected $codeUrl = null;
 	protected $directories = array();
 	protected $outputFile = null;
 	protected $analyzers = array();
+	protected $categorizers = array();
 	protected $includer = null;
 	protected $run = true;
 
@@ -30,6 +33,11 @@ class treemap extends atoum\script
 		return parent::help();
 	}
 
+	public function getProjectName()
+	{
+		return $this->projectName;
+	}
+
 	public function setProjectName($projectName)
 	{
 		$this->projectName = $projectName;
@@ -37,9 +45,28 @@ class treemap extends atoum\script
 		return $this;
 	}
 
-	public function getProjectName()
+	public function getProjectUrl()
 	{
-		return $this->projectName;
+		return $this->projectUrl;
+	}
+
+	public function setProjectUrl($projectUrl)
+	{
+		$this->projectUrl = $projectUrl;
+
+		return $this;
+	}
+
+	public function getCodeUrl()
+	{
+		return $this->codeUrl;
+	}
+
+	public function setCodeUrl($codeUrl)
+	{
+		$this->codeUrl = $codeUrl;
+
+		return $this;
 	}
 
 	public function addDirectory($directory)
@@ -77,6 +104,18 @@ class treemap extends atoum\script
 	public function addAnalyzer(treemap\analyzer $analyzer)
 	{
 		$this->analyzers[] = $analyzer;
+
+		return $this;
+	}
+
+	public function getCategorizers()
+	{
+		return $this->categorizers;
+	}
+
+	public function addCategorizer(treemap\categorizer $categorizer)
+	{
+		$this->categorizers[] = $categorizer;
 
 		return $this;
 	}
@@ -130,26 +169,31 @@ class treemap extends atoum\script
 				throw new exceptions\runtime($this->locale->_('Output file is undefined'));
 			}
 
-			$maxDepth = 0;
+			$maxDepth = 1;
 
-			$rootData = array('name' => $this->projectName, 'path' => '', 'children' => array(), 'maxDepth' => & $maxDepth);
+			$nodes = array(
+				'name' => $this->projectName,
+				'url' => $this->projectUrl,
+				'path' => '',
+				'children' => array()
+			);
 
-			foreach ($this->directories as $directory)
+			foreach ($this->directories as $rootDirectory)
 			{
 				try
 				{
-					$directoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($directory));
+					$directoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($rootDirectory));
 				}
 				catch (\exception $exception)
 				{
-					throw new exceptions\runtime($this->locale->_('Directory \'' . $directory . '\' does not exist'));
+					throw new exceptions\runtime($this->locale->_('Directory \'' . $rootDirectory . '\' does not exist'));
 				}
 
 				foreach ($directoryIterator as $file)
 				{
-					$data = & $rootData;
+					$node = & $nodes;
 
-					$directories = ltrim(substr(dirname($file->getPathname()), strlen($directory)), DIRECTORY_SEPARATOR);
+					$directories = ltrim(substr(dirname($file->getPathname()), strlen($rootDirectory)), DIRECTORY_SEPARATOR);
 
 					if ($directories !== '')
 					{
@@ -162,37 +206,39 @@ class treemap extends atoum\script
 							$maxDepth = $depth;
 						}
 
-						foreach ($directories as $subDirectory)
+						foreach ($directories as $directory)
 						{
 							$childFound = false;
 
-							foreach ($data['children'] as $key => $child)
+							foreach ($node['children'] as $key => $child)
 							{
-								if ($child['name'] === $subDirectory)
+								$childFound = ($child['name'] === $directory);
+
+								if ($childFound === true)
 								{
-									$childFound = true;
 									break;
 								}
 							}
 
 							if ($childFound === false)
 							{
-								$key = sizeof($data['children']);
-								$data['children'][] = array(
-									'name' => $subDirectory,
-									'path' => $data['path'] . DIRECTORY_SEPARATOR . $subDirectory,
+								$key = sizeof($node['children']);
+								$node['children'][] = array(
+									'name' => $directory,
+									'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,
 									'children' => array()
 								);
 							}
 
-							$data = & $data['children'][$key];
+							$node = & $node['children'][$key];
 						}
 					}
 
 					$child = array(
 						'name' => $file->getFilename(),
-						'path' => $data['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
-						'metrics' => array()
+						'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
+						'metrics' => array(),
+						'type' => null
 					);
 
 					foreach ($this->analyzers as $analyzer)
@@ -200,11 +246,46 @@ class treemap extends atoum\script
 						$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
 					}
 
-					$data['children'][] = $child;
+					foreach ($this->categorizers as $categorizer)
+					{
+						if ($categorizer->categorize($file) === true)
+						{
+							$child['type'] = $categorizer->getName();
+
+							break;
+						}
+					}
+
+					$node['children'][] = $child;
 				}
 			}
 
-			if (@file_put_contents($this->outputFile, json_encode($rootData)) === false)
+			$data = array(
+				'codeUrl' => $this->codeUrl,
+				'metrics' => array(),
+				'categorizers' => array(),
+				'maxDepth' => $maxDepth,
+				'nodes' => $nodes
+			);
+
+			foreach ($this->analyzers as $analyzer)
+			{
+				$data['metrics'][] = array(
+					'name' => $analyzer->getMetricName(),
+					'label' => $analyzer->getMetricLabel()
+				);
+			}
+
+			foreach ($this->categorizers as $categorizer)
+			{
+				$data['categorizers'][] = array(
+					'name' => $categorizer->getName(),
+					'minDepthColor' => $categorizer->getMinDepthColor(),
+					'maxDepthColor' => $categorizer->getMaxDepthColor()
+				);
+			}
+
+			if (@file_put_contents($this->outputFile, json_encode($data)) === false)
 			{
 				throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputFile . '\''));
 			}
@@ -270,6 +351,32 @@ class treemap extends atoum\script
 				array('-pn', '--project-name'),
 				'<string>',
 				$this->locale->_('Set project name <string>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $projectUrl) {
+					if (sizeof($projectUrl) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getUrl()));
+					}
+
+					$script->setProjectUrl(current($projectUrl));
+				},
+				array('-pu', '--project-url'),
+				'<string>',
+				$this->locale->_('Set project url <string>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $codeUrl) {
+					if (sizeof($codeUrl) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getUrl()));
+					}
+
+					$script->setCodeUrl(current($codeUrl));
+				},
+				array('-cu', '--code-url'),
+				'<string>',
+				$this->locale->_('Set code url <string>')
 			)
 			->addArgumentHandler(
 					function($script, $argument, $files) {

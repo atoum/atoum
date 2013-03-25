@@ -13,6 +13,11 @@ class size implements analyzer
 		return 'size';
 	}
 
+	public function getMetricLabel()
+	{
+		return 'Size';
+	}
+
 	public function getMetricFromFile(\splFileInfo $file)
 	{
 		return $file->getSize();
