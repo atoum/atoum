@@ -28,7 +28,7 @@ class treemap extends atoum\test
 				->object($treemap->getIncluder())->isEqualTo(new atoum\includer())
 				->variable($treemap->getProjectName())->isNull()
 				->array($treemap->getDirectories())->isEmpty()
-				->variable($treemap->getOutputFile())->isNull()
+				->variable($treemap->getOutputDirectory())->isNull()
 				->array($treemap->getAnalyzers())->isEmpty()
 			->if($treemap = new testedClass($name = uniqid(), $adapter = new atoum\adapter()))
 			->then
@@ -37,7 +37,7 @@ class treemap extends atoum\test
 				->object($treemap->getIncluder())->isEqualTo(new atoum\includer())
 				->variable($treemap->getProjectName())->isNull()
 				->array($treemap->getDirectories())->isEmpty()
-				->variable($treemap->getOutputFile())->isNull()
+				->variable($treemap->getOutputDirectory())->isNull()
 				->array($treemap->getAnalyzers())->isEmpty()
 		;
 	}
@@ -86,13 +86,23 @@ class treemap extends atoum\test
 		;
 	}
 
-	public function testSetOutputFile()
+	public function testSetHtmlDirectory()
 	{
 		$this
 			->if($treemap = new testedClass(uniqid()))
 			->then
-				->object($treemap->setOutputFile($file = uniqid()))->isIdenticalTo($treemap)
-				->string($treemap->getOutputFile())->isEqualTo($file)
+				->object($treemap->setHtmlDirectory($directory = uniqid()))->isIdenticalTo($treemap)
+				->string($treemap->getHtmlDirectory())->isEqualTo($directory)
+		;
+	}
+
+	public function testSetOutputDirectory()
+	{
+		$this
+			->if($treemap = new testedClass(uniqid()))
+			->then
+				->object($treemap->setOutputDirectory($directory = uniqid()))->isIdenticalTo($treemap)
+				->string($treemap->getOutputDirectory())->isEqualTo($directory)
 		;
 	}
 

@@ -9,11 +9,14 @@ use
 
 class treemap extends atoum\script
 {
+	const dataFile = 'data.json';
+
 	protected $projectName = null;
 	protected $projectUrl = null;
 	protected $codeUrl = null;
 	protected $directories = array();
-	protected $outputFile = null;
+	protected $outputDirectory = null;
+	protected $htmlDirectory = null;
 	protected $analyzers = array();
 	protected $categorizers = array();
 	protected $includer = null;
@@ -84,16 +87,28 @@ class treemap extends atoum\script
 		return $this->directories;
 	}
 
-	public function setOutputFile($file)
+	public function setHtmlDirectory($path = null)
 	{
-		$this->outputFile = $file;
+		$this->htmlDirectory = $path;
 
 		return $this;
 	}
 
-	public function getOutputFile()
+	public function getHtmlDirectory()
 	{
-		return $this->outputFile;
+		return $this->htmlDirectory;
+	}
+
+	public function setOutputDirectory($directory)
+	{
+		$this->outputDirectory = $directory;
+
+		return $this;
+	}
+
+	public function getOutputDirectory()
+	{
+		return $this->outputDirectory;
 	}
 
 	public function getAnalyzers()
@@ -164,9 +179,14 @@ class treemap extends atoum\script
 				throw new exceptions\runtime($this->locale->_('Directories are undefined'));
 			}
 
-			if ($this->outputFile === null)
+			if ($this->outputDirectory === null)
 			{
-				throw new exceptions\runtime($this->locale->_('Output file is undefined'));
+				throw new exceptions\runtime($this->locale->_('Output directory is undefined'));
+			}
+
+			if ($this->htmlDirectory === null)
+			{
+				throw new exceptions\runtime($this->locale->_('Html directory is undefined'));
 			}
 
 			$maxDepth = 1;
@@ -238,7 +258,7 @@ class treemap extends atoum\script
 						'name' => $file->getFilename(),
 						'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
 						'metrics' => array(),
-						'type' => null
+						'type' => ''
 					);
 
 					foreach ($this->analyzers as $analyzer)
@@ -285,9 +305,26 @@ class treemap extends atoum\script
 				);
 			}
 
-			if (@file_put_contents($this->outputFile, json_encode($data)) === false)
+			if (@file_put_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($data)) === false)
 			{
-				throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputFile . '\''));
+				throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+			}
+
+			try
+			{
+				$htmlDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->htmlDirectory));
+			}
+			catch (\exception $exception)
+			{
+				throw new exceptions\runtime($this->locale->_('Directory \'' . $this->htmlDirectory . '\' does not exist'));
+			}
+
+			foreach ($htmlDirectoryIterator as $file)
+			{
+				if (@copy($file, $this->outputDirectory . DIRECTORY_SEPARATOR . basename($file)) === false)
+				{
+					throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+				}
 			}
 		}
 
@@ -309,35 +346,6 @@ class treemap extends atoum\script
 				array('-h', '--help'),
 				null,
 				$this->locale->_('Display this help')
-			)
-			->addArgumentHandler(
-				function($script, $argument, $outputFile) {
-					if (sizeof($outputFile) != 1)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->setOutputFile(current($outputFile));
-				},
-				array('-of', '--output-file'),
-				'<file>',
-				$this->locale->_('Save data in file <file>')
-			)
-			->addArgumentHandler(
-				function($script, $argument, $directories) {
-					if (sizeof($directories) <= 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					foreach ($directories as $directory)
-					{
-						$script->addDirectory($directory);
-					}
-				},
-				array('-d', '--directories'),
-				'<directory>...',
-				$this->locale->_('Scan all directories <directory>')
 			)
 			->addArgumentHandler(
 				function($script, $argument, $projectName) {
@@ -377,6 +385,48 @@ class treemap extends atoum\script
 				array('-cu', '--code-url'),
 				'<string>',
 				$this->locale->_('Set code url <string>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $directories) {
+					if (sizeof($directories) <= 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					foreach ($directories as $directory)
+					{
+						$script->addDirectory($directory);
+					}
+				},
+				array('-d', '--directories'),
+				'<directory>...',
+				$this->locale->_('Scan all directories <directory>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $outputDirectory) {
+					if (sizeof($outputDirectory) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->setOutputDirectory(current($outputDirectory));
+				},
+				array('-od', '--output-directory'),
+				'<directory>',
+				$this->locale->_('Generate treemap in directory <directory>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $htmlDirectory) {
+					if (sizeof($htmlDirectory) != 1)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->setHtmlDirectory(current($htmlDirectory));
+				},
+				array('-hd', '--html-directory'),
+				'<directory>',
+				$this->locale->_('Use html files in <directory> to generate treemap')
 			)
 			->addArgumentHandler(
 					function($script, $argument, $files) {

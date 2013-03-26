@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<style>
+	body {
+		background: #fff;
+		margin: 0;
+		font-size: 14px;
+		font-family: "Helvetica Neue", Helvetica;
+	}
+
+	#chart {
+		position: relative;
+		width: 1200px;
+		margin: auto;
+		margin-top: 20px;
+		margin-bottom: 20px;
+	}
+
+	#chart div.header, #chart div.footer {
+		z-index: 1;
+		display: block;
+		font-weight: 300;
+		text-shadow: 0 1px 0 #fff;
+	}
+
+	#chart div.header {
+		background: #fdd2ae;
+		padding: 0;
+		border-bottom: solid 1px #fff;
+		line-height: 30px;
+		height: 30px;
+		padding-left: 9px;
+	}
+
+	#chart div.treemap
+	{
+		width: 1200px;
+		height: 600px;
+	}
+
+	#chart div.treemap rect {
+		fill: none;
+		stroke: none;
+		pointer-events: all;
+	}
+
+	#chart div.treemap text {
+		font-size: 11px;
+		fill: #333;
+	}
+
+	#chart div.footer {
+		font-size: 36px;
+		text-align: right;
+	}
+
+	#chart div.footer p {
+		margin: 0;
+		padding: 0;
+		font-size: 12px;
+		color: #666;
+	}
+
+	#chart table.legend {
+		font-size: 11px;
+		display: none;
+		float: right;
+		margin-left: 20px;
+	}
+
+	#chart table.legend th {
+		font-weight: normal;
+		text-align: right;
+		color: #666;
+	}
+
+	#chart table.legend td {
+		text-align: center;
+		width: 10px;
+		height: 10px;
+	}
+
+	#chart table.legend td.defaultMinDepthColor {
+		background: #94ff5a;
+	}
+
+	#chart table.legend td.defaultMaxDepthColor {
+		background: #00500f;
+	}
+
+	#chart div.footer select {
+		position: absolute;
+		top: 640px;
+		left: 0px;
+	}
+
+	#chart div.treemap div.tooltip {
+		position: absolute;
+		text-align: center;
+		font: 12px sans-serif;
+		color: #333;
+		background: none;
+		pointer-events: none;
+		border-radius: 5px;
+		box-shadow: 5px 5px 3px #333;
+	}
+
+	#chart div.treemap div.tooltip p.path {
+		margin: 0;
+		padding: 4px;
+		background: #fefbcb;
+		border: solid 1px #000;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+	}
+
+	#chart div.treemap div.tooltip p.metric {
+		margin: 0;
+		padding: 4px;
+		background: #ff9;
+		font-weight: bold;
+		font-size: 24px;
+		border: solid 1px #000;
+		border-top: none;
+		border-bottom-left-radius: 5px;
+		border-bottom-right-radius: 5px;
+	}
+
+	a:link, a:visited {
+		color: #000;
+		text-decoration: none;
+	}
+
+	a:hover {
+		color: #666;
+	}
+	</style>
+</head>
+<body>
+	<div id="body">
+		<div id="chart">
+			<div class="header"></div>
+			<div class="treemap">
+				<div class="tooltip">
+					<div>
+						<p class="path"></p>
+						<p class="metric"></p>
+					</div>
+				</div>
+			</div>
+			<div class="footer">
+				<table class="legend">
+					<tr><td class="defaultMinDepthColor"></td><td class="defaultMaxDepthColor"></td></tr>
+				</table>
+				<a href="#" class="projectName">Project name</a> treemap</a>
+				<p>Color is function of file depth, click to zoom in or zoom out, use shift-click to vizualize code on <a href="http://github.com">github</a></p>
+				<select class="metrics"></select>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var changeColorLuminance = function(color, pourcent) {
+		var r = parseInt(color.substr(1, 2), 16);
+		var g = parseInt(color.substr(3, 2), 16);
+		var b = parseInt(color.substr(5, 2), 16);
+
+		return '#'
+			+ Math.round(Math.min(Math.max(0, r + (r * pourcent)), 255)).toString(16)
+			+ Math.round(Math.min(Math.max(0, g + (g * pourcent)), 255)).toString(16)
+			+ Math.round(Math.min(Math.max(0, b + (b * pourcent)), 255)).toString(16)
+		;
+	};
+
+	var getTextColor = function(background) {
+		return ((parseInt(background.substr(1, 2), 16) * 299 + parseInt(background.substr(3, 2), 16) * 587 + parseInt(background.substr(5, 2), 16) * 114) / 1000 >= 128 ? '#000000' : '#ffffff');
+	};
+
+	var chart = d3.select('#chart');
+	var divTreemap = chart.select('div.treemap');
+	var header = chart.select('div.header');
+	var legend = chart.select('table.legend');
+	var w = parseInt(divTreemap.style('width'));
+	var h = parseInt(divTreemap.style('height'));
+	var x = d3.scale.linear().range([0, w]);
+	var y = d3.scale.linear().range([0, h]);
+	var siblingColor = d3.rgb(header.style('background-color')).toString();
+	var mouseoverColor = changeColorLuminance(siblingColor, 0.1);
+	var root, node, overParent, overNode, codeUrl = currentMetric = null;
+
+	var colorizeSibling = function(d) {
+		if (d.children) {
+			d.children.forEach(colorizeSibling);
+		}
+
+		if (d.rect && d.rect.style('fill') != siblingColor) {
+			d.rect.style('fill', siblingColor);
+			d.text.style('fill', getTextColor(siblingColor));
+		}
+	};
+
+	var resetColor = function(d) {
+		if (d.children) {
+			d.children.forEach(resetColor);
+		}
+		
+		if (d.rect &&  d.rect.style('fill') != d.color) {
+			d.rect.style('fill', d.color);
+			d.text.style('fill', getTextColor(d.color));
+		}
+	};
+
+	var tooltip = divTreemap
+		.select('div.tooltip')
+			.style('opacity', 0)
+	;
+
+	var tooltipPath = tooltip.select('.path');
+	var tooltipMetric = tooltip.select('.metric');
+
+	var treemap = d3.layout.treemap()
+		.round(false)
+		.padding(0)
+		.size([w, h])
+		.sticky(true)
+	;
+
+	var svg = divTreemap
+		.append('svg:svg')
+			.attr('width', w)
+			.attr('height', h)
+			.append('svg:g')
+	;
+
+	var onClickOnCell = function(d) {
+		if (!d3.event.shiftKey) {
+			return zoom(node == d.parent ? root : d.parent);
+		} else if (codeUrl) {
+			return window.location.href = codeUrl + d.path;
+		}
+
+		d3.event.stopPropagation();
+	};
+
+	var onMouseOverOnCell = function(d) {
+		if (d.rect) {
+			if (overNode) {
+				legend.select('td.depth' + overNode.type + overNode.depth).style('background-color', overNode.color);
+
+				var color = (overNode.parent != d.parent || d.parent == node ? overNode.color : siblingColor);
+
+				overNode.rect.style('fill', color);
+				overNode.text.style('fill', getTextColor(color));
+			}
+
+			overNode = d;
+
+			if (overParent && overParent != d.parent) {
+				overParent.children.forEach(resetColor);
+				overParent = null;
+			}
+
+			if (!overParent && d.parent != node) {
+				overParent = d.parent;
+				overParent.children.forEach(colorizeSibling);
+			}
+
+			legend.select('td.depth' + d.type + d.depth).style('background-color', mouseoverColor);
+
+			d.rect.style('fill', mouseoverColor);
+			d.text.style('fill', getTextColor(mouseoverColor));
+		}
+
+		header.html(root.name + d.parent.path);
+
+		var mouse = d3.mouse(svg.node());
+
+		tooltipPath.text(d.path);
+		tooltipMetric.text(d.metrics[currentMetric]);
+
+		tooltip
+			.style('left', mouse[0] + 'px')
+			.style('top', mouse[1] + 'px')
+		;
+
+		tooltip
+			.transition()
+			.duration(200)
+			.style('opacity', 0.9)
+		;
+	};
+
+	var onMouseOutOnCell = function(d) {
+		header.html(root.name + node.path);
+
+		tooltip
+			.style('opacity', 0)
+		;
+	};
+
+	svg.on('mouseout', function() {
+			var mouse = d3.mouse(this);
+			var mouseX = mouse[0];
+			var mouseY = mouse[1];
+
+			if (mouseX < 0. || mouseX >= w || mouseY < 0. || mouseY >= h) {
+				node.children.forEach(resetColor);
+
+				if (overNode) {
+					legend.select('td.depth' + overNode.type + overNode.depth).style('background-color', overNode.color);
+				}
+
+				overParent = null;
+				overNode = null;
+			}
+		}
+	);
+
+	var zoom = function(d) {
+		var
+			kx = w / d.dx,
+			ky = h / d.dy
+		;
+
+		x.domain([d.x, d.x + d.dx]);
+		y.domain([d.y, d.y + d.dy]);
+
+		var transition = svg.selectAll('g.cell')
+			.transition()
+				.duration(750)
+				.attr('transform', function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; })
+		;
+
+		transition.select('rect')
+			.attr('width', function(d) { return d.dx < 1 ? 0 : kx * d.dx - 1; })
+			.attr('height', function(d) { return d.dy < 1 ? 0 : ky * d.dy - 1; })
+		;
+
+		transition.select('text')
+			.attr('x', function(d) { return kx * d.dx / 2; })
+			.attr('y', function(d) { return ky * d.dy / 2; })
+			.style('opacity', function(d) { return kx * d.dx > d.w && ky * d.dy > d.h ? 1 : 0; })
+		;
+		
+		transition.each('end', resetColor)
+
+		tooltip.style('opacity', 0);
+
+		node = d;
+
+		header.text(root.name + node.path);
+
+		if (overNode) {
+			legend.select('td.depth' + overNode.type + overNode.depth).style('background-color', overNode.color);
+		}
+
+		overParent = null;
+		overNode = null;
+
+		d3.event.stopPropagation();
+	};
+
+	d3.json('data.json', function(data) {
+			node = root = data['nodes'];
+
+			codeUrl = data.codeUrl;
+
+			d3.select('#chart a.projectName').text(root.name).attr('href', root.url);
+
+			var defaultColorMap = d3.scale.ordinal()
+				.range(d3.range(data.maxDepth + 1).map(d3.scale.linear()
+					.domain([0, data.maxDepth + 1])
+					.range([ legend.select('.defaultMinDepthColor').style('background-color'), legend.select('.defaultMaxDepthColor').style('background-color') ])
+					.interpolate(d3.interpolateLab))
+			);
+
+			legend.selectAll('tr').remove();
+
+			var depths = legend.append('tr');
+
+			depths.append('th').text('Depth');
+
+			for (i = 1; i <= data.maxDepth + 1; i++) {
+				depths.append('th').text(i);
+			}
+			
+			var defaultLegend = legend.append('tr');
+
+			defaultLegend.append('th')
+				.attr('scope', 'row')
+				.text('Unknown')
+			;
+
+			for (i = 1; i <= data.maxDepth + 1; i++) {
+				defaultLegend.append('td')
+					.style('background-color', defaultColorMap(i))
+					.attr('class', 'depth' + i)
+				;
+			}
+
+			var colorMaps = {};
+
+			data['categorizers'].forEach(function(categorizer) {
+					var colorMap = colorMaps[categorizer.name] = d3.scale.ordinal()
+						.range(d3.range(data.maxDepth + 1).map(d3.scale.linear()
+							.domain([0, data.maxDepth])
+							.range([ categorizer.minDepthColor, categorizer.maxDepthColor ])
+							.interpolate(d3.interpolateLab))
+						)
+					;
+
+					var categorizerLegend = legend.append('tr');
+
+					categorizerLegend.append('th')
+						.attr('scope', 'row')
+						.text(categorizer.name)
+					;
+
+					for (i = 1; i <= data.maxDepth + 1; i++) {
+						categorizerLegend.append('td')
+							.style('background-color', colorMaps[categorizer.name](i))
+							.attr('class', 'depth' + categorizer.name + i)
+						;
+					}
+				}
+			);
+
+			legend.style('display', 'block');
+
+			var select = d3.select('#chart select.metrics');
+
+			data['metrics'].forEach(function(metric) {
+					select.append('option')
+						.attr('value', metric.name)
+						.text(metric.label)
+					;
+				}
+			);
+
+			currentMetric = data['metrics'][0].name;
+
+			treemap.value(function(d) { return d.metrics[data['metrics'][0].name]; });
+
+			header.html(root.name);
+
+			var nodes = treemap.nodes(root).filter(function(d) { return !d.children; });
+
+			var cell = svg.selectAll('g')
+				.data(nodes)
+				.enter()
+					.append('svg:g')
+						.attr('class', 'cell')
+						.attr('transform', function(d) { return "translate(" + d.x + "," + d.y + ")"; })
+						.on('click', onClickOnCell)
+			;
+
+			cell.append('svg:rect')
+				.attr('width', function(d) { return d.dx < 1 ? 0 : d.dx - 1; })
+				.attr('height', function(d) { return d.dy < 1 ? 0 : d.dy - 1; })
+				.style('fill', function(d) {
+						d.rect = d3.select(this);
+						d.color = colorMaps[d.type] ? colorMaps[d.type](d.depth) : defaultColorMap(d.depth);
+
+						return d.color;
+					}
+				)
+				.on('mouseover', onMouseOverOnCell)
+				.on('mouseout', onMouseOutOnCell)
+			;
+
+			var text = cell.append('svg:text')
+				.attr('x', function(d) { return d.dx / 2; })
+				.attr('y', function(d) { return d.dy / 2; })
+				.attr('dy', '.35em')
+				.attr('text-anchor', 'middle')
+				.text(function(d) { return d.name; })
+				.style('fill', function(d) { d.text = d3.select(this); return getTextColor(d.color); })
+				.style('opacity', function(d) { var bbox = d3.select(this).node().getBBox(); d.w = bbox.width + 5; d.h = bbox.height + 5; return d.dx > d.w && d.dy > d.h ? 1 : 0; })
+				.style('pointer-events', 'none')
+			;
+
+			d3.select(window).on('click', function() { zoom(root); });
+
+			d3.select("select").on("change", function() {
+					currentMetric = this.value;
+
+					treemap
+						.value(function(d) { return d.metrics[currentMetric]; })
+						.nodes(root)
+					;
+
+					zoom(node);
+				}
+			);
+		}
+	);
+	</script>
+  </body>
+</html>
