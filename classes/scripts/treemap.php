@@ -7,8 +7,9 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class treemap extends atoum\script
+class treemap extends atoum\script\configurable
 {
+	const defaultConfigFile = '.treemap.php';
 	const dataFile = 'data.json';
 
 	protected $projectName = null;
@@ -135,39 +136,16 @@ class treemap extends atoum\script
 		return $this;
 	}
 
-	public function setIncluder(atoum\includer $includer = null)
-	{
-		$this->includer = $includer ?: new atoum\includer();
-
-		return $this;
-	}
-
-	public function getIncluder()
-	{
-		return $this->includer;
-	}
-
 	public function useConfigFile($path)
 	{
 		$script = $this;
 
-		try
-		{
-			$this->includer->includePath($path, function($path) use ($script) { include_once($path); });
-		}
-		catch (atoum\includer\exception $exception)
-		{
-			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
-		}
-
-		return $this;
+		return $this->includeConfigFile($path, function($path) use ($script) { include_once($path); });
 	}
 
 	public function run(array $arguments = array())
 	{
-		parent::run($arguments);
-
-		if ($this->run === true)
+		if (parent::run($arguments)->run === true)
 		{
 			if ($this->projectName === null)
 			{
@@ -333,20 +311,7 @@ class treemap extends atoum\script
 
 	protected function setArgumentHandlers()
 	{
-		return $this
-			->addArgumentHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) != 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script->help();
-				},
-				array('-h', '--help'),
-				null,
-				$this->locale->_('Display this help')
-			)
+		return parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $projectName) {
 					if (sizeof($projectName) != 1)
@@ -428,30 +393,6 @@ class treemap extends atoum\script
 				'<directory>',
 				$this->locale->_('Use html files in <directory> to generate treemap')
 			)
-			->addArgumentHandler(
-					function($script, $argument, $files) {
-						if (sizeof($files) <= 0)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-						}
-
-						foreach ($files as $path)
-						{
-							try
-							{
-								$script->useConfigFile($path);
-							}
-							catch (includer\exception $exception)
-							{
-								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
-							}
-						}
-					},
-					array('-c', '--configurations'),
-					'<file>...',
-					$this->locale->_('Use all configuration files <file>'),
-					1
-				)
 		;
 	}
 }

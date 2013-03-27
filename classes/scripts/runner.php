@@ -10,12 +10,11 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class runner extends atoum\script
+class runner extends atoum\script\configurable
 {
 	const defaultConfigFile = '.atoum.php';
 
 	protected $runner = null;
-	protected $includer = null;
 	protected $cliFactory = null;
 	protected $configuratorFactory = null;
 	protected $defaultReportFactory = null;
@@ -37,7 +36,6 @@ class runner extends atoum\script
 
 		$this
 			->setRunner()
-			->setIncluder()
 			->setCliFactory()
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
@@ -54,18 +52,6 @@ class runner extends atoum\script
 	public function getRunner()
 	{
 		return $this->runner;
-	}
-
-	public function setIncluder(atoum\includer $includer = null)
-	{
-		$this->includer = $includer ?: new atoum\includer();
-
-		return $this;
-	}
-
-	public function getIncluder()
-	{
-		return $this->includer;
 	}
 
 	public function setCliFactory(\closure $factory = null)
@@ -176,8 +162,6 @@ class runner extends atoum\script
 	{
 		try
 		{
-			$this->useDefaultConfigFiles();
-
 			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false && $this->hasDefaultArguments() === true)
 			{
 				parent::run($this->defaultArguments);
@@ -258,38 +242,9 @@ class runner extends atoum\script
 	public function useConfigFile($path)
 	{
 		$script = call_user_func($this->configuratorFactory, $this);
-
 		$runner = $this->runner;
 
-		try
-		{
-			$this->includer->includePath($path, function($path) use ($script, $runner) { include_once($path); });
-		}
-		catch (atoum\includer\exception $exception)
-		{
-			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
-		}
-
-		return $this;
-	}
-
-	public function useDefaultConfigFiles($startDirectory = null)
-	{
-		if ($startDirectory === null)
-		{
-			$startDirectory = $this->adapter->getcwd();
-		}
-
-		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
-		{
-			try
-			{
-				$this->useConfigFile($directory . self::defaultConfigFile);
-			}
-			catch (atoum\includer\exception $exception) {}
-		}
-
-		return $this;
+		return $this->includeConfigFile($path, function($path) use ($script, $runner) { include_once($path); });
 	}
 
 	public function testIt()
@@ -408,52 +363,9 @@ class runner extends atoum\script
 		static::$autorunner = false;
 	}
 
-	public static function getSubDirectoryPath($directory, $directorySeparator = null)
-	{
-		$directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
-
-		$paths = array();
-
-		if ($directory != '')
-		{
-			if ($directory == $directorySeparator)
-			{
-				$paths[] = $directory;
-			}
-			else
-			{
-				$directory = rtrim($directory, $directorySeparator);
-
-				$path = '';
-
-				foreach (explode($directorySeparator, $directory) as $subDirectory)
-				{
-					$path .= $subDirectory . $directorySeparator;
-
-					$paths[] = $path;
-				}
-			}
-		}
-
-		return $paths;
-	}
-
 	protected function setArgumentHandlers()
 	{
 		parent::setArgumentHandlers()
-			->addArgumentHandler(
-					function($script, $argument, $values) {
-						if (sizeof($values) !== 0)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-						}
-
-						$script->help();
-					},
-					array('-h', '--help'),
-					null,
-					$this->locale->_('Display this help')
-				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
 						if (sizeof($values) !== 0)
@@ -492,30 +404,6 @@ class runner extends atoum\script
 					array('-drt', '--default-report-title'),
 					'<string>',
 					$this->locale->_('Define default report title with <string>')
-				)
-			->addArgumentHandler(
-					function($script, $argument, $files) {
-						if (sizeof($files) <= 0)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-						}
-
-						foreach ($files as $path)
-						{
-							try
-							{
-								$script->useConfigFile($path);
-							}
-							catch (includer\exception $exception)
-							{
-								throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file \'%s\' does not exist'), $path));
-							}
-						}
-					},
-					array('-c', '--configurations'),
-					'<file>...',
-					$this->locale->_('Use all configuration files <file>'),
-					1
 				)
 			->addArgumentHandler(
 					function($script, $argument, $file) {

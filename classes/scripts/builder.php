@@ -9,8 +9,10 @@ use
 	mageekguy\atoum\scripts\builder
 ;
 
-class builder extends atoum\script
+class builder extends atoum\script\configurable
 {
+	const defaultConfigFile = '.builder.php';
+
 	const defaultUnitTestRunnerScript = 'scripts/runner.php';
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
@@ -565,32 +567,6 @@ class builder extends atoum\script
 				array('-h', '--help'),
 				null,
 				$this->locale->_('Display this help')
-			)
-			->addArgumentHandler(
-				function($script, $argument, $files) use ($builder) {
-					if (sizeof($files) <= 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					foreach ($files as $file)
-					{
-						if (file_exists($file) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Configuration file path \'%s\' is invalid'), $file));
-						}
-
-						if (is_readable($file) === false)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Unable to read configuration file \'%s\''), $file));
-						}
-
-						require_once $file;
-					}
-				},
-				array('-c', '--configuration-files'),
-				'<file>',
-				$this->locale->_('Use <file> as configuration file for builder')
 			)
 			->addArgumentHandler(
 				function($script, $argument, $files) use ($builder) {

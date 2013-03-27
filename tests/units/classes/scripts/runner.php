@@ -15,7 +15,7 @@ class runner extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\script');
+		$this->testedClass->extends('mageekguy\atoum\script\configurable');
 	}
 
 	public function testClassConstants()
@@ -47,6 +47,11 @@ class runner extends atoum\test
 							'Display this help'
 						),
 						array(
+							array('-c', '--configurations'),
+							'<file>...',
+							'Use all configuration files <file>'
+						),
+						array(
 							array('-v', '--version'),
 							null,
 							'Display version'
@@ -60,11 +65,6 @@ class runner extends atoum\test
 							array('-drt', '--default-report-title'),
 							'<string>',
 							'Define default report title with <string>'
-						),
-						array(
-							array('-c', '--configurations'),
-							'<file>...',
-							'Use all configuration files <file>'
 						),
 						array(
 							array('-sf', '--score-file'),
@@ -184,6 +184,11 @@ class runner extends atoum\test
 							'Display this help'
 						),
 						array(
+							array('-c', '--configurations'),
+							'<file>...',
+							'Use all configuration files <file>'
+						),
+						array(
 							array('-v', '--version'),
 							null,
 							'Display version'
@@ -197,11 +202,6 @@ class runner extends atoum\test
 							array('-drt', '--default-report-title'),
 							'<string>',
 							'Define default report title with <string>'
-						),
-						array(
-							array('-c', '--configurations'),
-							'<file>...',
-							'Use all configuration files <file>'
 						),
 						array(
 							array('-sf', '--score-file'),
@@ -342,32 +342,6 @@ class runner extends atoum\test
 		;
 	}
 
-	public function testUseDefaultConfigFiles()
-	{
-		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-			->and($runner->getMockController()->useConfigFile = function() {})
-			->then
-				->object($runner->useDefaultConfigFiles(atoum\directory))->isIdenticalTo($runner)
-				->mock($runner)
-					->foreach(scripts\runner::getSubDirectoryPath(atoum\directory), function($mock, $path) {
-							$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
-						}
-					)
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-			->and($runner->getMockController()->useConfigFile = function() {})
-			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->getcwd = $workingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
-			->then
-				->object($runner->useDefaultConfigFiles())->isIdenticalTo($runner)
-				->mock($runner)
-					->foreach(scripts\runner::getSubDirectoryPath($workingDirectory), function($mock, $path) {
-						$mock->call('useConfigFile')->withArguments($path . scripts\runner::defaultConfigFile)->once();
-					}
-				)
-		;
-	}
-
 	public function getTestAllDirectories()
 	{
 		$this
@@ -388,25 +362,6 @@ class runner extends atoum\test
 				->array($runner->gettestalldirectories())->isequalto(array($directory))
 				->object($runner->addtestalldirectory(($otherDirectory = uniqid()) . DIRECTORY_SEPARATOR))->isidenticalto($runner)
 				->array($runner->gettestalldirectories())->isequalto(array($directory, $otherDirectory))
-		;
-	}
-
-	public function testGetSubDirectoryPath()
-	{
-		$this
-			->array(scripts\runner::getSubDirectoryPath(''))->isEmpty()
-			->array(scripts\runner::getSubDirectoryPath('', '/'))->isEmpty()
-			->array(scripts\runner::getSubDirectoryPath('', '\\'))->isEmpty()
-			->array(scripts\runner::getSubDirectoryPath('/', '/'))->isEqualTo(array('/'))
-			->array(scripts\runner::getSubDirectoryPath('/foo', '/'))->isEqualTo(array('/', '/foo/'))
-			->array(scripts\runner::getSubDirectoryPath('/foo/', '/'))->isEqualTo(array('/', '/foo/'))
-			->array(scripts\runner::getSubDirectoryPath('/foo/bar', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
-			->array(scripts\runner::getSubDirectoryPath('/foo/bar/', '/'))->isEqualTo(array('/', '/foo/', '/foo/bar/'))
-			->array(scripts\runner::getSubDirectoryPath('c:\\', '\\'))->isEqualTo(array('c:\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\foo', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\foo\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
-			->array(scripts\runner::getSubDirectoryPath('c:\foo\bar\\', '\\'))->isEqualTo(array('c:\\', 'c:\foo\\', 'c:\foo\bar\\'))
 		;
 	}
 

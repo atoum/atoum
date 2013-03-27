@@ -15,7 +15,12 @@ class treemap extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\script');
+		$this->testedClass->extends('mageekguy\atoum\script\configurable');
+	}
+
+	public function testClassConstants()
+	{
+		$this->string(testedClass::defaultConfigFile)->isEqualTo('.treemap.php');
 	}
 
 	public function test__construct()
@@ -103,20 +108,6 @@ class treemap extends atoum\test
 			->then
 				->object($treemap->setOutputDirectory($directory = uniqid()))->isIdenticalTo($treemap)
 				->string($treemap->getOutputDirectory())->isEqualTo($directory)
-		;
-	}
-
-	public function testSetIncluder()
-	{
-		$this
-			->if($treemap = new testedClass(uniqid()))
-			->then
-				->object($treemap->setIncluder($includer = new atoum\includer()))->isIdenticalTo($treemap)
-				->object($treemap->getIncluder())->isIdenticalTo($includer)
-				->object($treemap->setIncluder())->isIdenticalTo($treemap)
-				->object($treemap->getIncluder())
-					->isNotIdenticalTo($includer)
-					->isEqualTo(new atoum\includer())
 		;
 	}
 

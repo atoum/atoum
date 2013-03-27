@@ -26,8 +26,12 @@ class builder extends atoum\test
 
 	public function testClass()
 	{
+		$this->testedClass->extends('mageekguy\atoum\script\configurable');
+	}
+
+	public function testClassConstants()
+	{
 		$this
-			->testedClass->extends('mageekguy\atoum\script')
 			->string(scripts\builder::defaultUnitTestRunnerScript)->isEqualTo('scripts/runner.php')
 			->string(scripts\builder::defaultPharGeneratorScript)->isEqualTo('scripts/phar/generator.php')
 		;
