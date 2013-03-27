@@ -4,7 +4,8 @@ namespace mageekguy\atoum\scripts;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\scripts\treemap\analyzers
 ;
 
 class treemap extends atoum\script\configurable
@@ -379,6 +380,30 @@ class treemap extends atoum\script\configurable
 				array('-od', '--output-directory'),
 				'<directory>',
 				$this->locale->_('Generate treemap in directory <directory>')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					$script->addAnalyzer(new analyzers\sloc());
+				},
+				array('--sloc'),
+				null,
+				$this->locale->_('Count source line of code (SLOC)')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					$script->addAnalyzer(new analyzers\token());
+				},
+				array('--php-token'),
+				null,
+				$this->locale->_('Count PHP tokens')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					$script->addAnalyzer(new analyzers\size());
+				},
+				array('--file-size'),
+				null,
+				$this->locale->_('Get file size')
 			)
 			->addArgumentHandler(
 				function($script, $argument, $htmlDirectory) {
