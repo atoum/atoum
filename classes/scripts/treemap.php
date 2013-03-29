@@ -300,20 +300,23 @@ class treemap extends atoum\script\configurable
 				throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
 			}
 
-			try
+			if ($this->onlyJsonFile === false)
 			{
-				$htmlDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->htmlDirectory));
-			}
-			catch (\exception $exception)
-			{
-				throw new exceptions\runtime($this->locale->_('Directory \'' . $this->htmlDirectory . '\' does not exist'));
-			}
-
-			foreach ($htmlDirectoryIterator as $file)
-			{
-				if (@copy($file, $this->outputDirectory . DIRECTORY_SEPARATOR . basename($file)) === false)
+				try
 				{
-					throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+					$htmlDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->htmlDirectory));
+				}
+				catch (\exception $exception)
+				{
+					throw new exceptions\runtime($this->locale->_('Directory \'' . $this->htmlDirectory . '\' does not exist'));
+				}
+
+				foreach ($htmlDirectoryIterator as $file)
+				{
+					if (@copy($file, $this->outputDirectory . DIRECTORY_SEPARATOR . basename($file)) === false)
+					{
+						throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+					}
 				}
 			}
 		}
