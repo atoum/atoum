@@ -17,8 +17,9 @@ class treemap extends atoum\script\configurable
 	protected $projectUrl = null;
 	protected $codeUrl = null;
 	protected $directories = array();
-	protected $outputDirectory = null;
 	protected $htmlDirectory = null;
+	protected $outputDirectory = null;
+	protected $onlyJsonFile = false;
 	protected $analyzers = array();
 	protected $categorizers = array();
 	protected $includer = null;
@@ -111,6 +112,16 @@ class treemap extends atoum\script\configurable
 	public function getOutputDirectory()
 	{
 		return $this->outputDirectory;
+	}
+
+	public function getOnlyJsonFile($boolean = null)
+	{
+		if ($boolean !== null)
+		{
+			$this->onlyJsonFile = ($boolean == true);
+		}
+
+		return $this->onlyJsonFile;
 	}
 
 	public function getAnalyzers()
@@ -383,6 +394,24 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
+					if (sizeof($value) != 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
+					$script->getOnlyJsonFile(true);
+				},
+				array('-ojf', '--only-json-file'),
+				null,
+				$this->locale->_('Generate only JSON file')
+			)
+			->addArgumentHandler(
+				function($script, $argument, $value) {
+					if (sizeof($value) != 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
 					$script->addAnalyzer(new analyzers\sloc());
 				},
 				array('--sloc'),
@@ -391,6 +420,11 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
+					if (sizeof($value) != 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
 					$script->addAnalyzer(new analyzers\token());
 				},
 				array('--php-token'),
@@ -399,6 +433,11 @@ class treemap extends atoum\script\configurable
 			)
 			->addArgumentHandler(
 				function($script, $argument, $value) {
+					if (sizeof($value) != 0)
+					{
+						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+					}
+
 					$script->addAnalyzer(new analyzers\size());
 				},
 				array('--file-size'),

@@ -111,6 +111,22 @@ class treemap extends atoum\test
 		;
 	}
 
+	public function testGetOnlyJsonFile()
+	{
+		$this
+			->if($treemap = new testedClass(uniqid()))
+			->then
+				->boolean($treemap->getOnlyJsonFile())->isFalse()
+				->boolean($treemap->getOnlyJsonFile(null))->isFalse()
+				->boolean($treemap->getOnlyJsonFile(true))->isTrue()
+				->boolean($treemap->getOnlyJsonFile())->isTrue()
+				->boolean($treemap->getOnlyJsonFile(null))->isTrue()
+				->boolean($treemap->getOnlyJsonFile(false))->isFalse()
+				->boolean($treemap->getOnlyJsonFile())->isFalse()
+				->boolean($treemap->getOnlyJsonFile(null))->isFalse()
+		;
+	}
+
 	public function testAddAnalyzer()
 	{
 		$this
