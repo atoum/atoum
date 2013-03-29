@@ -33,7 +33,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		if (strlen($something) != $this->openFile()->adapter->fwrite($this->resource, $something))
 		{
-			throw  new exceptions\runtime('Unable to write in file \'' . $this->filename . '\'');
+			throw new exceptions\runtime('Unable to write in file \'' . $this->filename . '\'');
 		}
 
 		$this->adapter->fflush($this->resource);
@@ -45,7 +45,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	{
 		if ($this->openFile()->adapter->ftruncate($this->resource, 0) === false)
 		{
-			throw  new exceptions\runtime('Unable to truncate file \'' . $this->filename . '\'');
+			throw new exceptions\runtime('Unable to truncate file \'' . $this->filename . '\'');
 		}
 
 		return $this;
@@ -81,12 +81,12 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 			if ($this->resource === null)
 			{
-				throw  new exceptions\runtime('Unable to open file \'' . $this->filename . '\'');
+				throw new exceptions\runtime('Unable to open file \'' . $this->filename . '\'');
 			}
 
 			if ($this->adapter->flock($this->resource, LOCK_SH) === false)
 			{
-				throw  new exceptions\runtime('Unable to lock file \'' . $this->filename . '\'');
+				throw new exceptions\runtime('Unable to lock file \'' . $this->filename . '\'');
 			}
 
 			$this->clear();
