@@ -140,27 +140,26 @@
 	</style>
 </head>
 <body>
-	<div id="body">
-		<div id="chart">
-			<div class="header"></div>
-			<div class="treemap">
-				<div class="tooltip">
-					<div>
-						<p class="path"></p>
-						<p class="metric"></p>
-					</div>
+	<div id="chart">
+		<div class="header"></div>
+		<div class="treemap">
+			<div class="tooltip">
+				<div>
+					<p class="path"></p>
+					<p class="metric"></p>
 				</div>
 			</div>
-			<div class="footer">
-				<table class="legend">
-					<tr><td class="defaultMinDepthColor"></td><td class="defaultMaxDepthColor"></td></tr>
-				</table>
-				<a href="#" class="projectName">Project name</a> treemap</a>
-				<p>Color is function of file depth, click to zoom in or zoom out, use shift-click to vizualize code on <a href="http://github.com">github</a></p>
-				<select class="metrics"></select>
-			</div>
+		</div>
+		<div class="footer">
+			<table class="legend">
+				<tr><td class="defaultMinDepthColor"></td><td class="defaultMaxDepthColor"></td></tr>
+			</table>
+			<a href="#" class="projectName">Project name</a> treemap</a>
+			<p>Color is function of file depth, click to zoom in or zoom out, use shift-click to vizualize code on <a href="http://github.com">github</a></p>
+			<select class="metrics"></select>
 		</div>
 	</div>
+	<p class="copyright">Treemap powered by <a href="http://atoum.org/atoum">atoum, the simple, modern and intuitive unit testing framework for PHP ≥ 5.3</a></p>
 	<script type="text/javascript">
 	var changeColorLuminance = function(color, pourcent) {
 		var r = parseInt(color.substr(1, 2), 16);
