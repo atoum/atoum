@@ -88,6 +88,7 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
+			->and($this->calling($score)->getLastFailAssertion = null)
 			->and($this->calling($score)->getLastFailAssertion[1] = $failure1 = array(
 					'case' => null,
 					'dataSetKey' => null,
@@ -179,19 +180,15 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getVoidMethods[1] = array(
-					$void1 = array(
-						'class' => $class1 = uniqid(),
-						'method' => $method1 = uniqid()
-					)
+			->and($this->calling($score)->getLastVoidMethod = null)
+			->and($this->calling($score)->getLastVoidMethod[1] = array(
+					'class' => $class1 = uniqid(),
+					'method' => $method1 = uniqid()
 				)
 			)
-			->and($this->calling($score)->getVoidMethods[2] = array(
-					$void1,
-					$void2 = array(
-						'class' => $class2 = uniqid(),
-						'method' => $method2 = uniqid()
-					)
+			->and($this->calling($score)->getLastVoidMethod[2] = array(
+					'class' => $class2 = uniqid(),
+					'method' => $method2 = uniqid()
 				)
 			)
 			->and($test = new \mock\mageekguy\atoum\test())
@@ -226,21 +223,17 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getSkippedMethods[1] = array(
-					$skip1 = array(
-						'class' => $class1 = uniqid(),
-						'method' => $method1 = uniqid(),
-						'message' => $message1 = uniqid()
-					)
+			->and($this->calling($score)->getLastSkippedMethod = null)
+			->and($this->calling($score)->getLastSkippedMethod[1] = array(
+					'class' => $class1 = uniqid(),
+					'method' => $method1 = uniqid(),
+					'message' => $message1 = uniqid()
 				)
 			)
-			->and($this->calling($score)->getSkippedMethods[2] = array(
-					$skip1,
-					$skip2 = array(
-						'class' => $class2 = uniqid(),
-						'method' => $method2 = uniqid(),
-						'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
-					)
+			->and($this->calling($score)->getLastSkippedMethod[2] = array(
+					'class' => $class2 = uniqid(),
+					'method' => $method2 = uniqid(),
+					'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
 				)
 			)
 			->and($test = new \mock\mageekguy\atoum\test())
