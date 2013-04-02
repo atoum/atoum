@@ -38,9 +38,11 @@ class xunit extends atoum\reports\asynchronous
 		$errors = $this->score->getErrors();
 		$excepts = $this->score->getExceptions();
 		$fails = $this->score->getFailAssertions();
+		$uncomplete = $this->score->getUncompletedMethods();
+		$skipped = $this->score->getSkippedMethods();
 
 		$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
-		$extractClasses = function($list) use (& $clname, & $classes, $durations, $errors, $excepts, $fails, $filterClass) {
+		$extractClasses = function($list) use (& $clname, & $classes, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
 			foreach ($list as $entry)
 			{
 				$clname = $entry['class'];
@@ -51,7 +53,9 @@ class xunit extends atoum\reports\asynchronous
 						'errors' => array_filter($errors, $filterClass),
 						'excepts' => array_filter($excepts, $filterClass),
 						'fails' => array_filter($fails, $filterClass),
-						'durations' => array_filter($durations, $filterClass)
+						'durations' => array_filter($durations, $filterClass),
+						'uncomplete' => array_filter($uncomplete, $filterClass),
+						'skipped' => array_filter($skipped, $filterClass),
 					);
 				}
 			}
@@ -62,6 +66,8 @@ class xunit extends atoum\reports\asynchronous
 		$extractClasses($errors);
 		$extractClasses($excepts);
 		$extractClasses($fails);
+		$extractClasses($uncomplete);
+		$extractClasses($skipped);
 
 		return $classes;
 	}
@@ -95,9 +101,10 @@ class xunit extends atoum\reports\asynchronous
 
 				$testSuite->setAttribute('name', $clname);
 				$testSuite->setAttribute('package', $package);
-				$testSuite->setAttribute('tests', sizeof($class['durations']) + ($fails = sizeof($class['fails'])) + ($errors = sizeof($class['excepts']) + sizeof($class['errors'])));
+				$testSuite->setAttribute('tests', sizeof($class['durations']) + ($fails = sizeof($class['fails'])) + ($errors = sizeof($class['excepts']) + sizeof($class['errors']) + sizeof($class['uncomplete'])) + sizeof($class['skipped']));
 				$testSuite->setAttribute('failures', $fails);
 				$testSuite->setAttribute('errors', $errors);
+				$testSuite->setAttribute('skipped', sizeof($class['skipped']));
 
 				$time = 0;
 
@@ -119,6 +126,15 @@ class xunit extends atoum\reports\asynchronous
 					$xError->appendChild($document->createCDATASection($error['message']));
 				}
 
+				foreach ($class['uncomplete'] as $uncomplete)
+				{
+					$testCase = static::getTestCase($document, $testSuite, $name, $uncomplete['method'], 0, null);
+					$testCase->appendChild($xFail = $document->createElement('error'));
+
+					$xFail->setAttribute('type', $uncomplete['exitCode']);
+					$xFail->appendChild($document->createCDATASection($uncomplete['output']));
+				}
+
 				foreach ($class['fails'] as $fail)
 				{
 					$testCase = static::getTestCase($document, $testSuite, $name, $fail['method'], 0, $fail['file']);
@@ -137,6 +153,16 @@ class xunit extends atoum\reports\asynchronous
 
 					$xError->setAttribute('type', 'Exception');
 					$xError->appendChild($document->createCDATASection($exc['value']));
+				}
+
+				foreach ($class['skipped'] as $skipped)
+				{
+					$testCase = static::getTestCase($document, $testSuite, $name, $skipped['method'], 0, null);
+					$testCase->appendChild($xFail = $document->createElement('skipped'));
+
+					$xFail->setAttribute('type', 'Skipped');
+
+					$xFail->appendChild($document->createCDATASection($skipped['message']));
 				}
 			}
 

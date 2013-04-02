@@ -110,6 +110,8 @@ class generator extends atoum\test
 			->then
 				->object($generator->setAlias($alias = uniqid(), $asserter = uniqid()))->isIdenticalTo($generator)
 				->array($generator->getAliases())->isEqualTo(array($alias => $asserter))
+				->object($generator->setAlias($otherAlias = 'FOO', $otherAsserter = uniqid()))->isIdenticalTo($generator)
+				->array($generator->getAliases())->isEqualTo(array($alias => $asserter, 'foo' => $otherAsserter))
 		;
 	}
 

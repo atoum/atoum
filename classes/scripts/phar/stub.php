@@ -40,6 +40,7 @@ class stub extends scripts\runner
 		$this->writeMessage($this->locale->_('Available scripts are:') . PHP_EOL);
 		$this->writeMessage(self::padding . 'builder');
 		$this->writeMessage(self::padding . 'tagger');
+		$this->writeMessage(self::padding . 'treemap');
 
 		$this->runTests = false;
 

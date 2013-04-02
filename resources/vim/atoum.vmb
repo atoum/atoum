@@ -2,7 +2,11 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
+<<<<<<< HEAD
 150
+=======
+153
+>>>>>>> master
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
@@ -10,6 +14,9 @@ autoload/atoum.vim	[[[1
 "=============================================================================
 if !exists('g:atoum#php')
 	let g:atoum#php = 'php'
+endif
+if !exists('g:atoum#debug')
+	let g:atoum#debug = 0
 endif
 if !exists('g:atoum#_')
 	let g:atoum#_ = ''
@@ -39,7 +46,7 @@ function atoum#run(file, bang, args)
 
 		2d _ | resize 1 | redraw
 
-		execute 'silent! %!' . _ . ' ' . a:args
+		execute 'silent! %!' . _ . ' ' . a:args . (g:atoum#debug ? ' --debug' : '')
 		execute 'resize ' . line('$')
 		execute 'nnoremap <silent> <buffer> <CR> :call atoum#run(''' . a:file . ''', '''', ''' . a:args . ''')<CR>'
 		execute 'nnoremap <silent> <buffer> <LocalLeader>g :execute bufwinnr(' . bufnr . ') . ''wincmd w''<CR>'
@@ -91,7 +98,7 @@ function atoum#defineConfiguration(directory, configuration, extension)
 endfunction
 "goToFailure {{{1
 function atoum#goToFailure(line)
-	let pattern = 'In file \(\f\+\) on line \(\d\+\).*$'
+	let pattern = '^In file \(\f\+\) on line \(\d\+\).*$'
 
 	if (matchstr(a:line, pattern) != '')
 		execute bufwinnr('^' . substitute(a:line, pattern, '\1', '') . '$') . 'wincmd w'
@@ -237,7 +244,7 @@ $vimReport
 
 $runner->addReport($vimReport);
 ftplugin/php/atoum.vim	[[[1
-28
+29
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:48:22 CEST 2009
@@ -257,6 +264,7 @@ if (!exists('atoum#disable') || atoum#disable <= 0) && !exists('b:atoum_loaded')
 		endif
 
 		command -buffer -nargs=* -bang Atoum call atoum#run(expand('%'), '<bang>', '<args>')
+		command -buffer -nargs=0 AtoumDebugSwitch let g:atoum#debug=!g:atoum#debug | echomsg 'Atoum debug mode ' . (g:atoum#debug ? 'enabled' : 'disabled')
 		command -buffer -nargs=0 AtoumVimball call atoum#makeVimball()
 
 		let &cpo = s:cpo
@@ -266,16 +274,6 @@ endif
 
 finish
 " vim:filetype=vim foldmethod=marker shiftwidth=3 tabstop=3
-ftplugin/php/atoumdev.vim	[[[1
-8
-"=============================================================================
-" Author:					Frédéric Hardy - http://blog.mageekbox.net
-" Licence:					GPL version 2.0 license
-"=============================================================================
-augroup atoumdev
-	au!
-	au BufEnter ~/Atoum/repository/* lcd ~/Atoum/repository | cs add GTAGS
-augroup end
 syntax/atoum.vim	[[[1
 189
 "=============================================================================

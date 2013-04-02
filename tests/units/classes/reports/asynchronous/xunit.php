@@ -6,7 +6,6 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report,
-	mageekguy\atoum\asserter\exception,
 	mageekguy\atoum\reports\asynchronous as reports
 ;
 
@@ -100,6 +99,14 @@ class xunit extends atoum\test
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '4.xml')))
+			->if($score->addUncompletedMethod($class, $otherMethod, $exitCode = 1, $output = 'output'))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '5.xml')))
+			->if($score->addSkippedMethod($class, $thirdMethod, $message))
+			->and($report->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '6.xml')))
 		;
 	}
 }

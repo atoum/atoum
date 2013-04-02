@@ -4,14 +4,15 @@ namespace mageekguy\atoum;
 
 class autoloader
 {
-	const defaultCacheFileName = 'autoload.atoum.cache';
-
-	protected static $autoloader = null;
+	const defaultFileSuffix = '.php';
+	const defaultCacheFileName = '%s.atoum.cache';
 
 	protected $classes = array();
 	protected $directories = array();
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
+
+	protected static $autoloader = null;
 
 	private static $cacheFile = null;
 
@@ -58,7 +59,7 @@ class autoloader
 		return $this;
 	}
 
-	public function addDirectory($namespace, $directory, $suffix = '.php')
+	public function addDirectory($namespace, $directory, $suffix = self::defaultFileSuffix)
 	{
 		$namespace = strtolower(trim($namespace, '\\') . '\\');
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
@@ -108,7 +109,7 @@ class autoloader
 
 	public function addNamespaceAlias($alias, $target)
 	{
-		$this->namespaceAliases[trim($alias, '\\') . '\\'] = trim($target, '\\') . '\\';
+		$this->namespaceAliases[strtolower(trim($alias, '\\')) . '\\'] = trim($target, '\\') . '\\';
 
 		return $this;
 	}
@@ -120,7 +121,7 @@ class autoloader
 
 	public function addClassAlias($alias, $target)
 	{
-		$this->classAliases[trim($alias, '\\')] = trim($target, '\\');
+		$this->classAliases[strtolower(trim($alias, '\\'))] = trim($target, '\\');
 
 		return $this;
 	}
@@ -134,10 +135,12 @@ class autoloader
 	{
 		$class = strtolower($class);
 
-		$path = (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
+		$path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
 
 		if ($path === null)
 		{
+			$this->classes = array();
+
 			foreach ($this->directories as $namespace => $directories)
 			{
 				if (strpos($class, $namespace) === 0)
@@ -151,9 +154,9 @@ class autoloader
 
 						foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 						{
-							$path = $file->getPathname();
+							$filePath = $file->getPathname();
 
-							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($path, $directoryLength, $suffixLength)))] = $path;
+							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
 						}
 					}
 
@@ -240,11 +243,13 @@ class autoloader
 
 	public static function getCacheFile()
 	{
-		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . static::defaultCacheFileName);
+		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
 	}
 
 	protected function resolveNamespaceAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $alias) === 0)
@@ -258,6 +263,8 @@ class autoloader
 
 	protected function getNamespaceAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->namespaceAliases as $alias => $target)
 		{
 			if (strpos($class, $target) === 0)
@@ -271,6 +278,8 @@ class autoloader
 
 	protected function resolveClassAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->classAliases as $alias => $target)
 		{
 			if ($alias === $class)
@@ -284,6 +293,8 @@ class autoloader
 
 	protected function getClassAlias($class)
 	{
+		$class = strtolower($class);
+
 		foreach ($this->classAliases as $alias => $target)
 		{
 			if ($target === $class)

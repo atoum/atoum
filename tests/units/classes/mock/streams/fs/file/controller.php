@@ -1,19 +1,19 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\file;
+namespace mageekguy\atoum\tests\units\mock\streams\fs\file;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock\streams\file\controller as testedClass
+	mageekguy\atoum\mock\streams\fs\file\controller as testedClass
 ;
 
-require_once __DIR__ . '/../../../../runner.php';
+require_once __DIR__ . '/../../../../../runner.php';
 
 class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream\controller');
+		$this->testedClass->extends('mageekguy\atoum\mock\streams\fs\controller');
 	}
 
 	public function test__construct()
@@ -23,7 +23,7 @@ class controller extends atoum\test
 			->then
 				->string($controller->getContents())->isEmpty()
 				->integer($controller->getPointer())->isZero()
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->boolean($controller->stream_eof())->isFalse()
 				->array($controller->stream_stat())->isNotEmpty()
 		;
@@ -64,7 +64,7 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->and($controller->isNotExecutable())
 			->then
-				->integer($duplicatedController->getMode())->isEqualTo($controller->getMode())
+				->integer($duplicatedController->getPermissions())->isEqualTo($controller->getPermissions())
 			->if($controller->notExists())
 			->then
 				->boolean($duplicatedController->stream_stat())->isEqualTo($controller->stream_stat())
@@ -133,9 +133,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(200)
+				->integer($controller->getPermissions())->isEqualTo(200)
 				->object($controller->isNotReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(200)
+				->integer($controller->getPermissions())->isEqualTo(200)
 		;
 	}
 
@@ -145,15 +145,15 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 			->if($controller->isNotReadable())
 			->then
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isReadable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 		;
 	}
 
@@ -163,9 +163,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(444)
+				->integer($controller->getPermissions())->isEqualTo(444)
 				->object($controller->isNotWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(444)
+				->integer($controller->getPermissions())->isEqualTo(444)
 		;
 	}
 
@@ -176,9 +176,9 @@ class controller extends atoum\test
 			->and($controller->isNotWritable())
 			->then
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(666)
+				->integer($controller->getPermissions())->isEqualTo(666)
 				->object($controller->isWritable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(666)
+				->integer($controller->getPermissions())->isEqualTo(666)
 		;
 	}
 
@@ -188,9 +188,9 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->object($controller->isExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 				->object($controller->isExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 		;
 	}
 
@@ -201,9 +201,9 @@ class controller extends atoum\test
 			->and($controller->isExecutable())
 			->then
 				->object($controller->isNotExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 				->object($controller->isNotExecutable())->isIdenticalTo($controller)
-				->integer($controller->getMode())->isEqualTo(644)
+				->integer($controller->getPermissions())->isEqualTo(644)
 		;
 	}
 
@@ -310,7 +310,16 @@ class controller extends atoum\test
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEmpty()
 					->integer($controller->stream_write('a'))->isEqualTo(1)
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'w', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'w+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'w', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
@@ -346,7 +355,16 @@ class controller extends atoum\test
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEqualTo('a')
 					->integer($controller->stream_write('a'))->isEqualTo(1)
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'c', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'c+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'c', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
@@ -373,7 +391,6 @@ class controller extends atoum\test
 					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'c')
 					->integer($controller->stream_write('d'))->isEqualTo(1)
 					->string($controller->getContents())->isEqualTo('ab' . PHP_EOL . 'cd')
-
 					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
 					->integer($controller->stream_tell())->isZero()
 					->string($controller->stream_read(1))->isEqualTo('a')
@@ -395,7 +412,16 @@ class controller extends atoum\test
 					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'B')
 					->integer($controller->stream_write('C'))->isEqualTo(1)
 					->string($controller->getContents())->isEqualTo('abcdefghijklmnopqrstuvwxyz' . PHP_EOL . 'A' . PHP_EOL . 'BC')
-				->if($controller->isNotWritable())
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'a', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->notExists())
+				->then
+					->boolean($controller->stream_open(uniqid(), 'a+', 0))->isTrue()
+					->integer($controller->getPermissions())->isEqualTo(644)
+				->if($controller->exists())
+				->and($controller->isNotWritable())
 				->then
 					->boolean($controller->stream_open(uniqid(), 'a', 0))->isFalse()
 					->array($controller->getCalls())->isNotEmpty()
@@ -590,7 +616,7 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->stream_metadata(uniqid(), STREAM_META_ACCESS, 755))->isTrue()
-				->integer($controller->getMode())->isEqualTo(755)
+				->integer($controller->getPermissions())->isEqualTo(755)
 		;
 	}
 
@@ -803,7 +829,8 @@ class controller extends atoum\test
 		$this
 			->if($controller = new testedClass(uniqid()))
 			->then
-				->boolean($controller->dir_opendir(uniqid(), STREAM_MKDIR_RECURSIVE))->isFalse()
+				->boolean($controller->dir_opendir(uniqid(), 0x00))->isFalse()
+				->boolean($controller->dir_opendir(uniqid(), 0x04))->isFalse()
 		;
 	}
 
@@ -831,18 +858,6 @@ class controller extends atoum\test
 			->if($controller = new testedClass(uniqid()))
 			->then
 				->boolean($controller->dir_rewinddir())->isFalse()
-		;
-	}
-
-	public function testInvoke()
-	{
-		$this
-			->if($controller = new testedClass(uniqid()))
-			->then
-				->exception(function() use ($controller, & $method) { $controller->invoke($method = uniqid(), array()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Method streamWrapper::' . $method . '() does not exist')
-				->boolean($controller->invoke('unlink', array(uniqid())))->isTrue()
 		;
 	}
 }

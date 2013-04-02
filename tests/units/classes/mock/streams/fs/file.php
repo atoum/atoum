@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams;
+namespace mageekguy\atoum\tests\units\mock\streams\fs;
 
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\mock\streams\file as testedClass
+	mageekguy\atoum\mock\streams\fs\file as testedClass
 ;
 
-require_once __DIR__ . '/../../../runner.php';
+require_once __DIR__ . '/../../../../runner.php';
 
 class file extends atoum\test
 {
@@ -60,9 +60,9 @@ class file extends atoum\test
 			->if($file = testedClass::get())
 			->then
 				->integer(filesize($file))->isEqualTo(0)
-			->if($file->contains('abcdefghijklmnopqrstuvwxyz' . PHP_EOL))
+			->if($file->contains($data = ('abcdefghijklmnopqrstuvwxyz' . PHP_EOL)))
 			->then
-				->integer(filesize($file))->isEqualTo(27)
+				->integer(filesize($file))->isEqualTo(strlen($data))
 		;
 	}
 

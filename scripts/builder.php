@@ -12,7 +12,8 @@ $builder = new scripts\builder(__FILE__);
 set_error_handler(function($error, $message, $file, $line) use ($builder) {
 		if (error_reporting() !== 0)
 		{
-			$builder->writeError(sprintf($builder->getLocale()->_('Error: %s'), $message));
+			$builder->writeError($message);
+
 			exit($error);
 		}
 	}
@@ -24,7 +25,8 @@ try
 }
 catch (\exception $exception)
 {
-	$builder->writeError(sprintf($builder->getLocale()->_('Exception: %s'), $exception->getMessage()));
+	$builder->writeError($exception->getMessage());
+
 	exit($exception->getCode());
 }
 

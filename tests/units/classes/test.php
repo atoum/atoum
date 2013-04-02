@@ -282,6 +282,15 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testGetTestedClassPath()
+		{
+			$this
+				->if($testedClass = new \reflectionClass($this->getTestedClassName()))
+				->then
+					->string($this->getTestedClassPath())->isEqualTo($testedClass->getFilename())
+			;
+		}
+
 		public function testSetTestsSubNamespace()
 		{
 			$this
