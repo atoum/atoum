@@ -650,6 +650,45 @@ class score extends atoum\test
 		;
 	}
 
+	public function testGetLastVoidMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastVoidMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastVoidMethod())->isNull()
+			->if($score->addVoidMethod($class = uniqid(), $method = uniqid()))
+			->then
+				->array($score->getLastVoidMethod())->isEqualTo(array(
+						'class' => $class,
+						'method' => $method
+					)
+				)
+		;
+	}
+
+	public function testGetLastSkippedMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastSkippedMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastSkippedMethod())->isNull()
+			->if($score->addSkippedMethod($class = uniqid(), $method = uniqid(), $message = uniqid()))
+			->then
+				->array($score->getLastSkippedMethod())->isEqualTo(array(
+						'class' => $class,
+						'method' => $method,
+						'message' => $message
+					)
+				)
+		;
+	}
+
 	public function testGetPassAssertions()
 	{
 		$this

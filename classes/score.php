@@ -78,6 +78,11 @@ class score
 		return $this->voidMethods;
 	}
 
+	public function getLastVoidMethod()
+	{
+		return end($this->voidMethods) ?: null;
+	}
+
 	public function getVoidMethodNumber()
 	{
 		return sizeof($this->voidMethods);
@@ -96,6 +101,11 @@ class score
 	public function getSkippedMethods()
 	{
 		return $this->skippedMethods;
+	}
+
+	public function getLastSkippedMethod()
+	{
+		return end($this->skippedMethods) ?: null;
 	}
 
 	public function getSkippedMethodNumber()
@@ -334,7 +344,7 @@ class score
 		return $this;
 	}
 
-	public function addVoidMethod($file, $class, $method)
+	public function addVoidMethod($class, $method)
 	{
 		$this->voidMethods[] = array(
 			'class' => $class,

@@ -31,6 +31,11 @@ class tap extends report\fields\event
 		);
 	}
 
+	public function __toString()
+	{
+		return $this->testLine;
+	}
+
 	public function handleEvent($event, atoum\observable $observable)
 	{
 		$eventHandled = parent::handleEvent($event, $observable);
@@ -60,27 +65,17 @@ class tap extends report\fields\event
 					break;
 
 				case test::void:
-					$lastVoidMethod = self::getLast($observable->getScore()->getVoidMethods());
+					$lastVoidMethod = $observable->getScore()->getLastVoidMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' # TODO ' . trim($lastVoidMethod['class']) . '::' . trim($lastVoidMethod['method']) . '()' . PHP_EOL;
 					break;
 
 				case test::skipped:
-					$lastSkippedMethod = self::getLast($observable->getScore()->getSkippedMethods());
+					$lastSkippedMethod = $observable->getScore()->getLastSkippedMethod();
 					$this->testLine = 'ok ' . ++$this->testPoint . ' # SKIP ' . trim($lastSkippedMethod['class']) . '::' . trim($lastSkippedMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastSkippedMethod['message'])) . PHP_EOL;
 					break;
 			}
 		}
 
 		return $eventHandled;
-	}
-
-	public function __toString()
-	{
-		return $this->testLine;
-	}
-
-	private static function getLast(array $array)
-	{
-		return end($array);
 	}
 }
