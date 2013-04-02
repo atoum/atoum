@@ -2,11 +2,7 @@
 UseVimball
 finish
 autoload/atoum.vim	[[[1
-<<<<<<< HEAD
-150
-=======
 153
->>>>>>> master
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
