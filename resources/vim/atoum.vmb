@@ -3,10 +3,14 @@ UseVimball
 finish
 autoload/atoum.vim	[[[1
 <<<<<<< HEAD
+<<<<<<< HEAD
 153
 =======
 150
 >>>>>>> Improve vim plugin.
+=======
+153
+>>>>>>> Typo.
 "=============================================================================
 " Author:					Frédéric Hardy - http://blog.mageekbox.net
 " Date:						Fri Sep 25 14:29:10 CEST 2009
