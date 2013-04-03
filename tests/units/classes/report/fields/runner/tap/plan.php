@@ -37,7 +37,7 @@ class plan extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(runner::runStart, $runner))
 			->then
-				->castToString($field)->isEqualTo('1..' . $testMethodNumber . PHP_EOL)
+				->castToString($field)->isEqualTo('1..' . $testMethodNumber)
 		;
 	}
 }
