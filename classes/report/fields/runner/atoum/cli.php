@@ -24,6 +24,11 @@ class cli extends report\fields\runner\atoum
 		;
 	}
 
+	public function __toString()
+	{
+		return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize(sprintf($this->locale->_('atoum version %s by %s (%s)'), $this->version, $this->author, $this->path)) . PHP_EOL);
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt;
@@ -46,10 +51,5 @@ class cli extends report\fields\runner\atoum
 	public function getColorizer()
 	{
 		return $this->colorizer;
-	}
-
-	public function __toString()
-	{
-		return ($this->author === null || $this->version === null ? '' : $this->prompt . $this->colorizer->colorize(sprintf($this->locale->_('atoum version %s by %s (%s)'), $this->version, $this->author, $this->path)) . PHP_EOL);
 	}
 }

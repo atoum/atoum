@@ -33,6 +33,42 @@ class cli extends outputs
 		;
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		if ($this->runner !== null)
+		{
+			$outputs = $this->runner->getScore()->getOutputs();
+
+			$sizeOfOutputs = sizeof($outputs);
+
+			if ($sizeOfOutputs > 0)
+			{
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d output', 'There are %d outputs', $sizeOfOutputs), $sizeOfOutputs))
+					) .
+					PHP_EOL
+				;
+
+				foreach ($outputs as $output)
+				{
+					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize(sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']))) .	PHP_EOL;
+
+					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
+					{
+						$string .= $this->outputPrompt . $this->outputColorizer->colorize($line) . PHP_EOL;
+					}
+				}
+			}
+		}
+
+		return $string;
+	}
+
 	public function setTitlePrompt(prompt $prompt = null)
 	{
 		$this->titlePrompt = $prompt ?: new prompt();
@@ -103,41 +139,5 @@ class cli extends outputs
 	public function getOutputColorizer()
 	{
 		return $this->outputColorizer;
-	}
-
-	public function __toString()
-	{
-		$string = '';
-
-		if ($this->runner !== null)
-		{
-			$outputs = $this->runner->getScore()->getOutputs();
-
-			$sizeOfOutputs = sizeof($outputs);
-
-			if ($sizeOfOutputs > 0)
-			{
-				$string .=
-					$this->titlePrompt .
-					sprintf(
-						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d output', 'There are %d outputs', $sizeOfOutputs), $sizeOfOutputs))
-					) .
-					PHP_EOL
-				;
-
-				foreach ($outputs as $output)
-				{
-					$string .= $this->methodPrompt .  sprintf('%s:', $this->methodColorizer->colorize(sprintf($this->locale->_('In %s::%s()'), $output['class'], $output['method']))) .  PHP_EOL;
-
-					foreach (explode(PHP_EOL, rtrim($output['value'])) as $line)
-					{
-						$string .= $this->outputPrompt . $this->outputColorizer->colorize($line) . PHP_EOL;
-					}
-				}
-			}
-		}
-
-		return $string;
 	}
 }

@@ -27,6 +27,19 @@ class cli extends report\fields\runner\php\path
 		;
 	}
 
+	public function __toString()
+	{
+		return
+			$this->prompt .
+			sprintf(
+				$this->locale->_('%1$s: %2$s'),
+				$this->titleColorizer->colorize($this->locale->_('PHP path')),
+				$this->pathColorizer->colorize($this->path)
+			) .
+			PHP_EOL
+		;
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt();
@@ -61,18 +74,5 @@ class cli extends report\fields\runner\php\path
 	public function getPathColorizer()
 	{
 		return $this->pathColorizer;
-	}
-
-	public function __toString()
-	{
-		return
-			$this->prompt .
-			sprintf(
-				$this->locale->_('%1$s: %2$s'),
-				$this->titleColorizer->colorize($this->locale->_('PHP path')),
-				$this->pathColorizer->colorize($this->path)
-			) .
-			PHP_EOL
-		;
 	}
 }

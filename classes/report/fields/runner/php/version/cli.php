@@ -28,6 +28,25 @@ class cli extends report\fields\runner\php\version
 		;
 	}
 
+	public function __toString()
+	{
+		$string =
+			$this->titlePrompt .
+			sprintf(
+				'%s:',
+				$this->titleColorizer->colorize($this->locale->_('PHP version'))
+			) .
+			PHP_EOL
+		;
+
+		foreach (explode(PHP_EOL, $this->version) as $line)
+		{
+			$string .= $this->versionPrompt . $this->versionColorizer->colorize(rtrim($line)) . PHP_EOL;
+		}
+
+		return $string;
+	}
+
 	public function setTitlePrompt(prompt $prompt = null)
 	{
 		$this->titlePrompt = $prompt ?: new prompt();
@@ -74,24 +93,5 @@ class cli extends report\fields\runner\php\version
 	public function getVersionColorizer()
 	{
 		return $this->versionColorizer;
-	}
-
-	public function __toString()
-	{
-		$string =
-			$this->titlePrompt .
-			sprintf(
-				'%s:',
-				$this->titleColorizer->colorize($this->locale->_('PHP version'))
-			) .
-			PHP_EOL
-		;
-
-		foreach (explode(PHP_EOL, $this->version) as $line)
-		{
-			$string .= $this->versionPrompt . $this->versionColorizer->colorize(rtrim($line)) . PHP_EOL;
-		}
-
-		return $string;
 	}
 }

@@ -27,42 +27,6 @@ class cli extends fields\runner\result
 		;
 	}
 
-	public function setPrompt(prompt $prompt = null)
-	{
-		$this->prompt = $prompt ?: new prompt();
-
-		return $this;
-	}
-
-	public function getPrompt()
-	{
-		return $this->prompt;
-	}
-
-	public function setSuccessColorizer(colorizer $colorizer = null)
-	{
-		$this->successColorizer = $colorizer ?: new colorizer();
-
-		return $this;
-	}
-
-	public function getSuccessColorizer()
-	{
-		return $this->successColorizer;
-	}
-
-	public function setFailureColorizer(colorizer $colorizer = null)
-	{
-		$this->failureColorizer = $colorizer ?: new colorizer();
-
-		return $this;
-	}
-
-	public function getFailureColorizer()
-	{
-		return $this->failureColorizer;
-	}
-
 	public function __toString()
 	{
 		$string = $this->prompt;
@@ -104,5 +68,41 @@ class cli extends fields\runner\result
 		}
 
 		return $string . PHP_EOL;
+	}
+
+	public function setPrompt(prompt $prompt = null)
+	{
+		$this->prompt = $prompt ?: new prompt();
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
+
+	public function setSuccessColorizer(colorizer $colorizer = null)
+	{
+		$this->successColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getSuccessColorizer()
+	{
+		return $this->successColorizer;
+	}
+
+	public function setFailureColorizer(colorizer $colorizer = null)
+	{
+		$this->failureColorizer = $colorizer ?: new colorizer();
+
+		return $this;
+	}
+
+	public function getFailureColorizer()
+	{
+		return $this->failureColorizer;
 	}
 }

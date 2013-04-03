@@ -27,6 +27,23 @@ class cli extends report\fields\runner\tests\duration
 		;
 	}
 
+	public function __toString()
+	{
+		return $this->prompt .
+			sprintf(
+				$this->locale->_('%s: %s.'),
+				$this->titleColorizer->colorize($this->locale->__('Total test duration', 'Total tests duration', $this->testNumber)),
+				$this->durationColorizer->colorize(
+					sprintf(
+						$this->value === null ? $this->locale->_('unknown') : $this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
+						$this->value
+					)
+				)
+			) .
+			PHP_EOL
+		;
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt();
@@ -61,22 +78,5 @@ class cli extends report\fields\runner\tests\duration
 	public function getDurationColorizer()
 	{
 		return $this->durationColorizer;
-	}
-
-	public function __toString()
-	{
-		return $this->prompt .
-			sprintf(
-				$this->locale->_('%s: %s.'),
-				$this->titleColorizer->colorize($this->locale->__('Total test duration', 'Total tests duration', $this->testNumber)),
-				$this->durationColorizer->colorize(
-					sprintf(
-						$this->value === null ? $this->locale->_('unknown') : $this->locale->__('%4.2f second', '%4.2f seconds', $this->value),
-						$this->value
-					)
-				)
-			) .
-			PHP_EOL
-		;
 	}
 }

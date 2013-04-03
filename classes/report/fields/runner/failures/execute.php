@@ -25,30 +25,6 @@ class execute extends runner\failures
 		;
 	}
 
-	public function setCommand($command)
-	{
-		$this->command = (string) $command;
-
-		return $this;
-	}
-
-	public function getCommand()
-	{
-		return $this->command;
-	}
-
-	public function setAdapter(adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
-
 	public function __toString()
 	{
 		if ($this->runner !== null)
@@ -74,5 +50,29 @@ class execute extends runner\failures
 		}
 
 		return '';
+	}
+
+	public function setCommand($command)
+	{
+		$this->command = (string) $command;
+
+		return $this;
+	}
+
+	public function getCommand()
+	{
+		return $this->command;
+	}
+
+	public function setAdapter(adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
 	}
 }

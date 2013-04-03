@@ -27,6 +27,22 @@ class cli extends report\fields\runner\tests\memory
 		;
 	}
 
+	public function __toString()
+	{
+		$title = $this->locale->__('Total test memory usage', 'Total tests memory usage', $this->testNumber);
+
+		if ($this->value === null)
+		{
+			$memory = $this->locale->_('unknown');
+		}
+		else
+		{
+			$memory = sprintf($this->locale->_('%4.2f Mb'), $this->value / 1048576);
+		}
+
+		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory)) . PHP_EOL;
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt();
@@ -61,21 +77,5 @@ class cli extends report\fields\runner\tests\memory
 	public function getMemoryColorizer()
 	{
 		return $this->memoryColorizer;
-	}
-
-	public function __toString()
-	{
-		$title = $this->locale->__('Total test memory usage', 'Total tests memory usage', $this->testNumber);
-
-		if ($this->value === null)
-		{
-			$memory = $this->locale->_('unknown');
-		}
-		else
-		{
-			$memory = sprintf($this->locale->_('%4.2f Mb'), $this->value / 1048576);
-		}
-
-		return $this->prompt . sprintf($this->locale->_('%s: %s.'), $this->titleColorizer->colorize($title), $this->memoryColorizer->colorize($memory)) . PHP_EOL;
 	}
 }

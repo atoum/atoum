@@ -33,6 +33,67 @@ class cli extends report\fields\runner\exceptions
 		;
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		if ($this->runner !== null)
+		{
+			$exceptions = $this->runner->getScore()->getExceptions();
+
+			$sizeOfErrors = sizeof($exceptions);
+
+			if ($sizeOfErrors > 0)
+			{
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->colorizeTitle(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $sizeOfErrors), $sizeOfErrors))
+					) .
+					PHP_EOL
+				;
+
+				$class = null;
+				$method = null;
+
+				foreach ($exceptions as $exception)
+				{
+					if ($exception['class'] !== $class || $exception['method'] !== $method)
+					{
+						$string .=
+							$this->methodPrompt .
+							sprintf(
+								$this->locale->_('%s:'),
+								$this->colorizeMethod($exception['class'] . '::' . $exception['method'] . '()')
+							) .
+							PHP_EOL
+						;
+
+						$class = $exception['class'];
+						$method = $exception['method'];
+					}
+
+					$string .=
+						$this->exceptionPrompt .
+						sprintf(
+							$this->locale->_('%s:'),
+							$this->colorizeException(sprintf($this->locale->_('Exception throwed in file %s on line %d'), $exception['file'], $exception['line']))
+						) .
+						PHP_EOL
+					;
+
+					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
+					{
+						$string .= $this->exceptionPrompt . $line . PHP_EOL;
+					}
+				}
+			}
+		}
+
+		return $string;
+	}
+
 	public function setTitlePrompt(prompt $prompt = null)
 	{
 		$this->titlePrompt = $prompt ?: new prompt();
@@ -103,67 +164,6 @@ class cli extends report\fields\runner\exceptions
 	public function getExceptionColorizer()
 	{
 		return $this->exceptionColorizer;
-	}
-
-	public function __toString()
-	{
-		$string = '';
-
-		if ($this->runner !== null)
-		{
-			$exceptions = $this->runner->getScore()->getExceptions();
-
-			$sizeOfErrors = sizeof($exceptions);
-
-			if ($sizeOfErrors > 0)
-			{
-				$string .=
-					$this->titlePrompt .
-					sprintf(
-						$this->locale->_('%s:'),
-						$this->colorizeTitle(sprintf($this->locale->__('There is %d exception', 'There are %d exceptions', $sizeOfErrors), $sizeOfErrors))
-					) .
-					PHP_EOL
-				;
-
-				$class = null;
-				$method = null;
-
-				foreach ($exceptions as $exception)
-				{
-					if ($exception['class'] !== $class || $exception['method'] !== $method)
-					{
-						$string .=
-							$this->methodPrompt .
-							sprintf(
-								$this->locale->_('%s:'),
-								$this->colorizeMethod($exception['class'] . '::' . $exception['method'] . '()')
-							) .
-							PHP_EOL
-						;
-
-						$class = $exception['class'];
-						$method = $exception['method'];
-					}
-
-					$string .=
-						$this->exceptionPrompt .
-						sprintf(
-							$this->locale->_('%s:'),
-							$this->colorizeException(sprintf($this->locale->_('Exception throwed in file %s on line %d'), $exception['file'], $exception['line']))
-						) .
-						PHP_EOL
-					;
-
-					foreach (explode(PHP_EOL, rtrim($exception['value'])) as $line)
-					{
-						$string .= $this->exceptionPrompt . $line . PHP_EOL;
-					}
-				}
-			}
-		}
-
-		return $string;
 	}
 
 	private function colorizeTitle($title)

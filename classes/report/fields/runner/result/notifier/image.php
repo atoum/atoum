@@ -14,6 +14,18 @@ abstract class image extends notifier
 	protected $successImage = null;
 	protected $failureImage = null;
 
+	public function __toString()
+	{
+		try
+		{
+			return parent::__toString();
+		}
+		catch(exceptions\runtime $exception)
+		{
+			return $exception->getMessage() . PHP_EOL;
+		}
+	}
+
 	public function setSuccessImage($path)
 	{
 		$this->successImage = $path;
@@ -53,14 +65,5 @@ abstract class image extends notifier
 	public function send($title, $message, $success)
 	{
 		return parent::send($title, $message, $this->getImage($success));
-	}
-
-	public function __toString()
-	{
-		try {
-			return parent::__toString();
-		} catch(exceptions\runtime $exception) {
-			return $exception->getMessage() . PHP_EOL;
-		}
 	}
 }

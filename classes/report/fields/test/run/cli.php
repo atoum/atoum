@@ -25,6 +25,20 @@ class cli extends report\fields\test\run
 		;
 	}
 
+	public function __toString()
+	{
+		return $this->prompt .
+			(
+				$this->testClass === null
+				?
+				$this->colorizer->colorize($this->locale->_('There is currently no test running.'))
+				:
+				sprintf($this->locale->_('%s...'), $this->colorizer->colorize($this->testClass))
+			) .
+			PHP_EOL
+		;
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt();
@@ -47,19 +61,5 @@ class cli extends report\fields\test\run
 	public function getColorizer()
 	{
 		return $this->colorizer;
-	}
-
-	public function __toString()
-	{
-		return $this->prompt .
-			(
-				$this->testClass === null
-				?
-				$this->colorizer->colorize($this->locale->_('There is currently no test running.'))
-				:
-				sprintf($this->locale->_('%s...'), $this->colorizer->colorize($this->testClass))
-			) .
-			PHP_EOL
-		;
 	}
 }

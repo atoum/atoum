@@ -20,18 +20,6 @@ class cli extends report\fields\test\event
 		$this->setProgressBar();
 	}
 
-	public function setProgressBar(progressBar $progressBar = null)
-	{
-		$this->progressBar = $progressBar ?: new progressBar();
-
-		return $this;
-	}
-
-	public function getProgressBar()
-	{
-		return $this->progressBar;
-	}
-
 	public function __toString()
 	{
 		$string = '';
@@ -90,5 +78,17 @@ class cli extends report\fields\test\event
 		}
 
 		return $string;
+	}
+
+	public function setProgressBar(progressBar $progressBar = null)
+	{
+		$this->progressBar = $progressBar ?: new progressBar();
+
+		return $this;
+	}
+
+	public function getProgressBar()
+	{
+		return $this->progressBar;
 	}
 }

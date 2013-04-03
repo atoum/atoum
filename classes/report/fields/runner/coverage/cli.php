@@ -28,6 +28,24 @@ class cli extends report\fields\runner\coverage
 		;
 	}
 
+	public function __toString()
+	{
+		return $this->prompt .
+			sprintf(
+				'%s: %s.',
+				$this->titleColorizer->colorize($this->locale->_('Code coverage')),
+				$this->coverageColorizer->colorize(
+					$this->coverage === null
+					?
+					$this->locale->_('unknown')
+					:
+					sprintf($this->locale->_('%3.2f%%'), round($this->coverage->getValue() * 100, 2))
+				)
+			) .
+			PHP_EOL
+		;
+	}
+
 	public function setPrompt(prompt $prompt = null)
 	{
 		$this->prompt = $prompt ?: new prompt();
@@ -62,23 +80,5 @@ class cli extends report\fields\runner\coverage
 	public function getCoverageColorizer()
 	{
 		return $this->coverageColorizer;
-	}
-
-	public function __toString()
-	{
-		return $this->prompt .
-			sprintf(
-				'%s: %s.',
-				$this->titleColorizer->colorize($this->locale->_('Code coverage')),
-				$this->coverageColorizer->colorize(
-					$this->coverage === null
-					?
-					$this->locale->_('unknown')
-					:
-					sprintf($this->locale->_('%3.2f%%'), round($this->coverage->getValue() * 100, 2))
-				)
-			) .
-			PHP_EOL
-		;
 	}
 }

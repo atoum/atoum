@@ -2,7 +2,6 @@
 
 namespace mageekguy\atoum\report\fields\runner\failures\execute\unix;
 
-
 use
 	mageekguy\atoum,
 	mageekguy\atoum\report\fields\runner\failures

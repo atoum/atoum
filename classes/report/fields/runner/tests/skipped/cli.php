@@ -30,6 +30,37 @@ class cli extends skipped
 		;
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		if ($this->runner !== null)
+		{
+			$skippedMethods = $this->runner->getScore()->getSkippedMethods();
+
+			$sizeOfSkippedMethod = sizeof($skippedMethods);
+
+			if ($sizeOfSkippedMethod > 0)
+			{
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d skipped method', 'There are %d skipped methods', $sizeOfSkippedMethod), $sizeOfSkippedMethod))
+					) .
+					PHP_EOL
+				;
+
+				foreach ($skippedMethods as $skippedMethod)
+				{
+					$string .= $this->methodPrompt . sprintf($this->locale->_('%s: %s'), $this->methodColorizer->colorize(sprintf('%s::%s()', $skippedMethod['class'], $skippedMethod['method'])), $this->messageColorizer->colorize($skippedMethod['message'])) . PHP_EOL;
+				}
+			}
+		}
+
+		return $string;
+	}
+
 	public function setTitlePrompt(prompt $prompt = null)
 	{
 		$this->titlePrompt = $prompt ?: new prompt();
@@ -88,36 +119,5 @@ class cli extends skipped
 	public function getMessageColorizer()
 	{
 		return $this->messageColorizer;
-	}
-
-	public function __toString()
-	{
-		$string = '';
-
-		if ($this->runner !== null)
-		{
-			$skippedMethods = $this->runner->getScore()->getSkippedMethods();
-
-			$sizeOfSkippedMethod = sizeof($skippedMethods);
-
-			if ($sizeOfSkippedMethod > 0)
-			{
-				$string .=
-					$this->titlePrompt .
-					sprintf(
-						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d skipped method', 'There are %d skipped methods', $sizeOfSkippedMethod), $sizeOfSkippedMethod))
-					) .
-					PHP_EOL
-				;
-
-				foreach ($skippedMethods as $skippedMethod)
-				{
-					$string .= $this->methodPrompt . sprintf($this->locale->_('%s: %s'), $this->methodColorizer->colorize(sprintf('%s::%s()', $skippedMethod['class'], $skippedMethod['method'])), $this->messageColorizer->colorize($skippedMethod['message'])) . PHP_EOL;
-				}
-			}
-		}
-
-		return $string;
 	}
 }

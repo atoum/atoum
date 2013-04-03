@@ -32,6 +32,55 @@ class cli extends report\fields\runner\tests\uncompleted
 		;
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		if ($this->runner !== null)
+		{
+			$uncompletedMethods = $this->runner->getScore()->getUncompletedMethods();
+
+			$sizeOfUncompletedMethod = sizeof($uncompletedMethods);
+
+			if ($sizeOfUncompletedMethod > 0)
+			{
+				$string .=
+					$this->titlePrompt .
+					sprintf(
+						$this->locale->_('%s:'),
+						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', $sizeOfUncompletedMethod), $sizeOfUncompletedMethod))
+					) .
+					PHP_EOL
+				;
+
+				foreach ($uncompletedMethods as $uncompletedMethod)
+				{
+					$string .=
+						$this->methodPrompt .
+						sprintf(
+							$this->locale->_('%s:'),
+							$this->methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $uncompletedMethod['class'], $uncompletedMethod['method'], $uncompletedMethod['exitCode']))
+						) .
+						PHP_EOL
+					;
+
+					$lines = explode(PHP_EOL, trim($uncompletedMethod['output']));
+
+					$string .= $this->outputPrompt . 'output(' . strlen($uncompletedMethod['output']) . ') "' . array_shift($lines);
+
+					foreach ($lines as $line)
+					{
+						$string .= PHP_EOL . $this->outputPrompt . $line;
+					}
+
+					$string .= '"' . PHP_EOL;
+				}
+			}
+		}
+
+		return $string;
+	}
+
 	public function setTitlePrompt(prompt $prompt = null)
 	{
 		$this->titlePrompt = $prompt ?: new prompt();
@@ -102,54 +151,5 @@ class cli extends report\fields\runner\tests\uncompleted
 	public function getOutputColorizer()
 	{
 		return $this->outputColorizer;
-	}
-
-	public function __toString()
-	{
-		$string = '';
-
-		if ($this->runner !== null)
-		{
-			$uncompletedMethods = $this->runner->getScore()->getUncompletedMethods();
-
-			$sizeOfUncompletedMethod = sizeof($uncompletedMethods);
-
-			if ($sizeOfUncompletedMethod > 0)
-			{
-				$string .=
-					$this->titlePrompt .
-					sprintf(
-						$this->locale->_('%s:'),
-						$this->titleColorizer->colorize(sprintf($this->locale->__('There is %d uncompleted method', 'There are %d uncompleted methods', $sizeOfUncompletedMethod), $sizeOfUncompletedMethod))
-					) .
-					PHP_EOL
-				;
-
-				foreach ($uncompletedMethods as $uncompletedMethod)
-				{
-					$string .=
-						$this->methodPrompt .
-						sprintf(
-							$this->locale->_('%s:'),
-							$this->methodColorizer->colorize(sprintf('%s::%s() with exit code %d', $uncompletedMethod['class'], $uncompletedMethod['method'], $uncompletedMethod['exitCode']))
-						) .
-						PHP_EOL
-					;
-
-					$lines = explode(PHP_EOL, trim($uncompletedMethod['output']));
-
-					$string .= $this->outputPrompt . 'output(' . strlen($uncompletedMethod['output']) . ') "' . array_shift($lines);
-
-					foreach ($lines as $line)
-					{
-						$string .= PHP_EOL . $this->outputPrompt . $line;
-					}
-
-					$string .= '"' . PHP_EOL;
-				}
-			}
-		}
-
-		return $string;
 	}
 }

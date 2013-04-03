@@ -21,11 +21,6 @@ class cli extends report\fields\runner\event
 		$this->progressBar = $progressBar ?: new progressBar();
 	}
 
-	public function getProgressBar()
-	{
-		return $this->progressBar;
-	}
-
 	public function __toString()
 	{
 		$string = '';
@@ -82,5 +77,10 @@ class cli extends report\fields\runner\event
 		}
 
 		return $string;
+	}
+
+	public function getProgressBar()
+	{
+		return $this->progressBar;
 	}
 }
