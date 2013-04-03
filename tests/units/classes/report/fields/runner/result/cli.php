@@ -7,8 +7,7 @@ use
 	mageekguy\atoum\locale,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\tests\units
+	mageekguy\atoum\report\fields\runner\result\cli as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -23,7 +22,7 @@ class cli extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->then
 				->object($field->getPrompt())->isEqualTo(new prompt())
 				->object($field->getSuccessColorizer())->isEqualTo(new colorizer())
@@ -41,7 +40,7 @@ class cli extends atoum\test
 	public function testSetPrompt()
 	{
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->then
 				->object($field->setPrompt($prompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getPrompt())->isEqualTo($prompt)
@@ -55,7 +54,7 @@ class cli extends atoum\test
 	public function testSetSuccessColorizer()
 	{
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->then
 				->object($field->setSuccessColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getSuccessColorizer())->isIdenticalTo($colorizer)
@@ -69,7 +68,7 @@ class cli extends atoum\test
 	public function testSetFailureColorizer()
 	{
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->then
 				->object($field->setFailureColorizer($colorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getFailureColorizer())->isIdenticalTo($colorizer)
@@ -92,7 +91,7 @@ class cli extends atoum\test
 			->and($runner->setScore($score))
 			->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 			->and($runner->getMockController()->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
-			->and($field = new runner\result\cli())
+			->and($field = new testedClass())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isFalse()
 				->variable($field->getTestNumber())->isNull()
@@ -182,7 +181,7 @@ class cli extends atoum\test
 		$this->startCase('Success with one test, one method and one assertion, no fail, no error, no exception');
 
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->and($field->setPrompt($prompt))
 			->and($field->setSuccessColorizer($successColorizer))
 			->and($field->setFailureColorizer($failureColorizer))
@@ -227,7 +226,7 @@ class cli extends atoum\test
 		$scoreController->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX);
 
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->and($field->setPrompt($prompt))
 			->and($field->setSuccessColorizer($successColorizer))
 			->and($field->setFailureColorizer($failureColorizer))
@@ -272,7 +271,7 @@ class cli extends atoum\test
 		$scoreController->getUncompletedMethodNumber = 1;
 
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->and($field->setPrompt($prompt))
 			->and($field->setSuccessColorizer($successColorizer))
 			->and($field->setFailureColorizer($failureColorizer))
@@ -321,7 +320,7 @@ class cli extends atoum\test
 		$scoreController->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX);
 
 		$this
-			->if($field = new runner\result\cli())
+			->if($field = new testedClass())
 			->and($field->setPrompt($prompt))
 			->and($field->setSuccessColorizer($successColorizer))
 			->and($field->setFailureColorizer($failureColorizer))
