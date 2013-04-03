@@ -81,30 +81,30 @@ abstract class asserter
 
 	public function getTypeOf($mixed)
 	{
-		switch (true)
+		switch (gettype($mixed))
 		{
-			case is_bool($mixed):
+			case 'boolean':
 				return sprintf($this->locale->_('boolean(%s)'), ($mixed == false ? $this->locale->_('false') : $this->locale->_('true')));
 
-			case is_integer($mixed):
+			case 'integer':
 				return sprintf($this->locale->_('integer(%s)'), $mixed);
 
-			case is_float($mixed):
+			case 'double':
 				return sprintf($this->locale->_('float(%s)'), $mixed);
 
-			case is_null($mixed):
+			case 'NULL':
 				return $this->locale->_('null');
 
-			case is_object($mixed):
+			case 'object':
 				return sprintf($this->locale->_('object(%s)'), get_class($mixed));
 
-			case is_resource($mixed):
+			case 'resource':
 				return sprintf($this->locale->_('resource(%s)'), $mixed);
 
-			case is_string($mixed):
+			case 'string':
 				return sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), $mixed);
 
-			case is_array($mixed):
+			case 'array':
 				return sprintf($this->locale->_('array(%s)'), sizeof($mixed));
 		}
 	}
