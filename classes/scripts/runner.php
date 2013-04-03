@@ -700,14 +700,30 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$report = new atoum\reports\realtime\cli\light();
-						$report->addWriter($script->getOutputWriter());
+						$lightReport = new atoum\reports\realtime\cli\light();
+						$lightReport->addWriter($script->getOutputWriter());
 
-						$script->getRunner()->addReport($report);
+						$script->getRunner()->addReport($lightReport);
 					},
 					array('-ulr', '--use-light-report'),
 					null,
 					$this->locale->_('Use "light" CLI report')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$tapReport = new atoum\reports\realtime\tap();
+						$tapReport->addWriter($script->getOutputWriter());
+
+						$script->getRunner()->addReport($tapReport);
+					},
+					array('-utr', '--use-tap-report'),
+					null,
+					$this->locale->_('Use TAP report')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
