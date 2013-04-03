@@ -10,6 +10,7 @@ use
 
 abstract class asserter
 {
+	protected $locale = null;
 	protected $generator = null;
 
 	public function __construct(asserter\generator $generator = null)
@@ -53,19 +54,22 @@ abstract class asserter
 		return $this;
 	}
 
-	public function getScore()
+	public function setLocale(locale $locale)
 	{
-		return $this->generator->getScore();
+		$this->locale = $locale;
+
+		return $this;
 	}
 
 	public function getLocale()
 	{
-		return $this->generator->getLocale();
+		return $this->locale;
 	}
 
 	public function setGenerator(asserter\generator $generator = null)
 	{
 		$this->generator = $generator ?: new asserter\generator();
+		$this->locale = $this->generator->getLocale();
 
 		return $this;
 	}
@@ -80,28 +84,28 @@ abstract class asserter
 		switch (gettype($mixed))
 		{
 			case 'boolean':
-				return sprintf($this->getLocale()->_('boolean(%s)'), ($mixed == false ? $this->getLocale()->_('false') : $this->getLocale()->_('true')));
+				return sprintf($this->locale->_('boolean(%s)'), ($mixed == false ? $this->locale->_('false') : $this->locale->_('true')));
 
 			case 'integer':
-				return sprintf($this->getLocale()->_('integer(%s)'), $mixed);
+				return sprintf($this->locale->_('integer(%s)'), $mixed);
 
 			case 'double':
-				return sprintf($this->getLocale()->_('float(%s)'), $mixed);
+				return sprintf($this->locale->_('float(%s)'), $mixed);
 
 			case 'NULL':
-				return 'null';
+				return $this->locale->_('null');
 
 			case 'object':
-				return sprintf($this->getLocale()->_('object(%s)'), get_class($mixed));
+				return sprintf($this->locale->_('object(%s)'), get_class($mixed));
 
 			case 'resource':
-				return sprintf($this->getLocale()->_('resource(%s)'), $mixed);
+				return sprintf($this->locale->_('resource(%s)'), $mixed);
 
 			case 'string':
-				return sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($mixed), $mixed);
+				return sprintf($this->locale->_('string(%s) \'%s\''), strlen($mixed), $mixed);
 
 			case 'array':
-				return sprintf($this->getLocale()->_('array(%s)'), sizeof($mixed));
+				return sprintf($this->locale->_('array(%s)'), sizeof($mixed));
 		}
 	}
 
