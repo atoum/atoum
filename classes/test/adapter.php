@@ -45,7 +45,7 @@ class adapter extends atoum\adapter
 
 	public function __isset($functionName)
 	{
-		return (isset($this->invokers[strtolower($functionName)]) === false ? false : isset($this->invokers[strtolower($functionName)][0]));
+		return (isset($this->invokers[strtolower($functionName)]) === true);
 	}
 
 	public function __unset($functionName)

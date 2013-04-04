@@ -90,7 +90,7 @@ class adapter extends test
 				->boolean(isset($adapter->{strtolower($function)}))->isTrue()
 			->if($adapter->{$function = uniqid()}[2] = uniqid())
 			->then
-				->boolean(isset($adapter->{$function}))->isFalse()
+				->boolean(isset($adapter->{$function}))->isTrue()
 				->boolean(isset($adapter->{$function}[0]))->isFalse()
 				->boolean(isset($adapter->{$function}[1]))->isFalse()
 				->boolean(isset($adapter->{$function}[2]))->isTrue()
