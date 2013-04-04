@@ -88,7 +88,6 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getLastFailAssertion = null)
 			->and($this->calling($score)->getLastFailAssertion[1] = $failure1 = array(
 					'case' => null,
 					'dataSetKey' => null,
@@ -180,7 +179,6 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getLastVoidMethod = null)
 			->and($this->calling($score)->getLastVoidMethod[1] = array(
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid()
@@ -223,7 +221,6 @@ class tap extends atoum\test
 		$this
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
-			->and($this->calling($score)->getLastSkippedMethod = null)
 			->and($this->calling($score)->getLastSkippedMethod[1] = array(
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid(),
