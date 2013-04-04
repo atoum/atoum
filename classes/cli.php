@@ -19,7 +19,22 @@ class cli
 
 		if (self::$isTerminal === null)
 		{
-			self::$isTerminal = $adapter->defined('PHP_WINDOWS_VERSION_BUILD') ? (Boolean) $adapter->getenv('ANSICON') : ($adapter->defined('STDOUT') === true && $adapter->function_exists('posix_isatty') === true && $adapter->posix_isatty($adapter->constant('STDOUT')) === true);
+			if ($adapter->defined('STDOUT') === false)
+			{
+				self::$isTerminal = false;
+			}
+			else
+			{
+				$stat = $adapter->fstat($adapter->constant('STDOUT'));
+				// please, see <sys/stat.h>.
+				$mode = $stat['mode'] & 0170000;
+				self::$isTerminal = $mode === 0020000;
+
+				if ($adapter->defined('PHP_WINDOWS_VERSION_BUILD') === true)
+				{
+					self::$isTerminal = self::$isTerminal && (Boolean) $adapter->getenv('ANSICON');
+				}
+			}
 		}
 	}
 
