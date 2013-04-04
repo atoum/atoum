@@ -32,4 +32,21 @@ class directory extends atoum\test
 				->integer($directory->getPermissions())->isEqualTo(0007)
 		;
 	}
+
+	public function testRmdir()
+	{
+		$this
+			->if($directory = testedClass::get())
+			->and($directory->notExists())
+			->then
+				->boolean(rmdir($directory))->isFalse()
+			->if($directory->exists())
+			->then
+				->boolean(rmdir($directory))->isTrue()
+			->if($directory->exists())
+			->and($directory->isNotWritable())
+			->then
+				->boolean(rmdir($directory))->isFalse()
+		;
+	}
 }

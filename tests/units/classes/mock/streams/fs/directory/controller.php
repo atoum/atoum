@@ -13,7 +13,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream\controller');
+		$this->testedClass->extends('mageekguy\atoum\mock\streams\fs\controller');
 	}
 
 	public function test__construct()
