@@ -11,14 +11,6 @@ require_once __DIR__ . '/../../runner.php';
 
 class colorizer extends atoum\test
 {
-	public function beforeTestMethod($testMethod)
-	{
-		if (defined('STDOUT') === false)
-		{
-			define('STDOUT', uniqid());
-		}
-	}
-
 	public function test__construct()
 	{
 		$colorizer = new cli\colorizer();
