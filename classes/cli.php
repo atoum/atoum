@@ -19,35 +19,20 @@ class cli
 
 		if (self::$isTerminal === null)
 		{
-			if ($adapter->defined('STDOUT') === false)
-			{
-				self::$isTerminal = false;
-			}
-			else
-			{
-				$stat = $adapter->fstat($adapter->constant('STDOUT'));
-				// please, see <sys/stat.h>.
-				$mode = $stat['mode'] & 0170000;
-				self::$isTerminal = $mode === 0020000;
+			self::$isTerminal = $adapter->defined('STDOUT');
 
-				if ($adapter->defined('PHP_WINDOWS_VERSION_BUILD') === true)
+			if (self::$isTerminal === true)
+			{
+				$stdoutStat = $adapter->fstat($adapter->constant('STDOUT'));
+
+				self::$isTerminal = (($stdoutStat['mode'] & 0170000) === 0020000); // See <sys/stat.h> for more information.
+
+				if (self::$isTerminal === true && $adapter->defined('PHP_WINDOWS_VERSION_BUILD') === true)
 				{
-					self::$isTerminal = self::$isTerminal && (Boolean) $adapter->getenv('ANSICON');
+					self::$isTerminal = (self::$isTerminal && $adapter->getenv('ANSICON') == true);
 				}
 			}
 		}
-	}
-
-	public function setAdapter(atoum\adapter $adapter)
-	{
-		$this->adapter = $adapter;
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function isTerminal()
