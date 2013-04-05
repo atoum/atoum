@@ -810,5 +810,42 @@ namespace mageekguy\atoum\tests\units
 					->array($adapter->getCalls())->isEmpty()
 			;
 		}
+
+		public function testErrorHandler()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($adapter = new atoum\test\adapter())
+				->and($adapter->error_reporting = 0)
+				->and($test->setAdapter($adapter))
+				->then
+					->boolean($test->errorHandler(rand(1, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->array($test->getScore()->getErrors())->isEmpty()
+				->if($adapter->error_reporting = E_ALL)
+				->then
+					->boolean($test->errorHandler(E_NOTICE, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_NOTICE))->isNotNull()
+					->boolean($test->errorHandler(E_WARNING, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_WARNING))->isNotNull()
+					->boolean($test->errorHandler(E_USER_NOTICE, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_USER_NOTICE))->isNotNull()
+					->boolean($test->errorHandler(E_USER_WARNING, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_USER_WARNING))->isNotNull()
+					->boolean($test->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_DEPRECATED))->isNotNull()
+				->if($adapter->error_reporting = E_ALL & ~E_DEPRECATED)
+				->then
+					->boolean($test->errorHandler(E_NOTICE, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_NOTICE))->isNotNull()
+					->boolean($test->errorHandler(E_WARNING, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_WARNING))->isNotNull()
+					->boolean($test->errorHandler(E_USER_NOTICE, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_USER_NOTICE))->isNotNull()
+					->boolean($test->errorHandler(E_USER_WARNING, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_USER_WARNING))->isNotNull()
+					->boolean($test->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_DEPRECATED))->isNull()
+			;
+		}
 	}
 }

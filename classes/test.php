@@ -1005,7 +1005,9 @@ abstract class test implements observable, \countable
 
 	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
 	{
-		if (error_reporting() !== 0)
+		$errorReporting = $this->adapter->error_reporting();
+
+		if ($errorReporting !== 0 && $errorReporting & $errno)
 		{
 			list($file, $line) = $this->getBacktrace();
 
