@@ -50,7 +50,6 @@
 		"classmap": [ "classes/" ]
 	},
     "suggest": {
-        "ext-posix": "Provides a better user experience with the CLI",
         "ext-mbstring": "Provides support for UTF-8 strings"
     }
 }
