@@ -139,10 +139,9 @@ class controller extends stream\controller
 		}
 		else
 		{
-			return $this
-				->addCall(__FUNCTION__, array())
-				->getStat()
-			;
+			$this->addCall(__FUNCTION__, array());
+
+			return $this->getStat();
 		}
 	}
 
@@ -154,10 +153,9 @@ class controller extends stream\controller
 		}
 		else
 		{
-			return $this
-				->addCall(__FUNCTION__, func_get_args())
-				->getStat()
-			;
+			$this->addCall(__FUNCTION__, func_get_args());
+
+			return $this->getStat();
 		}
 	}
 

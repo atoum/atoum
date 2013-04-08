@@ -357,9 +357,14 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->then
 				->array($adapter->getCalls())->isEmpty()
-				->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args))
-				->array($adapter->getCalls(strtoupper($method)))->isEqualTo(array(1 => $args))
+				->integer($adapter->addCall($method = uniqid(), $args1 = array(uniqid())))->isEqualTo(1)
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1))
+				->integer($adapter->addCall($otherMethod = uniqid(), $otherArgs1 = array(uniqid(), uniqid())))->isEqualTo(1)
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1))
+				->array($adapter->getCalls($otherMethod))->isEqualTo(array(2 => $otherArgs1))
+				->integer($adapter->addCall($method, $args2 = array(uniqid())))->isEqualTo(2)
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2))
+				->array($adapter->getCalls($otherMethod))->isEqualTo(array(2 => $otherArgs1))
 		;
 	}
 

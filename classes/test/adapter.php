@@ -183,7 +183,7 @@ class adapter extends atoum\adapter
 	{
 		$this->calls[$functionName][++self::$callsNumber] = $arguments;
 
-		return $this;
+		return sizeof($this->calls[$functionName]);
 	}
 
 	public function invoke($functionName, array $arguments = array())
@@ -193,9 +193,7 @@ class adapter extends atoum\adapter
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
 		}
 
-		$this->addCall($functionName, $arguments);
-
-		$call = sizeof($this->getCalls($functionName));
+		$call = $this->addCall($functionName, $arguments);
 
 		try
 		{
