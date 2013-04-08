@@ -252,6 +252,7 @@ class adapter extends atoum\adapter
 		switch (strtolower($functionName))
 		{
 			case 'array':
+			case 'declare':
 			case 'echo':
 			case 'empty':
 			case 'eval':
