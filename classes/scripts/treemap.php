@@ -22,7 +22,6 @@ class treemap extends atoum\script\configurable
 	protected $onlyJsonFile = false;
 	protected $analyzers = array();
 	protected $categorizers = array();
-	protected $includer = null;
 	protected $run = true;
 
 	public function __construct($name, atoum\adapter $adapter = null)
