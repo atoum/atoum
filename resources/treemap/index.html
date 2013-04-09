@@ -234,13 +234,13 @@
 	;
 
 	var onClickOnCell = function(d) {
+		d3.event.stopPropagation();
+
 		if (!d3.event.shiftKey) {
 			return zoom(node == d.parent ? root : d.parent);
 		} else if (codeUrl) {
 			return window.location.href = codeUrl + d.path;
 		}
-
-		d3.event.stopPropagation();
 	};
 
 	var onMouseOverOnCell = function(d) {
