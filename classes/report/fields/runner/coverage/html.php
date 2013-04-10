@@ -51,26 +51,27 @@ class html extends report\fields\runner\coverage\cli
 
 		if ($this->adapter->extension_loaded('xdebug') === true)
 		{
-			foreach ($this->srcDirectories as $srcDirectory)
+			foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
 			{
-				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
+				foreach ($srcDirectoryIterator as $file)
 				{
-					foreach ($srcDirectoryIterator as $file)
+					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+
+					$declaredClasses = $this->adapter->get_declared_classes();
+
+					$this->adapter->ob_start();
+
+					require_once $file->getPathname();
+
+					$xDebugData = $this->adapter->xdebug_get_code_coverage();
+
+					$this->adapter->ob_end_clean();
+
+					$this->adapter->xdebug_stop_code_coverage();
+
+					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
 					{
-						$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-
-						$declaredClasses = $this->adapter->get_declared_classes();
-
-						require_once $file->getPathname();
-
-						$xDebugData = $this->adapter->xdebug_get_code_coverage();
-
-						$this->adapter->xdebug_stop_code_coverage();
-
-						foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
-						{
-							$this->coverage->addXdebugDataForClass($class, $xDebugData);
-						}
+						$this->coverage->addXdebugDataForClass($class, $xDebugData);
 					}
 				}
 			}
