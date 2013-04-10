@@ -6,13 +6,14 @@ class closure extends \recursiveFilterIterator
 {
 	protected $closures = array();
 
-	public function __construct(\iterator $iterator, \closure $closure = null)
+	public function __construct(\iterator $iterator, $closure = null)
 	{
 		parent::__construct($iterator);
 
 		if ($closure !== null)
 		{
-			$this->addClosure($closure);
+			foreach((array) $closure as $c)
+				$this->addClosure($c);
 		}
 	}
 
@@ -32,12 +33,20 @@ class closure extends \recursiveFilterIterator
 	{
 		foreach ($this->closures as $closure)
 		{
-			if ($closure($this->current(), $this->key()) === false)
+			if ($closure($this->current(), $this->key(), $this->getInnerIterator()) === false)
 			{
 				return false;
 			}
 		}
 
 		return true;
+	}
+
+	public function getChildren()
+	{
+		return new static(
+			$this->getInnerIterator()->getChildren(),
+			$this->closures
+		);
 	}
 }
