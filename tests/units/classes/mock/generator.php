@@ -10,6 +10,8 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
+interface foo extends \Traversable {}
+
 class generator extends atoum\test
 {
 	public function test__construct()
@@ -939,6 +941,8 @@ class generator extends atoum\test
 			->and($reflectionClassController->isFinal = false)
 			->and($reflectionClassController->isInterface = true)
 			->and($reflectionClassController->getMethods = array($reflectionMethod))
+			->and($reflectionClassController->isInstantiable = false)
+			->and($reflectionClassController->implementsInterface = false)
 			->and($reflectionClass = new \mock\reflectionClass(null))
 			->and($generator->setReflectionClassFactory(function() use ($reflectionClass) { return $reflectionClass; }))
 			->and($adapter = new atoum\test\adapter())
@@ -996,6 +1000,107 @@ class generator extends atoum\test
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
 					"\t\t" . 'return ' . var_export(array('__construct'), true) . ';' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					'}' . PHP_EOL .
+					'}'
+				)
+			;
+
+			$this
+			->if($reflectionClassController->implementsInterface = function($interface) { return ($interface == 'traversable' ? true : false); })
+			->and($generator->setReflectionClassFactory(function($class) use ($reflectionClass) { return ($class == 'iterator' ? new \reflectionClass('iterator') : $reflectionClass); }))
+			->then
+				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
+					'namespace mock {' . PHP_EOL .
+					'final class ' . $realClass . ' implements \\iterator, \\' . $realClass . ', \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'{' . PHP_EOL .
+					"\t" . 'private $mockController = null;' . PHP_EOL .
+					"\t" . 'public function getMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController(new \mageekguy\atoum\mock\controller());' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function setMockController(\mageekguy\atoum\mock\controller $controller)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== $controller)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = $controller;' . PHP_EOL .
+					"\t\t\t" . '$controller->control($this);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function resetMockController()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($this->mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = $this->mockController;' . PHP_EOL .
+					"\t\t\t" . '$this->mockController = null;' . PHP_EOL .
+					"\t\t\t" . '$mockController->reset();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this;' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function __construct(\mageekguy\atoum\mock\controller $mockController = null)' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if ($mockController === null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->__construct = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function current()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->current) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->current = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'current\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function next()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->next) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->next = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'next\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function key()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->key) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->key = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'key\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function valid()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->valid) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->valid = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'valid\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public function rewind()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->rewind) === false)' . PHP_EOL .
+					"\t\t" . '{' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->rewind = function() {};' . PHP_EOL .
+					"\t\t" . '}' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'rewind\', func_get_args());' . PHP_EOL .
+					"\t" . '}' . PHP_EOL .
+					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
+					"\t" . '{' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', 'current', 'next', 'key', 'valid', 'rewind'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'

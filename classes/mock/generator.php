@@ -229,7 +229,9 @@ class generator
 			}
 		}
 
-		foreach ($class->getMethods() as $method)
+		$methods = $class->getMethods();
+
+		foreach ($methods as $method)
 		{
 			$isConstructor = $method->isConstructor() || $method->getName() === '__construct';
 
@@ -457,7 +459,7 @@ class generator
 		return join(', ', $parameters);
 	}
 
-	protected function generateInterfaceMethodCode(\reflectionClass $class)
+	protected function generateInterfaceMethodCode(\reflectionClass $class, $addIteratorInterface)
 	{
 		$mockedMethods = '';
 
@@ -465,7 +467,16 @@ class generator
 
 		$hasConstructor = false;
 
-		foreach ($class->getMethods(\reflectionMethod::IS_PUBLIC) as $method)
+		$methods = $class->getMethods(\reflectionMethod::IS_PUBLIC);
+
+		if ($addIteratorInterface === true)
+		{
+			$iteratorInterface = call_user_func($this->reflectionClassFactory, 'iterator');
+
+			$methods = array_merge($methods, $iteratorInterface->getMethods(\reflectionMethod::IS_PUBLIC));
+		}
+
+		foreach ($methods as $method)
 		{
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
@@ -532,11 +543,13 @@ class generator
 
 	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
+		$addIteratorInterface = ($class->isInstantiable() === false && ($class->implementsInterface('traversable') === true && $class->implementsInterface('iterator') === false));
+
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
-			'final class ' . $mockClass . ' implements \\' . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
+			'final class ' . $mockClass . ' implements \\' . ($addIteratorInterface === false ? '' : 'iterator, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
 			self::generateMockControllerMethod() .
-			$this->generateInterfaceMethodCode($class) .
+			$this->generateInterfaceMethodCode($class, $addIteratorInterface) .
 			'}' . PHP_EOL .
 			'}'
 		;
