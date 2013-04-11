@@ -212,20 +212,26 @@ class generator
 	{
 		$mockedMethods = '';
 
-		$hasConstructor = false;
-
 		$className = $class->getName();
 
 		$mockedMethodNames = array();
 
+		$constructor = $class->getConstructor();
+
+		$hasConstructor = ($constructor !== null);
+
+		if ($hasConstructor === true)
+		{
+			if ($constructor->isPublic() === false)
+			{
+				$this->shuntParentClassCalls();
+				$this->overload(new php\method('__construct'));
+			}
+		}
+
 		foreach ($class->getMethods() as $method)
 		{
 			$isConstructor = $method->isConstructor() || $method->getName() === '__construct';
-
-			if ($isConstructor === true)
-			{
-				$hasConstructor = true;
-			}
 
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
@@ -257,6 +263,7 @@ class generator
 						break;
 
 					case $method->isPublic():
+					case $this->isOverloaded($methodName):
 						$parameters = array();
 
 						$overload = $this->getOverload($methodName);
@@ -356,7 +363,6 @@ class generator
 						$methodCode .= "\t" . '}' . PHP_EOL;
 
 						$mockedMethodNames[] = strtolower($methodName);
-						break;
 				}
 
 				$mockedMethods .= $methodCode;
