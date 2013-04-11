@@ -1,21 +1,46 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result;
+namespace mageekguy\atoum\tests\units\report\fields\runner\result;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\report,
+	mageekguy\atoum\locale,
 	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	mageekguy\atoum\cli\colorizer,
+	mageekguy\atoum\report\fields\runner\result\logo as testedClass
 ;
 
-class logo extends cli
+require_once __DIR__ . '/../../../../../runner.php';
+
+class logo extends atoum\test
 {
-	public function __toString()
+	public function testClass()
 	{
-		if ($this->failNumber === 0 && $this->errorNumber === 0 && $this->exceptionNumber === 0 && $this->uncompletedMethodNumber === 0)
-		{
-			return "
+		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result\cli');
+	}
+
+	public function test__toString()
+	{
+		$score = new \mock\mageekguy\atoum\score();
+		$scoreController = $score->getMockController();
+		$scoreController->getAssertionNumber = 1;
+		$scoreController->getFailNumber = 0;
+		$scoreController->getErrorNumber = 0;
+		$scoreController->getExceptionNumber = 0;
+
+		$runner = new \mock\mageekguy\atoum\runner();
+		$runnerController = $runner->getMockController();
+		$runnerController->getScore = $score;
+		$runnerController->getTestNumber = 1;
+		$runnerController->getTestMethodNumber = 1;
+
+		$this->startCase('Success with one test, one method and one assertion, no fail, no error, no exception');
+
+		$this
+			->if($field = new testedClass())
+            ->and($field->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($field)->isEqualTo("
               \033[48;5;16m  \033[0m                                 \033[48;5;16m  \033[0m
             \033[48;5;16m    \033[0m                                 \033[48;5;16m   \033[0m
             \033[48;5;16m  \033[48;5;231m \033[48;5;120m \033[48;5;16m  \033[0m                             \033[48;5;16m  \033[48;5;120m \033[48;5;231m \033[48;5;16m \033[0m
@@ -33,11 +58,21 @@ class logo extends cli
                          \033[48;5;16m  \033[48;5;83m  \033[48;5;16m   \033[48;5;83m \033[48;5;16m   \033[48;5;83m  \033[48;5;16m  \033[0m
                            \033[48;5;16m  \033[48;5;83m       \033[48;5;16m  \033[0m
                              \033[48;5;16m       \033[0m
-            \033[0m" . PHP_EOL;
-		}
-		else
-		{
-			return "
+            \033[0m" . PHP_EOL)
+		;
+
+		$this->startCase('Failure with several tests, several methods and several assertions, one fail, one error, one exception');
+
+		$scoreController->getFailNumber = 1;
+		$scoreController->getErrorNumber = 1;
+		$scoreController->getExceptionNumber = 1;
+		$scoreController->getUncompletedMethodNumber = 1;
+
+		$this
+			->if($field = new testedClass())
+			->and($field->handleEvent(atoum\runner::runStop, $runner))
+			->then
+				->castToString($field)->isEqualTo("
               \033[48;5;16m  \033[0m                                 \033[48;5;16m  \033[0m
             \033[48;5;16m    \033[0m                                 \033[48;5;16m   \033[0m
             \033[48;5;16m  \033[48;5;231m \033[48;5;211m \033[48;5;16m  \033[0m                             \033[48;5;16m  \033[48;5;211m \033[48;5;231m \033[48;5;16m \033[0m
@@ -55,7 +90,7 @@ class logo extends cli
                          \033[48;5;16m  \033[48;5;197m \033[48;5;197m \033[48;5;16m   \033[48;5;197m \033[48;5;16m   \033[48;5;197m \033[48;5;197m \033[48;5;16m  \033[0m
                            \033[48;5;16m  \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;197m \033[48;5;16m  \033[0m
                              \033[48;5;16m       \033[0m
-            \033[0m" . PHP_EOL;
-		}
+            \033[0m" . PHP_EOL)
+		;
 	}
 }
