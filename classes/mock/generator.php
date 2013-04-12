@@ -220,6 +220,8 @@ class generator
 
 		$hasConstructor = ($constructor !== null);
 
+		$shuntParentClassCalls = $this->callsToParentClassAreShunted();
+
 		if ($hasConstructor === true)
 		{
 			if ($constructor->isPublic() === false)
@@ -381,6 +383,11 @@ class generator
 		$mockedMethods .= "\t" . '{' . PHP_EOL;
 		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
 		$mockedMethods .= "\t" . '}' . PHP_EOL;
+
+		if ($shuntParentClassCalls === false && $this->callsToParentClassAreShunted() === true)
+		{
+			$this->unshuntParentClassCalls();
+		}
 
 		return $mockedMethods;
 	}
