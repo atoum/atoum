@@ -1002,9 +1002,6 @@ class generator extends atoum\test
 					'}' . PHP_EOL .
 					'}'
 				)
-			;
-
-			$this
 			->if($reflectionClassController->implementsInterface = function($interface) { return ($interface == 'traversable' ? true : false); })
 			->and($generator->setReflectionClassFactory(function($class) use ($reflectionClass) { return ($class == 'iterator' ? new \reflectionClass('iterator') : $reflectionClass); }))
 			->then
