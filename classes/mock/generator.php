@@ -211,15 +211,10 @@ class generator
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
-
 		$className = $class->getName();
-
 		$mockedMethodNames = array();
-
 		$constructor = $class->getConstructor();
-
 		$hasConstructor = ($constructor !== null);
-
 		$shuntParentClassCalls = $this->callsToParentClassAreShunted();
 
 		if ($hasConstructor === true)
@@ -240,7 +235,6 @@ class generator
 			if ($method->isFinal() === false && $method->isStatic() === false)
 			{
 				$methodCode = '';
-
 				$methodName = $method->getName();
 
 				switch (true)
