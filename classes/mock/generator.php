@@ -459,7 +459,7 @@ class generator
 		return join(', ', $parameters);
 	}
 
-	protected function generateInterfaceMethodCode(\reflectionClass $class, $addIteratorInterface)
+	protected function generateInterfaceMethodCode(\reflectionClass $class, $addIteratorAggregate)
 	{
 		$mockedMethods = '';
 
@@ -469,9 +469,9 @@ class generator
 
 		$methods = $class->getMethods(\reflectionMethod::IS_PUBLIC);
 
-		if ($addIteratorInterface === true)
+		if ($addIteratorAggregate === true)
 		{
-			$iteratorInterface = call_user_func($this->reflectionClassFactory, 'iterator');
+			$iteratorInterface = call_user_func($this->reflectionClassFactory, 'iteratorAggregate');
 
 			$methods = array_merge($methods, $iteratorInterface->getMethods(\reflectionMethod::IS_PUBLIC));
 		}
@@ -543,13 +543,20 @@ class generator
 
 	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		$addIteratorInterface = ($class->isInstantiable() === false && ($class->implementsInterface('traversable') === true && $class->implementsInterface('iterator') === false));
+		$addIteratorAggregate = (
+				$class->isInstantiable() === false
+			&& (
+					$class->implementsInterface('traversable') === true
+				&& $class->implementsInterface('iterator') === false
+				&& $class->implementsInterface('iteratorAggregate') === false
+			)
+		);
 
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
-			'final class ' . $mockClass . ' implements \\' . ($addIteratorInterface === false ? '' : 'iterator, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
+			'final class ' . $mockClass . ' implements \\' . ($addIteratorAggregate === false ? '' : 'iteratorAggregate, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
 			self::generateMockControllerMethod() .
-			$this->generateInterfaceMethodCode($class, $addIteratorInterface) .
+			$this->generateInterfaceMethodCode($class, $addIteratorAggregate) .
 			'}' . PHP_EOL .
 			'}'
 		;

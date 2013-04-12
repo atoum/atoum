@@ -1003,11 +1003,11 @@ class generator extends atoum\test
 					'}'
 				)
 			->if($reflectionClassController->implementsInterface = function($interface) { return ($interface == 'traversable' ? true : false); })
-			->and($generator->setReflectionClassFactory(function($class) use ($reflectionClass) { return ($class == 'iterator' ? new \reflectionClass('iterator') : $reflectionClass); }))
+			->and($generator->setReflectionClassFactory(function($class) use ($reflectionClass) { return ($class == 'iteratorAggregate' ? new \reflectionClass('iteratorAggregate') : $reflectionClass); }))
 			->then
 				->string($generator->getMockedClassCode($realClass = uniqid()))->isEqualTo(
 					'namespace mock {' . PHP_EOL .
-					'final class ' . $realClass . ' implements \\iterator, \\' . $realClass . ', \mageekguy\atoum\mock\aggregator' . PHP_EOL .
+					'final class ' . $realClass . ' implements \\iteratorAggregate, \\' . $realClass . ', \mageekguy\atoum\mock\aggregator' . PHP_EOL .
 					'{' . PHP_EOL .
 					"\t" . 'private $mockController = null;' . PHP_EOL .
 					"\t" . 'public function getMockController()' . PHP_EOL .
@@ -1053,49 +1053,17 @@ class generator extends atoum\test
 					"\t\t" . '}' . PHP_EOL .
 					"\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function current()' . PHP_EOL .
+					"\t" . 'public function getIterator()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'if (isset($this->getMockController()->current) === false)' . PHP_EOL .
+					"\t\t" . 'if (isset($this->getMockController()->getIterator) === false)' . PHP_EOL .
 					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController->current = function() {};' . PHP_EOL .
+					"\t\t\t" . '$this->mockController->getIterator = function() {};' . PHP_EOL .
 					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->mockController->invoke(\'current\', func_get_args());' . PHP_EOL .
-					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function next()' . PHP_EOL .
-					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'if (isset($this->getMockController()->next) === false)' . PHP_EOL .
-					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController->next = function() {};' . PHP_EOL .
-					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->mockController->invoke(\'next\', func_get_args());' . PHP_EOL .
-					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function key()' . PHP_EOL .
-					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'if (isset($this->getMockController()->key) === false)' . PHP_EOL .
-					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController->key = function() {};' . PHP_EOL .
-					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->mockController->invoke(\'key\', func_get_args());' . PHP_EOL .
-					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function valid()' . PHP_EOL .
-					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'if (isset($this->getMockController()->valid) === false)' . PHP_EOL .
-					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController->valid = function() {};' . PHP_EOL .
-					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->mockController->invoke(\'valid\', func_get_args());' . PHP_EOL .
-					"\t" . '}' . PHP_EOL .
-					"\t" . 'public function rewind()' . PHP_EOL .
-					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'if (isset($this->getMockController()->rewind) === false)' . PHP_EOL .
-					"\t\t" . '{' . PHP_EOL .
-					"\t\t\t" . '$this->mockController->rewind = function() {};' . PHP_EOL .
-					"\t\t" . '}' . PHP_EOL .
-					"\t\t" . 'return $this->mockController->invoke(\'rewind\', func_get_args());' . PHP_EOL .
+					"\t\t" . 'return $this->mockController->invoke(\'getIterator\', func_get_args());' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					"\t" . 'public static function getMockedMethods()' . PHP_EOL .
 					"\t" . '{' . PHP_EOL .
-					"\t\t" . 'return ' . var_export(array('__construct', 'current', 'next', 'key', 'valid', 'rewind'), true) . ';' . PHP_EOL .
+					"\t\t" . 'return ' . var_export(array('__construct', 'getiterator'), true) . ';' . PHP_EOL .
 					"\t" . '}' . PHP_EOL .
 					'}' . PHP_EOL .
 					'}'
