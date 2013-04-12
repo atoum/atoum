@@ -10,6 +10,8 @@ use
 
 require_once __DIR__ . '/../../runner.php';
 
+interface foo extends \Traversable {}
+
 class generator extends atoum\test
 {
 	public function test__construct()

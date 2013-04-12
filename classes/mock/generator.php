@@ -543,7 +543,7 @@ class generator
 
 	protected function generateInterfaceCode(\reflectionClass $class, $mockNamespace, $mockClass)
 	{
-		$addIteratorInterface = ($class->isInstantiable() === false && ($class->implementsInterface('traversable') === true && $class->implementsInterface('iterator') === false));
+		$addIteratorInterface = ($class->isInstantiable() === false && ($class->implementsInterface('traversable') === true && $class->implementsInterface('iterator') === false && $class->implementsInterface('iteratorAggregate') === false));
 
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . ($addIteratorInterface === false ? '' : 'iterator, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
