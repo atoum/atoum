@@ -1241,6 +1241,8 @@ abstract class test implements observable, \countable
 
 					$this->callObservers(self::afterTestMethod);
 
+					$this->score->merge($score);
+
 					switch (true)
 					{
 						case $score->getRuntimeExceptionNumber() > 0:
@@ -1275,8 +1277,6 @@ abstract class test implements observable, \countable
 						default:
 							$this->callObservers(self::success);
 					}
-
-					$this->score->merge($score);
 
 					if ($engine->isAsynchronous() === true)
 					{
