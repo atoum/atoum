@@ -83,6 +83,30 @@ class tap extends atoum\test
 		;
 	}
 
+	public function test__toString()
+	{
+		$this
+			->if($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $method = uniqid())
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::success, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
+			->if($this->calling($test)->getCurrentMethod = $otherMethod = uniqid())
+			->and($field->handleEvent(atoum\test::success, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 2' . PHP_EOL . '# ' . $class . '::' . $otherMethod . '()' . PHP_EOL)
+			->if($this->calling($test)->getClass = $otherClass = uniqid())
+			->if($this->calling($test)->getCurrentMethod = $thridMethod = uniqid())
+			->and($field->handleEvent(atoum\test::success, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 3' . PHP_EOL . '# ' . $otherClass . '::' . $thridMethod . '()' . PHP_EOL)
+		;
+	}
+
 	public function test__toStringWithFailures()
 	{
 		$this
@@ -182,14 +206,14 @@ class tap extends atoum\test
 			->and($this->calling($score)->getLastVoidMethod[1] = array(
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid(),
-                    'file' => $file1 = uniqid(),
+					'file' => $file1 = uniqid(),
 					'line' => $line1 = uniqid(),
 				)
 			)
 			->and($this->calling($score)->getLastVoidMethod[2] = array(
 					'class' => $class2 = uniqid(),
 					'method' => $method2 = uniqid(),
-                    'file' => $file2 = uniqid(),
+					'file' => $file2 = uniqid(),
 					'line' => $line2 = uniqid(),
 				)
 			)

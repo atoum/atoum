@@ -51,6 +51,7 @@ class tap extends report\fields\event
 
 				case test::success:
 					$this->testLine = 'ok ' . ++$this->testPoint . PHP_EOL;
+					$this->testLine .= '# ' . $observable->getClass() . '::' . $observable->getCurrentMethod() . '()' . PHP_EOL;
 					break;
 
 				case test::error:
@@ -62,13 +63,13 @@ class tap extends report\fields\event
 				case test::fail:
 					$lastFailAssertion = $observable->getScore()->getLastFailAssertion();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastFailAssertion['class']) . '::' . trim($lastFailAssertion['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastFailAssertion['fail'])) . PHP_EOL;
-                    $this->testLine .= '# ' . $lastFailAssertion['file'] . ':' . $lastFailAssertion['line'] . PHP_EOL;
+					$this->testLine .= '# ' . $lastFailAssertion['file'] . ':' . $lastFailAssertion['line'] . PHP_EOL;
 					break;
 
 				case test::void:
 					$lastVoidMethod = $observable->getScore()->getLastVoidMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' # TODO ' . trim($lastVoidMethod['class']) . '::' . trim($lastVoidMethod['method']) . '()' . PHP_EOL;
-                    $this->testLine .= '# ' . $lastVoidMethod['file'] . ':' . $lastVoidMethod['line'] . PHP_EOL;
+					$this->testLine .= '# ' . $lastVoidMethod['file'] . ':' . $lastVoidMethod['line'] . PHP_EOL;
 					break;
 
 				case test::skipped:
