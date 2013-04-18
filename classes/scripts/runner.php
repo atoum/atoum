@@ -162,7 +162,7 @@ class runner extends atoum\script\configurable
 	{
 		try
 		{
-			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false && $this->hasDefaultArguments() === true)
+			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
 			{
 				parent::run($this->defaultArguments);
 			}
