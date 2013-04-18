@@ -196,7 +196,7 @@ class generator
 
 		$this->shuntedMethods = $this->overloadedMethods = $this->orphanizedMethods = array();
 
-		return $this;
+		return $this->unshuntParentClassCalls();
 	}
 
 	protected function getNamespace($class)
@@ -215,7 +215,6 @@ class generator
 		$mockedMethodNames = array();
 		$constructor = $class->getConstructor();
 		$hasConstructor = ($constructor !== null);
-		$shuntParentClassCalls = $this->callsToParentClassAreShunted();
 
 		if ($hasConstructor === true)
 		{
@@ -377,11 +376,6 @@ class generator
 		$mockedMethods .= "\t" . '{' . PHP_EOL;
 		$mockedMethods .=	"\t\t" . 'return ' . var_export($mockedMethodNames, true) . ';' . PHP_EOL;
 		$mockedMethods .= "\t" . '}' . PHP_EOL;
-
-		if ($shuntParentClassCalls === false && $this->callsToParentClassAreShunted() === true)
-		{
-			$this->unshuntParentClassCalls();
-		}
 
 		return $mockedMethods;
 	}

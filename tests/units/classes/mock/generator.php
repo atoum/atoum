@@ -1459,6 +1459,11 @@ class generator extends atoum\test
 				->boolean($generator->isShunted('__construct'))->isTrue()
 				->object($generator->generate('reflectionMethod'))->isIdenticalTo($generator)
 				->boolean($generator->isShunted('__construct'))->isFalse()
+			->if($generator = new testedClass())
+			->and($generator->shuntParentClassCalls())
+			->then
+				->object($generator->generate('reflectionParameter'))->isIdenticalTo($generator)
+				->boolean($generator->callsToParentClassAreShunted())->isFalse()
 		;
 	}
 }
