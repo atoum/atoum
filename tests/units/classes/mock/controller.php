@@ -19,6 +19,8 @@ class foo
 	public function doSomethingElse() {}
 }
 
+class bar {}
+
 class controller extends atoum\test
 {
 	public function testClass()
@@ -439,6 +441,12 @@ class controller extends atoum\test
 							7 => array($argument1, $argument2, $argument3)
 						)
 					)
+			->if($mockController = new testedClass())
+			->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\bar()))
+			->then
+				->exception(function() use ($mockController) { $mockController->foo = uniqid(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Method \'mock\\' . __NAMESPACE__ . '\bar::foo()\' does not exist')
 		;
 	}
 

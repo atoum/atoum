@@ -294,6 +294,29 @@ class coverage implements \countable, \serializable
 		return $coverage;
 	}
 
+	public function getNumberOfCoverableLinesInClass($class)
+	{
+		$coverableLines = 0;
+
+		$class = (string) $class;
+
+		if (isset($this->methods[$class]) === true)
+		{
+			foreach ($this->methods[$class] as $lines)
+			{
+				foreach ($lines as $call)
+				{
+					if ($call >= -1)
+					{
+						$coverableLines++;
+					}
+				}
+			}
+		}
+
+		return $coverableLines;
+	}
+
 	public function getValueForMethod($class, $method)
 	{
 		$value = null;

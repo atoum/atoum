@@ -225,7 +225,7 @@ class controller extends test\adapter
 			{
 				$this->set__call();
 			}
-			else if (isset($this->__call) === false)
+			else
 			{
 				throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 			}
