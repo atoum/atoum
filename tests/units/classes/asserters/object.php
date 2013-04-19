@@ -74,7 +74,7 @@ class object extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(0); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s has not size %d'), $asserter, 0))
+					->hasMessage(sprintf($generator->getLocale()->_('%s has size %d, expected size %d'), $asserter, sizeof($this), 0))
 				->object($asserter->hasSize(sizeof($this)))->isIdenticalTo($asserter);
 		;
 	}
