@@ -67,7 +67,7 @@ class object extends asserters\variable
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has not size %d'), $this, $size));
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s has size %d, expected size %d'), $this, sizeof($this->valueIsSet()->value), $size));
 		}
 
 		return $this;
