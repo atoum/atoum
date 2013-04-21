@@ -29,6 +29,7 @@ class runner extends atoum\script\configurable
 	protected $loop = false;
 
 	protected static $autorunner = true;
+	protected static $runnerFile = null;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -330,6 +331,11 @@ class runner extends atoum\script\configurable
 	{
 		static $autorunIsRegistered = false;
 
+		if (static::$autorunner instanceof static)
+		{
+			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
+		}
+
 		if ($autorunIsRegistered === false)
 		{
 			$autorunner = & static::$autorunner;
@@ -346,11 +352,6 @@ class runner extends atoum\script\configurable
 			);
 
 			$autorunIsRegistered = true;
-		}
-
-		if (static::$autorunner instanceof static)
-		{
-			throw new exceptions\runtime('Unable to autorun \'' . $name . '\' because \'' . static::$autorunner->getName() . '\' is already set as autorunner');
 		}
 
 		static::$autorunner = new static($name);

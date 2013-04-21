@@ -4,9 +4,8 @@ namespace mageekguy\atoum\tests\units\scripts;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\scripts,
 	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\scripts\builder\vcs
+	mageekguy\atoum\scripts\runner as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,14 +20,14 @@ class runner extends atoum\test
 	public function testClassConstants()
 	{
 		$this->assert
-			->string(scripts\runner::defaultConfigFile)->isEqualTo('.atoum.php')
+			->string(testedClass::defaultConfigFile)->isEqualTo('.atoum.php')
 		;
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($runner = new scripts\runner($name = uniqid()))
+			->if($runner = new testedClass($name = uniqid()))
 			->then
 				->boolean($runner->hasDefaultArguments())->isFalse()
 				->array($runner->getDefaultArguments())->isEmpty()
@@ -173,7 +172,7 @@ class runner extends atoum\test
 						)
 					)
 				)
-			->if($runner = new scripts\runner($name = uniqid(), $adapter = new atoum\adapter()))
+			->if($runner = new testedClass($name = uniqid(), $adapter = new atoum\adapter()))
 			->then
 				->string($runner->getName())->isEqualTo($name)
 				->object($runner->getAdapter())->isIdenticalTo($adapter)
@@ -321,7 +320,7 @@ class runner extends atoum\test
 	public function testSetArguments()
 	{
 		$this
-			->if($runner = new scripts\runner($name = uniqid()))
+			->if($runner = new testedClass($name = uniqid()))
 			->then
 				->object($runner->setArguments(array()))->isIdenticalTo($runner)
 				->array($runner->getArguments())->isEmpty()
@@ -333,7 +332,7 @@ class runner extends atoum\test
 	public function testUseConfigFile()
 	{
 		$this
-			->if($runner = new scripts\runner(uniqid()))
+			->if($runner = new testedClass(uniqid()))
 			->and($runner->setLocale($locale = new \mock\mageekguy\atoum\locale()))
 			->then
 				->exception(function() use ($runner, & $file) {
