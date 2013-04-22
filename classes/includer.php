@@ -15,7 +15,10 @@ class includer
 		$path = (string) $path;
 
 		$errorHandler = set_error_handler(function($error, $message, $file, $line, $context) use (& $errors) {
-				$errors[] = func_get_args();
+				if (error_reporting() !== 0)
+				{
+					$errors[] = func_get_args();
+				}
 			}
 		);
 
