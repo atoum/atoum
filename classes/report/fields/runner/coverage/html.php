@@ -457,7 +457,7 @@ class html extends report\fields\runner\coverage\cli
 
 		foreach ($this->srcDirectories as $srcDirectory => $closures)
 		{
-			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory)));
+			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
 
 			foreach ($closures as $closure)
 			{
