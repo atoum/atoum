@@ -7,17 +7,35 @@ Do "php path/to/test/file -c path/to/this/file" or "php path/to/atoum/scripts/ru
 
 use \mageekguy\atoum;
 
+// HTML
+
 /*
 Please replace in next line /path/to/destination/directory by your destination directory path for html files.
 */
-$coverageField = new atoum\report\fields\runner\coverage\html('atoum', '/path/to/destination/directory');
+$coverageHtmlField = new atoum\report\fields\runner\coverage\html('atoum', '/path/to/destination/directory');
 
 /*
 Please replace in next line http://url/of/web/site by the root url of your code coverage web site.
 */
-$coverageField->setRootUrl('http://url/of/web/site');
+$coverageHtmlField->setRootUrl('http://url/of/web/site');
+
+// Treemap (not mandatory)
+
+/*
+Please replace in next line /path/to/destination/directory by your destination directory path for html files.
+*/
+$coverageTreemapField = new atoum\report\fields\runner\coverage\treemap('atoum', '/path/to/destination/directory');
+
+/*
+Please replace in next line http://url/of/treemap by the root url of your code coverage web site.
+*/
+$coverageTreemapField
+	->setTreemapUrl('http://url/of/treemap')
+	->setHtmlReportBaseUrl($coverageHtmlField->getRootUrl())
+;
 
 $script
 	->addDefaultReport()
-		->addField($coverageField)
+		->addField($coverageHtmlField)
+		->addField($coverageTreemapField)
 ;

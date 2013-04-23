@@ -47,7 +47,7 @@ class html extends report\fields\runner\coverage\cli
 
 	public function __toString()
 	{
-		$string = parent::__toString();
+		$string = '';
 
 		if ($this->adapter->extension_loaded('xdebug') === true)
 		{
@@ -65,9 +65,9 @@ class html extends report\fields\runner\coverage\cli
 
 					$xDebugData = $this->adapter->xdebug_get_code_coverage();
 
-					$this->adapter->ob_end_clean();
-
 					$this->adapter->xdebug_stop_code_coverage();
+
+					$this->adapter->ob_end_clean();
 
 					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
 					{
@@ -291,7 +291,7 @@ class html extends report\fields\runner\coverage\cli
 			}
 		}
 
-		return $string;
+		return parent::__toString() . $string;
 	}
 
 	public function setReflectionClassInjector(\closure $reflectionClassInjector)

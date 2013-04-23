@@ -300,7 +300,7 @@ class coverage implements \countable, \serializable
 
 		$class = (string) $class;
 
-		if (isset($this->methods[$class]) === true)
+		if (isset($this->methods[$class]) === true && $this->isInExcludedClasses($class) === false)
 		{
 			foreach ($this->methods[$class] as $lines)
 			{
@@ -315,6 +315,29 @@ class coverage implements \countable, \serializable
 		}
 
 		return $coverableLines;
+	}
+
+	public function getNumberOfCoveredLinesInClass($class)
+	{
+		$coveredLines = 0;
+
+		$class = (string) $class;
+
+		if (isset($this->methods[$class]) === true && $this->isInExcludedClasses($class) === false)
+		{
+			foreach ($this->methods[$class] as $lines)
+			{
+				foreach ($lines as $call)
+				{
+					if ($call === 1)
+					{
+						$coveredLines++;
+					}
+				}
+			}
+		}
+
+		return $coveredLines;
 	}
 
 	public function getValueForMethod($class, $method)

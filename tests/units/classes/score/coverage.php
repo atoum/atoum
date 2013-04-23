@@ -925,6 +925,116 @@ class coverage extends atoum\test
 		;
 	}
 
+	public function testGetNumberOfCoverableLinesInClass()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->integer($coverage->getNumberOfCoverableLinesInClass(uniqid()))->isZero()
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
+			->and($class =  new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 4)
+			->and($methodController->getEndLine = 8)
+			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				$classFile =>
+					array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -1
+					),
+					uniqid() =>
+					array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
+					)
+				)
+			)
+			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
+			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->integer($coverage->getNumberOfCoverableLinesInClass($className))->isEqualTo(4)
+		;
+	}
+
+	public function testGetNumberOfCoveredLinesInClass()
+	{
+		$this
+			->if($coverage = new testedClass())
+			->then
+				->integer($coverage->getNumberOfCoveredLinesInClass(uniqid()))->isZero()
+			->if($classController = new mock\controller())
+			->and($classController->disableMethodChecking())
+			->and($classController->__construct = function() {})
+			->and($classController->getName = function() use (& $className) { return $className; })
+			->and($classController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($classController->getTraits = array())
+			->and($classController->getStartLine = 1)
+			->and($classController->getEndLine = 12)
+			->and($class =  new \mock\reflectionClass(uniqid(), $classController))
+			->and($methodController = new mock\controller())
+			->and($methodController->__construct = function() {})
+			->and($methodController->getName = function() use (& $methodName) { return $methodName; })
+			->and($methodController->isAbstract = false)
+			->and($methodController->getFileName = function() use (& $classFile) { return $classFile; })
+			->and($methodController->getDeclaringClass = function() use ($class) { return $class; })
+			->and($methodController->getStartLine = 4)
+			->and($methodController->getEndLine = 8)
+			->and($classController->getMethods = array(new \mock\reflectionMethod(uniqid(), uniqid(), $methodController)))
+			->and($classFile = uniqid())
+			->and($className = uniqid())
+			->and($methodName = uniqid())
+			->and($xdebugData = array(
+				$classFile =>
+					array(
+						3 => -2,
+						4 => 1,
+						5 => -1,
+						6 => -1,
+						7 => -1,
+						8 => -2,
+						9 => -1
+					),
+					uniqid() =>
+					array(
+						5 => 2,
+						6 => 3,
+						7 => 4,
+						8 => 3,
+						9 => 2
+					)
+				)
+			)
+			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
+			->and($coverage->addXdebugDataForTest($this, $xdebugData))
+			->then
+				->integer($coverage->getNumberOfCoveredLinesInClass($className))->isEqualTo(1)
+		;
+	}
+
 	public function testGetValueForMethod()
 	{
 		$this
