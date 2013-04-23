@@ -98,6 +98,11 @@ class score
 		return sizeof($this->uncompletedMethods);
 	}
 
+	public function getLastUncompleteMethod()
+	{
+		return end($this->uncompletedMethods) ?: null;
+	}
+
 	public function getSkippedMethods()
 	{
 		return $this->skippedMethods;
@@ -241,6 +246,21 @@ class score
 		return $this;
 	}
 
+	public function getLastErroredMethod()
+	{
+		return end($this->errors) ?: null;
+	}
+
+	public function getLastException()
+	{
+		return end($this->exceptions) ?: null;
+	}
+
+	public function getLastRuntimeException()
+	{
+		return end($this->runtimeExceptions) ?: null;
+	}
+
 	public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->failAssertions[] = array(
@@ -344,9 +364,10 @@ class score
 		return $this;
 	}
 
-	public function addVoidMethod($class, $method)
+	public function addVoidMethod($file, $class, $method)
 	{
 		$this->voidMethods[] = array(
+			'file' => $file,
 			'class' => $class,
 			'method' => $method
 		);

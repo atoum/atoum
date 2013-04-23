@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\report\fields\test\event;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\report\fields\test\event\tap as testedClass
 ;
 
@@ -100,7 +101,7 @@ class tap extends atoum\test
 			->then
 				->castToString($field)->isEqualTo('ok 2' . PHP_EOL . '# ' . $class . '::' . $otherMethod . '()' . PHP_EOL)
 			->if($this->calling($test)->getClass = $otherClass = uniqid())
-			->if($this->calling($test)->getCurrentMethod = $thridMethod = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $thridMethod = uniqid())
 			->and($field->handleEvent(atoum\test::success, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 3' . PHP_EOL . '# ' . $otherClass . '::' . $thridMethod . '()' . PHP_EOL)
@@ -206,15 +207,13 @@ class tap extends atoum\test
 			->and($this->calling($score)->getLastVoidMethod[1] = array(
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid(),
-					'file' => $file1 = uniqid(),
-					'line' => $line1 = uniqid(),
+					'file' => $file1 = uniqid()
 				)
 			)
 			->and($this->calling($score)->getLastVoidMethod[2] = array(
 					'class' => $class2 = uniqid(),
 					'method' => $method2 = uniqid(),
-					'file' => $file2 = uniqid(),
-					'line' => $line2 = uniqid(),
+					'file' => $file2 = uniqid()
 				)
 			)
 			->and($test = new \mock\mageekguy\atoum\test())
@@ -227,20 +226,20 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $file1 . ':' . $line1 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $file1 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $file2 . ':' . $line2 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $file2 . PHP_EOL)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $file1 . ':' . $line1 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 # TODO ' . $class1 . '::' . $method1 . '()' . PHP_EOL . '# ' . $file1 . PHP_EOL)
 			->if($field->handleEvent(atoum\test::void, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $file2 . ':' . $line2 . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 # TODO ' . $class2 . '::' . $method2 . '()' . PHP_EOL . '# ' . $file2 . PHP_EOL)
 		;
 	}
 
@@ -299,6 +298,168 @@ class tap extends atoum\test
 					'# ' . $anotherMessage2 .
 					PHP_EOL
 				)
+		;
+	}
+
+	public function test__toStringWithErrors()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
+			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
+			->and($this->calling($score)->getLastErroredMethod[1] = array(
+					'case' => $case = uniqid(),
+					'dataSetKey' => $dataSetKey = uniqid(),
+					'dataSetProvider' => $dataSetProvider = uniqid(),
+					'class' => $class,
+					'method' => $method,
+					'file' => $file = uniqid(),
+					'line' => $line = rand(1, PHP_INT_MAX),
+					'type' => $type = rand(1, E_ALL),
+					'message' => $message = uniqid(),
+					'errorFile' => $errorFile = uniqid(),
+					'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
+				)
+			)
+			->and($this->calling($score)->getLastErroredMethod[2] = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => $class,
+					'method' => $otherMethod,
+					'file' => $otherFile = uniqid(),
+					'line' => $otherLine = rand(1, PHP_INT_MAX),
+					'type' => $otherType = rand(1, E_ALL),
+					'message' => $otherMessage = uniqid(),
+					'errorFile' => null,
+					'errorLine' => null
+				)
+			)
+			->if($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::error, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
+			->if($field->handleEvent(atoum\test::error, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithException()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
+			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
+			->and($this->calling($score)->getLastException[1] = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => $class,
+					'method' => $method,
+					'file' => $file = uniqid(),
+					'line' => $line = rand(1, PHP_INT_MAX),
+					'value' => $exception = uniqid()
+				)
+			)
+			->and($this->calling($score)->getLastException[2] = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => $class,
+					'method' => $otherMethod,
+					'file' => $otherFile = uniqid(),
+					'line' => $otherLine = rand(1, PHP_INT_MAX),
+					'value' => $otherException = uniqid()
+				)
+			)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::exception, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $exception . PHP_EOL . '# ' . $file . ':' . $line . PHP_EOL)
+			->if($field->handleEvent(atoum\test::exception, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherException . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithUncompleteMethods()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
+			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
+			->and($this->calling($score)->getLastUncompleteMethod[1] = array(
+					'class' => $class,
+					'method' => $method,
+					'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
+					'output' => $output = uniqid()
+				)
+			)
+			->and($this->calling($score)->getLastUncompleteMethod[2] = array(
+					'class' => $class,
+					'method' => $otherMethod,
+					'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
+					'output' => $otherOutput = uniqid()
+				)
+			)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $output . PHP_EOL)
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithRuntimeException()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $method = uniqid())
+			->and($this->calling($score)->getLastRuntimeException = new exceptions\runtime())
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::runtimeException, $test))
+			->then
+				->castToString($field)->isEqualTo('Bail out!' . PHP_EOL)
+			->if($this->calling($score)->getLastRuntimeException = new exceptions\runtime($message = uniqid()))
+			->and($field->handleEvent(atoum\test::runtimeException, $test))
+			->then
+				->castToString($field)->isEqualTo('Bail out! ' . $message . PHP_EOL)
 		;
 	}
 }
