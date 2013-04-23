@@ -300,6 +300,56 @@ class tap extends atoum\test
 		;
 	}
 
+	public function test__toStringWithErrors()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
+			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
+			->and($this->calling($score)->getLastErroredMethod[1] = array(
+					'case' => $case = uniqid(),
+					'dataSetKey' => $dataSetKey = uniqid(),
+					'dataSetProvider' => $dataSetProvider = uniqid(),
+					'class' => $class,
+					'method' => $method,
+					'file' => $file = uniqid(),
+					'line' => $line = rand(1, PHP_INT_MAX),
+					'type' => $type = rand(1, E_ALL),
+					'message' => $message = uniqid(),
+					'errorFile' => $errorFile = uniqid(),
+					'errorLine' => $errorLine = rand(1, PHP_INT_MAX)
+				)
+			)
+			->and($this->calling($score)->getLastErroredMethod[2] = array(
+					'case' => null,
+					'dataSetKey' => null,
+					'dataSetProvider' => null,
+					'class' => $class,
+					'method' => $otherMethod,
+					'file' => $otherFile = uniqid(),
+					'line' => $otherLine = rand(1, PHP_INT_MAX),
+					'type' => $otherType = rand(1, E_ALL),
+					'message' => $otherMessage = uniqid(),
+					'errorFile' => null,
+					'errorLine' => null
+				)
+			)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::error, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
+			->if($field->handleEvent(atoum\test::error, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
+		;
+	}
+
 	public function testUnhandledEvents()
 	{
 		$this
@@ -315,9 +365,6 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::success, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
-			->if($field->handleEvent(atoum\test::error, $test))
-			->then
-				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::exception, $test))
 			->then
 				->castToString($field)->isEmpty()

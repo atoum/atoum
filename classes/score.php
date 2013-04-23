@@ -241,6 +241,11 @@ class score
 		return $this;
 	}
 
+	public function getLastErroredMethod()
+	{
+		return end($this->errors) ?: null;
+	}
+
 	public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->failAssertions[] = array(

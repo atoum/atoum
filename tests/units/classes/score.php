@@ -690,6 +690,50 @@ class score extends atoum\test
 		;
 	}
 
+	public function testGetLastErroredMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastErroredMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastErroredMethod())->isNull()
+			->if($score->addError($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $type = rand(E_ERROR, E_USER_DEPRECATED), $message = uniqid()))
+			->then
+				->array($score->getLastErroredMethod())->isEqualTo(array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => trim($message),
+						'errorFile' => null,
+						'errorLine' => null
+					)
+				)
+			->if($score->addError($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $type = rand(E_ERROR, E_USER_DEPRECATED), $message = uniqid(), $errorFile = uniqid(), $errorLine = rand(1, PHP_INT_MAX), $case = uniqid(), $dataSetKey = uniqid(), $dataSetProvider = uniqid()))
+			->then
+				->array($score->getLastErroredMethod())->isEqualTo(array(
+						'case' => $case,
+						'dataSetKey' => $dataSetKey,
+						'dataSetProvider' => $dataSetProvider,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => trim($message),
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
+					)
+				)
+		;
+	}
+
 	public function testGetPassAssertions()
 	{
 		$this
