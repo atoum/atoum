@@ -3,7 +3,8 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -659,9 +660,10 @@ class score extends atoum\test
 			->if($score->addPass())
 			->then
 				->variable($score->getLastVoidMethod())->isNull()
-			->if($score->addVoidMethod($class = uniqid(), $method = uniqid()))
+			->if($score->addVoidMethod($file = uniqid(), $class = uniqid(), $method = uniqid()))
 			->then
 				->array($score->getLastVoidMethod())->isEqualTo(array(
+						'file' => $file,
 						'class' => $class,
 						'method' => $method
 					)
@@ -686,6 +688,136 @@ class score extends atoum\test
 						'message' => $message
 					)
 				)
+		;
+	}
+
+	public function testGetLastErroredMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastErroredMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastErroredMethod())->isNull()
+			->if($score->addError($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $type = rand(E_ERROR, E_USER_DEPRECATED), $message = uniqid()))
+			->then
+				->array($score->getLastErroredMethod())->isEqualTo(array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => trim($message),
+						'errorFile' => null,
+						'errorLine' => null
+					)
+				)
+			->if($score->addError($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $type = rand(E_ERROR, E_USER_DEPRECATED), $message = uniqid(), $errorFile = uniqid(), $errorLine = rand(1, PHP_INT_MAX), $case = uniqid(), $dataSetKey = uniqid(), $dataSetProvider = uniqid()))
+			->then
+				->array($score->getLastErroredMethod())->isEqualTo(array(
+						'case' => $case,
+						'dataSetKey' => $dataSetKey,
+						'dataSetProvider' => $dataSetProvider,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'type' => $type,
+						'message' => trim($message),
+						'errorFile' => $errorFile,
+						'errorLine' => $errorLine
+					)
+				)
+		;
+	}
+
+	public function testGetLastException()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastException())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastException())->isNull()
+			->if($score->addException($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $exception = new \exception()))
+			->then
+				->array($score->getLastException())->isEqualTo(array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'value' => (string) $exception
+					)
+				)
+			->if($score->addException($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherLine = rand(1, PHP_INT_MAX), $otherException = new \exception(), $case = uniqid(), $dataSetKey = uniqid(), $dataSetProvider = uniqid()))
+			->then
+				->array($score->getLastException())->isEqualTo(array(
+						'case' => $case,
+						'dataSetKey' => $dataSetKey,
+						'dataSetProvider' => $dataSetProvider,
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'file' => $otherFile,
+						'line' => $otherLine,
+						'value' => (string) $otherException
+					)
+				)
+		;
+	}
+
+	public function testGetLastUncompleteMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastUncompleteMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastUncompleteMethod())->isNull()
+			->if($score->addUncompletedMethod($class = uniqid(), $method = uniqid(), $exitCode = rand(1, PHP_INT_MAX), $output = uniqid()))
+			->then
+				->array($score->getLastUncompleteMethod())->isEqualTo(array(
+						'class' => $class,
+						'method' => $method,
+						'exitCode' => $exitCode,
+						'output' => $output,
+					)
+				)
+			->if($score->addUncompletedMethod($otherClass = uniqid(), $otherMethod = uniqid(), $otherExitCode = rand(1, PHP_INT_MAX), $otherOutput = uniqid()))
+			->then
+				->array($score->getLastUncompleteMethod())->isEqualTo(array(
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'exitCode' => $otherExitCode,
+						'output' => $otherOutput,
+					)
+				)
+		;
+	}
+
+	public function testGetLastRuntimeException()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastRuntimeException())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastRuntimeException())->isNull()
+			->if($score->addRuntimeException($file = uniqid(), $class = uniqid(), $method = uniqid(), $exception = new exceptions\runtime()))
+			->then
+				->object($score->getLastRuntimeException())->isIdenticalTo($exception)
+			->if($score->addRuntimeException($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherException = new exceptions\runtime()))
+			->then
+				->object($score->getLastRuntimeException())->isIdenticalTo($otherException)
 		;
 	}
 
