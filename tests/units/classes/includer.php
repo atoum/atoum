@@ -4,7 +4,8 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock\stream
+	mageekguy\atoum\mock\stream,
+	mageekguy\atoum\includer as testedClass
 ;
 
 require __DIR__ . '/../runner.php';
@@ -13,8 +14,8 @@ class includer extends atoum\test
 {
 	public function testIncludePath()
 	{
-		$this->assert
-			->if($includer = new atoum\includer())
+		$this
+			->if($includer = new testedClass())
 			->and($unknownFile = stream::get())
 			->then
 				->exception(function() use ($includer, $unknownFile) { $includer->includePath($unknownFile); })
