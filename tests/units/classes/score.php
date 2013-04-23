@@ -734,6 +734,44 @@ class score extends atoum\test
 		;
 	}
 
+	public function testGetLastException()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastException())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastException())->isNull()
+			->if($score->addException($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $exception = new \exception()))
+			->then
+				->array($score->getLastException())->isEqualTo(array(
+						'case' => null,
+						'dataSetKey' => null,
+						'dataSetProvider' => null,
+						'class' => $class,
+						'method' => $method,
+						'file' => $file,
+						'line' => $line,
+						'value' => (string) $exception
+					)
+				)
+			->if($score->addException($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherLine = rand(1, PHP_INT_MAX), $otherException = new \exception(), $case = uniqid(), $dataSetKey = uniqid(), $dataSetProvider = uniqid()))
+			->then
+				->array($score->getLastException())->isEqualTo(array(
+						'case' => $case,
+						'dataSetKey' => $dataSetKey,
+						'dataSetProvider' => $dataSetProvider,
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'file' => $otherFile,
+						'line' => $otherLine,
+						'value' => (string) $otherException
+					)
+				)
+		;
+	}
+
 	public function testGetPassAssertions()
 	{
 		$this

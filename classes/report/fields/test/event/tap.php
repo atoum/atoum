@@ -54,10 +54,15 @@ class tap extends report\fields\event
 					$this->testLine .= '# ' . $observable->getClass() . '::' . $observable->getCurrentMethod() . '()' . PHP_EOL;
 					break;
 
-				case test::exception:
 				case test::runtimeException:
 				case test::uncompleted:
 					$this->testLine = '';
+					break;
+
+				case test::exception:
+					$lastException = $observable->getScore()->getLastException();
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastException['class']) . '::' . trim($lastException['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastException['value'])) . PHP_EOL;
+					$this->testLine .= '# ' . $lastException['file'] . ':' . $lastException['line'] . PHP_EOL;
 					break;
 
 				case test::error:

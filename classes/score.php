@@ -246,6 +246,11 @@ class score
 		return end($this->errors) ?: null;
 	}
 
+	public function getLastException()
+	{
+		return end($this->exceptions) ?: null;
+	}
+
 	public function addFail($file, $class, $method, $line, $asserter, $reason, $case = null, $dataSetKey = null, $dataSetProvider = null)
 	{
 		$this->failAssertions[] = array(
