@@ -886,7 +886,7 @@ abstract class test implements observable, \countable
 
 					if ($assertionNumber == $this->score->getAssertionNumber() && $this->methodIsNotVoid($this->currentMethod) === false)
 					{
-						$this->score->addVoidMethod($this->class, $this->currentMethod);
+						$this->score->addVoidMethod($this->path, $this->class, $this->currentMethod);
 					}
 				}
 				catch (\exception $exception)

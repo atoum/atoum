@@ -659,9 +659,10 @@ class score extends atoum\test
 			->if($score->addPass())
 			->then
 				->variable($score->getLastVoidMethod())->isNull()
-			->if($score->addVoidMethod($class = uniqid(), $method = uniqid()))
+			->if($score->addVoidMethod($file = uniqid(), $class = uniqid(), $method = uniqid()))
 			->then
 				->array($score->getLastVoidMethod())->isEqualTo(array(
+						'file' => $file,
 						'class' => $class,
 						'method' => $method
 					)

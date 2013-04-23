@@ -69,7 +69,7 @@ class tap extends report\fields\event
 				case test::void:
 					$lastVoidMethod = $observable->getScore()->getLastVoidMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' # TODO ' . trim($lastVoidMethod['class']) . '::' . trim($lastVoidMethod['method']) . '()' . PHP_EOL;
-					$this->testLine .= '# ' . $lastVoidMethod['file'] . ':' . $lastVoidMethod['line'] . PHP_EOL;
+					$this->testLine .= '# ' . $lastVoidMethod['file'] . PHP_EOL;
 					break;
 
 				case test::skipped:

@@ -344,9 +344,10 @@ class score
 		return $this;
 	}
 
-	public function addVoidMethod($class, $method)
+	public function addVoidMethod($file, $class, $method)
 	{
 		$this->voidMethods[] = array(
+			'file' => $file,
 			'class' => $class,
 			'method' => $method
 		);
