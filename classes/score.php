@@ -98,6 +98,11 @@ class score
 		return sizeof($this->uncompletedMethods);
 	}
 
+	public function getLastUncompleteMethod()
+	{
+		return end($this->uncompletedMethods) ?: null;
+	}
+
 	public function getSkippedMethods()
 	{
 		return $this->skippedMethods;

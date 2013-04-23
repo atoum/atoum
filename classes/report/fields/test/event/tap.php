@@ -55,8 +55,12 @@ class tap extends report\fields\event
 					break;
 
 				case test::runtimeException:
-				case test::uncompleted:
 					$this->testLine = '';
+					break;
+
+				case test::uncompleted:
+					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
 					break;
 
 				case test::exception:

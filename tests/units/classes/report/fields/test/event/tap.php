@@ -397,6 +397,45 @@ class tap extends atoum\test
 		;
 	}
 
+	public function test__toStringWithUncompleteMethods()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
+			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
+			->and($this->calling($score)->getLastUncompleteMethod[1] = array(
+					'class' => $class,
+					'method' => $method,
+					'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
+					'output' => $output = uniqid()
+				)
+			)
+			->and($this->calling($score)->getLastUncompleteMethod[2] = array(
+					'class' => $class,
+					'method' => $otherMethod,
+					'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
+					'output' => $otherOutput = uniqid()
+				)
+			)
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->and($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $output . PHP_EOL)
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL)
+		;
+	}
+
 	public function testUnhandledEvents()
 	{
 		$this
@@ -413,9 +452,6 @@ class tap extends atoum\test
 			->then
 				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
 			->if($field->handleEvent(atoum\test::runtimeException, $test))
-			->then
-				->castToString($field)->isEmpty()
-			->if($field->handleEvent(atoum\test::uncompleted, $test))
 			->then
 				->castToString($field)->isEmpty()
 		;

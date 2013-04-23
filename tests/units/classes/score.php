@@ -772,6 +772,36 @@ class score extends atoum\test
 		;
 	}
 
+	public function testGetLastUncompleteMethod()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastUncompleteMethod())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastUncompleteMethod())->isNull()
+			->if($score->addUncompletedMethod($class = uniqid(), $method = uniqid(), $exitCode = rand(1, PHP_INT_MAX), $output = uniqid()))
+			->then
+				->array($score->getLastUncompleteMethod())->isEqualTo(array(
+						'class' => $class,
+						'method' => $method,
+						'exitCode' => $exitCode,
+						'output' => $output,
+					)
+				)
+			->if($score->addUncompletedMethod($otherClass = uniqid(), $otherMethod = uniqid(), $otherExitCode = rand(1, PHP_INT_MAX), $otherOutput = uniqid()))
+			->then
+				->array($score->getLastUncompleteMethod())->isEqualTo(array(
+						'class' => $otherClass,
+						'method' => $otherMethod,
+						'exitCode' => $otherExitCode,
+						'output' => $otherOutput,
+					)
+				)
+		;
+	}
+
 	public function testGetPassAssertions()
 	{
 		$this
