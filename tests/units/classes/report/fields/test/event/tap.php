@@ -299,4 +299,34 @@ class tap extends atoum\test
 				)
 		;
 	}
+
+	public function testUnhandledEvents()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $method = uniqid())
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::success, $test))
+			->then
+				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
+			->if($field->handleEvent(atoum\test::error, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::exception, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::runtimeException, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEmpty()
+		;
+	}
 }

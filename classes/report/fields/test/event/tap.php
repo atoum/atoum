@@ -58,6 +58,7 @@ class tap extends report\fields\event
 				case test::exception:
 				case test::runtimeException:
 				case test::uncompleted:
+					$this->testLine = '';
 					break;
 
 				case test::fail:
