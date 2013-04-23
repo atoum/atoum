@@ -93,7 +93,7 @@ class treemap extends atoum\test
 		$this
 			->if($treemap = new testedClass(uniqid(), uniqid()))
 			->then
-				->object($treemap->setReflectionClassFactory($factory = function($className) use(& $reflectionClassInstance) { return ($reflectionClassInstance = new \reflectionClass($this)); }))->isIdenticalTo($treemap)
+				->object($treemap->setReflectionClassFactory($factory = function($className) use(& $reflectionClassInstance) { return ($reflectionClassInstance = new \reflectionClass(__CLASS__)); }))->isIdenticalTo($treemap)
 				->object($treemap->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClassInstance)
 				->object($treemap->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClassInstance)
 				->exception(function() use($treemap) { $treemap->setReflectionClassFactory(function() {}); })
