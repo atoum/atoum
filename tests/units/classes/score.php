@@ -3,7 +3,8 @@
 namespace mageekguy\atoum\tests\units;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\exceptions
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -799,6 +800,24 @@ class score extends atoum\test
 						'output' => $otherOutput,
 					)
 				)
+		;
+	}
+
+	public function testGetLastRuntimeException()
+	{
+		$this
+			->if($score = new atoum\score())
+			->then
+				->variable($score->getLastRuntimeException())->isNull()
+			->if($score->addPass())
+			->then
+				->variable($score->getLastRuntimeException())->isNull()
+			->if($score->addRuntimeException($file = uniqid(), $class = uniqid(), $method = uniqid(), $exception = new exceptions\runtime()))
+			->then
+				->object($score->getLastRuntimeException())->isIdenticalTo($exception)
+			->if($score->addRuntimeException($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherException = new exceptions\runtime()))
+			->then
+				->object($score->getLastRuntimeException())->isIdenticalTo($otherException)
 		;
 	}
 

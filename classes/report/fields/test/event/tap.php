@@ -55,7 +55,8 @@ class tap extends report\fields\event
 					break;
 
 				case test::runtimeException:
-					$this->testLine = '';
+					$lastRuntimeException = $observable->getScore()->getLastRuntimeException();
+					$this->testLine = 'Bail out!' . ($lastRuntimeException->getMessage() ? ' ' . trim($lastRuntimeException->getMessage()) : '') . PHP_EOL;
 					break;
 
 				case test::uncompleted:

@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\report\fields\test\event;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\report\fields\test\event\tap as testedClass
 ;
 
@@ -424,7 +425,7 @@ class tap extends atoum\test
 			->and($field = new testedClass())
 			->then
 				->castToString($field)->isEmpty()
-			->and($field->handleEvent(atoum\runner::runStart, $test))
+			->if($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::uncompleted, $test))
@@ -433,6 +434,32 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::uncompleted, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL)
+		;
+	}
+
+	public function test__toStringWithRuntimeException()
+	{
+		$this
+			->mockGenerator->shunt('__construct')
+			->if($score = new \mock\atoum\test\score())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($this->calling($test)->getScore = $score)
+			->and($this->calling($test)->getClass = $class = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $method = uniqid())
+			->and($this->calling($score)->getLastRuntimeException = new exceptions\runtime())
+			->and($field = new testedClass())
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\runner::runStart, $test))
+			->then
+				->castToString($field)->isEmpty()
+			->if($field->handleEvent(atoum\test::runtimeException, $test))
+			->then
+				->castToString($field)->isEqualTo('Bail out!' . PHP_EOL)
+			->if($this->calling($score)->getLastRuntimeException = new exceptions\runtime($message = uniqid()))
+			->and($field->handleEvent(atoum\test::runtimeException, $test))
+			->then
+				->castToString($field)->isEqualTo('Bail out! ' . $message . PHP_EOL)
 		;
 	}
 
@@ -451,9 +478,6 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::success, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
-			->if($field->handleEvent(atoum\test::runtimeException, $test))
-			->then
-				->castToString($field)->isEmpty()
 		;
 	}
 }
