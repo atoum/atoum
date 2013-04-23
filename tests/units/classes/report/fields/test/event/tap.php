@@ -101,7 +101,7 @@ class tap extends atoum\test
 			->then
 				->castToString($field)->isEqualTo('ok 2' . PHP_EOL . '# ' . $class . '::' . $otherMethod . '()' . PHP_EOL)
 			->if($this->calling($test)->getClass = $otherClass = uniqid())
-			->if($this->calling($test)->getCurrentMethod = $thridMethod = uniqid())
+			->and($this->calling($test)->getCurrentMethod = $thridMethod = uniqid())
 			->and($field->handleEvent(atoum\test::success, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 3' . PHP_EOL . '# ' . $otherClass . '::' . $thridMethod . '()' . PHP_EOL)
@@ -339,7 +339,7 @@ class tap extends atoum\test
 					'errorLine' => null
 				)
 			)
-			->and($field = new testedClass())
+			->if($field = new testedClass())
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::error, $test))
@@ -386,7 +386,7 @@ class tap extends atoum\test
 			->and($field = new testedClass())
 			->then
 				->castToString($field)->isEmpty()
-			->and($field->handleEvent(atoum\runner::runStart, $test))
+			->if($field->handleEvent(atoum\runner::runStart, $test))
 			->then
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::exception, $test))
@@ -460,24 +460,6 @@ class tap extends atoum\test
 			->and($field->handleEvent(atoum\test::runtimeException, $test))
 			->then
 				->castToString($field)->isEqualTo('Bail out! ' . $message . PHP_EOL)
-		;
-	}
-
-	public function testUnhandledEvents()
-	{
-		$this
-			->mockGenerator->shunt('__construct')
-			->if($score = new \mock\atoum\test\score())
-			->and($test = new \mock\mageekguy\atoum\test())
-			->and($this->calling($test)->getScore = $score)
-			->and($this->calling($test)->getClass = $class = uniqid())
-			->and($this->calling($test)->getCurrentMethod = $method = uniqid())
-			->and($field = new testedClass())
-			->then
-				->castToString($field)->isEmpty()
-			->if($field->handleEvent(atoum\test::success, $test))
-			->then
-				->castToString($field)->isEqualTo('ok 1' . PHP_EOL . '# ' . $class . '::' . $method . '()' . PHP_EOL)
 		;
 	}
 }

@@ -54,22 +54,6 @@ class tap extends report\fields\event
 					$this->testLine .= '# ' . $observable->getClass() . '::' . $observable->getCurrentMethod() . '()' . PHP_EOL;
 					break;
 
-				case test::runtimeException:
-					$lastRuntimeException = $observable->getScore()->getLastRuntimeException();
-					$this->testLine = 'Bail out!' . ($lastRuntimeException->getMessage() ? ' ' . trim($lastRuntimeException->getMessage()) : '') . PHP_EOL;
-					break;
-
-				case test::uncompleted:
-					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
-					break;
-
-				case test::exception:
-					$lastException = $observable->getScore()->getLastException();
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastException['class']) . '::' . trim($lastException['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastException['value'])) . PHP_EOL;
-					$this->testLine .= '# ' . $lastException['file'] . ':' . $lastException['line'] . PHP_EOL;
-					break;
-
 				case test::error:
 					$lastError = $observable->getScore()->getLastErroredMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
@@ -88,9 +72,25 @@ class tap extends report\fields\event
 					$this->testLine .= '# ' . $lastVoidMethod['file'] . PHP_EOL;
 					break;
 
+				case test::uncompleted:
+					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
+					break;
+
 				case test::skipped:
 					$lastSkippedMethod = $observable->getScore()->getLastSkippedMethod();
 					$this->testLine = 'ok ' . ++$this->testPoint . ' # SKIP ' . trim($lastSkippedMethod['class']) . '::' . trim($lastSkippedMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastSkippedMethod['message'])) . PHP_EOL;
+					break;
+
+				case test::exception:
+					$lastException = $observable->getScore()->getLastException();
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastException['class']) . '::' . trim($lastException['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastException['value'])) . PHP_EOL;
+					$this->testLine .= '# ' . $lastException['file'] . ':' . $lastException['line'] . PHP_EOL;
+					break;
+
+				case test::runtimeException:
+					$lastRuntimeException = $observable->getScore()->getLastRuntimeException();
+					$this->testLine = 'Bail out!' . ($lastRuntimeException->getMessage() ? ' ' . trim($lastRuntimeException->getMessage()) : '') . PHP_EOL;
 					break;
 			}
 		}
