@@ -38,7 +38,8 @@ class includer
 			{
 				throw new includer\exception('Unable to include \'' . $path . '\'');
 			}
-			else if ($errorHandler !== null)
+
+			if ($errorHandler !== null)
 			{
 				foreach ($errors as $error)
 				{
