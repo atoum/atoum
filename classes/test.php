@@ -1163,7 +1163,7 @@ abstract class test implements observable, \countable
 			->setHandler('extensions', function($value) use ($test, & $methodName) {
 					foreach (annotations\extractor::toArray($value) as $mandatoryExtension)
 					{
-						$$test->addMandatoryMethodExtension($methodName, $mandatoryExtension);
+						$test->addMandatoryMethodExtension($methodName, $mandatoryExtension);
 					}
 				}
 			)

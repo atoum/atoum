@@ -38,6 +38,7 @@ namespace mageekguy\atoum\tests\units
 		public function testMethod1() {}
 
 		/**
+		@extensions mbstring socket
 		@ignore off
 		@tags test method two
 		*/
@@ -580,6 +581,16 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testGetMandatoryMethodExtensions()
+		{
+			$this
+				->if($test = new notEmptyTest())
+				->then
+					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEmpty()
+					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
+			;
+		}
+
 		public function testAddMandatoryMethodExtension()
 		{
 			$this
@@ -589,22 +600,22 @@ namespace mageekguy\atoum\tests\units
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Test method ' . get_class($test) . '::' . $method . '() does not exist')
 					->object($test->addMandatoryMethodExtension('testMethod1', $extension = uniqid()))->isIdenticalTo($test)
-					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension), 'testMethod2' => array()))
+					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension), 'testMethod2' => array('mbstring', 'socket')))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension))
-					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEmpty()
+					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
 					->object($test->addMandatoryMethodExtension('testMethod1', $otherExtension = uniqid()))->isIdenticalTo($test)
-					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array()))
+					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array('mbstring', 'socket')))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension, $otherExtension))
-					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEmpty()
+					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket'))
 					->object($test->addMandatoryMethodExtension('testMethod2', $anOtherExtension = uniqid()))->isIdenticalTo($test)
-					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array($anOtherExtension)))
+					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($extension, $otherExtension), 'testMethod2' => array('mbstring', 'socket', $anOtherExtension)))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($extension, $otherExtension))
-					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array($anOtherExtension))
+					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array('mbstring', 'socket', $anOtherExtension))
 				->if($test->addMandatoryClassExtension($classExtension = uniqid()))
 				->then
-					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($classExtension, $extension, $otherExtension), 'testMethod2' => array($classExtension, $anOtherExtension)))
+					->array($test->getMandatoryMethodExtensions())->isEqualTo(array('testMethod1' => array($classExtension, $extension, $otherExtension), 'testMethod2' => array($classExtension, 'mbstring', 'socket', $anOtherExtension)))
 					->array($test->getMandatoryMethodExtensions('testMethod1'))->isEqualTo(array($classExtension, $extension, $otherExtension))
-					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array($classExtension, $anOtherExtension))
+					->array($test->getMandatoryMethodExtensions('testMethod2'))->isEqualTo(array($classExtension, 'mbstring', 'socket', $anOtherExtension))
 			;
 		}
 
