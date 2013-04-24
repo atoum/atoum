@@ -23,12 +23,11 @@ class AtoumTask extends Task
 	private $maxChildren = false;
 	private $message = null;
 
-	public function createFileSet()
-	{
-		$this->fileSets = $fileSet = new Fileset();
-
-		return $fileSet;
-	}
+    public function createFileSet()
+    {
+        $num = array_push($this->fileSets, new FileSet());
+        return $this->fileSets[$num - 1];
+    }
 
 	private function getFiles()
 	{
