@@ -9,7 +9,6 @@ class AtoumTask extends Task
 {
 	private $runner = false;
 	private $fileSets = array();
-	private $configurationFiles = array();
 	private $bootstrap = null;
 	private $codeCoverage = false;
 	private $codeCoverageReportPath = null;
@@ -163,18 +162,6 @@ class AtoumTask extends Task
 		$this->codeCoverage = (boolean) $codeCoverage;
 
 		return $this;
-	}
-
-	public function setConfigurationFiles(array $configurationFiles)
-	{
-		$this->configurationFiles = $configurationFiles;
-
-		return $this;
-	}
-
-	public function getConfigurationFiles()
-	{
-		return $this->configurationFiles;
 	}
 
 	public function setAtoumPharPath($atoumPharPath)

@@ -177,19 +177,6 @@ namespace tests\units {
 			;
 		}
 
-		public function testGetSetConfigurationFiles()
-		{
-			$this
-				->given($task = new testedClass())
-				->then
-					->array($task->getConfigurationFiles())->isEmpty()
-				->if($files = array(uniqid()))
-				->then
-					->object($task->setConfigurationFiles($files))->isIdenticalTo($task)
-					->array($task->getConfigurationFiles())->isEqualTo($files)
-			;
-		}
-
 		public function testSetAtoumPharPath()
 		{
 			$this
