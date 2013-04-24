@@ -1,6 +1,9 @@
 <?php
+use mageekguy\atoum;
 
-require_once "phing/Task.php";
+if($path = stream_resolve_include_path('phing/Task.php') !== false) {
+	require_once $path;
+}
 
 class AtoumTask extends Task
 {
@@ -20,8 +23,29 @@ class AtoumTask extends Task
 	private $showMemory = true;
 	private $showCodeCoverage = true;
 	private $showMissingCodeCoverage = true;
-	private $maxChildren = false;
-	private $message = null;
+	private $maxChildren = 0;
+
+	public function __construct(atoum\runner $runner = null)
+	{
+		$this->setRunner($runner);
+	}
+
+	public function setRunner(atoum\runner $runner = null)
+	{
+		$this->runner = $runner ?: new atoum\runner();
+
+		return $this;
+	}
+
+	public function getRunner()
+	{
+		return $this->runner;
+	}
+
+	public function codeCoverageEnabled()
+	{
+		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null);
+	}
 
 	public function createFileSet()
 	{
@@ -49,15 +73,6 @@ class AtoumTask extends Task
 		return $files;
 	}
 
-	public function setMessage($str)
-	{
-		$this->message = $str;
-
-		return $this;
-	}
-
-	public function init() {}
-
 	public function main()
 	{
 		if ($this->codeCoverage && extension_loaded('xdebug') === false)
@@ -83,7 +98,7 @@ class AtoumTask extends Task
 			throw new exception('Unknown class mageekguy\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
 		}
 
-		mageekguy\atoum\scripts\runner::disableAutorun();
+		atoum\scripts\runner::disableAutorun();
 
 		foreach ($this->getFiles() as $file)
 		{
@@ -95,61 +110,40 @@ class AtoumTask extends Task
 
 	public function execute()
 	{
-		if ($this->runner === false)
+		$report = new atoum\reports\realtime\phing();
+		$writer = new atoum\writers\std\out();
+		$this->runner->addReport($report->addWriter($writer));
+
+		if ($this->phpPath !== null)
 		{
-			$this->runner = new \mageekguy\atoum\runner();
-
-			$report = new \mageekguy\atoum\reports\realtime\phing(
-				$this->showProgress,
-				$this->showCodeCoverage,
-				$this->showMissingCodeCoverage,
-				$this->showDuration,
-				$this->showMemory,
-				$this->codeCoverageReportPath,
-				$this->codeCoverageReportUrl
-			);
-
-			$writer = new \mageekguy\atoum\writers\std\out();
-
-			$report->addWriter($writer);
-
-			$this->runner->addReport($report);
-
-			if ($this->phpPath !== null)
-			{
-				$this->runner->setPhpPath($this->phpPath);
-			}
-
-			if ($this->maxChildren !== false)
-			{
-				$this->runner->setMaxChildrenNumber($this->maxChildren);
-			}
-
-			if ($this->codeCoverage === true)
-			{
-				$this->runner->enableCodeCoverage();
-			}
-			else
-			{
-				$this->runner->disableCodeCoverage();
-			}
-
-			if ($this->codeCoverageXunitPath !== false)
-			{
-				$xUnit = new \mageekguy\atoum\reports\asynchronous\xunit();
-
-				$file = new \mageekguy\atoum\writers\file($this->codeCoverageXunitPath);
-				$xUnit->addWriter($file);
-
-				$this->runner->addReport($xUnit);
-			}
+			$this->runner->setPhpPath($this->phpPath);
 		}
 
-		$this->runner->run();
+		if ($this->maxChildren > 0)
+		{
+			$this->runner->setMaxChildrenNumber($this->maxChildren);
+		}
 
-		$score = $this->runner->getScore();
+		if ($this->codeCoverageEnabled() === true)
+		{
+			$this->runner->enableCodeCoverage();
+		}
+		else
+		{
+			$this->runner->disableCodeCoverage();
+		}
 
-		if (sizeof($score->getErrors()) > 0 || sizeof($score->getFailAssertions()) > 0 || sizeof($score->getExceptions()) > 0)
+		if ($this->codeCoverageXunitPath !== null)
+		{
+			$xUnit = new atoum\reports\asynchronous\xunit();
+			$file = new atoum\writers\file($this->codeCoverageXunitPath);
+			$this->runner->addReport($xUnit->addWriter($file));
+		}
+
+		$score = $this->runner->run();
+
+		$failures = ($score->getUncompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
+		if ($failures > 0)
 		{
 			throw new BuildException("Tests did not pass");
 		}
