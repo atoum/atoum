@@ -1,5 +1,8 @@
 <?php
-use mageekguy\atoum;
+use
+	mageekguy\atoum,
+	mageekguy\atoum\reports\realtime
+;
 
 if($path = stream_resolve_include_path('phing/Task.php') !== false) {
 	require_once $path;
@@ -109,9 +112,7 @@ class AtoumTask extends Task
 
 	public function execute()
 	{
-		$report = new atoum\reports\realtime\phing();
-		$writer = new atoum\writers\std\out();
-		$this->runner->addReport($report->addWriter($writer));
+		$this->runner->addReport($this->configureDefaultReport());
 
 		if ($this->phpPath !== null)
 		{
@@ -148,6 +149,59 @@ class AtoumTask extends Task
 		}
 
 		return $this;
+	}
+
+	public function configureDefaultReport(realtime\phing $report = null)
+	{
+		$report = $report ?: new realtime\phing();
+		$report->addWriter(new atoum\writers\std\out());
+
+		if($this->showProgress)
+		{
+			$report->showProgress();
+		}
+		else
+		{
+			$report->hideProgress();
+		}
+
+		if($this->showDuration)
+		{
+			$report->showDuration();
+		}
+		else
+		{
+			$report->hideDuration();
+		}
+
+		if($this->showMemory)
+		{
+			$report->showMemory();
+		}
+		else
+		{
+			$report->hideMemory();
+		}
+
+		if($this->showCodeCoverage)
+		{
+			$report->showCodeCoverage();
+		}
+		else
+		{
+			$report->hideCodeCoverage();
+		}
+
+		if($this->showMissingCodeCoverage)
+		{
+			$report->showMissingCodeCoverage();
+		}
+		else
+		{
+			$report->hideMissingCodeCoverage();
+		}
+
+		return $report;
 	}
 
 	public function setBootstrap($bootstrap)

@@ -150,6 +150,78 @@ namespace tests\units {
 			;
 		}
 
+		public function testConfigureDefaultReport()
+		{
+			$this
+				->if($task = new testedClass())
+				->then
+					->object($task->configureDefaultReport())->isInstanceOf('\\mageekguy\\atoum\\reports\\realtime\\phing')
+				->if($report = new atoum\reports\realtime\phing())
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+				->if($report = new \mock\mageekguy\atoum\reports\realtime\phing())
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('addWriter')->once()
+				->if($report->getMockController()->resetCalls())
+				->and($task->setShowProgress(true))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('showProgress')->once()
+				->if($task->setShowProgress(false))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('hideProgress')->once()
+				->if($report->getMockController()->resetCalls())
+				->and($task->setShowDuration(true))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('showDuration')->once()
+				->if($task->setShowDuration(false))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('hideDuration')->once()
+				->if($report->getMockController()->resetCalls())
+				->and($task->setShowMemory(true))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('showMemory')->once()
+				->if($task->setShowMemory(false))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('hideMemory')->once()
+				->if($report->getMockController()->resetCalls())
+				->and($task->setShowCodeCoverage(true))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('showCodeCoverage')->once()
+				->if($task->setShowCodeCoverage(false))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('hideCodeCoverage')->once()
+				->if($report->getMockController()->resetCalls())
+				->and($task->setShowMissingCodeCoverage(true))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('showMissingCodeCoverage')->once()
+				->if($task->setShowMissingCodeCoverage(false))
+				->then
+					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
+					->mock($report)
+						->call('hideMissingCodeCoverage')->once()
+			;
+		}
+
 		public function testCreateFileSet()
 		{
 			$this
