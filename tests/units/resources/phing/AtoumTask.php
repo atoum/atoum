@@ -222,6 +222,18 @@ namespace tests\units {
 			;
 		}
 
+		public function testConfigureAsynchronousReport()
+		{
+			$this
+				->if($task = new testedClass())
+				->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
+				->then
+					->object($task->configureAsynchronousReport($report, uniqid()))->isIdenticalTo($report)
+					->mock($report)
+						->call('addWriter')->once()
+			;
+		}
+
 		public function testCreateFileSet()
 		{
 			$this
@@ -355,6 +367,15 @@ namespace tests\units {
 				->then
 					->object($task->setCodeCoverageXunitPath($path = uniqid()))->isIdenticalTo($task)
 					->string($task->getCodeCoverageXunitPath())->isEqualTo($path)
+			;
+		}
+
+		public function testSetCodeCoverageCloverPath()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setCodeCoverageCloverPath($path = uniqid()))->isIdenticalTo($task)
 			;
 		}
 	}

@@ -1,7 +1,9 @@
 <?php
 use
 	mageekguy\atoum,
-	mageekguy\atoum\reports\realtime
+	mageekguy\atoum\reports,
+	mageekguy\atoum\reports\realtime,
+	mageekguy\atoum\report\fields\runner\coverage
 ;
 
 if($path = stream_resolve_include_path('phing/Task.php') !== false) {
@@ -17,6 +19,7 @@ class AtoumTask extends Task
 	private $codeCoverageReportPath = null;
 	private $codeCoverageReportUrl = null;
 	private $codeCoverageXunitPath = null;
+	private $codeCoverageCloverPath = null;
 	private $atoumPharPath = null;
 	private $atoumAutoloaderPath = null;
 	private $phpPath = null;
@@ -112,7 +115,8 @@ class AtoumTask extends Task
 
 	public function execute()
 	{
-		$this->runner->addReport($this->configureDefaultReport());
+		$report = $this->configureDefaultReport();
+		$this->runner->addReport($report);
 
 		if ($this->phpPath !== null)
 		{
@@ -127,17 +131,32 @@ class AtoumTask extends Task
 		if ($this->codeCoverageEnabled() === true)
 		{
 			$this->runner->enableCodeCoverage();
+
+			if (($path = $this->codeCoverageCloverPath) !== null)
+			{
+				$clover = new atoum\reports\asynchronous\clover();
+				$this->runner->addReport($this->configureAsynchronousReport($clover, $path));
+			}
+
+			if (($path = $this->codeCoverageReportPath) !== null)
+			{
+				$projectName = isset($this->project) ? $this->project->getName() : 'Code coverage report';
+				$reportUrl = $this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html';
+
+				$coverageHtmlField = new coverage\html($projectName, $path);
+				$coverageHtmlField->setRootUrl($reportUrl);
+				$report->addField($coverageHtmlField);
+			}
 		}
 		else
 		{
 			$this->runner->disableCodeCoverage();
 		}
 
-		if ($this->codeCoverageXunitPath !== null)
+		if (($path = $this->codeCoverageXunitPath) !== null)
 		{
 			$xUnit = new atoum\reports\asynchronous\xunit();
-			$file = new atoum\writers\file($this->codeCoverageXunitPath);
-			$this->runner->addReport($xUnit->addWriter($file));
+			$this->runner->addReport($this->configureAsynchronousReport($xUnit, $path));
 		}
 
 		$score = $this->runner->run();
@@ -200,6 +219,13 @@ class AtoumTask extends Task
 		{
 			$report->hideMissingCodeCoverage();
 		}
+
+		return $report;
+	}
+
+	public function configureAsynchronousReport(reports\asynchronous $report, $path)
+	{
+		$report->addWriter(new atoum\writers\file($path));
 
 		return $report;
 	}
@@ -298,6 +324,13 @@ class AtoumTask extends Task
 	public function setCodeCoverageXunitPath($codeCoverageXunitPath)
 	{
 		$this->codeCoverageXunitPath = $codeCoverageXunitPath;
+
+		return $this;
+	}
+
+	public function setCodeCoverageCloverPath($codeCoverageCloverPath)
+	{
+		$this->codeCoverageCloverPath = $codeCoverageCloverPath;
 
 		return $this;
 	}
