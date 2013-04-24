@@ -25,7 +25,7 @@ class AtoumTask extends Task
 
 	public function createFileSet()
 	{
-		$this->fileSets = $fileSet = new Fileset();
+		$this->fileSets[] = $fileSet = new Fileset();
 
 		return $fileSet;
 	}
