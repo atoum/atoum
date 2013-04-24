@@ -11,8 +11,8 @@ namespace tests\units {
 		AtoumTask as testedClass
 	;
 
-	require_once __DIR__ . '/../runner.php';
-	require_once __DIR__ . '/../../../resources/phing/AtoumTask.php';
+	require_once __DIR__ . '/../../runner.php';
+	require_once __DIR__ . '/../../../../resources/phing/AtoumTask.php';
 
 	class AtoumTask extends atoum
 	{
