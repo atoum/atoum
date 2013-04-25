@@ -11,7 +11,9 @@ use
 
 class controller extends test\adapter
 {
-	protected $mock = null;
+	protected $mockHash = null;
+	protected $mockClass = null;
+	protected $mockMethods = array();
 	protected $iterator = null;
 
 	protected static $controlNextNewMock = null;
@@ -78,19 +80,14 @@ class controller extends test\adapter
 		return $this;
 	}
 
-	public function getMock()
-	{
-		return $this->mock;
-	}
-
 	public function getMockClass()
 	{
-		return ($this->mock === null ? null : get_class($this->mock));
+		return $this->mockClass;
 	}
 
 	public function getMethods()
 	{
-		return ($this->mock === null ? array() : $this->mock->getMockedMethods());
+		return $this->mockMethods;
 	}
 
 	public function methods(\closure $filter = null)
@@ -124,19 +121,21 @@ class controller extends test\adapter
 	{
 		$mockClass = get_class($mock);
 
-		if ($this->mock !== $mock)
-		{
-			$this->mock = $mock;
+		$mockHash = spl_object_hash($mock);
 
-			$methods = $this->getMethods();
+		if ($this->mockHash !== $mockHash)
+		{
+			$this->mockHash = $mockHash;
+			$this->mockClass = get_class($mock);
+			$this->mockMethods = $mock->getMockedMethods();
 
 			if ($this->disableMethodChecking === false)
 			{
 				foreach (array_keys($this->invokers) as $method)
 				{
-					if (in_array($method, $methods) === false)
+					if (in_array($method, $this->mockMethods) === false)
 					{
-						if (in_array('__call', $methods) === false)
+						if (in_array('__call', $this->mockMethods) === false)
 						{
 							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 						}
@@ -150,7 +149,7 @@ class controller extends test\adapter
 				}
 			}
 
-			foreach ($methods as $method)
+			foreach ($this->mockMethods as $method)
 			{
 				if (isset($this->invokers[$method]) === false)
 				{
@@ -188,7 +187,9 @@ class controller extends test\adapter
 
 	public function reset()
 	{
-		$this->mock = null;
+		$this->mockHash = null;
+		$this->mockClass = null;
+		$this->mockMethods = array();
 
 		return parent::reset();
 	}
@@ -219,7 +220,7 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mock !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
+		if ($this->mockHash !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
 		{
 			if (array_key_exists('__call', $this->invokers) === true)
 			{
