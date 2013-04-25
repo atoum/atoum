@@ -22,6 +22,8 @@ class atoumTask extends task
 	private $codeCoverage = false;
 	private $codeCoverageReportPath = null;
 	private $codeCoverageReportUrl = null;
+	private $codeCoverageTreemapPath = null;
+	private $codeCoverageTreemapUrl = null;
 	private $codeCoverageXunitPath = null;
 	private $codeCoverageCloverPath = null;
 	private $atoumPharPath = null;
@@ -58,7 +60,7 @@ class atoumTask extends task
 
 	public function codeCoverageEnabled()
 	{
-		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null);
+		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null || $this->codeCoverageTreemapPath !== null);
 	}
 
 	public function createFileSet()
@@ -154,12 +156,18 @@ class atoumTask extends task
 				$this->runner->addReport($this->configureAsynchronousReport($clover, $path));
 			}
 
+			$coverageReportUrl = null;
 			if (($path = $this->codeCoverageReportPath) !== null)
 			{
 				$coverageHtmlField = new coverage\html(isset($this->project) === true ? $this->project->getName() : 'Code coverage report', $path);
 				$coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html');
 
 				$report->addField($coverageHtmlField);
+			}
+
+			if (($path = $this->codeCoverageTreemapPath) !== null)
+			{
+				$report->addField($this->configureCoverageTreemapField($path, $coverageReportUrl));
 			}
 		}
 
@@ -240,6 +248,19 @@ class atoumTask extends task
 		$report->addWriter(new atoum\writers\file($path));
 
 		return $report;
+	}
+
+	public function configureCoverageTreemapField($coverageTreemapPath, $coverageReportUrl = null)
+	{
+		$coverageTreemapField = new coverage\treemap(isset($this->project) ? $this->project->getName() : 'Code coverage treemap', $coverageTreemapPath);
+		$coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://' . $coverageTreemapPath . '/index.html');
+
+		if ($coverageReportUrl !== null)
+		{
+			$coverageTreemapField->setHtmlReportBaseUrl($coverageReportUrl);
+		}
+
+		return $coverageTreemapField;
 	}
 
 	public function setBootstrap($bootstrap)
@@ -372,6 +393,20 @@ class atoumTask extends task
 	public function getCodeCoverageReportPath()
 	{
 		return $this->codeCoverageReportPath;
+	}
+
+	public function setCodeCoverageTreemapPath($codeCoverageTreemapPath)
+	{
+		$this->codeCoverageTreemapPath = (string) $codeCoverageTreemapPath;
+
+		return $this;
+	}
+
+	public function setCodeCoverageTreemapUrl($codeCoverageTreemapUrl)
+	{
+		$this->codeCoverageTreemapUrl = (string) $codeCoverageTreemapUrl;
+
+		return $this;
 	}
 
 	public function setCodeCoverageReportUrl($codeCoverageReportUrl)

@@ -12,6 +12,7 @@
                 phppath="/usr/bin/php"
                 codecoverage="true"
                 codecoveragereportpath="reports/html/"
+                codecoveragetreemappath="reports/treemap/"
                 codecoveragexunitpath="reports/xunit/xunit.xml"
                 codecoveragecloverpath="reports/clover/clover.xml"
                 showcodecoverage="true"
