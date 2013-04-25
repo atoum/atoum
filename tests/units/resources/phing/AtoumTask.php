@@ -77,6 +77,12 @@ namespace tests\units {
 					->mock($runner)
 						->call('setPhpPath')->withArguments($phpPath)->once()
 				->if($runner->getMockController()->resetCalls())
+				->and($task->setBootstrap($bootstrapFile = uniqid()))
+				->then
+					->object($task->execute())->isIdenticalTo($task)
+					->mock($runner)
+						->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
+				->if($runner->getMockController()->resetCalls())
 				->and($task->setMaxChildren($maxChildren = rand(1, PHP_INT_MAX)))
 				->then
 					->object($task->execute())->isIdenticalTo($task)

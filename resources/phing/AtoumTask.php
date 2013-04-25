@@ -90,11 +90,6 @@ class AtoumTask extends Task
 			throw new exception('AtoumTask depends on Xdebug being installed to gather code coverage information');
 		}
 
-		if ($this->bootstrap)
-		{
-			require_once $this->bootstrap;
-		}
-
 		if ($this->atoumPharPath !== null)
 		{
 			require_once $this->atoumPharPath;
@@ -126,6 +121,11 @@ class AtoumTask extends Task
 		if ($this->phpPath !== null)
 		{
 			$this->getRunner()->setPhpPath($this->phpPath);
+		}
+
+		if ($this->bootstrap !== null)
+		{
+			$this->getRunner()->setBootstrapFile($this->bootstrap);
 		}
 
 		if ($this->maxChildren > 0)
