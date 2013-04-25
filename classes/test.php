@@ -918,8 +918,12 @@ abstract class test implements observable, \countable
 			{
 				$this->score->addSkippedMethod($this->class, $this->currentMethod, $exception->getMessage());
 			}
-			catch (test\exceptions\stop $exception)
+			catch (test\exceptions\stop $exception) {}
+			catch (exception $exception)
 			{
+				list($file, $line) = $this->getBacktrace($exception->getTrace());
+
+				$this->errorHandler(E_USER_ERROR, $exception->getMessage(), $file, $line);
 			}
 			catch (\exception $exception)
 			{
@@ -1003,13 +1007,23 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function errorHandler($errno, $errstr, $errfile, $errline, $context)
+	public function errorHandler($errno, $errstr, $errfile, $errline)
 	{
 		$errorReporting = $this->adapter->error_reporting();
 
 		if ($errorReporting !== 0 && $errorReporting & $errno)
 		{
 			list($file, $line) = $this->getBacktrace();
+
+			if ($file === null)
+			{
+				$file = $errfile;
+			}
+
+			if ($line === null)
+			{
+				$line = $errline;
+			}
 
 			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
 		}
@@ -1178,7 +1192,7 @@ abstract class test implements observable, \countable
 
 		foreach ($debugBacktrace as $key => $value)
 		{
-			if (isset($value['class']) === true && isset($value['function']) === true && $value['class'] === $this->class && $value['function'] === $this->currentMethod)
+			if (isset($value['class']) === true && $value['class'] === $this->class && isset($value['function']) === true && $value['function'] === $this->currentMethod)
 			{
 				if (isset($debugBacktrace[$key - 1]) === true)
 				{
