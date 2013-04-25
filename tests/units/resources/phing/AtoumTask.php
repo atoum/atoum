@@ -25,7 +25,7 @@ namespace tests\units
 		public function test__construct()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->object($task->getRunner())->isInstanceOf('mageekguy\atoum\runner')
 					->variable($task->getBootstrap())->isNull()
@@ -67,7 +67,7 @@ namespace tests\units
 		public function testGetSetRunner()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->object($task->setRunner($runner = new atoum\runner()))->isIdenticalTo($task)
 					->object($task->getRunner())->isIdenticalTo($runner)
@@ -81,10 +81,14 @@ namespace tests\units
 		public function testCodeCoverageEnabled()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->boolean($task->codeCoverageEnabled())->isFalse()
 				->if($task->setCodeCoverageReportPath(uniqid()))
+				->then
+					->boolean($task->codeCoverageEnabled())->isTrue()
+				->if($task = new testedClass())
+				->and($task->setCodeCoverageTreemapPath(uniqid()))
 				->then
 					->boolean($task->codeCoverageEnabled())->isTrue()
 				->if($task = new testedClass())
@@ -193,6 +197,23 @@ namespace tests\units
 			;
 		}
 
+		public function testExecuteWithCodeCoverageTreemap()
+		{
+			$this
+				->mockGenerator->shuntParentClassCalls()
+				->if($runner = new \mock\mageekguy\atoum\runner())
+				->and($this->calling($runner)->run = new atoum\score())
+				->and($task = new \mock\AtoumTask($runner))
+				->and($this->calling($task)->configureDefaultReport = $report = new \mock\mageekguy\atoum\reports\realtime\phing())
+				->and($this->calling($task)->configureCoverageTreemapField = $field = new atoum\report\fields\runner\coverage\treemap(uniqid(), uniqid()))
+				->and($task->setCodeCoverageTreemapPath(uniqid()))
+				->then
+					->object($task->execute())->isIdenticalTo($task)
+					->mock($report)
+						->call('addField')->withArguments($field)->once()
+			;
+		}
+
 		public function testConfigureDefaultReport()
 		{
 			$this
@@ -274,6 +295,20 @@ namespace tests\units
 					->object($task->configureAsynchronousReport($report, uniqid()))->isIdenticalTo($report)
 					->mock($report)
 						->call('addWriter')->once()
+			;
+		}
+
+		public function testConfigureCoverageTreemapField()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\mageekguy\\atoum\\report\\fields\\runner\\coverage\\treemap')
+					->string($field->getDestinationDirectory())->isEqualTo($path)
+					->string($field->getTreemapUrl())->isEqualTo('file://' . $path . '/index.html/')
+				->if($field = $task->configureCoverageTreemapField($path = uniqid(), $url = uniqid()))
+				->then
+					->string($field->getHtmlReportBaseUrl())->isEqualTo($url)
 			;
 		}
 
@@ -452,6 +487,24 @@ namespace tests\units
 					->string($task->getCodeCoverageReportUrl())->isEqualTo($path)
 					->object($task->setCodeCoverageReportUrl($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
 					->string($task->getCodeCoverageReportUrl())->isEqualTo((string) $path)
+			;
+		}
+
+		public function testSetCodeCoverageTreemapPath()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setCodeCoverageTreemapPath(uniqid()))->isIdenticalTo($task)
+			;
+		}
+
+		public function testSetCodeCoverageTreemapUrl()
+		{
+			$this
+				->given($task = new testedClass())
+				->then
+					->object($task->setCodeCoverageTreemapUrl(uniqid()))->isIdenticalTo($task)
 			;
 		}
 
