@@ -13,6 +13,7 @@
                 codecoverage="true"
                 codecoveragereportpath="reports/html/"
                 codecoveragexunitpath="reports/xunit/xunit.xml"
+                codecoveragecloverpath="reports/clover/clover.xml"
                 showcodecoverage="true"
                 showmissingcodecoverage="true"
                 showprogress="true"
