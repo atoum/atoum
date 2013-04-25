@@ -255,7 +255,8 @@ class atoumTask extends task
 		$coverageTreemapField = new coverage\treemap(isset($this->project) ? $this->project->getName() : 'Code coverage treemap', $coverageTreemapPath);
 		$coverageTreemapField->setTreemapUrl($this->codeCoverageTreemapUrl ?: 'file://' . $coverageTreemapPath . '/index.html');
 
-		if($coverageReportUrl !== null) {
+		if ($coverageReportUrl !== null)
+		{
 			$coverageTreemapField->setHtmlReportBaseUrl($coverageReportUrl);
 		}
 
