@@ -22,6 +22,23 @@ class string extends asserters\variable
 		$this->setAdapter($adapter);
 	}
 
+	public function __get($asserter)
+	{
+		switch ($asserter)
+		{
+			case 'length':
+				return $this->getLengthAsserter();
+
+			default:
+				return $this->generator->__get($asserter);
+		}
+	}
+
+	public function __toString()
+	{
+		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
+	}
+
 	public function setAdapter(atoum\adapter $adapter = null)
 	{
 		$this->adapter = $adapter ?: new atoum\adapter();
@@ -32,11 +49,6 @@ class string extends asserters\variable
 	public function getAdapter()
 	{
 		return $this->adapter;
-	}
-
-	public function __toString()
-	{
-		return (is_string($this->value) === false ? parent::__toString() : sprintf($this->getLocale()->_('string(%s) \'%s\''), strlen($this->value), addcslashes($this->value, $this->charlist)));
 	}
 
 	public function getCharlist()
@@ -162,6 +174,11 @@ class string extends asserters\variable
 		}
 
 		return $this;
+	}
+
+	protected function getLengthAsserter()
+	{
+		return $this->generator->__call('integer', array(strlen($this->valueIsSet()->value)));
 	}
 
 	protected static function check($value, $method)

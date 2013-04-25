@@ -113,6 +113,11 @@ class utf8String extends asserters\string
 		return (is_string($mixed) === false ? parent::getTypeOf($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed));
 	}
 
+	protected function getLengthAsserter()
+	{
+		return $this->generator->__call('integer', array(mb_strlen($this->valueIsSet()->value, 'UTF-8')));
+	}
+
 	protected static function isUtf8($string)
 	{
 		return (preg_match('/^.*$/us', $string) === 1);
