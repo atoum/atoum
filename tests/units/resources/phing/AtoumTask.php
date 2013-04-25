@@ -25,7 +25,7 @@ namespace tests\units
 		public function test__construct()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->object($task->getRunner())->isInstanceOf('mageekguy\atoum\runner')
 					->variable($task->getBootstrap())->isNull()
@@ -67,7 +67,7 @@ namespace tests\units
 		public function testGetSetRunner()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->object($task->setRunner($runner = new atoum\runner()))->isIdenticalTo($task)
 					->object($task->getRunner())->isIdenticalTo($runner)
@@ -81,7 +81,7 @@ namespace tests\units
 		public function testCodeCoverageEnabled()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->boolean($task->codeCoverageEnabled())->isFalse()
 				->if($task->setCodeCoverageReportPath(uniqid()))
@@ -301,7 +301,7 @@ namespace tests\units
 		public function testConfigureCoverageTreemapField()
 		{
 			$this
-				->if($task = new testedClass())
+				->given($task = new testedClass())
 				->then
 					->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\mageekguy\\atoum\\report\\fields\\runner\\coverage\\treemap')
 					->string($field->getDestinationDirectory())->isEqualTo($path)
