@@ -1,4 +1,5 @@
 <?php
+
 use
 	mageekguy\atoum,
 	mageekguy\atoum\reports,
@@ -6,12 +7,14 @@ use
 	mageekguy\atoum\report\fields\runner\coverage
 ;
 
-
-if (($path = stream_resolve_include_path('phing/Task.php')) !== false) {
-	require_once $path;
+if (defined('mageekguy\atoum\phing\task\path') === false)
+{
+	define('mageekguy\atoum\phing\task\path', 'phing/Task.php');
 }
 
-class AtoumTask extends Task
+require_once mageekguy\atoum\phing\task\path;
+
+class atoumTask extends task
 {
 	private $runner = false;
 	private $fileSets = array();
@@ -45,7 +48,8 @@ class AtoumTask extends Task
 
 	public function getRunner()
 	{
-		if ($this->runner === null) {
+		if ($this->runner === null)
+		{
 			$this->runner = new atoum\runner();
 		}
 
@@ -116,57 +120,59 @@ class AtoumTask extends Task
 	public function execute()
 	{
 		$report = $this->configureDefaultReport();
-		$this->getRunner()->addReport($report);
+
+		$runner = $this->getRunner();
+
+		$runner->addReport($report);
 
 		if ($this->phpPath !== null)
 		{
-			$this->getRunner()->setPhpPath($this->phpPath);
+			$this->runner->setPhpPath($this->phpPath);
 		}
 
 		if ($this->bootstrap !== null)
 		{
-			$this->getRunner()->setBootstrapFile($this->bootstrap);
+			$this->runner->setBootstrapFile($this->bootstrap);
 		}
 
 		if ($this->maxChildren > 0)
 		{
-			$this->getRunner()->setMaxChildrenNumber($this->maxChildren);
+			$this->runner->setMaxChildrenNumber($this->maxChildren);
 		}
 
-		if ($this->codeCoverageEnabled() === true)
+		if ($this->codeCoverageEnabled() === false)
 		{
-			$this->getRunner()->enableCodeCoverage();
+			$this->runner->disableCodeCoverage();
+		}
+		else
+		{
+			$this->runner->enableCodeCoverage();
 
 			if (($path = $this->codeCoverageCloverPath) !== null)
 			{
 				$clover = new atoum\reports\asynchronous\clover();
-				$this->getRunner()->addReport($this->configureAsynchronousReport($clover, $path));
+				$this->runner->addReport($this->configureAsynchronousReport($clover, $path));
 			}
 
 			if (($path = $this->codeCoverageReportPath) !== null)
 			{
-				$projectName = isset($this->project) ? $this->project->getName() : 'Code coverage report';
-				$reportUrl = $this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html';
+				$coverageHtmlField = new coverage\html(isset($this->project) === true ? $this->project->getName() : 'Code coverage report', $path);
+				$coverageHtmlField->setRootUrl($this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html');
 
-				$coverageHtmlField = new coverage\html($projectName, $path);
-				$coverageHtmlField->setRootUrl($reportUrl);
 				$report->addField($coverageHtmlField);
 			}
-		}
-		else
-		{
-			$this->getRunner()->disableCodeCoverage();
 		}
 
 		if (($path = $this->codeCoverageXunitPath) !== null)
 		{
 			$xUnit = new atoum\reports\asynchronous\xunit();
-			$this->getRunner()->addReport($this->configureAsynchronousReport($xUnit, $path));
+			$this->runner->addReport($this->configureAsynchronousReport($xUnit, $path));
 		}
 
-		$score = $this->getRunner()->run();
+		$score = $this->runner->run();
 
 		$failures = ($score->getUncompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
+
 		if ($failures > 0)
 		{
 			throw new BuildException("Tests did not pass");
@@ -178,9 +184,10 @@ class AtoumTask extends Task
 	public function configureDefaultReport(realtime\phing $report = null)
 	{
 		$report = $report ?: new realtime\phing();
+
 		$report->addWriter(new atoum\writers\std\out());
 
-		if($this->showProgress)
+		if ($this->showProgress === true)
 		{
 			$report->showProgress();
 		}
@@ -189,7 +196,7 @@ class AtoumTask extends Task
 			$report->hideProgress();
 		}
 
-		if($this->showDuration)
+		if ($this->showDuration === true)
 		{
 			$report->showDuration();
 		}
@@ -198,7 +205,7 @@ class AtoumTask extends Task
 			$report->hideDuration();
 		}
 
-		if($this->showMemory)
+		if ($this->showMemory === true)
 		{
 			$report->showMemory();
 		}
@@ -207,7 +214,7 @@ class AtoumTask extends Task
 			$report->hideMemory();
 		}
 
-		if($this->showCodeCoverage)
+		if ($this->showCodeCoverage === true)
 		{
 			$report->showCodeCoverage();
 		}
@@ -216,7 +223,7 @@ class AtoumTask extends Task
 			$report->hideCodeCoverage();
 		}
 
-		if($this->showMissingCodeCoverage)
+		if ($this->showMissingCodeCoverage === true)
 		{
 			$report->showMissingCodeCoverage();
 		}
@@ -242,11 +249,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getBootstrap()
+	{
+		return $this->bootstrap;
+	}
+
 	public function setCodeCoverage($codeCoverage)
 	{
 		$this->codeCoverage = (boolean) $codeCoverage;
 
 		return $this;
+	}
+
+	public function getCodeCoverage()
+	{
+		return $this->codeCoverage;
 	}
 
 	public function setAtoumPharPath($atoumPharPath)
@@ -256,11 +273,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getAtoumPharPath()
+	{
+		return $this->atoumPharPath;
+	}
+
 	public function setPhpPath($phpPath)
 	{
 		$this->phpPath = (string) $phpPath;
 
 		return $this;
+	}
+
+	public function getPhpPath()
+	{
+		return $this->phpPath;
 	}
 
 	public function setShowCodeCoverage($showCodeCoverage)
@@ -270,11 +297,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getShowCodeCoverage()
+	{
+		return $this->showCodeCoverage;
+	}
+
 	public function setShowDuration($showDurationReport)
 	{
 		$this->showDuration = (boolean) $showDurationReport;
 
 		return $this;
+	}
+
+	public function getShowDuration()
+	{
+		return $this->showDuration;
 	}
 
 	public function setShowMemory($showMemoryReport)
@@ -284,11 +321,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getShowMemory()
+	{
+		return $this->showMemory;
+	}
+
 	public function setShowMissingCodeCoverage($showMissingCodeCoverage)
 	{
 		$this->showMissingCodeCoverage = (boolean) $showMissingCodeCoverage;
 
 		return $this;
+	}
+
+	public function getShowMissingCodeCoverage()
+	{
+		return $this->showMissingCodeCoverage;
 	}
 
 	public function setShowProgress($showProgress)
@@ -298,11 +345,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getShowProgress()
+	{
+		return $this->showProgress;
+	}
+
 	public function setAtoumAutoloaderPath($atoumAutoloaderPath)
 	{
-		$this->atoumAutoloaderPath = $atoumAutoloaderPath;
+		$this->atoumAutoloaderPath = (string) $atoumAutoloaderPath;
 
 		return $this;
+	}
+
+	public function getAtoumAutoloaderPath()
+	{
+		return $this->atoumAutoloaderPath;
 	}
 
 	public function setCodeCoverageReportPath($codeCoverageReportPath)
@@ -312,11 +369,21 @@ class AtoumTask extends Task
 		return $this;
 	}
 
+	public function getCodeCoverageReportPath()
+	{
+		return $this->codeCoverageReportPath;
+	}
+
 	public function setCodeCoverageReportUrl($codeCoverageReportUrl)
 	{
 		$this->codeCoverageReportUrl = (string) $codeCoverageReportUrl;
 
 		return $this;
+	}
+
+	public function getCodeCoverageReportUrl()
+	{
+		return $this->codeCoverageReportUrl;
 	}
 
 	public function setMaxChildren($maxChildren)
@@ -326,16 +393,14 @@ class AtoumTask extends Task
 		return $this;
 	}
 
-	public function setCodeCoverageXunitPath($codeCoverageXunitPath)
+	public function getMaxChildren()
 	{
-		$this->codeCoverageXunitPath = $codeCoverageXunitPath;
-
-		return $this;
+		return $this->maxChildren;
 	}
 
-	public function setCodeCoverageCloverPath($codeCoverageCloverPath)
+	public function setCodeCoverageXunitPath($codeCoverageXunitPath)
 	{
-		$this->codeCoverageCloverPath = $codeCoverageCloverPath;
+		$this->codeCoverageXunitPath = (string) $codeCoverageXunitPath;
 
 		return $this;
 	}
@@ -343,5 +408,17 @@ class AtoumTask extends Task
 	public function getCodeCoverageXunitPath()
 	{
 		return $this->codeCoverageXunitPath;
+	}
+
+	public function setCodeCoverageCloverPath($codeCoverageCloverPath)
+	{
+		$this->codeCoverageCloverPath = (string) $codeCoverageCloverPath;
+
+		return $this;
+	}
+
+	public function getCodeCoverageCloverPath()
+	{
+		return $this->codeCoverageCloverPath;
 	}
 }

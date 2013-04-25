@@ -1,17 +1,23 @@
 <?php
-namespace {
+
+namespace
+{
 	class Task {}
 	class FileSet {}
 	class BuildException extends Exception {}
 }
 
-namespace tests\units {
+namespace tests\units
+{
 	use
 		atoum,
 		AtoumTask as testedClass
 	;
 
 	require_once __DIR__ . '/../../runner.php';
+
+	define('mageekguy\atoum\phing\task\path', atoum\mock\streams\fs\file::get());
+
 	require_once __DIR__ . '/../../../../resources/phing/AtoumTask.php';
 
 	class AtoumTask extends atoum
@@ -21,10 +27,40 @@ namespace tests\units {
 			$this
 				->if($task = new testedClass())
 				->then
-					->object($task->getRunner())->isInstanceOf('\\mageekguy\\atoum\\runner')
+					->object($task->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+					->variable($task->getBootstrap())->isNull()
+					->boolean($task->getCodeCoverage())->isFalse()
+					->variable($task->getAtoumPharPath())->isNull()
+					->variable($task->getPhpPath())->isNull()
+					->boolean($task->getShowCodeCoverage())->isTrue()
+					->boolean($task->getShowDuration())->isTrue()
+					->boolean($task->getShowMemory())->isTrue()
+					->boolean($task->getShowMissingCodeCoverage())->isTrue()
+					->boolean($task->getShowProgress())->isTrue()
+					->variable($task->getAtoumAutoloaderPath())->isNull()
+					->variable($task->getCodeCoverageReportPath())->isNull()
+					->variable($task->getCodeCoverageReportUrl())->isNull()
+					->variable($task->getCodeCoverageXunitPath())->isNull()
+					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->integer($task->getMaxChildren())->isZero()
 				->if($task = new testedClass($runner = new atoum\runner()))
 				->then
 					->object($task->getRunner())->isIdenticalTo($runner)
+					->variable($task->getBootstrap())->isNull()
+					->boolean($task->getCodeCoverage())->isFalse()
+					->variable($task->getAtoumPharPath())->isNull()
+					->variable($task->getPhpPath())->isNull()
+					->boolean($task->getShowCodeCoverage())->isTrue()
+					->boolean($task->getShowDuration())->isTrue()
+					->boolean($task->getShowMemory())->isTrue()
+					->boolean($task->getShowMissingCodeCoverage())->isTrue()
+					->boolean($task->getShowProgress())->isTrue()
+					->variable($task->getAtoumAutoloaderPath())->isNull()
+					->variable($task->getCodeCoverageReportPath())->isNull()
+					->variable($task->getCodeCoverageReportUrl())->isNull()
+					->variable($task->getCodeCoverageXunitPath())->isNull()
+					->variable($task->getCodeCoverageCloverPath())->isNull()
+					->integer($task->getMaxChildren())->isZero()
 			;
 		}
 
@@ -33,11 +69,12 @@ namespace tests\units {
 			$this
 				->if($task = new testedClass())
 				->then
-					->object($task->getRunner())->isInstanceOf('\\mageekguy\\atoum\\runner')
-					->object($task->setRunner())->isIdenticalTo($task)
-					->object($task->getRunner())->isInstanceOf('\\mageekguy\\atoum\\runner')
 					->object($task->setRunner($runner = new atoum\runner()))->isIdenticalTo($task)
 					->object($task->getRunner())->isIdenticalTo($runner)
+					->object($task->setRunner())->isIdenticalTo($task)
+					->object($task->getRunner())
+						->isInstanceOf('mageekguy\atoum\runner')
+						->isNotIdenticalTo($runner)
 			;
 		}
 
@@ -115,7 +152,7 @@ namespace tests\units {
 							$task->execute();
 						}
 					)
-						->isInstanceOf('\\BuildException')
+						->isInstanceOf('buildException')
 						->hasMessage('Tests did not pass')
 				->if($this->calling($score)->getUncompletedMethodNumber = 0)
 				->and($this->calling($score)->getFailNumber = rand(1, PHP_INT_MAX))
@@ -124,7 +161,7 @@ namespace tests\units {
 							$task->execute();
 						}
 					)
-						->isInstanceOf('\\BuildException')
+						->isInstanceOf('buildException')
 						->hasMessage('Tests did not pass')
 				->if($this->calling($score)->getFailNumber = 0)
 				->and($this->calling($score)->getErrorNumber = rand(1, PHP_INT_MAX))
@@ -133,7 +170,7 @@ namespace tests\units {
 							$task->execute();
 						}
 					)
-						->isInstanceOf('\\BuildException')
+						->isInstanceOf('buildException')
 						->hasMessage('Tests did not pass')
 				->if($this->calling($score)->getErrorNumber = 0)
 				->and($this->calling($score)->getExceptionNumber = rand(1, PHP_INT_MAX))
@@ -142,7 +179,7 @@ namespace tests\units {
 							$task->execute();
 						}
 					)
-						->isInstanceOf('\\BuildException')
+						->isInstanceOf('buildException')
 						->hasMessage('Tests did not pass')
 				->if($this->calling($score)->getExceptionNumber = 0)
 				->and($this->calling($score)->getRuntimeExceptionNumber = rand(1, PHP_INT_MAX))
@@ -151,7 +188,7 @@ namespace tests\units {
 							$task->execute();
 						}
 					)
-						->isInstanceOf('\\BuildException')
+						->isInstanceOf('buildException')
 						->hasMessage('Tests did not pass')
 			;
 		}
@@ -161,7 +198,7 @@ namespace tests\units {
 			$this
 				->if($task = new testedClass())
 				->then
-					->object($task->configureDefaultReport())->isInstanceOf('\\mageekguy\\atoum\\reports\\realtime\\phing')
+					->object($task->configureDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\phing')
 				->if($report = new atoum\reports\realtime\phing())
 				->then
 					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
@@ -245,7 +282,7 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->createFileSet())->isInstanceOf('\\FileSet')
+					->object($task->createFileSet())->isInstanceOf('fileSet')
 			;
 		}
 
@@ -254,7 +291,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setBootstrap(uniqid()))->isIdenticalTo($task)
+					->object($task->setBootstrap($bootstrap = uniqid()))->isIdenticalTo($task)
+					->string($task->getBootstrap())->isEqualTo($bootstrap)
+					->object($task->setBootstrap($bootstrap = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getBootstrap())->isEqualTo((string) $bootstrap)
 			;
 		}
 
@@ -263,7 +303,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setCodeCoverage((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setCodeCoverage(true))->isIdenticalTo($task)
+					->boolean($task->getCodeCoverage())->isTrue()
+					->object($task->setCodeCoverage(false))->isIdenticalTo($task)
+					->boolean($task->getCodeCoverage())->isFalse()
+					->object($task->setCodeCoverage(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getCodeCoverage())->isTrue()
+					->object($task->setCodeCoverage(0))->isIdenticalTo($task)
+					->boolean($task->getCodeCoverage())->isFalse()
 			;
 		}
 
@@ -272,7 +319,11 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setAtoumPharPath(uniqid()))->isIdenticalTo($task)
+					->object($task->setAtoumPharPath($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getAtoumPharPath())->isEqualTo($path)
+					->object($task->setAtoumPharPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getAtoumPharPath())->isEqualTo((string) $path)
+
 			;
 		}
 
@@ -281,7 +332,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setPhpPath(uniqid()))->isIdenticalTo($task)
+					->object($task->setPhpPath($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getPhpPath())->isEqualTo($path)
+					->object($task->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getPhpPath())->isEqualTo((string) $path)
 			;
 		}
 
@@ -290,7 +344,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setShowCodeCoverage((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setShowCodeCoverage(true))->isIdenticalTo($task)
+					->boolean($task->getShowCodeCoverage())->isTrue()
+					->object($task->setShowCodeCoverage(false))->isIdenticalTo($task)
+					->boolean($task->getShowCodeCoverage())->isFalse()
+					->object($task->setShowCodeCoverage(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getShowCodeCoverage())->isTrue()
+					->object($task->setShowCodeCoverage(0))->isIdenticalTo($task)
+					->boolean($task->getShowCodeCoverage())->isFalse()
 			;
 		}
 
@@ -299,7 +360,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setShowDuration((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setShowDuration(true))->isIdenticalTo($task)
+					->boolean($task->getShowDuration())->isTrue()
+					->object($task->setShowDuration(false))->isIdenticalTo($task)
+					->boolean($task->getShowDuration())->isFalse()
+					->object($task->setShowDuration(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getShowDuration())->isTrue()
+					->object($task->setShowDuration(0))->isIdenticalTo($task)
+					->boolean($task->getShowDuration())->isFalse()
 			;
 		}
 
@@ -308,7 +376,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setShowMemory((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setShowMemory(true))->isIdenticalTo($task)
+					->boolean($task->getShowMemory())->isTrue()
+					->object($task->setShowMemory(false))->isIdenticalTo($task)
+					->boolean($task->getShowMemory())->isFalse()
+					->object($task->setShowMemory(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getShowMemory())->isTrue()
+					->object($task->setShowMemory(0))->isIdenticalTo($task)
+					->boolean($task->getShowMemory())->isFalse()
 			;
 		}
 
@@ -317,7 +392,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setShowMissingCodeCoverage((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setShowMissingCodeCoverage(true))->isIdenticalTo($task)
+					->boolean($task->getShowMissingCodeCoverage())->isTrue()
+					->object($task->setShowMissingCodeCoverage(false))->isIdenticalTo($task)
+					->boolean($task->getShowMissingCodeCoverage())->isFalse()
+					->object($task->setShowMissingCodeCoverage(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getShowMissingCodeCoverage())->isTrue()
+					->object($task->setShowMissingCodeCoverage(0))->isIdenticalTo($task)
+					->boolean($task->getShowMissingCodeCoverage())->isFalse()
 			;
 		}
 
@@ -326,7 +408,14 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setShowProgress((bool) rand(0, 1)))->isIdenticalTo($task)
+					->object($task->setShowProgress(true))->isIdenticalTo($task)
+					->boolean($task->getShowProgress())->isTrue()
+					->object($task->setShowProgress(false))->isIdenticalTo($task)
+					->boolean($task->getShowProgress())->isFalse()
+					->object($task->setShowProgress(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->boolean($task->getShowProgress())->isTrue()
+					->object($task->setShowProgress(0))->isIdenticalTo($task)
+					->boolean($task->getShowProgress())->isFalse()
 			;
 		}
 
@@ -335,7 +424,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setAtoumAutoloaderPath(uniqid()))->isIdenticalTo($task)
+					->object($task->setAtoumAutoloaderPath($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getAtoumAutoloaderPath())->isEqualTo($path)
+					->object($task->setAtoumAutoloaderPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getAtoumAutoloaderPath())->isEqualTo((string) $path)
 			;
 		}
 
@@ -344,7 +436,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setCodeCoverageReportPath(uniqid()))->isIdenticalTo($task)
+					->object($task->setCodeCoverageReportPath($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getCodeCoverageReportPath())->isEqualTo($path)
+					->object($task->setCodeCoverageReportPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getCodeCoverageReportPath())->isEqualTo((string) $path)
 			;
 		}
 
@@ -353,7 +448,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setCodeCoverageReportUrl(uniqid()))->isIdenticalTo($task)
+					->object($task->setCodeCoverageReportUrl($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getCodeCoverageReportUrl())->isEqualTo($path)
+					->object($task->setCodeCoverageReportUrl($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getCodeCoverageReportUrl())->isEqualTo((string) $path)
 			;
 		}
 
@@ -362,7 +460,10 @@ namespace tests\units {
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->setMaxChildren(rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->object($task->setMaxChildren($maxChildren = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->integer($task->getMaxChildren())->isEqualTo($maxChildren)
+					->object($task->setMaxChildren((string) ($maxChildren = rand(1, PHP_INT_MAX))))->isIdenticalTo($task)
+					->integer($task->getMaxChildren())->isEqualTo($maxChildren)
 			;
 		}
 
@@ -373,6 +474,8 @@ namespace tests\units {
 				->then
 					->object($task->setCodeCoverageXunitPath($path = uniqid()))->isIdenticalTo($task)
 					->string($task->getCodeCoverageXunitPath())->isEqualTo($path)
+					->object($task->setCodeCoverageXunitPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getCodeCoverageXunitPath())->isEqualTo((string) $path)
 			;
 		}
 
@@ -382,6 +485,9 @@ namespace tests\units {
 				->given($task = new testedClass())
 				->then
 					->object($task->setCodeCoverageCloverPath($path = uniqid()))->isIdenticalTo($task)
+					->string($task->getCodeCoverageCloverPath())->isEqualTo($path)
+					->object($task->setCodeCoverageCloverPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($task)
+					->string($task->getCodeCoverageCloverPath())->isEqualTo((string) $path)
 			;
 		}
 	}
