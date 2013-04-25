@@ -1,17 +1,26 @@
 <?php
+use
+	mageekguy\atoum,
+	mageekguy\atoum\reports,
+	mageekguy\atoum\reports\realtime,
+	mageekguy\atoum\report\fields\runner\coverage
+;
 
-require_once "phing/Task.php";
+
+if (($path = stream_resolve_include_path('phing/Task.php')) !== false) {
+	require_once $path;
+}
 
 class AtoumTask extends Task
 {
 	private $runner = false;
 	private $fileSets = array();
-	private $configurationFiles = array();
 	private $bootstrap = null;
 	private $codeCoverage = false;
 	private $codeCoverageReportPath = null;
 	private $codeCoverageReportUrl = null;
 	private $codeCoverageXunitPath = null;
+	private $codeCoverageCloverPath = null;
 	private $atoumPharPath = null;
 	private $atoumAutoloaderPath = null;
 	private $phpPath = null;
@@ -20,8 +29,33 @@ class AtoumTask extends Task
 	private $showMemory = true;
 	private $showCodeCoverage = true;
 	private $showMissingCodeCoverage = true;
-	private $maxChildren = false;
-	private $message = null;
+	private $maxChildren = 0;
+
+	public function __construct(atoum\runner $runner = null)
+	{
+		$this->setRunner($runner);
+	}
+
+	public function setRunner(atoum\runner $runner = null)
+	{
+		$this->runner = $runner;
+
+		return $this;
+	}
+
+	public function getRunner()
+	{
+		if ($this->runner === null) {
+			$this->runner = new atoum\runner();
+		}
+
+		return $this->runner;
+	}
+
+	public function codeCoverageEnabled()
+	{
+		return ($this->codeCoverage === true || $this->codeCoverageReportPath !== null);
+	}
 
 	public function createFileSet()
 	{
@@ -49,25 +83,11 @@ class AtoumTask extends Task
 		return $files;
 	}
 
-	public function setMessage($str)
-	{
-		$this->message = $str;
-
-		return $this;
-	}
-
-	public function init() {}
-
 	public function main()
 	{
 		if ($this->codeCoverage && extension_loaded('xdebug') === false)
 		{
 			throw new exception('AtoumTask depends on Xdebug being installed to gather code coverage information');
-		}
-
-		if ($this->bootstrap)
-		{
-			require_once $this->bootstrap;
 		}
 
 		if ($this->atoumPharPath !== null)
@@ -83,7 +103,7 @@ class AtoumTask extends Task
 			throw new exception('Unknown class mageekguy\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
 		}
 
-		mageekguy\atoum\scripts\runner::disableAutorun();
+		atoum\scripts\runner::disableAutorun();
 
 		foreach ($this->getFiles() as $file)
 		{
@@ -95,66 +115,124 @@ class AtoumTask extends Task
 
 	public function execute()
 	{
-		if ($this->runner === false)
+		$report = $this->configureDefaultReport();
+		$this->getRunner()->addReport($report);
+
+		if ($this->phpPath !== null)
 		{
-			$this->runner = new \mageekguy\atoum\runner();
-
-			$report = new \mageekguy\atoum\reports\realtime\phing(
-				$this->showProgress,
-				$this->showCodeCoverage,
-				$this->showMissingCodeCoverage,
-				$this->showDuration,
-				$this->showMemory,
-				$this->codeCoverageReportPath,
-				$this->codeCoverageReportUrl
-			);
-
-			$writer = new \mageekguy\atoum\writers\std\out();
-
-			$report->addWriter($writer);
-
-			$this->runner->addReport($report);
-
-			if ($this->phpPath !== null)
-			{
-				$this->runner->setPhpPath($this->phpPath);
-			}
-
-			if ($this->maxChildren !== false)
-			{
-				$this->runner->setMaxChildrenNumber($this->maxChildren);
-			}
-
-			if ($this->codeCoverage === true)
-			{
-				$this->runner->enableCodeCoverage();
-			}
-			else
-			{
-				$this->runner->disableCodeCoverage();
-			}
-
-			if ($this->codeCoverageXunitPath !== false)
-			{
-				$xUnit = new \mageekguy\atoum\reports\asynchronous\xunit();
-
-				$file = new \mageekguy\atoum\writers\file($this->codeCoverageXunitPath);
-				$xUnit->addWriter($file);
-
-				$this->runner->addReport($xUnit);
-			}
+			$this->getRunner()->setPhpPath($this->phpPath);
 		}
 
-		$this->runner->run();
+		if ($this->bootstrap !== null)
+		{
+			$this->getRunner()->setBootstrapFile($this->bootstrap);
+		}
 
-		$score = $this->runner->getScore();
+		if ($this->maxChildren > 0)
+		{
+			$this->getRunner()->setMaxChildrenNumber($this->maxChildren);
+		}
 
-		if (sizeof($score->getErrors()) > 0 || sizeof($score->getFailAssertions()) > 0 || sizeof($score->getExceptions()) > 0)
+		if ($this->codeCoverageEnabled() === true)
+		{
+			$this->getRunner()->enableCodeCoverage();
+
+			if (($path = $this->codeCoverageCloverPath) !== null)
+			{
+				$clover = new atoum\reports\asynchronous\clover();
+				$this->getRunner()->addReport($this->configureAsynchronousReport($clover, $path));
+			}
+
+			if (($path = $this->codeCoverageReportPath) !== null)
+			{
+				$projectName = isset($this->project) ? $this->project->getName() : 'Code coverage report';
+				$reportUrl = $this->codeCoverageReportUrl ?: 'file://' . $path . '/index.html';
+
+				$coverageHtmlField = new coverage\html($projectName, $path);
+				$coverageHtmlField->setRootUrl($reportUrl);
+				$report->addField($coverageHtmlField);
+			}
+		}
+		else
+		{
+			$this->getRunner()->disableCodeCoverage();
+		}
+
+		if (($path = $this->codeCoverageXunitPath) !== null)
+		{
+			$xUnit = new atoum\reports\asynchronous\xunit();
+			$this->getRunner()->addReport($this->configureAsynchronousReport($xUnit, $path));
+		}
+
+		$score = $this->getRunner()->run();
+
+		$failures = ($score->getUncompletedMethodNumber() + $score->getFailNumber() + $score->getErrorNumber() + $score->getExceptionNumber() + $score->getRuntimeExceptionNumber());
+		if ($failures > 0)
 		{
 			throw new BuildException("Tests did not pass");
 		}
 
 		return $this;
+	}
+
+	public function configureDefaultReport(realtime\phing $report = null)
+	{
+		$report = $report ?: new realtime\phing();
+		$report->addWriter(new atoum\writers\std\out());
+
+		if($this->showProgress)
+		{
+			$report->showProgress();
+		}
+		else
+		{
+			$report->hideProgress();
+		}
+
+		if($this->showDuration)
+		{
+			$report->showDuration();
+		}
+		else
+		{
+			$report->hideDuration();
+		}
+
+		if($this->showMemory)
+		{
+			$report->showMemory();
+		}
+		else
+		{
+			$report->hideMemory();
+		}
+
+		if($this->showCodeCoverage)
+		{
+			$report->showCodeCoverage();
+		}
+		else
+		{
+			$report->hideCodeCoverage();
+		}
+
+		if($this->showMissingCodeCoverage)
+		{
+			$report->showMissingCodeCoverage();
+		}
+		else
+		{
+			$report->hideMissingCodeCoverage();
+		}
+
+		return $report;
+	}
+
+	public function configureAsynchronousReport(reports\asynchronous $report, $path)
+	{
+		$report->addWriter(new atoum\writers\file($path));
+
+		return $report;
 	}
 
 	public function setBootstrap($bootstrap)
@@ -169,18 +247,6 @@ class AtoumTask extends Task
 		$this->codeCoverage = (boolean) $codeCoverage;
 
 		return $this;
-	}
-
-	public function setConfigurationFiles(array $configurationFiles)
-	{
-		$this->configurationFiles = $configurationFiles;
-
-		return $this;
-	}
-
-	public function getConfigurationFiles()
-	{
-		return $this->configurationFiles;
 	}
 
 	public function setAtoumPharPath($atoumPharPath)
@@ -263,6 +329,13 @@ class AtoumTask extends Task
 	public function setCodeCoverageXunitPath($codeCoverageXunitPath)
 	{
 		$this->codeCoverageXunitPath = $codeCoverageXunitPath;
+
+		return $this;
+	}
+
+	public function setCodeCoverageCloverPath($codeCoverageCloverPath)
+	{
+		$this->codeCoverageCloverPath = $codeCoverageCloverPath;
 
 		return $this;
 	}
