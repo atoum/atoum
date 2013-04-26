@@ -134,41 +134,45 @@ class autoloader
 	public function getPath($class)
 	{
 		$class = strtolower($class);
+		$newClassesFound = 0;
+		$classesRemoved = 0;
 
 		$path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
 
-		if ($path === null)
+		if ($path === null && $this->handleClass($class) === true)
 		{
-			$this->classes = array();
+			$classes = array();
 
 			foreach ($this->directories as $namespace => $directories)
 			{
-				if (strpos($class, $namespace) === 0)
+				foreach ($directories as $directoryData)
 				{
-					foreach ($directories as $directoryData)
+					list($directory, $suffix) = $directoryData;
+
+					$directoryLength = strlen($directory);
+					$suffixLength = - strlen($suffix);
+
+					foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
 					{
-						list($directory, $suffix) = $directoryData;
+						$filePath = $file->getPathname();
 
-						$directoryLength = strlen($directory);
-						$suffixLength = - strlen($suffix);
-
-						foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO), \recursiveIteratorIterator::LEAVES_ONLY) as $file)
-						{
-							$filePath = $file->getPathname();
-
-							$this->classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
-						}
+						$classes[$namespace . strtolower(str_replace('/', '\\', substr($filePath, $directoryLength, $suffixLength)))] = $filePath;
 					}
-
-					$cacheFile = static::getCacheFile();
-
-					if (@file_put_contents($cacheFile, serialize($this)) === false)
-					{
-						throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
-					}
-
-					return (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
 				}
+			}
+
+			if ($classes != $this->classes)
+			{
+				$this->classes = $classes;
+
+				$cacheFile = static::getCacheFile();
+
+				if (@file_put_contents($cacheFile, serialize($this)) === false)
+				{
+					throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
+				}
+
+				$path = (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
 			}
 		}
 
@@ -304,6 +308,19 @@ class autoloader
 		}
 
 		return null;
+	}
+
+	protected function handleClass($class)
+	{
+		foreach ($this->directories as $namespace => $directories)
+		{
+			if (strpos($class, $namespace) === 0)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }
 
