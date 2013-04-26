@@ -11,7 +11,6 @@ use
 
 class controller extends test\adapter
 {
-	protected $mockHash = null;
 	protected $mockClass = null;
 	protected $mockMethods = array();
 	protected $iterator = null;
@@ -119,42 +118,35 @@ class controller extends test\adapter
 
 	public function control(mock\aggregator $mock)
 	{
-		$mockClass = get_class($mock);
+		$this->mockClass = get_class($mock);
+		$this->mockMethods = $mock->getMockedMethods();
 
-		$mockHash = spl_object_hash($mock);
-
-		if ($this->mockHash !== $mockHash)
+		if ($this->disableMethodChecking === false)
 		{
-			$this->mockHash = $mockHash;
-			$this->mockClass = get_class($mock);
-			$this->mockMethods = $mock->getMockedMethods();
-
-			if ($this->disableMethodChecking === false)
+			foreach (array_keys($this->invokers) as $method)
 			{
-				foreach (array_keys($this->invokers) as $method)
+				if (in_array($method, $this->mockMethods) === false)
 				{
-					if (in_array($method, $this->mockMethods) === false)
+					if (in_array('__call', $this->mockMethods) === false)
 					{
-						if (in_array('__call', $this->mockMethods) === false)
-						{
-							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
-						}
-						else if (isset($this->invokers['__call']) === false)
-						{
-							$this->invokers['__call'] = null;
+						throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
+					}
 
-							$this->set__call();
-						}
+					if (isset($this->invokers['__call']) === false)
+					{
+						$this->invokers['__call'] = null;
+
+						$this->set__call();
 					}
 				}
 			}
+		}
 
-			foreach ($this->mockMethods as $method)
+		foreach ($this->mockMethods as $method)
+		{
+			if (isset($this->invokers[$method]) === false)
 			{
-				if (isset($this->invokers[$method]) === false)
-				{
-					$this->invokers[$method] = null;
-				}
+				$this->invokers[$method] = null;
 			}
 		}
 
@@ -187,7 +179,6 @@ class controller extends test\adapter
 
 	public function reset()
 	{
-		$this->mockHash = null;
 		$this->mockClass = null;
 		$this->mockMethods = array();
 
@@ -220,7 +211,7 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockHash !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
+		if ($this->mockClass !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
 		{
 			if (array_key_exists('__call', $this->invokers) === true)
 			{
