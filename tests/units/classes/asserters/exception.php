@@ -130,4 +130,27 @@ class exception extends atoum\test
 					->hasMessage($generator->getLocale()->_('exception does not contain this nested exception'))
 		;
 	}
+
+	public function testMessage()
+	{
+		$this
+			->if($asserter = new asserters\exception($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->message; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Exception is undefined')
+			->if($asserter->setWith(new atoum\exceptions\runtime('', 0)))
+			->then
+				->object($string = $asserter->message)
+					->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())
+					->isEqualTo('')
+			->if($asserter->setWith(new atoum\exceptions\runtime('Exception message', 0)))
+			->then
+				->object($string = $asserter->message)
+					->isInstanceOf('mageekguy\atoum\asserters\string')
+				->string($string->getValue())
+					->isEqualTo('Exception message')
+		;
+	}
 }

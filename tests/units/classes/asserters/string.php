@@ -256,4 +256,27 @@ class string extends atoum\test
 					->hasMessage(sprintf($this->getLocale()->_('String does not contain %s'), $fragment))
 		;
 	}
+
+	public function testLength()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->length; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(''))
+			->then
+				->object($integer = $asserter->length)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(0)
+			->if($asserter->setWith($str = uniqid()))
+			->then
+				->object($integer = $asserter->length)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(strlen($str))
+		;
+	}
 }

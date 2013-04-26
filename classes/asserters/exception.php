@@ -10,6 +10,18 @@ use
 
 class exception extends asserters\object
 {
+	public function __get($asserter)
+	{
+		switch ($asserter)
+		{
+			case 'message':
+				return $this->getMessageAsserter();
+
+			default:
+				return $this->generator->__get($asserter);
+		}
+	}
+
 	public function setWith($value, $label = null, $check = true)
 	{
 		$exception = $value;
@@ -124,6 +136,11 @@ class exception extends asserters\object
 	protected function valueIsSet($message = 'Exception is undefined')
 	{
 		return parent::valueIsSet($message);
+	}
+
+	protected function getMessageAsserter()
+	{
+		return $this->generator->__call('string', array($this->valueIsSet()->value->getMessage()));
 	}
 
 	protected static function check($value, $method)
