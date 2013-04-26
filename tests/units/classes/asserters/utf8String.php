@@ -265,6 +265,39 @@ class utf8String extends atoum\test
 		;
 	}
 
+	public function testLength()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->length; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith(''))
+			->then
+				->object($integer = $asserter->length)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(0)
+			->if($asserter->setWith($str = uniqid()))
+			->then
+				->object($integer = $asserter->length)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(strlen($str))
+			->if($asserter->setWith($str = $this->getRandomUtf8String()))
+			->then
+				->object($integer = $asserter->length)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(mb_strlen($str, 'UTF-8'))
+		;
+	}
+
+
+	/*********
+	* HELPER *
+	*********/
 	private function getRandomUtf8String()
 	{
 		$characters = 'àâäéèêëîïôöùüŷÿ';
