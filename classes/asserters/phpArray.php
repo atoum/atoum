@@ -12,6 +12,18 @@ class phpArray extends asserters\variable
 {
 	private $key = null;
 
+	public function __get($asserter)
+	{
+		switch ($asserter)
+		{
+			case 'size':
+				return $this->getSizeAsserter();
+
+			default:
+				return $this->generator->__get($asserter);
+		}
+	}
+
 	public function setWith($value, $label = null)
 	{
 		parent::setWith($value, $label);
@@ -376,6 +388,11 @@ class phpArray extends asserters\variable
 	protected function valueIsSet($message = 'Array is undefined')
 	{
 		return parent::valueIsSet($message);
+	}
+
+	protected function getSizeAsserter()
+	{
+		return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
 	}
 
 	protected static function check($value, $method)

@@ -469,4 +469,27 @@ class phpArray extends atoum\test
 				->object($asserter->hasKeys(array(0, 2, 4)))->isIdenticalTo($asserter)
 		;
 	}
+
+	public function testSize()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->size; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array()))
+			->then
+				->object($integer = $asserter->size)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(0)
+			->if($asserter->setWith(array(uniqid(), uniqid())))
+			->then
+				->object($integer = $asserter->size)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->integer($integer->getValue())
+					->isEqualTo(2)
+		;
+	}
 }
