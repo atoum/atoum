@@ -231,7 +231,7 @@ class generator
 		{
 			$isConstructor = $method->isConstructor() || $method->getName() === '__construct';
 
-			if ($method->isFinal() === false && $method->isStatic() === false)
+			if ($method->isFinal() === false && $method->isStatic() === false && $method->getName() !== 'clone')
 			{
 				$methodCode = '';
 				$methodName = $method->getName();
