@@ -134,12 +134,10 @@ class autoloader
 	public function getPath($class)
 	{
 		$class = strtolower($class);
-		$newClassesFound = 0;
-		$classesRemoved = 0;
 
 		$path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
 
-		if ($path === null && $this->handleClass($class) === true)
+		if ($path === null && $this->handleNamespaceOfClass($class) === true)
 		{
 			$classes = array();
 
@@ -310,7 +308,7 @@ class autoloader
 		return null;
 	}
 
-	protected function handleClass($class)
+	protected function handleNamespaceOfClass($class)
 	{
 		foreach ($this->directories as $namespace => $directories)
 		{
