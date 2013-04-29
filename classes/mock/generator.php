@@ -409,6 +409,10 @@ class generator
 		{
 			$type = 'array ';
 		}
+		elseif ($parameter->isCallable() == true)
+		{
+			$type = 'callable ';
+		}
 		else
 		{
 			$class = $parameter->getClass();
