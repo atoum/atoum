@@ -409,7 +409,7 @@ class generator
 		{
 			$type = 'array ';
 		}
-		elseif ($parameter->isCallable() == true)
+		elseif (method_exists($parameter, 'isCallable') && $parameter->isCallable() == true)
 		{
 			$type = 'callable ';
 		}
