@@ -229,12 +229,13 @@ class generator
 
 		foreach ($methods as $method)
 		{
-			$isConstructor = $method->isConstructor() || $method->getName() === '__construct';
+			$methodName = $method->getName();
 
-			if ($method->isFinal() === false && $method->isStatic() === false && $method->getName() !== 'clone')
+			$isConstructor = $method->isConstructor() || $methodName === '__construct';
+
+			if ($method->isFinal() === false && $method->isStatic() === false && $methodName !== 'clone')
 			{
 				$methodCode = '';
-				$methodName = $method->getName();
 
 				switch (true)
 				{
