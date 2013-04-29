@@ -150,7 +150,10 @@ class controller extends test\adapter
 			}
 		}
 
-		$mock->setMockController($this);
+		if ($mock->getMockController() !== $this)
+		{
+			$mock->setMockController($this);
+		}
 
 		if (self::$controlNextNewMock === $this)
 		{
