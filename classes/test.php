@@ -1028,7 +1028,7 @@ abstract class test implements observable, \countable
 			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
 		}
 
-		return true;
+		return ($errorReporting & $errno) & E_RECOVERABLE_ERROR ? false : true;
 	}
 
 	public function setUp() {}

@@ -844,6 +844,8 @@ namespace mageekguy\atoum\tests\units
 					->variable($test->getScore()->errorExists($errstr, E_USER_WARNING))->isNotNull()
 					->boolean($test->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
 					->variable($test->getScore()->errorExists($errstr, E_DEPRECATED))->isNotNull()
+					->boolean($test->errorHandler(E_RECOVERABLE_ERROR, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isFalse()
+					->variable($test->getScore()->errorExists($errstr, E_RECOVERABLE_ERROR))->isNotNull()
 				->if($adapter->error_reporting = E_ALL & ~E_DEPRECATED)
 				->then
 					->boolean($test->errorHandler(E_NOTICE, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
@@ -856,6 +858,10 @@ namespace mageekguy\atoum\tests\units
 					->variable($test->getScore()->errorExists($errstr, E_USER_WARNING))->isNotNull()
 					->boolean($test->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
 					->variable($test->getScore()->errorExists($errstr, E_DEPRECATED))->isNull()
+				->if($adapter->error_reporting = E_ALL & ~E_RECOVERABLE_ERROR)
+				->then
+					->boolean($test->errorHandler(E_RECOVERABLE_ERROR, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_RECOVERABLE_ERROR))->isNull()
 			;
 		}
 	}
