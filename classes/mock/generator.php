@@ -405,22 +405,23 @@ class generator
 	{
 		$type = '';
 
-		if ($parameter->isArray() == true)
+		switch (true)
 		{
-			$type = 'array ';
-		}
-		elseif (method_exists($parameter, 'isCallable') && $parameter->isCallable() == true)
-		{
-			$type = 'callable ';
-		}
-		else
-		{
-			$class = $parameter->getClass();
+			case $parameter->isArray():
+				$type = 'array ';
+				break;
 
-			if ($class !== null)
-			{
-				$type = '\\' . $class->getName() . ' ';
-			}
+			case method_exists($parameter, 'isCallable') && $parameter->isCallable():
+				$type = 'callable ';
+				break;
+
+			default:
+				$class = $parameter->getClass();
+
+				if ($class !== null)
+				{
+					$type = '\\' . $class->getName() . ' ';
+				}
 		}
 
 		return $type;
