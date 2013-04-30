@@ -11,6 +11,7 @@ class autoloader
 	protected $directories = array();
 	protected $classAliases = array();
 	protected $namespaceAliases = array();
+	protected $cacheFileInstance = null;
 
 	protected static $autoloader = null;
 
@@ -163,7 +164,7 @@ class autoloader
 			{
 				$this->classes = $classes;
 
-				$cacheFile = static::getCacheFile();
+				$cacheFile = $this->getCacheFileForInstance();
 
 				if (@file_put_contents($cacheFile, serialize($this)) === false)
 				{
@@ -209,6 +210,18 @@ class autoloader
 				}
 			}
 		}
+	}
+
+	public function setCacheFileForInstance($cacheFile)
+	{
+		$this->cacheFileInstance = $cacheFile;
+
+		return $this;
+	}
+
+	public function getCacheFileForInstance()
+	{
+		return ($this->cacheFileInstance ?: static::getCacheFile());
 	}
 
 	public static function set()

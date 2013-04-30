@@ -25,6 +25,7 @@ class autoloader extends atoum\test
 			->if($autoloader = new testedClass())
 			->then
 				->array($autoloader->getClasses())->isEmpty()
+				->variable($autoloader->getCacheFileForInstance())->isEqualTo(testedClass::getCacheFile())
 				->array($autoloader->getDirectories())->isEqualTo(array(
 						'mageekguy\atoum\\' => array(
 							array(
@@ -133,6 +134,16 @@ class autoloader extends atoum\test
 			->if(testedClass::setCacheFile($cacheFile = uniqid()))
 			->then
 				->string(testedClass::getCacheFile())->isEqualTo($cacheFile)
+		;
+	}
+
+	public function testSetCacheFileForInstance()
+	{
+		$this
+			->if($autoloader = new testedClass())
+			->then
+				->object($autoloader->setCacheFileForInstance($path = uniqid()))->isIdenticalTo($autoloader)
+				->string($autoloader->getCacheFileForInstance())->isEqualTo($path)
 		;
 	}
 }
