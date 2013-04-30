@@ -1009,26 +1009,20 @@ abstract class test implements observable, \countable
 
 	public function errorHandler($errno, $errstr, $errfile, $errline)
 	{
+		$doNotCallDefaultErrorHandler = true;
 		$errorReporting = $this->adapter->error_reporting();
 
 		if ($errorReporting !== 0 && $errorReporting & $errno)
 		{
 			list($file, $line) = $this->getBacktrace();
 
-			if ($file === null)
-			{
-				$file = $errfile;
-			}
+			$this->score->addError($file ?: $errfile, $this->class, $this->currentMethod, $line ?: $errline, $errno, $errstr, $errfile, $errline);
 
-			if ($line === null)
-			{
-				$line = $errline;
-			}
-
-			$this->score->addError($file, $this->class, $this->currentMethod, $line, $errno, $errstr, $errfile, $errline);
+			$doNotCallDefaultErrorHandler = !($errno & E_RECOVERABLE_ERROR);
 		}
 
-		return true;
+		return $doNotCallDefaultErrorHandler;
+
 	}
 
 	public function setUp() {}
