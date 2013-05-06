@@ -642,21 +642,21 @@ class generator
 	protected static function generateDefaultConstructor()
 	{
 		return
-			  "\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL
-			. "\t" . '{' . PHP_EOL
-			. "\t\t" . 'if ($mockController === null)' . PHP_EOL
-			. "\t\t" . '{' . PHP_EOL
-			. "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL
-			. "\t\t" . '}' . PHP_EOL
-			. "\t\t" . 'if ($mockController !== null)' . PHP_EOL
-			. "\t\t" . '{' . PHP_EOL
-			. "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL
-			. "\t\t" . '}' . PHP_EOL
-			. "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL
-			. "\t\t" . '{' . PHP_EOL
-			. "\t\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL
-			. "\t\t" . '}' . PHP_EOL
-			. "\t" . '}' . PHP_EOL
+			"\t" . 'public function __construct(\\' . __NAMESPACE__ . '\\controller $mockController = null)' . PHP_EOL .
+			"\t" . '{' . PHP_EOL .
+			"\t\t" . 'if ($mockController === null)' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t\t" . 'if ($mockController !== null)' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL .
+			"\t\t" . '{' . PHP_EOL .
+			"\t\t\t" . '$this->mockController->invoke(\'__construct\', func_get_args());' . PHP_EOL .
+			"\t\t" . '}' . PHP_EOL .
+			"\t" . '}' . PHP_EOL
 		;
 	}
 }
