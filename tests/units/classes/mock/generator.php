@@ -931,6 +931,7 @@ class generator extends atoum\test
 		;
 	}
 
+	/** @php >= 5.4 */
 	public function testGetMockedClassCodeWithProtectedAbstractMethod()
 	{
 		$this
