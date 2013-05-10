@@ -1105,7 +1105,7 @@ class generator extends atoum\test
 		;
 	}
 
-	/** @php 5.4 */
+	/** @php >= 5.4 */
 	public function testGetMockedClassCodeForClassWithCallableTypeHint()
 	{
 		$this
