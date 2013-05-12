@@ -92,21 +92,30 @@ class adapter extends atoum\adapter
 
 			if ($arguments !== null)
 			{
-				$callback = function($a, $b) {
-					return ($a == $b ? 0 : -1);
-				};
-
-				if ($identical === false)
+				if ($arguments === array())
 				{
-					$filter = function($callArguments) use ($arguments, $callback) {
-						return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					$filter = function($callArguments) use ($arguments) {
+						return ($arguments === $callArguments);
 					};
 				}
 				else
 				{
-					$filter = function($callArguments) use ($arguments, $callback) {
-						return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					$callback = function($a, $b) {
+						return ($a == $b ? 0 : -1);
 					};
+
+					if ($identical === false)
+					{
+						$filter = function($callArguments) use ($arguments, $callback) {
+							return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+						};
+					}
+					else
+					{
+						$filter = function($callArguments) use ($arguments, $callback) {
+							return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+						};
+					}
 				}
 			}
 

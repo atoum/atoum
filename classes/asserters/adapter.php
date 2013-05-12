@@ -169,6 +169,13 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
+	public function withoutAnyArgument()
+	{
+		$this->calledFunctionNameIsSet()->call->setArguments(array());
+
+		return $this;
+	}
+
 	public function once($failMessage = null)
 	{
 		return $this->exactly(1, $failMessage);

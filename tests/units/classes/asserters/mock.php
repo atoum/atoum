@@ -386,6 +386,26 @@ class mock extends atoum\test
 		;
 	}
 
+	public function testWithoutAnyArgument()
+	{
+		$this
+			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+			->if($asserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+			->if($asserter->call($function = uniqid()))
+			->then
+				->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->getCall())->isEqualTo(new php\call($function, array(), $mock))
+		;
+	}
+
 	public function testOnce()
 	{
 		$this

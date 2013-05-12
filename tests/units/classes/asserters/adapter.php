@@ -80,7 +80,6 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -101,7 +100,6 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -126,7 +124,6 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
-			->and($asserter->getMockController()->atLeastOnce = function() {})
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -146,6 +143,26 @@ class adapter extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg)))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new php\call($function))
+		;
+	}
+
+	public function testWithoutAnyArgument()
+	{
+		$this
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Adapter is undefined')
+			->if($asserter->setWith($adapter = new test\adapter()))
+			->then
+				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called function is undefined')
+			->if($asserter->call($function = uniqid()))
+			->then
+				->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->getCall())->isEqualTo(new php\call($function, array()))
 		;
 	}
 
