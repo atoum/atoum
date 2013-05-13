@@ -9,7 +9,6 @@ use
 class iterator implements \iteratorAggregate
 {
 	protected $controller = null;
-	protected $methods = array();
 	protected $filters = array();
 
 	public function __construct(mock\controller $controller = null)
