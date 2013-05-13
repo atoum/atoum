@@ -241,20 +241,20 @@ abstract class test implements observable, \countable
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
 		;
 
-		$returnAssertionManager = function() use ($test) { return $test; };
+		$returnTest = function() use ($test) { return $test; };
 
 		$this->assertionManager
-			->setHandler('if', $returnAssertionManager)
-			->setHandler('and', $returnAssertionManager)
-			->setHandler('then', $returnAssertionManager)
-			->setHandler('given', $returnAssertionManager)
+			->setHandler('if', $returnTest)
+			->setHandler('and', $returnTest)
+			->setHandler('then', $returnTest)
+			->setHandler('given', $returnTest)
 		;
 
-		$mockControllerExtractor = function(mock\aggregator $mock) { return $mock->getMockController(); };
+		$returnMockController = function(mock\aggregator $mock) { return $mock->getMockController(); };
 
 		$this->assertionManager
-			->setHandler('calling', $mockControllerExtractor)
-			->setHandler('ƒ', $mockControllerExtractor)
+			->setHandler('calling', $returnMockController)
+			->setHandler('ƒ', $returnMockController)
 			->setHandler('resetMock', function(mock\aggregator $mock) { return $mock->getMockController()->resetCalls(); })
 		;
 
