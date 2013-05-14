@@ -202,125 +202,184 @@ class generator
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
-		$className = $class->getName();
 		$mockedMethodNames = array();
+		$className = $class->getName();
+
 		$constructor = $class->getConstructor();
-
-		if ($constructor !== null && $constructor->isPublic() === false)
-		{
-			$this
-				->shuntParentClassCalls()
-				->overload(new php\method('__construct'))
-			;
-		}
-
-		foreach ($class->getMethods() as $method) if ($this->methodIsMockable($method) === true)
-		{
-			$methodName = $method->getName();
-			$isConstructor = $method->isConstructor() || $methodName === '__construct';
-			$parameters = $this->getParameters($method);
-
-			$mockedMethodNames[] = strtolower($methodName);
-
-			$overload = $this->getOverload($methodName);
-
-			if ($overload === null)
-			{
-				$modifier = ($method->isPublic() === true ? 'public' : 'protected');
-
-				$mockedMethods .= "\t" . $modifier . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . ($isConstructor ? '__construct' : $methodName) . '(' . $this->getParametersSignature($method, $isConstructor) . ')';
-			}
-			else
-			{
-				if ($isConstructor === true)
-				{
-					$overload->addArgument(php\method\argument::get('mockController')
-							->isObject('\\' . __NAMESPACE__ . '\\controller')
-							->setDefaultValue(null)
-						)
-					;
-				}
-
-				$mockedMethods .= "\t" . $overload;
-			}
-
-			$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
-
-			$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
-
-			if ($isConstructor === true)
-			{
-				$mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-				$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			}
-
-			if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
-			{
-				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-				$mockedMethods .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-			}
-			else if ($isConstructor === true && $methodName === $className && $this->isShunted('__construct') === true)
-			{
-				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$this->getMockController()->__construct = function() {};' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-				$mockedMethods .=	"\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL;
-			}
-			else
-			{
-				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-
-				if ($isConstructor === true && $methodName === $className)
-				{
-					$mockedMethods .= "\t\t" . 'else if (isset($this->getMockController()->__construct) === true)' . PHP_EOL;
-					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-					$mockedMethods .= "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL;
-					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-				}
-
-				$mockedMethods .= "\t\t" . 'else' . PHP_EOL;
-				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-
-				if ($methodName === '__call')
-				{
-					$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(current(array_slice($arguments, 0, 1)), current(array_slice($arguments, 1)));' . PHP_EOL;
-				}
-
-				$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-
-				if ($this->shuntParentClassCalls === false)
-				{
-					$mockedMethods .= "\t\t\t" . ($isConstructor === true ? '' : 'return ') . 'call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
-				}
-
-				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
-			}
-
-			$mockedMethods .= "\t" . '}' . PHP_EOL;
-		}
 
 		if ($constructor === null)
 		{
 			$mockedMethods .= self::generateDefaultConstructor();
 			$mockedMethodNames[] = '__construct';
 		}
+		else if ($constructor->isFinal() === false)
+		{
+			$constructorName = $constructor->getName();
+			$parameters = $this->getParameters($constructor);
+			$overload = $this->getOverload($constructorName);
 
-		$mockedMethods .= self::generateGetMockedMethod($mockedMethodNames);
+			if ($constructor->isPublic() === false)
+			{
+				$this->shuntParentClassCalls();
 
-		return $mockedMethods;
+				if ($overload === null)
+				{
+					$this->overload(new php\method('__construct'));
+
+					$overload = $this->getOverload('__construct');
+				}
+			}
+
+			if ($overload === null)
+			{
+				$mockedMethods .= "\t" . 'public function __construct(' . $this->getParametersSignature($constructor) . ')';
+			}
+			else
+			{
+				$overload
+					->addArgument(
+						php\method\argument::get('mockController')
+							->isObject('\\' . __NAMESPACE__ . '\\controller')
+							->setDefaultValue(null)
+					)
+				;
+
+				$mockedMethods .= "\t" . $overload;
+			}
+
+			$mockedMethods .= PHP_EOL;
+			$mockedMethods .= "\t" . '{' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+			$mockedMethods .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+			$mockedMethods .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+			$mockedMethods .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+			$mockedMethods .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+			$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+
+			if ($constructor->isAbstract() === true)
+			{
+				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+				$mockedMethods .= "\t\t\t" . '$this->getMockController()->__construct = function() {};' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL;
+			}
+			else if ($this->isShunted($className) === true)
+			{
+				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $className . ') === false)' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+				$mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $className . ' = function() {};' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '$this->getMockController()->invoke(\'' . $className . '\', $arguments);' . PHP_EOL;
+			}
+			else if ($this->isShunted('__construct') === true)
+			{
+				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->__construct) === false)' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+				$mockedMethods .= "\t\t\t" . '$this->getMockController()->__construct = function() {};' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL;
+			}
+			else
+			{
+				if ($constructorName !== $className)
+				{
+					$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->__construct) === true)' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . '$this->getMockController()->invoke(\'__construct\', $arguments);' . PHP_EOL;
+				}
+				else
+				{
+					$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $className . ') === true)' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . '$this->getMockController()->invoke(\'' . $className . '\', $arguments);' . PHP_EOL;
+				}
+
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+
+				$mockedMethods .= "\t\t" . 'else' . PHP_EOL;
+				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+
+				$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $constructorName . '\', $arguments);' . PHP_EOL;
+
+				if ($this->shuntParentClassCalls === false)
+				{
+					$mockedMethods .= "\t\t\t" . 'call_user_func_array(\'parent::' . $constructorName . '\', $arguments);' . PHP_EOL;
+				}
+
+				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+			}
+
+			$mockedMethods .= "\t" . '}' . PHP_EOL;
+
+			$mockedMethodNames[] = $constructorName;
+		}
+
+		foreach ($class->getMethods() as $method)
+		{
+			if ($this->methodIsMockable($method) === true)
+			{
+				$methodName = $method->getName();
+
+				$mockedMethodNames[] = strtolower($methodName);
+
+				$overload = $this->getOverload($methodName);
+
+				if ($overload !== null)
+				{
+					$mockedMethods .= "\t" . $overload;
+				}
+				else
+				{
+					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
+				}
+
+				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
+
+				$parameters = $this->getParameters($method);
+
+				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
+
+				if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
+				{
+					$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+					$mockedMethods .=	"\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+				}
+				else
+				{
+					$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+					$mockedMethods .= "\t\t\t" . 'return $this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+					$mockedMethods .= "\t\t" . 'else' . PHP_EOL;
+					$mockedMethods .= "\t\t" . '{' . PHP_EOL;
+
+					if ($methodName === '__call')
+					{
+						$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(current(array_slice($arguments, 0, 1)), current(array_slice($arguments, 1)));' . PHP_EOL;
+					}
+
+					$mockedMethods .= "\t\t\t" . '$this->getMockController()->addCall(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+
+					if ($this->shuntParentClassCalls === false)
+					{
+						$mockedMethods .= "\t\t\t" . 'return call_user_func_array(\'parent::' . $methodName . '\', $arguments);' . PHP_EOL;
+					}
+
+					$mockedMethods .= "\t\t" . '}' . PHP_EOL;
+				}
+
+				$mockedMethods .= "\t" . '}' . PHP_EOL;
+			}
+		}
+
+		return $mockedMethods . self::generateGetMockedMethod($mockedMethodNames);
 	}
 
 	protected function generateClassCode(\reflectionClass $class, $mockNamespace, $mockClass)
@@ -328,7 +387,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' extends \\' . $class->getName() . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
+			self::generateMockControllerMethods() .
 			$this->generateClassMethodCode($class) .
 			'}' . PHP_EOL .
 			'}'
@@ -419,7 +478,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . ($addIteratorAggregate === false ? '' : 'iteratorAggregate, \\') . $class->getName() . ', \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
+			self::generateMockControllerMethods() .
 			$this->generateInterfaceMethodCode($class, $addIteratorAggregate) .
 			'}' . PHP_EOL .
 			'}'
@@ -434,20 +493,60 @@ class generator
 		return '\\' . $this->getDefaultNamespace() . ($lastAntiSlash === false ? '' : '\\' . substr($class, 0, $lastAntiSlash));
 	}
 
-	protected function methodIsMockable(\reflectionMethod $method)
+	protected function getParameters(\reflectionMethod $method)
 	{
-		switch (true)
-		{
-			case $method->isFinal():
-			case $method->isStatic():
-			case $method->isPrivate():
-			case $method->isProtected() && $method->isAbstract() === false:
-			case $method->getName() === 'clone':
-				return $this->isOverloaded($method->getName());
+		$parameters = array();
 
-			default:
-				return true;
+		$overload = $this->getOverload($method->getName());
+
+		if ($overload === null)
+		{
+			foreach ($method->getParameters() as $parameter)
+			{
+				$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
+			}
 		}
+		else
+		{
+			foreach ($overload->getArguments() as $argument)
+			{
+				$parameters[] = $argument->getVariable();
+			}
+		}
+
+		return $parameters;
+	}
+
+	protected function getParametersSignature(\reflectionMethod $method)
+	{
+		$parameters = array();
+
+		$mustBeNull = $this->isOrphanized($method->getName());
+
+		foreach ($method->getParameters() as $parameter)
+		{
+			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
+
+			switch (true)
+			{
+				case $parameter->isDefaultValueAvailable():
+					$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+					break;
+
+				case $parameter->isOptional():
+				case $mustBeNull:
+					$parameterCode .= '=null';
+			}
+
+			$parameters[] = $parameterCode;
+		}
+
+		if ($method->isConstructor() === true)
+		{
+			$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
+		}
+
+		return join(', ', $parameters);
 	}
 
 	protected static function getClassName($class)
@@ -476,63 +575,7 @@ class generator
 		}
 	}
 
-	protected function getParameters(\reflectionMethod $method)
-	{
-		$parameters = array();
-
-		$overload = $this->getOverload($method->getName());
-
-		if ($overload === null)
-		{
-			foreach ($method->getParameters() as $parameter)
-			{
-				$parameters[] = ($parameter->isPassedByReference() === false ? '' : '& ') . '$' . $parameter->getName();
-			}
-		}
-		else
-		{
-			foreach ($overload->getArguments() as $argument)
-			{
-				$parameters[] = $argument->getVariable();
-			}
-		}
-
-		return $parameters;
-	}
-
-	protected function getParametersSignature(\reflectionMethod $method, $addMockController = false)
-	{
-		$parameters = array();
-
-		$mustBeNull = $this->isOrphanized($method->getName());
-
-		foreach ($method->getParameters() as $parameter)
-		{
-			$parameterCode = self::getParameterType($parameter) . ($parameter->isPassedByReference() == false ? '' : '& ') . '$' . $parameter->getName();
-
-			switch (true)
-			{
-				case $parameter->isDefaultValueAvailable():
-					$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
-					break;
-
-				case $parameter->isOptional():
-				case $mustBeNull:
-					$parameterCode .= '=null';
-			}
-
-			$parameters[] = $parameterCode;
-		}
-
-		if ($addMockController === true)
-		{
-			$parameters[] = '\\' . __NAMESPACE__ . '\\controller $mockController = null';
-		}
-
-		return join(', ', $parameters);
-	}
-
-	protected static function generateMockControllerMethod()
+	protected static function generateMockControllerMethods()
 	{
 		return
 			"\t" . 'private $mockController = null;' . PHP_EOL .
@@ -612,7 +655,7 @@ class generator
 		return 'namespace ' . ltrim($mockNamespace, '\\') . ' {' . PHP_EOL .
 			'final class ' . $mockClass . ' implements \\' . __NAMESPACE__ . '\\aggregator' . PHP_EOL .
 			'{' . PHP_EOL .
-			self::generateMockControllerMethod() .
+			self::generateMockControllerMethods() .
 			self::generateDefaultConstructor(true) .
 			"\t" . 'public function __call($methodName, $arguments)' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .
@@ -629,5 +672,25 @@ class generator
 			'}' . PHP_EOL .
 			'}'
 		;
+	}
+
+	private function methodIsMockable(\reflectionMethod $method)
+	{
+		switch (true)
+		{
+			case $method->isFinal():
+			case $method->isStatic():
+			case $method->isConstructor():
+			case $method->getName() === 'clone':
+			case $method->getName() === '__destruct':
+				return false;
+
+			case $method->isPrivate():
+			case $method->isProtected() && $method->isAbstract() === false:
+				return $this->isOverloaded($method->getName());
+
+			default:
+				return true;
+		}
 	}
 }
