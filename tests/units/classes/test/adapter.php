@@ -4,10 +4,7 @@ namespace mageekguy\atoum\tests\units\test;
 
 use
 	mageekguy\atoum\test,
-	mageekguy\atoum\test\adapter as testedClass,
-	mageekguy\atoum\test\adapter\invoker,
-	mageekguy\atoum\dependency,
-	mageekguy\atoum\dependencies
+	mageekguy\atoum\test\adapter as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
