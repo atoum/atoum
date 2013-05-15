@@ -344,10 +344,10 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::error, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . atoum\asserters\error::getAsString($type) . ' : ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
 			->if($field->handleEvent(atoum\test::error, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . atoum\asserters\error::getAsString($otherType) . ' : ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
 		;
 	}
 

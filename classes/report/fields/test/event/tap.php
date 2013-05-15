@@ -56,7 +56,9 @@ class tap extends report\fields\event
 
 				case test::error:
 					$lastError = $observable->getScore()->getLastErroredMethod();
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
+					$lastErrorType = atoum\asserters\error::getAsString($lastError['type']);
+
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . $lastErrorType . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
 					$this->testLine .= '# ' . (isset($lastError['errorFile']) ? $lastError['errorFile'] : $lastError['file']) . ':' . (isset($lastError['errorLine']) ? $lastError['errorLine'] : $lastError['line']) . PHP_EOL;
 					break;
 
