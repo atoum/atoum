@@ -387,11 +387,13 @@ class score
 		return $this;
 	}
 
-	public function addSkippedMethod($class, $method, $message)
+	public function addSkippedMethod($file, $class, $method, $line, $message)
 	{
 		$this->skippedMethods[] = array(
+			'file' => $file,
 			'class' => $class,
 			'method' => $method,
+			'line' => $line,
 			'message' => $message
 		);
 

@@ -103,7 +103,7 @@ class xunit extends atoum\test
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '5.xml')))
-			->if($score->addSkippedMethod($class, $thirdMethod, $message))
+			->if($score->addSkippedMethod($file, $class, $thirdMethod, $line = rand(1, PHP_INT_MAX), $message))
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '6.xml')))

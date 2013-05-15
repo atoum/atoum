@@ -249,14 +249,18 @@ class tap extends atoum\test
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
 			->and($this->calling($score)->getLastSkippedMethod[1] = array(
+					'file' => $file1 = uniqid(),
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid(),
+					'line' => $line1 = rand(1, PHP_INT_MAX),
 					'message' => $message1 = uniqid()
 				)
 			)
 			->and($this->calling($score)->getLastSkippedMethod[2] = array(
+					'file' => $file2 = uniqid(),
 					'class' => $class2 = uniqid(),
 					'method' => $method2 = uniqid(),
+					'line' => $line2 = rand(1, PHP_INT_MAX),
 					'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
 				)
 			)
@@ -271,15 +275,16 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
-					'# ' . $message1 . PHP_EOL
+					'# ' . $message1 . PHP_EOL .
+					'# ' . $file1 . ':' . $line1 . PHP_EOL
 				)
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
 					'# ' . $message2 . PHP_EOL .
 					'# ' . $otherMessage2 . PHP_EOL .
-					'# ' . $anotherMessage2 .
-					PHP_EOL
+					'# ' . $anotherMessage2 . PHP_EOL .
+					'# ' . $file2 . ':' . $line2 . PHP_EOL
 				)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
@@ -288,15 +293,16 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
-					'# ' . $message1 . PHP_EOL
+					'# ' . $message1 . PHP_EOL .
+					'# ' . $file1 . ':' . $line1 . PHP_EOL
 				)
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
 					'# ' . $message2 . PHP_EOL .
 					'# ' . $otherMessage2 . PHP_EOL .
-					'# ' . $anotherMessage2 .
-					PHP_EOL
+					'# ' . $anotherMessage2 . PHP_EOL .
+					'# ' . $file2 . ':' . $line2 . PHP_EOL
 				)
 		;
 	}

@@ -82,6 +82,7 @@ class tap extends report\fields\event
 				case test::skipped:
 					$lastSkippedMethod = $observable->getScore()->getLastSkippedMethod();
 					$this->testLine = 'ok ' . ++$this->testPoint . ' # SKIP ' . trim($lastSkippedMethod['class']) . '::' . trim($lastSkippedMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastSkippedMethod['message'])) . PHP_EOL;
+					$this->testLine .= '# ' . $lastSkippedMethod['file'] . ':' . $lastSkippedMethod['line'] . PHP_EOL;
 					break;
 
 				case test::exception:

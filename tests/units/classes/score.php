@@ -522,11 +522,13 @@ class score extends atoum\test
 			->if($score = new atoum\score())
 			->then
 				->array($score->getSkippedMethods())->isEmpty()
-				->object($score->addSkippedMethod($class = uniqid(), $method = uniqid(), $message = uniqid()))->isIdenticalTo($score)
+				->object($score->addSkippedMethod($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $message = uniqid()))->isIdenticalTo($score)
 				->array($score->getSkippedMethods())->isEqualTo(array(
 						array(
+							'file' => $file,
 							'class' => $class,
 							'method' => $method,
+							'line' => $line,
 							'message' => $message
 						)
 					)
@@ -680,11 +682,13 @@ class score extends atoum\test
 			->if($score->addPass())
 			->then
 				->variable($score->getLastSkippedMethod())->isNull()
-			->if($score->addSkippedMethod($class = uniqid(), $method = uniqid(), $message = uniqid()))
+			->if($score->addSkippedMethod($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $message = uniqid()))
 			->then
 				->array($score->getLastSkippedMethod())->isEqualTo(array(
+						'file' => $file,
 						'class' => $class,
 						'method' => $method,
+						'line' => $line,
 						'message' => $message
 					)
 				)
@@ -996,7 +1000,7 @@ class score extends atoum\test
 			->and($score->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addMemoryUsage(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($score->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
-			->and($score->addSkippedMethod(uniqid(), uniqid(), uniqid()))
+			->and($score->addSkippedMethod(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
 			->then
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(1)
@@ -1017,7 +1021,7 @@ class score extends atoum\test
 			->and($otherScore->addDuration(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addMemoryUsage(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->and($otherScore->addUncompletedMethod(uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
-			->and($otherScore->addSkippedMethod(uniqid(), uniqid(), uniqid()))
+			->and($otherScore->addSkippedMethod(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))
 			->then
 				->object($score->merge($otherScore))->isIdenticalTo($score)
 				->integer($score->getPassNumber())->isEqualTo(2)
