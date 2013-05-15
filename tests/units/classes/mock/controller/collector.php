@@ -8,16 +8,18 @@ use
 	mageekguy\atoum\mock\controller\collector as testedClass
 ;
 
-require __DIR__ . '../../../runner.php';
+require __DIR__ . '../../../../runner.php';
 
 class collector extends atoum\test
 {
 	public function testAdd()
 	{
 		$this
-			->if(testedClass::add($mock = new \mock\foo(), $controller = new controller()))
-			->then
-				->object(testedClass::get($mock))->isIdenticalTo($controller)
+			->object(testedClass::add($mock = new \mock\foo(), $controller = new \mock\mageekguy\atoum\mock\controller()))->isIdenticalTo($controller)
+			->object(testedClass::get($mock))
+				->isIdenticalTo($controller)
+				->isIdenticalTo($mock->getMockController())
+			->mock($controller)->call('control')->withArguments($mock)->once()
 		;
 	}
 
@@ -37,15 +39,17 @@ class collector extends atoum\test
 	public function testRemove()
 	{
 		$this
-			->if(testedClass::add($mock = new \mock\foo(), new controller()))
+			->if(testedClass::add($mock = new \mock\foo(), $controller = new \mock\mageekguy\atoum\mock\controller()))
 			->and(testedClass::remove($mock))
 			->then
 				->variable(testedClass::get($mock))->isNull()
-			->if(testedClass::add($mock, $controller = new controller()))
+				->mock($controller)->call('reset')->once()
+			->if(testedClass::add($mock, $controller = new \mock\mageekguy\atoum\mock\controller()))
 			->and(testedClass::add($otherMock = new \mock\foo(), $otherController = new controller()))
 			->and(testedClass::remove($mock))
 			->then
 				->variable(testedClass::get($mock))->isNull()
+				->mock($controller)->call('reset')->once()
 				->object(testedClass::get($otherMock))->isIdenticalTo($otherController)
 		;
 	}

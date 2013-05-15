@@ -13,6 +13,8 @@ class collector
 	public static function add(mock\aggregator $mock, mock\controller $controller)
 	{
 		self::$instances[$mock] = $controller;
+
+		return $controller->control($mock);
 	}
 
 	public static function get(mock\aggregator $mock)
@@ -24,6 +26,8 @@ class collector
 	{
 		if (isset(self::$instances[$mock]) === true)
 		{
+			self::$instances[$mock]->reset();
+
 			unset(self::$instances[$mock]);
 		}
 	}
