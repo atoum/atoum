@@ -155,7 +155,7 @@ class controller extends test\adapter
 			$mock->setMockController($this);
 		}
 
-		return $this->notControlNextNewMock();
+		return $this->resetCalls()->notControlNextNewMock();
 	}
 
 	public function controlNextNewMock()

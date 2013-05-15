@@ -45,27 +45,39 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mockController = new testedClass())
-			->and($mockController->{$method = 'aMethod'} = function() use (& $return) { return $return = uniqid(); })
+			->and($mockController->{$method = 'aMethod'} = $return = uniqid())
 			->then
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
-			->if($mockController->{$method = 'anOtherMethod'} = $return = uniqid())
+				->array($mockController->getCalls($method))->hasSize(2)
+				->array($mockController->getCalls(strtoupper($method)))->hasSize(2)
+			->if($mockController->{$otherMethod = 'anOtherMethod'} = $otherReturn = uniqid())
 			->then
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
+				->array($mockController->getCalls($method))->hasSize(4)
+				->array($mockController->getCalls(strtoupper($method)))->hasSize(4)
+				->string($mockController->invoke($otherMethod))->isEqualTo($otherReturn)
+				->string($mockController->invoke(strtoupper($otherMethod)))->isEqualTo($otherReturn)
+				->array($mockController->getCalls($otherMethod))->hasSize(2)
+				->array($mockController->getCalls(strtoupper($otherMethod)))->hasSize(2)
 			->if($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
 			->then
 				->boolean(isset($mockController->__call))->isTrue()
 				->string($mockController->invoke($method))->isEqualTo($return)
 				->string($mockController->invoke(strtoupper($method)))->isEqualTo($return)
 				->array($mockController->getCalls($method))->hasSize(2)
+				->array($mockController->getCalls(strtoupper($method)))->hasSize(2)
 				->variable($mockController->getCalls('__call'))->isNull()
+				->variable($mockController->getCalls(strtoupper('__call')))->isNull()
 			->if($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
 			->and($mockController->bar = function() {})
 			->and($mock->bar($arg = uniqid(), $otherArg = uniqid()))
 			->then
 				->array($mockController->getCalls('bar'))->hasSize(1)
+				->array($mockController->getCalls(strtoupper('bar')))->hasSize(1)
 				->array($mockController->getCalls('__call'))->hasSize(1)
+				->array($mockController->getCalls(strtoupper('__call')))->hasSize(1)
 				->mock($mock)->call('bar')->withArguments($arg)->once()
 				->mock($mock)->call('__call')->withArguments('bar', array($arg, $otherArg))->once()
 		;
@@ -207,13 +219,10 @@ class controller extends atoum\test
 
 	public function testControl()
 	{
-		$aMockController = new testedClass();
-		$aMockController->__construct = function() {};
-
-		$aMock = new \mock\reflectionClass(uniqid());
-
 		$this
-			->if($mockController = new testedClass())
+			->if->mockGenerator->shunt('__construct')
+			->and($aMock = new \mock\reflectionClass(uniqid()))
+			->and($mockController = new testedClass())
 			->then
 				->variable($mockController->getMockClass())->isNull()
 				->array($mockController->getInvokers())->isEmpty()
@@ -441,7 +450,7 @@ class controller extends atoum\test
 	public function testGet()
 	{
 		$this
-				->variable(testedClass::get())->isNull()
+			->variable(testedClass::get())->isNull()
 			->if($mockController = new testedClass())
 			->then
 				->object($mockController->controlNextNewMock())->isIdenticalTo($mockController)

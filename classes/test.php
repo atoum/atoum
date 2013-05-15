@@ -934,6 +934,8 @@ abstract class test implements observable, \countable
 
 			$this->currentMethod = null;
 
+			mock\controller\collector::clean();
+
 			restore_error_handler();
 
 			ini_restore('display_errors');

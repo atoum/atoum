@@ -51,6 +51,7 @@ class mock extends atoum\test
 				->variable($asserter->getMock())->isNull()
 			->if($asserter->setWith($mock = new \mock\mageekguy\atoum\score()))
 			->and($mock->setMockController($mockController))
+			->and($this->resetMock($mockController))
 			->then
 				->object($asserter->getMock())->isIdenticalTo($mock)
 				->object($asserter->reset())->isIdenticalTo($asserter)
