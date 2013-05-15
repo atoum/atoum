@@ -215,7 +215,8 @@ class generator
 		else if ($constructor->isFinal() === false)
 		{
 			$constructorName = $constructor->getName();
-			$parameters = $this->getParameters($constructor);
+			$parameters = array();
+
 			$overload = $this->getOverload($constructorName);
 
 			if ($constructor->isPublic() === false)
@@ -232,10 +233,17 @@ class generator
 
 			if ($overload === null)
 			{
+				$parameters = $this->getParameters($constructor);
+
 				$mockedMethods .= "\t" . 'public function __construct(' . $this->getParametersSignature($constructor) . ')';
 			}
 			else
 			{
+				foreach ($overload->getArguments() as $argument)
+				{
+					$parameters[] = $argument->getVariable();
+				}
+
 				$overload
 					->addArgument(
 						php\method\argument::get('mockController')
@@ -299,23 +307,29 @@ class generator
 			if ($this->methodIsMockable($method) === true)
 			{
 				$methodName = $method->getName();
+				$parameters = array();
 
 				$mockedMethodNames[] = strtolower($methodName);
 
 				$overload = $this->getOverload($methodName);
 
-				if ($overload !== null)
+				if ($overload === null)
 				{
-					$mockedMethods .= "\t" . $overload;
+					$parameters = $this->getParameters($method);
+
+					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
 				}
 				else
 				{
-					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
+					foreach ($overload->getArguments() as $argument)
+					{
+						$parameters[] = $argument->getVariable();
+					}
+
+					$mockedMethods .= "\t" . $overload;
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
-
-				$parameters = $this->getParameters($method);
 
 				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
 
