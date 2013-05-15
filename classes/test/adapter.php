@@ -56,12 +56,9 @@ class adapter extends atoum\adapter
 
 			unset($this->invokers[$functionName]);
 
-			foreach ($this->calls as $callName => $closure)
+			if (isset($this->calls[$functionName]) === true)
 			{
-				if ($functionName == strtolower($callName))
-				{
-					unset($this->calls[$callName]);
-				}
+				unset($this->calls[$functionName]);
 			}
 		}
 
@@ -119,20 +116,15 @@ class adapter extends atoum\adapter
 				}
 			}
 
-			foreach ($this->calls as $callName => $callArguments)
+			if (isset($this->calls[$functionName]) === true)
 			{
-				if ($functionName == strtolower($callName))
+				if ($arguments === null)
 				{
-					if ($arguments === null)
-					{
-						$calls = $callArguments;
-					}
-					else
-					{
-						$calls = array_filter($callArguments, $filter);
-					}
-
-					break;
+					$calls = $this->calls[$functionName];
+				}
+				else
+				{
+					$calls = array_filter($this->calls[$functionName], $filter);
 				}
 			}
 		}
@@ -144,18 +136,23 @@ class adapter extends atoum\adapter
 	{
 		$timeline = array();
 
-		foreach ($this->calls as $calledFunctionName => $calls)
+		if ($functionName === null)
 		{
-			if ($functionName === null)
+			foreach ($this->calls as $calledFunctionName => $calls)
 			{
 				foreach ($calls as $number => $arguments)
 				{
 					$timeline[$number] = array($calledFunctionName => $arguments);
 				}
 			}
-			else if ($calledFunctionName === $functionName)
+		}
+		else
+		{
+			$functionName = strtolower($functionName);
+
+			if (isset($this->calls[$functionName]) === true)
 			{
-				foreach ($calls as $number => $arguments)
+				foreach ($this->calls[$functionName] as $number => $arguments)
 				{
 					$timeline[$number] = $arguments;
 				}
@@ -173,9 +170,14 @@ class adapter extends atoum\adapter
 		{
 			$this->calls = array();
 		}
-		else if (isset($this->calls[$functionName]) === true)
+		else
 		{
-			unset($this->calls[$functionName]);
+			$functionName = strtolower($functionName);
+
+			if (isset($this->calls[$functionName]) === true)
+			{
+				unset($this->calls[$functionName]);
+			}
 		}
 
 		return $this;
@@ -190,6 +192,8 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
+		$functionName = strtolower($functionName);
+
 		$this->calls[$functionName][++self::$callsNumber] = $arguments;
 
 		return sizeof($this->calls[$functionName]);
