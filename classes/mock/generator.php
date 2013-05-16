@@ -215,7 +215,6 @@ class generator
 		else if ($constructor->isFinal() === false)
 		{
 			$constructorName = $constructor->getName();
-			$parameters = array();
 
 			$overload = $this->getOverload($constructorName);
 
@@ -231,19 +230,14 @@ class generator
 				}
 			}
 
+			$parameters = $this->getParameters($constructor);
+
 			if ($overload === null)
 			{
-				$parameters = $this->getParameters($constructor);
-
 				$mockedMethods .= "\t" . 'public function __construct(' . $this->getParametersSignature($constructor) . ')';
 			}
 			else
 			{
-				foreach ($overload->getArguments() as $argument)
-				{
-					$parameters[] = $argument->getVariable();
-				}
-
 				$overload
 					->addArgument(
 						php\method\argument::get('mockController')
@@ -307,30 +301,20 @@ class generator
 			if ($this->methodIsMockable($method) === true)
 			{
 				$methodName = $method->getName();
-				$parameters = array();
-
 				$mockedMethodNames[] = strtolower($methodName);
-
 				$overload = $this->getOverload($methodName);
+				$parameters = $this->getParameters($method);
 
-				if ($overload === null)
+				if ($overload !== null)
 				{
-					$parameters = $this->getParameters($method);
-
-					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
+					$mockedMethods .= "\t" . $overload;
 				}
 				else
 				{
-					foreach ($overload->getArguments() as $argument)
-					{
-						$parameters[] = $argument->getVariable();
-					}
-
-					$mockedMethods .= "\t" . $overload;
+					$mockedMethods .= "\t" . ($method->isPublic() === true ? 'public' : 'protected') . ' function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')';
 				}
 
 				$mockedMethods .= PHP_EOL . "\t" . '{' . PHP_EOL;
-
 				$mockedMethods .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . '));' . PHP_EOL;
 
 				if ($this->isShunted($methodName) === true || $method->isAbstract() === true)
@@ -416,7 +400,7 @@ class generator
 
 				$parameters = $this->getParameters($method);
 
-				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method, $isConstructor) . ')' . PHP_EOL;
+				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
 				$methodCode .= "\t" . '{' . PHP_EOL;
 				$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
 
@@ -520,12 +504,12 @@ class generator
 			switch (true)
 			{
 				case $parameter->isDefaultValueAvailable():
-					$parameterCode .= '=' . var_export($parameter->getDefaultValue(), true);
+					$parameterCode .= ' = ' . var_export($parameter->getDefaultValue(), true);
 					break;
 
 				case $parameter->isOptional():
 				case $mustBeNull:
-					$parameterCode .= '=null';
+					$parameterCode .= ' = null';
 			}
 
 			$parameters[] = $parameterCode;
