@@ -11,13 +11,18 @@ require_once __DIR__ . '/../runner.php';
 
 class writer extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->isAbstract();
+	}
+
 	public function test__construct()
 	{
 		$this
 			->if($writer = new testedClass())
 			->then
 				->object($writer->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-			->if($writer = new \mock\mageekguy\atoum\writer($adapter = new atoum\test\adapter()))
+			->if($writer = new testedClass($adapter = new atoum\test\adapter()))
 			->then
 				->object($writer->getAdapter())->isIdenticalTo($adapter)
 		;
