@@ -9,7 +9,7 @@ use
 
 class out extends writers\std
 {
-	protected function getResource()
+	protected function init()
 	{
 		if ($this->resource === null)
 		{

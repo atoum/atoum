@@ -23,7 +23,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 
 	public function write($something)
 	{
-		$this->getResource()->adapter->fwrite($this->resource, $something);
+		$this->init()->adapter->fwrite($this->resource, $something);
 
 		return $this;
 	}
@@ -43,5 +43,5 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		return $this->write((string) $report);
 	}
 
-	protected abstract function getResource();
+	protected abstract function init();
 }
