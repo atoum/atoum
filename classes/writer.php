@@ -8,12 +8,12 @@ abstract class writer
 
 	public function __construct(adapter $adapter = null)
 	{
-		$this->setAdapter($adapter ?: new adapter());
+		$this->setAdapter($adapter);
 	}
 
-	public function setAdapter(adapter $adapter)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->adapter = $adapter;
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}
