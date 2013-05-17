@@ -21,7 +21,7 @@ class writer extends atoum\test
 		$this
 			->if($writer = new testedClass())
 			->then
-				->object($writer->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($writer->getAdapter())->isEqualTo(new atoum\adapter())
 			->if($writer = new testedClass($adapter = new atoum\test\adapter()))
 			->then
 				->object($writer->getAdapter())->isIdenticalTo($adapter)
@@ -35,6 +35,10 @@ class writer extends atoum\test
 			->then
 				->object($writer->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($writer)
 				->object($writer->getAdapter())->isIdenticalTo($adapter)
+				->object($writer->setAdapter())->isIdenticalTo($writer)
+				->object($writer->getAdapter())
+					->isNotIdenticalTo($adapter)
+					->isEqualTo(new atoum\adapter())
 		;
 	}
 }

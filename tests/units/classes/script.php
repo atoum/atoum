@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\script\prompt,
 	mock\mageekguy\atoum as mock
 ;
 
@@ -99,6 +100,22 @@ class script extends atoum\test
 		;
 	}
 
+	public function testSetPrompt()
+	{
+		$this
+			->if($script = new mock\script(uniqid()))
+			->then
+				->object($script->setPrompt($prompt = new prompt()))->isIdenticalTo($script)
+				->object($script->getPrompt())->isIdenticalTo($prompt)
+				->object($prompt->getOutputWriter())->isIdenticalTo($script->getOutputWriter())
+				->object($script->setPrompt())->isIdenticalTo($script)
+				->object($script->getPrompt())
+					->isNotIdenticalTo($prompt)
+					->isEqualTo(new prompt())
+				->object($script->getPrompt()->getOutputWriter())->isIdenticalTo($script->getOutputWriter())
+		;
+	}
+
 	public function testAddArgumentHandler()
 	{
 		$this
@@ -162,30 +179,20 @@ class script extends atoum\test
 
 	public function testPrompt()
 	{
-		if (defined('STDIN') === false)
-		{
-			define('STDIN', rand(1, PHP_INT_MAX));
-		}
-
 		$this
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->fgets = $input = uniqid())
-			->and($script = new mock\script(uniqid(), $adapter))
-			->and($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
-			->and($script->setOutputWriter($stdOut))
+			->if($prompt = new mock\script\prompt())
+			->and($this->calling($prompt)->ask = $answer = uniqid())
+			->and($script = new mock\script(uniqid()))
+			->and($script->setPrompt($prompt))
 			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-				->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(2)
-			->if($adapter->fgets = ' ' . ($input = uniqid()) . "\t")
+				->string($script->prompt($message = uniqid()))->isEqualTo($answer)
+				->mock($prompt)->call('ask')->withIdenticalArguments($message)->once()
+				->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($answer)
+				->mock($prompt)->call('ask')->withIdenticalArguments($message)->once()
+			->if($this->calling($prompt)->ask = ' ' . ($answer = uniqid()) . "\t")
 			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(3)
+				->string($script->prompt($message = uniqid()))->isEqualTo($answer)
+				->mock($prompt)->call('ask')->withIdenticalArguments($message)->once()
 		;
 	}
 

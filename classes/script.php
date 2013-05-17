@@ -17,6 +17,7 @@ abstract class script
 	protected $factory = null;
 	protected $locale = null;
 	protected $adapter = null;
+	protected $prompt = null;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
 
@@ -30,6 +31,7 @@ abstract class script
 		$this
 			->setAdapter($adapter)
 			->setLocale()
+			->setPrompt()
 			->setArgumentsParser()
 			->setOutputWriter()
 			->setErrorWriter()
@@ -108,6 +110,23 @@ abstract class script
 		return $this->errorWriter;
 	}
 
+	public function setPrompt(script\prompt $prompt = null)
+	{
+		if ($prompt === null)
+		{
+			$prompt = new script\prompt();
+		}
+
+		$this->prompt = $prompt->setOutputWriter($this->outputWriter);
+
+		return $this;
+	}
+
+	public function getPrompt()
+	{
+		return $this->prompt;
+	}
+
 	public function getName()
 	{
 		return $this->name;
@@ -173,9 +192,7 @@ abstract class script
 
 	public function prompt($message)
 	{
-		$this->outputWriter->write(rtrim($message));
-
-		return trim($this->adapter->fgets(STDIN));
+		return trim($this->prompt->ask(rtrim($message)));
 	}
 
 	public function writeMessage($message, $eol = true)
