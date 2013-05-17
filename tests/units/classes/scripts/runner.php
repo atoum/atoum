@@ -61,6 +61,11 @@ class runner extends atoum\test
 							'Path to PHP binary which must be used to run tests'
 						),
 						array(
+							array('--init'),
+							null,
+							'Create configuration and bootstrap files'
+						),
+						array(
 							array('-drt', '--default-report-title'),
 							'<string>',
 							'Define default report title with <string>'
@@ -203,6 +208,11 @@ class runner extends atoum\test
 							'Path to PHP binary which must be used to run tests'
 						),
 						array(
+							array('--init'),
+							null,
+							'Create configuration and bootstrap files'
+						),
+						array(
 							array('-drt', '--default-report-title'),
 							'<string>',
 							'Define default report title with <string>'
@@ -314,6 +324,83 @@ class runner extends atoum\test
 						)
 					)
 				)
+		;
+	}
+
+	public function testInit()
+	{
+		if (defined('STDIN') === false)
+		{
+			define('STDIN', rand(1, PHP_INT_MAX));
+		}
+
+		$this
+			->if($adapter = new atoum\test\adapter())
+			->and($runner = new scripts\runner($name = uniqid(), $adapter))
+			->and($runner->getPrompt()->setAdapter($adapter))
+			->and($stdOut = new \mock\mageekguy\atoum\writers\std\out())
+			->and($runner->setOutputWriter($stdOut))
+			->and($runner->getPrompt()->setOutputWriter($stdOut))
+			->then
+				->object($runner->getPrompt()->getAdapter())->isIdenticalTo($adapter)
+				->object($runner->getPrompt()->getOutputWriter())->isIdenticalTo($stdOut)
+
+			->if($adapter->getcwd = $cwd = '/tmp')
+			->and($adapter->is_writable = false)
+			->then
+				->exception(
+					function() use($runner)
+					{
+						$runner->init();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to write in \'' . $cwd . '\' directory')
+
+			->if($adapter->resetCalls())
+			->and($adapter->is_writable = true)
+			->and($adapter->file_exists = false)
+			->and($adapter->copy = function() use($runner) { return $runner; })
+			->and($stdOut->getMockController()->write = function() {})
+			->then
+				->object($runner->init())
+					->isIdenticalTo($runner)
+				->adapter($adapter)->call('copy')
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $cwd . '/.atoum.php')->once()
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $cwd . '/.bootstrap.php')->once()
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($cwd . '/.atoum.php was successfully generated' . PHP_EOL)->once()
+					->withIdenticalArguments($cwd . '/.bootstrap.php was successfully generated' . PHP_EOL)->once()
+
+			->if($adapter->resetCalls())
+			->and($adapter->file_exists = true)
+			->and($adapter->fgets = 'y')
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->object($runner->init())
+					->isIdenticalTo($runner)
+				->adapter($adapter)->call('copy')
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $cwd . '/.atoum.php')->once()
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $cwd . '/.bootstrap.php')->once()
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($cwd . '/.atoum.php already exists. Do you want to overwrite it ? (y/n) [n]')->once()
+					->withIdenticalArguments($cwd . '/.atoum.php was successfully generated' . PHP_EOL)->once()
+					->withIdenticalArguments($cwd . '/.bootstrap.php already exists. Do you want to overwrite it ? (y/n) [n]')->once()
+					->withIdenticalArguments($cwd . '/.bootstrap.php was successfully generated' . PHP_EOL)->once()
+
+			->if($adapter->resetCalls())
+			->and($adapter->file_exists = true)
+			->and($adapter->fgets = 'n')
+			->and($stdOut->getMockController()->resetCalls())
+			->then
+				->object($runner->init())
+					->isIdenticalTo($runner)
+				->adapter($adapter)->call('copy')
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/atoum.php.dist', $cwd . '/.atoum.php')->never()
+					->withIdenticalArguments(atoum\directory . '/resources/configurations/runner/bootstrap.php.dist', $cwd . '/.bootstrap.php')->never()
+				->mock($stdOut)->call('write')
+					->withIdenticalArguments($cwd . '/.atoum.php already exists. Do you want to overwrite it ? (y/n) [n]')->once()
+					->withIdenticalArguments($cwd . '/.bootstrap.php already exists. Do you want to overwrite it ? (y/n) [n]')->once()
 		;
 	}
 

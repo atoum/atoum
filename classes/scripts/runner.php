@@ -240,6 +240,51 @@ class runner extends atoum\script\configurable
 		return parent::help();
 	}
 
+	public function init()
+	{
+		$cwd = $this->adapter->getcwd();
+
+		if(!$this->adapter->is_writable($cwd))
+		{
+			throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $cwd . '\' directory'));
+		}
+
+		$resourceDirectory = $this->getResourcesDirectory();
+
+		$file = $cwd . '/.atoum.php';
+		if(!$this->adapter->file_exists($file)
+		||  $this->prompt->select($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
+		{
+			$this->adapter->copy(
+				$resourceDirectory . '/configurations/runner/atoum.php.dist',
+				$file
+			);
+
+			$this->writeMessage($this->locale->_($file . ' was successfully generated') . PHP_EOL);
+		}
+
+		$file = $cwd . '/.bootstrap.php';
+		if(!$this->adapter->file_exists($file)
+		||  $this->prompt->select($this->locale->_($file . ' already exists. Do you want to overwrite it ?'), array('y', 'n'), 'n') == 'y')
+		{
+			$this->adapter->copy(
+				$resourceDirectory . '/configurations/runner/bootstrap.php.dist',
+				$file
+			);
+
+			$this->writeMessage($this->locale->_($file . ' was successfully generated') . PHP_EOL);
+		}
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function getResourcesDirectory()
+	{
+		return atoum\directory . '/resources';
+	}
+
 	public function useConfigFile($path)
 	{
 		$script = call_user_func($this->configuratorFactory, $this);
@@ -392,6 +437,19 @@ class runner extends atoum\script\configurable
 					array('-p', '--php'),
 					'<path/to/php/binary>',
 					$this->locale->_('Path to PHP binary which must be used to run tests')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->init();
+					},
+					array('--init'),
+					null,
+					$this->locale->_('Create configuration and bootstrap files')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $defaultReportTitle) {
@@ -746,7 +804,7 @@ class runner extends atoum\script\configurable
 
 	protected function runAgain()
 	{
-		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
+		return ($this->prompt->get($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
 	}
 
 	protected function loop()

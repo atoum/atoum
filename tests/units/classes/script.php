@@ -99,6 +99,16 @@ class script extends atoum\test
 		;
 	}
 
+	public function testSetPrompt()
+	{
+		$this
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->object($script->setPrompt($prompt = new atoum\script\prompt()))->isIdenticalTo($script)
+				->object($script->getPrompt())->isIdenticalTo($prompt)
+		;
+	}
+
 	public function testAddArgumentHandler()
 	{
 		$this
@@ -160,40 +170,11 @@ class script extends atoum\test
 		;
 	}
 
-	public function testPrompt()
-	{
-		if (defined('STDIN') === false)
-		{
-			define('STDIN', rand(1, PHP_INT_MAX));
-		}
-
-		$this
-			->if($adapter = new atoum\test\adapter())
-			->and($adapter->fgets = $input = uniqid())
-			->and($script = new mock\script(uniqid(), $adapter))
-			->and($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
-			->and($script->setOutputWriter($stdOut))
-			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->once()
-				->string($script->prompt(($message = ' ' . $message) . "\t\n"))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(2)
-			->if($adapter->fgets = ' ' . ($input = uniqid()) . "\t")
-			->then
-				->string($script->prompt($message = uniqid()))->isEqualTo($input)
-				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
-				->adapter($adapter)->call('fgets')->withArguments(STDIN)->exactly(3)
-		;
-	}
-
 	public function testWriteMessage()
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -221,7 +202,7 @@ class script extends atoum\test
 		$this
 			->if($locale = new mock\locale())
 			->and($stderr = new mock\writers\std\err())
-			->and($stderr->getMockCOntroller()->write = function() {})
+			->and($stderr->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setErrorWriter($stderr))
 			->and($script->setLocale($locale))
@@ -245,7 +226,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -258,7 +239,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
@@ -281,7 +262,7 @@ class script extends atoum\test
 	{
 		$this
 			->if($stdOut = new mock\writers\std\out())
-			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($stdOut->getMockController()->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setOutputWriter($stdOut))
 			->then
