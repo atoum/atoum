@@ -13,7 +13,7 @@ class in extends reader
 
 	public function read($length = null)
 	{
-		// fgets() must be call without any second argument if $length is null to avoid message "Warning: fgets(): Length parameter must be greater than 0"
+		// fgets() must be called without any second argument if $length is null to avoid message "Warning: fgets(): Length parameter must be greater than 0"
 		return ($length === null ? $this->init()->adapter->fgets($this->resource) : $this->init()->adapter->fgets($this->resource, $length));
 	}
 
