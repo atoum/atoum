@@ -29,7 +29,7 @@ class in extends atoum\test
 			->and($adapter->fgets = $line = uniqid())
 			->then
 				->string($reader->read())->isEqualTo($line)
-				->adapter($adapter)->call('fgets')->withArguments($resource, null)->once()
+				->adapter($adapter)->call('fgets')->withArguments($resource)->once()
 				->string($reader->read($length = rand(1, PHP_INT_MAX)))->isEqualTo($line)
 				->adapter($adapter)->call('fgets')->withArguments($resource, $length)->once()
 		;

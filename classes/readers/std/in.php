@@ -13,7 +13,7 @@ class in extends reader
 
 	public function read($length = null)
 	{
-		return $this->init()->adapter->fgets($this->resource, $length);
+		return ($length === null ? $this->init()->adapter->fgets($this->resource) : $this->init()->adapter->fgets($this->resource, $length));
 	}
 
 	protected function init()

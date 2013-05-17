@@ -163,9 +163,9 @@ class runner extends atoum\script\configurable
 	{
 		try
 		{
-			if (parent::run($arguments ?: $this->arguments)->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
+			if (parent::run($arguments ?: $this->getArguments())->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
 			{
-				parent::run($this->defaultArguments);
+				parent::run($this->getDefaultArguments());
 			}
 
 			if ($this->runTests === true)
@@ -197,16 +197,13 @@ class runner extends atoum\script\configurable
 
 					$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
 
-					if ($oldFailMethods)
+					if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
 					{
-						if (sizeof(self::getFailMethods($newScore)) <= 0)
-						{
-							$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
+						$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
 
-							if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
-							{
-								$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
-							}
+						if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+						{
+							$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
 						}
 					}
 				}
