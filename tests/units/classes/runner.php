@@ -170,17 +170,8 @@ class runner extends atoum\test
 	{
 		$this
 			->if($adapter = new atoum\test\adapter())
-			->and($adapter->get_declared_classes = array())
-			->and($adapter->proc_open = function() {})
-			->and($adapter->stream_get_contents = '')
-			->and($adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); })
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($adapter->fclose = function() {})
-			->and($adapter->proc_get_status = array('exitcode' => 0, 'running' => false))
-			->and($adapter->proc_close = function() {})
-			->and($adapter->proc_terminate = function() {})
 			->and($adapter->microtime = function() { static $call = 0; return (++$call * 100); })
-			->and($adapter->get_declared_classes = function() { return array(); })
+			->and($adapter->get_declared_classes = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter))
 			->then
@@ -196,14 +187,6 @@ class runner extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->get_declared_classes = array())
-			->and($adapter->proc_open = function() {})
-			->and($adapter->stream_get_contents = '')
-			->and($adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); })
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($adapter->fclose = function() {})
-			->and($adapter->proc_get_status = array('exitcode' => 0, 'running' => false))
-			->and($adapter->proc_close = function() {})
-			->and($adapter->proc_terminate = function() {})
 			->and($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter))
 			->then
@@ -218,15 +201,6 @@ class runner extends atoum\test
 	{
 		$this
 			->if($adapter = new atoum\test\adapter())
-			->and($adapter->get_declared_classes = array())
-			->and($adapter->proc_open = function() {})
-			->and($adapter->stream_get_contents = '')
-			->and($adapter->getenv = function($variable) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : 'PHP_PEAR_PHP_BIN'); })
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($adapter->fclose = function() {})
-			->and($adapter->proc_get_status = array('exitcode' => 0, 'running' => false))
-			->and($adapter->proc_terminate = function() {})
-			->and($adapter->proc_close = function() {})
 			->and($adapter->get_declared_classes = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setAdapter($adapter))
