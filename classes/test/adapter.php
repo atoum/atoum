@@ -194,7 +194,14 @@ class adapter extends atoum\adapter
 	{
 		$functionName = strtolower($functionName);
 
-		$this->calls[$functionName][++self::$callsNumber] = $arguments;
+		$unreferencedArguments = array();
+
+		foreach ($arguments as $argument)
+		{
+			$unreferencedArguments[] = $argument;
+		}
+
+		$this->calls[$functionName][++self::$callsNumber] = $unreferencedArguments;
 
 		return sizeof($this->calls[$functionName]);
 	}
@@ -282,5 +289,10 @@ class adapter extends atoum\adapter
 			default:
 				return false;
 		}
+	}
+
+	protected static function & unreference($var)
+	{
+		return $var;
 	}
 }

@@ -401,17 +401,17 @@ class score
 	public function merge(score $score)
 	{
 		$this->passNumber += $score->getPassNumber();
-		$this->failAssertions = array_merge($this->failAssertions, $score->getFailAssertions());
-		$this->exceptions = array_merge($this->exceptions, $score->getExceptions());
-		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->getRuntimeExceptions());
-		$this->errors = array_merge($this->errors, $score->getErrors());
-		$this->outputs = array_merge($this->outputs, $score->getOutputs());
-		$this->durations = array_merge($this->durations, $score->getDurations());
-		$this->memoryUsages = array_merge($this->memoryUsages, $score->getMemoryUsages());
-		$this->voidMethods = array_merge($this->voidMethods, $score->getVoidMethods());
-		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->getUncompletedMethods());
-		$this->skippedMethods = array_merge($this->skippedMethods, $score->getSkippedMethods());
-		$this->coverage->merge($score->getCoverage());
+		$this->failAssertions = array_merge($this->failAssertions, $score->failAssertions);
+		$this->exceptions = array_merge($this->exceptions, $score->exceptions);
+		$this->runtimeExceptions = array_merge($this->runtimeExceptions, $score->runtimeExceptions);
+		$this->errors = array_merge($this->errors, $score->errors);
+		$this->outputs = array_merge($this->outputs, $score->outputs);
+		$this->durations = array_merge($this->durations, $score->durations);
+		$this->memoryUsages = array_merge($this->memoryUsages, $score->memoryUsages);
+		$this->voidMethods = array_merge($this->voidMethods, $score->voidMethods);
+		$this->uncompletedMethods = array_merge($this->uncompletedMethods, $score->uncompletedMethods);
+		$this->skippedMethods = array_merge($this->skippedMethods, $score->skippedMethods);
+		$this->coverage->merge($score->coverage);
 
 		return $this;
 	}

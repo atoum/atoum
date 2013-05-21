@@ -10,34 +10,17 @@ use
 
 class concurrent extends test\engine
 {
-	protected $adapter = null;
 	protected $scoreFactory = null;
+	protected $php = null;
 	protected $test = null;
 	protected $method = '';
-	protected $stdOut = '';
-	protected $stdErr = '';
-
-	private $php = null;
-	private $pipes = array();
 
 	public function __construct()
 	{
 		$this
-			->setAdapter()
 			->setScoreFactory()
+			->setPhp()
 		;
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function setScoreFactory(\closure $factory = null)
@@ -50,6 +33,18 @@ class concurrent extends test\engine
 	public function getScoreFactory()
 	{
 		return $this->scoreFactory;
+	}
+
+	public function setPhp(atoum\php $php = null)
+	{
+		$this->php = $php ?: new atoum\php();
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		return $this->php;
 	}
 
 	public function isAsynchronous()
@@ -65,17 +60,8 @@ class concurrent extends test\engine
 		{
 			$this->test = $test;
 			$this->method = $currentTestMethod;
-			$this->stdOut = '';
-			$this->stdErr = '';
 
 			$phpPath = $this->test->getPhpPath();
-
-			$this->php = @call_user_func_array(array($this->adapter, 'proc_open'), array(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), & $this->pipes));
-
-			if ($this->php === false)
-			{
-				throw new exceptions\runtime('Unable to use \'' . $phpPath . '\'');
-			}
 
 			$phpCode =
 				'<?php ' .
@@ -137,12 +123,10 @@ class concurrent extends test\engine
 				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
 			;
 
-			$this->adapter->fwrite($this->pipes[0], $phpCode, strlen($phpCode));
-			$this->adapter->fclose($this->pipes[0]);
-			unset($this->pipes[0]);
-
-			$this->adapter->stream_set_blocking($this->pipes[1], 0);
-			$this->adapter->stream_set_blocking($this->pipes[2], 0);
+			$this->php
+				->setBinaryPath($phpPath)
+				->execute($phpCode)
+			;
 		}
 
 		return $this;
@@ -152,50 +136,30 @@ class concurrent extends test\engine
 	{
 		$score = null;
 
-		if ($this->php !== null)
+		if ($this->test !== null && $this->php->isRunning() === false)
 		{
-			$phpStatus = $this->adapter->proc_get_status($this->php);
+			$stdOut = $this->php->getStdout();
 
-			if ($phpStatus['running'] == true)
+			$score = @unserialize($stdOut);
+
+			if ($score instanceof atoum\score === false)
 			{
-				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
-				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
+				$score = call_user_func($this->scoreFactory);
+				$score->addUncompletedMethod($this->test->getClass(), $this->method, $this->php->getExitCode(), $stdOut);
 			}
-			else
+
+			$stdErr = $this->php->getStderr();
+
+			if ($stdErr !== '')
 			{
-				$this->stdOut .= $this->adapter->stream_get_contents($this->pipes[1]);
-				$this->adapter->fclose($this->pipes[1]);
-
-				$this->stdErr .= $this->adapter->stream_get_contents($this->pipes[2]);
-				$this->adapter->fclose($this->pipes[2]);
-
-				$this->pipes = array();
-
-				$this->adapter->proc_close($this->php);
-				$this->php = null;
-
-				$score = @unserialize($this->stdOut);
-
-				if ($score instanceof atoum\score === false)
+				if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($stdErr), $errors, PREG_SET_ORDER) === 0)
 				{
-					$score = call_user_func($this->scoreFactory);
-					$score->addUncompletedMethod($this->test->getClass(), $this->method, $phpStatus['exitcode'], $this->stdOut);
+					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, 'UNKNOWN', $stdErr);
 				}
-
-				if ($this->stdErr !== '')
+				else foreach ($errors as $error)
 				{
-					if (preg_match_all('/([^:]+): (.+) in (.+) on line ([0-9]+)/', trim($this->stdErr), $errors, PREG_SET_ORDER) === 0)
-					{
-						$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, 'UNKNOWN', $this->stdErr);
-					}
-					else foreach ($errors as $error)
-					{
-						$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, $error[1], $error[2], $error[3], $error[4]);
-					}
+					$score->addError($this->test->getPath(), $this->test->getClass(), $this->method, null, $error[1], $error[2], $error[3], $error[4]);
 				}
-
-				$this->stdOut = '';
-				$this->stdErr = '';
 			}
 		}
 

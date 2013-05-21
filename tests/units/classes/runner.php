@@ -78,42 +78,8 @@ class runner extends atoum\test
 	{
 		$this
 			->if($runner = new atoum\runner())
-			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
-			->and($adapter->constant = function($constant) use (& $phpBinary) { return ($constant != 'PHP_BINARY' ? null : $phpBinary = uniqid()); })
 			->then
-				->string($runner->getPhpPath())->isEqualTo($phpBinary)
-			->if($runner = new atoum\runner())
-			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->defined = false)
-			->and($adapter->constant = null)
-			->and($adapter->getenv = function($variable) use (& $pearPhpPath) { return ($variable != 'PHP_PEAR_PHP_BIN' ? false : $pearPhpPath = uniqid()); })
-			->then
-				->string($runner->getPhpPath())->isEqualTo($pearPhpPath)
-			->if($runner = new atoum\runner())
-			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->defined = false)
-			->and($adapter->constant = null)
-			->and($adapter->getenv = function($variable) use (& $phpBinPath) {
-					switch ($variable)
-					{
-						case 'PHPBIN':
-							return ($phpBinPath = uniqid());
-
-						default:
-							return false;
-					}
-				}
-			)
-			->then
-				->string($runner->getPhpPath())->isEqualTo($phpBinPath)
-			->if($runner = new atoum\runner())
-			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->defined = false)
-			->and($adapter->constant = function($constant) use (& $phpBinDir) { return ($constant != 'PHP_BINDIR' ? null : $phpBinDir = uniqid()); })
-			->and($adapter->getenv = false)
-			->then
-				->string($runner->getPhpPath())->isEqualTo($phpBinDir . '/php')
+				->string($runner->getPhpPath())->isEqualTo($runner->getPhp()->getBinaryPath())
 		;
 	}
 
@@ -124,8 +90,6 @@ class runner extends atoum\test
 			->then
 				->object($runner->setPhpPath($phpPath = uniqid()))->isIdenticalTo($runner)
 				->string($runner->getPhpPath())->isIdenticalTo($phpPath)
-				->object($runner->setPhpPath($phpPath = rand(1, PHP_INT_MAX)))->isIdenticalTo($runner)
-				->string($runner->getPhpPath())->isIdenticalTo((string) $phpPath)
 		;
 	}
 
@@ -388,127 +352,14 @@ class runner extends atoum\test
 	public function testSetPathAndVersionInScore()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
-			->and($scoreController = $score->getMockController())
+			->if($php = new \mock\mageekguy\atoum\php())
+			->and($this->calling($php)->getBinaryPath = $phpPath = uniqid())
+			->and($this->calling($php)->execute = function() {})
+			->and($this->calling($php)->isRunning = false)
+			->and($this->calling($php)->getExitCode = 0)
+			->and($this->calling($php)->getStdout = $phpVersion = uniqid())
 			->and($adapter = new atoum\test\adapter())
-			->and($adapter->defined = false)
-			->and($adapter->proc_open = false)
-			->and($adapter->defined = function($constant) { return ($constant == 'PHP_BINARY'); })
-			->and($adapter->constant = function($constant) use (& $phpPath) { return ($constant != 'PHP_BINARY' ? null : $phpPath = uniqid()); })
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($runner = new atoum\runner())
-			->and($runner->setScore($score))
-			->and($runner->setAdapter($adapter))
-			->then
-				->exception(function() use ($runner) {
-						$runner->setPathAndVersionInScore();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to open \'' . $phpPath . '\'')
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-				->mock($score)
-					->call('setAtoumVersion')->withArguments(null)->once()
-					->call('setAtoumPath')->withArguments(null)->once()
-					->call('setPhpPath')->never()
-					->call('setPhpVersion')->never()
-			->if($adapter->realpath = false)
-			->and($adapter->resetCalls())
-			->and($score->reset())
-			->and($scoreController->resetCalls())
-			->then
-				->exception(function() use ($runner) {
-						$runner->setPathAndVersionInScore();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to find \'' . $phpPath . '\'')
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-				->mock($score)
-					->call('setAtoumVersion')->withArguments(null)->once()
-					->call('setAtoumPath')->withArguments(null)->once()
-					->call('setPhpPath')->never()
-					->call('setPhpVersion')->never()
-			->if($adapter->resetCalls())
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($adapter->proc_open = function($cmd, $descriptors, & $pipes) use (& $php, & $stdOut, & $stdErr) {
-					$pipes = array(
-						1 => $stdOut = uniqid(),
-						2 => $stErr = uniqid(),
-					);
-					return $php = uniqid();
-				}
-			)
-			->and($adapter->stream_get_contents = $phpVersion = uniqid())
-			->and($adapter->fclose = function() {})
-			->and($adapter->proc_close = function() {})
-			->and($adapter->proc_terminate = function() {})
-			->and($adapter->proc_get_status = array('running' => false, 'exitcode' => 126))
-			->and($score->reset())
-			->and( $scoreController->resetCalls())
-			->then
-				->exception(function() use ($runner) {
-						$runner->setPathAndVersionInScore();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-					->call('proc_close')->withArguments($php)->once()
-				->mock($score)
-					->call('setAtoumVersion')->withArguments(null)->once()
-					->call('setAtoumPath')->withArguments(null)->once()
-					->call('setPhpPath')->never()
-					->call('setPhpVersion')->never()
-			->if($adapter->resetCalls())
-			->and($adapter->proc_get_status = array('running' => false, 'exitcode' => 127))
-			->and($score->reset())
-			->and($scoreController->reset())
-			->then
-				->exception(function() use ($runner) {
-						$runner->setPathAndVersionInScore();
-					}
-				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-					->call('proc_close')->withArguments($php)->once()
-				->mock($score)
-					->call('setAtoumVersion')->withArguments(null)->once()
-					->call('setAtoumPath')->withArguments(null)->once()
-					->call('setPhpPath')->never()
-					->call('setPhpVersion')->never()
-			->if($adapter->resetCalls())
-			->and($adapter->proc_get_status = array('exitcode' => 0, 'running' => false))
-			->and($score->reset())
-			->and($scoreController->resetCalls())
-			->then
-				->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-					->call('stream_get_contents')->withArguments($stdOut)->once()
-					->call('fclose')->withArguments($stdOut)->once()
-					->call('proc_close')->withArguments($php)->once()
-				->mock($score)
-					->call('setAtoumVersion')->withArguments(null)->once()
-					->call('setAtoumPath')->withArguments(null)->once()
-					->call('setPhpPath')->withArguments($phpPath)->once()
-					->call('setPhpVersion')->withArguments($phpVersion)->once()
-			->if($adapter->defined = true)
+			->and($adapter->defined = true)
 			->and($adapter->constant = function($constantName) use (& $atoumVersion, & $atoumDirectory) {
 					switch ($constantName)
 					{
@@ -520,25 +371,35 @@ class runner extends atoum\test
 					}
 				}
 			)
-			->and($adapter->resetCalls())
-			->and($score->reset())
-			->and($scoreController->resetCalls())
+			->and($runner = new atoum\runner())
+			->and($runner->setPhp($php))
+			->and($runner->setAdapter($adapter))
+			->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
 			->then
 				->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
-				->adapter($adapter)
-					->call('realpath')->withArguments($phpPath)->once()
-					->call('defined')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('constant')->withArguments(atoum\runner::atoumVersionConstant)->once()
-					->call('defined')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-					->call('constant')->withArguments(atoum\runner::atoumDirectoryConstant)->once()
-					->call('stream_get_contents')->withArguments($stdOut)->once()
-					->call('fclose')->withArguments($stdOut)->once()
-					->call('proc_close')->withArguments($php)->once()
 				->mock($score)
 					->call('setAtoumVersion')->withArguments($atoumVersion)->once()
 					->call('setAtoumPath')->withArguments($atoumDirectory)->once()
 					->call('setPhpPath')->withArguments($phpPath)->once()
 					->call('setPhpVersion')->withArguments($phpVersion)->once()
+			->if($adapter->defined = false)
+			->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
+			->then
+				->object($runner->setPathAndVersionInScore())->isIdenticalTo($runner)
+				->mock($score)
+					->call('setAtoumVersion')->withArguments(null)->once()
+					->call('setAtoumPath')->withArguments(null)->once()
+					->call('setPhpPath')->withArguments($phpPath)->once()
+					->call('setPhpVersion')->withArguments($phpVersion)->once()
+			->if($this->calling($php)->getExitCode = rand(1, PHP_INT_MAX))
+			->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
+			->then
+				->exception(function() use ($runner) {
+						$runner->setPathAndVersionInScore();
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
 		;
 	}
 

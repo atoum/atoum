@@ -82,7 +82,7 @@ class score extends atoum\score
 			throw new exceptions\runtime('PHP version is already set');
 		}
 
-		$this->phpVersion = (string) $version;
+		$this->phpVersion = trim($version);
 
 		return $this;
 	}

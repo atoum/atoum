@@ -27,7 +27,7 @@ class runner implements observable
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
-	protected $phpPath = null;
+	protected $php = null;
 	protected $defaultReportTitle = null;
 	protected $maxChildrenNumber = null;
 	protected $bootstrapFile = null;
@@ -44,6 +44,7 @@ class runner implements observable
 			->setLocale()
 			->setIncluder()
 			->setScore()
+			->setPhp()
 			->setTestDirectoryIterator()
 			->setGlobIteratorFactory()
 			->setReflectionClassFactory()
@@ -196,43 +197,28 @@ class runner implements observable
 		return $this->defaultReportTitle;
 	}
 
+	public function setPhp(atoum\php $php = null)
+	{
+		$this->php = $php ?: new atoum\php();
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		return $this->php;
+	}
+
+	public function setPhpPath($path)
+	{
+		$this->php->setBinaryPath($path);
+
+		return $this;
+	}
+
 	public function getPhpPath()
 	{
-		if ($this->phpPath === null)
-		{
-			$phpPath = null;
-
-			if ($this->adapter->defined('PHP_BINARY') === true)
-			{
-				$phpPath = $this->adapter->constant('PHP_BINARY');
-			}
-
-			if ($phpPath === null)
-			{
-				$phpPath = $this->adapter->getenv('PHP_PEAR_PHP_BIN');
-
-				if ($phpPath === false)
-				{
-					$phpPath = $this->adapter->getenv('PHPBIN');
-
-					if ($phpPath === false)
-					{
-						$phpDirectory = $this->adapter->constant('PHP_BINDIR');
-
-						if ($phpDirectory === null)
-						{
-							throw new exceptions\runtime('Unable to find PHP executable');
-						}
-
-						$phpPath = $phpDirectory . '/php';
-					}
-				}
-			}
-
-			$this->setPhpPath($phpPath);
-		}
-
-		return $this->phpPath;
+		return $this->php->getBinaryPath();
 	}
 
 	public function getTestNumber()
@@ -289,13 +275,6 @@ class runner implements observable
 		return $this->score->getCoverage();
 	}
 
-	public function setPhpPath($path)
-	{
-		$this->phpPath = (string) $path;
-
-		return $this;
-	}
-
 	public function enableCodeCoverage()
 	{
 		$this->codeCoverage = true;
@@ -346,50 +325,20 @@ class runner implements observable
 			->setAtoumPath($this->adapter->defined(static::atoumDirectoryConstant) === false ? null : $this->adapter->constant(static::atoumDirectoryConstant))
 		;
 
-		$phpPath = $this->adapter->realpath($this->getPhpPath());
+		$this->php->addOption('--version')->execute();
 
-		if ($phpPath === false)
-		{
-			throw new exceptions\runtime('Unable to find \'' . $this->getPhpPath() . '\'');
-		}
-		else
-		{
-			$descriptors = array(
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w'),
-			);
-
-			$php = @call_user_func_array(array($this->adapter, 'proc_open'), array(escapeshellarg($phpPath) . ' --version', $descriptors, & $pipes));
-
-			if ($php === false)
-			{
-				throw new exceptions\runtime('Unable to open \'' . $phpPath . '\'');
-			}
-
-			$phpVersion = trim($this->adapter->stream_get_contents($pipes[1]));
-
-			$this->adapter->fclose($pipes[1]);
-			$this->adapter->fclose($pipes[2]);
-
-			$phpStatus = $this->adapter->proc_get_status($php);
-
-			while ($phpStatus['running'] == true)
-			{
-				$phpStatus = $this->adapter->proc_get_status($php);
-			}
-
-			$this->adapter->proc_close($php);
-
-			if ($phpStatus['exitcode'] > 0)
-			{
-				throw new exceptions\runtime('Unable to get PHP version from \'' . $phpPath . '\'');
-			}
-
-			$this->score
-				->setPhpPath($phpPath)
-				->setPhpVersion($phpVersion)
+		while ($this->php->isRunning() === true)
 			;
+
+		if ($this->php->getExitCode() > 0)
+		{
+			throw new exceptions\runtime('Unable to get PHP version from \'' . $this->php . '\'');
 		}
+
+		$this->score
+			->setPhpPath($this->php->getBinaryPath())
+			->setPhpVersion($this->php->getStdout())
+		;
 
 		return $this;
 	}
@@ -447,14 +396,12 @@ class runner implements observable
 
 		if ($tests)
 		{
-			$phpPath = $this->getPhpPath();
-
 			foreach ($tests as $testMethods)
 			{
 				list($test, $methods) = $testMethods;
 
 				$test
-					->setPhpPath($phpPath)
+					->setPhpPath((string) $this->php)
 					->setAdapter($this->adapter)
 					->setLocale($this->locale)
 					->setBootstrapFile($this->bootstrapFile)

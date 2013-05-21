@@ -309,6 +309,8 @@ class builder extends atoum\script\configurable
 
 			try
 			{
+				$pipes = array();
+
 				$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
 
 				if ($php === false)
@@ -446,6 +448,8 @@ class builder extends atoum\script\configurable
 									->tagVersion()
 								;
 							}
+
+							$pipes = array();
 
 							$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
 
