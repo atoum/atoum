@@ -21,6 +21,7 @@ class php extends atoum\test
 				->string($php->getStdout())->isEmpty()
 				->string($php->getStderr())->isEmpty()
 				->array($php->getOptions())->isEmpty()
+				->array($php->getArguments())->isEmpty()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter = new atoum\adapter()))
 			->then
 				->string($php->getBinaryPath())->isEqualTo($phpPath)
@@ -28,6 +29,7 @@ class php extends atoum\test
 				->string($php->getStdout())->isEmpty()
 				->string($php->getStderr())->isEmpty()
 				->array($php->getOptions())->isEmpty()
+				->array($php->getArguments())->isEmpty()
 		;
 	}
 
@@ -36,7 +38,19 @@ class php extends atoum\test
 		$this
 			->if($php = new testedClass())
 			->then
-				->castToString($php)->isEqualTo($php->getBinaryPath())
+				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()))
+			->if($php->addOption($option1 = uniqid()))
+			->then
+				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1))
+			->if($php->addOption($option2 = uniqid(), $option2Value = uniqid() . ' ' . uniqid()))
+			->then
+				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value))
+			->if($php->addArgument($argument1 = uniqid()))
+			->then
+				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value) . ' -- ' . escapeshellarg($argument1))
+			->if($php->addArgument($argument2 = uniqid(), $argument2Value = uniqid()))
+			->then
+				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value) . ' -- ' . escapeshellarg($argument1) . ' ' . escapeshellarg($argument2) . ' ' . escapeshellarg($argument2Value))
 		;
 	}
 
@@ -51,6 +65,26 @@ class php extends atoum\test
 				->object($php->getAdapter())
 					->isNotIdenticalTo($adapter)
 					->isEqualTo(new atoum\adapter())
+		;
+	}
+
+	public function testReset()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->object($php->reset())->isIdenticalTo($php)
+				->string($php->getBinaryPath())->isNotEmpty()
+				->array($php->getOptions())->isEmpty()
+				->array($php->getArguments())->isEmpty()
+			->if($php->setBinaryPath($binaryPath = uniqid()))
+			->and($php->addOption(uniqid()))
+			->and($php->addArgument(uniqid()))
+			->then
+				->object($php->reset())->isIdenticalTo($php)
+				->string($php->getBinaryPath())->isEqualTo($binaryPath)
+				->array($php->getOptions())->isEmpty()
+				->array($php->getArguments())->isEmpty()
 		;
 	}
 
@@ -111,6 +145,20 @@ class php extends atoum\test
 		;
 	}
 
+	public function testAddArgument()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->object($php->addArgument($argument1 = uniqid()))->isIdenticalTo($php)
+				->array($php->getArguments())->isEqualTo(array(array($argument1 => null)))
+				->object($php->addArgument($argument1))->isIdenticalTo($php)
+				->array($php->getArguments())->isEqualTo(array(array($argument1 => null), array($argument1 => null)))
+				->object($php->addArgument($argument2 = uniqid()))->isIdenticalTo($php)
+				->array($php->getArguments())->isEqualTo(array(array($argument1 => null), array($argument1 => null), array($argument2 => null)))
+		;
+	}
+
 	public function testExecute()
 	{
 		$this
@@ -121,7 +169,7 @@ class php extends atoum\test
 					->isInstanceOf('mageekguy\atoum\php\exception')
 					->hasMessage('Unable to execute \'' . $code . '\' with php binary \'' . $phpPath . '\'')
 				->adapter($adapter)
-					->call('proc_open')->withArguments(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->and($code = uniqid())
 			->and($adapter->proc_open = function($command, $descriptors, & $streams) use (& $phpResource, & $stdin, & $stdout, & $stderr) { $streams = array($stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid); return ($phpResource = uniqid()); })
@@ -131,7 +179,7 @@ class php extends atoum\test
 			->then
 				->object($php->execute($code))->isIdenticalTo($php)
 				->adapter($adapter)
-					->call('proc_open')->withArguments(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 					->call('fwrite')->withArguments($stdin, $code, strlen($code))->once()
 					->call('fclose')->withArguments($stdin)->once()
 					->call('stream_set_blocking')->withArguments($stdout)->once()
@@ -143,7 +191,7 @@ class php extends atoum\test
 			->then
 				->object($php->execute($code))->isIdenticalTo($php)
 				->adapter($adapter)
-					->call('proc_open')->withArguments(escapeshellarg($phpPath), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 					->call('fwrite')->withArguments($stdin, $code, strlen($code))->once()
 					->call('fwrite')->withArguments($stdin, substr($code, 4), strlen($code) - 4)->once()
 					->call('fclose')->withArguments($stdin)->once()
@@ -154,13 +202,40 @@ class php extends atoum\test
 			->then
 				->object($php->execute($code))->isIdenticalTo($php)
 				->adapter($adapter)
-					->call('proc_open')->withArguments(escapeshellarg($phpPath) . ' firstOption', array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->and($php->addOption('firstOption'))
 			->and($php->addOption('secondOption', 'secondOptionValue'))
+			->then
 				->object($php->execute($code))->isIdenticalTo($php)
 				->adapter($adapter)
-					->call('proc_open')->withArguments(escapeshellarg($phpPath) . ' firstOption secondOption ' . escapeshellarg('secondOptionValue'), array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+			->if($php = new testedClass($phpPath = uniqid(), $adapter))
+			->and($php->addArgument($argument1 = uniqid()))
+			->and($php->addArgument($argument2 = uniqid()))
+			->then
+				->object($php->execute($code))->isIdenticalTo($php)
+				->adapter($adapter)
+					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
+		;
+	}
+
+	public function testGetExitCode()
+	{
+		$this
+			->if($php = new testedClass(null, $adapter = new atoum\test\adapter()))
+			->then
+				->variable($php->getExitCode())->isNull()
+			->if($adapter->proc_open = function($command, $descriptors, & $streams) use (& $phpResource, & $stdin, & $stdout, & $stderr) { $streams = array($stdin = uniqid(), $stdout = uniqid(), $stderr = uniqid); return ($phpResource = uniqid()); })
+			->and($adapter->fclose = null)
+			->and($adapter->stream_set_blocking = null)
+			->and($adapter->stream_get_contents = null)
+			->and($adapter->proc_close = null)
+			->and($adapter->proc_get_status[1] = array('running' => true))
+			->and($adapter->proc_get_status[2] = array('running' => false, 'exitcode' => $exitCode = rand(0, PHP_INT_MAX)))
+			->and($php->execute())
+			->then
+				->variable($php->getExitCode())->isEqualTo($exitCode)
 		;
 	}
 }

@@ -4,7 +4,8 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock
+	mageekguy\atoum\mock,
+	mageekguy\atoum\runner as testedClass
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -26,7 +27,7 @@ class runner extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->getScore())->isInstanceOf('mageekguy\atoum\score')
 				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
@@ -44,10 +45,24 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testSetPhp()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->setPhp($php = new atoum\php()))->isIdenticalTo($runner)
+				->object($runner->getPhp())->isIdenticalTo($php)
+				->object($runner->setPhp())->isIdenticalTo($runner)
+				->object($runner->getPhp())
+					->isEqualTo(new atoum\php())
+					->isNotIdenticalTo($php)
+		;
+	}
+
 	public function testSetAdapter()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->setAdapter($adapter = new atoum\test\adapter()))->isIdenticalTo($runner)
 				->object($runner->getAdapter())->isIdenticalTo($adapter)
@@ -57,7 +72,7 @@ class runner extends atoum\test
 	public function testSetScore()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->setScore($score = new atoum\runner\score()))->isIdenticalTo($runner)
 				->object($runner->getScore())->isIdenticalTo($score);
@@ -67,7 +82,7 @@ class runner extends atoum\test
 	public function testSetDefaultReportTtitle()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->setDefaultReportTitle($title = uniqid()))->isIdenticalTo($runner)
 				->string($runner->getDefaultReportTitle())->isEqualTo($title)
@@ -77,7 +92,7 @@ class runner extends atoum\test
 	public function testGetPhpPath()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->string($runner->getPhpPath())->isEqualTo($runner->getPhp()->getBinaryPath())
 		;
@@ -86,7 +101,7 @@ class runner extends atoum\test
 	public function testSetPhpPath()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->setPhpPath($phpPath = uniqid()))->isIdenticalTo($runner)
 				->string($runner->getPhpPath())->isIdenticalTo($phpPath)
@@ -96,7 +111,7 @@ class runner extends atoum\test
 	public function runnerEnableDebugMode()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->enableDebugMode())->isIdenticalTo($runner)
 				->boolean($runner->debugModeIsEnabled())->isTrue()
@@ -108,7 +123,7 @@ class runner extends atoum\test
 	public function runnerDisableDebugMode()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->disableDebugMode())->isIdenticalTo($runner)
 				->boolean($runner->debugModeIsEnabled())->isFalse()
@@ -124,7 +139,7 @@ class runner extends atoum\test
 	public function testAddObserver()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
@@ -135,7 +150,7 @@ class runner extends atoum\test
 	public function testRemoveObserver()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->array($runner->getObservers())->isEmpty()
 				->object($runner->removeObserver(new \mock\mageekguy\atoum\observers\runner()))->isIdenticalTo($runner)
@@ -156,7 +171,7 @@ class runner extends atoum\test
 	public function testCallObservers()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->callObservers(atoum\runner::runStart))->isIdenticalTo($runner)
 			->if($runner->addObserver($observer = new \mock\mageekguy\atoum\observers\runner()))
@@ -172,7 +187,7 @@ class runner extends atoum\test
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->microtime = function() { static $call = 0; return (++$call * 100); })
 			->and($adapter->get_declared_classes = array())
-			->and($runner = new atoum\runner())
+			->and($runner = new testedClass())
 			->and($runner->setAdapter($adapter))
 			->then
 				->variable($runner->getRunningDuration())->isNull()
@@ -187,7 +202,7 @@ class runner extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->get_declared_classes = array())
-			->and($runner = new atoum\runner())
+			->and($runner = new testedClass())
 			->and($runner->setAdapter($adapter))
 			->then
 				->integer($runner->getTestNumber())->isZero()
@@ -202,7 +217,7 @@ class runner extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->get_declared_classes = array())
-			->and($runner = new atoum\runner())
+			->and($runner = new testedClass())
 			->and($runner->setAdapter($adapter))
 			->then
 				->integer($runner->getTestMethodNumber())->isZero()
@@ -215,7 +230,7 @@ class runner extends atoum\test
 	public function testGetBootstrapFile()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->and($includer = new \mock\mageekguy\atoum\includer())
 			->and($includer->getMockController()->includePath = function() {})
 			->and($runner->setIncluder($includer))
@@ -229,7 +244,7 @@ class runner extends atoum\test
 	public function testHasReports()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->boolean($runner->hasReports())->isFalse()
 			->if($runner->addReport(new atoum\reports\realtime\cli()))
@@ -241,7 +256,7 @@ class runner extends atoum\test
 	public function testAddReport()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->addReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($report))
@@ -252,7 +267,7 @@ class runner extends atoum\test
 	public function testRemoveReport()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
@@ -280,7 +295,7 @@ class runner extends atoum\test
 	public function testRemoveReports()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
@@ -302,7 +317,7 @@ class runner extends atoum\test
 	public function testEnableCodeCoverage()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->and($runner->disableCodeCoverage())
 			->then
 				->boolean($runner->codeCoverageIsEnabled())->isFalse()
@@ -314,7 +329,7 @@ class runner extends atoum\test
 	public function testDisableCodeCoverage()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->and($runner->enableCodeCoverage())
 			->then
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
@@ -328,7 +343,7 @@ class runner extends atoum\test
 		$this
 			->if($php = new \mock\mageekguy\atoum\php())
 			->and($this->calling($php)->getBinaryPath = $phpPath = uniqid())
-			->and($this->calling($php)->execute = function() {})
+			->and($this->calling($php)->execute = $php)
 			->and($this->calling($php)->isRunning = false)
 			->and($this->calling($php)->getExitCode = 0)
 			->and($this->calling($php)->getStdout = $phpVersion = uniqid())
@@ -345,7 +360,7 @@ class runner extends atoum\test
 					}
 				}
 			)
-			->and($runner = new atoum\runner())
+			->and($runner = new testedClass())
 			->and($runner->setPhp($php))
 			->and($runner->setAdapter($adapter))
 			->and($runner->setScore($score = new \mock\mageekguy\atoum\runner\score()))
@@ -373,14 +388,14 @@ class runner extends atoum\test
 					}
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-					->hasMessage('Unable to get PHP version from \'' . $phpPath . '\'')
+					->hasMessage('Unable to get PHP version from \'' . $php . '\'')
 		;
 	}
 
 	public function testGetCoverage()
 	{
 		$this
-			->if($runner = new atoum\runner())
+			->if($runner = new testedClass())
 			->then
 				->object($runner->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
 		;

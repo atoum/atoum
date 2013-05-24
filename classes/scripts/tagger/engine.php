@@ -120,7 +120,7 @@ class engine
 
 		if ($this->srcIteratorInjector === null)
 		{
-			$this->setSrcIteratorInjector(function ($directory) { return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($directory)); });
+			$this->setSrcIteratorInjector(function($directory) { return new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($directory)); });
 		}
 
 		return $this->srcIteratorInjector->__invoke($this->srcDirectory);
@@ -154,7 +154,7 @@ class engine
 				throw new exceptions\runtime('Unable to tag, path \'' . $path . '\' is unreadable');
 			}
 
-			$path = $this->destinationDirectory == $this->srcDirectory ? $path : $this->destinationDirectory . \DIRECTORY_SEPARATOR . substr($path, strlen($this->srcDirectory) + 1);
+			$path = ($this->destinationDirectory == $this->srcDirectory ? $path : $this->destinationDirectory . \DIRECTORY_SEPARATOR . substr($path, strlen($this->srcDirectory) + 1));
 
 			$directory = $this->adapter->dirname($path);
 

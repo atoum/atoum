@@ -325,12 +325,7 @@ class runner implements observable
 			->setAtoumPath($this->adapter->defined(static::atoumDirectoryConstant) === false ? null : $this->adapter->constant(static::atoumDirectoryConstant))
 		;
 
-		$this->php->addOption('--version')->execute();
-
-		while ($this->php->isRunning() === true)
-			;
-
-		if ($this->php->getExitCode() > 0)
+		if ($this->php->reset()->addOption('--version')->execute()->getExitCode() > 0)
 		{
 			throw new exceptions\runtime('Unable to get PHP version from \'' . $this->php . '\'');
 		}
@@ -401,7 +396,7 @@ class runner implements observable
 				list($test, $methods) = $testMethods;
 
 				$test
-					->setPhpPath((string) $this->php)
+					->setPhpPath($this->php->getBinaryPath())
 					->setAdapter($this->adapter)
 					->setLocale($this->locale)
 					->setBootstrapFile($this->bootstrapFile)

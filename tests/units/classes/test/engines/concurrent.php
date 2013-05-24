@@ -6,7 +6,7 @@ require_once __DIR__ . '/../../../runner.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\test\engines
+	mageekguy\atoum\test\engines\concurrent as testedClass
 ;
 
 class concurrent extends atoum\test
@@ -19,7 +19,7 @@ class concurrent extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($engine = new engines\concurrent())
+			->if($engine = new testedClass())
 			->then
 				->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf('closure')
 				->object($defaultScoreFactory())->isInstanceOf('mageekguy\atoum\score')
@@ -27,10 +27,24 @@ class concurrent extends atoum\test
 		;
 	}
 
+	public function testSetPhp()
+	{
+		$this
+			->if($engine = new testedClass())
+			->then
+				->object($engine->setPhp($php = new atoum\php()))->isIdenticalTo($engine)
+				->object($engine->getPhp())->isIdenticalTo($php)
+				->object($engine->setPhp())->isIdenticalTo($engine)
+				->object($engine->getPhp())
+					->isEqualTo(new atoum\php())
+					->isNotIdenticalTo($php)
+		;
+	}
+
 	public function testIsAsynchronous()
 	{
 		$this
-			->if($engine = new engines\concurrent())
+			->if($engine = new testedClass())
 			->then
 				->boolean($engine->isAsynchronous())->isTrue()
 		;
@@ -39,7 +53,7 @@ class concurrent extends atoum\test
 	public function testRun()
 	{
 		$this
-			->if($engine = new engines\concurrent())
+			->if($engine = new testedClass())
 			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
 			->then
 				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
@@ -76,7 +90,7 @@ class concurrent extends atoum\test
 	public function testGetScore()
 	{
 		$this
-			->if($engine = new engines\concurrent())
+			->if($engine = new testedClass())
 			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
 			->and($this->calling($php)->execute = $php)
 			->and($this->calling($php)->isRunning = false)

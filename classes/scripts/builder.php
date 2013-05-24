@@ -12,14 +12,12 @@ use
 class builder extends atoum\script\configurable
 {
 	const defaultConfigFile = '.builder.php';
-
 	const defaultUnitTestRunnerScript = 'scripts/runner.php';
 	const defaultPharGeneratorScript = 'scripts/phar/generator.php';
 
 	protected $php = null;
 	protected $vcs = null;
 	protected $taggerEngine = null;
-	protected $superglobals = null;
 	protected $revision = null;
 	protected $version = null;
 	protected $unitTestRunnerScript = null;
@@ -41,7 +39,7 @@ class builder extends atoum\script\configurable
 
 		$this
 			->setVcs()
-			->setSuperglobals()
+			->setPhp()
 			->setUnitTestRunnerScript(self::defaultUnitTestRunnerScript)
 			->setPharGeneratorScript(self::defaultPharGeneratorScript)
 		;
@@ -59,18 +57,6 @@ class builder extends atoum\script\configurable
 		return $this->vcs;
 	}
 
-	public function setSuperglobals(atoum\superglobals $superglobals = null)
-	{
-		$this->superglobals = $superglobals ?: new atoum\superglobals();
-
-		return $this;
-	}
-
-	public function getSuperglobals()
-	{
-		return $this->superglobals;
-	}
-
 	public function setTaggerEngine(atoum\scripts\tagger\engine $engine)
 	{
 		$this->taggerEngine = $engine;
@@ -83,26 +69,28 @@ class builder extends atoum\script\configurable
 		return $this->taggerEngine;
 	}
 
+	public function setPhp(atoum\php $php = null)
+	{
+		$this->php = $php ?: new atoum\php();
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		return $this->php;
+	}
+
 	public function setPhpPath($path)
 	{
-		$this->php = (string) $path;
+		$this->php->setBinaryPath($path);
 
 		return $this;
 	}
 
 	public function getPhpPath()
 	{
-		if ($this->php === null)
-		{
-			if (isset($this->superglobals->_SERVER['_']) === false)
-			{
-				throw new exceptions\runtime('Unable to find PHP executable');
-			}
-
-			$this->setPhpPath($this->superglobals->_SERVER['_']);
-		}
-
-		return $this->php;
+		return $this->php->getBinaryPath();
 	}
 
 	public function getRunnerConfigurationFiles()
@@ -291,55 +279,46 @@ class builder extends atoum\script\configurable
 				->exportRepository()
 			;
 
-			$descriptors = array(
-				1 => array('pipe', 'w'),
-				2 => array('pipe', 'w')
-			);
+			$this->php
+				->reset()
+				->addOption('-f', $this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript)
+				->addArgument('-ncc')
+				->addArgument('-d', $this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes')
+				->addArgument('-p', $this->php->getBinaryPath())
+			;
 
 			$scoreFile = $this->scoreDirectory === null ? $this->adapter->tempnam($this->adapter->sys_get_temp_dir(), '') : $this->scoreDirectory . DIRECTORY_SEPARATOR . $this->vcs->getRevision();
 
-			$phpPath = $this->getPhpPath();
+			$this->php->addArgument('-sf', $scoreFile);
 
-			$command = escapeshellarg($phpPath) . ' ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . $this->unitTestRunnerScript) . ($this->reportTitle === null ? '' : ' -drt ' . escapeshellarg(sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()))) . ' -ncc -sf ' . escapeshellarg($scoreFile) . ' -d ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . 'tests' . \DIRECTORY_SEPARATOR . 'units' . \DIRECTORY_SEPARATOR . 'classes') . ' -p ' . escapeshellarg($phpPath);
+			if ($this->reportTitle !== null)
+			{
+				$this->php->addArgument('-drt',  sprintf($this->reportTitle, '%1$s', '%2$s', '%3$s', $this->vcs->getRevision()));
+			}
 
 			foreach ($this->runnerConfigurationFiles as $runnerConfigurationFile)
 			{
-				$command .= ' -c ' . escapeshellarg($runnerConfigurationFile);
+				$this->php->addArgument('-c',  $runnerConfigurationFile);
 			}
 
 			try
 			{
-				$pipes = array();
+				$exitCode = $this->php->execute()->getExitCode();
 
-				$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
-
-				if ($php === false)
+				if ($exitCode > 0)
 				{
-					throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-				}
-
-				$phpStatus = $this->adapter->proc_get_status($php);
-
-				if ($phpStatus['running'] === false)
-				{
-					switch ($phpStatus['exitcode'])
+					switch ($exitCode)
 					{
 						case 126:
 						case 127:
-							throw new exceptions\runtime('Unable to find \'' . $phpPath . '\' or it is not executable');
+							throw new exceptions\runtime('Unable to find \'' . $this->php->getBinaryPath() . '\' or it is not executable');
 
 						default:
-							throw new exceptions\runtime('Command \'' . $command . '\' failed with exit code \'' . $phpStatus['exitcode'] . '\'');
+							throw new exceptions\runtime($this->php . ' failed with exit code \'' . $exitCode . '\': ' . $this->php->getStderr());
 					}
 				}
 
-				$stdOut = $this->adapter->stream_get_contents($pipes[1]);
-				$this->adapter->fclose($pipes[1]);
-
-				$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-				$this->adapter->fclose($pipes[2]);
-
-				$this->adapter->proc_close($php);
+				$stdErr = $this->php->getStdErr();
 
 				if ($stdErr != '')
 				{
@@ -416,11 +395,12 @@ class builder extends atoum\script\configurable
 
 			if (sizeof($revisions) > 0)
 			{
-				$descriptors = array(
-					2 => array('pipe', 'w')
-				);
-
-				$command = escapeshellarg($this->getPhpPath()) . ' -d phar.readonly=0 -f ' . escapeshellarg($this->workingDirectory . \DIRECTORY_SEPARATOR . $this->pharGeneratorScript) . ' -- -d ' . escapeshellarg($this->destinationDirectory);
+				$this->php
+					->reset()
+					->addOption('-d', 'phar.readonly=0')
+					->addOption('-f', $this->workingDirectory . DIRECTORY_SEPARATOR . $this->pharGeneratorScript)
+					->addArgument('-d', $this->destinationDirectory)
+				;
 
 				while (sizeof($revisions) > 0)
 				{
@@ -449,24 +429,11 @@ class builder extends atoum\script\configurable
 								;
 							}
 
-							$pipes = array();
+							$exitCode = $this->php->execute()->getExitCode();
 
-							$php = @call_user_func_array(array($this->adapter, 'proc_open'), array($command, $descriptors, & $pipes));
-
-							if ($php === false)
+							if ($exitCode > 0)
 							{
-								throw new exceptions\runtime('Unable to execute \'' . $command . '\'');
-							}
-
-							$stdErr = $this->adapter->stream_get_contents($pipes[2]);
-
-							$this->adapter->fclose($pipes[2]);
-
-							$this->adapter->proc_close($php);
-
-							if ($stdErr != '')
-							{
-								throw new exceptions\runtime($stdErr);
+								throw new exceptions\runtime('Unable to execute ' . $this->php . ': ' . $this->php->getStdErr());
 							}
 						}
 					}
@@ -551,27 +518,23 @@ class builder extends atoum\script\configurable
 		return $this;
 	}
 
+	protected function includeConfigFile($path, \closure $callback = null)
+	{
+		if ($callback === null)
+		{
+			$builder = $this;
+
+			$callback = function($path) use ($builder) { include_once($path); };
+		}
+
+		return parent::includeConfigFile($path, $callback);
+	}
+
 	protected function setArgumentHandlers()
 	{
 		$builder = $this;
 
-		return $this
-			->addArgumentHandler(
-				function($script, $argument, $values) {
-					if (sizeof($values) != 0)
-					{
-						throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-					}
-
-					$script
-						->disablePharCreation()
-						->help()
-					;
-				},
-				array('-h', '--help'),
-				null,
-				$this->locale->_('Display this help')
-			)
+		return parent::setArgumentHandlers()
 			->addArgumentHandler(
 				function($script, $argument, $files) use ($builder) {
 					if (sizeof($files) <= 0)

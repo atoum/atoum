@@ -12,6 +12,7 @@ class php
 	protected $adapter = null;
 	protected $binaryPath = '';
 	protected $options = array();
+	protected $arguments = array();
 
 	private $phpProcessus = null;
 	private $phpStreams = array();
@@ -29,7 +30,47 @@ class php
 
 	public function __toString()
 	{
-		return (string) $this->getBinaryPath();
+		$command = escapeshellarg($this->binaryPath);
+
+		foreach ($this->options as $option => $value)
+		{
+			$command .= ' ' . escapeshellarg($option);
+
+			if ($value !== null)
+			{
+				$command .= ' ' . escapeshellarg($value);
+			}
+		}
+
+		if (sizeof($this->arguments) > 0)
+		{
+			$command .= ' --';
+
+			foreach ($this->arguments as $argument)
+			{
+				$command .= ' ' . escapeshellarg(key($argument));
+
+				$value = current($argument);
+
+				if ($value !== null)
+				{
+					$command .= ' ' . escapeshellarg($value);
+				}
+			}
+		}
+
+		return $command;
+	}
+
+	public function reset()
+	{
+		$this->options = array();
+		$this->arguments = array();
+		$this->stdOut = '';
+		$this->stdErr = '';
+		$this->exitCode = null;
+
+		return $this;
 	}
 
 	public function getAdapter()
@@ -98,6 +139,18 @@ class php
 		return $this->options;
 	}
 
+	public function addArgument($argument, $value = null)
+	{
+		$this->arguments[] = array($argument => $value);
+
+		return $this;
+	}
+
+	public function getArguments()
+	{
+		return $this->arguments;
+	}
+
 	public function isRunning()
 	{
 		$isRunning = false;
@@ -143,6 +196,8 @@ class php
 
 	public function getExitCode()
 	{
+		while ($this->isRunning() === true);
+
 		return $this->exitCode;
 	}
 
@@ -151,23 +206,6 @@ class php
 		if ($this->phpProcessus !== null)
 		{
 			throw new php\exception('Unable to execute \'' . $code . '\' because php is running');
-		}
-
-		$this->phpStreams = array();
-		$this->stdOut = '';
-		$this->stdErr = '';
-		$this->exitCode = null;
-
-		$options = '';
-
-		foreach ($this->options as $option => $value)
-		{
-			$options .= ' ' . $option;
-
-			if ($value !== null)
-			{
-				$options .= ' ' . escapeshellarg($value);
-			}
 		}
 
 		$pipes = array(
@@ -180,7 +218,7 @@ class php
 			$pipes[0] = array('pipe', 'r');
 		}
 
-		$this->phpProcessus = @call_user_func_array(array($this->adapter, 'proc_open'), array(escapeshellarg($this->binaryPath) . $options, $pipes, & $this->phpStreams));
+		$this->phpProcessus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->phpStreams));
 
 		if ($this->phpProcessus === false)
 		{
