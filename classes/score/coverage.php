@@ -123,16 +123,16 @@ class coverage implements \countable, \serializable
 
 	public function addXdebugDataForClass($class, array $data)
 	{
-		if (sizeof($data) > 0)
+		try
 		{
-			try
+			$reflectedClass = call_user_func($this->reflectionClassFactory, $class);
+
+			if ($this->isExcluded($reflectedClass) === false)
 			{
-				$reflectedClass = call_user_func($this->reflectionClassFactory, $class);
+				$reflectedClassName = $reflectedClass->getName();
 
-				if ($this->isExcluded($reflectedClass) === false)
+				if (isset($this->classes[$reflectedClassName]) === false)
 				{
-					$reflectedClassName = $reflectedClass->getName();
-
 					$this->classes[$reflectedClassName] = $reflectedClass->getFileName();
 					$this->methods[$reflectedClassName] = array();
 
@@ -168,8 +168,8 @@ class coverage implements \countable, \serializable
 					}
 				}
 			}
-			catch (\exception $exception) {}
 		}
+		catch (\exception $exception) {}
 
 		return $this;
 	}

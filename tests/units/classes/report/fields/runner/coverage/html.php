@@ -11,7 +11,7 @@ use
 	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\cli\prompt,
 	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\coverage
+	mageekguy\atoum\report\fields\runner\coverage\html as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -26,7 +26,7 @@ class html extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($field = new coverage\html($projectName = uniqid(), $destinationDirectory = uniqid()))
+			->if($field = new testedClass($projectName = uniqid(), $destinationDirectory = uniqid()))
 			->then
 				->string($field->getProjectName())->isEqualTo($projectName)
 				->string($field->getDestinationDirectory())->isEqualTo($destinationDirectory)
@@ -48,7 +48,7 @@ class html extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
 				->object($field->getAdapter())->isIdenticalTo($adapter)
@@ -62,7 +62,7 @@ class html extends atoum\test
 	public function testSetUrlPrompt()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setUrlPrompt($urlPrompt = new prompt()))->isIdenticalTo($field)
 				->object($field->getUrlPrompt())->isIdenticalTo($urlPrompt)
@@ -76,7 +76,7 @@ class html extends atoum\test
 	public function testSetUrlColorizer()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setUrlColorizer($urlColorizer = new colorizer()))->isIdenticalTo($field)
 				->object($field->getUrlColorizer())->isIdenticalTo($urlColorizer)
@@ -90,7 +90,7 @@ class html extends atoum\test
 	public function testSetTemplatesDirectory()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setTemplatesDirectory($directory = uniqid()))->isIdenticalTo($field)
 				->string($field->getTemplatesDirectory())->isEqualTo($directory)
@@ -102,7 +102,7 @@ class html extends atoum\test
 	public function testSetDestinationDirectory()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($field)
 				->string($field->getDestinationDirectory())->isEqualTo($directory)
@@ -114,7 +114,7 @@ class html extends atoum\test
 	public function testSetTemplateParser()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($field->setTemplateParser($templateParser = new template\parser()))->isIdenticalTo($field)
 				->object($field->getTemplateParser())->isIdenticalTo($templateParser)
@@ -124,7 +124,7 @@ class html extends atoum\test
 	public function testSetProjectName()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->setProjectName($projectName = uniqid()))->isIdenticalTo($field)
 				->string($field->getProjectName())->isIdenticalTo($projectName)
@@ -136,7 +136,7 @@ class html extends atoum\test
 	public function testGetDestinationDirectoryIterator()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), __DIR__))
+			->if($field = new testedClass(uniqid(), __DIR__))
 			->then
 				->object($recursiveIteratorIterator = $field->getDestinationDirectoryIterator())->isInstanceOf('recursiveIteratorIterator')
 				->object($recursiveDirectoryIterator = $recursiveIteratorIterator->getInnerIterator())->isInstanceOf('recursiveDirectoryIterator')
@@ -147,7 +147,7 @@ class html extends atoum\test
 	public function testGetSrcDirectoryIterators()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->array($field->getSrcDirectoryIterators())->isEmpty()
 			->if($field->addSrcDirectory($directory = __DIR__))
@@ -229,7 +229,7 @@ class html extends atoum\test
 	public function testAddSrcDirectory()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->object($field->addSrcDirectory($srcDirectory = uniqid()))->isIdenticalTo($field)
 				->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
@@ -247,7 +247,7 @@ class html extends atoum\test
 	public function testSetRootUrl()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($field->setRootUrl($rootUrl = uniqid()))->isIdenticalTo($field)
 				->string($field->getRootUrl())->isIdenticalTo($rootUrl . '/')
@@ -261,7 +261,7 @@ class html extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, new atoum\runner()))->isFalse()
 				->variable($field->getCoverage())->isNull()
@@ -273,7 +273,7 @@ class html extends atoum\test
 	public function testSetReflectionClassInjector()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
 			->and($reflectionClassController = new mock\controller())
 			->and($reflectionClassController->__construct = function() {})
 			->and($reflectionClass = new \mock\reflectionClass(uniqid(), $reflectionClassController))
@@ -292,7 +292,7 @@ class html extends atoum\test
 	public function testGetReflectionClass()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid(), uniqid()))
 			->then
 				->object($field->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 				->string($field->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
@@ -310,7 +310,7 @@ class html extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($field = new coverage\html(uniqid(), uniqid()))
+			->if($field = new testedClass(uniqid(), uniqid()))
 			->then
 				->castToString($field)->isEqualTo('Code coverage: unknown.' . PHP_EOL)
 			->if($coverage = new \mock\mageekguy\atoum\score\coverage())
@@ -509,7 +509,7 @@ class html extends atoum\test
 					->call('build')->once()
 				->mock($classCoverageTemplate)
 					->call('__set')->withArguments('className', $className)->once()
-					->call('__set')->withArguments('classUrl', str_replace('\\', '/', $className) . coverage\html::htmlExtensionFile)->once()
+					->call('__set')->withArguments('classUrl', str_replace('\\', '/', $className) . testedClass::htmlExtensionFile)->once()
 					->call('build')->once()
 				->mock($classCoverageAvailableTemplate)
 					->call('build')->withArguments(array('classCoverageValue' => round($classCoverageValue * 100, 2)))->once()

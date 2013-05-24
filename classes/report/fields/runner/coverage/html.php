@@ -55,23 +55,40 @@ class html extends report\fields\runner\coverage\cli
 			{
 				foreach ($srcDirectoryIterator as $file)
 				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
+					$declaredClasses = array_unique($this->adapter->get_declared_classes());
 
-					$declaredClasses = $this->adapter->get_declared_classes();
-
-					$this->adapter->ob_start();
-
-					require_once $file->getPathname();
-
-					$xDebugData = $this->adapter->xdebug_get_code_coverage();
-
-					$this->adapter->xdebug_stop_code_coverage();
-
-					$this->adapter->ob_end_clean();
-
-					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
+					if (in_array($file->getPathname(), $this->adapter->get_included_files()) === true)
 					{
-						$this->coverage->addXdebugDataForClass($class, $xDebugData);
+						foreach ($declaredClasses as $class)
+						{
+							if ($this->coverage->getValueForClass($class) === null)
+							{
+								$declaredClass = new \reflectionClass($class);
+
+								if ($declaredClass->getFileName() === $file->getPathName())
+								{
+									$this->coverage->addXdebugDataForClass($class, array());
+								}
+							}
+						}
+					}
+					else
+					{
+						$this->adapter->ob_start();
+
+						require_once $file->getPathname();
+
+						$this->adapter->ob_end_clean();
+
+						$declaredClasses = $this->adapter->get_declared_classes();
+
+						foreach (array_diff(array_unique($this->adapter->get_declared_classes()), $declaredClasses) as $class)
+						{
+							if ($this->coverage->getValueForClass($class) === null)
+							{
+								$this->coverage->addXdebugDataForClass($class, array());
+							}
+						}
 					}
 				}
 			}

@@ -75,8 +75,12 @@ class coverage extends atoum\test
 			->if($coverage = new testedClass())
 			->then
 				->object($coverage->addXdebugDataForTest($this, array()))->isIdenticalTo($coverage)
-				->array($coverage->getClasses())->isEmpty()
-				->array($coverage->getMethods())->isEmpty()
+				->array($coverage->getClasses())->isEqualTo(
+					array($this->getTestedClassName() => $this->getTestedClassPath())
+				)
+				->array($coverage->getMethods())->isEqualTo(
+					array($this->getTestedClassName() => array())
+				)
 			->if($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
 			->and($classController->__construct = function() {})
@@ -124,6 +128,7 @@ class coverage extends atoum\test
 			->then
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 				->array($coverage->getMethods())->isEqualTo(array(
+						$this->getTestedClassName() => array(),
 						$className => array(
 							$methodName => array(
 								6 => 1,
@@ -134,6 +139,7 @@ class coverage extends atoum\test
 					)
 				)
 				->array($coverage->getMethods())->isEqualTo(array(
+						$this->getTestedClassName() => array(),
 						$className => array(
 							$methodName => array(
 								6 => 1,
@@ -145,6 +151,7 @@ class coverage extends atoum\test
 				)
 				->object($coverage->addXdebugDataForTest($this, $xdebugData))->isIdenticalTo($coverage)
 				->array($coverage->getMethods())->isEqualTo(array(
+						$this->getTestedClassName() => array(),
 						$className => array(
 							$methodName => array(
 								6 => 1,
