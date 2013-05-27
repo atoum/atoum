@@ -10,15 +10,8 @@
 	<body>
 		<div id="header">
 			<h1>Code coverage of <a href="<tpl:relativeRootUrl />"><tpl:projectName /></a>: <tpl:className /></h1>
-			<h2>
-				Class code coverage
-				<span>
-					<tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable>
-					<tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable>
-				</span>
-			</h2>
+			<h2>Class code coverage <span><tpl:classCoverageUnavailable>n/a</tpl:classCoverageUnavailable><tpl:classCoverageAvailable><tpl:classCoverageValue />%</tpl:classCoverageAvailable></span></h2>
 		</div>
-
 		<div id="page">
 			<div id="content">
 				<h3>Methods</h3>
@@ -40,7 +33,6 @@
 						</tpl:method>
 					</tpl:methods>
 				</ul>
-
 				<h3>Source</h3>
 				<table cellpadding="0" cellspacing="0" class="source">
 					<tr><th class="number">Line</th><th>Code</th></tr>
@@ -52,7 +44,6 @@
 				</table>
 			</div>
 		</div>
-
 		<div id="footer">
 			<p>Code coverage report powered by <a href="http://atoum.org">atoum</a></p>
 		</div>

@@ -498,15 +498,15 @@ class html extends report\fields\runner\coverage\cli
 				}
 
 				$phpCode .=
+					'$data = array(\'classes\' => get_declared_classes());' .
 					'ob_start();' .
 					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);' .
-					'$declaredClasses = get_declared_classes();' .
 					'require_once \'%s\';' .
-					'$xDebugData = xdebug_get_code_coverage();' .
+					'$data[\'coverage\'] = xdebug_get_code_coverage();' .
 					'xdebug_stop_code_coverage();' .
 					'ob_end_clean();' .
-					'$classes = array_diff(get_declared_classes(), $declaredClasses);' .
-					'echo serialize(array(\'classes\' => $classes, \'coverage\' => $xDebugData));'
+					'$data[\'classes\'] = array_diff(get_declared_classes(), $data[\'classes\']);' .
+					'echo serialize($data);'
 				;
 
 				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
