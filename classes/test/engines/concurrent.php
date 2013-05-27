@@ -126,7 +126,7 @@ class concurrent extends test\engine
 			$this->php
 				->reset()
 				->setBinaryPath($phpPath)
-				->execute($phpCode)
+				->run($phpCode)
 			;
 		}
 

@@ -201,11 +201,11 @@ class php
 		return $this->exitCode;
 	}
 
-	public function execute($code = '')
+	public function run($code = '')
 	{
 		if ($this->phpProcessus !== null)
 		{
-			throw new php\exception('Unable to execute \'' . $code . '\' because php is running');
+			throw new php\exception('Unable to run \'' . $code . '\' because php is running');
 		}
 
 		$pipes = array(
@@ -222,7 +222,7 @@ class php
 
 		if ($this->phpProcessus === false)
 		{
-			throw new php\exception('Unable to execute \'' . $code . '\' with php binary \'' . $this->binaryPath . '\'');
+			throw new php\exception('Unable to run \'' . $code . '\' with php binary \'' . $this->binaryPath . '\'');
 		}
 
 		if (isset($this->phpStreams[0]) === true)

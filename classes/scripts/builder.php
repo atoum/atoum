@@ -303,7 +303,7 @@ class builder extends atoum\script\configurable
 
 			try
 			{
-				$exitCode = $this->php->execute()->getExitCode();
+				$exitCode = $this->php->run()->getExitCode();
 
 				if ($exitCode > 0)
 				{
@@ -429,11 +429,11 @@ class builder extends atoum\script\configurable
 								;
 							}
 
-							$exitCode = $this->php->execute()->getExitCode();
+							$exitCode = $this->php->run()->getExitCode();
 
 							if ($exitCode > 0)
 							{
-								throw new exceptions\runtime('Unable to execute ' . $this->php . ': ' . $this->php->getStdErr());
+								throw new exceptions\runtime('Unable to run ' . $this->php . ': ' . $this->php->getStdErr());
 							}
 						}
 					}

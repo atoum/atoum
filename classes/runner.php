@@ -325,7 +325,7 @@ class runner implements observable
 			->setAtoumPath($this->adapter->defined(static::atoumDirectoryConstant) === false ? null : $this->adapter->constant(static::atoumDirectoryConstant))
 		;
 
-		if ($this->php->reset()->addOption('--version')->execute()->getExitCode() > 0)
+		if ($this->php->reset()->addOption('--version')->run()->getExitCode() > 0)
 		{
 			throw new exceptions\runtime('Unable to get PHP version from \'' . $this->php . '\'');
 		}

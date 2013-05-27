@@ -343,7 +343,7 @@ class runner extends atoum\test
 		$this
 			->if($php = new \mock\mageekguy\atoum\php())
 			->and($this->calling($php)->getBinaryPath = $phpPath = uniqid())
-			->and($this->calling($php)->execute = $php)
+			->and($this->calling($php)->run = $php)
 			->and($this->calling($php)->isRunning = false)
 			->and($this->calling($php)->getExitCode = 0)
 			->and($this->calling($php)->getStdout = $phpVersion = uniqid())

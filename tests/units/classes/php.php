@@ -159,15 +159,15 @@ class php extends atoum\test
 		;
 	}
 
-	public function testExecute()
+	public function testRun()
 	{
 		$this
 			->if($php = new testedClass($phpPath = uniqid(), $adapter = new atoum\test\adapter()))
 			->and($adapter->proc_open = false)
 			->then
-				->exception(function() use ($php, & $code) { $php->execute($code = uniqid()); })
+				->exception(function() use ($php, & $code) { $php->run($code = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\php\exception')
-					->hasMessage('Unable to execute \'' . $code . '\' with php binary \'' . $phpPath . '\'')
+					->hasMessage('Unable to run \'' . $code . '\' with php binary \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
@@ -177,7 +177,7 @@ class php extends atoum\test
 			->and($adapter->fclose = null)
 			->and($adapter->stream_set_blocking = null)
 			->then
-				->object($php->execute($code))->isIdenticalTo($php)
+				->object($php->run($code))->isIdenticalTo($php)
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 					->call('fwrite')->withArguments($stdin, $code, strlen($code))->once()
@@ -189,7 +189,7 @@ class php extends atoum\test
 			->and($adapter->fwrite[1] = 4)
 			->and($adapter->fwrite[2] = strlen($code) - 4)
 			->then
-				->object($php->execute($code))->isIdenticalTo($php)
+				->object($php->run($code))->isIdenticalTo($php)
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 					->call('fwrite')->withArguments($stdin, $code, strlen($code))->once()
@@ -200,21 +200,21 @@ class php extends atoum\test
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->and($php->addOption('firstOption'))
 			->then
-				->object($php->execute($code))->isIdenticalTo($php)
+				->object($php->run($code))->isIdenticalTo($php)
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->and($php->addOption('firstOption'))
 			->and($php->addOption('secondOption', 'secondOptionValue'))
 			->then
-				->object($php->execute($code))->isIdenticalTo($php)
+				->object($php->run($code))->isIdenticalTo($php)
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
 			->and($php->addArgument($argument1 = uniqid()))
 			->and($php->addArgument($argument2 = uniqid()))
 			->then
-				->object($php->execute($code))->isIdenticalTo($php)
+				->object($php->run($code))->isIdenticalTo($php)
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 		;
@@ -233,7 +233,7 @@ class php extends atoum\test
 			->and($adapter->proc_close = null)
 			->and($adapter->proc_get_status[1] = array('running' => true))
 			->and($adapter->proc_get_status[2] = array('running' => false, 'exitcode' => $exitCode = rand(0, PHP_INT_MAX)))
-			->and($php->execute())
+			->and($php->run())
 			->then
 				->variable($php->getExitCode())->isEqualTo($exitCode)
 		;

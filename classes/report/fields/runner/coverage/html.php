@@ -515,7 +515,7 @@ class html extends report\fields\runner\coverage\cli
 					{
 						if (in_array($file->getPathname(), $this->adapter->get_included_files()) === false)
 						{
-							$exitCode = $this->php->reset()->execute(sprintf($phpCode, $file->getPathname()))->getExitCode();
+							$exitCode = $this->php->reset()->run(sprintf($phpCode, $file->getPathname()))->getExitCode();
 
 							if ($exitCode > 0)
 							{

@@ -62,15 +62,15 @@ class concurrent extends atoum\test
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
 			->and($test->getMockController()->codeCoverageIsEnabled = false)
 			->and($test->getMockController()->getBootstrapFile = null)
-			->and($this->calling($php)->execute->throw = $exception = new atoum\php\exception())
+			->and($this->calling($php)->run->throw = $exception = new atoum\php\exception())
 			->then
 				->exception(function() use ($engine, $test) { $engine->run($test); })
 					->isIdenticalTo($exception)
-			->if($this->calling($php)->execute = $php)
+			->if($this->calling($php)->run = $php)
 			->then
 				->object($engine->run($test))->isIdenticalTo($engine)
 				->mock($php)
-					->call('execute')->withArguments(
+					->call('run')->withArguments(
 						'<?php ' .
 						'ob_start();' .
 						'require \'' . atoum\directory . '/classes/autoloader.php\';' .
@@ -92,7 +92,7 @@ class concurrent extends atoum\test
 		$this
 			->if($engine = new testedClass())
 			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
-			->and($this->calling($php)->execute = $php)
+			->and($this->calling($php)->run = $php)
 			->and($this->calling($php)->isRunning = false)
 			->then
 				->variable($engine->getScore())->isNull()
