@@ -36,12 +36,27 @@ class html extends atoum\test
 				->object($field->getCoverageColorizer())->isEqualTo(new colorizer())
 				->object($field->getUrlPrompt())->isEqualTo(new prompt())
 				->object($field->getUrlColorizer())->isEqualTo(new colorizer())
-				->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($field->getPhp())->isEqualTo(new atoum\php())
+				->object($field->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($field->getLocale())->isEqualTo(new locale())
 				->object($field->getTemplateParser())->isInstanceOf('mageekguy\atoum\template\parser')
 				->variable($field->getCoverage())->isNull()
 				->array($field->getSrcDirectories())->isEmpty()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
+		;
+	}
+
+	public function testSetPhp()
+	{
+		$this
+			->if($field = new testedClass(uniqid(), uniqid()))
+			->then
+				->object($field->setPhp($php = new atoum\php()))->isIdenticalTo($field)
+				->object($field->getPhp())->isIdenticalTo($php)
+				->object($field->setPhp())->isIdenticalTo($field)
+				->object($field->getPhp())
+					->isNotIdenticalTo($php)
+					->isEqualTo(new atoum\php())
 		;
 	}
 
