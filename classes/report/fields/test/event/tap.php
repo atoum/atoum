@@ -77,6 +77,7 @@ class tap extends report\fields\event
 				case test::uncompleted:
 					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
+                    $this->testLine .= '# ' . $lastUncompleteMethod['file'] . PHP_EOL;
 					break;
 
 				case test::skipped:

@@ -99,7 +99,7 @@ class xunit extends atoum\test
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '4.xml')))
-			->if($score->addUncompletedMethod($class, $otherMethod, $exitCode = 1, $output = 'output'))
+			->if($score->addUncompletedMethod($file, $class, $otherMethod, $exitCode = 1, $output = 'output'))
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '5.xml')))
