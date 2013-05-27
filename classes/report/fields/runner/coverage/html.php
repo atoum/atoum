@@ -20,6 +20,7 @@ class html extends report\fields\runner\coverage\cli
 
 	protected $urlPrompt = null;
 	protected $urlColorizer = null;
+	protected $php = null;
 	protected $adapter = null;
 	protected $rootUrl = '';
 	protected $projectName = '';
@@ -28,6 +29,7 @@ class html extends report\fields\runner\coverage\cli
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
 	protected $reflectionClassInjector = null;
+	protected $bootstrapFile = null;
 
 	public function __construct($projectName, $destinationDirectory)
 	{
@@ -36,6 +38,7 @@ class html extends report\fields\runner\coverage\cli
 		$this
 			->setProjectName($projectName)
 			->setDestinationDirectory($destinationDirectory)
+			->setPhp()
 			->setAdapter()
 			->setUrlPrompt()
 			->setUrlColorizer()
@@ -48,51 +51,6 @@ class html extends report\fields\runner\coverage\cli
 	public function __toString()
 	{
 		$string = '';
-
-		if ($this->adapter->extension_loaded('xdebug') === true)
-		{
-			foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
-			{
-				foreach ($srcDirectoryIterator as $file)
-				{
-					$declaredClasses = array_unique($this->adapter->get_declared_classes());
-
-					if (in_array($file->getPathname(), $this->adapter->get_included_files()) === true)
-					{
-						foreach ($declaredClasses as $class)
-						{
-							if ($this->coverage->getValueForClass($class) === null)
-							{
-								$declaredClass = new \reflectionClass($class);
-
-								if ($declaredClass->getFileName() === $file->getPathName())
-								{
-									$this->coverage->addXdebugDataForClass($class, array());
-								}
-							}
-						}
-					}
-					else
-					{
-						$this->adapter->ob_start();
-
-						require_once $file->getPathname();
-
-						$this->adapter->ob_end_clean();
-
-						$declaredClasses = $this->adapter->get_declared_classes();
-
-						foreach (array_diff(array_unique($this->adapter->get_declared_classes()), $declaredClasses) as $class)
-						{
-							if ($this->coverage->getValueForClass($class) === null)
-							{
-								$this->coverage->addXdebugDataForClass($class, array());
-							}
-						}
-					}
-				}
-			}
-		}
 
 		if (sizeof($this->coverage) > 0)
 		{
@@ -133,14 +91,7 @@ class html extends report\fields\runner\coverage\cli
 
 					$classCoverageValue = $this->coverage->getValueForClass($className);
 
-					if ($classCoverageValue === null)
-					{
-						$classCoverageUnavailableTemplates->build();
-					}
-					else
-					{
-						$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
-					}
+					$classCoverageAvailableTemplates->build(array('classCoverageValue' => round($classCoverageValue * 100, 2)));
 
 					$classCoverageTemplates->build();
 
@@ -309,6 +260,18 @@ class html extends report\fields\runner\coverage\cli
 		}
 
 		return parent::__toString() . $string;
+	}
+
+	public function setPhp(atoum\php $php = null)
+	{
+		$this->php = $php ?: new atoum\php();
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		return $this->php;
 	}
 
 	public function setReflectionClassInjector(\closure $reflectionClassInjector)
@@ -504,5 +467,73 @@ class html extends report\fields\runner\coverage\cli
 		catch (\exception $exception) {}
 
 		return $this;
+	}
+
+	public function handleEvent($event, \mageekguy\atoum\observable $observable)
+	{
+		if (parent::handleEvent($event, $observable) === false)
+		{
+			return false;
+		}
+		else
+		{
+			if ($this->adapter->extension_loaded('xdebug') === true)
+			{
+				$phpCode =
+					'<?php ' .
+					'ob_start();' .
+					'require \'' . atoum\directory . '/classes/autoloader.php\';'
+				;
+
+				$bootstrapFile = $observable->getBootstrapFile();
+
+				if ($bootstrapFile !== null)
+				{
+					$phpCode .=
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
+					;
+				}
+
+				$phpCode .=
+					'ob_start();' .
+					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);' .
+					'$declaredClasses = get_declared_classes();' .
+					'require_once \'%s\';' .
+					'$xDebugData = xdebug_get_code_coverage();' .
+					'xdebug_stop_code_coverage();' .
+					'ob_end_clean();' .
+					'$classes = array_diff(get_declared_classes(), $declaredClasses);' .
+					'echo serialize(array(\'classes\' => $classes, \'coverage\' => $xDebugData));'
+				;
+
+				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
+				{
+					foreach ($srcDirectoryIterator as $file)
+					{
+						if (in_array($file->getPathname(), $this->adapter->get_included_files()) === false)
+						{
+							$exitCode = $this->php->reset()->execute(sprintf($phpCode, $file->getPathname()))->getExitCode();
+
+							if ($exitCode > 0)
+							{
+								throw new exceptions\runtime('Unable to get default code coverage for file \'' . $file->getPathname() . '\': ' . $this->php->getStderr());
+							}
+
+							$data = unserialize($this->php->getStdOut());
+
+							foreach ($data['classes'] as $class)
+							{
+								$this->coverage->addXdebugDataForClass($class, $data['coverage']);
+							}
+						}
+					}
+				}
+			}
+
+			return true;
+		}
 	}
 }
