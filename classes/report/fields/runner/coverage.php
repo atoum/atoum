@@ -3,7 +3,9 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
-	mageekguy\atoum,
+	mageekguy\atoum\php,
+	mageekguy\atoum\adapter,
+	mageekguy\atoum\iterators,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report
 ;
@@ -25,9 +27,9 @@ abstract class coverage extends report\field
 		;
 	}
 
-	public function setPhp(atoum\php $php = null)
+	public function setPhp(php $php = null)
 	{
-		$this->php = $php ?: new atoum\php();
+		$this->php = $php ?: new php();
 
 		return $this;
 	}
@@ -37,9 +39,9 @@ abstract class coverage extends report\field
 		return $this->php;
 	}
 
-	public function setAdapter(atoum\adapter $adapter = null)
+	public function setAdapter(adapter $adapter = null)
 	{
-		$this->adapter = $adapter ?: new atoum\adapter();
+		$this->adapter = $adapter ?: new adapter();
 
 		return $this;
 	}
@@ -76,7 +78,7 @@ abstract class coverage extends report\field
 
 		foreach ($this->srcDirectories as $srcDirectory => $closures)
 		{
-			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
+			$iterators[] = $iterator = new \recursiveIteratorIterator(new iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
 
 			foreach ($closures as $closure)
 			{
@@ -108,7 +110,7 @@ abstract class coverage extends report\field
 				$phpCode =
 					'<?php ' .
 					'ob_start();' .
-					'require \'' . atoum\directory . '/classes/autoloader.php\';'
+					'require \'' . \mageekguy\atoum\directory . '/classes/autoloader.php\';'
 				;
 
 				$bootstrapFile = $observable->getBootstrapFile();
