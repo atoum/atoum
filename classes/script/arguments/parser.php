@@ -163,7 +163,9 @@ class parser implements \iteratorAggregate
 				{
 					$argument = $value;
 
-					$this->values[$argument] = array();
+                    if(isset($this->values[$argument]) === false) {
+					    $this->values[$argument] = array();
+                    }
 				}
 
 				$arguments->next();
