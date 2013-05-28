@@ -257,6 +257,23 @@ class string extends atoum\test
 		;
 	}
 
+	public function testNotContains()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = 'FreeAgent scans the field'))
+			->then
+				->exception(function() use ($asserter, & $fragment) { $asserter->notContains($fragment = 'Agent'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String contains %s'), $fragment))
+				->object($asserter->notContains('coach'))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testLength()
 	{
 		$this

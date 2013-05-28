@@ -265,6 +265,30 @@ class utf8String extends atoum\test
 		;
 	}
 
+	public function testNotContains()
+	{
+		$this
+			->if($asserter = new asserters\utf8String($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = 'FreeAgent scans the field'))
+			->and($fragment = 'Agent')
+			->then
+				->exception(function() use ($asserter, $fragment) { $asserter->notContains($fragment); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String contains %s'), $fragment))
+				->object($asserter->notContains('coach'))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter) {
+							$asserter->notContains("\xf0\x28\x8c\xbc");
+						}
+					)
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Fragment \'' . "\xf0\x28\x8c\xbc" . '\' is not an UTF-8 string')
+		;
+	}
+
 	public function testLength()
 	{
 		$this
