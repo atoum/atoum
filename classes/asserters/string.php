@@ -176,6 +176,20 @@ class string extends asserters\variable
 		return $this;
 	}
 
+	public function notContains($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) !== false)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String contains %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	protected function getLengthAsserter()
 	{
 		return $this->generator->__call('integer', array(strlen($this->valueIsSet()->value)));

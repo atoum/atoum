@@ -108,6 +108,25 @@ class utf8String extends asserters\string
 		return $this;
 	}
 
+	public function notContains($fragment, $failMessage = null)
+	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
+		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') !== false)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String contains %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	public function getTypeOf($mixed)
 	{
 		return (is_string($mixed) === false ? parent::getTypeOf($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed));
