@@ -293,34 +293,6 @@ class html extends atoum\test
 		;
 	}
 
-	public function testSetPhp()
-	{
-		$this
-			->if($field = new testedClass(uniqid(), uniqid()))
-			->then
-				->object($field->setPhp($php = new atoum\php()))->isIdenticalTo($field)
-				->object($field->getPhp())->isIdenticalTo($php)
-				->object($field->setPhp())->isIdenticalTo($field)
-				->object($field->getPhp())
-					->isNotIdenticalTo($php)
-					->isEqualTo(new atoum\php())
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$this
-			->if($field = new testedClass(uniqid(), uniqid()))
-			->then
-				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
-				->object($field->getAdapter())->isIdenticalTo($adapter)
-				->object($field->setAdapter())->isIdenticalTo($field)
-				->object($field->getAdapter())
-					->isNotIdenticalTo($adapter)
-					->isEqualTo(new atoum\adapter())
-		;
-	}
-
 	public function testSetUrlPrompt()
 	{
 		$this
@@ -485,24 +457,6 @@ class html extends atoum\test
 			->if($field->getMockController()->getDestinationDirectoryIterator->throw = new \exception())
 			->then
 				->object($field->cleanDestinationDirectory())->isIdenticalTo($field)
-		;
-	}
-
-	public function testAddSrcDirectory()
-	{
-		$this
-			->if($field = new testedClass(uniqid(), uniqid()))
-			->then
-				->object($field->addSrcDirectory($srcDirectory = uniqid()))->isIdenticalTo($field)
-				->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
-				->object($field->addSrcDirectory($srcDirectory))->isIdenticalTo($field)
-				->array($field->getSrcDirectories())->isEqualTo(array($srcDirectory => array()))
-				->object($field->addSrcDirectory($otherSrcDirectory = rand(1, PHP_INT_MAX)))->isIdenticalTo($field)
-				->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array(), (string) $otherSrcDirectory => array()))
-				->object($field->addSrcDirectory($srcDirectory, $closure = function() {}))->isIdenticalTo($field)
-				->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure), (string) $otherSrcDirectory => array()))
-				->object($field->addSrcDirectory($srcDirectory, $otherClosure = function() {}))->isIdenticalTo($field)
-				->array($field->getSrcDirectories())->isIdenticalTo(array($srcDirectory => array($closure, $otherClosure), (string) $otherSrcDirectory => array()))
 		;
 	}
 

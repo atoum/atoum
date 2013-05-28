@@ -20,11 +20,8 @@ class html extends report\fields\runner\coverage\cli
 
 	protected $urlPrompt = null;
 	protected $urlColorizer = null;
-	protected $php = null;
-	protected $adapter = null;
 	protected $rootUrl = '';
 	protected $projectName = '';
-	protected $srcDirectories = array();
 	protected $templatesDirectory = null;
 	protected $destinationDirectory = null;
 	protected $templateParser = null;
@@ -38,8 +35,6 @@ class html extends report\fields\runner\coverage\cli
 		$this
 			->setProjectName($projectName)
 			->setDestinationDirectory($destinationDirectory)
-			->setPhp()
-			->setAdapter()
 			->setUrlPrompt()
 			->setUrlColorizer()
 			->setTemplatesDirectory()
@@ -262,18 +257,6 @@ class html extends report\fields\runner\coverage\cli
 		return parent::__toString() . $string;
 	}
 
-	public function setPhp(atoum\php $php = null)
-	{
-		$this->php = $php ?: new atoum\php();
-
-		return $this;
-	}
-
-	public function getPhp()
-	{
-		return $this->php;
-	}
-
 	public function setReflectionClassInjector(\closure $reflectionClassInjector)
 	{
 		$closure = new \reflectionMethod($reflectionClassInjector, '__invoke');
@@ -331,18 +314,6 @@ class html extends report\fields\runner\coverage\cli
 	public function getDestinationDirectory()
 	{
 		return $this->destinationDirectory;
-	}
-
-	public function setAdapter(atoum\adapter $adapter = null)
-	{
-		$this->adapter = $adapter ?: new atoum\adapter();
-
-		return $this;
-	}
-
-	public function getAdapter()
-	{
-		return $this->adapter;
 	}
 
 	public function setUrlPrompt(prompt $prompt = null)
@@ -405,47 +376,9 @@ class html extends report\fields\runner\coverage\cli
 		return $this->rootUrl;
 	}
 
-	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
-	{
-		$srcDirectory = (string) $srcDirectory;
-
-		if (isset($this->srcDirectories[$srcDirectory]) === false)
-		{
-			$this->srcDirectories[$srcDirectory] = $filterClosure === null ? array() : array($filterClosure);
-		}
-		else if ($filterClosure !== null)
-		{
-			$this->srcDirectories[$srcDirectory][] = $filterClosure;
-		}
-
-		return $this;
-	}
-
-	public function getSrcDirectories()
-	{
-		return $this->srcDirectories;
-	}
-
 	public function getDestinationDirectoryIterator()
 	{
 		return new \recursiveIteratorIterator(new \recursiveDirectoryIterator($this->destinationDirectory, \filesystemIterator::KEY_AS_PATHNAME | \filesystemIterator::CURRENT_AS_FILEINFO | \filesystemIterator::SKIP_DOTS), \recursiveIteratorIterator::CHILD_FIRST);
-	}
-
-	public function getSrcDirectoryIterators()
-	{
-		$iterators = array();
-
-		foreach ($this->srcDirectories as $srcDirectory => $closures)
-		{
-			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
-
-			foreach ($closures as $closure)
-			{
-				$iterator->addClosure($closure);
-			}
-		}
-
-		return $iterators;
 	}
 
 	public function cleanDestinationDirectory()
@@ -467,73 +400,5 @@ class html extends report\fields\runner\coverage\cli
 		catch (\exception $exception) {}
 
 		return $this;
-	}
-
-	public function handleEvent($event, \mageekguy\atoum\observable $observable)
-	{
-		if (parent::handleEvent($event, $observable) === false)
-		{
-			return false;
-		}
-		else
-		{
-			if ($this->adapter->extension_loaded('xdebug') === true)
-			{
-				$phpCode =
-					'<?php ' .
-					'ob_start();' .
-					'require \'' . atoum\directory . '/classes/autoloader.php\';'
-				;
-
-				$bootstrapFile = $observable->getBootstrapFile();
-
-				if ($bootstrapFile !== null)
-				{
-					$phpCode .=
-						'$includer = new mageekguy\atoum\includer();' .
-						'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-						'catch (mageekguy\atoum\includer\exception $exception)' .
-						'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
-					;
-				}
-
-				$phpCode .=
-					'$data = array(\'classes\' => get_declared_classes());' .
-					'ob_start();' .
-					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);' .
-					'require_once \'%s\';' .
-					'$data[\'coverage\'] = xdebug_get_code_coverage();' .
-					'xdebug_stop_code_coverage();' .
-					'ob_end_clean();' .
-					'$data[\'classes\'] = array_diff(get_declared_classes(), $data[\'classes\']);' .
-					'echo serialize($data);'
-				;
-
-				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
-				{
-					foreach ($srcDirectoryIterator as $file)
-					{
-						if (in_array($file->getPathname(), $this->adapter->get_included_files()) === false)
-						{
-							$exitCode = $this->php->reset()->run(sprintf($phpCode, $file->getPathname()))->getExitCode();
-
-							if ($exitCode > 0)
-							{
-								throw new exceptions\runtime('Unable to get default code coverage for file \'' . $file->getPathname() . '\': ' . $this->php->getStderr());
-							}
-
-							$data = unserialize($this->php->getStdOut());
-
-							foreach ($data['classes'] as $class)
-							{
-								$this->coverage->addXdebugDataForClass($class, $data['coverage']);
-							}
-						}
-					}
-				}
-			}
-
-			return true;
-		}
 	}
 }

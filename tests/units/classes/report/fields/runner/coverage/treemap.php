@@ -44,50 +44,6 @@ class treemap extends atoum\test
 		;
 	}
 
-	public function testAddSrcDirectory()
-	{
-		$this
-			->if($treemap = new testedClass(uniqid(), uniqid()))
-			->then
-				->object($treemap->addSrcDirectory($directory1 = uniqid()))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array($directory1 => array()))
-				->object($treemap->addSrcDirectory($directory2 = uniqid()))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array(
-						$directory1 => array(),
-						$directory2 => array()
-					)
-				)
-				->object($treemap->addSrcDirectory($directory3 = uniqid()))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array(
-						$directory1 => array(),
-						$directory2 => array(),
-						$directory3 => array()
-					)
-				)
-				->object($treemap->addSrcDirectory($directory2, $closure21 = function() {}))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array(
-						$directory1 => array(),
-						$directory2 => array($closure21),
-						$directory3 => array()
-					)
-				)
-				->object($treemap->addSrcDirectory($directory2, $closure22 = function() {}))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array(
-						$directory1 => array(),
-						$directory2 => array($closure21, $closure22),
-						$directory3 => array()
-					)
-				)
-				->object($treemap->addSrcDirectory($directory1, $closure1 = function() {}))->isIdenticalTo($treemap)
-				->array($treemap->getSrcDirectories())->isEqualTo(array(
-						$directory1 => array($closure1),
-						$directory2 => array($closure21, $closure22),
-						$directory3 => array()
-					)
-				)
-		;
-	}
-
 	public function testSetReflectionClassFactory()
 	{
 		$this
@@ -119,16 +75,6 @@ class treemap extends atoum\test
 			->then
 				->object($treemap->setDestinationDirectory($directory = uniqid()))->isIdenticalTo($treemap)
 				->string($treemap->getDestinationDirectory())->isEqualTo($directory)
-		;
-	}
-
-	public function testSetAdapter()
-	{
-		$this
-			->if($treemap = new testedClass(uniqid(), uniqid()))
-			->then
-				->object($treemap->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($treemap)
-				->object($treemap->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
 

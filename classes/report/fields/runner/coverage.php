@@ -3,18 +3,90 @@
 namespace mageekguy\atoum\report\fields\runner;
 
 use
+	mageekguy\atoum,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report
 ;
 
 abstract class coverage extends report\field
 {
+	protected $php = null;
+	protected $adapter = null;
 	protected $coverage = null;
+	protected $srcDirectories = array();
 
 	public function __construct()
 	{
 		parent::__construct(array(runner::runStop));
+
+		$this
+			->setPhp()
+			->setAdapter()
+		;
 	}
+
+	public function setPhp(atoum\php $php = null)
+	{
+		$this->php = $php ?: new atoum\php();
+
+		return $this;
+	}
+
+	public function getPhp()
+	{
+		return $this->php;
+	}
+
+	public function setAdapter(atoum\adapter $adapter = null)
+	{
+		$this->adapter = $adapter ?: new atoum\adapter();
+
+		return $this;
+	}
+
+	public function getAdapter()
+	{
+		return $this->adapter;
+	}
+
+	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
+	{
+		$srcDirectory = (string) $srcDirectory;
+
+		if (isset($this->srcDirectories[$srcDirectory]) === false)
+		{
+			$this->srcDirectories[$srcDirectory] = $filterClosure === null ? array() : array($filterClosure);
+		}
+		else if ($filterClosure !== null)
+		{
+			$this->srcDirectories[$srcDirectory][] = $filterClosure;
+		}
+
+		return $this;
+	}
+
+	public function getSrcDirectories()
+	{
+		return $this->srcDirectories;
+	}
+
+	public function getSrcDirectoryIterators()
+	{
+		$iterators = array();
+
+		foreach ($this->srcDirectories as $srcDirectory => $closures)
+		{
+			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
+
+			foreach ($closures as $closure)
+			{
+				$iterator->addClosure($closure);
+			}
+		}
+
+		return $iterators;
+	}
+
 
 	public function getCoverage()
 	{
@@ -30,6 +102,60 @@ abstract class coverage extends report\field
 		else
 		{
 			$this->coverage = $observable->getScore()->getCoverage();
+
+			if ($this->adapter->extension_loaded('xdebug') === true)
+			{
+				$phpCode =
+					'<?php ' .
+					'ob_start();' .
+					'require \'' . atoum\directory . '/classes/autoloader.php\';'
+				;
+
+				$bootstrapFile = $observable->getBootstrapFile();
+
+				if ($bootstrapFile !== null)
+				{
+					$phpCode .=
+						'$includer = new mageekguy\atoum\includer();' .
+						'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
+						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
+					;
+				}
+
+				$phpCode .=
+					'$data = array(\'classes\' => get_declared_classes());' .
+					'ob_start();' .
+					'xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);' .
+					'require_once \'%s\';' .
+					'$data[\'coverage\'] = xdebug_get_code_coverage();' .
+					'xdebug_stop_code_coverage();' .
+					'ob_end_clean();' .
+					'$data[\'classes\'] = array_diff(get_declared_classes(), $data[\'classes\']);' .
+					'echo serialize($data);'
+				;
+
+				foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
+				{
+					foreach ($srcDirectoryIterator as $file)
+					{
+						if (in_array($file->getPathname(), $this->adapter->get_included_files()) === false)
+						{
+							if ($this->php->reset()->run(sprintf($phpCode, $file->getPathname()))->getExitCode() > 0)
+							{
+								throw new exceptions\runtime('Unable to get default code coverage for file \'' . $file->getPathname() . '\': ' . $this->php->getStderr());
+							}
+
+							$data = unserialize($this->php->getStdOut());
+
+							foreach ($data['classes'] as $class)
+							{
+								$this->coverage->addXdebugDataForClass($class, $data['coverage']);
+							}
+						}
+					}
+				}
+			}
 
 			return true;
 		}

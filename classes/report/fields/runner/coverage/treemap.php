@@ -20,12 +20,10 @@ class treemap extends report\fields\runner\coverage\cli
 
 	protected $urlPrompt = null;
 	protected $urlColorizer = null;
-	protected $adapter = null;
 	protected $treemapUrl = '';
 	protected $projectName = '';
 	protected $htmlReportBaseUrl = null;
 	protected $resourcesDirectory = array();
-	protected $srcDirectories = array();
 	protected $destinationDirectory = null;
 	protected $reflectionClassFactory = null;
 
@@ -47,34 +45,6 @@ class treemap extends report\fields\runner\coverage\cli
 	public function __toString()
 	{
 		$string = '';
-
-		if ($this->adapter->extension_loaded('xdebug') === true)
-		{
-			foreach ($this->getSrcDirectoryIterators() as $srcDirectoryIterator)
-			{
-				foreach ($srcDirectoryIterator as $file)
-				{
-					$this->adapter->xdebug_start_code_coverage(XDEBUG_CC_UNUSED | XDEBUG_CC_DEAD_CODE);
-
-					$declaredClasses = $this->adapter->get_declared_classes();
-
-					$this->adapter->ob_start();
-
-					require_once $file->getPathname();
-
-					$xDebugData = $this->adapter->xdebug_get_code_coverage();
-
-					$this->adapter->xdebug_stop_code_coverage();
-
-					$this->adapter->ob_end_clean();
-
-					foreach (array_diff($this->adapter->get_declared_classes(), $declaredClasses) as $class)
-					{
-						$this->coverage->addXdebugDataForClass($class, $xDebugData);
-					}
-				}
-			}
-		}
 
 		if (sizeof($this->coverage) > 0)
 		{
@@ -180,27 +150,6 @@ class treemap extends report\fields\runner\coverage\cli
 		$this->htmlReportBaseUrl = (string) $url;
 
 		return $this;
-	}
-
-	public function addSrcDirectory($srcDirectory, \closure $filterClosure = null)
-	{
-		$srcDirectory = (string) $srcDirectory;
-
-		if (isset($this->srcDirectories[$srcDirectory]) === false)
-		{
-			$this->srcDirectories[$srcDirectory] = $filterClosure === null ? array() : array($filterClosure);
-		}
-		else if ($filterClosure !== null)
-		{
-			$this->srcDirectories[$srcDirectory][] = $filterClosure;
-		}
-
-		return $this;
-	}
-
-	public function getSrcDirectories()
-	{
-		return $this->srcDirectories;
 	}
 
 	public function setReflectionClassFactory(\closure $factory)
@@ -320,22 +269,5 @@ class treemap extends report\fields\runner\coverage\cli
 	public function getResourcesDirectory()
 	{
 		return $this->resourcesDirectory;
-	}
-
-	public function getSrcDirectoryIterators()
-	{
-		$iterators = array();
-
-		foreach ($this->srcDirectories as $srcDirectory => $closures)
-		{
-			$iterators[] = $iterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\closure(new \recursiveDirectoryIterator($srcDirectory, \filesystemIterator::SKIP_DOTS|\filesystemIterator::CURRENT_AS_FILEINFO)), \recursiveIteratorIterator::LEAVES_ONLY);
-
-			foreach ($closures as $closure)
-			{
-				$iterator->addClosure($closure);
-			}
-		}
-
-		return $iterators;
 	}
 }
