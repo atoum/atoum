@@ -60,12 +60,14 @@ class extension extends atoum\asserter
 	{
 		if ($this->valueIsSet()->adapter->extension_loaded($this->name) === true)
 		{
-			return $this->pass();
+			$this->pass();
 		}
 		else
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('PHP extension \'%s\' is not loaded'), $this));
 		}
+
+		return $this;
 	}
 
 	protected function valueIsSet($message = 'Name of PHP extension is undefined')
