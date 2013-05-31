@@ -13,6 +13,7 @@ use
 class runner extends atoum\script\configurable
 {
 	const defaultConfigFile = '.atoum.php';
+	const defaultBootstrapFile = '.bootstrap.atoum.php';
 
 	protected $runner = null;
 	protected $cliFactory = null;
@@ -170,6 +171,8 @@ class runner extends atoum\script\configurable
 
 			if ($this->runTests === true)
 			{
+				$this->setDefaultBootstrapFiles();
+
 				if ($this->loop === true)
 				{
 					$this->loop();
@@ -221,10 +224,7 @@ class runner extends atoum\script\configurable
 
 	public function version()
 	{
-		$this
-			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
-		;
-
+		$this->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL);
 		$this->runTests = false;
 
 		return $this;
@@ -319,6 +319,66 @@ class runner extends atoum\script\configurable
 		return $this->runner->getReports();
 	}
 
+	public function init()
+	{
+		$resourceDirectory = static::getResourcesDirectory();
+		$currentDirectory = rtrim($this->adapter->getcwd(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
+
+		$defaultConfigFile = $currentDirectory . static::defaultConfigFile;
+
+		if ($this->adapter->file_exists($defaultConfigFile) === false || $this->prompt($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')) === 'Y')
+		{
+			$this
+				->copy($resourceDirectory . '/configurations/runner/atoum.php.dist', $defaultConfigFile)
+				->writeMessage($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' was successfully created in the current directory'))
+			;
+		}
+
+		$bootstrapFile = $currentDirectory . static::defaultBootstrapFile;
+
+		if ($this->adapter->file_exists($bootstrapFile) == false || $this->prompt($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' already exists in the current directory, type \'Y\' to overwrite it...')) === 'Y')
+		{
+			$this
+				->copy($resourceDirectory . '/configurations/runner/bootstrap.php.dist', $bootstrapFile)
+				->writeMessage($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' was successfully created in the current directory'))
+			;
+		}
+
+		$this->runTests = false;
+
+		return $this;
+	}
+
+	public function setDefaultBootstrapFiles($startDirectory = null)
+	{
+		if ($this->runner->getBootstrapFile() === null)
+		{
+			if ($startDirectory === null)
+			{
+				$startDirectory = $this->adapter->getcwd();
+			}
+
+			foreach (self::getSubDirectoryPath($startDirectory) as $directory)
+			{
+				$defaultBootstrapFile = $directory . static::defaultBootstrapFile;
+
+				if ($this->adapter->is_file($defaultBootstrapFile) === true)
+				{
+					$this->runner->setBootstrapFile($defaultBootstrapFile);
+
+					break;
+				}
+			}
+		}
+
+		return $this;
+	}
+
+	public static function getResourcesDirectory()
+	{
+		return atoum\directory . '/resources';
+	}
+
 	public static function autorunMustBeEnabled()
 	{
 		return (static::$autorunner === true);
@@ -377,6 +437,19 @@ class runner extends atoum\script\configurable
 					null,
 					$this->locale->_('Display version')
 				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->init();
+					},
+					array('-i', '--init'),
+					null,
+					$this->locale->_('Create configuration and bootstrap files in the current directory')
+	)
 			->addArgumentHandler(
 					function($script, $argument, $path) {
 						if (sizeof($path) != 1)
@@ -825,6 +898,16 @@ class runner extends atoum\script\configurable
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+	}
+
+	private function copy($from, $to)
+	{
+		if (@$this->adapter->copy($from, $to) === false)
+		{
+			throw new exceptions\runtime($this->locale->_('Unable to write \'' . $from . '\' to \'' . $to . '\''));
+		}
+
+		return $this;
 	}
 
 	private static function getFailMethods(atoum\score $score)
