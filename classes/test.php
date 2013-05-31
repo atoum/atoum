@@ -916,7 +916,9 @@ abstract class test implements observable, \countable
 			}
 			catch (test\exceptions\skip $exception)
 			{
-				$this->score->addSkippedMethod($this->class, $this->currentMethod, $exception->getMessage());
+				list($file, $line) = $this->getBacktrace($exception->getTrace());
+
+				$this->score->addSkippedMethod($file, $this->class, $this->currentMethod, $line, $exception->getMessage());
 			}
 			catch (test\exceptions\stop $exception) {}
 			catch (exception $exception)

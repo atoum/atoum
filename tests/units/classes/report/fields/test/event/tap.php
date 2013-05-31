@@ -249,14 +249,18 @@ class tap extends atoum\test
 			->mockGenerator->shunt('__construct')
 			->if($score = new \mock\atoum\test\score())
 			->and($this->calling($score)->getLastSkippedMethod[1] = array(
+					'file' => $file1 = uniqid(),
 					'class' => $class1 = uniqid(),
 					'method' => $method1 = uniqid(),
+					'line' => $line1 = rand(1, PHP_INT_MAX),
 					'message' => $message1 = uniqid()
 				)
 			)
 			->and($this->calling($score)->getLastSkippedMethod[2] = array(
+					'file' => $file2 = uniqid(),
 					'class' => $class2 = uniqid(),
 					'method' => $method2 = uniqid(),
+					'line' => $line2 = rand(1, PHP_INT_MAX),
 					'message' => ($message2 = uniqid()) . PHP_EOL . ($otherMessage2 = uniqid()) . PHP_EOL . ($anotherMessage2 = uniqid())
 				)
 			)
@@ -271,15 +275,16 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
-					'# ' . $message1 . PHP_EOL
+					'# ' . $message1 . PHP_EOL .
+					'# ' . $file1 . ':' . $line1 . PHP_EOL
 				)
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
 					'# ' . $message2 . PHP_EOL .
 					'# ' . $otherMessage2 . PHP_EOL .
-					'# ' . $anotherMessage2 .
-					PHP_EOL
+					'# ' . $anotherMessage2 . PHP_EOL .
+					'# ' . $file2 . ':' . $line2 . PHP_EOL
 				)
 			->if($score->getMockController()->resetCalls())
 			->and($field->handleEvent(atoum\runner::runStart, $test))
@@ -288,15 +293,16 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 1 # SKIP ' . $class1 . '::' . $method1 . '()' . PHP_EOL .
-					'# ' . $message1 . PHP_EOL
+					'# ' . $message1 . PHP_EOL .
+					'# ' . $file1 . ':' . $line1 . PHP_EOL
 				)
 			->if($field->handleEvent(atoum\test::skipped, $test))
 			->then
 				->castToString($field)->isEqualTo('ok 2 # SKIP ' . $class2 . '::' . $method2 . '()' . PHP_EOL .
 					'# ' . $message2 . PHP_EOL .
 					'# ' . $otherMessage2 . PHP_EOL .
-					'# ' . $anotherMessage2 .
-					PHP_EOL
+					'# ' . $anotherMessage2 . PHP_EOL .
+					'# ' . $file2 . ':' . $line2 . PHP_EOL
 				)
 		;
 	}
@@ -344,10 +350,10 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::error, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . atoum\asserters\error::getAsString($type) . ' : ' . $message . PHP_EOL . '# ' . $errorFile . ':' . $errorLine . PHP_EOL)
 			->if($field->handleEvent(atoum\test::error, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . atoum\asserters\error::getAsString($otherType) . ' : ' . $otherMessage . PHP_EOL . '# ' . $otherFile . ':' . $otherLine . PHP_EOL)
 		;
 	}
 
@@ -405,18 +411,21 @@ class tap extends atoum\test
 			->if($score = new \mock\atoum\test\score())
 			->and($test = new \mock\mageekguy\atoum\test())
 			->and($this->calling($test)->getScore = $score)
-			->and($this->calling($test)->getClass = $class = uniqid())
+            ->and($this->calling($test)->getPath = $file = uniqid())
+            ->and($this->calling($test)->getClass = $class = uniqid())
 			->and($this->calling($test)->getCurrentMethod[1] = $method = uniqid())
 			->and($this->calling($test)->getCurrentMethod[2] = $otherMethod = uniqid())
 			->and($this->calling($score)->getLastUncompleteMethod[1] = array(
-					'class' => $class,
+                    'file' => $file,
+                    'class' => $class,
 					'method' => $method,
 					'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
 					'output' => $output = uniqid()
 				)
 			)
 			->and($this->calling($score)->getLastUncompleteMethod[2] = array(
-					'class' => $class,
+                    'file' => $file,
+                    'class' => $class,
 					'method' => $otherMethod,
 					'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
 					'output' => $otherOutput = uniqid()
@@ -430,10 +439,10 @@ class tap extends atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(atoum\test::uncompleted, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $output . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 1 - ' . $class . '::' . $method . '()' . PHP_EOL . '# ' . $output . PHP_EOL . '# ' . $file . PHP_EOL)
 			->if($field->handleEvent(atoum\test::uncompleted, $test))
 			->then
-				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL)
+				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL . '# ' . $file . PHP_EOL)
 		;
 	}
 
