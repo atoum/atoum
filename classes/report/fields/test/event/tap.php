@@ -56,7 +56,9 @@ class tap extends report\fields\event
 
 				case test::error:
 					$lastError = $observable->getScore()->getLastErroredMethod();
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
+					$lastErrorType = atoum\asserters\error::getAsString($lastError['type']);
+
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastError['class']) . '::' . trim($lastError['method']) . '()' . PHP_EOL . '# ' . $lastErrorType . ' : ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
 					$this->testLine .= '# ' . (isset($lastError['errorFile']) ? $lastError['errorFile'] : $lastError['file']) . ':' . (isset($lastError['errorLine']) ? $lastError['errorLine'] : $lastError['line']) . PHP_EOL;
 					break;
 
@@ -75,11 +77,13 @@ class tap extends report\fields\event
 				case test::uncompleted:
 					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
 					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
+                    $this->testLine .= '# ' . $lastUncompleteMethod['file'] . PHP_EOL;
 					break;
 
 				case test::skipped:
 					$lastSkippedMethod = $observable->getScore()->getLastSkippedMethod();
 					$this->testLine = 'ok ' . ++$this->testPoint . ' # SKIP ' . trim($lastSkippedMethod['class']) . '::' . trim($lastSkippedMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastSkippedMethod['message'])) . PHP_EOL;
+					$this->testLine .= '# ' . $lastSkippedMethod['file'] . ':' . $lastSkippedMethod['line'] . PHP_EOL;
 					break;
 
 				case test::exception:
