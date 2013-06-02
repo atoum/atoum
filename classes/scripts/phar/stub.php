@@ -131,18 +131,8 @@ class stub extends scripts\runner
 
 	public function extractResourcesTo($directory)
 	{
-		if (($versions = $this->getVersions($phar = call_user_func($this->pharFactory, $this->getName()))) === null)
-		{
-			throw new exceptions\runtime('Unable to extract resources from PHAR in \'' . $directory . '\', the versions\'s file is invalid');
-		}
-
-		if (isset($phar[$versions['current'] . '/resources']) === false)
-		{
-			throw new exceptions\logic('Resources directory does not exist in PHAR \'' . $this->getName() . '\'');
-		}
-
+		$resourcesDirectory = $this->getResourcesDirectory();
 		$directory = rtrim($directory, DIRECTORY_SEPARATOR);
-		$resourcesDirectory = 'phar://' . $this->getName() . '/' . $versions['current'] . '/resources';
 
 		foreach (new \recursiveIteratorIterator(new \recursiveDirectoryIterator($resourcesDirectory)) as $resourceFile)
 		{
@@ -381,6 +371,21 @@ class stub extends scripts\runner
 		$this->runTests = false;
 
 		return $this;
+	}
+
+	public function getResourcesDirectory()
+	{
+		if (($versions = $this->getVersions($phar = call_user_func($this->pharFactory, $this->getName()))) === null)
+		{
+			throw new exceptions\runtime('Unable to define resources directory, verions\'s file is invalid');
+		}
+
+		if (isset($phar[$versions['current'] . '/resources']) === false)
+		{
+			throw new exceptions\logic('Resources directory does not exist in PHAR \'' . $this->getName() . '\'');
+		}
+
+		return 'phar://' . $this->getName() . '/' . $versions['current'] . '/resources';
 	}
 
 	protected function setArgumentHandlers()

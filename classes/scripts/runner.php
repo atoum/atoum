@@ -44,6 +44,11 @@ class runner extends atoum\script\configurable
 		;
 	}
 
+	public function getResourcesDirectory()
+	{
+		return atoum\directory . '/resources';
+	}
+
 	public function setRunner(atoum\runner $runner = null)
 	{
 		$this->runner = $runner ?: new atoum\runner();
@@ -374,11 +379,6 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	public static function getResourcesDirectory()
-	{
-		return atoum\directory . '/resources';
-	}
-
 	public static function autorunMustBeEnabled()
 	{
 		return (static::$autorunner === true);
@@ -446,7 +446,7 @@ class runner extends atoum\script\configurable
 
 						$script->init();
 					},
-					array('-i', '--init'),
+					array('--init'),
 					null,
 					$this->locale->_('Create configuration and bootstrap files in the current directory')
 	)
