@@ -858,10 +858,28 @@ namespace mageekguy\atoum\tests\units
 					->variable($test->getScore()->errorExists($errstr, E_USER_WARNING))->isNotNull()
 					->boolean($test->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
 					->variable($test->getScore()->errorExists($errstr, E_DEPRECATED))->isNull()
-					 ->if($adapter->error_reporting = E_ALL & ~E_RECOVERABLE_ERROR)
-					 ->then
-						 ->boolean($test->errorHandler(E_RECOVERABLE_ERROR, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
-						 ->variable($test->getScore()->errorExists($errstr, E_RECOVERABLE_ERROR))->isNull()
+				->if($adapter->error_reporting = E_ALL & ~E_RECOVERABLE_ERROR)
+				->then
+					->boolean($test->errorHandler(E_RECOVERABLE_ERROR, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
+					->variable($test->getScore()->errorExists($errstr, E_RECOVERABLE_ERROR))->isNull()
+				->if($adapter->error_reporting = E_ALL)
+				->and($factory = function($class) use (& $reflection, & $filename, & $classname) {
+					$reflection = new \mock\ReflectionClass($class);
+					$reflection->getMockController()->getFilename = $filename = 'filename';
+					$reflection->getMockController()->getName = $classname = 'classname';
+
+					return $reflection;
+				})
+				->and($score = new \mock\mageekguy\atoum\test\score())
+				->and($test = new emptyTest(null, null, null, null, $factory))
+				->and($test->setScore($score))
+				->then
+					->boolean($test->errorHandler($errno = E_NOTICE, $errstr = 'errstr', $errfile = 'errfile', $errline = rand(1, PHP_INT_MAX)))->isTrue()
+					->mock($score)
+						->call('addError')->withArguments($errfile, $classname, $test->getCurrentMethod(), $errline, $errno, $errstr, $errfile, $errline, null, null, null)->once()
+					->boolean($test->errorHandler($errno, $errstr, null, $errline = rand(1, PHP_INT_MAX)))->isTrue()
+					->mock($score)
+						->call('addError')->withArguments($filename, $classname, $test->getCurrentMethod(), $errline, $errno, $errstr, null, $errline, null, null, null)->once()
 			;
 		}
 	}
