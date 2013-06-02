@@ -57,7 +57,7 @@ class runner extends atoum\test
 							'Display version'
 						),
 						array(
-							array('-i', '--init'),
+							array('--init'),
 							null,
 							'Create configuration and bootstrap files in the current directory'
 						),
@@ -204,7 +204,7 @@ class runner extends atoum\test
 							'Display version'
 						),
 						array(
-							array('-i', '--init'),
+							array('--init'),
 							null,
 							'Create configuration and bootstrap files in the current directory'
 						),
