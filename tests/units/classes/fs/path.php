@@ -89,81 +89,91 @@ class path extends atoum\test
 				->then
 					->object($path->relativizeFrom(clone $path))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('.')
+						->toString->isEqualTo('.')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/a', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('./b')
+						->toString->isEqualTo('./b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/a/', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('./b')
+						->toString->isEqualTo('./b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/c', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('../a/b')
+						->toString->isEqualTo('../a/b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/c/', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('../a/b')
+						->toString->isEqualTo('../a/b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/c/d', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('../../a/b')
+						->toString->isEqualTo('../../a/b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/c/d/', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('../../a/b')
+						->toString->isEqualTo('../../a/b')
 				->if($path = new testedClass('/a/b', '/', $adapter))
 				->then
 					->object($path->relativizeFrom(new testedClass('/', '/', $adapter)))
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo('./a/b')
+						->toString->isEqualTo('./a/b')
 		;
 	}
 
 	public function testGetParentDirectory()
 	{
 		$this
-			->if($path = new testedClass('/', '/'))
+			->given($adapter = new atoum\test\adapter())
+			->and($adapter->realpath = function($path) { return $path; })
 			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('/', '/'))
-			->if($path = new testedClass('/' . uniqid(), '/'))
-			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('/', '/'))
-			->if($path = new testedClass(($parentDirectory = '/' . uniqid()) . '/' . uniqid(), '/'))
-			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass($parentDirectory, '/'))
-				->object($path->getParentDirectory()->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('/', '/'))
-			->if($path = new testedClass('\\', '\\'))
-			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('\\', '\\'))
-			->if($path = new testedClass('\\' . uniqid(), '\\'))
-			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('\\', '\\'))
-			->if($path = new testedClass('C:\\' . uniqid(), '\\'))
-			->then
-				->object($path->getParentDirectory())
-					->isNotIdenticalTo($path)
-					->isEqualTo(new testedClass('C:\\', '\\'))
+				->if($path = new testedClass('/', '/', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('/')
+				->if($path = new testedClass('/' . uniqid(), '/', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('/')
+				->if($path = new testedClass(($parentDirectory = '/' . uniqid()) . '/' . uniqid(), '/', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo($parentDirectory)
+					->object($path->getParentDirectory()->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('/')
+				->if($path = new testedClass('\\', '\\', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('\\')
+				->if($path = new testedClass('\\' . uniqid(), '\\', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('\\')
+				->if($path = new testedClass('C:\\' . uniqid(), '\\', $adapter))
+				->then
+					->object($path->getParentDirectory())
+						->isNotIdenticalTo($path)
+						->toString
+							->isEqualTo('C:\\')
 		;
 	}
 
@@ -178,7 +188,7 @@ class path extends atoum\test
 				->then
 					->object($path->resolve())
 						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString()->isEqualTo($currentWorkingDirectory)
+						->toString->isEqualTo($currentWorkingDirectory)
 			->if($adapter->realpath = false)
 			->then
 				->if($path = new testedClass(uniqid(), '/'))
@@ -193,39 +203,43 @@ class path extends atoum\test
 	public function testIsRoot()
 	{
 		$this
-			->if($path = new testedClass(DIRECTORY_SEPARATOR))
+			->given($adapter = new atoum\test\adapter())
+			->and($adapter->realpath = function($path) { return $path; })
 			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('/', '/'))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('/' . uniqid(), '/'))
-			->then
-				->boolean($path->isRoot())->isFalse()
-			->if($path = new testedClass('/', '\\'))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('\\', '\\'))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('\\'), '/')
-			->then
-				->boolean($path->isRoot())->isFalse()
-			->if($path = new testedClass('C:\\', '\\'))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('c:\\', '\\'))
-			->then
-				->boolean($path->isRoot())->isTrue()
-			->if($path = new testedClass('C:\\', '/'))
-			->then
-				->boolean($path->isRoot())->isFalse()
-			->if($path = new testedClass('C:\\' . uniqid(), '\\'))
-			->then
-				->boolean($path->isRoot())->isFalse()
+				->if($path = new testedClass(DIRECTORY_SEPARATOR))
+				->and($path->setAdapter($adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('/', '/', $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('/' . uniqid(), '/', $adapter))
+				->then
+					->boolean($path->isRoot())->isFalse()
+				->if($path = new testedClass('/', '\\', $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('\\', '\\', $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('\\', '/', $adapter))
+				->then
+					->boolean($path->isRoot())->isFalse()
+				->if($path = new testedClass('C:\\', '\\', $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('c:\\', '\\', $adapter))
+				->then
+					->boolean($path->isRoot())->isTrue()
+				->if($path = new testedClass('C:\\', '/', $adapter))
+				->then
+					->boolean($path->isRoot())->isFalse()
+				->if($path = new testedClass('C:\\' . uniqid(), '\\', $adapter))
+				->then
+					->boolean($path->isRoot())->isFalse()
 		;
 	}
 }
