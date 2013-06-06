@@ -862,7 +862,7 @@ namespace mageekguy\atoum\tests\units
 				->then
 					->boolean($test->errorHandler(E_RECOVERABLE_ERROR, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
 					->variable($test->getScore()->errorExists($errstr, E_RECOVERABLE_ERROR))->isNull()
-				->if($adapter->error_reporting = E_ALL)
+				->if($adapter->error_reporting = 32767)
 				->and($factory = function($class) use (& $reflection, & $filename, & $classname) {
 					$reflection = new \mock\ReflectionClass($class);
 					$reflection->getMockController()->getFilename = $filename = 'filename';
@@ -872,6 +872,7 @@ namespace mageekguy\atoum\tests\units
 				})
 				->and($score = new \mock\mageekguy\atoum\test\score())
 				->and($test = new emptyTest(null, null, null, null, $factory))
+				->and($test->setAdapter($adapter))
 				->and($test->setScore($score))
 				->then
 					->boolean($test->errorHandler($errno = E_NOTICE, $errstr = 'errstr', $errfile = 'errfile', $errline = rand(1, PHP_INT_MAX)))->isTrue()

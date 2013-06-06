@@ -1020,7 +1020,7 @@ abstract class test implements observable, \countable
 		{
 			list($file, $line) = $this->getBacktrace();
 
-			$this->score->addError($file ?: ($errfile ?: $this->path), $this->class, $this->currentMethod, $line ?: $errline, $errno, $errstr, $errfile, $errline);
+			$this->score->addError($file ?: ($errfile ?: $this->path), $this->class, $this->currentMethod, $line ?: $errline, $errno, trim($errstr), $errfile, $errline);
 
 			$doNotCallDefaultErrorHandler = !($errno & E_RECOVERABLE_ERROR);
 		}
