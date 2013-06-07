@@ -124,7 +124,10 @@ class path
 
 	public function isSubPathOf(self $path)
 	{
-		return ($path->isRoot() === true || strpos($this->resolve()->components, $path->resolve()->components . '/') === 0);
+		$absoluteThis = $this->resolve();
+		$absolutePath = $path->resolve();
+
+		return ($absoluteThis->components !== $absolutePath->components && ($absolutePath->isRoot() === true || strpos($absoluteThis->components, $absolutePath->components . '/') === 0));
 	}
 
 	public function isNotSubPathOf(self $path)
