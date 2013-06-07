@@ -156,7 +156,7 @@ class score extends atoum\test
 			->then
 				->array($score->getErrors())->isEmpty()
 				->integer($score->getErrorNumber())->isZero()
-				->object($score->addError($file = uniqid(), $class = uniqid(), $method = uniqid(), $line = rand(1, PHP_INT_MAX), $type = rand(1, PHP_INT_MAX), $message = uniqid(), $errorFile = uniqid(), $errorLine = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+				->object($score->addError($file = 'file1', $class = 'class1', $method = 'method1', $line = 1, $type = 5, $message = 'message1', $errorFile = 'errorFile1', $errorLine = 2))->isIdenticalTo($score)
 				->array($score->getErrors())->isEqualTo(array(
 						array(
 							'case' => null,
@@ -174,7 +174,7 @@ class score extends atoum\test
 					)
 				)
 				->integer($score->getErrorNumber())->isEqualTo(1)
-				->object($score->addError($otherFile = uniqid(), $otherClass = uniqid(), $otherMethod = uniqid(), $otherLine= rand(1, PHP_INT_MAX), $otherType = rand(1, PHP_INT_MAX), $otherMessage = uniqid(), $otherErrorFile = uniqid(), $otherErrorLine = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
+				->object($score->addError($otherFile = 'file2', $otherClass = 'class2', $otherMethod = 'method2', $otherLine = 10, $otherType = 15, $otherMessage = 'message2', $otherErrorFile = 'errorFile2', $otherErrorLine = 20))->isIdenticalTo($score)
 				->array($score->getErrors())->isEqualTo(array(
 						array(
 							'case' => null,
@@ -205,7 +205,7 @@ class score extends atoum\test
 					)
 				)
 				->integer($score->getErrorNumber())->isEqualTo(2)
-				->object($score->addError($file, $class, $method, $line, $type, $anAnotherMessage = uniqid(), $errorFile, $errorLine))->isIdenticalTo($score)
+				->object($score->addError($file, $class, $method, $line, $type, $anAnotherMessage = 'message1.1', $errorFile, $errorLine))->isIdenticalTo($score)
 				->array($score->getErrors())->isEqualTo(array(
 						array(
 							'case' => null,
@@ -249,6 +249,63 @@ class score extends atoum\test
 					)
 				)
 				->integer($score->getErrorNumber())->isEqualTo(3)
+				->object($score->addError($file, $class, $method, $line + 1, $type, ("   \t    \t" . $messageWithWhitespace = 'message with withespace' . "      \t    " . PHP_EOL), $errorFile, $errorLine))->isIdenticalTo($score)
+				->array($score->getErrors())->isEqualTo(array(
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => $class,
+							'method' => $method,
+							'file' => $file,
+							'line' => $line,
+							'type' => $type,
+							'message' => $anAnotherMessage,
+							'errorFile' => $errorFile,
+							'errorLine' => $errorLine
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => $class,
+							'method' => $method,
+							'file' => $file,
+							'line' => $line,
+							'type' => $type,
+							'message' => $message,
+							'errorFile' => $errorFile,
+							'errorLine' => $errorLine
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => $class,
+							'method' => $method,
+							'file' => $file,
+							'line' => $line + 1,
+							'type' => $type,
+							'message' => trim($messageWithWhitespace),
+							'errorFile' => $errorFile,
+							'errorLine' => $errorLine
+						),
+						array(
+							'case' => null,
+							'dataSetKey' => null,
+							'dataSetProvider' => null,
+							'class' => $otherClass,
+							'method' => $otherMethod,
+							'file' => $otherFile,
+							'line' => $otherLine,
+							'type' => $otherType,
+							'message' => $otherMessage,
+							'errorFile' => $otherErrorFile,
+							'errorLine' => $otherErrorLine
+						),
+					)
+				)
+				->integer($score->getErrorNumber())->isEqualTo(4)
 		;
 	}
 
