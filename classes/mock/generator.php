@@ -273,11 +273,9 @@ class generator
 			}
 			else
 			{
-				$methodName = ($constructorName === $className ? $className : '__construct');
-
-				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === true)' . PHP_EOL;
+				$mockedMethods .= "\t\t" . 'if (isset($this->getMockController()->' . $constructorName . ') === true)' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
-				$mockedMethods .= "\t\t\t" . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+				$mockedMethods .= "\t\t\t" . '$this->getMockController()->invoke(\'' . $constructorName . '\', $arguments);' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '}' . PHP_EOL;
 				$mockedMethods .= "\t\t" . 'else' . PHP_EOL;
 				$mockedMethods .= "\t\t" . '{' . PHP_EOL;
