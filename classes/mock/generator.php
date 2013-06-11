@@ -552,7 +552,7 @@ class generator
 		return
 			"\t" . 'public function getMockController()' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .
-			"\t\t" . '$mockController = \mageekguy\atoum\mock\controller\collector::get($this);' . PHP_EOL .
+			"\t\t" . '$mockController = \mageekguy\atoum\mock\controller::getForMock($this);' . PHP_EOL .
 			"\t\t" . 'if ($mockController === null)' . PHP_EOL .
 			"\t\t" . '{' . PHP_EOL .
 			"\t\t\t" . '$this->setMockController($mockController = new \\' . __NAMESPACE__ . '\\controller());' . PHP_EOL .
@@ -561,11 +561,11 @@ class generator
 			"\t" . '}' . PHP_EOL .
 			"\t" . 'public function setMockController(\\' . __NAMESPACE__ . '\\controller $controller)' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .
-			"\t\t" . 'return \mageekguy\atoum\mock\controller\collector::add($this, $controller);' . PHP_EOL .
+			"\t\t" . 'return $controller->control($this);' . PHP_EOL .
 			"\t" . '}' . PHP_EOL .
 			"\t" . 'public function resetMockController()' . PHP_EOL .
 			"\t" . '{' . PHP_EOL .
-			"\t\t" . '\mageekguy\atoum\mock\controller\collector::remove($this);' . PHP_EOL .
+			"\t\t" . '\mageekguy\atoum\mock\controller::getForMock($this)->reset();' . PHP_EOL .
 			"\t\t" . 'return $this;' . PHP_EOL .
 			"\t" . '}' . PHP_EOL
 		;

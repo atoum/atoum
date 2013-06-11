@@ -40,6 +40,8 @@ abstract class test implements observable, \countable
 	private $reflectionMethodFactory = null;
 	private $asserterGenerator = null;
 	private $assertionManager = null;
+	private $testAdapterStorage = null;
+	private $mockControllerLinker = null;
 	private $phpPath = null;
 	private $testedClassName = null;
 	private $testedClassPath = null;
@@ -77,6 +79,8 @@ abstract class test implements observable, \countable
 			->setAdapter($adapter)
 			->setAsserterGenerator($asserterGenerator)
 			->setAssertionManager($assertionManager)
+			->setTestAdapterStorage()
+			->setMockControllerLinker()
 			->setScore()
 			->setLocale()
 			->setMockGenerator()
@@ -134,6 +138,32 @@ abstract class test implements observable, \countable
 	public function __call($method, array $arguments)
 	{
 		return $this->assertionManager->invoke($method, $arguments);
+	}
+
+	public function setTestAdapterStorage(test\adapter\storage $storage = null)
+	{
+		$this->testAdapterStorage = $storage ?: new test\adapter\storage();
+
+		test\adapter::setStorage($this->testAdapterStorage);
+
+		return $this;
+	}
+
+	public function getTestAdapterStorage()
+	{
+		return $this->testAdapterStorage;
+	}
+
+	public function setMockControllerLinker(mock\controller\linker $linker = null)
+	{
+		$this->mockControllerLinker = $linker ?: new mock\controller\linker();
+
+		return $this;
+	}
+
+	public function getMockControllerLinker()
+	{
+		return $this->mockControllerLinker;
 	}
 
 	public function setScore(test\score $score = null)
@@ -218,7 +248,7 @@ abstract class test implements observable, \countable
 
 	public function getAsserterGenerator()
 	{
-		test\adapter::resetCallsForAllInstances();
+		$this->testAdapterStorage->resetCalls();
 
 		return $this->asserterGenerator;
 	}
@@ -822,6 +852,8 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
+					mock\controller::setLinker($this->mockControllerLinker);
+
 					$this->beforeTestMethod($this->currentMethod);
 
 					if ($this->codeCoverageIsEnabled() === true)
@@ -868,6 +900,9 @@ abstract class test implements observable, \countable
 							$this->score->unsetDataSet();
 						}
 					}
+
+					$this->mockControllerLinker->reset();
+					$this->testAdapterStorage->reset();
 
 					$memoryUsage = memory_get_usage(true) - $memory;
 					$duration = microtime(true) - $time;
@@ -920,7 +955,9 @@ abstract class test implements observable, \countable
 
 				$this->score->addSkippedMethod($file, $this->class, $this->currentMethod, $line, $exception->getMessage());
 			}
-			catch (test\exceptions\stop $exception) {}
+			catch (test\exceptions\stop $exception)
+			{
+			}
 			catch (exception $exception)
 			{
 				list($file, $line) = $this->getBacktrace($exception->getTrace());
@@ -935,8 +972,6 @@ abstract class test implements observable, \countable
 			$this->afterTestMethod($this->currentMethod);
 
 			$this->currentMethod = null;
-
-			mock\controller\collector::clean();
 
 			restore_error_handler();
 
@@ -983,8 +1018,7 @@ abstract class test implements observable, \countable
 
 	public function startCase($case)
 	{
-		test\adapter::resetCallsForAllInstances();
-
+		$this->testAdapterStorage->resetCalls();
 		$this->score->setCase($case);
 
 		return $this;
@@ -992,8 +1026,7 @@ abstract class test implements observable, \countable
 
 	public function stopCase()
 	{
-		test\adapter::resetCallsForAllInstances();
-
+		$this->testAdapterStorage->resetCalls();
 		$this->score->unsetCase();
 
 		return $this;

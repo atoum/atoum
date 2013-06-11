@@ -534,4 +534,18 @@ class controller extends atoum\test
 				->array($mockController->getCalls())->isEmpty()
 		;
 	}
+
+	public function testGetForMock()
+	{
+		$this
+			->if($mockController = new testedClass())
+			->and($mock = new \mock\foo())
+			->and($mockController->control($mock))
+			->then
+				->object(testedClass::getForMock($mock))->isIdenticalTo($mockController)
+			->if($mockController->bar = function() {})
+			->then
+				->object(testedClass::getForMock($mock))->isIdenticalTo($mockController)
+		;
+	}
 }

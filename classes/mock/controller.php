@@ -16,6 +16,7 @@ class controller extends test\adapter
 	protected $iterator = null;
 
 	protected static $controlNextNewMock = null;
+	protected static $linker = null;
 
 	private $disableMethodChecking = false;
 
@@ -23,7 +24,10 @@ class controller extends test\adapter
 	{
 		parent::__construct();
 
-		$this->setIterator()->controlNextNewMock();
+		$this
+			->setIterator()
+			->controlNextNewMock()
+		;
 	}
 
 	public function __set($method, $mixed)
@@ -118,44 +122,54 @@ class controller extends test\adapter
 
 	public function control(mock\aggregator $mock)
 	{
-		$this->mockClass = get_class($mock);
-		$this->mockMethods = $mock->getMockedMethods();
+		$currentMockController = self::$linker->getController($mock);
 
-		if ($this->disableMethodChecking === false)
+		if ($currentMockController !== null && $currentMockController !== $this)
 		{
-			foreach (array_keys($this->invokers) as $method)
+			$currentMockController->reset();
+		}
+
+		if ($currentMockController === null || $currentMockController !== $this)
+		{
+			$this->mockClass = get_class($mock);
+			$this->mockMethods = $mock->getMockedMethods();
+
+			if ($this->disableMethodChecking === false)
 			{
-				if (in_array($method, $this->mockMethods) === false)
+				foreach (array_keys($this->invokers) as $method)
 				{
-					if (in_array('__call', $this->mockMethods) === false)
+					if (in_array($method, $this->mockMethods) === false)
 					{
-						throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
-					}
+						if (in_array('__call', $this->mockMethods) === false)
+						{
+							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
+						}
 
-					if (isset($this->invokers['__call']) === false)
-					{
-						$this->invokers['__call'] = null;
+						if (isset($this->invokers['__call']) === false)
+						{
+							$this->invokers['__call'] = null;
 
-						$this->set__call();
+							$this->set__call();
+						}
 					}
 				}
 			}
-		}
 
-		foreach ($this->mockMethods as $method)
-		{
-			if (isset($this->invokers[$method]) === false)
+			foreach ($this->mockMethods as $method)
 			{
-				$this->invokers[$method] = null;
+				if (isset($this->invokers[$method]) === false)
+				{
+					$this->invokers[$method] = null;
+				}
 			}
+
+			self::$linker->link($this, $mock);
 		}
 
-		if ($mock->getMockController() !== $this)
-		{
-			$mock->setMockController($this);
-		}
-
-		return $this->resetCalls()->notControlNextNewMock();
+		return $this
+			->resetCalls()
+			->notControlNextNewMock()
+		;
 	}
 
 	public function controlNextNewMock()
@@ -177,6 +191,7 @@ class controller extends test\adapter
 
 	public function reset()
 	{
+		self::$linker->unlink($this);
 		$this->mockClass = null;
 		$this->mockMethods = array();
 
@@ -205,6 +220,16 @@ class controller extends test\adapter
 		}
 
 		return $instance;
+	}
+
+	public static function setLinker(controller\linker $linker = null)
+	{
+		self::$linker = $linker ?: new controller\linker();
+	}
+
+	public static function getForMock(aggregator $mock)
+	{
+		return self::$linker->getController($mock);
 	}
 
 	protected function checkMethod($method)
@@ -236,3 +261,5 @@ class controller extends test\adapter
 		return $this;
 	}
 }
+
+controller::setLinker();

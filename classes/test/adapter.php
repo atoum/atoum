@@ -13,22 +13,12 @@ class adapter extends atoum\adapter
 	protected $calls = array();
 	protected $invokers = array();
 
+	private static $storage = null;
 	private static $callsNumber = 0;
-	private static $instances = null;
 
 	public function __construct()
 	{
-		if (self::$instances === null)
-		{
-			self::$instances = new \splObjectStorage();
-		}
-
-		self::$instances->attach($this);
-	}
-
-	public function __destruct()
-	{
-		self::$instances->detach($this);
+		self::$storage->add($this);
 	}
 
 	public function __set($functionName, $mixed)
@@ -230,15 +220,9 @@ class adapter extends atoum\adapter
 		return self::$callsNumber;
 	}
 
-	public static function resetCallsForAllInstances()
+	public static function setStorage(adapter\storage $storage = null)
 	{
-		if (self::$instances !== null)
-		{
-			foreach (self::$instances as $instance)
-			{
-				$instance->resetCalls();
-			}
-		}
+		self::$storage = $storage ?: new adapter\storage();
 	}
 
 	protected function setInvoker($name, \closure $factory)
@@ -290,9 +274,6 @@ class adapter extends atoum\adapter
 				return false;
 		}
 	}
-
-	protected static function & unreference($var)
-	{
-		return $var;
-	}
 }
+
+adapter::setStorage();
