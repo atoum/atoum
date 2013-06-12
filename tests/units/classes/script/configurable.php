@@ -109,9 +109,19 @@ class configurable extends atoum\test
 							$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
 						}
 					)
-			->if($configurable = new testedClass(uniqid()))
+			->if($configurable = new testedClass(($directory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid()) . DIRECTORY_SEPARATOR . uniqid()))
 			->and($configurable->getMockController()->useConfigFile = function() {})
 			->and($configurable->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->dirname = $directory)
+			->and($adapter->is_dir = true)
+			->then
+				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
+				->mock($configurable)
+					->foreach(testedClass::getSubDirectoryPath($directory), function($mock, $path) {
+						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+					}
+				)
+			->if($adapter->is_dir = false)
 			->and($adapter->getcwd = $workingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
 			->then
 				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)

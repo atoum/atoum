@@ -49,7 +49,12 @@ abstract class configurable extends atoum\script
 	{
 		if ($startDirectory === null)
 		{
-			$startDirectory = $this->adapter->getcwd();
+			$startDirectory = $this->adapter->dirname($this->getName());
+
+			if ($this->adapter->is_dir($startDirectory) === false)
+			{
+				$startDirectory = $this->adapter->getcwd();
+			}
 		}
 
 		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
