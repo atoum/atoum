@@ -30,7 +30,7 @@ abstract class notifier extends result
 
 		if ($success === true)
 		{
-			$title = 'Success !';
+			$title = 'Success!';
 			$message = sprintf(
 				$this->locale->_('%s %s %s %s %s'),
 				sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber) . PHP_EOL,
@@ -42,7 +42,7 @@ abstract class notifier extends result
 		}
 		else
 		{
-			$title = 'Failure !';
+			$title = 'Failure!';
 			$message = sprintf(
 				$this->locale->_('%s %s %s %s %s %s %s %s'),
 				sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber) . PHP_EOL,
