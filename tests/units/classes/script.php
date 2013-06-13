@@ -347,4 +347,21 @@ class script extends atoum\test
 					->call('write')->withIdenticalArguments(atoum\script::padding . atoum\script::padding . atoum\script::padding . '  ' . $label3 . ': ' . $message3 . PHP_EOL)->once()
 		;
 	}
+
+	public function testGetDirectory()
+	{
+		$this
+			->given($script = new mock\script($name = uniqid()))
+			->and($script->setAdapter($adapter = new atoum\test\adapter()))
+			->then
+				->if($adapter->is_dir = true)
+				->and($adapter->dirname = $directory = uniqid())
+				->then
+					->string($script->getDirectory())->isEqualTo($directory)
+				->if($adapter->is_dir = false)
+				->and($adapter->getcwd = $currentDirectory = uniqid())
+				->then
+					->string($script->getDirectory())->isEqualTo($currentDirectory)
+		;
+	}
 }

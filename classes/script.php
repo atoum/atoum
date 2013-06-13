@@ -43,6 +43,18 @@ abstract class script
 	 	}
 	}
 
+	public function getDirectory()
+	{
+		$directory = $this->adapter->dirname($this->getName());
+
+		if ($this->adapter->is_dir($directory) === false)
+		{
+			$directory = $this->adapter->getcwd();
+		}
+
+		return $directory;
+	}
+
 	public function setAdapter(atoum\adapter $adapter = null)
 	{
 		$this->adapter = $adapter ?: new atoum\adapter();

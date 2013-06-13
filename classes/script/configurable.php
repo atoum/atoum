@@ -47,17 +47,7 @@ abstract class configurable extends atoum\script
 
 	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		if ($startDirectory === null)
-		{
-			$startDirectory = $this->adapter->dirname($this->getName());
-
-			if ($this->adapter->is_dir($startDirectory) === false)
-			{
-				$startDirectory = $this->adapter->getcwd();
-			}
-		}
-
-		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
+		foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
 		{
 			try
 			{

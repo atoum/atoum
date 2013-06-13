@@ -358,12 +358,7 @@ class runner extends atoum\script\configurable
 	{
 		if ($this->runner->getBootstrapFile() === null)
 		{
-			if ($startDirectory === null)
-			{
-				$startDirectory = $this->adapter->getcwd();
-			}
-
-			foreach (self::getSubDirectoryPath($startDirectory) as $directory)
+			foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
 			{
 				$defaultBootstrapFile = $directory . static::defaultBootstrapFile;
 
