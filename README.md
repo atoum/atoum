@@ -133,7 +133,7 @@ You should get the following result, or something equivalent :
 	> Total test memory usage: 0.25 Mb.
 	> Code coverage value: 100.00%
 	> Running duration: 0.08 second.
-	> Success (1 test, 1 method, 2 assertions, 0 error, 0 exception) !
+	> Success (1 test, 1 method, 2 assertions, 0 error, 0 exception)!
 
 ### Step 6 : Complete your tests and restart the cycle from Step 3
 

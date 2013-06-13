@@ -39,7 +39,7 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->successColorizer->colorize(
 					sprintf(
-						$this->locale->_('Success (%s, %s, %s, %s, %s) !'),
+						$this->locale->_('Success (%s, %s, %s, %s, %s)!'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber, $this->testMethodNumber),
 						sprintf($this->locale->__('%s void method', '%s void methods', $this->voidMethodNumber), $this->voidMethodNumber),
@@ -53,7 +53,7 @@ class cli extends fields\runner\result
 		{
 			$string .= $this->failureColorizer->colorize(
 					sprintf(
-						$this->locale->_('Failure (%s, %s, %s, %s, %s, %s, %s, %s) !'),
+						$this->locale->_('Failure (%s, %s, %s, %s, %s, %s, %s, %s)!'),
 						sprintf($this->locale->__('%s test', '%s tests', $this->testNumber), $this->testNumber),
 						sprintf($this->locale->__('%s/%s method', '%s/%s methods', $this->testMethodNumber), $this->testMethodNumber - $this->voidMethodNumber - $this->skippedMethodNumber - $this->uncompletedMethodNumber, $this->testMethodNumber),
 						sprintf($this->locale->__('%s void method', '%s void methods', $this->voidMethodNumber), $this->voidMethodNumber),
