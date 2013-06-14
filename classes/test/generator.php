@@ -16,6 +16,9 @@ class generator
 	protected $testedClassNamespace = null;
 	protected $testClassesDirectory = null;
 	protected $testClassNamespace = null;
+	protected $testedClassPathExtractor = null;
+	protected $fullyQualifiedTestClassNameExtractor = null;
+	protected $fullyQualifiedTestedClassNameExtractor = null;
 	protected $runnerPath = null;
 	protected $templateParser = null;
 	protected $pathFactory = null;
@@ -28,6 +31,9 @@ class generator
 			->setTemplateParser()
 			->setPathFactory()
 			->setAdapter()
+			->setFullyQualifiedTestClassNameExtractor()
+			->setFullyQualifiedTestedClassNameExtractor()
+			->setTestedClassPathExtractor()
 		;
 	}
 
@@ -139,6 +145,48 @@ class generator
 		return $this->testClassNamespace;
 	}
 
+	public function setFullyQualifiedTestClassNameExtractor(\closure $extractor = null)
+	{
+		$this->fullyQualifiedTestClassNameExtractor = $extractor ?: function($generator, $relativeTestClassPath) {
+			return $generator->getTestClassNamespace() . str_replace(DIRECTORY_SEPARATOR, '\\', substr($relativeTestClassPath, 0, -4));
+		};
+
+		return $this;
+	}
+
+	public function getFullyQualifiedTestClassNameExtractor()
+	{
+		return $this->fullyQualifiedTestClassNameExtractor;
+	}
+
+	public function setFullyQualifiedTestedClassNameExtractor(\closure $extractor = null)
+	{
+		$this->fullyQualifiedTestedClassNameExtractor = $extractor ?: function($generator, $fullyQualifiedTestClassName) {
+			return $generator->getTestedClassNamespace() . substr($fullyQualifiedTestClassName, strlen($generator->getTestClassNamespace()));
+		};
+
+		return $this;
+	}
+
+	public function getFullyQualifiedTestedClassNameExtractor()
+	{
+		return $this->fullyQualifiedTestedClassNameExtractor;
+	}
+
+	public function setTestedClassPathExtractor(\closure $extractor = null)
+	{
+		$this->testedClassPathExtractor = $extractor ?: function($generator, $fullyQualifiedTestedClassName) {
+			return $generator->getTestedClassesDirectory() . substr(str_replace('\\', DIRECTORY_SEPARATOR, $fullyQualifiedTestedClassName), strlen($generator->getTestedClassNamespace())) . '.php';
+		};
+
+		return $this;
+	}
+
+	public function getTestedClassPathExtractor()
+	{
+		return $this->testedClassPathExtractor;
+	}
+
 	public function generate($testClassPath)
 	{
 		if ($this->testedClassesDirectory === null)
@@ -172,7 +220,7 @@ class generator
 
 		$testClassRelativePath = substr($testClassPath->relativizeFrom($testClassBaseDirectory), 2);
 
-		$fullyQualifiedTestClassName = $this->getFullyQualifiedTestClassName($testClassRelativePath);
+		$fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, array($this, $testClassRelativePath));
 
 		$testClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testClass.php');
 
@@ -189,7 +237,7 @@ class generator
 			$testClassTemplate->requireRunner->build();
 		}
 
-		$fullyQualifiedTestedClassName = $this->getFullyQualifiedTestedClassName($fullyQualifiedTestClassName);
+		$fullyQualifiedTestedClassName = call_user_func_array($this->fullyQualifiedTestedClassNameExtractor, array($this, $fullyQualifiedTestClassName));
 
 		if ($this->adapter->class_exists($fullyQualifiedTestedClassName) === false)
 		{
@@ -197,7 +245,7 @@ class generator
 			$testClassTemplate->testMethods->testMethod->methodName->build();
 			$testClassTemplate->testMethods->testMethod->build();
 
-			$testedClassPath = $this->getTestedClassPath($fullyQualifiedTestedClassName);
+			$testedClassPath = call_user_func_array($this->testedClassPathExtractor, array($this, $fullyQualifiedTestedClassName));
 
 			$testedClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testedClass.php');
 
@@ -224,21 +272,6 @@ class generator
 		$this->saveClassInFile($testClassTemplate->build(), $testClassPath);
 
 		return $this;
-	}
-
-	protected function getFullyQualifiedTestClassName($relativeTestClassPath)
-	{
-		return $this->testClassNamespace . str_replace(DIRECTORY_SEPARATOR, '\\', substr($relativeTestClassPath, 0, -4));
-	}
-
-	protected function getFullyQualifiedTestedClassName($fullyQualifiedTestClassName)
-	{
-		return $this->testedClassNamespace . substr($fullyQualifiedTestClassName, strlen($this->testClassNamespace));
-	}
-
-	protected function getTestedClassPath($fullyQualifiedTestedClassName)
-	{
-		return $this->testedClassesDirectory . substr(str_replace('\\', DIRECTORY_SEPARATOR, $fullyQualifiedTestedClassName), strlen($this->testedClassNamespace)) . '.php';
 	}
 
 	protected function saveClassInFile($class, $file)

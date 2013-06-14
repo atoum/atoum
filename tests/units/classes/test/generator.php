@@ -143,6 +143,36 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testSetFullyQualifiedTestClassNameExtractor()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->setFullyQualifiedTestClassNameExtractor($extractor = function() {}))->isIdenticalTo($generator)
+				->object($generator->getFullyQualifiedTestClassNameExtractor())->isIdenticalTo($extractor)
+		;
+	}
+
+	public function testSetFullyQualifiedTestedClassNameExtractor()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->setFullyQualifiedTestedClassNameExtractor($extractor = function() {}))->isIdenticalTo($generator)
+				->object($generator->getFullyQualifiedTestedClassNameExtractor())->isIdenticalTo($extractor)
+		;
+	}
+
+	public function testSetTestedClassPathExtractor()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->setTestedClassPathExtractor($extractor = function() {}))->isIdenticalTo($generator)
+				->object($generator->getTestedClassPathExtractor())->isIdenticalTo($extractor)
+		;
+	}
+
 	public function testGenerate()
 	{
 		$this
