@@ -1,4 +1,3 @@
-script: php ./scripts/runner.php --test-it
 language: php
 php:
   - 5.3
@@ -6,3 +5,12 @@ php:
   - 5.5
 notifications:
   irc: "irc.freenode.org##atoum"
+env:
+    global:
+        - secure: "eR29PJZa3FF4td4M/1flQpxCng73lG2iUrvu6aVbX/kvt1LN8Gsb/gH0snJF\nIegV7nLtxGfKiVtZ8S5hHJBeScz8nL3s82q4SYq72spk8jf7+XRJsGEmX28Y\nIW+jlMsIFBOxZX19394NKuMlliLy4AXywGEGoRn5sFjXIFfmF4k="
+before_script:
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && cp resources/configurations/runner/coveralls.php.dist .atoum.php || true"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s?/path/to/sources/directory?classes? .atoum.php || true"
+  - "[ -n \"$COVERALLS_REPO_TOKEN\" ] && sed -i s/YouCoverallsProjectToken/$COVERALLS_REPO_TOKEN/ .atoum.php || true"
+script:
+  - php ./scripts/runner.php --test-it
