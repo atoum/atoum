@@ -5,14 +5,17 @@ namespace mageekguy\atoum\reports\asynchronous;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\exceptions,
-	mageekguy\atoum\score
+	mageekguy\atoum\score,
+	mageekguy\atoum\report
 ;
 
 class coveralls extends atoum\reports\asynchronous
 {
 	const defaultServiceName = 'atoum';
 	const defaultEvent = 'manual';
-	const defaultCoverallsUrl = 'https://coveralls.io/api/v1/jobs';
+	const defaultCoverallsApiUrl = 'https://coveralls.io/api/v1/jobs';
+	const defaultCoverallsApiMethod = 'POST';
+	const defaultCoverallsApiParameter = 'json';
 
 	protected $sourceDir = null;
 	protected $repositoryToken = null;
@@ -78,6 +81,19 @@ class coveralls extends atoum\reports\asynchronous
 		return $this->serviceJobId;
 	}
 
+	public function addDefaultWriter(report\writers\asynchronous $writer = null)
+	{
+		$writer = $writer ?: new atoum\writers\http($this->adapter);
+		$writer
+			->setUrl(static::defaultCoverallsApiUrl)
+			->setMethod(static::defaultCoverallsApiMethod)
+			->setParameter(static::defaultCoverallsApiParameter)
+			->addHeader('Content-type', 'multipart/form-data')
+		;
+
+		return parent::addWriter($writer);
+	}
+
 	public function getSourceDir()
 	{
 		return $this->sourceDir;
@@ -96,19 +112,6 @@ class coveralls extends atoum\reports\asynchronous
 		{
 			$coverage = $this->makeJson($this->score->getCoverage());
 			$this->string = json_encode($coverage);
-
-			if (sizeof($coverage['source_files']) > 0)
-			{
-				$opts = array(
-					'http' => array(
-						'method'  => 'POST',
-						'header'  => 'Content-type: multipart/form-data',
-						'content' => http_build_query(array('json' => $this->string))
-					)
-				);
-				$context = stream_context_create($opts);
-				$this->adapter->file_get_contents(static::defaultCoverallsUrl, false, $context);
-			}
 		}
 
 		return $this;

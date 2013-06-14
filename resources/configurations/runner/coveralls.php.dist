@@ -36,9 +36,9 @@ $coverallsReport
 
 		return $branch;
 	})
-	->setServiceName(getenv('TRAVIS') ? 'travis' : null)
-	->setServiceJobId(getenv('TRAVIS_JOB_NUMBER') ? 'travis' : null)
-	->addWriter()
+	->setServiceName(getenv('TRAVIS') ? 'travis-ci' : null)
+	->setServiceJobId(getenv('TRAVIS_JOB_ID') ?: null)
+	->addDefaultWriter()
 ;
 
 $runner->addReport($coverallsReport);
