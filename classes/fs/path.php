@@ -80,7 +80,7 @@ class path
 		return $realParentDirectory;
 	}
 
-	public function relativizeFrom(self $reference)
+	public function relativizeFrom(path $reference)
 	{
 		$absolutePath = $this->resolve();
 		$absoluteReference = $reference->resolve();
@@ -157,7 +157,7 @@ class path
 		return $resolvedPath;
 	}
 
-	public function isSubPathOf(self $path)
+	public function isSubPathOf(path $path)
 	{
 		$absoluteThis = $this->resolve();
 		$absolutePath = $path->resolve();
@@ -165,7 +165,7 @@ class path
 		return ($absoluteThis->components !== $absolutePath->components && ($absolutePath->isRoot() === true || strpos($absoluteThis->components, $absolutePath->components . '/') === 0));
 	}
 
-	public function isNotSubPathOf(self $path)
+	public function isNotSubPathOf(path $path)
 	{
 		return ($this->isSubPathOf($path) === false);
 	}
