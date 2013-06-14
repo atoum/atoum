@@ -245,14 +245,14 @@ class generator
 			$testClassTemplate->testMethods->testMethod->methodName->build();
 			$testClassTemplate->testMethods->testMethod->build();
 
-			$testedClassPath = call_user_func_array($this->testedClassPathExtractor, array($this, $fullyQualifiedTestedClassName));
+			$testedClassPath = $this->pathFactory->build(call_user_func_array($this->testedClassPathExtractor, array($this, $fullyQualifiedTestedClassName)));
 
 			$testedClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testedClass.php');
 
 			$testedClassTemplate->testedClassName = self::getShortClassName($fullyQualifiedTestedClassName);
 			$testedClassTemplate->testedClassNamespace = self::getClassNamespace($fullyQualifiedTestedClassName);
 
-			$this->saveClassInFile($testedClassTemplate->build(), $testedClassPath);
+			$testedClassPath->putContents($testedClassTemplate->build());
 		}
 		else
 		{
@@ -269,7 +269,7 @@ class generator
 
 		$testClassTemplate->testMethods->build();
 
-		$this->saveClassInFile($testClassTemplate->build(), $testClassPath);
+		$testClassPath->putContents($testClassTemplate->build());
 
 		return $this;
 	}

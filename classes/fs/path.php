@@ -192,6 +192,28 @@ class path
 		return static::pathIsAbsolute($this->components);
 	}
 
+	public function createParentDirectory()
+	{
+		$parentDirectory = $this->getParentDirectory();
+
+		if ($this->adapter->file_exists($parentDirectory) === false && @$this->adapter->mkdir($parentDirectory, 0777, true) === false)
+		{
+			throw new exceptions\runtime('Unable to create directory \'' . $parentDirectory . '\'');
+		}
+
+		return $this;
+	}
+
+	public function putContents($data)
+	{
+		if (@$this->adapter->file_put_contents($this->createParentDirectory(), $data) === false)
+		{
+			throw new exceptions\runtime('Unable to put data \'' . $data . '\' in file \'' . $this . '\'');
+		}
+
+		return $this;
+	}
+
 	protected function setDriveAndComponents($value)
 	{
 		$drive = null;

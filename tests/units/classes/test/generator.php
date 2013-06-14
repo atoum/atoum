@@ -200,11 +200,13 @@ class generator extends atoum\test
 					->isInstanceOf('mageekguy\atoum\test\generator\exception')
 					->hasMessage('Test class namespace is undefined')
 			->if($generator->setTestClassNamespace($testClassNamespace = uniqid()))
-			->and($adapter->file_put_contents = rand(1, PHP_INT_MAX))
 			->and($testClassesDirectoryPath = new \mock\mageekguy\atoum\fs\path('/a/b/c'))
+			->and($testedClassPath = new \mock\mageekguy\atoum\fs\path('/x/y/z/f.php'))
+			->and($this->calling($testedClassPath)->putContents = $testedClassPath)
 			->and($testClassPath = new \mock\mageekguy\atoum\fs\path('/a/b/c/d/e/f.php'))
 			->and($this->calling($testClassPath)->getRealParentDirectory = new \mock\mageekguy\atoum\fs\path('/a/b/c/d/e'))
-			->and($this->calling($pathFactory)->build = function($path) use ($testClassesDirectoryPath, $testClassPath) {
+			->and($this->calling($testClassPath)->putContents = $testClassPath)
+			->and($this->calling($pathFactory)->build = function($path) use ($testClassesDirectoryPath, $testClassPath, $testedClassPath) {
 					switch ($path)
 					{
 						case (string) $testClassesDirectoryPath . DIRECTORY_SEPARATOR:
@@ -212,6 +214,9 @@ class generator extends atoum\test
 
 						case (string) $testClassPath:
 							return $testClassPath;
+
+						default:
+							return $testedClassPath;
 					}
 				}
 			)

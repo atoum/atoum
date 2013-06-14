@@ -416,4 +416,49 @@ class path extends atoum\test
 				->object($path->resolve())->isEqualTo(new testedClass('/a/b'))
 		;
 	}
+
+	public function testCreateParentDirectory()
+	{
+		$this
+			->if($path = new testedClass('/a/b'))
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->file_exists = false)
+			->and($adapter->mkdir = true)
+			->and($path->setAdapter($adapter))
+			->then
+				->object($path->createParentDirectory())->isEqualTo($path)
+				->adapter($adapter)->call('mkdir')->withArguments('/a', 0777, true)->once()
+			->if($adapter->mkdir = false)
+			->then
+				->exception(function() use ($path) { $path->createParentDirectory(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to create directory \'' . $path->getParentDirectory() . '\'')
+			->if($adapter->file_exists = true)
+			->and($this->resetAdapter($adapter))
+			->then
+				->object($path->createParentDirectory())->isEqualTo($path)
+				->adapter($adapter)->call('mkdir')->never()
+		;
+	}
+
+	public function testPutContents()
+	{
+		$this
+			->if($path = new testedClass('/a/b'))
+			->and($adapter = new atoum\test\adapter())
+			->and($adapter->mkdir = true)
+			->and($adapter->file_put_contents = true)
+			->and($path->setAdapter($adapter))
+			->then
+				->object($path->putContents($data = uniqid()))->isEqualTo($path)
+				->adapter($adapter)
+					->call('mkdir')->withArguments('/a', true)->once()
+					->call('file_put_contents')->withArguments((string) $path, $data)->once()
+			->if($adapter->file_put_contents = false)
+			->then
+				->exception(function() use ($path, & $data) { $path->putContents($data = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->hasMessage('Unable to put data \'' . $data . '\' in file \'' . $path . '\'')
+		;
+	}
 }
