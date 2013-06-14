@@ -883,5 +883,38 @@ namespace mageekguy\atoum\tests\units
 						->call('addError')->withArguments($filename, $classname, $test->getCurrentMethod(), $errline, $errno, $errstr, null, $errline, null, null, null)->once()
 			;
 		}
+
+		public function testGetTestedClassNameFromTestClass()
+		{
+			$this
+				->string(atoum\test::getTestedClassNameFromTestClass(__CLASS__))->isEqualTo('mageekguy\atoum\test')
+				->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\tests\units\testedClass'))->isEqualTo('foo\bar\testedClass')
+				->if(atoum\test::setNamespace('test\unit'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\test\unit\testedClass'))->isEqualTo('foo\bar\testedClass')
+				->if(atoum\test::setNamespace('\test\unit\\'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\test\unit\testedClass'))->isEqualTo('foo\bar\testedClass')
+				->if(atoum\test::setNamespace('test\unit\\'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\test\unit\testedClass'))->isEqualTo('foo\bar\testedClass')
+				->if(atoum\test::setNamespace('\test\unit'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\test\unit\testedClass'))->isEqualTo('foo\bar\testedClass')
+					->exception(function() { atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass'); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which contains \'' . atoum\test::getNamespace() . '\'')
+				->if(atoum\test::setNamespace('#(?:^|\\\)xxxs?\\\yyys?\\\#i'))
+				->then
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\xxx\yyy\testedClass'))->isEqualTo('foo\bar\testedClass')
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\xxxs\yyy\testedClass'))->isEqualTo('foo\bar\testedClass')
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\xxxs\yyys\testedClass'))->isEqualTo('foo\bar\testedClass')
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\xxx\yyys\testedClass'))->isEqualTo('foo\bar\testedClass')
+					->exception(function() { atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass'); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
+					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
+			;
+		}
 	}
 }

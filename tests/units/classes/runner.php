@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\runner as testedClass
 ;
@@ -33,6 +34,7 @@ class runner extends atoum\test
 				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->variable($runner->getTestGenerator())->isNull()
 				->object($runner->getTestDirectoryIterator())->isInstanceOf('mageekguy\atoum\iterators\recursives\directory\factory')
 				->object($defaultGlobIteratorFactory = $runner->getGlobIteratorFactory())->isInstanceOf('closure')
 				->object($defaultGlobIteratorFactory($pattern = uniqid()))->isEqualTo(new \globIterator($pattern))
@@ -105,6 +107,18 @@ class runner extends atoum\test
 			->then
 				->object($runner->setPhpPath($phpPath = uniqid()))->isIdenticalTo($runner)
 				->string($runner->getPhpPath())->isIdenticalTo($phpPath)
+		;
+	}
+
+	public function testSetTestGenerator()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->setTestGenerator($generator = new test\generator()))->isIdenticalTo($runner)
+				->object($runner->getTestGenerator())->isIdenticalTo($generator)
+				->object($runner->setTestGenerator())->isIdenticalTo($runner)
+				->object($runner->getTestGenerator())->isEqualTo(new test\generator())
 		;
 	}
 

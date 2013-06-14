@@ -82,314 +82,338 @@ class path extends atoum\test
 	public function testRelativizeFrom()
 	{
 		$this
-			->given($adapter = new atoum\test\adapter())
-			->and($adapter->realpath = function($path) { return $path; })
+			->if($path = new testedClass('/a/b', '/'))
 			->then
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(clone $path))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('.')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/a', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('./b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/a/', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('./b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/c', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('../a/b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/c/', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('../a/b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/c/d', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('../../a/b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/c/d/', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('../../a/b')
-				->if($path = new testedClass('/a/b', '/', $adapter))
-				->then
-					->object($path->relativizeFrom(new testedClass('/', '/', $adapter)))
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo('./a/b')
+				->object($path->relativizeFrom(clone $path))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('.')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/a', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('./b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/a/', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('./b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/c', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('../a/b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/c/', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('../a/b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/c/d', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('../../a/b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/c/d/', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('../../a/b')
+			->if($path = new testedClass('/a/b', '/'))
+			->then
+				->object($path->relativizeFrom(new testedClass('/', '/')))
+					->isInstanceOf('mageekguy\atoum\fs\path')
+					->toString->isEqualTo('./a/b')
 		;
 	}
 
 	public function testGetParentDirectory()
 	{
 		$this
-			->given($adapter = new atoum\test\adapter())
-			->and($adapter->realpath = function($path) { return $path; })
+			->if($path = new testedClass('/', '/'))
 			->then
-				->if($path = new testedClass('/', '/', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('/')
-				->if($path = new testedClass('/' . uniqid(), '/', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('/')
-				->if($path = new testedClass(($parentDirectory = '/' . uniqid()) . '/' . uniqid(), '/', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo($parentDirectory)
-					->object($path->getParentDirectory()->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('/')
-				->if($path = new testedClass('\\', '\\', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('\\')
-				->if($path = new testedClass('\\' . uniqid(), '\\', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('\\')
-				->if($path = new testedClass('C:\\' . uniqid(), '\\', $adapter))
-				->then
-					->object($path->getParentDirectory())
-						->isNotIdenticalTo($path)
-						->toString
-							->isEqualTo('C:\\')
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('/')
+			->if($path = new testedClass('/' . uniqid(), '/'))
+			->then
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('/')
+			->if($path = new testedClass(($parentDirectory = '/' . uniqid()) . '/' . uniqid(), '/'))
+			->then
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo($parentDirectory)
+				->object($path->getParentDirectory()->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('/')
+			->if($path = new testedClass('\\', '\\'))
+			->then
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('\\')
+			->if($path = new testedClass('\\' . uniqid(), '\\'))
+			->then
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('\\')
+			->if($path = new testedClass('C:\\' . uniqid(), '\\'))
+			->then
+				->object($path->getParentDirectory())
+					->isNotIdenticalTo($path)
+					->toString
+						->isEqualTo('C:\\')
 		;
 	}
 
-	public function testResolve()
+	public function testExists()
 	{
 		$this
 			->given($adapter = new atoum\test\adapter())
-			->and($adapter->realpath = $currentWorkingDirectory = '/a/b/c/d')
+			->and($path = new testedClass(uniqid(), '/', $adapter))
 			->then
-				->if($path = new testedClass(uniqid(), '/'))
-				->and($path->setAdapter($adapter))
+				->if($adapter->file_exists = false)
 				->then
-					->object($path->resolve())
-						->isInstanceOf('mageekguy\atoum\fs\path')
-						->toString->isEqualTo($currentWorkingDirectory)
-			->if($adapter->realpath = false)
-			->then
-				->if($path = new testedClass(uniqid(), '/'))
-				->and($path->setAdapter($adapter))
+					->boolean($path->exists())->isFalse()
+					->adapter($adapter)->call('file_exists')->withArguments((string) $path)->once()
+				->if($adapter->file_exists = true)
 				->then
-					->exception(function() use ($path) { $path->resolve(); })
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-						->hasMessage('Unable to resolve \'' . $path . '\'')
+					->boolean($path->exists())->isTrue()
+					->adapter($adapter)->call('file_exists')->withArguments((string) $path)->twice()
 		;
 	}
 
 	public function testIsRoot()
 	{
 		$this
-			->given($adapter = new atoum\test\adapter())
-			->and($adapter->realpath = function($path) { return $path; })
+			->if($path = new testedClass(DIRECTORY_SEPARATOR))
 			->then
-				->if($path = new testedClass(DIRECTORY_SEPARATOR))
-				->and($path->setAdapter($adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR, $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('/', '/', $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('/' . uniqid(), '/', $adapter))
-				->then
-					->boolean($path->isRoot())->isFalse()
-				->if($path = new testedClass('/', '\\', $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('\\', '\\', $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('\\', '/', $adapter))
-				->then
-					->boolean($path->isRoot())->isFalse()
-				->if($path = new testedClass('C:\\', '\\', $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('c:\\', '\\', $adapter))
-				->then
-					->boolean($path->isRoot())->isTrue()
-				->if($path = new testedClass('C:\\', '/', $adapter))
-				->then
-					->boolean($path->isRoot())->isFalse()
-				->if($path = new testedClass('C:\\' . uniqid(), '\\', $adapter))
-				->then
-					->boolean($path->isRoot())->isFalse()
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass(DIRECTORY_SEPARATOR, DIRECTORY_SEPARATOR))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('/', '/'))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('/' . uniqid(), '/'))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('/', '\\'))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('\\', '\\'))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('\\', '/'))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:\\', '\\'))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('c:\\', '\\'))
+			->then
+				->boolean($path->isRoot())->isTrue()
+			->if($path = new testedClass('C:\\', '/'))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:\\' . uniqid(), '\\'))
+			->then
+				->boolean($path->isRoot())->isFalse()
 		;
 	}
 
 	public function testIsSubPathOf()
 	{
 		$this
-			->given($adapter = new atoum\test\adapter())
-			->and($adapter->realpath = function($path) { return $path; })
-			->and($reference = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+			->if($reference = new testedClass('/a/b', DIRECTORY_SEPARATOR))
 			->then
-				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-			->given($reference = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+			->given($reference = new testedClass('/', DIRECTORY_SEPARATOR))
 			->then
-				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
 			->given($referenceAdapter = new atoum\test\adapter())
-			->and($referenceAdapter->realpath = '/a/b')
+			->and($referenceAdapter->getcwd = '/a/b')
 			->and($reference = new testedClass('d/e/../..', DIRECTORY_SEPARATOR, $referenceAdapter))
 			->then
-				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-				->if($path = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
-			->given($reference = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+			->given($reference = new testedClass('/', DIRECTORY_SEPARATOR))
 			->then
-				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/e', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/d/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/c/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/a/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isTrue()
-				->if($path = new testedClass('/', DIRECTORY_SEPARATOR, $adapter))
+				->if($path = new testedClass('/', DIRECTORY_SEPARATOR))
 				->then
 					->boolean($path->isSubPathOf($reference))->isFalse()
+		;
+	}
+
+	public function testAbsolutize()
+	{
+		$this
+			->given($adapter = new atoum\test\adapter())
+			->and($adapter->getcwd = $currentDirectory = uniqid())
+			->then
+				->if($path = new testedClass('/a/b', DIRECTORY_SEPARATOR, $adapter))
+				->then
+					->object($path->absolutize())->isCloneOf($path)
+				->if($path = new testedClass('../a/b', DIRECTORY_SEPARATOR, $adapter))
+				->then
+					->castToString($path->absolutize())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR . $path)
+				->if($path = new testedClass('a/b', DIRECTORY_SEPARATOR, $adapter))
+				->then
+					->castToString($path->absolutize())->isEqualTo($currentDirectory . DIRECTORY_SEPARATOR . $path)
+		;
+	}
+
+	public function testResolve()
+	{
+		$this
+			->if($path = new testedClass('/a/b'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/a/b'))
+			->if($path = new testedClass('/a/b/..'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/a'))
+			->if($path = new testedClass('/a/b/../..'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/'))
+			->if($path = new testedClass('/a/b/.'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/a/b'))
+			->if($path = new testedClass('/a/./b'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/a/b'))
+			->if($path = new testedClass('//a////./////b'))
+			->then
+				->object($path->resolve())->isEqualTo(new testedClass('/a/b'))
 		;
 	}
 }

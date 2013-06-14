@@ -354,14 +354,14 @@ class script extends atoum\test
 			->given($script = new mock\script($name = uniqid()))
 			->and($script->setAdapter($adapter = new atoum\test\adapter()))
 			->then
-				->if($adapter->is_dir = true)
-				->and($adapter->dirname = $directory = uniqid())
-				->then
-					->string($script->getDirectory())->isEqualTo($directory)
-				->if($adapter->is_dir = false)
-				->and($adapter->getcwd = $currentDirectory = uniqid())
-				->then
-					->string($script->getDirectory())->isEqualTo($currentDirectory)
-		;
+			->if($adapter->is_dir = true)
+			->and($adapter->dirname = $directory = uniqid())
+			->then
+			->string($script->getDirectory())->isEqualTo($directory)
+			->if($adapter->is_dir = false)
+			->and($adapter->getcwd = $currentDirectory = uniqid())
+			->then
+			->string($script->getDirectory())->isEqualTo($currentDirectory)
+			;
 	}
 }

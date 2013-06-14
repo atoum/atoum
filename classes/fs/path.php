@@ -12,22 +12,16 @@ class path
 	protected $adapter = null;
 	protected $drive = '';
 	protected $components = '';
-	protected $directorySeparator = '';
+	protected $directorySeparator = DIRECTORY_SEPARATOR;
 
-	public function __construct($value, $directorySeparator = DIRECTORY_SEPARATOR, atoum\adapter $adapter = null)
+	public function __construct($value, $directorySeparator = null, atoum\adapter $adapter = null)
 	{
-		$this->setAdapter($adapter);
+		$this->directorySeparator = (string) $directorySeparator ?: DIRECTORY_SEPARATOR;
 
-		$this->directorySeparator = (string) $directorySeparator;
-
-		list($this->drive, $value) = static::getDriveAndComponents($value);
-
-		if ($this->directorySeparator === '\\')
-		{
-			$value = str_replace('\\', '/', $value);
-		}
-
-		$this->components = static::getComponents($value, '/');
+		$this
+			->setDriveAndComponents($value)
+			->setAdapter($adapter)
+		;
 	}
 
 	public function __toString()
@@ -62,13 +56,28 @@ class path
 	public function getParentDirectory()
 	{
 		$parentDirectory = clone $this;
-
-		if ($this->isRoot() === false)
-		{
-			$parentDirectory->components = dirname($parentDirectory->components);
-		}
+		$parentDirectory->components = dirname($parentDirectory->components);
 
 		return $parentDirectory;
+	}
+
+	public function getRealParentDirectory()
+	{
+		$realParentDirectory = clone $this;
+		$realParentDirectory = $realParentDirectory->absolutize();
+		$realParentDirectory = $realParentDirectory->getParentDirectory();
+
+		while ($realParentDirectory->exists() === false && self::pathIsRoot($realParentDirectory) === false)
+		{
+			$realParentDirectory = $realParentDirectory->getParentDirectory();
+		}
+
+		if ($realParentDirectory->exists() === false)
+		{
+			throw new exceptions\runtime('Unable to find real parent directory for \'' . $this . '\'');
+		}
+
+		return $realParentDirectory;
 	}
 
 	public function relativizeFrom(self $reference)
@@ -106,20 +115,46 @@ class path
 		return $absolutePath;
 	}
 
+	public function exists()
+	{
+		return ($this->adapter->file_exists((string) $this) === true);
+	}
+
 	public function resolve()
 	{
-		$absoluteComponents = $this->adapter->realpath($this->drive . $this->components);
+		$resolvedPath = $this;
 
-		if ($absoluteComponents === false)
+		if ($resolvedPath->isAbsolute() === false)
 		{
-			throw new exceptions\runtime('Unable to resolve \'' . $this . '\'');
+			$resolvedPath = $resolvedPath->absolutize();
 		}
 
-		$absolutePath = clone $this;
+		$components = array();
 
-		list($absolutePath->drive, $absolutePath->components) = static::getDriveAndComponents($absoluteComponents);
+		foreach (explode('/', ltrim($resolvedPath->components, '/')) as $component)
+		{
+			switch ($component)
+			{
+				case '.':
+					break;
 
-		return $absolutePath;
+				case '..':
+					if (sizeof($components) <= 0)
+					{
+						throw new exceptions\runtime('Unable to resolve path \'' . $this . '\'');
+					}
+
+					array_pop($components);
+					break;
+
+				default:
+					$components[] = $component;
+			}
+		}
+
+		$resolvedPath->components = '/' . join('/', $components);
+
+		return $resolvedPath;
 	}
 
 	public function isSubPathOf(self $path)
@@ -140,9 +175,42 @@ class path
 		return static::pathIsRoot($this->resolve()->components);
 	}
 
+	public function absolutize()
+	{
+		$absolutePath = clone $this;
+
+		if ($absolutePath->isAbsolute() === false)
+		{
+			$absolutePath->setDriveAndComponents($this->adapter->getcwd() . DIRECTORY_SEPARATOR . $absolutePath->components);
+		}
+
+		return $absolutePath;
+	}
+
 	public function isAbsolute()
 	{
 		return static::pathIsAbsolute($this->components);
+	}
+
+	protected function setDriveAndComponents($value)
+	{
+		$drive = null;
+
+		if (preg_match('/^[a-z]:/i', $value, $matches) == true)
+		{
+			$drive = $matches[0];
+			$value = substr($value, 2);
+		}
+
+		if ($this->directorySeparator === '\\')
+		{
+			$value = str_replace('\\', '/', $value);
+		}
+
+		$this->drive = $drive;
+		$this->components = self::getComponents($value, '/');
+
+		return $this;
 	}
 
 	protected static function pathIsRoot($path)
@@ -162,19 +230,8 @@ class path
 			$path = rtrim($path, $directorySeparator);
 		}
 
+		$path = preg_replace('#/{2,}#', '/', $path);
+
 		return $path;
-	}
-
-	protected static function getDriveAndComponents($value)
-	{
-		$drive = null;
-
-		if (preg_match('/^[a-z]:/i', $value, $matches) == true)
-		{
-			$drive = $matches[0];
-			$value = substr($value, 2);
-		}
-
-		return array($drive, $value);
 	}
 }

@@ -144,8 +144,6 @@ abstract class test implements observable, \countable
 	{
 		$this->testAdapterStorage = $storage ?: new test\adapter\storage();
 
-		test\adapter::setStorage($this->testAdapterStorage);
-
 		return $this;
 	}
 
@@ -635,29 +633,7 @@ abstract class test implements observable, \countable
 	{
 		if ($this->testedClassName === null)
 		{
-			$testClass = $this->getClass();
-			$testNamespace = $this->getTestNamespace();
-
-			if (self::isRegex($testNamespace) === true)
-			{
-				if (preg_match($testNamespace, $testClass) === 0)
-				{
-					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
-				}
-
-				$this->testedClassName = trim(preg_replace($testNamespace, '\\', $testClass), '\\');
-			}
-			else
-			{
-				$position = strpos($testClass, $testNamespace);
-
-				if ($position === false)
-				{
-					throw new exceptions\runtime('Test class \'' . $testClass . '\' is not in a namespace which contains \'' . $testNamespace . '\'');
-				}
-
-				$this->testedClassName = trim(substr($testClass, 0, $position) . substr($testClass, $position + strlen($testNamespace) + 1), '\\');
-			}
+			$this->testedClassName = self::getTestedClassNameFromTestClass($this->getClass(), $this->getTestNamespace());
 		}
 
 		return $this->testedClassName;
@@ -852,6 +828,7 @@ abstract class test implements observable, \countable
 						throw new exceptions\runtime('Tested class \'' . $testedClassName . '\' does not exist for test class \'' . $this->getClass() . '\'');
 					}
 
+					test\adapter::setStorage($this->testAdapterStorage);
 					mock\controller::setLinker($this->mockControllerLinker);
 
 					$this->beforeTestMethod($this->currentMethod);
@@ -1093,6 +1070,37 @@ abstract class test implements observable, \countable
 	public static function getDefaultEngine()
 	{
 		return self::$defaultEngine ?: self::defaultEngine;
+	}
+
+	public static function getTestedClassNameFromTestClass($fullyQualifiedClassName, $testNamespace = null)
+	{
+		if ($testNamespace === null)
+		{
+			$testNamespace = self::getNamespace();
+		}
+
+		if (self::isRegex($testNamespace) === true)
+		{
+			if (preg_match($testNamespace, $fullyQualifiedClassName) === 0)
+			{
+				throw new exceptions\runtime('Test class \'' . $fullyQualifiedClassName . '\' is not in a namespace which match pattern \'' . $testNamespace . '\'');
+			}
+
+			$testedClassName = preg_replace($testNamespace, '\\', $fullyQualifiedClassName);
+		}
+		else
+		{
+			$position = strpos($fullyQualifiedClassName, $testNamespace);
+
+			if ($position === false)
+			{
+				throw new exceptions\runtime('Test class \'' . $fullyQualifiedClassName . '\' is not in a namespace which contains \'' . $testNamespace . '\'');
+			}
+
+			$testedClassName = substr($fullyQualifiedClassName, 0, $position) . substr($fullyQualifiedClassName, $position + 1 + strlen($testNamespace));
+		}
+
+		return trim($testedClassName, '\\');
 	}
 
 	protected function setClassAnnotations(annotations\extractor $extractor)

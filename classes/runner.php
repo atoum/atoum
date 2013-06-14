@@ -20,6 +20,7 @@ class runner implements observable
 	protected $adapter = null;
 	protected $locale = null;
 	protected $includer = null;
+	protected $testGenerator = null;
 	protected $globIteratorFactory = null;
 	protected $reflectionClassFactory = null;
 	protected $observers = null;
@@ -100,6 +101,18 @@ class runner implements observable
 	public function getScore()
 	{
 		return $this->score;
+	}
+
+	public function setTestGenerator(atoum\test\generator $generator = null)
+	{
+		$this->testGenerator = $generator ?: new atoum\test\generator();
+
+		return $this;
+	}
+
+	public function getTestGenerator()
+	{
+		return $this->testGenerator;
 	}
 
 	public function setTestDirectoryIterator(iterators\recursives\directory\factory $iterator = null)
@@ -440,14 +453,31 @@ class runner implements observable
 	public function addTest($path)
 	{
 		$runner = $this;
+		$includer = function($path) use ($runner) { include_once($path); };
 
 		try
 		{
-			$this->includer->includePath($path, function($path) use ($runner) { include_once($path); });
+			$this->includer->includePath($path, $includer);
 		}
 		catch (atoum\includer\exception $exception)
 		{
-			throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+			if ($this->testGenerator === null)
+			{
+				throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+			}
+			else
+			{
+				$this->testGenerator->generate($path);
+
+				try
+				{
+					$this->includer->includePath($path, $includer);
+				}
+				catch (atoum\includer\exception $exception)
+				{
+					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $path));
+				}
+			}
 		}
 
 		return $this;
