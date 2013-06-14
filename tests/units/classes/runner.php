@@ -118,7 +118,9 @@ class runner extends atoum\test
 				->object($runner->setTestGenerator($generator = new test\generator()))->isIdenticalTo($runner)
 				->object($runner->getTestGenerator())->isIdenticalTo($generator)
 				->object($runner->setTestGenerator())->isIdenticalTo($runner)
-				->object($runner->getTestGenerator())->isEqualTo(new test\generator())
+				->object($runner->getTestGenerator())
+					->isInstanceOf('mageekguy\atoum\test\generator')
+					->isNotIdenticalTo($generator)
 		;
 	}
 
