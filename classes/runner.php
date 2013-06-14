@@ -454,10 +454,28 @@ class runner implements observable
 	{
 		$runner = $this;
 		$includer = function($path) use ($runner) { include_once($path); };
+		$generateTestClass = false;
 
 		try
 		{
+			$declaredTestClasses = $this->getDeclaredTestClasses();
+			$numberOfIncludedFiles = sizeof(get_included_files());
+
 			$this->includer->includePath($path, $includer);
+
+			if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->getDeclaredTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null)
+			{
+				$this->testGenerator->generate($path);
+
+				try
+				{
+					$this->includer->includePath($path, function($path) use ($runner) { include($path); });
+				}
+				catch (atoum\includer\exception $exception)
+				{
+					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+				}
+			}
 		}
 		catch (atoum\includer\exception $exception)
 		{
