@@ -13,6 +13,7 @@ class xunit extends atoum\reports\asynchronous
 	const defaultTitle = 'atoum testsuite';
 
 	protected $score = null;
+	protected $assertions = array();
 
 	public function __construct(atoum\adapter $adapter = null)
 	{
@@ -28,7 +29,28 @@ class xunit extends atoum\reports\asynchronous
 
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		$this->score = ($event !== atoum\runner::runStop) ? null : $observable->getScore();
+		//var_dump($event);
+		$this->score = null;
+
+		if ($event === atoum\test::afterTestMethod)
+		{
+			$classname = $this->adapter->get_class($observable);
+			$method = $observable->getCurrentMethod();
+
+			if (isset($this->assertions[$classname]) === false)
+			{
+				$this->assertions[$classname] = array();
+			}
+
+			//var_dump($event, get_class($observable), $observable->getScore()->getAssertionNumber());
+			$this->assertions[$classname][$method] = $observable->getScore()->getAssertionNumber() - array_sum($this->assertions[$classname]);
+		}
+
+		if ($event === atoum\runner::runStop)
+		{
+			$this->score = $observable->getScore();
+		}
+
 		return parent::handleEvent($event, $observable);
 	}
 
@@ -40,12 +62,13 @@ class xunit extends atoum\reports\asynchronous
 		$fails = $this->score->getFailAssertions();
 		$uncomplete = $this->score->getUncompletedMethods();
 		$skipped = $this->score->getSkippedMethods();
+		$assertions = $this->assertions;
 
 		$filterClass = function ($element) use (& $clname) { return ($element['class'] == $clname); };
-		$extractClasses = function($list) use (& $clname, & $classes, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
+		$extractClasses = function($list) use (& $clname, & $classes, & $assertions, $durations, $errors, $excepts, $fails, $uncomplete, $skipped, $filterClass) {
 			foreach ($list as $entry)
 			{
-				$clname = $entry['class'];
+				$clname = ltrim($entry['class'], '\\');
 
 				if (isset($classes[$clname]) === false)
 				{
@@ -56,6 +79,7 @@ class xunit extends atoum\reports\asynchronous
 						'durations' => array_filter($durations, $filterClass),
 						'uncomplete' => array_filter($uncomplete, $filterClass),
 						'skipped' => array_filter($skipped, $filterClass),
+						'assertions' => isset($assertions[$clname]) ? $assertions[$clname] : array()
 					);
 				}
 			}
@@ -105,21 +129,21 @@ class xunit extends atoum\reports\asynchronous
 				$testSuite->setAttribute('failures', $fails);
 				$testSuite->setAttribute('errors', $errors);
 				$testSuite->setAttribute('skipped', sizeof($class['skipped']));
+				$testSuite->setAttribute('assertions', array_sum($class['assertions']));
 
 				$time = 0;
-
 				foreach ($class['durations'] as $duration)
 				{
 					$time += $duration['value'];
 
-					static::getTestCase($document, $testSuite, $name, $duration['method'], $duration['value'], $duration['path']);
+					static::getTestCase($document, $testSuite, $name, $duration['method'], $duration['value'], $duration['path'], isset($class['assertions'][$duration['method']]) ? $class['assertions'][$duration['method']] : 0);
 				}
 
 				$testSuite->setAttribute('time', $time);
 
 				foreach ($class['errors'] as $error)
 				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $error['method'], 0, $error['file']);
+					$testCase = static::getTestCase($document, $testSuite, $name, $error['method'], 0, $error['file'], isset($class['assertions'][$error['method']]) ? $class['assertions'][$error['method']] : 0);
 					$testCase->appendChild($xError = $document->createElement('error'));
 
 					$xError->setAttribute('type', $error['type']);
@@ -128,7 +152,7 @@ class xunit extends atoum\reports\asynchronous
 
 				foreach ($class['uncomplete'] as $uncomplete)
 				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $uncomplete['method'], 0, null);
+					$testCase = static::getTestCase($document, $testSuite, $name, $uncomplete['method'], 0, null, isset($class['assertions'][$uncomplete['method']]) ? $class['assertions'][$uncomplete['method']] : 0);
 					$testCase->appendChild($xFail = $document->createElement('error'));
 
 					$xFail->setAttribute('type', $uncomplete['exitCode']);
@@ -137,7 +161,7 @@ class xunit extends atoum\reports\asynchronous
 
 				foreach ($class['fails'] as $fail)
 				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $fail['method'], 0, $fail['file']);
+					$testCase = static::getTestCase($document, $testSuite, $name, $fail['method'], 0, $fail['file'], isset($class['assertions'][$fail['method']]) ? $class['assertions'][$fail['method']] : 0);
 					$testCase->appendChild($xFail = $document->createElement('failure'));
 
 					$xFail->setAttribute('type', 'Failure');
@@ -148,7 +172,7 @@ class xunit extends atoum\reports\asynchronous
 
 				foreach ($class['excepts'] as $exc)
 				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $exc['method'], 0, $exc['file']);
+					$testCase = static::getTestCase($document, $testSuite, $name, $exc['method'], 0, $exc['file'], isset($class['assertions'][$exc['method']]) ? $class['assertions'][$exc['method']] : 0);
 					$testCase->appendChild($xError = $document->createElement('error'));
 
 					$xError->setAttribute('type', 'Exception');
@@ -157,7 +181,7 @@ class xunit extends atoum\reports\asynchronous
 
 				foreach ($class['skipped'] as $skipped)
 				{
-					$testCase = static::getTestCase($document, $testSuite, $name, $skipped['method'], 0, null);
+					$testCase = static::getTestCase($document, $testSuite, $name, $skipped['method'], 0, null, isset($class['assertions'][$skipped['method']]) ? $class['assertions'][$skipped['method']] : 0);
 					$testCase->appendChild($xFail = $document->createElement('skipped'));
 
 					$xFail->setAttribute('type', 'Skipped');
@@ -172,7 +196,7 @@ class xunit extends atoum\reports\asynchronous
 		return $this;
 	}
 
-	private static function getTestCase(\DOMDocument $document, \DOMElement $testSuite, $class, $method, $time, $path)
+	private static function getTestCase(\DOMDocument $document, \DOMElement $testSuite, $class, $method, $time, $path, $assertions)
 	{
 		if (($testCase = static::findTestCase($document, $class, $method)) === null)
 		{
@@ -182,6 +206,7 @@ class xunit extends atoum\reports\asynchronous
 			$testCase->setAttribute('time', $time);
 			$testCase->setAttribute('file', $path);
 			$testCase->setAttribute('classname', $class);
+			$testCase->setAttribute('assertions', $assertions);
 
 			$testSuite->appendChild($testCase);
 		}

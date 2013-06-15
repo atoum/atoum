@@ -1292,9 +1292,9 @@ abstract class test implements observable, \countable
 				{
 					unset($this->engines[$this->currentMethod]);
 
-					$this->callObservers(self::afterTestMethod);
-
 					$this->score->merge($score);
+
+					$this->callObservers(self::afterTestMethod);
 
 					switch (true)
 					{
