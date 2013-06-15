@@ -29,7 +29,6 @@ class xunit extends atoum\reports\asynchronous
 
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		//var_dump($event);
 		$this->score = null;
 
 		if ($event === atoum\test::afterTestMethod)
@@ -42,7 +41,6 @@ class xunit extends atoum\reports\asynchronous
 				$this->assertions[$classname] = array();
 			}
 
-			//var_dump($event, get_class($observable), $observable->getScore()->getAssertionNumber());
 			$this->assertions[$classname][$method] = $observable->getScore()->getAssertionNumber() - array_sum($this->assertions[$classname]);
 		}
 
