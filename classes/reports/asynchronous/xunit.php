@@ -127,7 +127,6 @@ class xunit extends atoum\reports\asynchronous
 				$testSuite->setAttribute('failures', $fails);
 				$testSuite->setAttribute('errors', $errors);
 				$testSuite->setAttribute('skipped', sizeof($class['skipped']));
-				$testSuite->setAttribute('assertions', array_sum($class['assertions']));
 
 				$time = 0;
 				foreach ($class['durations'] as $duration)
