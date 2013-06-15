@@ -24,7 +24,9 @@ $coverallsReport = new reports\asynchronous\coveralls($sources, $token);
 
 /*
 If you are using Travis-CI (or any other CI tool), you should customize the report
-http://about.travis-ci.org/docs/user/ci-environment/#Environment-variables
+* https://coveralls.io/docs/api
+* http://about.travis-ci.org/docs/user/ci-environment/#Environment-variables
+* https://wiki.jenkins-ci.org/display/JENKINS/Building+a+software+project#Buildingasoftwareproject-JenkinsSetEnvironmentVariables
 */
 $defaultFinder = $coverallsReport->getBranchFinder();
 $coverallsReport
