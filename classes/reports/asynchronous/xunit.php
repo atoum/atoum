@@ -202,7 +202,6 @@ class xunit extends atoum\reports\asynchronous
 			$testCase->setAttribute('name', $method);
 			$testCase->setIdAttribute('name', true);
 			$testCase->setAttribute('time', $time);
-			$testCase->setAttribute('file', $path);
 			$testCase->setAttribute('classname', $class);
 			$testCase->setAttribute('assertions', $assertions);
 
