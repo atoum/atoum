@@ -35,3 +35,26 @@ $coverageField->setRootUrl('http://url/of/web/site');
 
 $report->addField($coverageField);
 */
+
+/*
+TEST GENERATOR SETUP
+
+$testGenerator = new atoum\test\generator();
+
+// Please replace in next line "/path/to/your/tests/units/classes/directory" by your unit test's directory.
+$testGenerator->setTestClassesDirectory('path/to/your/tests/units/classes/directory');
+
+// Please replace in next line "your\project\namespace\tests\units" by your unit test's namespace.
+$testGenerator->setTestClassNamespace('your\project\namespace\tests\units');
+
+// Please replace in next line "your\project\namespace\tests\units" by your classes directory.
+$testGenerator->setTestedClassesDirectory('path/to/your/classes/directory');
+
+// Please replace in next line "your\project\namespace" by your project namespace.
+$testGenerator->setTestedClassNamespace('your\project\namespace');
+
+// Please replace in next line "path/to/your/tests/units/runner.php" by path to your unit test's runner.
+$testGenerator->setRunnerPath('path/to/your/tests/units/runner.php');
+
+$script->getRunner()->setTestGenerator($testGenerator);
+*/
