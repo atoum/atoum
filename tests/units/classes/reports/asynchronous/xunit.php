@@ -69,10 +69,18 @@ class xunit extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->extension_loaded = true)
+			->and($adapter->get_class = $class = 'class')
 			->and($runner = new atoum\runner())
 			->and($score = new runner\score())
 			->and($report = new reports\xunit($adapter))
 			->and($runner->setScore($score))
+			->and($testScore = new atoum\test\score())
+			->and($testScore->addPass())
+			->and($test = new \mock\mageekguy\atoum\test())
+			->and($test->getMockController()->getCurrentMethod[1] = $method = 'method')
+			->and($test->getMockController()->getCurrentMethod[2] = $otherMethod = 'otherMethod')
+			->and($test->getMockController()->getCurrentMethod[3] = $thirdMethod = 'thirdMethod')
+			->and($test->setScore($testScore))
 			->and($path = join(
 				DIRECTORY_SEPARATOR,
 				array(
@@ -81,32 +89,41 @@ class xunit extends atoum\test
 					'resources'
 				)
 			))
-			->and($score->addDuration($file = 'file', $class = 'class', $method = 'method', $duration = 1))
+			->and($testScore->addDuration(uniqid(), $class, $method, $duration = 1))
+			->and($testScore->addUncompletedMethod(uniqid(), $class, $otherMethod, $exitCode = 1, $output = 'output'))
+			->and($testScore->addSkippedMethod(uniqid(), $class, $thirdMethod, $line = rand(1, PHP_INT_MAX), $message = 'message'))
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
+			->and($testScore->addPass())
+			->and($testScore->addPass())
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
+			->and($score->merge($testScore))
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '1.xml')))
-			->if($score->addFail($otherFile = 'otherFile', $otherClass = 'otherClass', $otherMethod = 'otherMethod', 1, $asserter = 'asserter', $reason = 'reason'))
+			->if($adapter->get_class = $otherClass = 'otherClass')
+			->and($test->setScore($testScore = new atoum\test\score()))
+			->and($test->getMockController()->getCurrentMethod[4] = $otherMethod)
+			->and($test->getMockController()->getCurrentMethod[5] = $thirdMethod)
+			->and($testScore->addFail(uniqid(), $otherClass, $otherMethod, 1, $asserter = 'asserter', $reason = 'reason'))
+			->and($exception = new \mock\Exception())
+			->and($exception->getMockController()->__toString = $trace = 'trace')
+			->and($testScore->addException(uniqid(), $otherClass, $thirdMethod, 1, $exception))
+			->and($score->merge($testScore))
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '2.xml')))
-			->if($exception = new \mock\Exception())
-			->and($exception->getMockController()->__toString = $trace = 'trace')
-			->and($score->addException($otherFile, $otherClass, $thirdMethod = 'thirdMethod', 1, $exception))
+			->if($adapter->get_class = $thirdClassFqn = 'package\\thirdClass')
+			->and($test->setScore($testScore = new atoum\test\score()))
+			->and($test->getMockController()->getCurrentMethod[6] = $fourthMethod = 'fourthMethod')
+			->and($testScore->addError(uniqid(), $thirdClassFqn, $fourthMethod, rand(0, PHP_INT_MAX), $type = E_ERROR, $message))
+			->and($score->merge($testScore))
+			->and($report->handleEvent(atoum\test::afterTestMethod, $test))
 			->and($report->handleEvent(atoum\runner::runStop, $runner))
 			->then
 				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '3.xml')))
-			->if($score->addError($thirdFile = 'thirdFile', $thirdClassFqn = 'package\\thirdClass', $fourthMethod = 'fourthMethod', rand(0, PHP_INT_MAX), $type = E_ERROR, $message = 'message'))
-			->and($report->handleEvent(atoum\runner::runStop, $runner))
-			->then
-				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '4.xml')))
-			->if($score->addUncompletedMethod($file, $class, $otherMethod, $exitCode = 1, $output = 'output'))
-			->and($report->handleEvent(atoum\runner::runStop, $runner))
-			->then
-				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '5.xml')))
-			->if($score->addSkippedMethod($file, $class, $thirdMethod, $line = rand(1, PHP_INT_MAX), $message))
-			->and($report->handleEvent(atoum\runner::runStop, $runner))
-			->then
-				->castToString($report)->isEqualToContentsOfFile(join(DIRECTORY_SEPARATOR, array($path, '6.xml')))
 		;
 	}
 }
