@@ -1298,12 +1298,12 @@ abstract class test implements observable, \countable
 
 					switch (true)
 					{
-						case $score->getRuntimeExceptionNumber() > 0:
+						case $score->getRuntimeExceptionNumber():
 							$this->callObservers(self::runtimeException);
 							$runtimeExceptions = $score->getRuntimeExceptions();
 							throw array_shift($runtimeExceptions);
 
-						case $score->getVoidMethodNumber() > 0:
+						case $score->getVoidMethodNumber():
 							$this->callObservers(self::void);
 							break;
 
