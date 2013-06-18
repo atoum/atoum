@@ -19,7 +19,6 @@ class runner extends atoum\script\configurable
 	protected $cliFactory = null;
 	protected $configuratorFactory = null;
 	protected $defaultReportFactory = null;
-	protected $runTests = true;
 	protected $scoreFile = null;
 	protected $arguments = array();
 	protected $defaultArguments = array();
@@ -173,49 +172,6 @@ class runner extends atoum\script\configurable
 			{
 				parent::run($this->getDefaultArguments());
 			}
-
-			if ($this->runTests === true)
-			{
-				$this->setDefaultBootstrapFiles();
-
-				if ($this->loop === true)
-				{
-					$this->loop();
-				}
-				else
-				{
-					if ($this->runner->hasReports() === false)
-					{
-						$this->addDefaultReport();
-					}
-
-					$methods = $this->methods;
-
-					$oldFailMethods = array();
-
-					if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
-					{
-						$oldFailMethods = self::getFailMethods($oldScore);
-
-						if ($oldFailMethods)
-						{
-							$methods = $oldFailMethods;
-						}
-					}
-
-					$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
-
-					if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
-					{
-						$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
-
-						if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
-						{
-							$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
-						}
-					}
-				}
-			}
 		}
 		catch (atoum\exception $exception)
 		{
@@ -229,17 +185,12 @@ class runner extends atoum\script\configurable
 
 	public function version()
 	{
-		$this->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL);
-		$this->runTests = false;
+		$this
+			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
+			->stop()
+		;
 
 		return $this;
-	}
-
-	public function help()
-	{
-		$this->runTests = false;
-
-		return parent::help();
 	}
 
 	public function useConfigFile($path)
@@ -349,9 +300,7 @@ class runner extends atoum\script\configurable
 			;
 		}
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function setDefaultBootstrapFiles($startDirectory = null)
@@ -809,6 +758,50 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	protected function doRun()
+	{
+		$this->setDefaultBootstrapFiles();
+
+		if ($this->loop === true)
+		{
+			$this->loop();
+		}
+		else
+		{
+			if ($this->runner->hasReports() === false)
+			{
+				$this->addDefaultReport();
+			}
+
+			$methods = $this->methods;
+			$oldFailMethods = array();
+
+			if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+			{
+				$oldFailMethods = self::getFailMethods($oldScore);
+
+				if ($oldFailMethods)
+				{
+					$methods = $oldFailMethods;
+				}
+			}
+
+			$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
+
+			if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
+			{
+				$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
+
+				if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+				{
+					$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+				}
+			}
+		}
+
+		return $this;
+	}
+
 	protected function runAgain()
 	{
 		return ($this->prompt($this->locale->_('Press <Enter> to reexecute, press any other key and <Enter> to stop...')) == '');
@@ -867,13 +860,13 @@ class runner extends atoum\script\configurable
 
 		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($_SERVER['argv'][0]) . $arguments;
 
-		while ($this->runTests === true)
+		while ($this->canRun() === true)
 		{
 			passthru($command);
 
 			if ($this->loop === false || $this->runAgain() === false)
 			{
-				$this->runTests = false;
+				$this->stopRun();
 			}
 		}
 

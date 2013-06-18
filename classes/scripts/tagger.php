@@ -12,7 +12,6 @@ use
 class tagger extends atoum\script
 {
 	protected $engine = null;
-	protected $tagVersion = true;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -33,25 +32,6 @@ class tagger extends atoum\script
 	public function getEngine()
 	{
 		return $this->engine;
-	}
-
-	public function run(array $arguments = array())
-	{
-		parent::run($arguments);
-
-		if ($this->tagVersion === true)
-		{
-			$this->engine->tagVersion();
-		}
-
-		return $this;
-	}
-
-	public function help()
-	{
-		$this->tagVersion = false;
-
-		return parent::help();
 	}
 
 	protected function setArgumentHandlers()
@@ -128,6 +108,13 @@ class tagger extends atoum\script
 				)
 			;
 		}
+
+		return $this;
+	}
+
+	protected function doRun()
+	{
+		$this->engine->tagVersion();
 
 		return $this;
 	}

@@ -14,7 +14,6 @@ class generator extends atoum\script
 {
 	const phar = 'mageekguy.atoum.phar';
 
-	protected $generate = true;
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;
 	protected $stubFile = null;
@@ -117,28 +116,7 @@ class generator extends atoum\script
 		return $this->stubFile;
 	}
 
-	public function run(array $arguments = array())
-	{
-		$this->generate = true;
-
-		parent::run($arguments);
-
-		if ($this->generate === true)
-		{
-			$this->generate();
-		}
-
-		return $this;
-	}
-
-	public function help()
-	{
-		$this->generate = false;
-
-		return parent::help();
-	}
-
-	protected function generate()
+	protected function doRun()
 	{
 		if ($this->originDirectory === null)
 		{

@@ -21,6 +21,7 @@ abstract class script
 	protected $outputWriter = null;
 	protected $errorWriter = null;
 
+	private $doRun = true;
 	private $help = array();
 	private $argumentsParser = null;
 
@@ -176,7 +177,7 @@ abstract class script
 			$this->writeLabels($arguments);
 		}
 
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null, $priority = 0)
@@ -197,7 +198,14 @@ abstract class script
 		$this->adapter->ini_set('log_errors', 'Off');
 		$this->adapter->ini_set('display_errors', 'stderr');
 
+		$this->doRun = true;
+
 		$this->argumentsParser->parse($this, $arguments);
+
+		if ($this->canRun() === true)
+		{
+			$this->doRun();
+		}
 
 		return $this;
 	}
@@ -280,4 +288,18 @@ abstract class script
 
 		return $this;
 	}
+
+	protected function canRun()
+	{
+		return ($this->doRun === true);
+	}
+
+	protected function stopRun()
+	{
+		$this->doRun = false;
+
+		return $this;
+	}
+
+	protected abstract function doRun();
 }

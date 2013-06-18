@@ -22,20 +22,12 @@ class treemap extends atoum\script\configurable
 	protected $onlyJsonFile = false;
 	protected $analyzers = array();
 	protected $categorizers = array();
-	protected $run = true;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
 		parent::__construct($name, $adapter);
 
 		$this->setIncluder();
-	}
-
-	public function help()
-	{
-		$this->run = false;
-
-		return parent::help();
 	}
 
 	public function getProjectName()
@@ -152,175 +144,6 @@ class treemap extends atoum\script\configurable
 		$script = $this;
 
 		return $this->includeConfigFile($path, function($path) use ($script) { include_once($path); });
-	}
-
-	public function run(array $arguments = array())
-	{
-		if (parent::run($arguments)->run === true)
-		{
-			if ($this->projectName === null)
-			{
-				throw new exceptions\runtime($this->locale->_('Project name is undefined'));
-			}
-
-			if (sizeof($this->directories) <= 0)
-			{
-				throw new exceptions\runtime($this->locale->_('Directories are undefined'));
-			}
-
-			if ($this->outputDirectory === null)
-			{
-				throw new exceptions\runtime($this->locale->_('Output directory is undefined'));
-			}
-
-			if ($this->htmlDirectory === null)
-			{
-				throw new exceptions\runtime($this->locale->_('Html directory is undefined'));
-			}
-
-			$maxDepth = 1;
-
-			$nodes = array(
-				'name' => $this->projectName,
-				'url' => $this->projectUrl,
-				'path' => '',
-				'children' => array()
-			);
-
-			foreach ($this->directories as $rootDirectory)
-			{
-				try
-				{
-					$directoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($rootDirectory));
-				}
-				catch (\exception $exception)
-				{
-					throw new exceptions\runtime($this->locale->_('Directory \'' . $rootDirectory . '\' does not exist'));
-				}
-
-				foreach ($directoryIterator as $file)
-				{
-					$node = & $nodes;
-
-					$directories = ltrim(substr(dirname($file->getPathname()), strlen($rootDirectory)), DIRECTORY_SEPARATOR);
-
-					if ($directories !== '')
-					{
-						$directories = explode(DIRECTORY_SEPARATOR, $directories);
-
-						$depth = sizeof($directories);
-
-						if ($depth > $maxDepth)
-						{
-							$maxDepth = $depth;
-						}
-
-						foreach ($directories as $directory)
-						{
-							$childFound = false;
-
-							foreach ($node['children'] as $key => $child)
-							{
-								$childFound = ($child['name'] === $directory);
-
-								if ($childFound === true)
-								{
-									break;
-								}
-							}
-
-							if ($childFound === false)
-							{
-								$key = sizeof($node['children']);
-								$node['children'][] = array(
-									'name' => $directory,
-									'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,
-									'children' => array()
-								);
-							}
-
-							$node = & $node['children'][$key];
-						}
-					}
-
-					$child = array(
-						'name' => $file->getFilename(),
-						'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
-						'metrics' => array(),
-						'type' => ''
-					);
-
-					foreach ($this->analyzers as $analyzer)
-					{
-						$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
-					}
-
-					foreach ($this->categorizers as $categorizer)
-					{
-						if ($categorizer->categorize($file) === true)
-						{
-							$child['type'] = $categorizer->getName();
-
-							break;
-						}
-					}
-
-					$node['children'][] = $child;
-				}
-			}
-
-			$data = array(
-				'codeUrl' => $this->codeUrl,
-				'metrics' => array(),
-				'categorizers' => array(),
-				'maxDepth' => $maxDepth,
-				'nodes' => $nodes
-			);
-
-			foreach ($this->analyzers as $analyzer)
-			{
-				$data['metrics'][] = array(
-					'name' => $analyzer->getMetricName(),
-					'label' => $analyzer->getMetricLabel()
-				);
-			}
-
-			foreach ($this->categorizers as $categorizer)
-			{
-				$data['categorizers'][] = array(
-					'name' => $categorizer->getName(),
-					'minDepthColor' => $categorizer->getMinDepthColor(),
-					'maxDepthColor' => $categorizer->getMaxDepthColor()
-				);
-			}
-
-			if (@file_put_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($data)) === false)
-			{
-				throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
-			}
-
-			if ($this->onlyJsonFile === false)
-			{
-				try
-				{
-					$htmlDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->htmlDirectory));
-				}
-				catch (\exception $exception)
-				{
-					throw new exceptions\runtime($this->locale->_('Directory \'' . $this->htmlDirectory . '\' does not exist'));
-				}
-
-				foreach ($htmlDirectoryIterator as $file)
-				{
-					if (@copy($file, $this->outputDirectory . DIRECTORY_SEPARATOR . basename($file)) === false)
-					{
-						throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
-					}
-				}
-			}
-		}
-
-		return $this;
 	}
 
 	protected function setArgumentHandlers()
@@ -460,5 +283,171 @@ class treemap extends atoum\script\configurable
 				$this->locale->_('Use html files in <directory> to generate treemap')
 			)
 		;
+	}
+
+	protected function doRun()
+	{
+		if ($this->projectName === null)
+		{
+			throw new exceptions\runtime($this->locale->_('Project name is undefined'));
+		}
+
+		if (sizeof($this->directories) <= 0)
+		{
+			throw new exceptions\runtime($this->locale->_('Directories are undefined'));
+		}
+
+		if ($this->outputDirectory === null)
+		{
+			throw new exceptions\runtime($this->locale->_('Output directory is undefined'));
+		}
+
+		if ($this->htmlDirectory === null)
+		{
+			throw new exceptions\runtime($this->locale->_('Html directory is undefined'));
+		}
+
+		$maxDepth = 1;
+
+		$nodes = array(
+			'name' => $this->projectName,
+			'url' => $this->projectUrl,
+			'path' => '',
+			'children' => array()
+		);
+
+		foreach ($this->directories as $rootDirectory)
+		{
+			try
+			{
+				$directoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($rootDirectory));
+			}
+			catch (\exception $exception)
+			{
+				throw new exceptions\runtime($this->locale->_('Directory \'' . $rootDirectory . '\' does not exist'));
+			}
+
+			foreach ($directoryIterator as $file)
+			{
+				$node = & $nodes;
+
+				$directories = ltrim(substr(dirname($file->getPathname()), strlen($rootDirectory)), DIRECTORY_SEPARATOR);
+
+				if ($directories !== '')
+				{
+					$directories = explode(DIRECTORY_SEPARATOR, $directories);
+
+					$depth = sizeof($directories);
+
+					if ($depth > $maxDepth)
+					{
+						$maxDepth = $depth;
+					}
+
+					foreach ($directories as $directory)
+					{
+						$childFound = false;
+
+						foreach ($node['children'] as $key => $child)
+						{
+							$childFound = ($child['name'] === $directory);
+
+							if ($childFound === true)
+							{
+								break;
+							}
+						}
+
+						if ($childFound === false)
+						{
+							$key = sizeof($node['children']);
+							$node['children'][] = array(
+								'name' => $directory,
+								'path' => $node['path'] . DIRECTORY_SEPARATOR . $directory,
+								'children' => array()
+							);
+						}
+
+						$node = & $node['children'][$key];
+					}
+				}
+
+				$child = array(
+					'name' => $file->getFilename(),
+					'path' => $node['path'] . DIRECTORY_SEPARATOR . $file->getFilename(),
+					'metrics' => array(),
+					'type' => ''
+				);
+
+				foreach ($this->analyzers as $analyzer)
+				{
+					$child['metrics'][$analyzer->getMetricName()] = $analyzer->getMetricFromFile($file);
+				}
+
+				foreach ($this->categorizers as $categorizer)
+				{
+					if ($categorizer->categorize($file) === true)
+					{
+						$child['type'] = $categorizer->getName();
+
+						break;
+					}
+				}
+
+				$node['children'][] = $child;
+			}
+		}
+
+		$data = array(
+			'codeUrl' => $this->codeUrl,
+			'metrics' => array(),
+			'categorizers' => array(),
+			'maxDepth' => $maxDepth,
+			'nodes' => $nodes
+		);
+
+		foreach ($this->analyzers as $analyzer)
+		{
+			$data['metrics'][] = array(
+				'name' => $analyzer->getMetricName(),
+				'label' => $analyzer->getMetricLabel()
+			);
+		}
+
+		foreach ($this->categorizers as $categorizer)
+		{
+			$data['categorizers'][] = array(
+				'name' => $categorizer->getName(),
+				'minDepthColor' => $categorizer->getMinDepthColor(),
+				'maxDepthColor' => $categorizer->getMaxDepthColor()
+			);
+		}
+
+		if (@file_put_contents($this->outputDirectory . DIRECTORY_SEPARATOR . self::dataFile, json_encode($data)) === false)
+		{
+			throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+		}
+
+		if ($this->onlyJsonFile === false)
+		{
+			try
+			{
+				$htmlDirectoryIterator = new \recursiveIteratorIterator(new atoum\iterators\filters\recursives\dot($this->htmlDirectory));
+			}
+			catch (\exception $exception)
+			{
+				throw new exceptions\runtime($this->locale->_('Directory \'' . $this->htmlDirectory . '\' does not exist'));
+			}
+
+			foreach ($htmlDirectoryIterator as $file)
+			{
+				if (@copy($file, $this->outputDirectory . DIRECTORY_SEPARATOR . basename($file)) === false)
+				{
+					throw new exceptions\runtime($this->locale->_('Unable to write in \'' . $this->outputDirectory . '\''));
+				}
+			}
+		}
+
+		return $this;
 	}
 }

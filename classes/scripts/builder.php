@@ -457,45 +457,6 @@ class builder extends atoum\script\configurable
 		return $pharBuilt;
 	}
 
-	public function run(array $arguments = array())
-	{
-		parent::run($arguments);
-
-		$alreadyRun = false;
-
-		$runFile = $this->getRunFile();
-
-		$pid = trim(@$this->adapter->file_get_contents($runFile));
-
-		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
-		{
-			if ($this->pharCreationEnabled === true)
-			{
-				$runFileResource = @$this->adapter->fopen($runFile, 'w+');
-
-				if ($runFileResource === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
-				}
-
-				if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
-				{
-					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
-				}
-
-				$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
-
-				$this->createPhar($this->version);
-
-				$this->adapter->fclose($runFileResource);
-
-				@$this->adapter->unlink($runFile);
-			}
-		}
-
-		return $this;
-	}
-
 	public function writeErrorInErrorsDirectory($error)
 	{
 		if ($this->errorsDirectory !== null)
@@ -700,6 +661,43 @@ class builder extends atoum\script\configurable
 				array('-rt', '--report-title')
 			)
 		;
+	}
+
+	protected function doRun()
+	{
+		$alreadyRun = false;
+
+		$runFile = $this->getRunFile();
+
+		$pid = trim(@$this->adapter->file_get_contents($runFile));
+
+		if (is_numeric($pid) === false || $this->adapter->posix_kill($pid, 0) === false)
+		{
+			if ($this->pharCreationEnabled === true)
+			{
+				$runFileResource = @$this->adapter->fopen($runFile, 'w+');
+
+				if ($runFileResource === false)
+				{
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to open run file \'%s\''), $runFile));
+				}
+
+				if ($this->adapter->flock($runFileResource, \LOCK_EX | \LOCK_NB) === false)
+				{
+					throw new exceptions\runtime(sprintf($this->locale->_('Unable to get exclusive lock on run file \'%s\''), $runFile));
+				}
+
+				$this->adapter->fwrite($runFileResource, $this->adapter->getmypid());
+
+				$this->createPhar($this->version);
+
+				$this->adapter->fclose($runFileResource);
+
+				@$this->adapter->unlink($runFile);
+			}
+		}
+
+		return $this;
 	}
 
 	protected function cleanDirectoryPath($path)
