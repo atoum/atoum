@@ -1221,9 +1221,9 @@ abstract class test implements observable, \countable
 								$arguments = array($arguments);
 							}
 
-							if (sizeof($arguments) != $numberOfArguments)
+							if (sizeof($arguments) < $numberOfArguments)
 							{
-								throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
+								throw new test\exceptions\runtime('Data provider ' . $this->getClass() . '::' . $this->dataProviders[$testMethod] . '() does not provide enough arguments at key ' . $key . ' for test method ' . $this->getClass() . '::' . $testMethod . '()');
 							}
 
 							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
