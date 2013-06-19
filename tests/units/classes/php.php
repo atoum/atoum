@@ -38,19 +38,19 @@ class php extends atoum\test
 		$this
 			->if($php = new testedClass())
 			->then
-				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath()))
 			->if($php->addOption($option1 = uniqid()))
 			->then
-				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1))
 			->if($php->addOption($option2 = uniqid(), $option2Value = uniqid() . ' ' . uniqid()))
 			->then
-				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value))
 			->if($php->addArgument($argument1 = uniqid()))
 			->then
-				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value) . ' -- ' . escapeshellarg($argument1))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value . ' -- ' . $argument1))
 			->if($php->addArgument($argument2 = uniqid(), $argument2Value = uniqid()))
 			->then
-				->castToString($php)->isEqualTo(escapeshellarg($php->getBinaryPath()) . ' ' . escapeshellarg($option1) . ' ' . escapeshellarg($option2) . ' ' . escapeshellarg($option2Value) . ' -- ' . escapeshellarg($argument1) . ' ' . escapeshellarg($argument2) . ' ' . escapeshellarg($argument2Value))
+				->castToString($php)->isEqualTo(escapeshellcmd($php->getBinaryPath() . ' ' . $option1 . ' ' . $option2 . ' ' . $option2Value . ' -- ' . $argument1 . ' ' . $argument2 . ' ' . $argument2Value))
 		;
 	}
 

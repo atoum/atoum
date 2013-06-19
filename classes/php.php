@@ -30,15 +30,15 @@ class php
 
 	public function __toString()
 	{
-		$command = escapeshellarg($this->binaryPath);
+		$command = $this->binaryPath;
 
 		foreach ($this->options as $option => $value)
 		{
-			$command .= ' ' . escapeshellarg($option);
+			$command .= ' ' . $option;
 
 			if ($value !== null)
 			{
-				$command .= ' ' . escapeshellarg($value);
+				$command .= ' ' . $value;
 			}
 		}
 
@@ -48,18 +48,18 @@ class php
 
 			foreach ($this->arguments as $argument)
 			{
-				$command .= ' ' . escapeshellarg(key($argument));
+				$command .= ' ' . key($argument);
 
 				$value = current($argument);
 
 				if ($value !== null)
 				{
-					$command .= ' ' . escapeshellarg($value);
+					$command .= ' ' . $value;
 				}
 			}
 		}
 
-		return $command;
+		return escapeshellcmd($command);
 	}
 
 	public function reset()
