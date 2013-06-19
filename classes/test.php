@@ -1178,7 +1178,15 @@ abstract class test implements observable, \countable
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
-			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value); })
+			->setHandler('dataProvider', function($value) use ($test, & $methodName) {
+					if ($value === true)
+					{
+						$value = substr($methodName, 4) . 'DataProvider';
+					}
+
+					$test->setDataProvider($methodName, $value);
+				}
+			)
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
 			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
 			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
