@@ -29,6 +29,7 @@ abstract class test implements observable, \countable
 	const exception = 'testException';
 	const runtimeException = 'testRuntimeException';
 	const success = 'testAssertionSuccess';
+	const afterTestMethodDataSet = 'afterTestMethodDataSet';
 	const afterTestMethod = 'afterTestMethod';
 	const beforeTearDown = 'beforeTestTearDown';
 	const afterTearDown = 'afterTestTearDown';
@@ -1232,6 +1233,9 @@ abstract class test implements observable, \countable
 							$this->asserterCallManager->check();
 
 							$this->score->unsetDataSet();
+
+							$this->afterTestMethodDataSet($this->currentMethod, $key, $arguments);
+							$this->callObservers(self::afterTestMethodDataSet);
 						}
 					}
 
@@ -1400,6 +1404,8 @@ abstract class test implements observable, \countable
 	public function setUp() {}
 
 	public function beforeTestMethod($testMethod) {}
+
+	public function afterTestMethodDataSet($testMethod, $key, array $arguments) {}
 
 	public function afterTestMethod($testMethod) {}
 
