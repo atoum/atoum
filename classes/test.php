@@ -1018,7 +1018,7 @@ abstract class test implements observable, \countable
 	{
 		if ($dataProvider === null)
 		{
-			$dataProvider = substr($testMethodName, 4) . 'DataProvider';
+			$dataProvider = $testMethodName . 'DataProvider';
 		}
 
 		if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
