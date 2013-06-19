@@ -119,6 +119,11 @@ abstract class test implements observable, \countable
 				$this->testMethods[$methodName] = array();
 
 				$annotationExtractor->extract($publicMethod->getDocComment());
+
+				if ($publicMethod->getNumberOfParameters() > 0 && isset($this->dataProviders[$methodName]) === false)
+				{
+					$this->setDataProvider($methodName);
+				}
 			}
 		}
 
@@ -1009,11 +1014,16 @@ abstract class test implements observable, \countable
 		return $this;
 	}
 
-	public function setDataProvider($testMethodName, $dataProvider)
+	public function setDataProvider($testMethodName, $dataProvider = null)
 	{
+		if ($dataProvider === null)
+		{
+			$dataProvider = substr($testMethodName, 4) . 'DataProvider';
+		}
+
 		if (method_exists($this->checkMethod($testMethodName), $dataProvider) === false)
 		{
-			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . $dataProvider . '() is unknown');
+			throw new exceptions\logic\invalidArgument('Data provider ' . $this->class . '::' . lcfirst($dataProvider) . '() is unknown');
 		}
 
 		$this->dataProviders[$testMethodName] = $dataProvider;
@@ -1178,15 +1188,7 @@ abstract class test implements observable, \countable
 			->resetHandlers()
 			->setHandler('ignore', function($value) use ($test, & $methodName) { $test->ignoreMethod($methodName, annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test, & $methodName) { $test->setMethodTags($methodName, annotations\extractor::toArray($value)); })
-			->setHandler('dataProvider', function($value) use ($test, & $methodName) {
-					if ($value === true)
-					{
-						$value = substr($methodName, 4) . 'DataProvider';
-					}
-
-					$test->setDataProvider($methodName, $value);
-				}
-			)
+			->setHandler('dataProvider', function($value) use ($test, & $methodName) { $test->setDataProvider($methodName, $value === true ? null : $value); })
 			->setHandler('engine', function($value) use ($test, & $methodName) { $test->setMethodEngine($methodName, $value); })
 			->setHandler('isVoid', function($value) use ($test, & $methodName) { $test->setMethodVoid($methodName); })
 			->setHandler('isNotVoid', function($value) use ($test, & $methodName) { $test->setMethodNotVoid($methodName); })
