@@ -4,7 +4,7 @@ namespace mageekguy\atoum\fs;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\fs\path\exception
 ;
 
 class path
@@ -53,66 +53,40 @@ class path
 		return $this->directorySeparator;
 	}
 
-	public function getParentDirectory()
-	{
-		$parentDirectory = clone $this;
-		$parentDirectory->components = dirname($parentDirectory->components);
-
-		return $parentDirectory;
-	}
-
-	public function getRealParentDirectory()
-	{
-		$realParentDirectory = clone $this;
-		$realParentDirectory = $realParentDirectory->absolutize();
-		$realParentDirectory = $realParentDirectory->getParentDirectory();
-
-		while ($realParentDirectory->exists() === false && self::pathIsRoot($realParentDirectory) === false)
-		{
-			$realParentDirectory = $realParentDirectory->getParentDirectory();
-		}
-
-		if ($realParentDirectory->exists() === false)
-		{
-			throw new exceptions\runtime('Unable to find real parent directory for \'' . $this . '\'');
-		}
-
-		return $realParentDirectory;
-	}
-
 	public function relativizeFrom(path $reference)
 	{
-		$absolutePath = $this->resolve();
-		$absoluteReference = $reference->resolve();
+		$this->resolve();
+
+		$resolvedReferencePath = $reference->getResolvedPath();
 
 		switch (true)
 		{
-			case $absoluteReference->components === '/':
-				$absolutePath->components = '.' . $absolutePath->components;
+			case $this->components === '/':
+				$this->components = '.' . $this->components;
 				break;
 
-			case $absolutePath->components === $absoluteReference->components:
-				$absolutePath->components = '.';
+			case $this->components === $resolvedReferencePath->components:
+				$this->components = '.';
 				break;
 
-			case $absolutePath->isSubPathOf($absoluteReference):
-				$absolutePath->components = './' . substr($absolutePath->components, strlen($absoluteReference->components) + 1);
+			case $this->isSubPathOf($resolvedReferencePath):
+				$this->components = './' . ltrim(substr($this->components, strlen($resolvedReferencePath->components)), '/');
 				break;
 
 			default:
 				$relativePath = '';
 
-				while ($absolutePath->isNotSubPathOf($absoluteReference))
+				while ($this->isNotSubPathOf($resolvedReferencePath))
 				{
 					$relativePath .= '../';
 
-					$absoluteReference = $absoluteReference->getParentDirectory();
+					$resolvedReferencePath = $resolvedReferencePath->getParentDirectoryPath();
 				}
 
-				$absolutePath->components = static::getComponents($relativePath, '/') . '/' . ltrim(substr($absolutePath->components, strlen($absoluteReference->components)), '/');
+				$this->components = static::getComponents($relativePath, '/') . '/' . ltrim(substr($this->components, strlen($resolvedReferencePath->components)), '/');
 		}
 
-		return $absolutePath;
+		return $this;
 	}
 
 	public function exists()
@@ -122,16 +96,14 @@ class path
 
 	public function resolve()
 	{
-		$resolvedPath = $this;
-
-		if ($resolvedPath->isAbsolute() === false)
+		if ($this->isAbsolute() === false)
 		{
-			$resolvedPath = $resolvedPath->absolutize();
+			$this->absolutize();
 		}
 
 		$components = array();
 
-		foreach (explode('/', ltrim($resolvedPath->components, '/')) as $component)
+		foreach (explode('/', ltrim($this->components, '/')) as $component)
 		{
 			switch ($component)
 			{
@@ -141,7 +113,7 @@ class path
 				case '..':
 					if (sizeof($components) <= 0)
 					{
-						throw new exceptions\runtime('Unable to resolve path \'' . $this . '\'');
+						throw new exception('Unable to resolve path \'' . $this . '\'');
 					}
 
 					array_pop($components);
@@ -152,17 +124,18 @@ class path
 			}
 		}
 
-		$resolvedPath->components = '/' . join('/', $components);
+		$this->components = '/' . join('/', $components);
 
-		return $resolvedPath;
+		return $this;
 	}
 
 	public function isSubPathOf(path $path)
 	{
-		$absoluteThis = $this->resolve();
-		$absolutePath = $path->resolve();
+		$this->resolve();
 
-		return ($absoluteThis->components !== $absolutePath->components && ($absolutePath->isRoot() === true || strpos($absoluteThis->components, $absolutePath->components . '/') === 0));
+		$resolvedPath = $path->getResolvedPath();
+
+		return ($this->components !== $resolvedPath->components && ($resolvedPath->isRoot() === true || strpos($this->components, $resolvedPath->components . '/') === 0));
 	}
 
 	public function isNotSubPathOf(path $path)
@@ -172,19 +145,7 @@ class path
 
 	public function isRoot()
 	{
-		return static::pathIsRoot($this->resolve()->components);
-	}
-
-	public function absolutize()
-	{
-		$absolutePath = clone $this;
-
-		if ($absolutePath->isAbsolute() === false)
-		{
-			$absolutePath->setDriveAndComponents($this->adapter->getcwd() . DIRECTORY_SEPARATOR . $absolutePath->components);
-		}
-
-		return $absolutePath;
+		return static::pathIsRoot($this->getResolvedPath()->components);
 	}
 
 	public function isAbsolute()
@@ -192,13 +153,98 @@ class path
 		return static::pathIsAbsolute($this->components);
 	}
 
+	public function absolutize()
+	{
+		if ($this->isAbsolute() === false)
+		{
+			$this->setDriveAndComponents($this->adapter->getcwd() . DIRECTORY_SEPARATOR . $this->components);
+		}
+
+		return $this;
+	}
+
+	public function getRealPath()
+	{
+		$absolutePath = $this->getAbsolutePath();
+
+		$files = '';
+		$realPath = $this->adapter->realpath((string) $absolutePath);
+
+		if ($realPath === false)
+		{
+			while ($realPath === false && $absolutePath->isRoot() === false)
+			{
+				$files = $this->directorySeparator . $this->adapter->basename((string) $absolutePath) . $files;
+				$absolutePath = $absolutePath->getParentDirectoryPath();
+				$realPath = $this->adapter->realpath((string) $absolutePath);
+			}
+		}
+
+		if ($realPath !== false)
+		{
+			$absolutePath->setDriveAndComponents($realPath . $files);
+		}
+		else
+		{
+			throw new exception('Unable to get real path for \'' . $this . '\'');
+		}
+
+		return $absolutePath;
+	}
+
+	public function getParentDirectoryPath()
+	{
+		$parentDirectory = clone $this;
+		$parentDirectory->components = $this->adapter->dirname($parentDirectory->components);
+
+		return $parentDirectory;
+	}
+
+	public function getRealParentDirectoryPath()
+	{
+		$realParentDirectoryPath = $this->getParentDirectoryPath();
+
+		while ($realParentDirectoryPath->exists() === false && $realParentDirectoryPath->isRoot() === false)
+		{
+			$realParentDirectoryPath = $realParentDirectoryPath->getParentDirectoryPath();
+		}
+
+		if ($realParentDirectoryPath->exists() === false)
+		{
+			throw new exception('Unable to find real parent directory for \'' . $this . '\'');
+		}
+
+		return $realParentDirectoryPath;
+	}
+
+	public function getRelativePathFrom(path $reference)
+	{
+		$clone = clone $this;
+
+		return $clone->relativizeFrom($reference);
+	}
+
+	public function getResolvedPath()
+	{
+		$clone = clone $this;
+
+		return $clone->resolve();
+	}
+
+	public function getAbsolutePath()
+	{
+		$clone = clone $this;
+
+		return $clone->absolutize();
+	}
+
 	public function createParentDirectory()
 	{
-		$parentDirectory = $this->getParentDirectory();
+		$parentDirectory = $this->getParentDirectoryPath();
 
 		if ($this->adapter->file_exists($parentDirectory) === false && @$this->adapter->mkdir($parentDirectory, 0777, true) === false)
 		{
-			throw new exceptions\runtime('Unable to create directory \'' . $parentDirectory . '\'');
+			throw new exception('Unable to create directory \'' . $parentDirectory . '\'');
 		}
 
 		return $this;
@@ -208,7 +254,7 @@ class path
 	{
 		if (@$this->adapter->file_put_contents($this->createParentDirectory(), $data) === false)
 		{
-			throw new exceptions\runtime('Unable to put data \'' . $data . '\' in file \'' . $this . '\'');
+			throw new exception('Unable to put data \'' . $data . '\' in file \'' . $this . '\'');
 		}
 
 		return $this;

@@ -209,18 +209,25 @@ class generator
 			throw new generator\exception('Test class namespace is undefined');
 		}
 
-		$testClassesDirectory = $this->pathFactory->build($this->testClassesDirectory)->resolve();
-		$testClassPath = $this->pathFactory->build($testClassPath);
-		$testClassBaseDirectory = $testClassPath->getRealParentDirectory();
+		$testClassesDirectory = $this->pathFactory->build($this->testClassesDirectory);
 
-		if ((string) $testClassesDirectory !== (string) $testClassBaseDirectory && $testClassBaseDirectory->isSubPathOf($testClassesDirectory) === false)
+		if ($testClassesDirectory->exists() === false)
+		{
+			throw new generator\exception('Test classes directory \'' . $testClassesDirectory . '\' does not exist');
+		}
+
+		$realTestClassesDirectory = $testClassesDirectory->getRealPath();
+		$realTestClassPath = $this->pathFactory->build($testClassPath)->getRealPath();
+		$realTestClassBaseDirectory = $realTestClassPath->getRealParentDirectoryPath();
+
+		if ((string) $realTestClassesDirectory !== (string) $realTestClassBaseDirectory && $realTestClassBaseDirectory->isSubPathOf($realTestClassesDirectory) === false)
 		{
 			throw new generator\exception('Path \'' . $testClassPath . '\' is not in directory \'' . $this->testClassesDirectory . '\'');
 		}
 
-		$testClassRelativePath = substr($testClassPath->relativizeFrom($testClassBaseDirectory), 2);
+		$realTestClassRelativePath = substr($realTestClassPath->getRelativePathFrom($realTestClassBaseDirectory), 2);
 
-		$fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, array($this, $testClassRelativePath));
+		$fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, array($this, $realTestClassRelativePath));
 
 		$testClassTemplate = $this->templateParser->parseFile($this->templatesDirectory . DIRECTORY_SEPARATOR . 'testClass.php');
 
@@ -231,7 +238,7 @@ class generator
 		if ($this->runnerPath !== null)
 		{
 			$runnerPath = $this->pathFactory->build($this->runnerPath);
-			$relativeRunnerPath = $runnerPath->relativizeFrom($testClassBaseDirectory);
+			$relativeRunnerPath = $runnerPath->relativizeFrom($realTestClassBaseDirectory);
 
 			$testClassTemplate->requireRunner->relativeRunnerPath = $relativeRunnerPath;
 			$testClassTemplate->requireRunner->build();
@@ -269,7 +276,7 @@ class generator
 
 		$testClassTemplate->testMethods->build();
 
-		$testClassPath->putContents($testClassTemplate->build());
+		$realTestClassPath->putContents($testClassTemplate->build());
 
 		return $this;
 	}
