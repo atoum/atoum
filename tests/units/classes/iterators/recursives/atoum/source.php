@@ -72,7 +72,7 @@ class source extends atoum\test
 			->and($sourceDirectory->closedir = true)
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory))
 			->then
-				->integer($iterator->key())->isZero()
+				->variable($iterator->key())->isNull()
 			->if($file = stream::getSubStream($sourceDirectory))
 			->and($sourceDirectory->readdir[1] = $file->getBasename())
 			->and($sourceDirectory->readdir[2] = false)
@@ -82,10 +82,10 @@ class source extends atoum\test
 			->if($sourceDirectory->readdir[1] = '.file')
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory))
 			->then
-				->integer($iterator->key())->isZero()
+				->variable($iterator->key())->isNull()
 			->if($iterator = new iterators\recursives\atoum\source($sourceDirectory, $pharDirectory = uniqid()))
 			->then
-				->string($iterator->key())->isEmpty()
+				->variable($iterator->key())->isNull()
 			->if($sourceDirectory->readdir[1] = $file->getBasename())
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory, $pharDirectory = uniqid()))
 			->then
@@ -93,7 +93,7 @@ class source extends atoum\test
 			->if($sourceDirectory->readdir[1] = '.file')
 			->and($iterator = new iterators\recursives\atoum\source($sourceDirectory, $pharDirectory = uniqid()))
 			->then
-				->string($iterator->key())->isEmpty()
+				->variable($iterator->key())->isNull()
 		;
 	}
 }
