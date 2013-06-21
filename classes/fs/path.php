@@ -180,16 +180,12 @@ class path
 			}
 		}
 
-		if ($realPath !== false)
-		{
-			$absolutePath->setDriveAndComponents($realPath . $files);
-		}
-		else
+		if ($realPath === false)
 		{
 			throw new exception('Unable to get real path for \'' . $this . '\'');
 		}
 
-		return $absolutePath;
+		return $absolutePath->setDriveAndComponents($realPath . $files);
 	}
 
 	public function getParentDirectoryPath()
