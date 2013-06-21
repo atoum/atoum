@@ -7,7 +7,7 @@ use
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\annotations,
 	mageekguy\atoum\test\phpunit
-;
+	;
 
 abstract class test extends atoum\test
 {
@@ -181,7 +181,7 @@ abstract class test extends atoum\test
 
 				return $self->skip($skipMessage);
 			})
-			->setHandler('getMock', function($class, $methods = array(), $args = array(), $mockClassName = null, $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false) use ($self) {
+			->setHandler('getMock', $getMockHandler = function($class, $methods = array(), $args = array(), $mockClassName = null, $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false) use ($self) {
 				if($callOriginalConstructor === false) {
 					$self->getMockGenerator()->orphanize('__construct');
 					$self->getMockGenerator()->shuntParentClassCalls();
@@ -209,6 +209,9 @@ abstract class test extends atoum\test
 
 				return $mock;
 			})
+			->setHandler('getMockForAbstractClass', function($class, $args = array(), $mockClassName = null, $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true) use ($self) {
+				return $self->getMock($class, array(), $args, $mockClassName, $callOriginalConstructor, $callOriginalClone, $callAutoload);
+			})
 			->setHandler('getMockBuilder', function($class) use ($self) {
 				$mockBuilder = new mock\builder($self, $class);
 
@@ -223,13 +226,6 @@ abstract class test extends atoum\test
 			})
 			->setHandler('assertFileEquals', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->string(file_get_contents($actual))->isEqualToContentsOffile($expected, $failMessage);
-			})
-			->setHandler('getMockForAbstractClass', function() use ($self) {
-				foreach($self->getMocks() as $mock) {
-					$mock->getMockDefinition()->reset();
-				}
-
-				return $self->skip('PHPUnit mocks are not available');
 			})
 			->setHandler('assertInternalType', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->{$expected}($actual, $failMessage);
