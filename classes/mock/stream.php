@@ -82,16 +82,7 @@ class stream
 
 	public static function setDirectorySeparator($stream, $directorySeparator = DIRECTORY_SEPARATOR)
 	{
-		$path =  preg_replace('#^[^:]+://#', '', $stream);
-
-		if ($directorySeparator == '/')
-		{
-			$path = str_replace('\\', '/', $path);
-		}
-		else
-		{
-			$path = str_replace('/', '\\', $path);
-		}
+		$path = str_replace(($directorySeparator == '/' ? '\\' : '/'), $directorySeparator, preg_replace('#^[^:]+://#', '', $stream));
 
 		return substr($stream, 0, strlen($stream) - strlen($path)) . $path;
 	}
