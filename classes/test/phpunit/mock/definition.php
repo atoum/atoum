@@ -65,13 +65,47 @@ class definition extends atoum\test\mock\generator
 	{
 		$mockController = atoum\mock\controller::getForMock($this->mock);
 
-		if ($this->currentIndex !== null)
+		if ($return instanceof atoum\test\phpunit\call\throwing)
 		{
-			$mockController->{$this->currentMethod}[$this->currentIndex] = $return;
+			if ($this->currentIndex !== null)
+			{
+				$mockController->{$this->currentMethod}[$this->currentIndex]->throw = $return;
+			}
+			else
+			{
+				$mockController->{$this->currentMethod}->throw = $return;
+			}
 		}
 		else
 		{
-			$mockController->{$this->currentMethod} = $return;
+			if ($this->currentIndex !== null)
+			{
+				if ($return instanceof atoum\test\phpunit\call\consecutive)
+				{
+					foreach ($return->getValues() as $value)
+					{
+						$mockController->{$this->currentMethod}[$this->currentIndex++] = $value;
+					}
+				}
+				else
+				{
+					$mockController->{$this->currentMethod}[$this->currentIndex] = $return;
+				}
+			}
+			else
+			{
+				if ($return instanceof atoum\test\phpunit\call\consecutive)
+				{
+					foreach ($return->getValues() as $index => $value)
+					{
+						$mockController->{$this->currentMethod}[$index + 1] = $value;
+					}
+				}
+				else
+				{
+					$mockController->{$this->currentMethod} = $return;
+				}
+			}
 		}
 
 		return $this;

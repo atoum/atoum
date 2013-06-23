@@ -287,6 +287,18 @@ abstract class test extends atoum\test
 			->setHandler('identicalTo', function($value) {
 				return $value;
 			})
+			->setHandler('matchesRegularExpression', function() use ($self) {
+				$self->skip('matchesRegularExpression is not supported');
+			})
+			->setHandler('stringContains', function() use ($self) {
+				$self->skip('stringContains is not supported');
+			})
+			->setHandler('onConsecutiveCalls', function() {
+				return new phpunit\call\consecutive(func_get_args());
+			})
+			->setHandler('throwException', function(\exception $exception) {
+				return new phpunit\call\throwing($exception);
+			})
 			->setHandler('fail', function($failMessage = null) use ($self) {
 				throw new atoum\asserter\exception($failMessage);
 			})
