@@ -6,16 +6,16 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\score,
 	mageekguy\atoum\mock,
-	mageekguy\atoum\reports\asynchronous\clover as testedClass
+	mageekguy\atoum\reports\asynchronous\coveralls as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
 
-class clover extends atoum\test
+class coveralls extends atoum\test
 {
 	public function beforeTestMethod($method)
 	{
-		$this->extension('libxml')->isLoaded();
+		$this->extension('json')->isLoaded();
 	}
 
 	public function testClass()
@@ -26,32 +26,75 @@ class clover extends atoum\test
 	public function testClassConstants()
 	{
 		$this
-			->string(testedClass::defaultTitle)->isEqualTo('atoum code coverage')
-			->string(testedClass::defaultPackage)->isEqualTo('atoumCodeCoverage')
-			->string(testedClass::lineTypeMethod)->isEqualTo('method')
-			->string(testedClass::lineTypeStatement)->isEqualTo('stmt')
-			->string(testedClass::lineTypeConditional)->isEqualTo('cond')
+			->string(testedClass::defaultServiceName)->isEqualTo('atoum')
+			->string(testedClass::defaultEvent)->isEqualTo('manual')
+			->string(testedClass::defaultCoverallsUrl)->isEqualTo('https://coveralls.io/api/v1/jobs')
 		;
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($report = new testedClass($adapter = new atoum\test\adapter()))
+			->if($report = new testedClass($sourceDir = uniqid(), $token = uniqid()))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEmpty()
-				->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
+				->castToString($report->getSourceDir())->isEqualTo($sourceDir)
+				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
+				->string($report->getServiceName())->isEqualTo('atoum')
+				->variable($report->getServiceJobId())->isNull()
+			->if($report = new testedClass($sourceDir, $token, $adapter = new atoum\test\adapter()))
+			->then
+				->adapter($report->getAdapter())->call('extension_loaded')->withArguments('json')->once()
 			->if($adapter->extension_loaded = false)
 			->then
 				->exception(function() use ($adapter) {
-								new testedClass($adapter);
+								new testedClass(uniqid(), uniqid(), $adapter);
 							}
 						)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('libxml PHP extension is mandatory for clover report')
+				->hasMessage('JSON PHP extension is mandatory for coveralls report')
+		;
+	}
+
+	public function testGetSetBranchFinder()
+	{
+		$this
+			->if($report = new testedClass(uniqid(), uniqid()))
+			->then
+				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
+			->if($finder = function() {})
+			->then
+				->object($report->setBranchFinder($finder))->isIdenticalTo($report)
+				->object($report->getBranchFinder())->isIdenticalTo($finder)
+		;
+	}
+
+	public function testGetSetServiceName()
+	{
+		$this
+			->if($report = new testedClass(uniqid(), uniqid()))
+			->then
+				->string($report->getServiceName())->isEqualTo('atoum')
+			->if($service = uniqid())
+			->then
+				->object($report->setServiceName($service))->isIdenticalTo($report)
+				->string($report->getServiceName())->isEqualTo($service)
+		;
+	}
+
+	public function testGetSetServiceJobId()
+	{
+		$this
+			->if($report = new testedClass(uniqid(), uniqid()))
+			->then
+				->variable($report->getServiceJobId())->isNull()
+			->if($service = uniqid())
+			->then
+				->object($report->setServiceJobId($service))->isIdenticalTo($report)
+				->string($report->getServiceJobId())->isEqualTo($service)
 		;
 	}
 
@@ -60,18 +103,30 @@ class clover extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->if($adapter->extension_loaded = true)
-			->and($report = new testedClass($adapter))
+			->and($adapter->exec = function($command) {
+				switch($command) {
+					case 'git log -1 --pretty=format:\'{"id":"%H","author_name":"%aN","author_email":"%ae","committer_name":"%cN","committer_email":"%ce","message":"%s"}\'':
+						return '{"id":"7282ea7620b45fcba0f9d3bfd484ab146aba2bd0","author_name":"mageekguy","author_email":"atoum@atoum.org","comitter_name":"mageekguy","comitter_email":"atoum@atoum.org"}';
+
+					case 'git rev-parse --abbrev-ref HEAD':
+						return 'master';
+
+					default:
+						return null;
+				}
+			})
+			->and($report = new testedClass($sourceDir = uniqid(), $token = '51bb597d202b4', $adapter))
 			->and($score = new \mock\mageekguy\atoum\score())
 			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
 			->and($writer = new \mock\mageekguy\atoum\writers\file())
-			->and($writer->getMockController()->write = $writer)
 			->then
 				->when(function() use ($report, $writer) {
 						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
 					})
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
-			->and($adapter->time = 762476400)
-			->and($adapter->uniqid = 'foo')
+					->adapter($adapter)->call('file_get_contents')->never()
+			->if($adapter->date = '2013-05-13 10:00:00 +0000')
+			->and($adapter->file_get_contents = '<?php')
 			->and($observable = new \mock\mageekguy\atoum\runner())
 			->and($observable->getMockController()->getScore = $score)
 			->and($score->getMockController()->getCoverage = $coverage)
@@ -80,15 +135,17 @@ class clover extends atoum\test
 				DIRECTORY_SEPARATOR,
 				array(
 					__DIR__,
-					'clover',
+					'coveralls',
 					'resources',
-					'1.xml'
+					'1.json'
 				)
 			))
-			->and($report = new testedClass($adapter))
+			->and($report = new testedClass($sourceDir, $token, $adapter))
+			->and($report->addWriter($writer))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 			->if($coverage->getMockController()->getClasses = array())
 			->and($classController = new mock\controller())
 			->and($classController->disableMethodChecking())
@@ -128,9 +185,9 @@ class clover extends atoum\test
 				DIRECTORY_SEPARATOR,
 				array(
 					__DIR__,
-					'clover',
+					'coveralls',
 					'resources',
-					'2.xml'
+					'2.json'
 				)
 			))
 			->and($coverage->setReflectionClassFactory(function() use ($class) { return $class; }))
@@ -138,50 +195,22 @@ class clover extends atoum\test
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
-		;
-	}
-
-	public function testGetTitle()
-	{
-		$this
-			->if($report = new testedClass())
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->twice()
+			->if($finder = function() use (& $branch) { return 'feature'; })
+			->and($report->setBranchFinder($finder))
+			->and($filepath = join(
+				DIRECTORY_SEPARATOR,
+				array(
+					__DIR__,
+					'coveralls',
+					'resources',
+					'3.json'
+				)
+			))
 			->then
-				->string($report->getTitle())->isEqualTo(testedClass::defaultTitle)
-			->if($report->setTitle($title = uniqid()))
-			->then
-				->string($report->getTitle())->isEqualTo($title)
-		;
-	}
-
-	public function testSetTitle()
-	{
-		$this
-			->if($report = new testedClass())
-			->then
-				->object($report->setTitle($title = uniqid()))->isIdenticalTo($report)
-				->string($report->getTitle())->isEqualTo($title)
-		;
-	}
-
-	public function testGetPackage()
-	{
-		$this
-			->if($report = new testedClass())
-			->then
-				->string($report->getPackage())->isEqualTo(testedClass::defaultPackage)
-			->if($report->setPackage($package = uniqid()))
-			->then
-				->string($report->getPackage())->isEqualTo($package)
-		;
-	}
-
-	public function testSetPackage()
-	{
-		$this
-			->if($report = new testedClass())
-			->then
-				->object($report->setPackage($package = uniqid()))->isIdenticalTo($report)
-				->string($report->getPackage())->isEqualTo($package)
+				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
+				->castToString($report)->isEqualToContentsOfFile($filepath)
+				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->thrice()
 		;
 	}
 }
