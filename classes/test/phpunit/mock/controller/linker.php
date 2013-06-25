@@ -15,7 +15,7 @@ class linker extends atoum\mock\controller\linker
 	{
 		$this->test = $test;
 
-		$this->init();
+		parent::__construct();
 	}
 
 	public function reset()

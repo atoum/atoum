@@ -6,9 +6,9 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\annotations,
-	mageekguy\atoum\test\phpunit
-	;
-use mageekguy\atoum\adapter;
+	mageekguy\atoum\test\phpunit,
+	mageekguy\atoum\adapter
+;
 
 abstract class test extends atoum\test
 {
@@ -122,6 +122,32 @@ abstract class test extends atoum\test
 		$assertionManager = parent::setAssertionManager($assertionManager)->getAssertionManager();
 		$self = $this;
 
+		$asserterFactory = function($value) use ($self) {
+			switch (true)
+			{
+				case is_string($value):
+					return $self->string($value);
+
+				case is_object($value):
+					return $self->object($value);
+
+				case is_bool($value):
+					return $self->boolean($value);
+
+				case is_array($value):
+					return $self->array($value);
+
+				case is_int($value):
+					return $self->integer($value);
+
+				case is_float($value):
+					return $self->float($value);
+
+				default:
+					return $self->variable($value);
+			}
+		};
+
 		$assertionManager
 			->setHandler('assertFalse', function($value, $failMessage = null) use ($self) {
 				return $self->boolean($value)->isFalse($failMessage);
@@ -135,11 +161,14 @@ abstract class test extends atoum\test
 			->setHandler('assertNotNull', function($value, $failMessage = null) use ($self) {
 				return $self->variable($value)->isNotNull($failMessage);
 			})
-			->setHandler('assertEquals', function($expected, $actual, $failMessage = null) use ($self) {
-				return $self->variable($actual)->isEqualTo($expected, $failMessage);
+			->setHandler('assertEquals', function($expected, $actual, $failMessage = null) use ($asserterFactory) {
+				return $asserterFactory($actual)->isEqualTo($expected, $failMessage);
 			})
-			->setHandler('assertNotEquals', function($expected, $actual, $failMessage = null) use ($self) {
-				return $self->variable($actual)->isNotEqualTo($expected, $failMessage);
+			->setHandler('assertNotEquals', function($expected, $actual, $failMessage = null) use ($asserterFactory) {
+				return $asserterFactory($actual)->isNotEqualTo($expected, $failMessage);
+			})
+			->setHandler('assertSame', function($expected, $actual, $failMessage = null) use ($self) {
+				return $self->variable($actual)->isIdenticalTo($expected, $failMessage);
 			})
 			->setHandler('assertContains', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->string($actual)->contains($expected, $failMessage);
@@ -147,22 +176,14 @@ abstract class test extends atoum\test
 			->setHandler('assertNotContains', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->string($actual)->notContains($expected, $failMessage);
 			})
-			->setHandler('assertSame', function($expected, $actual, $failMessage = null) use ($self) {
-				return $self->variable($actual)->isIdenticalTo($expected, $failMessage);
-			})
 			->setHandler('assertInstanceof', $assertInstanceOf = function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->object($actual)->isInstanceOf($expected, $failMessage);
 			})
 			->setHandler('assertInstanceOf', $assertInstanceOf)
-			->setHandler('assertNotInstanceof', function($expected, $actual, $failMessage = null) use ($self) {
-				$assert = null;
-
-				if(is_object($actual) === false) {
-					return $self;
-				}
-
+			->setHandler('assertNotInstanceof', $assertNotInstanceOf = function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->object($actual)->isNotInstanceOf($expected, $failMessage);
 			})
+			->setHandler('assertNotInstanceOf', $assertNotInstanceOf)
 			->setHandler('assertArrayHasKey', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->array($actual)->hasKey($expected, $failMessage);
 			})
@@ -170,18 +191,28 @@ abstract class test extends atoum\test
 				switch (true)
 				{
 					case $actual instanceof \Countable:
-						return $self->object($actual)->hasSize($expected, $failMessage);
+						$asserter = $self->object($actual);
+						break;
+
+					case is_array($actual):
+						$asserter = $self->array($actual);
+						break;
 
 					default:
-						return $self->array($actual)->hasSize($expected, $failMessage);
+						throw new atoum\exceptions\logic\invalidArgument('Value is not countable');
 				}
+
+				return $asserter->hasSize($expected);
 			})
 			->setHandler('markTestSkipped', function($skipMessage) use ($self) {
 				foreach($self->getMocks() as $mock) {
 					$mock->getMockDefinition()->reset();
 				}
 
-				return $self->skip($skipMessage);
+				$self->skip($skipMessage);
+			})
+			->setHandler('setExpectedException', function() use ($self) {
+				$self->markTestSkipped('Testing exception is not available');
 			})
 			->setHandler('getMock', $getMockHandler = function($class, $methods = array(), $args = array(), $mockClassName = null, $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false) use ($self) {
 				if($callOriginalConstructor === false) {
@@ -189,11 +220,11 @@ abstract class test extends atoum\test
 					$self->getMockGenerator()->shuntParentClassCalls();
 				}
 
-				$classname = '\\' . $self->getMockGenerator()->getDefaultnamespace() . '\\' . trim($mockClassName ?: $class ,'\\');
+				$classname = '\\' . ltrim($self->getMockGenerator()->getDefaultnamespace(), '\\') . '\\' . trim($mockClassName ?: $class ,'\\');
 
-				if (class_exists($classname) === false)
+				if (class_exists($classname, $callAutoload) === false)
 				{
-					$self->getMockGenerator()->generate($class, $mockClassName);
+					$self->getMockGenerator()->generate($class, null, $mockClassName);
 				}
 
 				$mock = null;
@@ -218,13 +249,6 @@ abstract class test extends atoum\test
 				$mockBuilder = new mock\builder($self, $class);
 
 				return $mockBuilder;
-			})
-			->setHandler('setExpectedException', function($class) use ($self) {
-				foreach($self->getMocks() as $mock) {
-					$mock->getMockDefinition()->reset();
-				}
-
-				return $self->skip('Testing exception is not available');
 			})
 			->setHandler('assertFileEquals', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->string(file_get_contents($actual))->isEqualToContentsOffile($expected, $failMessage);
@@ -257,49 +281,49 @@ abstract class test extends atoum\test
 				return $self->string($actual)->match($expected, $failMessage);
 			})
 			->setHandler('exactly', function($value) {
-				return $value;
+				return new phpunit\mock\definition\expectations\exactly($value);
 			})
-			->setHandler('once', function() {
-				return 1;
+			->setHandler('once', function() use ($self) {
+				return $self->exactly(1);
 			})
 			->setHandler('atLeastOnce', function() {
-				return '>=1';
+				return new phpunit\mock\definition\expectations\atLeastOnce();
 			})
 			->setHandler('never', function() {
-				return 0;
-			})
-			->setHandler('returnCallback', function($value) {
-				return $value;
-			})
-			->setHandler('returnValue', function($value) {
-				return $value;
+				return new phpunit\mock\definition\expectations\never();
 			})
 			->setHandler('any', function() {
 				return null;
 			})
 			->setHandler('at', function($index) {
-				return '@:' . ($index + 1);
+				return $index + 1;
+			})
+			->setHandler('returnCallback', function($value) {
+				return new phpunit\mock\definition\call\returning($value);
+			})
+			->setHandler('returnValue', function($value) {
+				return new phpunit\mock\definition\call\returning($value);
 			})
 			->setHandler('equalTo', function($value) {
 				return $value;
 			})
-			->setHandler('isInstanceOf', function($value) {
-				return $value;
+			->setHandler('isInstanceOf', function() use ($self) {
+				return $self->markTestSkipped('isInstanceOf is not supported');
 			})
 			->setHandler('identicalTo', function($value) {
 				return $value;
 			})
 			->setHandler('matchesRegularExpression', function() use ($self) {
-				$self->skip('matchesRegularExpression is not supported');
+				return $self->markTestSkipped('matchesRegularExpression is not supported');
 			})
 			->setHandler('stringContains', function() use ($self) {
-				$self->skip('stringContains is not supported');
+				return $self->markTestSkipped('stringContains is not supported');
 			})
 			->setHandler('onConsecutiveCalls', function() {
-				return new phpunit\call\consecutive(func_get_args());
+				return new phpunit\mock\definition\call\consecutive(func_get_args());
 			})
 			->setHandler('throwException', function(\exception $exception) {
-				return new phpunit\call\throwing($exception);
+				return new phpunit\mock\definition\call\throwing($exception);
 			})
 			->setHandler('fail', function($failMessage = null) use ($self) {
 				throw new atoum\asserter\exception($failMessage);

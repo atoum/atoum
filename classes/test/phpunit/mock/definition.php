@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\test\phpunit\mock;
 
 use mageekguy\atoum;
+use mageekguy\atoum\test\phpunit;
 
 class definition extends atoum\test\mock\generator
 {
@@ -10,12 +11,13 @@ class definition extends atoum\test\mock\generator
 	protected $currentIndex;
 	protected $currentExpect;
 	protected $mock;
-
-	protected $assertions = array();
+	protected $assertions;
 
 	public function __construct($mock)
 	{
 		$this->mock = $mock;
+
+		$this->reset();
 	}
 
 	public function reset()
@@ -36,14 +38,13 @@ class definition extends atoum\test\mock\generator
 		$this->currentMethod = null;
 		$this->currentExpect = null;
 
-		if (strpos($expectation, '@:') !== false)
+		if ($expectation instanceof phpunit\mock\definition\expectation)
 		{
-			$expect = trim($expectation, '@:');
-			$this->currentIndex = $expect;
+			$this->currentExpect = $expectation;
 		}
 		else
 		{
-			$this->currentExpect = $expectation;
+			$this->currentIndex = $expectation;
 		}
 
 		return $this;
@@ -53,102 +54,46 @@ class definition extends atoum\test\mock\generator
 	{
 		$this->currentMethod = $name;
 
-		$this->assertions[$name][] = array(
-			'calls' => $this->currentExpect,
-			'args' => null
-		);
+		if (isset($this->assertions[$name]) === false)
+		{
+			$this->assertions[$name] = new phpunit\mock\definition\expectations\chain();
+		}
+
+		$expectations = new phpunit\mock\definition\expectations\chain();
+		if ($this->currentExpect !== null)
+		{
+			$expectations->addExpectation($this->currentExpect);
+		}
+
+		$this->assertions[$name]->addExpectation($expectations);
 
 		return $this;
 	}
 
-	public function will($return)
+	public function will(phpunit\mock\definition\call $return)
 	{
 		$mockController = atoum\mock\controller::getForMock($this->mock);
-
-		if ($return instanceof atoum\test\phpunit\call\throwing)
-		{
-			if ($this->currentIndex !== null)
-			{
-				$mockController->{$this->currentMethod}[$this->currentIndex]->throw = $return;
-			}
-			else
-			{
-				$mockController->{$this->currentMethod}->throw = $return;
-			}
-		}
-		else
-		{
-			if ($this->currentIndex !== null)
-			{
-				if ($return instanceof atoum\test\phpunit\call\consecutive)
-				{
-					foreach ($return->getValues() as $value)
-					{
-						$mockController->{$this->currentMethod}[$this->currentIndex++] = $value;
-					}
-				}
-				else
-				{
-					$mockController->{$this->currentMethod}[$this->currentIndex] = $return;
-				}
-			}
-			else
-			{
-				if ($return instanceof atoum\test\phpunit\call\consecutive)
-				{
-					foreach ($return->getValues() as $index => $value)
-					{
-						$mockController->{$this->currentMethod}[$index + 1] = $value;
-					}
-				}
-				else
-				{
-					$mockController->{$this->currentMethod} = $return;
-				}
-			}
-		}
+		$return->define($mockController, $this->currentMethod, $this->currentIndex);
 
 		return $this;
 	}
 
 	public function with()
 	{
-		$i = count($this->assertions[$this->currentMethod]) - 1;
-		$i = $i < 0 ? 0 : 1;
-
-		$this->assertions[$this->currentMethod][$i]['args'] = func_get_args();
+		$this->assertions[$this->currentMethod]->getLastExpectation()->addExpectation(new phpunit\mock\definition\expectations\with(func_get_args()));
 
 		return $this;
 	}
 
 	public function verdict(atoum\test $test)
 	{
-		$assertions = $this->assertions;
-		$this->reset();
+		foreach($this->assertions as $method => $expectations) {
+			$assert = $test->mock($this->mock)->call($method);
 
-		foreach($assertions as $method => $expectations) {
-			foreach($expectations as $expect) {
-				$assert = $test->mock($this->mock)->call($method);
-
-				if(isset($expect['args'])) {
-					$assert = call_user_func_array(array($assert, 'withArguments'), $expect['args']);
-				}
-
-				if(isset($expect['calls'])) {
-					if(is_string($expect['calls'])) {
-						if('>=1' === $expect['calls']) {
-							$assert->atLeastOnce();
-						}
-					} else {
-						if(0 >= $expect['calls']) {
-							$assert->never();
-						} else {
-							$assert->exactly($expect['calls']);
-						}
-					}
-				}
-			}
+			$expectations->verdict($assert);
 		}
+
+		$this->reset();
 
 		return $this;
 	}
