@@ -43,6 +43,7 @@ class coveralls extends atoum\test
 				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
 				->array($report->getFields())->isEmpty()
+				->object($report->getSourceDir())->isInstanceOf('\\mageekguy\\atoum\\fs\\path')
 				->castToString($report->getSourceDir())->isEqualTo($sourceDir)
 				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
 				->string($report->getServiceName())->isEqualTo('atoum')
@@ -213,6 +214,18 @@ class coveralls extends atoum\test
 				->object($report->handleEvent(atoum\runner::runStop, $observable))->isIdenticalTo($report)
 				->castToString($report)->isEqualToContentsOfFile($filepath)
 				->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->thrice()
+			->if($report->setBranchFinder(function() use(& $branch) { return $branch = uniqid(); }))
+			->and($report->handleEvent(atoum\runner::runStop, $observable))
+			->then
+				->castToString($report)->contains('"branch":"' . $branch . '"')
+			->if($report->setBranchFinder(function() {}))
+			->and($report->handleEvent(atoum\runner::runStop, $observable))
+			->then
+				->castToString($report)->notContains('"branch":')
+			->if($report->setBranchFinder(function() { return ''; }))
+			->and($report->handleEvent(atoum\runner::runStop, $observable))
+			->then
+				->castToString($report)->notContains('"branch":')
 		;
 	}
 

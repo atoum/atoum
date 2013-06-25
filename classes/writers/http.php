@@ -37,6 +37,7 @@ class http extends atoum\writer implements writers\asynchronous
 		}
 
 		$headers = array();
+
 		foreach ($this->headers as $name => $value)
 		{
 			$headers[] = sprintf('%s: %s', $name, $value);
@@ -45,7 +46,7 @@ class http extends atoum\writer implements writers\asynchronous
 		$context = $this->adapter->stream_context_create(array(
 			'http' => array(
 				'method' => $this->method,
-				'header' => implode("\r\n", $headers),
+				'header' => join("\r\n", $headers),
 				'content' => $this->parameter ? http_build_query(array($this->parameter => $string)) : $string
 			)
 		));

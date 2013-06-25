@@ -81,7 +81,7 @@ class coveralls extends atoum\reports\asynchronous
 		return $this->serviceJobId;
 	}
 
-	public function addDefaultWriter(report\writers\asynchronous $writer = null)
+	public function addDefaultWriter(atoum\writers\http $writer = null)
 	{
 		$writer = $writer ?: new atoum\writers\http($this->adapter);
 		$writer
@@ -110,14 +110,14 @@ class coveralls extends atoum\reports\asynchronous
 	{
 		if ($event === atoum\runner::runStop)
 		{
-			$coverage = $this->makeJson($this->score->getCoverage());
+			$coverage = $this->makeRootElement($this->score->getCoverage());
 			$this->string = json_encode($coverage);
 		}
 
 		return $this;
 	}
 
-	protected function makeJson(score\coverage $coverage)
+	protected function makeRootElement(score\coverage $coverage)
 	{
 		return array(
 			'service_name' => $this->serviceName,
@@ -136,9 +136,9 @@ class coveralls extends atoum\reports\asynchronous
 		$infos = array('head' => json_decode($head));
 
 		$branch = call_user_func($this->getBranchFinder());
-		if (isset($branch))
+		if ($branch != null)
 		{
-			$infos['branch'] = trim($branch, '* ');
+			$infos['branch'] = $branch;
 		}
 
 		return $infos;
@@ -147,6 +147,7 @@ class coveralls extends atoum\reports\asynchronous
 	protected function makeSourceElement(score\coverage $coverage)
 	{
 		$sources = array();
+
 		foreach ($coverage->getClasses() as $class => $file)
 		{
 			$path = new atoum\fs\path($file);
@@ -172,7 +173,7 @@ class coveralls extends atoum\reports\asynchronous
 			{
 				if ($number > 1)
 				{
-					while (count($cover) < ($number - 1))
+					while (sizeof($cover) < ($number - 1))
 					{
 						$cover[] = null;
 					}
