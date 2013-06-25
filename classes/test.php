@@ -17,6 +17,7 @@ abstract class test implements observable, \countable
 	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const defaultMethodPrefix = '#^(?:test|_*[^_]+_should_)#i';
+	const defaultTestedClass = '#$#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
 	const afterSetUp = 'afterTestSetUp';
@@ -85,6 +86,7 @@ abstract class test implements observable, \countable
 
 	private static $namespace = null;
 	private static $methodPrefix = null;
+	private static $testedClass = null;
 	private static $defaultEngine = self::defaultEngine;
 
 	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null, \closure $phpExtensionFactory = null)
@@ -1440,7 +1442,22 @@ abstract class test implements observable, \countable
 
 	public static function getMethodPrefix()
 	{
-		return self::$methodPrefix ?: static::defaultMethodPrefix;
+		return self::$methodPrefix ?: self::defaultMethodPrefix;
+    }
+
+	public static function setTestedClass($testedClass)
+	{
+		self::$testedClass = $testedClass;
+
+		if (self::$testedClass === '')
+		{
+			throw new exceptions\logic\invalidArgument('Tested class must not be empty');
+		}
+	}
+
+	public static function getTestedClass()
+	{
+		return self::$testedClass ?: static::defaultTestedClass;
 	}
 
 	public static function setDefaultEngine($defaultEngine)
@@ -1480,6 +1497,8 @@ abstract class test implements observable, \countable
 
 			$testedClassName = substr($fullyQualifiedClassName, 0, $position) . substr($fullyQualifiedClassName, $position + 1 + strlen($testNamespace));
 		}
+
+		$testedClassName = preg_replace(self::getTestedClass(), '', $testedClassName);
 
 		return trim($testedClassName, '\\');
 	}

@@ -8,10 +8,12 @@ use
 	mageekguy\atoum\annotations,
 	mageekguy\atoum\test\phpunit
 	;
+use mageekguy\atoum\adapter;
 
 abstract class test extends atoum\test
 {
-	const defaultNamespace = '#^#';
+	const defaultNamespace = '#(?:^|\\\)Test\\\#';
+	const defaultTestedClass = '#Test$#';
 
 	private $unsupportedMethods = array();
 	private $mocks = array();
