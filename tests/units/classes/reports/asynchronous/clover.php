@@ -11,7 +11,7 @@ use
 
 require_once __DIR__ . '/../../../runner.php';
 
-class clover extends Atoum\test
+class clover extends atoum\test
 {
 	public function beforeTestMethod($method)
 	{
