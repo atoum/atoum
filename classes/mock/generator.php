@@ -636,6 +636,82 @@ class generator
 		;
 	}
 
+	protected static function methodNameIsReservedWord(\reflectionMethod $method)
+	{
+		switch ($method->getName())
+		{
+			case '__halt_compiler':
+			case 'abstract':
+			case 'and':
+			case 'array':
+			case 'as':
+			case 'break':
+			case 'callable':
+			case 'case':
+			case 'catch':
+			case 'class':
+			case 'clone':
+			case 'const':
+			case 'continue':
+			case 'declare':
+			case 'default':
+			case 'die':
+			case 'do':
+			case 'echo':
+			case 'else':
+			case 'elseif':
+			case 'empty':
+			case 'enddeclare':
+			case 'endfor':
+			case 'endforeach':
+			case 'endif':
+			case 'endswitch':
+			case 'endwhile':
+			case 'eval':
+			case 'exit':
+			case 'extends':
+			case 'final':
+			case 'for':
+			case 'foreach':
+			case 'function':
+			case 'global':
+			case 'goto ':
+			case 'if':
+			case 'implements':
+			case 'include':
+			case 'include_once':
+			case 'instanceof':
+			case 'insteadof':
+			case 'interface':
+			case 'isset':
+			case 'list':
+			case 'namespace ':
+			case 'new':
+			case 'or':
+			case 'print':
+			case 'private':
+			case 'protected':
+			case 'public':
+			case 'require':
+			case 'require_once':
+			case 'return':
+			case 'static':
+			case 'switch':
+			case 'throw':
+			case 'trait ':
+			case 'try':
+			case 'unset':
+			case 'use':
+			case 'var':
+			case 'while':
+			case 'xor':
+				return true;
+
+			default:
+				return false;
+		}
+	}
+
 	private function methodIsMockable(\reflectionMethod $method)
 	{
 		switch (true)
@@ -645,6 +721,7 @@ class generator
 			case $method->isConstructor():
 			case $method->getName() === 'clone':
 			case $method->getName() === '__destruct':
+			case static::methodNameIsReservedWord($method):
 				return false;
 
 			case $method->isPrivate():
@@ -655,4 +732,5 @@ class generator
 				return true;
 		}
 	}
+
 }
