@@ -470,6 +470,29 @@ class phpArray extends atoum\test
 		;
 	}
 
+	public function testKeys()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->keys; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array()))
+			->then
+				->object($array = $asserter->keys)
+					->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+				->array($array->getValue())
+					->isEqualTo(array())
+			->if($asserter->setWith(array($key1 = uniqid() => uniqid(), $key2 = uniqid() => uniqid())))
+			->then
+				->object($array = $asserter->keys)
+					->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+				->array($array->getValue())
+					->isEqualTo(array($key1, $key2))
+		;
+	}
+
 	public function testSize()
 	{
 		$this
