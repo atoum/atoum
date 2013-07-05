@@ -16,6 +16,9 @@ class phpArray extends asserters\variable
 	{
 		switch ($asserter)
 		{
+			case 'keys':
+				return $this->getKeysAsserter();
+
 			case 'size':
 				return $this->getSizeAsserter();
 
@@ -388,6 +391,11 @@ class phpArray extends asserters\variable
 	protected function valueIsSet($message = 'Array is undefined')
 	{
 		return parent::valueIsSet($message);
+	}
+
+	protected function getKeysAsserter()
+	{
+		return $this->generator->__call('phpArray', array(array_keys($this->valueIsSet()->value)));
 	}
 
 	protected function getSizeAsserter()
