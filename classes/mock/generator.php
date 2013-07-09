@@ -383,46 +383,59 @@ class generator
 
 		foreach ($methods as $method)
 		{
-			if ($method->isFinal() === false && $method->isStatic() === false)
+			$methodName = $method->getName();
+
+			$mockedMethodNames[] = strtolower($methodName);
+
+			$parameters = $this->getParameters($method);
+
+			switch (true)
 			{
-				$methodName = $method->getName();
+				case $method->isFinal() === false && $method->isStatic() === false:
+					$isConstructor = $methodName === '__construct';
 
-				$mockedMethodNames[] = strtolower($methodName);
+					if ($isConstructor === true)
+					{
+						$hasConstructor = true;
+					}
 
-				$isConstructor = $methodName === '__construct';
+					$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
+					$methodCode .= "\t" . '{' . PHP_EOL;
+					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
 
-				if ($isConstructor === true)
-				{
-					$hasConstructor = true;
-				}
+					if ($isConstructor === true)
+					{
+						$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
+						$methodCode .= "\t\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+						$methodCode .= "\t\t" . '}' . PHP_EOL;
+						$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
+						$methodCode .= "\t\t" . '{' . PHP_EOL;
+						$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
+						$methodCode .= "\t\t" . '}' . PHP_EOL;
+					}
 
-				$parameters = $this->getParameters($method);
-
-				$methodCode = "\t" . 'public function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
-				$methodCode .= "\t" . '{' . PHP_EOL;
-				$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ($isConstructor === false ? '' : ', -1') . '));' . PHP_EOL;
-
-				if ($isConstructor === true)
-				{
-					$methodCode .= "\t\t" . 'if ($mockController === null)' . PHP_EOL;
+					$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
 					$methodCode .= "\t\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t\t" . '$mockController = \mageekguy\atoum\mock\controller::get();' . PHP_EOL;
+					$methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
 					$methodCode .= "\t\t" . '}' . PHP_EOL;
-					$methodCode .= "\t\t" . 'if ($mockController !== null)' . PHP_EOL;
-					$methodCode .= "\t\t" . '{' . PHP_EOL;
-					$methodCode .= "\t\t\t" . '$this->setMockController($mockController);' . PHP_EOL;
-					$methodCode .= "\t\t" . '}' . PHP_EOL;
-				}
+					$methodCode .= "\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
+					$methodCode .= "\t" . '}' . PHP_EOL;
+					break;
 
-				$methodCode .= "\t\t" . 'if (isset($this->getMockController()->' . $methodName . ') === false)' . PHP_EOL;
-				$methodCode .= "\t\t" . '{' . PHP_EOL;
-				$methodCode .= "\t\t\t" . '$this->getMockController()->' . $methodName . ' = function() {};' . PHP_EOL;
-				$methodCode .= "\t\t" . '}' . PHP_EOL;
-				$methodCode .=	"\t\t" . ($isConstructor === true ? '' : 'return ') . '$this->getMockController()->invoke(\'' . $methodName . '\', $arguments);' . PHP_EOL;
-				$methodCode .= "\t" . '}' . PHP_EOL;
+				case $method->isStatic() === true:
+					$methodCode = "\t" . 'public static function' . ($method->returnsReference() === false ? '' : ' &') . ' ' . $methodName . '(' . $this->getParametersSignature($method) . ')' . PHP_EOL;
+					$methodCode .= "\t" . '{' . PHP_EOL;
+					$methodCode .= "\t\t" . '$arguments = array_merge(array(' . join(', ', $parameters) . '), array_slice(func_get_args(), ' . sizeof($parameters) . ', -1));' . PHP_EOL;
+					$methodCode .= "\t\t" . 'return call_user_func_array(array(\'parent\', \'' . $methodName . '\'), $arguments);' . PHP_EOL;
+					$methodCode .= "\t" . '}' . PHP_EOL;
+					break;
 
-				$mockedMethods .= $methodCode;
+				default:
+					$methodCode = '';
 			}
+
+			$mockedMethods .= $methodCode;
 		}
 
 		if ($hasConstructor === false)
