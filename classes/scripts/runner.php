@@ -187,7 +187,7 @@ class runner extends atoum\script\configurable
 	{
 		$this
 			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
-			->stop()
+			->stopRun()
 		;
 
 		return $this;
