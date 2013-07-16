@@ -181,7 +181,6 @@ class autoloader
 	public function requireClass($class)
 	{
 		$class = strtolower($class);
-
 		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
 
 		if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
@@ -191,21 +190,7 @@ class autoloader
 
 		if (static::exists($realClass) === true)
 		{
-			$alias = null;
-
-			if ($realClass !== $class)
-			{
-				$alias = $class;
-			}
-			else
-			{
-				$alias = $this->getClassAlias($realClass);
-
-				if ($alias === null)
-				{
-					$alias = $this->getNamespaceAlias($realClass);
-				}
-			}
+			$alias = ($realClass !== $class ? $class : $this->getClassAlias($realClass) ?: $this->getNamespaceAlias($realClass));
 
 			if ($alias !== null)
 			{
