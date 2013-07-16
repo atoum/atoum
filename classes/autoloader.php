@@ -191,9 +191,11 @@ class autoloader
 
 		if (static::exists($realClass) === true)
 		{
+			$alias = null;
+
 			if ($realClass !== $class)
 			{
-				class_alias($realClass, $class);
+				$alias = $class;
 			}
 			else
 			{
@@ -203,11 +205,11 @@ class autoloader
 				{
 					$alias = $this->getNamespaceAlias($realClass);
 				}
+			}
 
-				if ($alias !== null)
-				{
-					class_alias($realClass, $alias);
-				}
+			if ($alias !== null)
+			{
+				class_alias($realClass, $alias);
 			}
 		}
 	}
