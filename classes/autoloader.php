@@ -184,12 +184,12 @@ class autoloader
 
 		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
 
-		if (class_exists($realClass, false) === false && interface_exists($realClass, false) === false && ($path = $this->getPath($realClass)) !== null)
+		if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
 		{
 			require $path;
 		}
 
-		if (class_exists($realClass, false) === true || interface_exists($realClass, false) === true)
+		if (static::exists($realClass) === true)
 		{
 			if ($realClass !== $class)
 			{
@@ -332,6 +332,11 @@ class autoloader
 		}
 
 		return false;
+	}
+
+	protected static function exists($class)
+	{
+		return (class_exists($class, false) === true || interface_exists($class, false) === true);
 	}
 }
 
