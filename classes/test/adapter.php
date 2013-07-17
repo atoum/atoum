@@ -231,7 +231,7 @@ class adapter extends atoum\adapter
 
 		if (isset($this->invokers[$name]) === false)
 		{
-			$this->invokers[$name] = call_user_func($factory);
+			$this->invokers[$name] = $factory();
 		}
 
 		return $this->invokers[$name];
