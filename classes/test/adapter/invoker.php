@@ -6,7 +6,7 @@ use
 	mageekguy\atoum\exceptions
 ;
 
-class invoker implements \arrayAccess
+class invoker implements \arrayAccess, \countable
 {
 	protected $currentCall = null;
 	protected $closuresByCall = array();
@@ -36,6 +36,21 @@ class invoker implements \arrayAccess
 			default:
 				throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
 		}
+	}
+
+	public function count()
+	{
+		return sizeof($this->closuresByCall);
+	}
+
+	public function doNothing()
+	{
+		return $this->setClosure(function() {});
+	}
+
+	public function doSomething()
+	{
+		return $this->unsetClosure();
 	}
 
 	public function isEmpty()

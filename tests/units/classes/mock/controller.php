@@ -15,7 +15,7 @@ class foo
 {
 	public function __construct() {}
 	public function __call($method, $arguments) {}
-	public function doSomething() {}
+	public function doSomething() { return 'something done'; }
 	public function doSomethingElse() {}
 }
 
@@ -214,6 +214,27 @@ class controller extends atoum\test
 				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomethingelse'))
 				->object($mockController->methodsMatching('/^doSomething/i'))->isEqualTo($mockController->getIterator())
 				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
+		;
+	}
+
+	public function testDoNothing()
+	{
+		$this
+			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->and($this->calling($mock)->doSomething->doNothing())
+			->then
+				->variable($mock->doSomething())->isNull()
+		;
+	}
+
+	public function testDoSomething()
+	{
+		$this
+			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->and($this->calling($mock)->doSomething->doNothing())
+			->and($this->calling($mock)->doSomething->doSomething())
+			->then
+				->string($mock->doSomething())->isEqualTo('something done')
 		;
 	}
 

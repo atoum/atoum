@@ -13,7 +13,9 @@ class invoker extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->hasInterface('ArrayAccess')
+		$this->testedClass
+			->implements('arrayAccess')
+			->implements('countable')
 		;
 	}
 
@@ -48,6 +50,46 @@ class invoker extends atoum\test
 			->then
 				->boolean($invoker->isEmpty())->isTrue()
 				->variable($invoker->getCurrentCall())->isNull()
+		;
+	}
+
+	public function testDoNothing()
+	{
+		$this
+			->if($invoker = new adapter\invoker())
+			->then
+				->object($invoker->doNothing())->isIdenticalTo($invoker)
+				->boolean($invoker->closureIsSetForCall(0))->isTrue()
+				->variable($invoker->invoke())->isNull()
+		;
+	}
+
+	public function testDoSomething()
+	{
+		$this
+			->if($invoker = new adapter\invoker())
+			->and($invoker->doNothing())
+			->then
+				->object($invoker->doSomething())->isIdenticalTo($invoker)
+				->boolean($invoker->closureIsSetForCall(0))->isFalse()
+		;
+	}
+
+	public function testCount()
+	{
+		$this
+			->if($invoker = new adapter\invoker())
+			->then
+				->sizeof($invoker)->isZero()
+			->if($invoker->setClosure(function() {}))
+			->then
+				->sizeof($invoker)->isEqualTo(1)
+			->if($invoker->doNothing())
+			->then
+				->sizeof($invoker)->isEqualTo(1)
+			->if($invoker->setClosure(function() {}, 1))
+			->then
+				->sizeof($invoker)->isEqualTo(2)
 		;
 	}
 
