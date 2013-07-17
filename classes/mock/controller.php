@@ -15,8 +15,8 @@ class controller extends test\adapter
 	protected $mockMethods = array();
 	protected $iterator = null;
 
-	protected static $controlNextNewMock = null;
 	protected static $linker = null;
+	protected static $controlNextNewMock = null;
 
 	private $disableMethodChecking = false;
 
