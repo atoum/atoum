@@ -57,9 +57,7 @@ class controller extends test\adapter
 
 		parent::__unset($method);
 
-		$this->invokers[strtolower($method)] = null;
-
-		return $this;
+		return $this->setInvoker($method);
 	}
 
 	public function setIterator(controller\iterator $iterator = null)
@@ -134,32 +132,16 @@ class controller extends test\adapter
 			$this->mockClass = get_class($mock);
 			$this->mockMethods = $mock->getMockedMethods();
 
-			if ($this->disableMethodChecking === false)
+			foreach (array_keys($this->invokers) as $method)
 			{
-				foreach (array_keys($this->invokers) as $method)
-				{
-					if (in_array($method, $this->mockMethods) === false)
-					{
-						if (in_array('__call', $this->mockMethods) === false)
-						{
-							throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
-						}
-
-						if (isset($this->invokers['__call']) === false)
-						{
-							$this->invokers['__call'] = null;
-
-							$this->set__call();
-						}
-					}
-				}
+				$this->checkMethod($method);
 			}
 
 			foreach ($this->mockMethods as $method)
 			{
 				if (isset($this->invokers[$method]) === false)
 				{
-					$this->invokers[$method] = null;
+					$this->setInvoker($method);
 				}
 			}
 
@@ -234,29 +216,23 @@ class controller extends test\adapter
 
 	protected function checkMethod($method)
 	{
-		if ($this->mockClass !== null && $this->disableMethodChecking === false && array_key_exists(strtolower($method), $this->invokers) === false)
+		if ($this->mockClass !== null && $this->disableMethodChecking === false && in_array(strtolower($method), $this->mockMethods) === false)
 		{
-			if (array_key_exists('__call', $this->invokers) === true)
-			{
-				$this->set__call();
-			}
-			else
+			if (in_array('__call', $this->mockMethods) === false)
 			{
 				throw new exceptions\logic('Method \'' . $this->getMockClass() . '::' . $method . '()\' does not exist');
 			}
-		}
 
-		return $this;
-	}
+			if (isset($this->__call) === false)
+			{
+				$controller = $this;
 
-	private function set__call()
-	{
-		$controller = $this;
-
-		parent::__set('__call', function($method, $arguments) use ($controller) {
-				return $controller->invoke($method, $arguments);
+				parent::__set('__call', function($method, $arguments) use ($controller) {
+						return $controller->invoke($method, $arguments);
+					}
+				);
 			}
-		);
+		}
 
 		return $this;
 	}

@@ -87,7 +87,7 @@ class adapter extends test
 				->boolean(isset($adapter->{strtolower($function)}))->isTrue()
 			->if($adapter->{$function = uniqid()}[2] = uniqid())
 			->then
-				->boolean(isset($adapter->{$function}))->isTrue()
+				->boolean(isset($adapter->{$function}))->isFalse()
 				->boolean(isset($adapter->{$function}[0]))->isFalse()
 				->boolean(isset($adapter->{$function}[1]))->isFalse()
 				->boolean(isset($adapter->{$function}[2]))->isTrue()
@@ -296,6 +296,23 @@ class adapter extends test
 				->array($adapter->getCalls('foo', array(2 => 3, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
 				->array($adapter->getCalls('foo', array(0 => 1, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
 				->array($adapter->getCalls('foo', array(2 => 3, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+		;
+	}
+
+	public function testGetCallNumber()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->integer($adapter->getCallNumber())->isZero()
+			->if($adapter->md5($firstHash = uniqid()))
+			->then
+				->integer($adapter->getCallNumber())->isEqualTo(1)
+				->integer($adapter->getCallNumber('md5'))->isEqualTo(1)
+				->integer($adapter->getCallNumber('md5', array(uniqid())))->isEqualTo(0)
+				->integer($adapter->getCallNumber('md5', array($firstHash)))->isEqualTo(1)
+				->integer($adapter->getCallNumber('MD5', array($firstHash)))->isEqualTo(1)
+				->integer($adapter->getCallNumber(uniqid()))->isEqualTo(0)
 		;
 	}
 

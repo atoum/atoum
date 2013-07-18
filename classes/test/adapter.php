@@ -30,12 +30,14 @@ class adapter extends atoum\adapter
 
 	public function __get($functionName)
 	{
-		return $this->setInvoker($functionName, function() { return new invoker(); });
+		return $this->setInvoker($functionName);
 	}
 
 	public function __isset($functionName)
 	{
-		return (isset($this->invokers[$functionName = strtolower($functionName)]) === true && sizeof($this->invokers[$functionName]) > 0);
+		$functionName = strtolower($functionName);
+
+		return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($this->getCallNumber($functionName) + 1) === true);
 	}
 
 	public function __unset($functionName)
@@ -120,6 +122,11 @@ class adapter extends atoum\adapter
 		}
 
 		return $calls;
+	}
+
+	public function getCallNumber($functionName = null, array $arguments = null, $identical = false)
+	{
+		return sizeof($this->getCalls($functionName, $arguments, $identical));
 	}
 
 	public function getTimeline($functionName = null)
@@ -225,9 +232,14 @@ class adapter extends atoum\adapter
 		self::$storage = $storage ?: new adapter\storage();
 	}
 
-	protected function setInvoker($name, \closure $factory)
+	protected function setInvoker($name, \closure $factory = null)
 	{
 		$name = strtolower($name);
+
+		if ($factory === null)
+		{
+			$factory = function() { return new invoker(); };
+		}
 
 		if (isset($this->invokers[$name]) === false)
 		{

@@ -82,14 +82,21 @@ class invoker implements \arrayAccess, \countable
 	{
 		$call = static::checkCall($call);
 
-		return (isset($this->closuresByCall[$call]) === false ? null : $this->closuresByCall[$call]);
+		return (isset($this->closuresByCall[$call]) === true ? $this->closuresByCall[$call] : (isset($this->closuresByCall[0]) === false ? null : $this->closuresByCall[0]));
 	}
 
 	public function closureIsSetForCall($call = 0)
 	{
 		static::checkCall($call);
 
-		return (isset($this->closuresByCall[$call]) === true);
+		$closureIsSet = (isset($this->closuresByCall[$call]) === true);
+
+		if ($closureIsSet === false && $call > 0)
+		{
+			$closureIsSet = (isset($this->closuresByCall[0]) === true);
+		}
+
+		return $closureIsSet;
 	}
 
 	public function unsetClosure($call = 0)
@@ -131,19 +138,12 @@ class invoker implements \arrayAccess, \countable
 
 	public function invoke(array $arguments = array(), $call = 0)
 	{
-		$currentCall = $call;
-
-		if ($this->closureIsSetForCall($currentCall) === false)
-		{
-			$currentCall = 0;
-		}
-
-		if ($this->closureIsSetForCall($currentCall) === false)
+		if ($this->closureIsSetForCall($call) === false)
 		{
 			throw new exceptions\logic\invalidArgument('There is no closure defined for call ' . $call);
 		}
 
-		return call_user_func_array($this->closuresByCall[$currentCall], $arguments);
+		return call_user_func_array($this->getClosure($call), $arguments);
 	}
 
 	public function atCall($call)

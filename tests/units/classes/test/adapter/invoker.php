@@ -131,7 +131,19 @@ class invoker extends atoum\test
 			->if($invoker->setClosure($value = function() {}, 0))
 			->then
 				->object($invoker->getClosure(0))->isIdenticalTo($value)
+				->object($invoker->getClosure(1))->isIdenticalTo($value)
+				->object($invoker->getClosure(rand(2, PHP_INT_MAX)))->isIdenticalTo($value)
+			->if($invoker->unsetClosure(0))
+			->then
+				->variable($invoker->getClosure(0))->isNull()
 				->variable($invoker->getClosure(1))->isNull()
+				->variable($invoker->getClosure(rand(2, PHP_INT_MAX)))->isNull()
+			->if($invoker->setClosure($value = function() {}, $call = rand(2, PHP_INT_MAX - 1)))
+			->then
+				->variable($invoker->getClosure(0))->isNull()
+				->variable($invoker->getClosure($call - 1))->isNull()
+				->object($invoker->getClosure($call))->isIdenticalTo($value)
+				->variable($invoker->getClosure($call + 1))->isNull()
 		;
 	}
 
@@ -151,7 +163,15 @@ class invoker extends atoum\test
 			->then
 				->boolean($invoker->closureIsSetForCall())->isTrue()
 				->boolean($invoker->closureIsSetForCall(0))->isTrue()
-				->boolean($invoker->closureIsSetForCall(rand(1, PHP_INT_MAX)))->isFalse()
+				->boolean($invoker->closureIsSetForCall(rand(1, PHP_INT_MAX)))->isTrue()
+			->if($invoker->setClosure(function() {}, $call = rand(2, PHP_INT_MAX - 1)))
+			->and($invoker->unsetClosure(0))
+			->then
+				->boolean($invoker->closureIsSetForCall())->isFalse()
+				->boolean($invoker->closureIsSetForCall(0))->isFalse()
+				->boolean($invoker->closureIsSetForCall($call - 1))->isFalse()
+				->boolean($invoker->closureIsSetForCall($call))->isTrue()
+				->boolean($invoker->closureIsSetForCall($call + 1))->isFalse()
 		;
 	}
 
