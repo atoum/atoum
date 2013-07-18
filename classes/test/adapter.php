@@ -35,16 +35,14 @@ class adapter extends atoum\adapter
 
 	public function __isset($functionName)
 	{
-		$functionName = strtolower($functionName);
-
-		return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($this->getCallNumber($functionName) + 1) === true);
+		return $this->nextCallIsOverloaded($functionName);
 	}
 
 	public function __unset($functionName)
 	{
 		if (isset($this->{$functionName}) === true)
 		{
-			$functionName = strtolower($functionName);
+			$functionName = static::normalizeFunctionName($functionName);
 
 			unset($this->invokers[$functionName]);
 
@@ -77,8 +75,6 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$functionName = strtolower($functionName);
-
 			if ($arguments !== null)
 			{
 				if ($arguments === array())
@@ -107,6 +103,8 @@ class adapter extends atoum\adapter
 					}
 				}
 			}
+
+			$functionName = static::normalizeFunctionName($functionName);
 
 			if (isset($this->calls[$functionName]) === true)
 			{
@@ -145,7 +143,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$functionName = strtolower($functionName);
+			$functionName = static::normalizeFunctionName($functionName);
 
 			if (isset($this->calls[$functionName]) === true)
 			{
@@ -169,7 +167,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$functionName = strtolower($functionName);
+			$functionName = static::normalizeFunctionName($functionName);
 
 			if (isset($this->calls[$functionName]) === true)
 			{
@@ -189,7 +187,7 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
-		$functionName = strtolower($functionName);
+		$functionName = static::normalizeFunctionName($functionName);
 
 		$unreferencedArguments = array();
 
@@ -234,7 +232,7 @@ class adapter extends atoum\adapter
 
 	protected function setInvoker($name, \closure $factory = null)
 	{
-		$name = strtolower($name);
+		$name = static::normalizeFunctionName($name);
 
 		if ($factory === null)
 		{
@@ -251,14 +249,19 @@ class adapter extends atoum\adapter
 
 	protected function callIsOverloaded($functionName, $call)
 	{
-		$functionName = strtolower($functionName);
+		$functionName = static::normalizeFunctionName($functionName);
 
-		return (isset($this->invokers[$functionName]) === true && isset($this->invokers[$functionName][$call]) === true);
+		return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true);
 	}
 
 	protected function nextCallIsOverloaded($functionName)
 	{
-		return ($this->callIsOverloaded($functionName, sizeof($this->getCalls($functionName)) + 1) === true);
+		return ($this->callIsOverloaded($functionName, $this->getCallNumber($functionName) + 1) === true);
+	}
+
+	protected static function normalizeFunctionName($functionName)
+	{
+		return strtolower($functionName);
 	}
 
 	protected static function isLanguageConstruct($functionName)
