@@ -181,7 +181,7 @@ abstract class test extends atoum\test
 						throw new atoum\exceptions\logic\invalidArgument('Value is not countable');
 				}
 
-				return $asserter->hasSize($expected);
+				return $asserter->hasSize($expected, $failMessage);
 			})
 			->setHandler('markTestSkipped', function($skipMessage) use ($self) {
 				$self->getMockControllerLinker()->init();
