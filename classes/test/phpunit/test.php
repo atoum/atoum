@@ -14,6 +14,7 @@ abstract class test extends atoum\test
 {
 	const defaultNamespace = '#(?:^|\\\)Test\\\#';
 	const defaultTestedClass = '#Test$#';
+	const defaultEngine = 'inline';
 
 	private $unsupportedMethods = array();
 

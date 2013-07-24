@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\test\phpunit;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
-	mageekguy\atoum\test\phpunit
+	mageekguy\atoum\test\phpunit,
+	mageekguy\atoum\test\phpunit\test as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -21,6 +22,7 @@ class test extends atoum\test
 	{
 		$this->testedClass
 			->isSubClassOf('\\mageekguy\\atoum\\test')
+			->string(testedClass::defaultEngine)->isEqualTo('inline')
 		;
 	}
 
