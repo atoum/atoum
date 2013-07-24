@@ -354,12 +354,7 @@ class test extends atoum\test
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
 					->hasMessage('string(' . strlen($actual) . ') \'' . $actual . '\' is not an object')
-				->exception(function() use ($test, & $actual) {
-						$test->assertNotInstanceOf(uniqid(), $actual = uniqid());
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-					->hasMessage('string(' . strlen($actual) . ') \'' . $actual . '\' is not an object')
+				->object($test->assertNotInstanceOf(uniqid(), $actual = uniqid()))->isIdenticalTo($test)
 		;
 	}
 

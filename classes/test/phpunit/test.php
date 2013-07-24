@@ -5,6 +5,7 @@ namespace mageekguy\atoum\test\phpunit;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\annotations,
 	mageekguy\atoum\test\phpunit,
 	mageekguy\atoum\adapter
@@ -101,7 +102,7 @@ abstract class test extends atoum\test
 		$assertionManager = parent::setAssertionManager($assertionManager)->getAssertionManager();
 		$self = $this;
 
-		$asserterFactory = function($value) use ($self) {
+		$asserterFactory = function($value, & $expected) use ($self) {
 			switch (true)
 			{
 				case is_string($value):
@@ -117,6 +118,7 @@ abstract class test extends atoum\test
 					return $self->array($value);
 
 				case is_int($value):
+					$expected = (int) $expected;
 					return $self->integer($value);
 
 				case is_float($value):
@@ -141,10 +143,10 @@ abstract class test extends atoum\test
 				return $self->variable($value)->isNotNull($failMessage);
 			})
 			->setHandler('assertEquals', function($expected, $actual, $failMessage = null) use ($asserterFactory) {
-				return $asserterFactory($actual)->isEqualTo($expected, $failMessage);
+				return $asserterFactory($actual, $expected)->isEqualTo($expected, $failMessage);
 			})
 			->setHandler('assertNotEquals', function($expected, $actual, $failMessage = null) use ($asserterFactory) {
-				return $asserterFactory($actual)->isNotEqualTo($expected, $failMessage);
+				return $asserterFactory($actual, $expected)->isNotEqualTo($expected, $failMessage);
 			})
 			->setHandler('assertSame', function($expected, $actual, $failMessage = null) use ($self) {
 				return $self->variable($actual)->isIdenticalTo($expected, $failMessage);
@@ -160,7 +162,19 @@ abstract class test extends atoum\test
 			})
 			->setHandler('assertInstanceOf', $assertInstanceOf)
 			->setHandler('assertNotInstanceof', $assertNotInstanceOf = function($expected, $actual, $failMessage = null) use ($self) {
-				return $self->object($actual)->isNotInstanceOf($expected, $failMessage);
+				try
+				{
+					$asserter = new asserters\object();
+					$self->getAsserterGenerator()->asserterPass($asserter->setWith($actual));
+				}
+				catch (asserter\exception $exception)
+				{
+					return $self;
+				}
+
+				$asserter->setGenerator($self->getAsserterGenerator());
+
+				return $asserter->isNotInstanceOf($expected, $failMessage);
 			})
 			->setHandler('assertNotInstanceOf', $assertNotInstanceOf)
 			->setHandler('assertArrayHasKey', function($expected, $actual, $failMessage = null) use ($self) {
