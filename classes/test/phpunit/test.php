@@ -13,7 +13,7 @@ use
 
 abstract class test extends atoum\test
 {
-	const defaultNamespace = '#(?:^|\\\)Test\\\#';
+	const defaultNamespace = '#(?:^|\\\)Tests?\\\#i';
 	const defaultTestedClass = '#Test$#';
 	const defaultEngine = 'inline';
 
