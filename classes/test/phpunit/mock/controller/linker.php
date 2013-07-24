@@ -23,7 +23,17 @@ class linker extends atoum\mock\controller\linker
 		foreach ($this->mocks as $controller)
 		{
 			$mock = $this->getMock($controller);
-			$mock->getMockDefinition()->verdict($this->test);
+
+			try
+			{
+				$mock->getMockDefinition()->verdict($this->test);
+			}
+			catch(\exception $exception)
+			{
+				$this->init();
+
+				throw $exception;
+			}
 
 			$controller->reset();
 		}

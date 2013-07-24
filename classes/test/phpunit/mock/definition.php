@@ -54,18 +54,11 @@ class definition extends atoum\test\mock\generator
 	{
 		$this->currentMethod = $name;
 
-		if (isset($this->assertions[$name]) === false)
-		{
-			$this->assertions[$name] = new phpunit\mock\definition\expectations\chain();
-		}
-
-		$expectations = new phpunit\mock\definition\expectations\chain();
+		$this->assertions[] = new phpunit\mock\definition\expectations\call($name);
 		if ($this->currentExpect !== null)
 		{
-			$expectations->addExpectation($this->currentExpect);
+			end($this->assertions)->addExpectation($this->currentExpect);
 		}
-
-		$this->assertions[$name]->addExpectation($expectations);
 
 		return $this;
 	}
@@ -80,21 +73,21 @@ class definition extends atoum\test\mock\generator
 
 	public function with()
 	{
-		$this->assertions[$this->currentMethod]->getLastExpectation()->addExpectation(new phpunit\mock\definition\expectations\with(func_get_args()));
+		end($this->assertions)->addExpectation(new phpunit\mock\definition\expectations\with(func_get_args()));
 
 		return $this;
 	}
 
 	public function verdict(atoum\test $test)
 	{
-		foreach($this->assertions as $method => $expectations) {
-			$assert = $test->mock($this->mock)->call($method);
+		$asserter = $test->mock($this->mock);
 
-			$expectations->verdict($assert);
+		while(sizeof($this->assertions) > 0) {
+			$assertion = array_shift($this->assertions);
+
+			$assertion->verdict($asserter);
 		}
 
-		$this->reset();
-
-		return $this;
+		return $this->reset();
 	}
 }

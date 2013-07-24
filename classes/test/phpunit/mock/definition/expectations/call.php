@@ -5,17 +5,19 @@ namespace mageekguy\atoum\test\phpunit\mock\definition\expectations;
 use mageekguy\atoum\asserters;
 use mageekguy\atoum\test\phpunit\mock\definition\expectation;
 
-class with implements expectation
+class call extends chain
 {
 	protected $value;
 
-	public function __construct(array $arguments)
+	public function __construct($method, array $expectations = array())
 	{
-		$this->value = $arguments;
+		parent::__construct($expectations);
+
+		$this->value = $method;
 	}
 
 	public function verdict(asserters\mock $asserter)
 	{
-		return call_user_func_array(array($asserter, 'withArguments'), $this->value);
+		return parent::verdict($asserter->call($this->value));
 	}
 }

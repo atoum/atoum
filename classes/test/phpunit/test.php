@@ -16,7 +16,6 @@ abstract class test extends atoum\test
 	const defaultTestedClass = '#Test$#';
 
 	private $unsupportedMethods = array();
-	private $mocks = array();
 
 	public function setMockGenerator(atoum\test\mock\generator $generator = null)
 	{
@@ -42,32 +41,11 @@ abstract class test extends atoum\test
 		return $this->unsupportedMethods;
 	}
 
-	public function addMock(phpunit\mock\aggregator $mock)
-	{
-		$this->mocks[] = $mock;
-
-		return $this;
-	}
-
-	public function getMocks()
-	{
-		return $this->mocks;
-	}
-
 	public function beforeTestMethod($testMethod)
 	{
 		if(isset($this->unsupportedMethods[$testMethod])) {
 			$this->skip($this->unsupportedMethods[$testMethod]);
 		}
-	}
-
-	protected function assertMocks()
-	{
-		foreach($this->mocks as $mock) {
-			$mock->getMockDefinition()->verdict($this);
-		}
-
-		return $this;
 	}
 
 	protected function setMethodAnnotations(annotations\extractor $extractor, & $methodName)
@@ -205,9 +183,7 @@ abstract class test extends atoum\test
 				return $asserter->hasSize($expected);
 			})
 			->setHandler('markTestSkipped', function($skipMessage) use ($self) {
-				foreach($self->getMocks() as $mock) {
-					$mock->getMockDefinition()->reset();
-				}
+				$self->getMockControllerLinker()->init();
 
 				$self->skip($skipMessage);
 			})
@@ -215,13 +191,13 @@ abstract class test extends atoum\test
 				$self->markTestSkipped('Testing exception is not available');
 			})
 			->setHandler('getMock', $getMockHandler = function($class, $methods = array(), $args = array(), $mockClassName = null, $callOriginalConstructor = true, $callOriginalClone = true, $callAutoload = true, $cloneArguments = false) use ($self) {
+				$reflectionFactory = $self->getMockGenerator()->getReflectionClassFactory();
+
 				if($callOriginalConstructor === false) {
 					$self->getMockGenerator()->orphanize('__construct');
-					$self->getMockGenerator()->shuntParentClassCalls();
 				}
 
 				$classname = '\\' . ltrim($self->getMockGenerator()->getDefaultnamespace(), '\\') . '\\' . trim($mockClassName ?: $class ,'\\');
-
 				if (class_exists($classname, $callAutoload) === false)
 				{
 					$self->getMockGenerator()->generate($class, null, $mockClassName);
@@ -229,15 +205,27 @@ abstract class test extends atoum\test
 
 				$mock = null;
 				if(sizeof($args) > 0) {
-					$reflection = new \ReflectionClass($classname);
-					$mock = $reflection->newInstanceArgs($args);
+					$mock = $reflectionFactory($classname)->newInstanceArgs($args);
 				}
 
 				$mock = $mock ?: new $classname();
-				$self->addMock($mock);
 
-				foreach($methods as $method) {
-					$mock->getMockController()->{$method} = null;
+				if ($methods === array())
+				{
+					foreach ($reflectionFactory($class)->getMethods() as $method)
+					{
+						if ($method->isPublic() && $method->isStatic() === false)
+						{
+							$mock->getMockController()->{$method->getName()} = null;
+						}
+					}
+				}
+				else
+				{
+					foreach ($methods as $method)
+					{
+						$mock->getMockController()->{$method} = null;
+					}
 				}
 
 				return $mock;

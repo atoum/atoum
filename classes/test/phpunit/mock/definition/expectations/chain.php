@@ -21,11 +21,6 @@ class chain implements expectation
 		return $this;
 	}
 
-	public function getLastExpectation()
-	{
-		return current(array_reverse($this->expectations));
-	}
-
 	public function verdict(asserters\mock $asserter)
 	{
 		foreach ($this->expectations as $expectation)

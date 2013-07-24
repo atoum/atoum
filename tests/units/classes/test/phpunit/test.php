@@ -77,28 +77,6 @@ class test extends atoum\test
 		;
 	}
 
-	public function testAddGetMocks()
-	{
-		$this
-			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
-			->then
-				->array($test->getMocks())->isEmpty()
-			->if($generator = new atoum\test\phpunit\mock\generator($test))
-			->and($generator->generate($class = uniqid('_')))
-			->and($mockClass = '\\' . $generator->getDefaultNamespace() . '\\' . $class)
-			->and($mock = new $mockClass())
-			->then
-				->object($test->addMock($mock))->isIdenticalTo($test)
-				->array($test->getMocks())->isEqualTo(array($mock))
-			->and($generator->generate($class = 'StdClass'))
-			->and($mockClass = '\\' . $generator->getDefaultNamespace() . '\\' . $class)
-			->and($otherMock = new $mockClass())
-			->then
-				->object($test->addMock($otherMock))->isIdenticalTo($test)
-				->array($test->getMocks())->isEqualTo(array($mock, $otherMock))
-		;
-	}
-
 	public function testAssertTrueFalse()
 	{
 		$this

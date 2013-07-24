@@ -46,6 +46,11 @@ class linker
 		return (isset($this->mocks[$controller]) === false ? null : $this->mocks[$controller]);
 	}
 
+	public function getMocks()
+	{
+		return $this->mocks;
+	}
+
 	public function unlink(mock\controller $controller)
 	{
 		$mock = $this->getMock($controller);
@@ -71,7 +76,7 @@ class linker
 		return $this->init();
 	}
 
-	protected function init()
+	public function init()
 	{
 		$this->mocks = new \splObjectStorage();
 		$this->controllers = new \splObjectStorage();
