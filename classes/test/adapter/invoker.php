@@ -8,6 +8,7 @@ use
 
 class invoker implements \arrayAccess, \countable
 {
+	protected $bindClosureTo = null;
 	protected $currentCall = null;
 	protected $closuresByCall = array();
 
@@ -36,6 +37,13 @@ class invoker implements \arrayAccess, \countable
 			default:
 				throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
 		}
+	}
+
+	public function bindTo($object)
+	{
+		$this->bindClosureTo = $object;
+
+		return $this;
 	}
 
 	public function count()
@@ -73,7 +81,7 @@ class invoker implements \arrayAccess, \countable
 
 		static::checkCall($call);
 
-		$this->closuresByCall[$call] = $closure;
+		$this->closuresByCall[$call] = $this->bindClosure($closure);
 
 		return $this;
 	}
@@ -151,6 +159,16 @@ class invoker implements \arrayAccess, \countable
 		$this->currentCall = self::checkCall($call);
 
 		return $this;
+	}
+
+	protected function bindClosure(\closure $closure)
+	{
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0 && $this->bindClosureTo !== null)
+		{
+			$closure = $closure->bindTo($this->bindClosureTo);
+		}
+
+		return $closure;
 	}
 
 	protected static function checkCall($call)

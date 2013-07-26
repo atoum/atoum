@@ -234,13 +234,13 @@ class adapter extends atoum\adapter
 	{
 		$name = static::normalizeFunctionName($name);
 
-		if ($factory === null)
-		{
-			$factory = function() { return new invoker(); };
-		}
-
 		if (isset($this->invokers[$name]) === false)
 		{
+			if ($factory === null)
+			{
+				$factory = function() { return new invoker(); };
+			}
+
 			$this->invokers[$name] = $factory();
 		}
 

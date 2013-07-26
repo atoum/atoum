@@ -236,6 +236,13 @@ class controller extends test\adapter
 
 		return $this;
 	}
+
+	protected function setInvoker($name, \closure $factory = null)
+	{
+		$invoker = parent::setInvoker($name, $factory);
+
+		return $invoker->bindTo(self::$linker->getMock($this));
+	}
 }
 
 controller::setLinker();

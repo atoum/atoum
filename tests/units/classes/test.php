@@ -91,6 +91,7 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getScore())->isInstanceOf('mageekguy\atoum\score')
 					->object($test->getLocale())->isEqualTo(new atoum\locale())
 					->object($test->getAdapter())->isEqualTo(new atoum\adapter())
+					->object($test->getPhpMocker())->isInstanceOf('mageekguy\atoum\php\mocker')
 					->boolean($test->isIgnored())->isTrue()
 					->boolean($test->debugModeIsEnabled())->isFalse()
 					->array($test->getAllTags())->isEqualTo($tags = array('empty', 'fake', 'dummy'))
@@ -251,6 +252,20 @@ namespace mageekguy\atoum\tests\units
 					->object($test->getAsserterGenerator())->isIdenticalTo($asserterGenerator)
 					->object($asserterGenerator->getTest())->isIdenticalTo($test)
 					->object($asserterGenerator->getLocale())->isIdenticalTo($test->getLocale())
+			;
+		}
+
+		public function testSetPhpMocker()
+		{
+			$this
+				->if($test = new emptyTest())
+				->then
+					->object($test->setPhpMocker($phpMocker = new atoum\php\mocker()))->isIdenticalTo($test)
+					->object($test->getPhpMocker())->isIdenticalTo($phpMocker)
+					->object($test->setPhpMocker())->isIdenticalTo($test)
+					->object($test->getPhpMocker())
+						->isNotIdenticalTo($phpMocker)
+						->isInstanceOf('mageekguy\atoum\php\mocker')
 			;
 		}
 

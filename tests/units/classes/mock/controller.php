@@ -13,6 +13,8 @@ require_once __DIR__ . '/../../runner.php';
 
 class foo
 {
+	public $public = null;
+
 	public function __construct() {}
 	public function __call($method, $arguments) {}
 	public function doSomething() { return 'something done'; }
@@ -80,6 +82,19 @@ class controller extends atoum\test
 				->array($mockController->getCalls(strtoupper('__call')))->hasSize(1)
 				->mock($mock)->call('bar')->withArguments($arg)->once()
 				->mock($mock)->call('__call')->withArguments('bar', array($arg, $otherArg))->once()
+		;
+	}
+
+	/** @php 5.4 */
+	public function test__setAndBindingToMock()
+	{
+		$this
+			->if($mockController = new testedClass())
+			->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->and($mockController->doSomething = function() use (& $public) { $this->public = $public = uniqid(); })
+			->and($mock->doSomething())
+			->then
+				->string($mock->public)->isEqualTo($public)
 		;
 	}
 
