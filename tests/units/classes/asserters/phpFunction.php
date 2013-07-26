@@ -105,7 +105,7 @@ class phpFunction extends atoum\test
 		;
 	}
 
-	public function testWasCalled()
+	public function testIsCalled()
 	{
 		$this
 			->if($asserter = new testedClass())
