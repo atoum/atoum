@@ -13,21 +13,58 @@ class phpFunction extends atoum\asserter
 	protected $namespace = '';
 	protected $function = '';
 
-	public function setWith($function)
+	public function __toString()
+	{
+		return $this->getFullyQualifiedFunctionName();
+	}
+
+	public function setNamespace($namespace)
+	{
+		$this->namespace = trim($namespace, '\\');
+
+		if ($this->namespace !== '')
+		{
+			$this->namespace .= '\\';
+		}
+
+		return $this;
+	}
+
+	public function getNamespace()
+	{
+		return $this->namespace;
+	}
+
+	public function setFunction($function)
 	{
 		$this->function = $function;
 
 		return $this;
 	}
 
+	public function getFunction()
+	{
+		return $this->function;
+	}
+
+	public function getFullyQualifiedFunctionName()
+	{
+		return ($this->function === '' ? '' : $this->namespace . $this->function);
+	}
+
+	public function setWith($function)
+	{
+		return $this->setFunction($function);
+	}
+
 	public function setWithTest(atoum\test $test)
 	{
-		$this->namespace = $test->getTestedClassNamespace() . '\\';
+		$this->setNamespace($test->getTestedClassNamespace());
 
 		return parent::setWithTest($test);
 	}
 
-	public function wasCalled($failMessage = null)
+	public function isCalled($failMessage = null)
 	{
 		$fqdn = $this->functionIsSet()->namespace . $this->function;
 
@@ -37,7 +74,7 @@ class phpFunction extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this->function) . $this->getCallsAsString());
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this) . $this->getCallsAsString());
 		}
 
 		return $this;
@@ -45,9 +82,14 @@ class phpFunction extends atoum\asserter
 
 	protected function functionIsSet()
 	{
-		if ($this->function === null)
+		if ($this->getFullyQualifiedFunctionName() === '')
 		{
 			throw new exceptions\logic('Function is undefined');
+		}
+
+		if (function_exists($this->getFullyQualifiedFunctionName()) === false)
+		{
+			throw new exceptions\logic('Function \'' . $this->getFullyQualifiedFunctionName() . '\' does not exist');
 		}
 
 		return $this;
@@ -55,7 +97,7 @@ class phpFunction extends atoum\asserter
 
 	protected function getCalls()
 	{
-		return php\mocker::getAdapter()->getCalls($this->namespace . $this->function);
+		return php\mocker::getAdapter()->getCalls($this->getFullyQualifiedFunctionName());
 	}
 
 	protected function getCallsAsString()
