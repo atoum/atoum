@@ -16,28 +16,28 @@ class variable extends atoum\test
 		$diff = new tools\diffs\variable();
 
 		$this->assert
-			->variable($diff->getReference())->isNull()
-			->variable($diff->getData())->isNull()
+			->variable($diff->getExpected())->isNull()
+			->variable($diff->getActual())->isNull()
 		;
 	}
 
-	public function testSetReference()
+	public function testSetExpected()
 	{
 		$diff = new tools\diffs\variable();
 
 		$this->assert
-			->object($diff->setReference($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getReference())->isEqualTo(self::dumpAsString($variable))
+			->object($diff->setExpected($variable = uniqid()))->isIdenticalTo($diff)
+			->string($diff->getExpected())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
-	public function testSetData()
+	public function testSetActual()
 	{
 		$diff = new tools\diffs\variable();
 
 		$this->assert
-			->object($diff->setData($variable = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getData())->isEqualTo(self::dumpAsString($variable))
+			->object($diff->setActual($variable = uniqid()))->isIdenticalTo($diff)
+			->string($diff->getActual())->isEqualTo(self::dumpAsString($variable))
 		;
 	}
 
@@ -56,10 +56,10 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Reference is undefined')
+				->hasMessage('Expected is undefined')
 		;
 
-		$diff->setReference($reference = uniqid());
+		$diff->setExpected($reference = uniqid());
 
 		try
 		{
@@ -70,10 +70,10 @@ class variable extends atoum\test
 		$this->assert
 			->exception($exception)
 				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
-				->hasMessage('Data is undefined')
+				->hasMessage('Actual is undefined')
 		;
 
-		$diff->setData($reference);
+		$diff->setActual($reference);
 
 		$this->assert
 			->array($diff->make())->isEqualTo(array(self::dumpAsString($reference)))

@@ -99,7 +99,7 @@ class utf8String extends atoum\test
 			->then
 				->exception(function() use ($asserter, $secondString) { $asserter->isEqualTo($secondString); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference($secondString)->setData($firstString))
+					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setExpected($secondString)->setActual($firstString))
 			->object($asserter->isEqualTo($firstString))->isIdenticalTo($asserter)
 		;
 	}
@@ -124,7 +124,7 @@ class utf8String extends atoum\test
 			->then
 				->exception(function() use ($asserter, & $path) { $asserter->isEqualToContentsOfFile($path); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('string is not equals to contents of file %s'), $path) . PHP_EOL . $diff->setReference($fileContents)->setData($firstString))
+					->hasMessage(sprintf($generator->getLocale()->_('string is not equals to contents of file %s'), $path) . PHP_EOL . $diff->setExpected($fileContents)->setActual($firstString))
 			->if($adapter->file_get_contents = $firstString)
 			->then
 				->object($asserter->isEqualToContentsOfFile($this->getRandomUtf8String()))->isIdenticalTo($asserter)
@@ -144,7 +144,7 @@ class utf8String extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setReference('')->setData($string))
+					->hasMessage($generator->getLocale()->_('strings are not equals') . PHP_EOL . $diff->setExpected('')->setActual($string))
 			->if($asserter->setWith(''))
 			->then
 				->object($asserter->isEmpty())->isIdenticalTo($asserter)

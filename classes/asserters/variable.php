@@ -76,7 +76,7 @@ class variable extends atoum\asserter
 			$this->fail(
 				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->getTypeOf($value))) .
 				PHP_EOL .
-				$diff->setReference($value)->setData($this->value)
+				$diff->setExpected($value)->setActual($this->value)
 			);
 		}
 
@@ -114,7 +114,7 @@ class variable extends atoum\asserter
 			$this->fail(
 				($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not identical to %s'), $this, $this->getTypeOf($value))) .
 				PHP_EOL .
-				$diff->setReference($value)->setData($this->value)
+				$diff->setExpected($value)->setActual($this->value)
 			);
 		}
 

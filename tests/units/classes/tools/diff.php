@@ -16,29 +16,29 @@ class diff extends atoum\test
 		$diff = new tools\diff();
 
 		$this->assert
-			->string($diff->getReference())->isEmpty()
-			->string($diff->getData())->isEmpty()
+			->string($diff->getExpected())->isEmpty()
+			->string($diff->getActual())->isEmpty()
 		;
 
 		$diff = new tools\diff($reference = uniqid());
 
 		$this->assert
-			->string($diff->getReference())->isEqualTo($reference)
-			->string($diff->getData())->isEmpty()
+			->string($diff->getExpected())->isEqualTo($reference)
+			->string($diff->getActual())->isEmpty()
 		;
 
 		$diff = new tools\diff('', $data = uniqid());
 
 		$this->assert
-			->string($diff->getReference())->isEmpty()
-			->string($diff->getData())->isEqualTo($data)
+			->string($diff->getExpected())->isEmpty()
+			->string($diff->getActual())->isEqualTo($data)
 		;
 
 		$diff = new tools\diff($reference = uniqid(), $data = uniqid());
 
 		$this->assert
-			->string($diff->getReference())->isEqualTo($reference)
-			->string($diff->getData())->isEqualTo($data)
+			->string($diff->getExpected())->isEqualTo($reference)
+			->string($diff->getActual())->isEqualTo($data)
 		;
 	}
 
@@ -50,23 +50,23 @@ class diff extends atoum\test
 			->castToString($diff)->isEmpty()
 		;
 
-		$diff->setData($data = uniqid());
+		$diff->setActual($data = uniqid());
 
 		$this->assert
 			->castToString($diff)->isEqualTo(
-				'-Reference' . PHP_EOL .
-				'+Data' . PHP_EOL .
+				'-Expected' . PHP_EOL .
+				'+Actual' . PHP_EOL .
 				'@@ -1 +1 @@' . PHP_EOL .
 				'+' . $data
 			)
 		;
 
-		$diff->setData(($data = uniqid()) . PHP_EOL . ($otherSecondString = uniqid()));
+		$diff->setActual(($data = uniqid()) . PHP_EOL . ($otherSecondString = uniqid()));
 
 		$this->assert
 			->castToString($diff)->isEqualTo(
-				'-Reference' . PHP_EOL .
-				'+Data' . PHP_EOL .
+				'-Expected' . PHP_EOL .
+				'+Actual' . PHP_EOL .
 				'@@ -1 +1,2 @@' . PHP_EOL .
 				'+' . $data . PHP_EOL .
 				'+' . $otherSecondString
@@ -74,14 +74,14 @@ class diff extends atoum\test
 		;
 
 		$diff
-			->setReference($reference = 'check this dokument.')
-			->setData($data = 'check this document.')
+			->setExpected($reference = 'check this dokument.')
+			->setActual($data = 'check this document.')
 		;
 
 		$this->assert
 			->castToString($diff)->isEqualTo(
-				'-Reference' . PHP_EOL .
-				'+Data' . PHP_EOL .
+				'-Expected' . PHP_EOL .
+				'+Actual' . PHP_EOL .
 				'@@ -1 +1 @@' . PHP_EOL .
 				'-' . $reference . PHP_EOL .
 				'+' . $data
@@ -89,14 +89,14 @@ class diff extends atoum\test
 		;
 
 		$diff
-			->setReference($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-			->setData($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
+			->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+			->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 5 . PHP_EOL))
 		;
 
 		$this->assert
 			->castToString($diff)->isEqualTo(
-				'-Reference' . PHP_EOL .
-				'+Data' . PHP_EOL .
+				'-Expected' . PHP_EOL .
+				'+Actual' . PHP_EOL .
 				'@@ -4 +4 @@' . PHP_EOL .
 				'-4'. PHP_EOL .
 				'+6'
@@ -104,14 +104,14 @@ class diff extends atoum\test
 		;
 
 		$diff
-			->setReference($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
-			->setData($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
+			->setExpected($reference = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 4 . PHP_EOL . 5 . PHP_EOL))
+			->setActual($data = (1 . PHP_EOL . 2 . PHP_EOL . 3 . PHP_EOL . 6 . PHP_EOL . 7 . PHP_EOL . 5 . PHP_EOL))
 		;
 
 		$this->assert
 			->castToString($diff)->isEqualTo(
-				'-Reference' . PHP_EOL .
-				'+Data' . PHP_EOL .
+				'-Expected' . PHP_EOL .
+				'+Actual' . PHP_EOL .
 				'@@ -4 +4,2 @@' . PHP_EOL .
 				'-4'. PHP_EOL .
 				'+6' . PHP_EOL .
@@ -120,23 +120,23 @@ class diff extends atoum\test
 		;
 	}
 
-	public function testSetReference()
+	public function testSetExpected()
 	{
 		$diff = new tools\diff();
 
 		$this->assert
-			->object($diff->setReference($reference = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getReference())->isEqualTo($reference)
+			->object($diff->setExpected($reference = uniqid()))->isIdenticalTo($diff)
+			->string($diff->getExpected())->isEqualTo($reference)
 		;
 	}
 
-	public function testSetData()
+	public function testSetActual()
 	{
 		$diff = new tools\diff();
 
 		$this->assert
-			->object($diff->setData($data = uniqid()))->isIdenticalTo($diff)
-			->string($diff->getData())->isEqualTo($data)
+			->object($diff->setActual($data = uniqid()))->isIdenticalTo($diff)
+			->string($diff->getActual())->isEqualTo($data)
 		;
 	}
 
@@ -149,25 +149,25 @@ class diff extends atoum\test
 					''
 				)
 			)
-			->array($diff->setData($data = rand(0, 9))->make())->isEqualTo(array(
+			->array($diff->setActual($data = rand(0, 9))->make())->isEqualTo(array(
 					array(
 						'-' => array(''),
 						'+' => array($data)
 					)
 				)
 			)
-			->array($diff->setData($data = uniqid())->make())->isEqualTo(array(
+			->array($diff->setActual($data = uniqid())->make())->isEqualTo(array(
 					array(
 						'-' => array(''),
 						'+' => array($data)
 					)
 				)
 			)
-			->array($diff->setReference($data)->make())->isEqualTo(array(
+			->array($diff->setExpected($data)->make())->isEqualTo(array(
 					$data
 				)
 			)
-			->array($diff->setReference('')->setData(($firstLine = uniqid()). PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(array(
+			->array($diff->setExpected('')->setActual(($firstLine = uniqid()). PHP_EOL . ($secondLine = uniqid()))->make())->isEqualTo(array(
 					array(
 						'-' => array(''),
 						'+' => array(

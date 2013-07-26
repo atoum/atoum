@@ -53,7 +53,7 @@ class float extends asserters\integer
 					$this->fail(
 						($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $this, $this->getTypeOf($value), $epsilon)) .
 						PHP_EOL .
-						$diff->setReference($value)->setData($this->value)
+						$diff->setExpected($value)->setActual($this->value)
 					);
 				}
 		}

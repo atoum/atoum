@@ -46,7 +46,7 @@ class boolean extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setReference(true)->setData(false))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
 			->if($asserter->setWith(true))
 			->then
 				->object($asserter->isTrue)->isIdenticalTo($asserter)
@@ -55,7 +55,7 @@ class boolean extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setReference(true)->setData(false))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
 		;
 	}
 
@@ -75,7 +75,7 @@ class boolean extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setReference(false)->setData(true))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
 			->if($asserter->setWith(false))
 			->then
 				->object($asserter->isFalse)->isIdenticalTo($asserter)
@@ -84,7 +84,7 @@ class boolean extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse; })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setReference(false)->setData(true))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
 		;
 	}
 

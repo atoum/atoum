@@ -52,7 +52,7 @@ class integer extends atoum\test
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(- $value)->setData($value))
+			->and($diff->setExpected(- $value)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isEqualTo(- $value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -68,13 +68,13 @@ class integer extends atoum\test
 			->then
 				->object($asserter->isGreaterThan(0))->isIdenticalTo($asserter)
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(PHP_INT_MAX)->setData($value))
+			->and($diff->setExpected(PHP_INT_MAX)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isGreaterThan(PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not greater than %s'), $asserter, $asserter->getTypeOf(PHP_INT_MAX)))
 			->if($diff = new diffs\variable())
-			->and($diff->setReference($value)->setData($value))
+			->and($diff->setExpected($value)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isGreaterThan($value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -90,13 +90,13 @@ class integer extends atoum\test
 			->then
 				->object($asserter->isLessThan(0))->isIdenticalTo($asserter)
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(- PHP_INT_MAX)->setData($value))
+			->and($diff->setExpected(- PHP_INT_MAX)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThan(- PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
 			->if($diff = new diffs\variable())
-			->and($diff->setReference($value)->setData($value))
+			->and($diff->setExpected($value)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThan($value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -113,7 +113,7 @@ class integer extends atoum\test
 				->object($asserter->isGreaterThanOrEqualTo(0))->isIdenticalTo($asserter)
 				->object($asserter->isGreaterThanOrEqualTo($value))->isIdenticalTo($asserter)
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(PHP_INT_MAX)->setData($value))
+			->and($diff->setExpected(PHP_INT_MAX)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $line = __LINE__; $asserter->isGreaterThanOrEqualTo(PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -130,7 +130,7 @@ class integer extends atoum\test
 				->object($asserter->isLessThanOrEqualTo(0))->isIdenticalTo($asserter)
 				->object($asserter->isLessThanOrEqualTo($value))->isIdenticalTo($asserter)
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(- PHP_INT_MAX)->setData($value))
+			->and($diff->setExpected(- PHP_INT_MAX)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isLessThanOrEqualTo(- PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')

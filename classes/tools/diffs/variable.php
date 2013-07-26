@@ -11,30 +11,30 @@ class variable extends tools\diff
 {
 	public function __construct()
 	{
-		$this->reference = null;
-		$this->data = null;
+		$this->expected = null;
+		$this->actual = null;
 	}
 
-	public function setReference($mixed)
+	public function setExpected($mixed)
 	{
-		return parent::setReference(self::dumpAsString($mixed));
+		return parent::setExpected(self::dumpAsString($mixed));
 	}
 
-	public function setData($mixed)
+	public function setActual($mixed)
 	{
-		return parent::setData(self::dumpAsString($mixed));
+		return parent::setActual(self::dumpAsString($mixed));
 	}
 
 	public function make()
 	{
-		if ($this->reference === null)
+		if ($this->expected === null)
 		{
-			throw new exceptions\runtime('Reference is undefined');
+			throw new exceptions\runtime('Expected is undefined');
 		}
 
-		if ($this->data === null)
+		if ($this->actual === null)
 		{
-			throw new exceptions\runtime('Data is undefined');
+			throw new exceptions\runtime('Actual is undefined');
 		}
 
 		return parent::make();

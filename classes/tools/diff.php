@@ -4,14 +4,14 @@ namespace mageekguy\atoum\tools;
 
 class diff
 {
-	protected $reference = '';
-	protected $data = '';
+	protected $expected = '';
+	protected $actual = '';
 
 	public function __construct($reference = '', $data = '')
 	{
 		$this
-			->setReference($reference)
-			->setData($data)
+			->setExpected($reference)
+			->setActual($data)
 		;
 	}
 
@@ -23,8 +23,8 @@ class diff
 
 		if (sizeof($diff) > 0)
 		{
-			$string .= '-Reference' . PHP_EOL;
-			$string .= '+Data' . PHP_EOL;
+			$string .= '-Expected' . PHP_EOL;
+			$string .= '+Actual' . PHP_EOL;
 
 			foreach ($diff as $lineNumber => $diff)
 			{
@@ -56,33 +56,33 @@ class diff
 		return trim($string);
 	}
 
-	public function setReference($mixed)
+	public function setExpected($mixed)
 	{
-		$this->reference = (string) $mixed;
+		$this->expected = (string) $mixed;
 
 		return $this;
 	}
 
-	public function setData($mixed)
+	public function setActual($mixed)
 	{
-		$this->data = (string) $mixed;
+		$this->actual = (string) $mixed;
 
 		return $this;
 	}
 
-	public function getReference()
+	public function getExpected()
 	{
-		return $this->reference;
+		return $this->expected;
 	}
 
-	public function getData()
+	public function getActual()
 	{
-		return $this->data;
+		return $this->actual;
 	}
 
 	public function make()
 	{
-		return $this->diff(self::split($this->reference), self::split($this->data));
+		return $this->diff(self::split($this->expected), self::split($this->actual));
 	}
 
 	protected function diff($old, $new)

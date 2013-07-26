@@ -120,14 +120,14 @@ class variable extends atoum\test
 			->then
 				->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setReference($notEqualValue)->setData($asserter->getValue()))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setExpected($notEqualValue)->setActual($asserter->getValue()))
 			->if($asserter->setWith(1))
 			->and($otherDiff = new diffs\variable())
 			->then
 				->object($asserter->isEqualTo('1'))->isIdenticalTo($asserter)
 				->exception(function() use (& $otherLine, $asserter, & $otherNotEqualValue, & $otherFailMessage) { $otherLine = __LINE__; $asserter->isEqualTo($otherNotEqualValue = uniqid(), $otherFailMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setReference($otherNotEqualValue)->setData($asserter->getValue()))
+					->hasMessage($otherFailMessage . PHP_EOL . $otherDiff->setExpected($otherNotEqualValue)->setActual($asserter->getValue()))
 		;
 	}
 
@@ -168,10 +168,10 @@ class variable extends atoum\test
 			->then
 				->exception(function() use ($asserter, & $notIdenticalValue, $value) { $asserter->isIdenticalTo($notIdenticalValue = (string) $value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage(sprintf($generator->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)) . PHP_EOL . $diff->setReference($notIdenticalValue)->setData($asserter->getValue()))
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)) . PHP_EOL . $diff->setExpected($notIdenticalValue)->setActual($asserter->getValue()))
 				->exception(function() use ($asserter, $notIdenticalValue, & $failMessage) { $asserter->isIdenticalTo($notIdenticalValue, $failMessage = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-					->hasMessage($failMessage . PHP_EOL . $diff->setReference($notIdenticalValue)->setData($asserter->getValue()))
+					->hasMessage($failMessage . PHP_EOL . $diff->setExpected($notIdenticalValue)->setActual($asserter->getValue()))
 		;
 	}
 

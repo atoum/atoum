@@ -54,7 +54,7 @@ class float extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isEqualTo() must be a float')
 			->if($diff = new diffs\variable())
-			->and($diff->setReference(- $value)->setData($value))
+			->and($diff->setExpected(- $value)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isEqualTo(- $value); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -142,7 +142,7 @@ class float extends atoum\test
 					->isIdenticalTo($asserter);
 			} else {
 				$this->if($diff = new diffs\variable())
-					->and($diff->setReference($testValue)->setData($value))
+					->and($diff->setExpected($testValue)->setActual($value))
 					->then
 						->exception(function() use ($asserter, $testValue, $epsilon) { $asserter->isNearlyEqualTo($testValue, $epsilon); })
 							->isInstanceOf('mageekguy\atoum\asserter\exception')
