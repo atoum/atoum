@@ -95,6 +95,16 @@ class controller extends atoum\test
 			->and($mock->doSomething())
 			->then
 				->string($mock->public)->isEqualTo($public)
+			->if($mockController = new testedClass())
+			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->then
+				->string($mock->public)->isEqualTo($public)
+			->if($mockController = new testedClass())
+			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->string($mock->public)->isEqualTo($public)
 		;
 	}
 

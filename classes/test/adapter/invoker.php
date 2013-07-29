@@ -43,6 +43,11 @@ class invoker implements \arrayAccess, \countable
 	{
 		$this->bindClosureTo = $object;
 
+		foreach ($this->closuresByCall as $call => & $closure)
+		{
+			$closure = $this->bindClosure($closure);
+		}
+
 		return $this;
 	}
 
@@ -144,6 +149,13 @@ class invoker implements \arrayAccess, \countable
 		return $this->closureIsSetForCall($call) ?: $this->closureIsSetForCall(0);
 	}
 
+	public function atCall($call)
+	{
+		$this->currentCall = self::checkCall($call);
+
+		return $this;
+	}
+
 	public function invoke(array $arguments = array(), $call = 0)
 	{
 		if ($this->closureIsSetForCall($call) === false)
@@ -154,16 +166,9 @@ class invoker implements \arrayAccess, \countable
 		return call_user_func_array($this->getClosure($call), $arguments);
 	}
 
-	public function atCall($call)
-	{
-		$this->currentCall = self::checkCall($call);
-
-		return $this;
-	}
-
 	protected function bindClosure(\closure $closure)
 	{
-		if (version_compare(PHP_VERSION, '5.4.0') >= 0 && $this->bindClosureTo !== null)
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0 && $this->bindClosureTo !== null && static::isBindable($closure) === true)
 		{
 			$closure = $closure->bindTo($this->bindClosureTo);
 		}
@@ -181,5 +186,12 @@ class invoker implements \arrayAccess, \countable
 		}
 
 		return $call;
+	}
+
+	protected static function isBindable(\closure $closure)
+	{
+		$reflectedClosure = new \reflectionFunction($closure);
+
+		return ($reflectedClosure->getClosureThis() !== null);
 	}
 }
