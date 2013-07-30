@@ -43,7 +43,7 @@ class invoker implements \arrayAccess, \countable
 	{
 		$this->bindClosureTo = $object;
 
-		foreach ($this->closuresByCall as $call => & $closure)
+		foreach ($this->closuresByCall as & $closure)
 		{
 			$closure = $this->bindClosure($closure);
 		}
@@ -168,7 +168,7 @@ class invoker implements \arrayAccess, \countable
 
 	protected function bindClosure(\closure $closure)
 	{
-		if (version_compare(PHP_VERSION, '5.4.0') >= 0 && $this->bindClosureTo !== null && static::isBindable($closure) === true)
+		if ($this->bindClosureTo !== null && static::isBindable($closure) === true)
 		{
 			$closure = $closure->bindTo($this->bindClosureTo);
 		}
@@ -190,8 +190,15 @@ class invoker implements \arrayAccess, \countable
 
 	protected static function isBindable(\closure $closure)
 	{
-		$reflectedClosure = new \reflectionFunction($closure);
+		$isBindable = false;
 
-		return ($reflectedClosure->getClosureThis() !== null);
+		if (version_compare(PHP_VERSION, '5.4.0') >= 0)
+		{
+			$reflectedClosure = new \reflectionFunction($closure);
+
+			$isBindable = ($reflectedClosure->getClosureThis() !== null);
+		}
+
+		return $isBindable;
 	}
 }

@@ -40,6 +40,16 @@ class controller extends atoum\test
 				->variable($mockController->getMockClass())->isNull()
 				->array($mockController->getMethods())->isEmpty()
 				->object($mockController->getIterator())->isEqualTo(new mock\controller\iterator($mockController))
+				->boolean($mockController->autoBindIsEnabled())->isTrue()
+			->if(testedClass::disableAutoBindForNewMock())
+			->and($mockController = new testedClass())
+			->then
+				->boolean($mockController->autoBindIsEnabled())->isFalse()
+			->if(testedClass::enableAutoBindForNewMock())
+			->and($otherMockController = new testedClass())
+			->then
+				->boolean($mockController->autoBindIsEnabled())->isFalse()
+				->boolean($otherMockController->autoBindIsEnabled())->isTrue()
 		;
 	}
 
@@ -86,7 +96,7 @@ class controller extends atoum\test
 	}
 
 	/** @php 5.4 */
-	public function test__setAndBindingToMock()
+	public function test__setAndBindToMock()
 	{
 		$this
 			->if($mockController = new testedClass())
@@ -105,6 +115,64 @@ class controller extends atoum\test
 			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
 			->then
 				->string($mock->public)->isEqualTo($public)
+			->if($mockController->disableAutoBind())
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->variable($mock->public)->isNull()
+			->if(testedClass::disableAutoBindForNewMock())
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->variable($mock->public)->isNull()
+			->if($mockController = new testedClass())
+			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
+			->and($mockController->enableAutoBind())
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->string($mock->public)->isEqualTo($public)
+		;
+	}
+
+	/** @php 5.4 */
+	public function testEnableAutoBind()
+	{
+		$this
+			->if($mockController = new testedClass())
+			->then
+				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isTrue()
+			->if($mockController->disableAutoBind())
+			->then
+				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isTrue()
+			->if($mockController->disableAutoBind())
+			->and($mockController->doSomething = function() { return $this; })
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isTrue()
+				->object($mock->doSomething())->isIdenticalTo($mock)
+		;
+	}
+
+	/** @php 5.4 */
+	public function testDisableAutoBind()
+	{
+		$this
+			->if($mockController = new testedClass())
+			->then
+				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isFalse()
+			->if($mockController->enableAutoBind())
+			->then
+				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isFalse()
+			->if($mockController->enableAutoBind())
+			->and($mockController->doSomething = function() { return $this; })
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->then
+				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
+				->boolean($mockController->autoBindIsEnabled())->isFalse()
+				->boolean(isset($mockController->doSomething))->isFalse()
 		;
 	}
 

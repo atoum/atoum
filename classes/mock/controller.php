@@ -14,9 +14,11 @@ class controller extends test\adapter
 	protected $mockClass = null;
 	protected $mockMethods = array();
 	protected $iterator = null;
+	protected $autoBind = true;
 
 	protected static $linker = null;
 	protected static $controlNextNewMock = null;
+	protected static $autoBindForNewMock = true;
 
 	private $disableMethodChecking = false;
 
@@ -28,6 +30,15 @@ class controller extends test\adapter
 			->setIterator()
 			->controlNextNewMock()
 		;
+
+		if (self::$autoBindForNewMock === true)
+		{
+			$this->enableAutoBind();
+		}
+		else
+		{
+			$this->disableAutoBind();
+		}
 	}
 
 	public function __set($method, $mixed)
@@ -171,6 +182,30 @@ class controller extends test\adapter
 		return $this;
 	}
 
+	public function enableAutoBind()
+	{
+		$this->autoBind = true;
+
+		foreach ($this->invokers as $invoker)
+		{
+			$invoker->bindTo(self::$linker->getMock($this));
+		}
+
+		return $this;
+	}
+
+	public function disableAutoBind()
+	{
+		$this->autoBind = false;
+
+		return $this->reset();
+	}
+
+	public function autoBindIsEnabled()
+	{
+		return ($this->autoBind === true);
+	}
+
 	public function reset()
 	{
 		self::$linker->unlink($this);
@@ -190,6 +225,16 @@ class controller extends test\adapter
 		}
 
 		return parent::invoke($method, $arguments);
+	}
+
+	public static function enableAutoBindForNewMock()
+	{
+		self::$autoBindForNewMock = true;
+	}
+
+	public static function disableAutoBindForNewMock()
+	{
+		self::$autoBindForNewMock = false;
 	}
 
 	public static function get()
@@ -241,7 +286,12 @@ class controller extends test\adapter
 	{
 		$invoker = parent::setInvoker($name, $factory);
 
-		return $invoker->bindTo(self::$linker->getMock($this));
+		if ($this->autoBind === true)
+		{
+			$invoker->bindTo(self::$linker->getMock($this));
+		}
+
+		return $invoker;
 	}
 }
 
