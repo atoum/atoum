@@ -196,7 +196,7 @@ class invoker implements \arrayAccess, \countable
 		{
 			$reflectedClosure = new \reflectionFunction($closure);
 
-			$isBindable = ($reflectedClosure->getClosureThis() !== null);
+			$isBindable = ($reflectedClosure->getClosureThis() !== null || $reflectedClosure->getClosureScopeClass() === null);
 		}
 
 		return $isBindable;
