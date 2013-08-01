@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
@@ -10,6 +11,8 @@ use
 
 class exception extends asserters\object
 {
+	protected static $lastValue = null;
+
 	public function __get($asserter)
 	{
 		switch ($asserter)
@@ -48,6 +51,8 @@ class exception extends asserters\object
 			else
 			{
 				$this->pass();
+
+				static::$lastValue = $exception;
 			}
 		}
 
@@ -136,6 +141,11 @@ class exception extends asserters\object
 		}
 
 		return $this;
+	}
+
+	public static function getLastValue()
+	{
+		return static::$lastValue;
 	}
 
 	protected function valueIsSet($message = 'Exception is undefined')

@@ -128,7 +128,11 @@ namespace mageekguy\atoum\tests\units
 				->if($test->setAsserterGenerator($asserterGenerator = new atoum\test\asserter\generator(new emptyTest())))
 				->then
 					->object($test->assert)->isIdenticalTo($test)
+					->variable($test->exception)->isNull()
 					->exception(function() use ($test, & $property) { $test->{$property = uniqid()}; })
+						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->hasMessage('Asserter \'' . $property . '\' does not exist')
+					->exception($test->exception)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Asserter \'' . $property . '\' does not exist')
 			;

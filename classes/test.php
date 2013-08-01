@@ -6,6 +6,7 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
+	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\annotations
 ;
@@ -291,6 +292,7 @@ abstract class test implements observable, \countable
 			->setHandler('executeOnFailure', function($callback) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure($callback); } return $test; })
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
 			->setPropertyHandler('function', function() use ($test) { return $test->getPhpMocker(); })
+			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
 		;
 
 		$returnTest = function() use ($test) { return $test; };
