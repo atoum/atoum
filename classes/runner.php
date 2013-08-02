@@ -35,6 +35,7 @@ class runner implements observable
 	protected $bootstrapFile = null;
 	protected $testDirectoryIterator = null;
 	protected $debugMode = false;
+	protected $xdebugConfig = null;
 
 	private $start = null;
 	private $stop = null;
@@ -169,6 +170,18 @@ class runner implements observable
 	public function debugModeIsEnabled()
 	{
 		return $this->debugMode;
+	}
+
+	public function setXdebugConfig($value)
+	{
+		$this->xdebugConfig = $value;
+
+		return $this;
+	}
+
+	public function getXdebugConfig()
+	{
+		return $this->xdebugConfig;
 	}
 
 	public function setMaxChildrenNumber($number)
@@ -420,6 +433,8 @@ class runner implements observable
 				{
 					$test->enableDebugMode();
 				}
+
+				$test->setXdebugConfig($this->xdebugConfig);
 
 				if ($this->maxChildrenNumber !== null)
 				{

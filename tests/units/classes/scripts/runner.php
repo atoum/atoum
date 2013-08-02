@@ -175,6 +175,11 @@ class runner extends atoum\test
 							array('--debug'),
 							null,
 							'Enable debug mode'
+						),
+						array(
+							array('-xc', '--xdebug-config'),
+							null,
+							'Set XDEBUG_CONFIG variable'
 						)
 					)
 				)
@@ -322,6 +327,11 @@ class runner extends atoum\test
 							array('--debug'),
 							null,
 							'Enable debug mode'
+						),
+						array(
+							array('-xc', '--xdebug-config'),
+							null,
+							'Set XDEBUG_CONFIG variable'
 						)
 					)
 				)

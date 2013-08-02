@@ -62,6 +62,7 @@ class concurrent extends atoum\test
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
 			->and($test->getMockController()->codeCoverageIsEnabled = false)
 			->and($test->getMockController()->getBootstrapFile = null)
+			->and($test->setXdebugConfig($xdebugConfig = uniqid()))
 			->and($this->calling($php)->run->throw = $exception = new atoum\php\exception())
 			->then
 				->exception(function() use ($engine, $test) { $engine->run($test); })
@@ -82,8 +83,8 @@ class concurrent extends atoum\test
 						'ob_end_clean();' .
 						'mageekguy\atoum\scripts\runner::disableAutorun();' .
 						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
-					)
-					->twice()
+					)->twice()
+					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
 		;
 	}
 

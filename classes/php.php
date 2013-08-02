@@ -13,6 +13,7 @@ class php
 	protected $binaryPath = '';
 	protected $options = array();
 	protected $arguments = array();
+	protected $env = array();
 
 	private $phpProcessus = null;
 	private $phpStreams = array();
@@ -60,6 +61,33 @@ class php
 		}
 
 		return escapeshellcmd($command);
+	}
+
+	public function __set($envVariable, $value)
+	{
+		$this->env[$envVariable] = $value;
+
+		return $this;
+	}
+
+	public function __get($envVariable)
+	{
+		return (isset($this->{$envVariable}) === false ? null : $this->env[$envVariable]);
+	}
+
+	public function __isset($envVariable)
+	{
+		return (isset($this->env[$envVariable]) === true);
+	}
+
+	public function __unset($envVariable)
+	{
+		if (isset($this->{$envVariable}) === true)
+		{
+			unset($this->env[$envVariable]);
+		}
+
+		return $this;
 	}
 
 	public function reset()
@@ -218,7 +246,7 @@ class php
 			$pipes[0] = array('pipe', 'r');
 		}
 
-		$this->phpProcessus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->phpStreams));
+		$this->phpProcessus = @call_user_func_array(array($this->adapter, 'proc_open'), array((string) $this, $pipes, & $this->phpStreams, null, sizeof($this->env) <= 0 ? null : $this->env));
 
 		if ($this->phpProcessus === false)
 		{

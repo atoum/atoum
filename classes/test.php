@@ -69,6 +69,7 @@ abstract class test implements observable, \countable
 	private $executeOnFailure = array();
 	private $ignore = false;
 	private $debugMode = false;
+	private $xdebugConfig = null;
 	private $codeCoverage = false;
 	private $classHasNotVoidMethods = false;
 
@@ -512,6 +513,18 @@ abstract class test implements observable, \countable
 	public function debugModeIsEnabled()
 	{
 		return $this->debugMode;
+	}
+
+	public function setXdebugConfig($value)
+	{
+		$this->xdebugConfig = $value;
+
+		return $this;
+	}
+
+	public function getXdebugConfig()
+	{
+		return $this->xdebugConfig;
 	}
 
 	public function executeOnFailure(\closure $closure)

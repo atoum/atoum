@@ -123,6 +123,13 @@ class concurrent extends test\engine
 				'echo serialize($test->runTestMethod(\'' . $this->method . '\')->getScore());'
 			;
 
+			$xdebugConfig = $test->getXdebugConfig();
+
+			if ($xdebugConfig !== null)
+			{
+				$this->php->XDEBUG_CONFIG = $xdebugConfig;
+			}
+
 			$this->php
 				->reset()
 				->setBinaryPath($phpPath)

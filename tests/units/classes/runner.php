@@ -44,6 +44,7 @@ class runner extends atoum\test
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
 				->array($runner->getObservers())->isEmpty()
+				->variable($runner->getXdebugConfig())->isNull()
 		;
 	}
 
@@ -124,7 +125,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function runnerEnableDebugMode()
+	public function testEnableDebugMode()
 	{
 		$this
 			->if($runner = new testedClass())
@@ -136,7 +137,7 @@ class runner extends atoum\test
 		;
 	}
 
-	public function runnerDisableDebugMode()
+	public function testDisableDebugMode()
 	{
 		$this
 			->if($runner = new testedClass())
@@ -149,6 +150,16 @@ class runner extends atoum\test
 			->then
 				->object($runner->disableDebugMode())->isIdenticalTo($runner)
 				->boolean($runner->debugModeIsEnabled())->isFalse()
+		;
+	}
+
+	public function testSetXdebugConfig()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->setXdebugConfig($value = uniqid()))->isIdenticalTo($runner)
+				->string($runner->getXdebugConfig())->isEqualTo($value)
 		;
 	}
 

@@ -460,7 +460,7 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-getRunner()->disableCodeCoverage();
+						$script->getRunner()->disableCodeCoverage();
 					},
 					array('-ncc', '--no-code-coverage'),
 					null,
@@ -759,6 +759,19 @@ getRunner()->disableCodeCoverage();
 					array('--debug'),
 					null,
 					$this->locale->_('Enable debug mode')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) != 1)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
+						$script->getRunner()->setXdebugConfig($values[0]);
+					},
+					array('-xc', '--xdebug-config'),
+					null,
+					$this->locale->_('Set XDEBUG_CONFIG variable')
 				)
 		;
 

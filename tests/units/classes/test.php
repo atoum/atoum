@@ -106,6 +106,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getClassPhpVersions())->isEmpty()
 					->array($test->getMandatoryClassExtensions())->isEmpty()
 					->array($test->getMandatoryMethodExtensions())->isEmpty()
+					->variable($test->getXdebugConfig())->isNull()
 			;
 		}
 
