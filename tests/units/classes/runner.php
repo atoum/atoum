@@ -269,6 +269,26 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testSetReport()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->setReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report))
+				->array($runner->getObservers())->contains($report)
+				->object($runner->addReport($otherReport = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report))
+				->array($runner->getObservers())->contains($report)
+				->object($runner->setReport($otherReport))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+				->array($runner->getObservers())->contains($otherReport)
+				->object($runner->addReport($report))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+				->array($runner->getObservers())->contains($otherReport)
+		;
+	}
+
 	public function testAddReport()
 	{
 		$this
@@ -277,6 +297,11 @@ class runner extends atoum\test
 				->object($runner->addReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($report))
 				->array($runner->getObservers())->contains($report)
+			->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
+			->then
+				->object($runner->addReport($report = new atoum\reports\realtime\cli()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+				->array($runner->getObservers())->contains($otherReport)
 		;
 	}
 
@@ -305,6 +330,17 @@ class runner extends atoum\test
 				->object($runner->removeReport($report2))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
+			->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
+			->then
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+				->array($runner->getObservers())->isEqualTo(array($otherReport))
+				->object($runner->removeReport($otherReport))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+			->if($runner->addReport($report1)->addReport($report2))
+			->then
+				->array($runner->getReports())->isEqualTo(array($report1, $report2))
+				->array($runner->getObservers())->isEqualTo(array($report1, $report2))
 		;
 	}
 
@@ -327,6 +363,17 @@ class runner extends atoum\test
 				->object($runner->removeReports())->isIdenticalTo($runner)
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getObservers())->isEmpty()
+			->if($runner->setReport($otherReport = new atoum\reports\realtime\cli()))
+			->then
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+				->array($runner->getObservers())->isEqualTo(array($otherReport))
+				->object($runner->removeReports())->isIdenticalTo($runner)
+				->array($runner->getReports())->isEmpty()
+				->array($runner->getObservers())->isEmpty()
+			->if($runner->addReport($report1)->addReport($report2))
+			->then
+				->array($runner->getReports())->isEqualTo(array($report1, $report2))
+				->array($runner->getObservers())->isEqualTo(array($report1, $report2))
 		;
 	}
 

@@ -25,6 +25,7 @@ class runner implements observable
 	protected $reflectionClassFactory = null;
 	protected $observers = null;
 	protected $reports = null;
+	protected $reportSet = null;
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
@@ -578,15 +579,38 @@ class runner implements observable
 		);
 	}
 
+	public function setReport(atoum\report $report)
+	{
+		if ($this->reportSet === null)
+		{
+
+			$this->removeReports()->addReport($report);
+
+			$this->reportSet = $report;
+		}
+
+		return $this;
+	}
+
 	public function addReport(atoum\report $report)
 	{
-		$this->reports->attach($report);
+		if ($this->reportSet === null)
+		{
+			$this->reports->attach($report);
 
-		return $this->addObserver($report);
+			$this->addObserver($report);
+		}
+
+		return $this;
 	}
 
 	public function removeReport(atoum\report $report)
 	{
+		if ($this->reportSet === $report)
+		{
+			$this->reportSet = null;
+		}
+
 		$this->reports->detach($report);
 
 		return $this->removeObserver($report);
@@ -600,6 +624,7 @@ class runner implements observable
 		}
 
 		$this->reports = new \splObjectStorage();
+		$this->reportSet = null;
 
 		return $this;
 	}

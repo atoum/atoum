@@ -407,6 +407,21 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testSetReport()
+	{
+		$this
+			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->then
+				->object($runner->setReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($report))
+				->object($runner->setReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+			->if($runner->addReport($report))
+			->then
+				->array($runner->getReports())->isEqualTo(array($otherReport))
+		;
+	}
+
 	public function testSetNamespaces()
 	{
 		$this

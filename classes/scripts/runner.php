@@ -270,6 +270,13 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	public function setReport(atoum\report $report)
+	{
+		$this->runner->setReport($report);
+
+		return $this;
+	}
+
 	public function getReports()
 	{
 		return $this->runner->getReports();
@@ -453,7 +460,7 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$script->getRunner()->disableCodeCoverage();
+getRunner()->disableCodeCoverage();
 					},
 					array('-ncc', '--no-code-coverage'),
 					null,
@@ -718,7 +725,7 @@ class runner extends atoum\script\configurable
 						$lightReport = new atoum\reports\realtime\cli\light();
 						$lightReport->addWriter($script->getOutputWriter());
 
-						$script->getRunner()->addReport($lightReport);
+						$script->setReport($lightReport);
 					},
 					array('-ulr', '--use-light-report'),
 					null,
@@ -734,7 +741,7 @@ class runner extends atoum\script\configurable
 						$tapReport = new atoum\reports\realtime\tap();
 						$tapReport->addWriter($script->getOutputWriter());
 
-						$script->getRunner()->addReport($tapReport);
+						$script->setReport($tapReport);
 					},
 					array('-utr', '--use-tap-report'),
 					null,
