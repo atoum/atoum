@@ -89,7 +89,6 @@ abstract class coverage extends report\field
 		return $iterators;
 	}
 
-
 	public function getCoverage()
 	{
 		return $this->coverage;
@@ -101,7 +100,7 @@ abstract class coverage extends report\field
 		{
 			return false;
 		}
-		else
+		else if ($observable->codeCoverageIsEnabled() === true)
 		{
 			$this->coverage = $observable->getScore()->getCoverage();
 
