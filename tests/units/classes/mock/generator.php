@@ -1203,6 +1203,58 @@ class generator extends atoum\test
 		;
 	}
 
+	public function testMethodIsMockable()
+	{
+		$this
+			->if($generator = new testedClass())
+			->and($this->mockGenerator->orphanize('__construct'))
+			->and($method = new \mock\reflectionMethod($this, $methodName = uniqid()))
+			->and($this->calling($method)->getName = $methodName)
+			->and($this->calling($method)->isFinal = false)
+			->and($this->calling($method)->isStatic = false)
+			->and($this->calling($method)->isAbstract = false)
+			->and($this->calling($method)->isPrivate = false)
+			->and($this->calling($method)->isProtected = false)
+			->then
+				->boolean($generator->methodIsMockable($method))->isTrue()
+			->if($this->calling($method)->isFinal = true)
+			->then
+				->boolean($generator->methodIsMockable($method))->isFalse()
+			->if($this->calling($method)->isFinal = false)
+			->and($this->calling($method)->isStatic = true)
+			->then
+				->boolean($generator->methodIsMockable($method))->isFalse()
+			->if($this->calling($method)->isStatic = false)
+			->and($this->calling($method)->isPrivate = true)
+			->then
+				->boolean($generator->methodIsMockable($method))->isFalse()
+			->if($this->calling($method)->isPrivate = false)
+			->and($this->calling($method)->isProtected = true)
+			->then
+				->boolean($generator->methodIsMockable($method))->isFalse()
+			->if($generator->overload(new mock\php\method($methodName)))
+			->then
+				->boolean($generator->methodIsMockable($method))->isTrue()
+		;
+	}
+
+	public function testMethodIsMockableWithReservedWord($reservedWord)
+	{
+		$this
+			->if($generator = new testedClass())
+			->and($this->mockGenerator->orphanize('__construct'))
+			->and($method = new \mock\reflectionMethod($this, $reservedWord))
+			->and($this->calling($method)->getName = $reservedWord)
+			->and($this->calling($method)->isFinal = false)
+			->and($this->calling($method)->isStatic = false)
+			->and($this->calling($method)->isAbstract = false)
+			->and($this->calling($method)->isPrivate = false)
+			->and($this->calling($method)->isProtected = false)
+			->then
+				->boolean($generator->methodIsMockable($method))->isFalse()
+		;
+	}
+
 	/** @php 5.4 */
 	public function testGetMockedClassCodeWithOrphanizedMethod()
 	{
@@ -1501,5 +1553,77 @@ class generator extends atoum\test
 			"\t\t" . 'return $this;' . PHP_EOL .
 			"\t" . '}' . PHP_EOL
 		;
+	}
+
+	protected function testMethodIsMockableWithReservedWordDataProvider()
+	{
+		# See http://www.php.net/manual/en/reserved.keywords.php
+		return array(
+			'__halt_compiler',
+			'abstract',
+			'and',
+			'array',
+			'as',
+			'break',
+			'callable',
+			'case',
+			'catch',
+			'class',
+			'clone',
+			'const',
+			'continue',
+			'declare',
+			'default',
+			'die',
+			'do',
+			'echo',
+			'else',
+			'elseif',
+			'empty',
+			'enddeclare',
+			'endfor',
+			'endforeach',
+			'endif',
+			'endswitch',
+			'endwhile',
+			'eval',
+			'exit',
+			'extends',
+			'final',
+			'for',
+			'foreach',
+			'function',
+			'global',
+			'goto',
+			'if',
+			'implements',
+			'include',
+			'include_once',
+			'instanceof',
+			'insteadof',
+			'interface',
+			'isset',
+			'list',
+			'namespace',
+			'new',
+			'or',
+			'print',
+			'private',
+			'protected',
+			'public',
+			'require',
+			'require_once',
+			'return',
+			'static',
+			'switch',
+			'throw',
+			'trait',
+			'try',
+			'unset',
+			'use',
+			'var',
+			'while',
+			'xor'
+		);
 	}
 }

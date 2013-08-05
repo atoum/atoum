@@ -199,6 +199,24 @@ class generator
 		return $this->unshuntParentClassCalls();
 	}
 
+	public function methodIsMockable(\reflectionMethod $method)
+	{
+		switch (true)
+		{
+			case $method->isFinal():
+			case $method->isStatic():
+			case static::methodNameIsReservedWord($method):
+				return false;
+
+			case $method->isPrivate():
+			case $method->isProtected() && $method->isAbstract() === false:
+				return $this->isOverloaded($method->getName());
+
+			default:
+				return true;
+		}
+	}
+
 	protected function generateClassMethodCode(\reflectionClass $class)
 	{
 		$mockedMethods = '';
@@ -296,7 +314,7 @@ class generator
 
 		foreach ($class->getMethods() as $method)
 		{
-			if ($this->methodIsMockable($method) === true)
+			if ($method->isConstructor() === false && $this->methodIsMockable($method) === true)
 			{
 				$methodName = $method->getName();
 				$mockedMethodNames[] = strtolower($methodName);
@@ -688,7 +706,7 @@ class generator
 			case 'foreach':
 			case 'function':
 			case 'global':
-			case 'goto ':
+			case 'goto':
 			case 'if':
 			case 'implements':
 			case 'include':
@@ -698,7 +716,7 @@ class generator
 			case 'interface':
 			case 'isset':
 			case 'list':
-			case 'namespace ':
+			case 'namespace':
 			case 'new':
 			case 'or':
 			case 'print':
@@ -711,7 +729,7 @@ class generator
 			case 'static':
 			case 'switch':
 			case 'throw':
-			case 'trait ':
+			case 'trait':
 			case 'try':
 			case 'unset':
 			case 'use':
@@ -724,26 +742,4 @@ class generator
 				return false;
 		}
 	}
-
-	private function methodIsMockable(\reflectionMethod $method)
-	{
-		switch (true)
-		{
-			case $method->isFinal():
-			case $method->isStatic():
-			case $method->isConstructor():
-			case $method->getName() === 'clone':
-			case $method->getName() === '__destruct':
-			case static::methodNameIsReservedWord($method):
-				return false;
-
-			case $method->isPrivate():
-			case $method->isProtected() && $method->isAbstract() === false:
-				return $this->isOverloaded($method->getName());
-
-			default:
-				return true;
-		}
-	}
-
 }
