@@ -1421,16 +1421,23 @@ abstract class test implements observable, \countable
 
 		if ($this->currentMethod !== null)
 		{
-			$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
-
-			if (substr($engineClass, 0, 1) !== '\\')
+			if ($this->xdebugConfig != null)
 			{
-				$engineClass = self::enginesNamespace . '\\' . $engineClass;
+				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
 			}
-
-			if (class_exists($engineClass) === false)
+			else
 			{
-				throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
+				$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
+
+				if (substr($engineClass, 0, 1) !== '\\')
+				{
+					$engineClass = self::enginesNamespace . '\\' . $engineClass;
+				}
+
+				if (class_exists($engineClass) === false)
+				{
+					throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
+				}
 			}
 
 			$engine = new $engineClass();

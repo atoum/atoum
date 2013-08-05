@@ -14,10 +14,10 @@ abstract class script
 	const padding = '   ';
 
 	protected $name = '';
-	protected $factory = null;
 	protected $locale = null;
 	protected $adapter = null;
 	protected $prompt = null;
+	protected $cli = null;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
 
@@ -30,6 +30,7 @@ abstract class script
 		$this->name = (string) $name;
 
 		$this
+			->setCli()
 			->setAdapter($adapter)
 			->setLocale()
 			->setPrompt()
@@ -94,6 +95,18 @@ abstract class script
 		return $this->argumentsParser;
 	}
 
+	public function setCli(atoum\cli $cli = null)
+	{
+		$this->cli = $cli ?: new atoum\cli();
+
+		return $this;
+	}
+
+	public function getCli()
+	{
+		return $this->cli;
+	}
+
 	public function hasArguments()
 	{
 		return (sizeof($this->argumentsParser->getValues()) > 0);
@@ -101,7 +114,7 @@ abstract class script
 
 	public function setOutputWriter(atoum\writer $writer = null)
 	{
-		$this->outputWriter = $writer ?: new writers\std\out();
+		$this->outputWriter = $writer ?: new writers\std\out($this->cli);
 
 		return $this;
 	}
@@ -113,7 +126,7 @@ abstract class script
 
 	public function setErrorWriter(atoum\writer $writer = null)
 	{
-		$this->errorWriter = $writer ?: new writers\std\err();
+		$this->errorWriter = $writer ?: new writers\std\err($this->cli);
 
 		return $this;
 	}
@@ -231,7 +244,7 @@ abstract class script
 
 	public function writeError($message)
 	{
-		$this->errorWriter->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
+		$this->errorWriter->clear()->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
 
 		return $this;
 	}

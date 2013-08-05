@@ -198,7 +198,8 @@ class generator extends atoum\test
 		$this
 			->if($generator = new phar\generator(uniqid()))
 			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
-			->and($stderr->getMockController()->write = function() {})
+			->and($this->calling($stderr)->clear = $stderr)
+			->and($this->calling($stderr)->write = function() {})
 			->and($generator->setErrorWriter($stderr))
 			->then
 				->object($generator->writeError($error = uniqid()))->isIdenticalTo($generator)

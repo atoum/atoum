@@ -127,6 +127,11 @@ class concurrent extends test\engine
 
 			if ($xdebugConfig !== null)
 			{
+				if (getenv('XDEBUG_CONFIG') !== false || ini_get('xdebug.remote_autostart') != 0)
+				{
+					throw new exceptions\runtime('XDEBUG_CONFIG variable must not be set or value of xdebug.remote_autostart must be 0 to use xdebug with concurrent engine');
+				}
+
 				$this->php->XDEBUG_CONFIG = $xdebugConfig;
 			}
 

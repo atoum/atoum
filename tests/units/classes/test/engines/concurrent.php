@@ -64,6 +64,8 @@ class concurrent extends atoum\test
 			->and($test->getMockController()->getBootstrapFile = null)
 			->and($test->setXdebugConfig($xdebugConfig = uniqid()))
 			->and($this->calling($php)->run->throw = $exception = new atoum\php\exception())
+			->and($this->function->getenv = false)
+			->and($this->function->ini_get = 0)
 			->then
 				->exception(function() use ($engine, $test) { $engine->run($test); })
 					->isIdenticalTo($exception)

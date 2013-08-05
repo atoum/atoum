@@ -16,7 +16,6 @@ class runner extends atoum\script\configurable
 	const defaultBootstrapFile = '.bootstrap.atoum.php';
 
 	protected $runner = null;
-	protected $cliFactory = null;
 	protected $configuratorFactory = null;
 	protected $defaultReportFactory = null;
 	protected $scoreFile = null;
@@ -37,7 +36,6 @@ class runner extends atoum\script\configurable
 
 		$this
 			->setRunner()
-			->setCliFactory()
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
 		;
@@ -58,18 +56,6 @@ class runner extends atoum\script\configurable
 	public function getRunner()
 	{
 		return $this->runner;
-	}
-
-	public function setCliFactory(\closure $factory = null)
-	{
-		$this->cliFactory = $factory ?: function() { return new atoum\cli(); };
-
-		return $this;
-	}
-
-	public function getCliFactory()
-	{
-		return $this->cliFactory;
 	}
 
 	public function setConfiguratorFactory(\closure $factory = null)
@@ -831,9 +817,7 @@ class runner extends atoum\script\configurable
 	{
 		$arguments = ' --disable-loop-mode';
 
-		$cli = call_user_func($this->cliFactory);
-
-		if ($cli->isTerminal() === true)
+		if ($this->cli->isTerminal() === true)
 		{
 			$arguments .= ' --force-terminal';
 		}

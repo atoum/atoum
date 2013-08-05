@@ -29,6 +29,7 @@ class script extends atoum\test
 				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 				->array($script->getHelp())->isEmpty()
+				->object($script->getCli())->isEqualTo(new atoum\cli())
 			->and($script = new mock\script($name = uniqid(), $adapter = new atoum\adapter()))
 			->then
 				->string($script->getName())->isEqualTo($name)
@@ -38,6 +39,7 @@ class script extends atoum\test
 				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 				->array($script->getHelp())->isEmpty()
+				->object($script->getCli())->isEqualTo(new atoum\cli())
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->php_sapi_name = uniqid())
 			->then
@@ -70,6 +72,20 @@ class script extends atoum\test
 		;
 	}
 
+	public function testSetCli()
+	{
+		$this
+			->if($script = new mock\script(uniqid()))
+			->then
+				->object($script->setCli($cli = new atoum\cli()))->isIdenticalTo($script)
+				->object($script->getCli())->isIdenticalTo($cli)
+				->object($script->setCli())->isIdenticalTo($script)
+				->object($script->getCli())
+					->isNotIdenticalTo($cli)
+					->isEqualTo(new atoum\cli())
+		;
+	}
+
 	public function testSetArgumentParser()
 	{
 		$this
@@ -87,6 +103,8 @@ class script extends atoum\test
 			->then
 				->object($script->setOutputWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
 				->object($script->getOutputWriter())->isIdenticalTo($outputWriter)
+				->object($script->setOutputWriter())->isIdenticalTo($script)
+				->object($script->getOutputWriter())->isEqualTo(new atoum\writers\std\out($script->getCli()))
 		;
 	}
 
@@ -97,6 +115,8 @@ class script extends atoum\test
 			->then
 				->object($script->setErrorWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
 				->object($script->getErrorWriter())->isIdenticalTo($outputWriter)
+				->object($script->setErrorWriter())->isIdenticalTo($script)
+				->object($script->getErrorWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
 		;
 	}
 
@@ -228,22 +248,31 @@ class script extends atoum\test
 		$this
 			->if($locale = new mock\locale())
 			->and($stderr = new mock\writers\std\err())
-			->and($stderr->getMockCOntroller()->write = function() {})
+			->and($this->calling($stderr)->clear = $stderr)
+			->and($this->calling($stderr)->write = function() {})
 			->and($script = new mock\script(uniqid()))
 			->and($script->setErrorWriter($stderr))
 			->and($script->setLocale($locale))
 			->then
 				->object($script->writeError($message = uniqid()))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)
+					->call('clear')->once()
+					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->once()
 				->object($script->writeError(($message = uniqid()) . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)
+					->call('clear')->twice()
+					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(2)
 				->object($script->writeError(($message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)
+					->call('clear')->thrice()
+					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(3)
 				->object($script->writeError((' ' . $message = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
-				->mock($stderr)->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($stderr)
+					->call('clear')->exactly(4)
+					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(4)
 		;
 	}

@@ -11,7 +11,15 @@ use
 
 abstract class std extends atoum\writer implements writers\realtime, writers\asynchronous
 {
+	protected $cli = null;
 	protected $resource = null;
+
+	public function __construct(atoum\cli $cli = null, atoum\adapter $adapter = null)
+	{
+		parent::__construct($adapter);
+
+		$this->setCli($cli);
+	}
 
 	public function __destruct()
 	{
@@ -19,6 +27,18 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		{
 			$this->adapter->fclose($this->resource);
 		}
+	}
+
+	public function setCli(atoum\cli $cli = null)
+	{
+		$this->cli = $cli ?: new atoum\cli();
+
+		return $this;
+	}
+
+	public function getCli()
+	{
+		return $this->cli;
 	}
 
 	public function write($something)
@@ -30,7 +50,7 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 
 	public function clear()
 	{
-		return $this->write("\r");
+		return $this->write($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
 	}
 
 	public function writeRealtimeReport(reports\realtime $report, $event)
