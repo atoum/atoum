@@ -23,6 +23,11 @@ abstract class writer
 		return $this->adapter;
 	}
 
+	public function reset()
+	{
+		return $this;
+	}
+
 	public abstract function write($string);
 	public abstract function clear();
 }

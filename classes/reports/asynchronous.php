@@ -40,7 +40,7 @@ abstract class asynchronous extends atoum\report
 
 			foreach ($this->writers as $writer)
 			{
-				$writer->writeAsynchronousReport($this);
+				$writer->writeAsynchronousReport($this)->reset();
 			}
 		}
 

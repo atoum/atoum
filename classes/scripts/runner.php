@@ -386,7 +386,7 @@ class runner extends atoum\script\configurable
 					array('--init'),
 					null,
 					$this->locale->_('Create configuration and bootstrap files in the current directory')
-	)
+				)
 			->addArgumentHandler(
 					function($script, $argument, $path) {
 						if (sizeof($path) != 1)
@@ -459,9 +459,11 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
+						$coverage = $script->getRunner()->getCoverage();
+
 						foreach ($directories as $directory)
 						{
-							$script->getRunner()->getCoverage()->excludeDirectory($directory);
+							$coverage->excludeDirectory($directory);
 						}
 					},
 					array('-nccid', '--no-code-coverage-in-directories'),

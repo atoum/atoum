@@ -11,7 +11,17 @@ abstract class realtime extends atoum\report
 {
 	public function handleEvent($event, atoum\observable $observable)
 	{
-		return parent::handleEvent($event, $observable)->write($event);
+		parent::handleEvent($event, $observable)->write($event);
+
+		if ($event === atoum\runner::runStop)
+		{
+			foreach ($this->writers as $writer)
+			{
+				$writer->reset();
+			}
+		}
+
+		return $this;
 	}
 
 	public function addWriter(report\writers\realtime $writer)

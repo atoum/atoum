@@ -58,7 +58,7 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
-		return $this->write((string) $report);
+		return $this->write((string) $report)->closeFile();
 	}
 
 	public function setFilename($filename = null)
@@ -71,6 +71,13 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 	public function getFilename()
 	{
 		return $this->filename;
+	}
+
+	public function reset()
+	{
+		$this->closeFile();
+
+		return parent::reset();
 	}
 
 	private function openFile()

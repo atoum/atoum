@@ -41,4 +41,13 @@ class writer extends atoum\test
 					->isEqualTo(new atoum\adapter())
 		;
 	}
+
+	public function testReset()
+	{
+		$this
+			->if($writer = new testedClass())
+			->then
+				->object($writer->reset())->isIdenticalTo($writer)
+		;
+	}
 }
