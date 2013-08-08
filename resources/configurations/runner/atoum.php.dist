@@ -47,7 +47,7 @@ $testGenerator->setTestClassesDirectory('path/to/your/tests/units/classes/direct
 // Please replace in next line "your\project\namespace\tests\units" by your unit test's namespace.
 $testGenerator->setTestClassNamespace('your\project\namespace\tests\units');
 
-// Please replace in next line "your\project\namespace\tests\units" by your classes directory.
+// Please replace in next line "/path/to/your/classes/directory" by your classes directory.
 $testGenerator->setTestedClassesDirectory('path/to/your/classes/directory');
 
 // Please replace in next line "your\project\namespace" by your project namespace.
