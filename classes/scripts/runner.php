@@ -903,6 +903,13 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
+	protected function writeUsageMessage()
+	{
+		$this->writeMessage(sprintf($this->locale->_('Usage: %s [file] [options]'), $this->getName()) . PHP_EOL);
+
+		return $this;
+	}
+
 	protected static function getClassesOf($methods)
 	{
 		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);

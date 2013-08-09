@@ -168,7 +168,7 @@ abstract class script
 		if ($this->help)
 		{
 			$this
-				->writeMessage(sprintf($this->locale->_('Usage: %s [file] [options]'), $this->getName()) . PHP_EOL)
+				->writeUsageMessage()
 				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
 			;
 
@@ -317,6 +317,13 @@ abstract class script
 	protected function stopRun()
 	{
 		$this->doRun = false;
+
+		return $this;
+	}
+
+	protected function writeUsageMessage()
+	{
+		$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL);
 
 		return $this;
 	}
