@@ -225,7 +225,7 @@ class generator
 			throw new generator\exception('Path \'' . $testClassPath . '\' is not in directory \'' . $this->testClassesDirectory . '\'');
 		}
 
-		$realTestClassRelativePath = substr($realTestClassPath->getRelativePathFrom($realTestClassBaseDirectory), 2);
+		$realTestClassRelativePath = substr($realTestClassPath->getRelativePathFrom($realTestClassesDirectory), 2);
 
 		$fullyQualifiedTestClassName = call_user_func_array($this->fullyQualifiedTestClassNameExtractor, array($this, $realTestClassRelativePath));
 
