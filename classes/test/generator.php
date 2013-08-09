@@ -271,7 +271,6 @@ class generator
 				$testClassTemplate->testMethods->testMethod->methodName->build();
 				$testClassTemplate->testMethods->testMethod->build();
 			}
-
 		}
 
 		$testClassTemplate->testMethods->build();
