@@ -165,32 +165,11 @@ abstract class script
 
 	public function help()
 	{
-		if ($this->help)
-		{
-			$this
-				->writeUsageMessage()
-				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
-			;
-
-			$arguments = array();
-
-			foreach ($this->help as $help)
-			{
-				if ($help[1] !== null)
-				{
-					foreach ($help[0] as & $argument)
-					{
-						$argument .= ' ' . $help[1];
-					}
-				}
-
-				$arguments[join(', ', $help[0])] = $help[2];
-			}
-
-			$this->writeLabels($arguments);
-		}
-
-		return $this->stopRun();
+		return $this
+			->writeHelpUsage()
+			->writeHelpOptions()
+			->stopRun()
+		;
 	}
 
 	public function addArgumentHandler(\closure $handler, array $arguments, $values = null, $help = null, $priority = 0)
@@ -321,9 +300,40 @@ abstract class script
 		return $this;
 	}
 
-	protected function writeUsageMessage()
+	protected function writeHelpUsage()
 	{
-		$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL);
+		if ($this->help)
+		{
+			$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL);
+		}
+
+		return $this;
+	}
+
+	protected function writeHelpOptions()
+	{
+		if ($this->help)
+		{
+			$arguments = array();
+
+			foreach ($this->help as $help)
+			{
+				if ($help[1] !== null)
+				{
+					foreach ($help[0] as & $argument)
+					{
+						$argument .= ' ' . $help[1];
+					}
+				}
+
+				$arguments[join(', ', $help[0])] = $help[2];
+			}
+
+			$this
+				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+				->writeLabels($arguments)
+			;
+		}
 
 		return $this;
 	}
