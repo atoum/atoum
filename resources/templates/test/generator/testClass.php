@@ -11,8 +11,7 @@ use
 
 class <tpl:testClassName /> extends atoum\test
 {<tpl:testMethods><tpl:testMethod>
-
 	public function test<tpl:methodName/>()
 	{
-	}</tpl:testMethod></tpl:testMethods>
-}
+	}
+</tpl:testMethod></tpl:testMethods>}
