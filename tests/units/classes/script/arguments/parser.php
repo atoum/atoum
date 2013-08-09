@@ -13,7 +13,7 @@ class parser extends atoum\test
 {
 	public function testClass()
 	{
-		$this->assert->testedClass->hasInterface('iteratorAggregate');
+		$this->testedClass->hasInterface('iteratorAggregate');
 	}
 
 	public function test__construct()
@@ -24,6 +24,7 @@ class parser extends atoum\test
 				->object($parser->getSuperGlobals())->isEqualTo(new atoum\superglobals())
 				->array($parser->getValues())->isEmpty()
 				->array($parser->getHandlers())->isEmpty()
+				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
 			->if($parser = new script\arguments\parser($superglobals = new atoum\superglobals()))
@@ -31,6 +32,7 @@ class parser extends atoum\test
 				->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
 				->array($parser->getValues())->isEmpty()
 				->array($parser->getHandlers())->isEmpty()
+				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
 		;
@@ -49,33 +51,32 @@ class parser extends atoum\test
 	public function testGetValues()
 	{
 		$this
-			->assert
-				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
-				->and($parser = new script\arguments\parser())
-				->then
-					->array($parser->getValues())->isEmpty()
-					->variable($parser->getValues(uniqid()))->isNull()
-				->if($parser->addHandler(function($script, $argument, $value) {}, array('-a'))->parse($script, array('-a')))
-				->then
-					->array($parser->getValues())->isEqualTo(array('-a' => array()))
-					->array($parser->getValues('-a'))->isEmpty()
-					->variable($parser->getValues(uniqid()))->isNull()
-				->if($parser->parse($script, array('-a', 'a1', 'a2')))
-				->then
-					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-					->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-					->variable($parser->getValues(uniqid()))->isNull()
-				->if($parser->parse($script, array('-a', 'a1', '-a', 'a2')))
-				->then
-					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
-					->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-					->variable($parser->getValues(uniqid()))->isNull()
-				->if($parser->addHandler(function($script, $argument, $value) {}, array('-b'))->parse($script, array('-a', 'a1', 'a2', '-b')))
-				->then
-					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
-					->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
-					->array($parser->getValues('-b'))->isEmpty()
-					->variable($parser->getValues(uniqid()))->isNull()
+			->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+			->and($parser = new script\arguments\parser())
+			->then
+				->array($parser->getValues())->isEmpty()
+				->variable($parser->getValues(uniqid()))->isNull()
+			->if($parser->addHandler(function($script, $argument, $value) {}, array('-a'))->parse($script, array('-a')))
+			->then
+				->array($parser->getValues())->isEqualTo(array('-a' => array()))
+				->array($parser->getValues('-a'))->isEmpty()
+				->variable($parser->getValues(uniqid()))->isNull()
+			->if($parser->parse($script, array('-a', 'a1', 'a2')))
+			->then
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+				->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+				->variable($parser->getValues(uniqid()))->isNull()
+			->if($parser->parse($script, array('-a', 'a1', '-a', 'a2')))
+			->then
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
+				->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+				->variable($parser->getValues(uniqid()))->isNull()
+			->if($parser->addHandler(function($script, $argument, $value) {}, array('-b'))->parse($script, array('-a', 'a1', 'a2', '-b')))
+			->then
+				->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
+				->array($parser->getValues('-a'))->isEqualTo(array('a1', 'a2'))
+				->array($parser->getValues('-b'))->isEmpty()
+				->variable($parser->getValues(uniqid()))->isNull()
 		;
 	}
 
@@ -168,6 +169,29 @@ class parser extends atoum\test
 					->integer($invokeA)->isEqualTo(8)
 					->integer($invokeB)->isEqualTo(4)
 					->integer($invokeC)->isEqualTo(1)
+				->if($superglobals->_SERVER['argv'] = array('scriptName', '-ac'))
+				->then
+					->exception(function() use ($parser, $script) { $parser->parse($script); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->hasMessage('Argument \'-ac\' is unknown, did you mean \'--c\'?')
+				->if($superglobals->_SERVER['argv'] = array('scriptName', '-unknownArgument'))
+				->then
+					->exception(function() use ($parser, $script) { $parser->parse($script); })
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->hasMessage('Argument \'-unknownArgument\' is unknown')
+				->if($parser->setDefaultHandler(function($script, $argument) use (& $defaultHandlerScript, & $defaultHandlerArgument)
+						{
+							$defaultHandlerScript = $script;
+							$defaultHandlerArgument = $argument;
+
+							return ($argument == '-unknownArgument');
+						}
+					)
+				)
+				->then
+					->object($parser->parse($script))->isIdenticalTo($parser)
+					->object($defaultHandlerScript)->isIdenticalTo($script)
+					->string($defaultHandlerArgument)->isEqualTo('-unknownArgument')
 			->assert('when using argument')
 				->if($superglobals->_SERVER['argv'] = array())
 				->then
@@ -221,7 +245,7 @@ class parser extends atoum\test
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-						->hasMessage('First argument \'b\' is invalid')
+						->hasMessage('Argument \'b\' is invalid')
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'))
 				->and($parser->addHandler(function($script, $argument, $value) {}, array('-d'), PHP_INT_MAX))
 				->then
@@ -236,7 +260,7 @@ class parser extends atoum\test
 
 	public function testIsArgument()
 	{
-		$this->assert
+		$this
 			->boolean(script\arguments\parser::isArgument(uniqid()))->isFalse()
 			->boolean(script\arguments\parser::isArgument('+' . rand(0, 9)))->isFalse()
 			->boolean(script\arguments\parser::isArgument('-' . rand(0, 9)))->isFalse()
@@ -299,18 +323,68 @@ class parser extends atoum\test
 		;
 	}
 
+	public function testSetDefaultHandler()
+	{
+		$this
+			->if($parser = new script\arguments\parser())
+			->then
+				->object($parser->setDefaultHandler($defaultHandler = function($script, $argument) {}))->isIdenticalTo($parser)
+				->object($parser->getDefaultHandler())->isIdenticalTo($defaultHandler)
+				->exception(function() use ($parser) {
+							$parser->setDefaultHandler(function() {});
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Handler must take two arguments')
+				->exception(function() use ($parser) {
+							$parser->setDefaultHandler(function($script) {});
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->hasMessage('Handler must take two arguments')
+		;
+	}
+
+	public function testArgumentIsHandled()
+	{
+		$this
+			->if($parser = new script\arguments\parser())
+			->then
+				->boolean($parser->argumentIsHandled('-' . uniqid()))->isFalse()
+				->boolean($parser->argumentIsHandled('--' . uniqid()))->isFalse()
+				->boolean($parser->argumentIsHandled(uniqid()))->isFalse()
+			->if($parser->addHandler(function($script, $argument, $values) {}, array('--a-long-argument', '-a')))
+			->then
+				->boolean($parser->argumentIsHandled('-' . uniqid()))->isFalse()
+				->boolean($parser->argumentIsHandled('--' . uniqid()))->isFalse()
+				->boolean($parser->argumentIsHandled(uniqid()))->isFalse()
+				->boolean($parser->argumentIsHandled('-a'))->isTrue()
+				->boolean($parser->argumentIsHandled('--a-long-argument'))->isTrue()
+			->if($parser->setDefaultHandler(function($script, $argument) {}))
+			->then
+				->boolean($parser->argumentIsHandled('-' . uniqid()))->isTrue()
+				->boolean($parser->argumentIsHandled('--' . uniqid()))->isTrue()
+				->boolean($parser->argumentIsHandled(uniqid()))->isTrue()
+				->boolean($parser->argumentIsHandled('-a'))->isTrue()
+				->boolean($parser->argumentIsHandled('--a-long-argument'))->isTrue()
+		;
+	}
+
 	public function testResetHandlers()
 	{
-		$this->assert
+		$this
 			->if($parser = new script\arguments\parser())
 			->then
 				->object($parser->resetHandlers())->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEmpty()
+				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 			->if($parser->addHandler(function($script, $argument, $values) {}, array('-a')))
+			->and($parser->setDefaultHandler(function($script, $argument) {}))
 			->then
 				->object($parser->resetHandlers())->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEmpty()
+				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 		;
 	}

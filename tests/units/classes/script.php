@@ -156,6 +156,20 @@ class script extends atoum\test
 		;
 	}
 
+	public function testSetDefaultArgumentHandler()
+	{
+		$this
+			->if($argumentsParser = new mock\script\arguments\parser())
+			->and($argumentsParser->getMockController()->addHandler = function() {})
+			->and($script = new mock\script($name = uniqid()))
+			->and($script->setArgumentsParser($argumentsParser))
+			->then
+				->object($script->setDefaultArgumentHandler($defaultHandler = function($script, $argument) {}))->isIdenticalTo($script)
+				->mock($argumentsParser)->call('setDefaultHandler')->withArguments($defaultHandler)->once()
+				->array($script->getHelp())->isEmpty()
+		;
+	}
+
 	public function testHelp()
 	{
 		$this

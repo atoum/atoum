@@ -168,7 +168,7 @@ abstract class script
 		if ($this->help)
 		{
 			$this
-				->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL)
+				->writeMessage(sprintf($this->locale->_('Usage: %s [file] [options]'), $this->getName()) . PHP_EOL)
 				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
 			;
 
@@ -201,6 +201,13 @@ abstract class script
 		}
 
 		$this->argumentsParser->addHandler($handler, $arguments, $priority);
+
+		return $this;
+	}
+
+	public function setDefaultArgumentHandler(\closure $handler)
+	{
+		$this->argumentsParser->setDefaultHandler($handler);
 
 		return $this;
 	}

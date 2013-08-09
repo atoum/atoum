@@ -763,6 +763,20 @@ class runner extends atoum\script\configurable
 				)
 		;
 
+		$this->setDefaultArgumentHandler(function($script, $argument) {
+				try
+				{
+					$script->getRunner()->addTest($argument);
+				}
+				catch (\exception $exception)
+				{
+					return false;
+				}
+
+				return true;
+			}
+		);
+
 		return $this;
 	}
 

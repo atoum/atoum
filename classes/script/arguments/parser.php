@@ -11,6 +11,7 @@ class parser implements \iteratorAggregate
 {
 	protected $values = array();
 	protected $handlers = array();
+	protected $defaultHandler = null;
 	protected $priorities = array();
 
 	public function __construct(atoum\superglobals $superglobals = null)
@@ -107,9 +108,29 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
+	public function setDefaultHandler(\closure $handler)
+	{
+		$reflectedHandler = new \reflectionFunction($handler);
+
+		if ($reflectedHandler->getNumberOfParameters() < 2)
+		{
+			throw new exceptions\runtime('Handler must take two arguments');
+		}
+
+		$this->defaultHandler = $handler;
+
+		return $this;
+	}
+
+	public function getDefaultHandler()
+	{
+		return $this->defaultHandler;
+	}
+
 	public function resetHandlers()
 	{
 		$this->handlers = array();
+		$this->defaultHandler = null;
 		$this->priorities = array();
 
 		return $this;
@@ -117,12 +138,7 @@ class parser implements \iteratorAggregate
 
 	public function argumentIsHandled($argument)
 	{
-		return (isset($this->values[$argument]) === true);
-	}
-
-	public function argumentsAreHandled(array $arguments)
-	{
-		return (sizeof(array_intersect(array_keys($this->values), $arguments)) > 0);
+		return (isset($this->handlers[$argument]) === true || $this->defaultHandler !== null);
 	}
 
 	public function init(array $array = array())
@@ -140,9 +156,9 @@ class parser implements \iteratorAggregate
 		{
 			$value = $arguments->current();
 
-			if (self::isArgument($value) === false)
+			if (self::isArgument($value) === false && $this->defaultHandler === null)
 			{
-				throw new exceptions\runtime\unexpectedValue('First argument \'' . $value . '\' is invalid');
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $value . '\' is invalid');
 			}
 
 			$argument = $value;
@@ -183,36 +199,54 @@ class parser implements \iteratorAggregate
 		}
 		else
 		{
-			$argumentMetaphone = metaphone($argument);
+			$argumentIsHandled = false;
 
-			$min = null;
-			$closestArgument = null;
-			$handlerArguments = array_keys($this->handlers);
-
-			natsort($handlerArguments);
-
-			foreach ($handlerArguments as $handlerArgument)
+			if ($this->defaultHandler !== null)
 			{
-				$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
+				$argumentIsHandled = $this->defaultHandler->__invoke($script, $argument);
+			}
 
-				if ($min === null || $levenshtein < $min)
+			if ($argumentIsHandled === false)
+			{
+				if (self::isArgument($argument) === false)
 				{
-					$min = $levenshtein;
-					$closestArgument = $handlerArgument;
+					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is invalid');
 				}
-			}
 
-			if ($closestArgument === null)
-			{
-				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
-			}
-			else if ($min > 0)
-			{
-				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\' ?');
-			}
-			else
-			{
-				$this->invokeHandlers($script, $closestArgument, $values);
+				$argumentMetaphone = metaphone($argument);
+
+				$min = null;
+				$closestArgument = null;
+				$handlerArguments = array_keys($this->handlers);
+
+				natsort($handlerArguments);
+
+				foreach ($handlerArguments as $handlerArgument)
+				{
+					$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
+
+					if ($levenshtein < (strlen($argument) / 2))
+					{
+						if ($min === null || $levenshtein < $min)
+						{
+							$min = $levenshtein;
+							$closestArgument = $handlerArgument;
+						}
+					}
+				}
+
+				if ($closestArgument === null)
+				{
+					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
+				}
+				else if ($min > 0)
+				{
+					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\'?');
+				}
+				else
+				{
+					$this->invokeHandlers($script, $closestArgument, $values);
+				}
 			}
 		}
 
