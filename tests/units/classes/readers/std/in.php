@@ -25,13 +25,15 @@ class in extends atoum\test
 				->exception(function() use ($reader) { $reader->read(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to open php://stdin stream')
+				->adapter($adapter)
+					->call('fopen')->withArguments('php://stdin', 'r')->once()
 			->if($adapter->fopen = $resource = uniqid())
 			->and($adapter->fgets = $line = uniqid())
-			->and($adapter->resetCalls())
 			->then
 				->string($reader->read())->isEqualTo($line)
-				->adapter($adapter)->call('fopen')->withArguments('php://stdin', 'r')->once()
-				->adapter($adapter)->call('fgets')->withArguments($resource)->once()
+				->adapter($adapter)
+					->call('fopen')->withArguments('php://stdin', 'r')->twice()
+					->call('fgets')->withArguments($resource)->once()
 				->string($reader->read($length = rand(1, PHP_INT_MAX)))->isEqualTo($line)
 				->adapter($adapter)->call('fgets')->withArguments($resource, $length)->once()
 		;
