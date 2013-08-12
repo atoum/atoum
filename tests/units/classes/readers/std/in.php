@@ -27,8 +27,10 @@ class in extends atoum\test
 					->hasMessage('Unable to open php://stdin stream')
 			->if($adapter->fopen = $resource = uniqid())
 			->and($adapter->fgets = $line = uniqid())
+			->and($adapter->resetCalls())
 			->then
 				->string($reader->read())->isEqualTo($line)
+				->adapter($adapter)->call('fopen')->withArguments('php://stdin', 'r')->once()
 				->adapter($adapter)->call('fgets')->withArguments($resource)->once()
 				->string($reader->read($length = rand(1, PHP_INT_MAX)))->isEqualTo($line)
 				->adapter($adapter)->call('fgets')->withArguments($resource, $length)->once()

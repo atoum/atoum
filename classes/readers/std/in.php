@@ -21,7 +21,7 @@ class in extends reader
 	{
 		if ($this->resource === null)
 		{
-			$resource = $this->adapter->fopen('php://stdout', 'w');
+			$resource = $this->adapter->fopen('php://stdin', 'r');
 
 			if ($resource === false)
 			{
