@@ -5,7 +5,9 @@ namespace mageekguy\atoum\report\fields\runner;
 use
 	mageekguy\atoum\php,
 	mageekguy\atoum\adapter,
+	mageekguy\atoum\exceptions\runtime,
 	mageekguy\atoum\iterators,
+	mageekguy\atoum\observable,
 	mageekguy\atoum\runner,
 	mageekguy\atoum\report
 ;
@@ -94,7 +96,7 @@ abstract class coverage extends report\field
 		return $this->coverage;
 	}
 
-	public function handleEvent($event, \mageekguy\atoum\observable $observable)
+	public function handleEvent($event, observable $observable)
 	{
 		if (parent::handleEvent($event, $observable) === false)
 		{
@@ -144,7 +146,7 @@ abstract class coverage extends report\field
 						{
 							if ($this->php->reset()->run(sprintf($phpCode, $file->getPathname()))->getExitCode() > 0)
 							{
-								throw new exceptions\runtime('Unable to get default code coverage for file \'' . $file->getPathname() . '\': ' . $this->php->getStderr());
+								throw new runtime('Unable to get default code coverage for file \'' . $file->getPathname() . '\': ' . $this->php->getStderr());
 							}
 
 							$data = unserialize($this->php->getStdOut());
