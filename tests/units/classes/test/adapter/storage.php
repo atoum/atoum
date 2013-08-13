@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\adapter;
+namespace atoum\tests\units\test\adapter;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\adapter\storage as testedClass
+	atoum,
+	atoum\test\adapter\storage as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';

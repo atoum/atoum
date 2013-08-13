@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts\phar
+	atoum,
+	atoum\scripts\phar
 ;
 
 if (extension_loaded('phar') === false)
@@ -12,7 +12,7 @@ if (extension_loaded('phar') === false)
 	throw new \runtimeException('Phar extension is mandatory to use this PHAR');
 }
 
-define(__NAMESPACE__ . '\phar\name', 'mageekguy.atoum.phar');
+define(__NAMESPACE__ . '\phar\name', 'atoum.phar');
 
 \phar::mapPhar(atoum\phar\name);
 

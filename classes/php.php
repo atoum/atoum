@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php
+	atoum,
+	atoum\php
 ;
 
 class php

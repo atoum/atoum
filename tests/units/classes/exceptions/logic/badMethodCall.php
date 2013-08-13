@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\exceptions\logic;
+namespace atoum\tests\units\exceptions\logic;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions\logic
+	atoum,
+	atoum\exceptions\logic
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -17,7 +17,7 @@ class badMethodCall extends atoum\test
 			->testedClass
 				->isSubclassOf('logicException')
 				->isSubclassOf('badMethodCallException')
-				->isSubclassOf('mageekguy\atoum\exception')
+				->isSubclassOf('atoum\exception')
 		;
 	}
 }

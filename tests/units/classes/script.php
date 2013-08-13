@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers,
-	mageekguy\atoum\script\prompt,
-	mock\mageekguy\atoum as mock
+	atoum,
+	atoum\writers,
+	atoum\script\prompt,
+	mock\atoum as mock
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -32,12 +32,12 @@ class script extends atoum\test
 			->if($script = new mock\script($name = uniqid()))
 			->then
 				->string($script->getName())->isEqualTo($name)
-				->object($script->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
+				->object($script->getAdapter())->isInstanceOf('atoum\adapter')
+				->object($script->getLocale())->isInstanceOf('atoum\locale')
+				->object($script->getArgumentsParser())->isInstanceOf('atoum\script\arguments\parser')
+				->object($script->getOutputWriter())->isInstanceOf('atoum\writers\std\out')
 				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
-				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+				->object($script->getErrorWriter())->isInstanceOf('atoum\writers\std\err')
 				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
 				->object($script->getHelpWriter())->isEqualTo($defaultHelpWriter)
 				->array($script->getHelp())->isEmpty()
@@ -47,11 +47,11 @@ class script extends atoum\test
 			->then
 				->string($script->getName())->isEqualTo($name)
 				->object($script->getAdapter())->isIdenticalTo($adapter)
-				->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
-				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
+				->object($script->getLocale())->isInstanceOf('atoum\locale')
+				->object($script->getArgumentsParser())->isInstanceOf('atoum\script\arguments\parser')
+				->object($script->getOutputWriter())->isInstanceOf('atoum\writers\std\out')
 				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
-				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+				->object($script->getErrorWriter())->isInstanceOf('atoum\writers\std\err')
 				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
 				->object($script->getHelpWriter())->isEqualTo($defaultHelpWriter)
 				->array($script->getHelp())->isEmpty()
@@ -64,7 +64,7 @@ class script extends atoum\test
 						new mock\script($name = uniqid(), $adapter);
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('\'' . $name . '\' must be used in CLI only')
 		;
 	}

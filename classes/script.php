@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\script,
-	mageekguy\atoum\writers,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\script,
+	atoum\writers,
+	atoum\exceptions
 ;
 
 abstract class script
@@ -255,6 +255,25 @@ abstract class script
 
 	public function run(array $arguments = array())
 	{
+		// check old namespace
+		if (defined('mageekguy\atoum\author')
+		||  defined('mageekguy\atoum\directory')
+		||  defined('mageekguy\atoum\mail')
+		||  defined('mageekguy\atoum\repository')
+		||  defined('mageekguy\atoum\running')
+		||  defined('mageekguy\atoum\scripts\runner')
+		||  defined('mageekguy\atoum\version'))
+		{
+			$this
+				->writeWarning(
+					'Damn ! It seems that you use old \mageekguy\atoum\* constants...' . PHP_EOL .
+					'         You should update your atoum environment to use our brand new \atoum\* constants.' . PHP_EOL .
+					'         Your life would be better ! Do not thank us... it\'s with pleasure :)'
+				)
+				->writeMessage('')
+			;
+		}
+
 		$this->adapter->ini_set('log_errors_max_len', 0);
 		$this->adapter->ini_set('log_errors', 'Off');
 		$this->adapter->ini_set('display_errors', 'stderr');

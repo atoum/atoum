@@ -1,16 +1,16 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\event;
+namespace atoum\report\fields\runner\event;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\progressBar,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\test,
+	atoum\runner,
+	atoum\report,
+	atoum\exceptions,
+	atoum\cli\progressBar,
+	atoum\cli\colorizer
 ;
-use mageekguy\atoum;
 
 
 class nyancat extends cli

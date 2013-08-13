@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\iterators,
+	atoum\exceptions
 ;
 
 class runner implements observable
 {
-	const atoumVersionConstant = 'mageekguy\atoum\version';
-	const atoumDirectoryConstant = 'mageekguy\atoum\directory';
+	const atoumVersionConstant = 'atoum\version';
+	const atoumDirectoryConstant = 'atoum\directory';
 
 	const runStart = 'runnerStart';
 	const runStop = 'runnerStop';

@@ -1,22 +1,22 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter\call;
+namespace atoum\tests\units\asserters\adapter\call;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\asserters\adapter\call
+	atoum,
+	atoum\test,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\asserters\adapter\call
 ;
 
 class adapter extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\php\call');
+		$this->testedClass->extends('atoum\php\call');
 	}
 
 	public function test__construct()
@@ -40,7 +40,7 @@ class adapter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($call = new call\adapter($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
+			->if($call = new call\adapter($adapterAsserter = new \mock\atoum\asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
 			->and($adapterAsserter->getMockController()->call = $adapterAsserter)
 			->then
 				->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
@@ -49,7 +49,7 @@ class adapter extends atoum\test
 			->if($unknownFunction = uniqid())
 			->then
 				->exception(function() use ($call, $unknownFunction) { $call->{$unknownFunction}(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownFunction . '() does not exist')
 		;
 	}

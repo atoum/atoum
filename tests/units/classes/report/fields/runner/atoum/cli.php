@@ -1,24 +1,24 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
+namespace atoum\tests\units\report\fields\runner\atoum;
 
 use
-	mageekguy\atoum\locale,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\runner\score,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner\atoum\cli as testedClass
+	atoum\locale,
+	atoum\runner,
+	atoum\runner\score,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner\atoum\cli as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class cli extends \mageekguy\atoum\test
+class cli extends \atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\field');
+		$this->testedClass->extends('atoum\report\field');
 	}
 
 	public function test__construct()
@@ -80,7 +80,7 @@ class cli extends \mageekguy\atoum\test
 				->variable($field->getPath())->isNull()
 				->variable($field->getVersion())->isNull()
 				->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-				->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+				->string($field->getAuthor())->isEqualTo(\atoum\author)
 				->string($field->getPath())->isEqualTo($atoumPath)
 				->string($field->getVersion())->isEqualTo($atoumVersion)
 		;
@@ -102,7 +102,7 @@ class cli extends \mageekguy\atoum\test
 				->castToString($field)->isEmpty()
 			->if($field->handleEvent(runner::runStart, $runner))
 			->then
-				->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('atoum version %s by %s (%s)'), $atoumVersion, \mageekguy\atoum\author, $atoumPath)) . PHP_EOL)
+				->castToString($field)->isEqualTo($field->getPrompt() . $field->getColorizer()->colorize(sprintf($field->getLocale()->_('atoum version %s by %s (%s)'), $atoumVersion, \atoum\author, $atoumPath)) . PHP_EOL)
 		;
 	}
 }

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -25,7 +25,7 @@ class score extends atoum\test
 				->array($score->getMemoryUsages())->isEmpty()
 				->array($score->getUncompletedMethods())->isEmpty()
 				->array($score->getSkippedMethods())->isEmpty()
-				->object($score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+				->object($score->getCoverage())->isInstanceOf('atoum\score\coverage')
 			->and($score = new atoum\score($coverage = new atoum\score\coverage()))
 			->then
 				->integer($score->getPassNumber())->isZero()
@@ -907,7 +907,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->then
-				->object($coverage = $score->getCoverage())->isInstanceOf('mageekguy\atoum\score\coverage')
+				->object($coverage = $score->getCoverage())->isInstanceOf('atoum\score\coverage')
 		;
 	}
 
@@ -1177,7 +1177,7 @@ class score extends atoum\test
 		$this
 			->if($score = new atoum\score())
 			->exception(function() use ($score, & $key) { $score->deleteError($key = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 				->hasMessage('Error key \'' . $key . '\' does not exist')
 			->if($score->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type = rand(1, PHP_INT_MAX), $message = uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then

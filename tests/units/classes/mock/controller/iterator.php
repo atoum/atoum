@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\controller;
+namespace atoum\tests\units\mock\controller;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\mock\controller\iterator as testedClass
+	atoum,
+	atoum\mock,
+	atoum\mock\controller\iterator as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -44,7 +44,7 @@ class iterator extends atoum\test
 	{
 		$this
 			->if($iterator = new testedClass($controller = new mock\controller()))
-			->and($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+			->and($controller->control($mock = new \mock\atoum\tests\units\mock\controller\foo()))
 			->and($iterator->return = $return = uniqid())
 			->then
 				->boolean(isset($controller->__construct))->isFalse()
@@ -72,7 +72,7 @@ class iterator extends atoum\test
 				->exception(function() use ($controller) { $controller->doSomething->invoke(); })->isIdenticalTo($exception)
 				->exception(function() use ($controller) { $controller->doSomethingElse->invoke(); })->isIdenticalTo($exception)
 			->exception(function() use ($iterator) { $iterator->{uniqid()} = uniqid(); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+				->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 		;
 	}
 
@@ -120,7 +120,7 @@ class iterator extends atoum\test
 			->if($iterator = new testedClass($controller = new mock\controller()))
 			->then
 				->array($iterator->getMethods())->isEmpty()
-			->if($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+			->if($controller->control($mock = new \mock\atoum\tests\units\mock\controller\foo()))
 			->then
 				->array($iterator->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
 			->if($iterator->addFilter(function($method) { return true; }))
@@ -141,7 +141,7 @@ class iterator extends atoum\test
 			->if($iterator = new testedClass($controller = new mock\controller()))
 			->then
 				->object($iterator->getIterator())->isEqualTo(new \arrayIterator($iterator->getMethods()))
-			->if($controller->control(new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
+			->if($controller->control(new \mock\atoum\tests\units\mock\controller\foo()))
 			->then
 				->object($iterator->getIterator())->isEqualTo(new \arrayIterator($iterator->getMethods()))
 		;

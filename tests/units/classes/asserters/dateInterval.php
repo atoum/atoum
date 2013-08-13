@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\dateInterval as sut
+	atoum,
+	atoum\asserter,
+	atoum\asserters\dateInterval as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class dateInterval extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\object');
+		$this->testedClass->isSubclassOf('atoum\asserters\object');
 	}
 
 	public function test__construct()
@@ -35,7 +35,7 @@ class dateInterval extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->assert('Set the asserter with something else than a date interval trown an exception')
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not an instance of \\dateInterval'), $asserter->getTypeOf($value)))
 				->string($asserter->getValue())->isEqualTo($value)
 			->assert('The asserter was returned when it set with a date time')
@@ -52,16 +52,16 @@ class dateInterval extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isGreaterThan(new \DateInterval('P1D')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \DateInterval('P1Y')))
 			->then
 				->object($asserter->isGreaterThan(new \DateInterval('P1M')))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $interval) { $asserter->isGreaterThan($interval = new \DateInterval('P2Y')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not greater than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 				->exception(function() use ($asserter, & $interval) { $asserter->isGreaterThan($interval = new \DateInterval('P1Y')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not greater than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}
@@ -71,14 +71,14 @@ class dateInterval extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isGreaterThanOrEqualTo(new \DateInterval('P1D')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \DateInterval('P1Y')))
 			->then
 				->object($asserter->isGreaterThanOrEqualTo(new \DateInterval('P1M')))->isIdenticalTo($asserter)
 				->object($asserter->isGreaterThanOrEqualTo(new \DateInterval('P1Y')))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $interval) { $asserter->isGreaterThanOrEqualTo($interval = new \DateInterval('P2Y')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not greater than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}
@@ -89,7 +89,7 @@ class dateInterval extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isZero(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \DateInterval('P0Y')))
 			->then
@@ -97,7 +97,7 @@ class dateInterval extends atoum\test
 			->if($asserter->setWith($interval = new \DateInterval('P1Y')))
 			->then
 				->exception(function() use ($asserter) { $asserter->isZero(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not equal to zero')
 		;
 	}
@@ -107,16 +107,16 @@ class dateInterval extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isLessThan(new \DateInterval('P1D')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \dateInterval('P2D')))
 			->then
 				->object($asserter->isLessThan(new \dateInterval('P1M')))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $interval) { $asserter->isLessThan($interval = new \dateInterval('P1D')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 				->exception(function() use ($asserter, & $interval) { $asserter->isLessThan($interval = new \dateInterval('P2D')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not less than ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}
@@ -126,14 +126,14 @@ class dateInterval extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isLessThanOrEqualTo(new \DateInterval('P1D')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \dateInterval('P2D')))
 			->then
 				->object($asserter->isLessThanOrEqualTo(new \dateInterval('P1M')))->isIdenticalTo($asserter)
 				->object($asserter->isLessThanOrEqualTo(new \dateInterval('P2D')))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $interval) { $asserter->isLessThanOrEqualTo($interval = new \dateInterval('P1D')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not less than or equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}
@@ -143,16 +143,16 @@ class dateInterval extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isEqualTo(new \dateInterval('P1D')); })
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
 			->if($asserter->setWith(new \DateInterval('P1D')))
 				->then
 				->object($asserter->isEqualTo(new \DateInterval('P1D')))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $interval) { $asserter->isEqualTo($interval = new \dateInterval('PT1S')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 				->exception(function() use ($asserter, & $interval) { $asserter->isEqualTo($interval = new \dateInterval('P2D')); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
 		;
 	}

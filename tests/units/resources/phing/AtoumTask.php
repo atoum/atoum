@@ -16,7 +16,7 @@ namespace tests\units
 
 	require_once __DIR__ . '/../../runner.php';
 
-	define('mageekguy\atoum\phing\task\path', atoum\mock\streams\fs\file::get());
+	define('atoum\phing\task\path', atoum\mock\streams\fs\file::get());
 
 	require_once __DIR__ . '/../../../../resources/phing/AtoumTask.php';
 
@@ -27,7 +27,7 @@ namespace tests\units
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($task->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+					->object($task->getRunner())->isInstanceOf('atoum\runner')
 					->variable($task->getBootstrap())->isNull()
 					->boolean($task->getCodeCoverage())->isFalse()
 					->variable($task->getAtoumPharPath())->isNull()
@@ -73,7 +73,7 @@ namespace tests\units
 					->object($task->getRunner())->isIdenticalTo($runner)
 					->object($task->setRunner())->isIdenticalTo($task)
 					->object($task->getRunner())
-						->isInstanceOf('mageekguy\atoum\runner')
+						->isInstanceOf('atoum\runner')
 						->isNotIdenticalTo($runner)
 			;
 		}
@@ -102,7 +102,7 @@ namespace tests\units
 		{
 			$this
 				->mockGenerator->shuntParentClassCalls()
-				->if($runner = new \mock\mageekguy\atoum\runner())
+				->if($runner = new \mock\atoum\runner())
 				->and($this->calling($runner)->run = new atoum\score())
 				->and($task = new testedClass($runner))
 				->then
@@ -148,7 +148,7 @@ namespace tests\units
 					->object($task->execute())->isIdenticalTo($task)
 					->mock($runner)
 						->call('addReport')->twice()
-				->if($score = new \mock\mageekguy\atoum\score())
+				->if($score = new \mock\atoum\score())
 				->and($this->calling($runner)->run = $score)
 				->and($this->calling($score)->getUncompletedMethodNumber = rand(1, PHP_INT_MAX))
 				->then
@@ -201,10 +201,10 @@ namespace tests\units
 		{
 			$this
 				->mockGenerator->shuntParentClassCalls()
-				->if($runner = new \mock\mageekguy\atoum\runner())
+				->if($runner = new \mock\atoum\runner())
 				->and($this->calling($runner)->run = new atoum\score())
 				->and($task = new \mock\AtoumTask($runner))
-				->and($this->calling($task)->configureDefaultReport = $report = new \mock\mageekguy\atoum\reports\realtime\phing())
+				->and($this->calling($task)->configureDefaultReport = $report = new \mock\atoum\reports\realtime\phing())
 				->and($this->calling($task)->configureCoverageTreemapField = $field = new atoum\report\fields\runner\coverage\treemap(uniqid(), uniqid()))
 				->and($task->setCodeCoverageTreemapPath(uniqid()))
 				->then
@@ -219,11 +219,11 @@ namespace tests\units
 			$this
 				->if($task = new testedClass())
 				->then
-					->object($task->configureDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\phing')
+					->object($task->configureDefaultReport())->isInstanceOf('atoum\reports\realtime\phing')
 				->if($report = new atoum\reports\realtime\phing())
 				->then
 					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
-				->if($report = new \mock\mageekguy\atoum\reports\realtime\phing())
+				->if($report = new \mock\atoum\reports\realtime\phing())
 				->then
 					->object($task->configureDefaultReport($report))->isIdenticalTo($report)
 					->mock($report)
@@ -290,7 +290,7 @@ namespace tests\units
 		{
 			$this
 				->if($task = new testedClass())
-				->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
+				->and($report = new \mock\atoum\reports\asynchronous())
 				->then
 					->object($task->configureAsynchronousReport($report, uniqid()))->isIdenticalTo($report)
 					->mock($report)
@@ -303,7 +303,7 @@ namespace tests\units
 			$this
 				->given($task = new testedClass())
 				->then
-					->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\mageekguy\\atoum\\report\\fields\\runner\\coverage\\treemap')
+					->object($field = $task->configureCoverageTreemapField($path = uniqid()))->isInstanceOf('\\atoum\\report\\fields\\runner\\coverage\\treemap')
 					->string($field->getDestinationDirectory())->isEqualTo($path)
 					->string($field->getTreemapUrl())->isEqualTo('file://' . $path . '/index.html/')
 				->if($field = $task->configureCoverageTreemapField($path = uniqid(), $url = uniqid()))

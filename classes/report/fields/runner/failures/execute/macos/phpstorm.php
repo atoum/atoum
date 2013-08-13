@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures\execute\macos;
+namespace atoum\report\fields\runner\failures\execute\macos;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\report\fields\runner\failures
+	atoum,
+	atoum\locale,
+	atoum\adapter,
+	atoum\report\fields\runner\failures
 ;
 
 class phpstorm extends failures\execute

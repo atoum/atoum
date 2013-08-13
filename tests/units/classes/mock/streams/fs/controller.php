@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs;
+namespace atoum\tests\units\mock\streams\fs;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\dependence,
-	mageekguy\atoum\dependencies,
-	mageekguy\atoum\mock\stream,
-	mock\mageekguy\atoum\mock\streams\fs\controller as testedClass
+	atoum,
+	atoum\test,
+	atoum\dependence,
+	atoum\dependencies,
+	atoum\mock\stream,
+	mock\atoum\mock\streams\fs\controller as testedClass
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -17,7 +17,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream\controller');
+		$this->testedClass->extends('atoum\mock\stream\controller');
 	}
 
 	public function test__construct()

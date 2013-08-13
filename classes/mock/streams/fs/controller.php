@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\fs;
+namespace atoum\mock\streams\fs;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\mock\stream
+	atoum,
+	atoum\exceptions,
+	atoum\mock\stream
 ;
 
 class controller extends stream\controller

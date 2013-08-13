@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\scripts\treemap\analyzers
+	atoum,
+	atoum\exceptions,
+	atoum\scripts\treemap\analyzers
 ;
 
 class treemap extends atoum\script\configurable

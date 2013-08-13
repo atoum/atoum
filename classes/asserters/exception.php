@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs
+	atoum\test,
+	atoum\asserters,
+	atoum\exceptions,
+	atoum\tools\diffs
 ;
 
 class exception extends asserters\object

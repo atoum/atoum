@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace atoum\reports\realtime;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports\realtime,
-	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\reports\realtime,
+	atoum\report\fields\runner,
+	atoum\report\fields\test,
+	atoum\cli\colorizer,
+	atoum\cli\prompt
 ;
-use mageekguy\atoum\cli\prompt;
 
 class nyancat extends realtime
 {

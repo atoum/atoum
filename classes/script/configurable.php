@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\script;
+namespace atoum\script;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\system,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\system,
+	atoum\exceptions
 ;
 
 abstract class configurable extends atoum\script

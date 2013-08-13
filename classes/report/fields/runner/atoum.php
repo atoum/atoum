@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\report\fields\runner;
 
 require_once __DIR__ . '/../../../../constants.php';
 
 use
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report
+	atoum\runner,
+	atoum\report
 ;
 
 abstract class atoum extends report\field
@@ -35,7 +35,7 @@ abstract class atoum extends report\field
 		return $this->path;
 	}
 
-	public function handleEvent($event, \mageekguy\atoum\observable $observable)
+	public function handleEvent($event, \atoum\observable $observable)
 	{
 		if (parent::handleEvent($event, $observable) === false)
 		{
@@ -43,7 +43,7 @@ abstract class atoum extends report\field
 		}
 		else
 		{
-			$this->author = \mageekguy\atoum\author;
+			$this->author = \atoum\author;
 			$this->path = $observable->getScore()->getAtoumPath();
 			$this->version = $observable->getScore()->getAtoumVersion();
 

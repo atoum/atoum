@@ -1,24 +1,24 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\atoum;
+namespace atoum\tests\units\report\fields\runner\atoum;
 
 use
-	mageekguy\atoum\locale,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\runner\score,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner\atoum\logo as testedClass
+	atoum\locale,
+	atoum\runner,
+	atoum\runner\score,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner\atoum\logo as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
 
-class logo extends \mageekguy\atoum\test
+class logo extends \atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\atoum\cli');
+		$this->testedClass->extends('atoum\report\fields\runner\atoum\cli');
 	}
 
 	public function testHandleEvent()
@@ -37,7 +37,7 @@ class logo extends \mageekguy\atoum\test
 				->variable($field->getPath())->isNull()
 				->variable($field->getVersion())->isNull()
 				->boolean($field->handleEvent(runner::runStart, $runner))->isTrue()
-				->string($field->getAuthor())->isEqualTo(\mageekguy\atoum\author)
+				->string($field->getAuthor())->isEqualTo(\atoum\author)
 				->string($field->getPath())->isEqualTo($atoumPath)
 				->string($field->getVersion())->isEqualTo($atoumVersion)
 		;

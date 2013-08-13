@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\template,
-	mageekguy\atoum\exceptions
+	atoum\template,
+	atoum\exceptions
 ;
 
 class template extends template\data

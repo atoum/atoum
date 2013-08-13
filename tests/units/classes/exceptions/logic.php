@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\exceptions;
+namespace atoum\tests\units\exceptions;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -18,7 +18,7 @@ class logic extends atoum\test
 		$this->assert
 			->object($logicExcepion)
 				->isInstanceOf('logicException')
-				->isInstanceOf('mageekguy\atoum\exception')
+				->isInstanceOf('atoum\exception')
 		;
 	}
 }

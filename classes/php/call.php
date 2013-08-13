@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\php;
+namespace atoum\php;
 
 class call
 {

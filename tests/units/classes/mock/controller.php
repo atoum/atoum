@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock;
+namespace atoum\tests\units\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\test\adapter\invoker,
-	mageekguy\atoum\mock\controller as testedClass
+	atoum,
+	atoum\mock,
+	atoum\test\adapter\invoker,
+	atoum\mock\controller as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -27,7 +27,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\test\adapter');
+		$this->testedClass->extends('atoum\test\adapter');
 	}
 
 	public function test__construct()
@@ -73,7 +73,7 @@ class controller extends atoum\test
 				->string($mockController->invoke(strtoupper($otherMethod)))->isEqualTo($otherReturn)
 				->array($mockController->getCalls($otherMethod))->hasSize(2)
 				->array($mockController->getCalls(strtoupper($otherMethod)))->hasSize(2)
-			->if($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->if($mockController->control(new \mock\atoum\tests\units\mock\foo()))
 			->then
 				->boolean(isset($mockController->__call))->isTrue()
 				->string($mockController->invoke($method))->isEqualTo($return)
@@ -82,7 +82,7 @@ class controller extends atoum\test
 				->array($mockController->getCalls(strtoupper($method)))->hasSize(2)
 				->variable($mockController->getCalls('__call'))->isNull()
 				->variable($mockController->getCalls(strtoupper('__call')))->isNull()
-			->if($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->if($mockController->control($mock = new \mock\atoum\tests\units\mock\foo()))
 			->and($mockController->bar = function() {})
 			->and($mock->bar($arg = uniqid(), $otherArg = uniqid()))
 			->then
@@ -100,33 +100,33 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mockController = new testedClass())
-			->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->and($mockController->control($mock = new \mock\atoum\tests\units\mock\foo()))
 			->and($mockController->doSomething = function() use (& $public) { $this->public = $public = uniqid(); })
 			->and($mock->doSomething())
 			->then
 				->string($mock->public)->isEqualTo($public)
 			->if($mockController = new testedClass())
 			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->and($mock = new \mock\atoum\tests\units\mock\foo())
 			->then
 				->string($mock->public)->isEqualTo($public)
 			->if($mockController = new testedClass())
 			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->string($mock->public)->isEqualTo($public)
 			->if($mockController->disableAutoBind())
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->variable($mock->public)->isNull()
 			->if(testedClass::disableAutoBindForNewMock())
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->variable($mock->public)->isNull()
 			->if($mockController = new testedClass())
 			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
 			->and($mockController->enableAutoBind())
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->string($mock->public)->isEqualTo($public)
 		;
@@ -146,7 +146,7 @@ class controller extends atoum\test
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
 			->if($mockController->disableAutoBind())
 			->and($mockController->doSomething = function() { return $this; })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
@@ -168,7 +168,7 @@ class controller extends atoum\test
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
 			->if($mockController->enableAutoBind())
 			->and($mockController->doSomething = function() { return $this; })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\atoum\tests\units\mock\foo($mockController))
 			->then
 				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
@@ -197,15 +197,15 @@ class controller extends atoum\test
 		$this
 			->if($mockController = new testedClass())
 			->then
-				->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($mockController->{uniqid()})->isInstanceOf('atoum\test\adapter\invoker')
 			->if($mockController->{$method = uniqid()} = $function = function() {})
 			->then
-				->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($mockController->{uniqid()})->isInstanceOf('atoum\test\adapter\invoker')
 				->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
 				->object($mockController->{strtoupper($method)}->getClosure())->isIdenticalTo($function)
 			->if($mockController->{$otherMethod = uniqid()} = $return = uniqid())
 			->then
-				->object($mockController->{uniqid()})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($mockController->{uniqid()})->isInstanceOf('atoum\test\adapter\invoker')
 				->object($mockController->{$method}->getClosure())->isIdenticalTo($function)
 				->object($mockController->{strtoupper($method)}->getClosure())->isIdenticalTo($function)
 				->object($mockController->{$otherMethod}->getClosure())->isInstanceOf('closure')
@@ -301,7 +301,7 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mockController = new testedClass())
-			->and($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
+			->and($mockController->control(new \mock\atoum\tests\units\mock\foo()))
 			->then
 				->object($mockController->methodsMatching('/Else$/i'))->isEqualTo($mockController->getIterator())
 				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomethingelse'))
@@ -313,7 +313,7 @@ class controller extends atoum\test
 	public function testDoNothing()
 	{
 		$this
-			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->if($mock = new \mock\atoum\tests\units\mock\foo())
 			->and($this->calling($mock)->doSomething->doNothing())
 			->then
 				->variable($mock->doSomething())->isNull()
@@ -323,7 +323,7 @@ class controller extends atoum\test
 	public function testDoSomething()
 	{
 		$this
-			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
+			->if($mock = new \mock\atoum\tests\units\mock\foo())
 			->and($this->calling($mock)->doSomething->doNothing())
 			->and($this->calling($mock)->doSomething->doSomething())
 			->then
@@ -356,7 +356,7 @@ class controller extends atoum\test
 			->and($mockController->{$method = uniqid()} = uniqid())
 			->then
 				->exception(function() use ($mockController, $aMock) { $mockController->control($aMock); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Method \'' . get_class($aMock) . '::' . $method . '()\' does not exist')
 			->if($mockController->disableMethodChecking())
 			->and($mockController->{uniqid()} = uniqid())
@@ -402,7 +402,7 @@ class controller extends atoum\test
 						$mockController->invoke($method, array());
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Method ' . $method . '() is not under control')
 			->if($return = uniqid())
 			->and($mockController->test = function() use ($return) { return $return; })
@@ -553,10 +553,10 @@ class controller extends atoum\test
 						)
 					)
 			->if($mockController = new testedClass())
-			->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\bar()))
+			->and($mockController->control($mock = new \mock\atoum\tests\units\mock\bar()))
 			->then
 				->exception(function() use ($mockController) { $mockController->foo = uniqid(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Method \'mock\\' . __NAMESPACE__ . '\bar::foo()\' does not exist')
 		;
 	}
@@ -589,7 +589,7 @@ class controller extends atoum\test
 				->array($mockController->getCalls())->isEmpty()
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->class_exists = true)
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\controller($adapter))
+			->and($mock = new \mock\atoum\tests\units\mock\controller($adapter))
 			->and($mockController->control($mock))
 			->and($mockController->{$method = __FUNCTION__} = function() {})
 			->and($mockController->invoke($method, array()))

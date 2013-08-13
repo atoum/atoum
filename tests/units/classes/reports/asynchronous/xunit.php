@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\tests\units\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\reports\asynchronous as reports
+	atoum,
+	atoum\runner,
+	atoum\report,
+	atoum\reports\asynchronous as reports
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -15,7 +15,7 @@ class xunit extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->extends('atoum\reports\asynchronous');
 	}
 
 	public function testClassConstants()
@@ -31,12 +31,12 @@ class xunit extends atoum\test
 			->and($report = new reports\xunit($adapter))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 			->if($adapter->extension_loaded = false)
 			->then
 				->exception(function() use ($adapter) { new reports\xunit($adapter); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('libxml PHP extension is mandatory for xunit report')
 		;
 	}
@@ -56,10 +56,10 @@ class xunit extends atoum\test
 			->then
 				->string($report->setTitle($title = uniqid())->handleEvent(atoum\runner::runStop, new atoum\runner())->getTitle())->isEqualTo($title)
 			->if($report = new reports\xunit($adapter))
-			->and($writer = new \mock\mageekguy\atoum\writers\file())
+			->and($writer = new \mock\atoum\writers\file())
 			->and($writer->getMockController()->write = $writer)
 			->then
-				->when(function() use ($report, $writer) { $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner()); })
+				->when(function() use ($report, $writer) { $report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \atoum\runner()); })
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 		;
 	}
@@ -76,7 +76,7 @@ class xunit extends atoum\test
 			->and($runner->setScore($score))
 			->and($testScore = new atoum\test\score())
 			->and($testScore->addPass())
-			->and($test = new \mock\mageekguy\atoum\test())
+			->and($test = new \mock\atoum\test())
 			->and($test->getMockController()->getCurrentMethod[1] = $method = 'method')
 			->and($test->getMockController()->getCurrentMethod[2] = $otherMethod = 'otherMethod')
 			->and($test->getMockController()->getCurrentMethod[3] = $thirdMethod = 'thirdMethod')

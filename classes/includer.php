@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\includer
+	atoum,
+	atoum\includer
 ;
 
 class includer

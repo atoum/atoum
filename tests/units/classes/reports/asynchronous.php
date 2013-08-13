@@ -1,24 +1,24 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports;
+namespace atoum\tests\units\reports;
 
 require __DIR__ . '/../../runner.php';
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class asynchronous extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report');
+		$this->testedClass->extends('atoum\report');
 	}
 
 	public function testHandleEvent()
 	{
 		$this
-			->if($report = new \mock\mageekguy\atoum\reports\asynchronous())
+			->if($report = new \mock\atoum\reports\asynchronous())
 			->and($report->setAdapter($adapter = new atoum\test\adapter()))
 			->then
 				->object($report->handleEvent(atoum\runner::runStop, new atoum\runner()))->isIdenticalTo($report)

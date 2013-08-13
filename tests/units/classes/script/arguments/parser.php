@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script\arguments;
+namespace atoum\tests\units\script\arguments;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\script
+	atoum,
+	atoum\script
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -46,27 +46,27 @@ class parser extends atoum\test
 			->if($parser = new script\arguments\parser())
 			->then
 				->castToString($parser)->isEmpty()
-			->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array()))
+			->if($parser->parse(new \mock\atoum\script(uniqid()), array()))
 			->then
 				->castToString($parser)->isEmpty()
 			->if($parser->addHandler(function($script, $argument, $values) {}, array('-a')))
-			->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array()))
+			->and($parser->parse(new \mock\atoum\script(uniqid()), array()))
 			->then
 				->castToString($parser)->isEmpty()
-			->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a')))
+			->if($parser->parse(new \mock\atoum\script(uniqid()), array('-a')))
 			->then
 				->castToString($parser)->isEqualTo('-a')
-			->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a', 'A')))
+			->if($parser->parse(new \mock\atoum\script(uniqid()), array('-a', 'A')))
 			->then
 				->castToString($parser)->isEqualTo('-a A')
-			->if($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a', 'A', 'B', 'C')))
+			->if($parser->parse(new \mock\atoum\script(uniqid()), array('-a', 'A', 'B', 'C')))
 			->then
 				->castToString($parser)->isEqualTo('-a A B C')
 			->if($parser->addHandler(function($script, $argument, $values) {}, array('--b')))
-			->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a', 'A', 'B', 'C')))
+			->and($parser->parse(new \mock\atoum\script(uniqid()), array('-a', 'A', 'B', 'C')))
 			->then
 				->castToString($parser)->isEqualTo('-a A B C')
-			->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a', 'A', 'B', 'C', '--b')))
+			->and($parser->parse(new \mock\atoum\script(uniqid()), array('-a', 'A', 'B', 'C', '--b')))
 			->then
 				->castToString($parser)->isEqualTo('-a A B C --b')
 		;
@@ -85,7 +85,7 @@ class parser extends atoum\test
 	public function testGetValues()
 	{
 		$this
-			->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+			->if($script = new \mock\atoum\script(uniqid()))
 			->and($parser = new script\arguments\parser())
 			->then
 				->array($parser->getValues())->isEmpty()
@@ -117,7 +117,7 @@ class parser extends atoum\test
 	public function testGetIterator()
 	{
 		$this
-			->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+			->if($script = new \mock\atoum\script(uniqid()))
 			->and($parser = new script\arguments\parser())
 			->and($parser->parse($script, array()))
 			->then
@@ -140,7 +140,7 @@ class parser extends atoum\test
 	{
 		$this
 			->assert('when using $_SERVER')
-				->if($script = new \mock\mageekguy\atoum\script(uniqid()))
+				->if($script = new \mock\atoum\script(uniqid()))
 				->and($superglobals = new atoum\superglobals())
 				->and($superglobals->_SERVER['argv'] = array())
 				->and($parser = new script\arguments\parser($superglobals))
@@ -215,12 +215,12 @@ class parser extends atoum\test
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-ac'))
 				->then
 					->exception(function() use ($parser, $script) { $parser->parse($script); })
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 						->hasMessage('Argument \'-ac\' is unknown, did you mean \'--c\'?')
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-unknownArgument'))
 				->then
 					->exception(function() use ($parser, $script) { $parser->parse($script); })
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 						->hasMessage('Argument \'-unknownArgument\' is unknown')
 				->if($parser->setDefaultHandler(function($script, $argument) use (& $defaultHandlerScript, & $defaultHandlerArgument)
 						{
@@ -297,7 +297,7 @@ class parser extends atoum\test
 							$parser->parse($script, array('b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+						->isInstanceOf('atoum\exceptions\runtime\unexpectedValue')
 						->hasMessage('Argument \'b\' is unknown')
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'))
 				->and($parser->addHandler(function($script, $argument, $value) {}, array('-d'), PHP_INT_MAX))
@@ -357,25 +357,25 @@ class parser extends atoum\test
 							$parser->addHandler(function() {}, $argument = array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser) {
 							$parser->addHandler(function($script) {}, array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser) {
 							$parser->addHandler(function($script, $argument) {}, array('-b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take three arguments')
 				->exception(function() use ($parser, & $badArgument) {
 							$parser->addHandler(function($script, $argument, $values) {}, array($badArgument = 'b'));
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Argument \'' . $badArgument . '\' is invalid')
 				->object($parser->addHandler($otherHandler = function($script, $argument, $values) {}, array($otherArgument = '-b'), $priority = rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($parser)
 				->array($parser->getHandlers())->isEqualTo(array($argument => array($handler, $handler), $otherArgument => array($otherHandler)))
@@ -394,13 +394,13 @@ class parser extends atoum\test
 							$parser->setDefaultHandler(function() {});
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take two arguments')
 				->exception(function() use ($parser) {
 							$parser->setDefaultHandler(function($script) {});
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+						->isInstanceOf('atoum\exceptions\runtime')
 						->hasMessage('Handler must take two arguments')
 		;
 	}

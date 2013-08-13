@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\exceptions;
+namespace atoum\test\exceptions;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class skip extends exceptions\runtime

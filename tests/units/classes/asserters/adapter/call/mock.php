@@ -1,21 +1,21 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\adapter\call;
+namespace atoum\tests\units\asserters\adapter\call;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\asserters\adapter\call
+	atoum,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\asserters\adapter\call
 ;
 
 class mock extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\php\call');
+		$this->testedClass->extends('atoum\php\call');
 	}
 
 	public function test__construct()
@@ -39,7 +39,7 @@ class mock extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($call = new call\mock($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), new \mock\dummy(), uniqid()))
+			->if($call = new call\mock($adapterAsserter = new \mock\atoum\asserters\adapter(new asserter\generator()), new \mock\dummy(), uniqid()))
 			->and($adapterAsserter->getMockController()->call = $adapterAsserter)
 			->then
 				->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
@@ -48,7 +48,7 @@ class mock extends atoum\test
 			->if($unknownMethod = uniqid())
 			->then
 				->exception(function() use ($call, $unknownMethod) { $call->{$unknownMethod}(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownMethod . '() does not exist')
 		;
 	}
@@ -56,7 +56,7 @@ class mock extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($call = new call\mock(new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy(), $function = uniqid()))
+			->if($call = new call\mock(new \mock\atoum\asserters\adapter(new asserter\generator()), $mockAggregator = new \mock\dummy(), $function = uniqid()))
 			->then
 				->castToString($call)->isEqualTo(get_class($mockAggregator) . '::' . $function . '()')
 		;

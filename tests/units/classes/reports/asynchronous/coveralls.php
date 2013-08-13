@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\tests\units\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\score,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\reports\asynchronous\coveralls as testedClass
+	atoum,
+	atoum\score,
+	atoum\mock,
+	atoum\reports\asynchronous\coveralls as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -20,7 +20,7 @@ class coveralls extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->extends('atoum\reports\asynchronous');
 	}
 
 	public function testClassConstants()
@@ -40,10 +40,10 @@ class coveralls extends atoum\test
 			->if($report = new testedClass($sourceDir = uniqid(), $token = uniqid()))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEmpty()
-				->object($report->getSourceDir())->isInstanceOf('\\mageekguy\\atoum\\fs\\path')
+				->object($report->getSourceDir())->isInstanceOf('\\atoum\\fs\\path')
 				->castToString($report->getSourceDir())->isEqualTo($sourceDir)
 				->object($report->getBranchFinder())->isInstanceOf('\\Closure')
 				->string($report->getServiceName())->isEqualTo('atoum')
@@ -57,7 +57,7 @@ class coveralls extends atoum\test
 								new testedClass(uniqid(), uniqid(), $adapter);
 							}
 						)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('JSON PHP extension is mandatory for coveralls report')
 		;
 	}
@@ -119,18 +119,18 @@ class coveralls extends atoum\test
 				}
 			})
 			->and($report = new testedClass($sourceDir = uniqid(), $token = '51bb597d202b4', $adapter))
-			->and($score = new \mock\mageekguy\atoum\score())
-			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($writer = new \mock\mageekguy\atoum\writers\http())
+			->and($score = new \mock\atoum\score())
+			->and($coverage = new \mock\atoum\score\coverage())
+			->and($writer = new \mock\atoum\writers\http())
 			->and($writer->getMockController()->writeAsynchronousReport = function() use ($writer) { return $writer; })
 			->then
 				->when(function() use ($report, $writer) {
-						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
+						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \atoum\runner());
 					})
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 			->if($adapter->date = '2013-05-13 10:00:00 +0000')
 			->and($adapter->file_get_contents = '<?php')
-			->and($observable = new \mock\mageekguy\atoum\runner())
+			->and($observable = new \mock\atoum\runner())
 			->and($observable->getMockController()->getScore = $score)
 			->and($score->getMockController()->getCoverage = $coverage)
 			->and($coverage->getMockController()->getClasses = array())
@@ -237,7 +237,7 @@ class coveralls extends atoum\test
 			->and($adapter->file_get_contents = '')
 			->and($adapter->stream_context_create = $context = uniqid())
 			->and($report = new testedClass(uniqid(), uniqid(), $adapter))
-			->and($writer = new \mock\mageekguy\atoum\writers\http())
+			->and($writer = new \mock\atoum\writers\http())
 			->then
 				->object($report->addDefaultWriter($writer))->isIdenticalTo($report)
 				->mock($writer)

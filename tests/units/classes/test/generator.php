@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace atoum\tests\units\test;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\fs\path,
-	mageekguy\atoum\template,
-	mageekguy\atoum\test\generator as testedClass
+	atoum,
+	atoum\fs\path,
+	atoum\template,
+	atoum\test\generator as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -178,35 +178,35 @@ class generator extends atoum\test
 		$this
 			->if($generator = new testedClass())
 			->and($generator->setAdapter($adapter = new atoum\test\adapter()))
-			->and($generator->setPathFactory($pathFactory = new \mock\mageekguy\atoum\fs\path\factory()))
-			->and($generator->setTemplateParser($templateParser = new \mock\mageekguy\atoum\template\parser()))
+			->and($generator->setPathFactory($pathFactory = new \mock\atoum\fs\path\factory()))
+			->and($generator->setTemplateParser($templateParser = new \mock\atoum\template\parser()))
 			->then
 				->exception(function() use ($generator) { $generator->generate(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\test\generator\exception')
+					->isInstanceOf('atoum\test\generator\exception')
 					->hasMessage('Tested classes directory is undefined')
 			->if($generator->setTestedClassesDirectory($classesDirectory = uniqid()))
 			->then
 				->exception(function() use ($generator) { $generator->generate(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\test\generator\exception')
+					->isInstanceOf('atoum\test\generator\exception')
 					->hasMessage('Tests directory is undefined')
 			->if($generator->setTestClassesDirectory($testsDirectory = '/a/b/c'))
 			->then
 				->exception(function() use ($generator) { $generator->generate(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\test\generator\exception')
+					->isInstanceOf('atoum\test\generator\exception')
 					->hasMessage('Tested class namespace is undefined')
 			->if($generator->setTestedClassNamespace($testedClassNamespace = uniqid()))
 			->then
 				->exception(function() use ($generator) { $generator->generate(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\test\generator\exception')
+					->isInstanceOf('atoum\test\generator\exception')
 					->hasMessage('Test class namespace is undefined')
 			->if($generator->setTestClassNamespace($testClassNamespace = uniqid()))
-			->and($testClassesDirectoryPath = new \mock\mageekguy\atoum\fs\path('/a/b/c'))
+			->and($testClassesDirectoryPath = new \mock\atoum\fs\path('/a/b/c'))
 			->and($this->calling($testClassesDirectoryPath)->exists = true)
 			->and($this->calling($testClassesDirectoryPath)->getRealPath = $testClassesDirectoryPath)
-			->and($testedClassPath = new \mock\mageekguy\atoum\fs\path('/x/y/z/f.php'))
+			->and($testedClassPath = new \mock\atoum\fs\path('/x/y/z/f.php'))
 			->and($this->calling($testedClassPath)->putContents = $testedClassPath)
-			->and($testClassPath = new \mock\mageekguy\atoum\fs\path('/a/b/c/d/e/f.php'))
-			->and($this->calling($testClassPath)->getRealParentDirectoryPath = new \mock\mageekguy\atoum\fs\path('/a/b/c/d/e'))
+			->and($testClassPath = new \mock\atoum\fs\path('/a/b/c/d/e/f.php'))
+			->and($this->calling($testClassPath)->getRealParentDirectoryPath = new \mock\atoum\fs\path('/a/b/c/d/e'))
 			->and($this->calling($testClassPath)->getRealPath = $testClassPath)
 			->and($this->calling($testClassPath)->putContents = $testClassPath)
 			->and($this->calling($pathFactory)->build = function($path) use ($testClassesDirectoryPath, $testClassPath, $testedClassPath) {

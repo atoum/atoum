@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\controller;
+namespace atoum\tests\units\mock\controller;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\controller,
-	mageekguy\atoum\mock\controller\linker as testedClass
+	atoum,
+	atoum\mock\controller,
+	atoum\mock\controller\linker as testedClass
 ;
 
 require __DIR__ . '../../../../runner.php';
@@ -19,7 +19,7 @@ class linker extends atoum\test
 			->and(controller::setLinker($linker))
 			->then
 				->if($mock = new \mock\foo())
-				->and($controller = new \mock\mageekguy\atoum\mock\controller())
+				->and($controller = new \mock\atoum\mock\controller())
 				->then
 					->object($linker->link($controller, $mock))->isIdenticalTo($linker)
 					->mock($controller)->call('control')->withArguments($mock)->once()
@@ -68,13 +68,13 @@ class linker extends atoum\test
 			->given($linker = new testedClass())
 			->and(controller::setLinker($linker))
 			->then
-				->if($linker->link($controller = new \mock\mageekguy\atoum\mock\controller(), $mock = new \mock\foo()))
+				->if($linker->link($controller = new \mock\atoum\mock\controller(), $mock = new \mock\foo()))
 				->then
 					->object($linker->unlink($controller))->isIdenticalTo($linker)
 					->variable($linker->getMock($controller))->isNull()
 					->variable($linker->getController($mock))->isNull()
 					->object($mock->getMockController())->isNotIdenticalTo($controller)
-				->if($linker->link($controller = new \mock\mageekguy\atoum\mock\controller(), $mock))
+				->if($linker->link($controller = new \mock\atoum\mock\controller(), $mock))
 				->and($linker->link($otherController = new controller(), $otherMock = new \mock\foo()))
 				->then
 					->object($linker->unlink($controller))->isIdenticalTo($linker)
@@ -93,7 +93,7 @@ class linker extends atoum\test
 			->given($linker = new testedClass())
 			->and(controller::setLinker($linker))
 			->then
-				->if($linker->link($controller = new \mock\mageekguy\atoum\mock\controller(), $mock = new \mock\foo()))
+				->if($linker->link($controller = new \mock\atoum\mock\controller(), $mock = new \mock\foo()))
 				->then
 					->object($linker->reset())->isIdenticalTo($linker)
 					->variable($linker->getController($mock))->isNull()

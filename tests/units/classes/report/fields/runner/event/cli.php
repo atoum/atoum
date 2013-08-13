@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\event;
+namespace atoum\tests\units\report\fields\runner\event;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\mock,
+	atoum\report\fields\runner
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -14,7 +14,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\event');
+		$this->testedClass->extends('atoum\report\fields\runner\event');
 	}
 
 	public function test__construct()
@@ -33,7 +33,7 @@ class cli extends atoum\test
 		$this
 			->if($testController = new atoum\mock\controller())
 			->and($testController->__construct = function() {})
-			->and($test = new \mock\mageekguy\atoum\test())
+			->and($test = new \mock\atoum\test())
 			->and($runner = new atoum\runner())
 			->and($field = new runner\event\cli())
 			->then
@@ -89,7 +89,7 @@ class cli extends atoum\test
 			->and($runnerController = new atoum\mock\controller())
 			->and($runnerController->__construct = function() {})
 			->and($runnerController->getTestMethodNumber = function() use ($testMethodNumber) { return $testMethodNumber; })
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner = new \mock\atoum\runner())
 			->and($field = new runner\event\cli())
 			->and($progressBar = new atoum\cli\progressBar($runner->getTestMethodNumber()))
 			->then

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests;
+namespace atoum\report\fields\runner\tests;
 
 use
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\observable
+	atoum\runner,
+	atoum\report,
+	atoum\observable
 ;
 
 abstract class void extends report\field

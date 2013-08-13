@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous;
+namespace atoum\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\score,
-	mageekguy\atoum\report
+	atoum,
+	atoum\exceptions,
+	atoum\score,
+	atoum\report
 ;
 
 class coveralls extends atoum\reports\asynchronous

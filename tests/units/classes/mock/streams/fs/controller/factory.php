@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs\controller;
+namespace atoum\tests\units\mock\streams\fs\controller;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\streams\fs\controller,
-	mageekguy\atoum\mock\streams\fs\controller\factory as testedClass
+	atoum,
+	atoum\mock\streams\fs\controller,
+	atoum\mock\streams\fs\controller\factory as testedClass
 ;
 
 require __DIR__ . '/../../../../../runner.php';

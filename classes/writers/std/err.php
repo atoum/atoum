@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\writers\std;
+namespace atoum\writers\std;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers
+	atoum,
+	atoum\writers
 ;
 
 class err extends writers\std

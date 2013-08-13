@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier;
+namespace atoum\report\fields\runner\result\notifier;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\report\fields\runner\result\notifier
+	atoum,
+	atoum\exceptions,
+	atoum\report\fields\runner\result\notifier
 ;
 
 abstract class image extends notifier

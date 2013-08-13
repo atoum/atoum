@@ -1,18 +1,18 @@
 <?php
 
-namespace mageekguy\atoum\scripts\phar;
+namespace atoum\scripts\phar;
 
 require_once __DIR__ . '/../../../constants.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\iterators,
+	atoum\exceptions
 ;
 
 class generator extends atoum\script
 {
-	const phar = 'mageekguy.atoum.phar';
+	const phar = 'atoum.phar';
 
 	protected $originDirectory = null;
 	protected $destinationDirectory = null;

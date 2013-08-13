@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\report\fields\runner;
 
 use
-	mageekguy\atoum\php,
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\exceptions\runtime,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\observable,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report
+	atoum\php,
+	atoum\adapter,
+	atoum\exceptions\runtime,
+	atoum\iterators,
+	atoum\observable,
+	atoum\runner,
+	atoum\report
 ;
 
 abstract class coverage extends report\field
@@ -111,7 +111,7 @@ abstract class coverage extends report\field
 				$phpCode =
 					'<?php ' .
 					'ob_start();' .
-					'require \'' . \mageekguy\atoum\directory . '/classes/autoloader.php\';'
+					'require \'' . \atoum\directory . '/classes/autoloader.php\';'
 				;
 
 				$bootstrapFile = $observable->getBootstrapFile();
@@ -119,9 +119,9 @@ abstract class coverage extends report\field
 				if ($bootstrapFile !== null)
 				{
 					$phpCode .=
-						'$includer = new mageekguy\atoum\includer();' .
+						'$includer = new atoum\includer();' .
 						'try { $includer->includePath(\'' . $bootstrapFile . '\'); }' .
-						'catch (mageekguy\atoum\includer\exception $exception)' .
+						'catch (atoum\includer\exception $exception)' .
 						'{ die(\'Unable to include bootstrap file \\\'' . $bootstrapFile . '\\\'\'); }'
 					;
 				}

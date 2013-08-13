@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\scripts\tagger
+	atoum,
+	atoum\scripts,
+	atoum\exceptions,
+	atoum\scripts\tagger
 ;
 
 class tagger extends atoum\script

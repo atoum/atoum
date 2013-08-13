@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result;
+namespace atoum\tests\units\report\fields\runner\result;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\test
+	atoum,
+	atoum\locale,
+	atoum\adapter,
+	atoum\test
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -15,13 +15,13 @@ class notifier extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result');
+		$this->testedClass->extends('atoum\report\fields\runner\result');
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier())
+			->if($field = new \mock\atoum\report\fields\runner\result\notifier())
 			->then
 				->object($field->getLocale())->isEqualTo(new locale())
 				->object($field->getAdapter())->isEqualTo(new adapter())
@@ -32,7 +32,7 @@ class notifier extends atoum\test
 				->variable($field->getExceptionNumber())->isNull()
 				->array($field->getEvents())->isEqualTo(array(atoum\runner::runStop))
 			->if($adapter = new adapter())
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->then
 				->object($field->getAdapter())->isIdenticalTo($adapter)
 		;
@@ -41,16 +41,16 @@ class notifier extends atoum\test
 	public function testHandleEvent()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(1, PHP_INT_MAX))
 			->and($this->calling($score)->getFailNumber = $failNumber = rand(1, PHP_INT_MAX))
 			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(1, PHP_INT_MAX))
 			->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(1, PHP_INT_MAX))
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner = new \mock\atoum\runner())
 			->and($runner->setScore($score))
 			->and($this->calling($runner)->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier())
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $runner))->isFalse()
 				->variable($field->getTestNumber())->isNull()
@@ -72,10 +72,10 @@ class notifier extends atoum\test
 	public function testNotify()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\score())
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->if($score = new \mock\atoum\score())
+			->and($runner = new \mock\atoum\runner())
 			->and($this->calling($runner)->getScore = $score)
-			->and($locale = new \mock\mageekguy\atoum\locale())
+			->and($locale = new \mock\atoum\locale())
 			->and($this->calling($locale)->_ = function ($string) use (& $noTestRunningString, & $successString, & $failureString) {
 					switch ($string)
 					{
@@ -128,7 +128,7 @@ class notifier extends atoum\test
 			->and($this->calling($score)->getExceptionNumber = 0)
 			->and($adapter = new test\adapter())
 			->and($adapter->system = function() use (& $output) { return $output = uniqid(); })
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -143,7 +143,7 @@ class notifier extends atoum\test
 			->if($this->calling($runner)->getTestNumber = $testNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getAssertionNumber = $assertionNumber = rand(2, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -160,7 +160,7 @@ class notifier extends atoum\test
 			->and($this->calling($score)->getErrorNumber = 1)
 			->and($this->calling($score)->getExceptionNumber = 1)
 			->and($this->calling($score)->getUncompletedMethodNumber = 1)
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -179,7 +179,7 @@ class notifier extends atoum\test
 			->and($this->calling($score)->getErrorNumber = $errorNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getExceptionNumber = $exceptionNumber = rand(2, PHP_INT_MAX))
 			->and($this->calling($score)->getUncompletedMethodNumber = $uncompletedTestNumber = rand(2, PHP_INT_MAX))
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->and($field->setLocale($locale))
 			->and($field->handleEvent(atoum\runner::runStop, $runner))
 			->then
@@ -197,7 +197,7 @@ class notifier extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->if($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier())
+			->if($field = new \mock\atoum\report\fields\runner\result\notifier())
 			->then
 				->object($field->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($field)
 				->object($field->getAdapter())->isIdenticalTo($adapter)
@@ -213,7 +213,7 @@ class notifier extends atoum\test
 		$this
 			->if($adapter = new test\adapter())
 			->and($adapter->system = function() use (& $output) { return $output = uniqid(); })
-			->and($field = new \mock\mageekguy\atoum\report\fields\runner\result\notifier($adapter))
+			->and($field = new \mock\atoum\report\fields\runner\result\notifier($adapter))
 			->then
 				->string($field->send(uniqid(), uniqid(), true))->isEqualTo($output)
 		;

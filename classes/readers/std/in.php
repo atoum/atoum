@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\readers\std;
+namespace atoum\readers\std;
 
 use
-	mageekguy\atoum\reader,
-	mageekguy\atoum\exceptions
+	atoum\reader,
+	atoum\exceptions
 ;
 
 class in extends reader

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\runner;
+namespace atoum\tests\units\runner;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner\score as testedClass
+	atoum,
+	atoum\runner\score as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -13,7 +13,7 @@ class score extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\score');
+		$this->testedClass->isSubClassOf('atoum\score');
 	}
 
 	public function test__construct()
@@ -62,7 +62,7 @@ class score extends atoum\test
 							$score->setAtoumPath(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Path of atoum is already set')
 				->object($score->reset()->setAtoumPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getAtoumPath())->isEqualTo((string) $path)
@@ -80,7 +80,7 @@ class score extends atoum\test
 							$score->setAtoumVersion(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Version of atoum is already set')
 				->object($score->reset()->setAtoumVersion($version = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getAtoumVersion())->isEqualTo((string) $version)
@@ -98,7 +98,7 @@ class score extends atoum\test
 							$score->setPhpPath(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('PHP path is already set')
 				->object($score->reset()->setPhpPath($path = rand(1, PHP_INT_MAX)))->isIdenticalTo($score)
 				->string($score->getPhpPath())->isEqualTo((string) $path)
@@ -116,7 +116,7 @@ class score extends atoum\test
 						$score->setPhpVersion(uniqid());
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('PHP version is already set')
 		;
 	}

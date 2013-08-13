@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\writer\decorator
+	atoum\writer\decorator
 ;
 
 abstract class writer

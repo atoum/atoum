@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields;
+namespace atoum\report\fields;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\report,
-	mageekguy\atoum\test\cli,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\test,
+	atoum\report,
+	atoum\test\cli,
+	atoum\exceptions
 ;
 
 abstract class event extends report\field

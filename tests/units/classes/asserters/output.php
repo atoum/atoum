@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\output as sut
+	atoum,
+	atoum\asserter,
+	atoum\asserters\output as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class output extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserters\string');
+		$this->testedClass->extends('atoum\asserters\string');
 	}
 
 	public function test__construct()

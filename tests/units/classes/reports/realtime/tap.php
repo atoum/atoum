@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime;
+namespace atoum\tests\units\reports\realtime;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields,
-	mageekguy\atoum\reports\realtime\tap as testedClass
+	atoum,
+	atoum\report\fields,
+	atoum\reports\realtime\tap as testedClass
 ;
 
 require __DIR__ . '/../../../runner.php';
@@ -15,7 +15,7 @@ class tap extends atoum\test
 	public function testClass()
 	{
 		$this->testedClass
-			->extends('mageekguy\atoum\reports\realtime')
+			->extends('atoum\reports\realtime')
 		;
 	}
 

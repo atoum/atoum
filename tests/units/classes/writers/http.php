@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\tests\units\writers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers\http as testedClass
+	atoum,
+	atoum\writers\http as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,8 +15,8 @@ class http extends atoum\test
 	{
 		$this
 			->testedClass
-				->isSubclassOf('\\mageekguy\\atoum\\writer')
-				->implements('mageekguy\atoum\report\writers\asynchronous')
+				->isSubclassOf('\\atoum\\writer')
+				->implements('atoum\report\writers\asynchronous')
 		;
 	}
 
@@ -44,7 +44,7 @@ class http extends atoum\test
 						$writer->write(uniqid());
 					}
 				)
-					->isInstanceOf('\\mageekguy\\atoum\\exceptions\\runtime')
+					->isInstanceOf('\\atoum\\exceptions\\runtime')
 					->hasMessage('No URL set for HTTP writer')
 			->if($writer->setUrl($url = uniqid()))
 			->then
@@ -97,8 +97,8 @@ class http extends atoum\test
 		$this
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->file_get_contents = '')
-			->and($report = new \mock\mageekguy\atoum\reports\asynchronous())
-			->and($writer = new \mock\mageekguy\atoum\writers\http($adapter))
+			->and($report = new \mock\atoum\reports\asynchronous())
+			->and($writer = new \mock\atoum\writers\http($adapter))
 			->and($writer->setUrl(uniqid()))
 			->then
 				->object($writer->writeAsynchronousReport($report))->isIdenticalTo($writer)

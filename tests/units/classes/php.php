@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php as testedClass
+	atoum,
+	atoum\php as testedClass
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -170,7 +170,7 @@ class php extends atoum\test
 			->and($adapter->proc_open = false)
 			->then
 				->exception(function() use ($php, & $code) { $php->run($code = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\php\exception')
+					->isInstanceOf('atoum\php\exception')
 					->hasMessage('Unable to run \'' . $code . '\' with php binary \'' . $phpPath . '\'')
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()

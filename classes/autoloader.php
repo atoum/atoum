@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 class autoloader
 {
@@ -36,12 +36,12 @@ class autoloader
 			$this->addDirectory($namespace, $directory);
 		}
 
-		foreach ($namespaceAliases ?: array('atoum' => __NAMESPACE__) as $alias => $target)
+		foreach ($namespaceAliases ?: array('mageekguy\\atoum' => __NAMESPACE__) as $alias => $target)
 		{
 			$this->addNamespaceAlias($alias, $target);
 		}
 
-		foreach ($classAliases ?: array('atoum' => __NAMESPACE__ . '\test', __NAMESPACE__ => __NAMESPACE__ . '\test') as $alias => $target)
+		foreach ($classAliases ?: array(__NAMESPACE__ => __NAMESPACE__ . '\test') as $alias => $target)
 		{
 			$this->addClassAlias($alias, $target);
 		}

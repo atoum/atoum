@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum;
+namespace atoum;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\annotations
+	atoum\test,
+	atoum\mock,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\exceptions,
+	atoum\annotations
 ;
 
 abstract class test implements observable, \countable
@@ -32,7 +32,7 @@ abstract class test implements observable, \countable
 	const afterTearDown = 'afterTestTearDown';
 	const runStop = 'testRunStop';
 	const defaultEngine = 'concurrent';
-	const enginesNamespace = '\mageekguy\atoum\test\engines';
+	const enginesNamespace = '\atoum\test\engines';
 
 	private $score = null;
 	private $locale = null;
@@ -1424,7 +1424,7 @@ abstract class test implements observable, \countable
 		{
 			if ($this->xdebugConfig != null)
 			{
-				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
+				$engineClass = 'atoum\test\engines\concurrent';
 			}
 			else
 			{

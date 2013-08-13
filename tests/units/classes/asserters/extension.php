@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\extension as sut // use sut here instead of testedClass because atoum\asserters\testedClass exists !
+	atoum,
+	atoum\asserter,
+	atoum\asserters\extension as sut // use sut here instead of testedClass because atoum\asserters\testedClass exists !
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class extension extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserter');
+		$this->testedClass->extends('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -94,7 +94,7 @@ class extension extends atoum\test
 						$asserter->isLoaded();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Name of PHP extension is undefined')
 			->if($asserter->setAdapter($adapter = new atoum\test\adapter()))
 			->and($adapter->extension_loaded = false)
@@ -104,7 +104,7 @@ class extension extends atoum\test
 						$asserter->isLoaded();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\test\exceptions\skip')
+					->isInstanceOf('atoum\test\exceptions\skip')
 					->hasMessage('PHP extension \'' . $extensionName . '\' is not loaded')
 			->if($adapter->extension_loaded = true)
 			->then

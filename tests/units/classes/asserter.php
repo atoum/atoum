@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 require __DIR__ . '/../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserters,
-	mock\mageekguy\atoum\asserter as sut
+	atoum,
+	atoum\asserters,
+	mock\atoum\asserter as sut
 ;
 
 class asserter extends atoum\test
@@ -41,7 +41,7 @@ class asserter extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new atoum\asserter\generator()))
 			->then
-				->object($integerAsserter = $asserter->integer($integer = rand(1, PHP_INT_MAX)))->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->object($integerAsserter = $asserter->integer($integer = rand(1, PHP_INT_MAX)))->isInstanceOf('atoum\asserters\integer')
 				->integer($integerAsserter->getValue())->isEqualTo($integer)
 				->object($integerAsserter->getGenerator())->isIdenticalTo($generator)
 		;
@@ -118,7 +118,7 @@ class asserter extends atoum\test
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
-			->and($asserter->setLocale($locale = new \mock\mageekguy\atoum\locale()))
+			->and($asserter->setLocale($locale = new \mock\atoum\locale()))
 			->then
 				->string($asserter->getTypeOf(true))->isEqualTo('boolean(true)')
 				->mock($locale)->call('_')->withArguments('boolean(%s)')->once()

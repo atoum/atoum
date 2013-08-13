@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace atoum\tests\units\test;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\test\adapter as testedClass
+	atoum\test,
+	atoum\test\adapter as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -13,7 +13,7 @@ class adapter extends test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\adapter');
+		$this->testedClass->extends('atoum\adapter');
 	}
 
 	public function test__construct()
@@ -35,14 +35,14 @@ class adapter extends test
 				->object($adapter->md5->getClosure())->isIdenticalTo($closure)
 			->if($adapter->md5 = $return = uniqid())
 			->then
-				->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($adapter->md5)->isInstanceOf('atoum\test\adapter\invoker')
+				->object($adapter->MD5)->isInstanceOf('atoum\test\adapter\invoker')
 				->string($adapter->invoke('md5'))->isEqualTo($return)
 				->string($adapter->invoke('MD5'))->isEqualTo($return)
 			->if($adapter->MD5 = $return = uniqid())
 			->then
-				->object($adapter->md5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
-				->object($adapter->MD5)->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->object($adapter->md5)->isInstanceOf('atoum\test\adapter\invoker')
+				->object($adapter->MD5)->isInstanceOf('atoum\test\adapter\invoker')
 				->string($adapter->invoke('md5'))->isEqualTo($return)
 				->string($adapter->invoke('MD5'))->isEqualTo($return)
 		;
@@ -148,13 +148,13 @@ class adapter extends test
 							$adapter->require(uniqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Function \'require()\' is not invokable by an adapter')
 				->exception(function() use ($adapter) {
 							$adapter->REQUIRE(uNiqid());
 						}
 					)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Function \'REQUIRE()\' is not invokable by an adapter')
 			->if($adapter->md5 = 0)
 			->and($adapter->md5[1] = 1)

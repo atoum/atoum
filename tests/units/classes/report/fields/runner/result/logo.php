@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\result;
+namespace atoum\tests\units\report\fields\runner\result;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\result\logo as testedClass
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\result\logo as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -16,19 +16,19 @@ class logo extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\result\cli');
+		$this->testedClass->extends('atoum\report\fields\runner\result\cli');
 	}
 
 	public function test__toString()
 	{
-		$score = new \mock\mageekguy\atoum\score();
+		$score = new \mock\atoum\score();
 		$scoreController = $score->getMockController();
 		$scoreController->getAssertionNumber = 1;
 		$scoreController->getFailNumber = 0;
 		$scoreController->getErrorNumber = 0;
 		$scoreController->getExceptionNumber = 0;
 
-		$runner = new \mock\mageekguy\atoum\runner();
+		$runner = new \mock\atoum\runner();
 		$runnerController = $runner->getMockController();
 		$runnerController->getScore = $score;
 		$runnerController->getTestNumber = 1;

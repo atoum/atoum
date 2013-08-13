@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class stream extends atoum\asserter

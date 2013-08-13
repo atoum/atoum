@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\php;
+namespace atoum\tests\units\mock\php;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\php
+	atoum,
+	atoum\mock\php
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -35,7 +35,7 @@ class method extends atoum\test
 						$method->returnReference();
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Constructor can not return a reference')
 		;
 	}

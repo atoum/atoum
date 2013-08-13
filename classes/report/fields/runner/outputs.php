@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner;
+namespace atoum\report\fields\runner;
 
 use
-	mageekguy\atoum\runner,
-	mageekguy\atoum\observable,
-	mageekguy\atoum\report\field
+	atoum\runner,
+	atoum\observable,
+	atoum\report\field
 ;
 
 abstract class outputs extends field

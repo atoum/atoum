@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\tagger;
+namespace atoum\tests\units\scripts\tagger;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\scripts\tagger
+	atoum,
+	atoum\mock,
+	atoum\scripts\tagger
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -14,7 +14,7 @@ class engine extends atoum\test
 {
 	public function testClassConstants()
 	{
-		$this->string(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/');
+		$this->string(\atoum\scripts\tagger\engine::defaultVersionPattern)->isEqualTo('/\$Rev: [^ ]+ \$/');
 	}
 
 	public function test__construct()
@@ -25,8 +25,8 @@ class engine extends atoum\test
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
 			->variable($tagger->getVersion())->isNull()
-			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
-			->object($tagger->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+			->string($tagger->getVersionPattern())->isEqualTo(\atoum\scripts\tagger\engine::defaultVersionPattern)
+			->object($tagger->getAdapter())->isInstanceOf('atoum\adapter')
 		;
 
 		$tagger = new tagger\engine($adapter = new atoum\adapter());
@@ -35,7 +35,7 @@ class engine extends atoum\test
 			->variable($tagger->getSrcDirectory())->isNull()
 			->variable($tagger->getDestinationDirectory())->isNull()
 			->variable($tagger->getVersion())->isNull()
-			->string($tagger->getVersionPattern())->isEqualTo(\mageekguy\atoum\scripts\tagger\engine::defaultVersionPattern)
+			->string($tagger->getVersionPattern())->isEqualTo(\atoum\scripts\tagger\engine::defaultVersionPattern)
 			->object($tagger->getAdapter())->isIdenticalTo($adapter)
 		;
 	}
@@ -116,7 +116,7 @@ class engine extends atoum\test
 					$tagger->setSrcIteratorInjector(function() {});
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Src iterator injector must take one argument')
 			->object($tagger->setSrcIteratorInjector(function($directory) { return new \recursiveDirectoryIterator($directory); }))->isIdenticalTo($tagger)
 			->object($tagger->getSrcIterator())->isInstanceOf('recursiveDirectoryIterator')
@@ -133,7 +133,7 @@ class engine extends atoum\test
 					$tagger->getSrcIterator();
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Unable to get files iterator, source directory is undefined')
 		;
 
@@ -141,7 +141,7 @@ class engine extends atoum\test
 
 		$this->assert
 			->object($tagger->getSrcIterator())->isInstanceOf('recursiveIteratorIterator')
-			->object($tagger->getSrcIterator()->getInnerIterator())->isInstanceOf('mageekguy\atoum\iterators\filters\recursives\dot')
+			->object($tagger->getSrcIterator()->getInnerIterator())->isInstanceOf('atoum\iterators\filters\recursives\dot')
 		;
 	}
 
@@ -157,7 +157,7 @@ class engine extends atoum\test
 					$tagger->tagVersion(uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Unable to tag, src directory is undefined')
 		;
 
@@ -168,7 +168,7 @@ class engine extends atoum\test
 					$tagger->tagVersion(uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Unable to tag, version is undefined')
 		;
 
@@ -182,7 +182,7 @@ class engine extends atoum\test
 					$tagger->tagVersion(uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\logic')
+				->isInstanceOf('atoum\exceptions\logic')
 				->hasMessage('Unable to tag, src iterator injector does not return an iterator')
 		;
 
@@ -218,7 +218,7 @@ class engine extends atoum\test
 					$tagger->tagVersion(uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to tag, path \'' . $file2 . '\' is unreadable')
 		;
 
@@ -231,7 +231,7 @@ class engine extends atoum\test
 					$tagger->tagVersion(uniqid());
 				}
 			)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('Unable to tag, path \'' . $file2 . '\' is unwritable')
 		;
 

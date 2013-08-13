@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\test\engines;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test
+	atoum,
+	atoum\test
 ;
 
 class inline extends test\engine

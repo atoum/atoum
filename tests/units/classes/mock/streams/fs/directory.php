@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs;
+namespace atoum\tests\units\mock\streams\fs;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\mock\streams\fs\directory as testedClass
+	atoum,
+	atoum\mock\stream,
+	atoum\mock\streams\fs\directory as testedClass
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -14,7 +14,7 @@ class directory extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\stream');
+		$this->testedClass->extends('atoum\mock\stream');
 	}
 
 	public function testMkdir()

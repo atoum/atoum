@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\boolean as sut
+	atoum,
+	atoum\asserter,
+	atoum\tools\diffs,
+	atoum\asserters\boolean as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class boolean extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\variable');
+		$this->testedClass->isSubclassOf('atoum\asserters\variable');
 	}
 
 	public function test__construct()
@@ -45,7 +45,7 @@ class boolean extends atoum\test
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
 			->if($asserter->setWith(true))
 			->then
@@ -54,7 +54,7 @@ class boolean extends atoum\test
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not true'), $asserter) . PHP_EOL . $diff->setExpected(true)->setActual(false))
 		;
 	}
@@ -74,7 +74,7 @@ class boolean extends atoum\test
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
 			->if($asserter->setWith(false))
 			->then
@@ -83,7 +83,7 @@ class boolean extends atoum\test
 			->and($diff = new diffs\variable())
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse; })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not false'), $asserter) . PHP_EOL . $diff->setExpected(false)->setActual(true))
 		;
 	}
@@ -95,7 +95,7 @@ class boolean extends atoum\test
 			->then
 				->assert('Set the asserter with something else than a boolean throw an exception')
 					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->isInstanceOf('atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s is not a boolean'), $asserter->getTypeOf($value)))
 				->assert('The asserter was returned when it set with a boolean')
 					->string($asserter->getValue())->isEqualTo($value)

@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\test\event;
+namespace atoum\report\fields\test\event;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\test,
+	atoum\runner,
+	atoum\report,
+	atoum\exceptions
 ;
 
 class tap extends report\fields\event

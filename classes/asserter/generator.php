@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\asserter;
+namespace atoum\asserter;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class generator
 {
-	const defaultAsserterNamespace = 'mageekguy\atoum\asserters';
+	const defaultAsserterNamespace = 'atoum\asserters';
 
 	protected $aliases = array();
 	protected $locale = null;

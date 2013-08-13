@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
+namespace atoum\tests\units\report\fields\runner\failures;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\failures\execute as testedClass
+	atoum,
+	atoum\report\fields\runner\failures\execute as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -13,7 +13,7 @@ class execute extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures');
+		$this->testedClass->extends('atoum\report\fields\runner\failures');
 	}
 
 	public function test__construct()
@@ -22,8 +22,8 @@ class execute extends atoum\test
 			->if($field = new testedClass($command = uniqid()))
 			->then
 				->string($field->getCommand())->isEqualTo($command)
-				->object($field->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($field->getLocale())->isInstanceOf('mageekguy\atoum\locale')
+				->object($field->getAdapter())->isInstanceOf('atoum\adapter')
+				->object($field->getLocale())->isInstanceOf('atoum\locale')
 		;
 	}
 
@@ -36,7 +36,7 @@ class execute extends atoum\test
 			->then
 				->castToString($field)->isEmpty()
 				->adapter($adapter)->call('system')->never()
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($score->getMockController()->getErrors = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

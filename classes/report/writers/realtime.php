@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\report\writers;
+namespace atoum\report\writers;
 
 use
-	mageekguy\atoum\reports
+	atoum\reports
 ;
 
 interface realtime

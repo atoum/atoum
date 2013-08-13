@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php;
+namespace atoum\tests\units\php;
 
 require_once __DIR__ . '/../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php\mocker as testedClass
+	atoum,
+	atoum\php\mocker as testedClass
 ;
 
 function doSomething() {}
@@ -117,7 +117,7 @@ class mocker extends atoum\test
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
 				->exception(function() use ($php) { $php->generate(__NAMESPACE__ . '\doSomething'); })
-					->isInstanceof('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceof('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Function \'' . __NAMESPACE__ . '\doSomething\' already exists')
 			->if($php->{$functionName} = $returnValue = uniqid())
 			->then

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\script;
+namespace atoum\tests\units\script;
 
 use
-	mageekguy\atoum,
-	mock\mageekguy\atoum\script\configurable as testedClass
+	atoum,
+	mock\atoum\script\configurable as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class configurable extends atoum\test
 	{
 		$this->testedClass
 			->isAbstract()
-			->extends('mageekguy\atoum\script')
+			->extends('atoum\script')
 		;
 	}
 
@@ -31,7 +31,7 @@ class configurable extends atoum\test
 			->then
 				->string($configurable->getName())->isEqualTo($name)
 				->object($configurable->getAdapter())->isEqualTo(new atoum\adapter())
-				->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->object($configurable->getIncluder())->isInstanceOf('atoum\includer')
 				->array($configurable->getConfigFiles())->isEmpty()
 				->array($configurable->getHelp())->isEqualTo(array(
 						array(
@@ -50,7 +50,7 @@ class configurable extends atoum\test
 			->then
 				->string($configurable->getName())->isEqualTo($name)
 				->object($configurable->getAdapter())->isIdenticalTo($adapter)
-				->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->object($configurable->getIncluder())->isInstanceOf('atoum\includer')
 				->array($configurable->getConfigFiles())->isEmpty()
 				->array($configurable->getHelp())->isEqualTo(array(
 						array(
@@ -88,9 +88,9 @@ class configurable extends atoum\test
 			->if($configurable = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($configurable, & $file) { $configurable->useConfigFile($file = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\includer\exception')
+					->isInstanceOf('atoum\includer\exception')
 					->hasMessage('Unable to find configuration file \'' . $file . '\'')
-			->if($includer = new \mock\mageekguy\atoum\includer())
+			->if($includer = new \mock\atoum\includer())
 			->and($this->calling($includer)->includePath = function() {})
 			->and($configurable->setIncluder($includer))
 			->then

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\fs\path;
+namespace atoum\fs\path;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class exception extends exceptions\runtime {}

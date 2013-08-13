@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test;
+namespace atoum\tests\units\test;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\score as testedClass
+	atoum,
+	atoum\test\score as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -13,7 +13,7 @@ class score extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\score');
+		$this->testedClass->isSubClassOf('atoum\score');
 	}
 
 	public function test__construct()

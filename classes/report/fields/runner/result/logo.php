@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result;
+namespace atoum\report\fields\runner\result;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\report,
+	atoum\cli\prompt,
+	atoum\cli\colorizer
 ;
 
 class logo extends cli

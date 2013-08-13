@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\coverage;
+namespace atoum\report\fields\runner\coverage;
 
 require_once __DIR__ . '/../../../../../constants.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\report,
-	mageekguy\atoum\template,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\locale,
+	atoum\report,
+	atoum\template,
+	atoum\exceptions,
+	atoum\cli\prompt,
+	atoum\cli\colorizer
 ;
 
 class treemap extends report\fields\runner\coverage\cli

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tap;
+namespace atoum\tests\units\report\fields\runner\tap;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report\fields\runner\tap\plan as testedClass
+	atoum,
+	atoum\runner,
+	atoum\report\fields\runner\tap\plan as testedClass
 ;
 
 require __DIR__ . '/../../../../../runner.php';
@@ -14,7 +14,7 @@ class plan extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\field');
+		$this->testedClass->extends('atoum\report\field');
 	}
 
 	public function test__construct()
@@ -29,7 +29,7 @@ class plan extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\runner())
+			->if($runner = new \mock\atoum\runner())
 			->and($this->calling($runner)->getTestMethodNumber = $testMethodNumber = rand(1, PHP_INT_MAX))
 			->and($field = new testedClass())
 			->if($field->handleEvent(runner::runStop, $runner))

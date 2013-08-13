@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\mock;
+namespace atoum\test\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock
+	atoum,
+	atoum\mock
 ;
 
 class generator extends mock\generator

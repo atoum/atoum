@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\event;
+namespace atoum\report\fields\runner\event;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\cli\progressBar
+	atoum\test,
+	atoum\runner,
+	atoum\report,
+	atoum\exceptions,
+	atoum\cli\progressBar
 ;
 
 class cli extends report\fields\runner\event

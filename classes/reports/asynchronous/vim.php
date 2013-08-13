@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous;
+namespace atoum\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\reports,
+	atoum\report\fields\test,
+	atoum\report\fields\runner
 ;
 
 class vim extends reports\asynchronous

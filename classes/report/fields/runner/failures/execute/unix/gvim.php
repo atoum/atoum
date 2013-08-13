@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures\execute\unix;
+namespace atoum\report\fields\runner\failures\execute\unix;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\failures
+	atoum,
+	atoum\report\fields\runner\failures
 ;
 
 class gvim extends failures\execute

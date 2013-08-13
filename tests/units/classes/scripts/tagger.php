@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\tests\units\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts,
-	mock\mageekguy\atoum as mock
+	atoum,
+	atoum\scripts,
+	mock\atoum as mock
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class tagger extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\script');
+		$this->testedClass->isSubclassOf('atoum\script');
 	}
 
 	public function test__construct()
@@ -22,7 +22,7 @@ class tagger extends atoum\test
 		$this
 			->if($tagger = new scripts\tagger(uniqid()))
 			->then
-				->object($tagger->getEngine())->isInstanceOf('mageekguy\atoum\scripts\tagger\engine')
+				->object($tagger->getEngine())->isInstanceOf('atoum\scripts\tagger\engine')
 		;
 	}
 
@@ -41,8 +41,8 @@ class tagger extends atoum\test
 		$this
 			->if($helpWriter = new mock\writers\std\out())
 			->and($this->calling($helpWriter)->write = function() {})
-			->and($tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid()))
-			->and($tagger->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine()))
+			->and($tagger = new \mock\atoum\scripts\tagger(uniqid()))
+			->and($tagger->setEngine($engine = new \mock\atoum\scripts\tagger\engine()))
 			->and($tagger->setHelpWriter($helpWriter))
 			->and($this->calling($engine)->tagVersion = function() {})
 			->then

@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\tests\units\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts\treemap as testedClass,
-	mock\mageekguy\atoum\scripts\treemap\analyzer as analyzer,
-	mock\mageekguy\atoum\scripts\treemap\categorizer as categorizer
+	atoum,
+	atoum\scripts\treemap as testedClass,
+	mock\atoum\scripts\treemap\analyzer as analyzer,
+	mock\atoum\scripts\treemap\categorizer as categorizer
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class treemap extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\script\configurable');
+		$this->testedClass->extends('atoum\script\configurable');
 	}
 
 	public function testClassConstants()
@@ -163,7 +163,7 @@ class treemap extends atoum\test
 			->if($this->calling($includer)->includePath->throw = new atoum\includer\exception())
 			->then
 				->exception(function() use ($treemap, & $file) { $treemap->useConfigFile($file = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\includer\exception')
+					->isInstanceOf('atoum\includer\exception')
 					->hasMessage('Unable to find configuration file \'' . $file . '\'')
 		;
 	}

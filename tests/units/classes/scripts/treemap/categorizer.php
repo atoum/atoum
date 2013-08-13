@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts\treemap;
+namespace atoum\tests\units\scripts\treemap;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\scripts\treemap\categorizer as testedClass
+	atoum,
+	atoum\scripts\treemap\categorizer as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -42,13 +42,13 @@ class categorizer extends atoum\test
 				->object($categorizer->setMinDepthColor($color = 'FFFFFF'))->isIdenticalTo($categorizer)
 				->string($categorizer->getMinDepthColor())->isEqualTo('#' . $color)
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMinDepthColor('#00000g'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMinDepthColor('#00000'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMinDepthColor('@000000'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 		;
 	}
@@ -71,13 +71,13 @@ class categorizer extends atoum\test
 				->object($categorizer->setMaxDepthColor($color = 'FFFFFF'))->isIdenticalTo($categorizer)
 				->string($categorizer->getMaxDepthColor())->isEqualTo('#' . $color)
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMaxDepthColor('#00000g'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMaxDepthColor('#00000'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 				->exception(function() use ($categorizer, & $color) { $categorizer->setMaxDepthColor('@000000'); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Color must be in hexadecimal format')
 		;
 	}

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\cli;
+namespace atoum\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writer
+	atoum,
+	atoum\writer
 ;
 
 class colorizer implements writer\decorator

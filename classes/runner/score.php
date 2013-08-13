@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\runner;
+namespace atoum\runner;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class score extends atoum\score

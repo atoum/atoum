@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\tests\units\writers;
 
 use
-	mageekguy\atoum,
-	mock\mageekguy\atoum\writers\std as testedClass
+	atoum,
+	mock\atoum\writers\std as testedClass
 ;
 
 require __DIR__ . '/../../runner.php';
@@ -13,7 +13,7 @@ class std extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\writer');
+		$this->testedClass->extends('atoum\writer');
 	}
 
 	public function test__construct()
@@ -73,7 +73,7 @@ class std extends atoum\test
 	public function testClear()
 	{
 		$this
-			->if($std = new testedClass($cli = new \mock\mageekguy\atoum\cli(), $adapter = new atoum\test\adapter()))
+			->if($std = new testedClass($cli = new \mock\atoum\cli(), $adapter = new atoum\test\adapter()))
 			->and($adapter->fwrite = function() {})
 			->and($this->calling($cli)->isTerminal = true)
 			->and($this->calling($std)->init = $std)

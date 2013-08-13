@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\coverage;
+namespace atoum\tests\units\report\fields\runner\coverage;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\coverage\treemap as testedClass
+	atoum,
+	atoum\report\fields\runner\coverage\treemap as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -13,7 +13,7 @@ class treemap extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\coverage\cli');
+		$this->testedClass->extends('atoum\report\fields\runner\coverage\cli');
 	}
 
 	public function test__construct()
@@ -53,7 +53,7 @@ class treemap extends atoum\test
 				->object($treemap->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClassInstance)
 				->object($treemap->getReflectionClass(uniqid()))->isIdenticalTo($reflectionClassInstance)
 				->exception(function() use($treemap) { $treemap->setReflectionClassFactory(function() {}); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Reflection class factory must take one argument')
 		;
 	}

@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\failures;
+namespace atoum\tests\units\report\fields\runner\failures;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	atoum\report\fields\runner
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -17,7 +17,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\failures');
+		$this->testedClass->extends('atoum\report\fields\runner\failures');
 	}
 
 	public function test__construct()
@@ -106,7 +106,7 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($score->getMockController()->getErrors = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

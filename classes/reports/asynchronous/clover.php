@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\reports\asynchronous;
+namespace atoum\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\score
+	atoum,
+	atoum\exceptions,
+	atoum\score
 ;
 
 class clover extends atoum\reports\asynchronous

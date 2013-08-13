@@ -10,7 +10,7 @@ More information on documentation:
 [fr] http://docs.atoum.org/fr/chapter3.html#Fichier-de-configuration
 */
 
-use \mageekguy\atoum;
+use \atoum;
 
 $report = $script->addDefaultReport();
 
