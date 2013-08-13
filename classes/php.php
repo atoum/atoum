@@ -31,7 +31,11 @@ class php
 
 	public function __toString()
 	{
-		$command = $this->binaryPath;
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			$command = '"'.$this->binaryPath.'"';
+		} else {
+			$command = $this->binaryPath;
+		}
 
 		foreach ($this->options as $option => $value)
 		{
@@ -60,7 +64,11 @@ class php
 			}
 		}
 
-		return escapeshellcmd($command);
+		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
+			return $command;
+		} else {
+			return escapeshellcmd($command);
+		}
 	}
 
 	public function __set($envVariable, $value)
