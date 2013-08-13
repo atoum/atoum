@@ -31,11 +31,7 @@ class php
 
 	public function __toString()
 	{
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			$command = '"'.$this->binaryPath.'"';
-		} else {
-			$command = $this->binaryPath;
-		}
+		$command = '';
 
 		foreach ($this->options as $option => $value)
 		{
@@ -64,11 +60,16 @@ class php
 			}
 		}
 
-		if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {
-			return $command;
-		} else {
-			return escapeshellcmd($command);
+		if (static::osIsWindows() === true)
+		{
+			$command = '"' . $this->binaryPath . '"' . $command;
 		}
+		else
+		{
+			$command = escapeshellcmd($this->binaryPath . $command);
+		}
+
+		return $command;
 	}
 
 	public function __set($envVariable, $value)
@@ -283,5 +284,10 @@ class php
 		$this->adapter->stream_set_blocking($this->phpStreams[2], 0);
 
 		return $this;
+	}
+
+	private static function osIsWindows()
+	{
+		return (defined('PHP_WINDOWS_VERSION_MAJOR') === true);
 	}
 }
