@@ -166,7 +166,7 @@ class php
 
 	public function addOption($option, $value = null)
 	{
-		$this->options[$option] = $value;
+		$this->options[$option] = $value ?: null;
 
 		return $this;
 	}
@@ -178,7 +178,7 @@ class php
 
 	public function addArgument($argument, $value = null)
 	{
-		$this->arguments[] = array($argument => $value);
+		$this->arguments[] = array($argument => $value ?: null);
 
 		return $this;
 	}

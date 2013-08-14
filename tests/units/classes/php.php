@@ -142,6 +142,8 @@ class php extends atoum\test
 				->array($php->getOptions())->isEqualTo(array($optionName => null, $otherOptionName => null, $anotherOptionName => $optionValue))
 				->object($php->addOption($anotherOptionName, $anotherOptionValue = uniqid()))->isIdenticalTo($php)
 				->array($php->getOptions())->isEqualTo(array($optionName => null, $otherOptionName => null, $anotherOptionName => $anotherOptionValue))
+				->object($php->addOption($emptyOption = uniqid(), ''))->isIdenticalTo($php)
+				->array($php->getOptions())->isEqualTo(array($optionName => null, $otherOptionName => null, $anotherOptionName => $anotherOptionValue, $emptyOption => null))
 		;
 	}
 
@@ -156,6 +158,8 @@ class php extends atoum\test
 				->array($php->getArguments())->isEqualTo(array(array($argument1 => null), array($argument1 => null)))
 				->object($php->addArgument($argument2 = uniqid()))->isIdenticalTo($php)
 				->array($php->getArguments())->isEqualTo(array(array($argument1 => null), array($argument1 => null), array($argument2 => null)))
+				->object($php->addArgument($emptyArgument = uniqid(), ''))->isIdenticalTo($php)
+				->array($php->getArguments())->isEqualTo(array(array($argument1 => null), array($argument1 => null), array($argument2 => null), array($emptyArgument => null)))
 		;
 	}
 
