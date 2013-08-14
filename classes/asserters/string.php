@@ -190,6 +190,62 @@ class string extends asserters\variable
 		return $this;
 	}
 
+	public function startWith($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) === 0)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not start with %s'), $fragment));
+		}
+
+		return $this;
+	}
+
+	public function notStartWith($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) === 0)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String start with %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function endWith($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) === (strlen($this->valueIsSet()->value) - strlen($fragment)))
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not end with %s'), $fragment));
+		}
+
+		return $this;
+	}
+
+	public function notEndWith($fragment, $failMessage = null)
+	{
+		if (strpos($this->valueIsSet()->value, $fragment) === (strlen($this->valueIsSet()->value) - strlen($fragment)))
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String end with %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	protected function getLengthAsserter()
 	{
 		return $this->generator->__call('integer', array(strlen($this->valueIsSet()->value)));
