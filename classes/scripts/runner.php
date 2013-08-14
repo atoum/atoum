@@ -6,7 +6,6 @@ require_once __DIR__ . '/../../constants.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\system,
 	mageekguy\atoum\exceptions
 ;
 
@@ -782,41 +781,44 @@ class runner extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		$this->setDefaultBootstrapFiles();
+		if ($this->hasArguments() === true)
+		{
+			$this->setDefaultBootstrapFiles();
 
-		if ($this->loop === true)
-		{
-			$this->loop();
-		}
-		else
-		{
-			if ($this->runner->hasReports() === false)
+			if ($this->loop === true)
 			{
-				$this->addDefaultReport();
+				$this->loop();
 			}
-
-			$methods = $this->methods;
-			$oldFailMethods = array();
-
-			if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+			else
 			{
-				$oldFailMethods = self::getFailMethods($oldScore);
-
-				if ($oldFailMethods)
+				if ($this->runner->hasReports() === false)
 				{
-					$methods = $oldFailMethods;
+					$this->addDefaultReport();
 				}
-			}
 
-			$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
+				$methods = $this->methods;
+				$oldFailMethods = array();
 
-			if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
-			{
-				$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
-
-				if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
 				{
-					$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+					$oldFailMethods = self::getFailMethods($oldScore);
+
+					if ($oldFailMethods)
+					{
+						$methods = $oldFailMethods;
+					}
+				}
+
+				$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
+
+				if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
+				{
+					$testMethods = $this->runner->getTestMethods($this->namespaces, $this->tags, $this->methods);
+
+					if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
+					{
+						$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+					}
 				}
 			}
 		}
