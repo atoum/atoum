@@ -414,10 +414,10 @@ class runner implements observable
 			}
 		}
 
-		$this->callObservers(self::runStart);
-
 		if ($tests)
 		{
+			$this->callObservers(self::runStart);
+
 			foreach ($tests as $testMethods)
 			{
 				list($test, $methods) = $testMethods;
@@ -457,11 +457,11 @@ class runner implements observable
 
 				$this->score->merge($test->run($methods)->getScore());
 			}
+
+			$this->callObservers(self::runStop);
 		}
 
 		$this->stop = $this->adapter->microtime(true);
-
-		$this->callObservers(self::runStop);
 
 		return $this->score;
 	}
