@@ -154,10 +154,7 @@ class runner extends atoum\script\configurable
 	{
 		try
 		{
-			if (parent::run($arguments ?: $this->getArguments())->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
-			{
-				parent::run($this->getDefaultArguments());
-			}
+			parent::run($arguments ?: $this->getArguments());
 		}
 		catch (atoum\exception $exception)
 		{
@@ -782,35 +779,44 @@ class runner extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		if ($this->hasArguments() === true)
-		{
-			$this->setDefaultBootstrapFiles();
+		$this->setDefaultBootstrapFiles();
 
-			if ($this->loop === true)
+		if ($this->loop === true)
+		{
+			$this->loop();
+		}
+		else
+		{
+			if ($this->runner->hasReports() === false)
 			{
-				$this->loop();
+				$this->addDefaultReport();
+			}
+
+			$methods = $this->methods;
+			$oldFailMethods = array();
+
+			if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+			{
+				$oldFailMethods = self::getFailMethods($oldScore);
+
+				if ($oldFailMethods)
+				{
+					$methods = $oldFailMethods;
+				}
+			}
+
+			$newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
+
+			if ($this->runner->getTestMethodNumber() <= 0)
+			{
+				if ($this->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
+				{
+					parent::run($this->getDefaultArguments());
+				}
 			}
 			else
 			{
-				if ($this->runner->hasReports() === false)
-				{
-					$this->addDefaultReport();
-				}
-
-				$methods = $this->methods;
-				$oldFailMethods = array();
-
-				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
-				{
-					$oldFailMethods = self::getFailMethods($oldScore);
-
-					if ($oldFailMethods)
-					{
-						$methods = $oldFailMethods;
-					}
-				}
-
-				$this->saveScore($newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods));
+				$this->saveScore($newScore);
 
 				if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)
 				{
@@ -835,7 +841,6 @@ class runner extends atoum\script\configurable
 	protected function loop()
 	{
 		$php = new php();
-
 		$php
 			->addOption('-f', $_SERVER['argv'][0])
 			->addArgument('--disable-loop-mode')
