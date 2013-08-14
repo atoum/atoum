@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../constants.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\php,
 	mageekguy\atoum\exceptions
 ;
 
@@ -833,11 +834,16 @@ class runner extends atoum\script\configurable
 
 	protected function loop()
 	{
-		$arguments = ' --disable-loop-mode';
+		$php = new php();
+
+		$php
+			->addOption('-f', $_SERVER['argv'][0])
+			->addArgument('--disable-loop-mode')
+		;
 
 		if ($this->cli->isTerminal() === true)
 		{
-			$arguments .= ' --force-terminal';
+			$php->addArgument('--force-terminal');
 		}
 
 		$addScoreFile = false;
@@ -857,12 +863,7 @@ class runner extends atoum\script\configurable
 					break;
 
 				default:
-					$arguments .= ' ' . $argument;
-
-					foreach ($values as $value)
-					{
-						$arguments .= ' ' . escapeshellarg($value);
-					}
+					$php->addArgument($argument, join(' ', $values));
 			}
 		}
 
@@ -877,14 +878,12 @@ class runner extends atoum\script\configurable
 
 		if ($addScoreFile === true)
 		{
-			$arguments .= ' --score-file ' . escapeshellarg($this->scoreFile);
+			$php->addArgument('--score-file', $this->scoreFile);
 		}
-
-		$command = escapeshellarg($this->runner->getPhpPath()) . ' ' . escapeshellarg($_SERVER['argv'][0]) . $arguments;
 
 		while ($this->canRun() === true)
 		{
-			passthru($command);
+			passthru((string) $php);
 
 			if ($this->loop === false || $this->runAgain() === false)
 			{
