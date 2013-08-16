@@ -183,7 +183,7 @@ class coveralls extends atoum\reports\asynchronous
 				{
 					$cover[] = 1;
 				}
-				else
+				elseif ($line >= -1)
 				{
 					$cover[] = 0;
 				}
