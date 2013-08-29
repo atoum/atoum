@@ -76,8 +76,20 @@ class tap extends report\fields\event
 
 				case test::uncompleted:
 					$lastUncompleteMethod = $observable->getScore()->getLastUncompleteMethod();
-					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL . '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output'])) . PHP_EOL;
-                    $this->testLine .= '# ' . $lastUncompleteMethod['file'] . PHP_EOL;
+					$lastError = $observable->getScore()->getLastErroredMethod();
+
+					$this->testLine = 'not ok ' . ++$this->testPoint . ' - ' . trim($lastUncompleteMethod['class']) . '::' . trim($lastUncompleteMethod['method']) . '()' . PHP_EOL;
+
+					if ($lastError['class'] === $lastUncompleteMethod['class'] && $lastError['method'] === $lastUncompleteMethod['method'])
+					{
+						$this->testLine .= '# ' . $lastError['type'] . ' : ' .  str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastError['message'])) . PHP_EOL;
+					}
+					else
+					{
+						$this->testLine .= '# ' . str_replace(PHP_EOL, PHP_EOL . '# ', trim($lastUncompleteMethod['output']) ?: 'uncomplete method') . PHP_EOL;
+					}
+
+					$this->testLine .= '# ' . $lastUncompleteMethod['file'] . PHP_EOL;
 					break;
 
 				case test::skipped:
