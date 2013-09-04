@@ -32,6 +32,7 @@ class configurable extends atoum\test
 				->string($configurable->getName())->isEqualTo($name)
 				->object($configurable->getAdapter())->isEqualTo(new atoum\adapter())
 				->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->array($configurable->getConfigFiles())->isEmpty()
 				->array($configurable->getHelp())->isEqualTo(array(
 						array(
 							array('-h', '--help'),
@@ -50,6 +51,7 @@ class configurable extends atoum\test
 				->string($configurable->getName())->isEqualTo($name)
 				->object($configurable->getAdapter())->isIdenticalTo($adapter)
 				->object($configurable->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
+				->array($configurable->getConfigFiles())->isEmpty()
 				->array($configurable->getHelp())->isEqualTo(array(
 						array(
 							array('-h', '--help'),
@@ -94,6 +96,7 @@ class configurable extends atoum\test
 			->then
 				->object($configurable->useConfigFile($file = uniqid()))->isIdenticalTo($configurable)
 				->mock($includer)->call('includePath')->withArguments($file)->once()
+				->array($configurable->getConfigFiles())->isEqualTo(array($file))
 		;
 	}
 
@@ -101,7 +104,7 @@ class configurable extends atoum\test
 	{
 		$this
 			->if($configurable = new testedClass(uniqid()))
-			->and($configurable->getMockController()->useConfigFile = function() {})
+			->and($this->calling($configurable)->useConfigFile = function() {})
 			->then
 				->object($configurable->useDefaultConfigFiles(atoum\directory))->isIdenticalTo($configurable)
 				->mock($configurable)
@@ -110,9 +113,8 @@ class configurable extends atoum\test
 						}
 					)
 			->if($configurable = new testedClass(($directory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid()) . DIRECTORY_SEPARATOR . uniqid()))
-			->and($configurable->getMockController()->useConfigFile = function() {})
+			->and($this->calling($configurable)->useConfigFile = function() {})
 			->and($configurable->setAdapter($adapter = new atoum\test\adapter()))
-			->and($adapter->dirname = $directory)
 			->and($adapter->is_dir = true)
 			->then
 				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
@@ -127,6 +129,16 @@ class configurable extends atoum\test
 				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
 				->mock($configurable)
 					->foreach(testedClass::getSubDirectoryPath($workingDirectory), function($mock, $path) {
+						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+					}
+				)
+			->if($adapter->is_dir = true)
+			->and($adapter->getcwd = $otherWorkingDirectory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid())
+			->and($this->calling($configurable)->useConfigFile->throw = new atoum\includer\exception())
+			->then
+				->object($configurable->useDefaultConfigFiles(uniqid()))->isIdenticalTo($configurable)
+				->mock($configurable)
+					->foreach(testedClass::getSubDirectoryPath($otherWorkingDirectory), function($mock, $path) {
 						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
 					}
 				)

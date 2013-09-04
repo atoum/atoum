@@ -13,6 +13,7 @@ abstract class configurable extends atoum\script
 	const defaultConfigFile = '.config.php';
 
 	protected $includer = null;
+	protected $configFiles = array();
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -33,6 +34,11 @@ abstract class configurable extends atoum\script
 		return $this->includer;
 	}
 
+	public function getCOnfigFiles()
+	{
+		return $this->configFiles;
+	}
+
 	public function run(array $arguments = array())
 	{
 		$this->useDefaultConfigFiles();
@@ -47,13 +53,37 @@ abstract class configurable extends atoum\script
 
 	public function useDefaultConfigFiles($startDirectory = null)
 	{
-		foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
+		if ($startDirectory === null)
+		{
+			$startDirectory = $this->getDirectory();
+		}
+
+		$configFilesFound = $this->configFiles;
+
+		foreach (self::getSubDirectoryPath($startDirectory) as $directory)
 		{
 			try
 			{
 				$this->useConfigFile($directory . static::defaultConfigFile);
 			}
 			catch (atoum\includer\exception $exception) {}
+		}
+
+		if ($configFilesFound === $this->configFiles)
+		{
+			$workingDirectory = $this->adapter->getcwd();
+
+			if ($workingDirectory !== $startDirectory)
+			{
+				foreach (self::getSubDirectoryPath($workingDirectory) as $directory)
+				{
+					try
+					{
+						$this->useConfigFile($directory . static::defaultConfigFile);
+					}
+					catch (atoum\includer\exception $exception) {}
+				}
+			}
 		}
 
 		return $this;
@@ -146,6 +176,8 @@ abstract class configurable extends atoum\script
 		try
 		{
 			$this->includer->includePath($path, $callback);
+
+			$this->configFiles[] = $path;
 		}
 		catch (atoum\includer\exception $exception)
 		{
