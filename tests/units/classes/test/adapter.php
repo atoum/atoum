@@ -358,6 +358,10 @@ class adapter extends test
 						4 => array($md5arg3)
 					)
 				)
+				->array($adapter->getTimeline('md5', array($md5arg2)))->isEqualTo(array(
+						2 => array($md5arg2),
+					)
+				)
 				->array($adapter->getTimeline('sha1'))->isEqualTo(array(
 						3 => array($sha1arg1)
 					)

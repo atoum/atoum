@@ -65,7 +65,7 @@ class adapter extends atoum\adapter
 		return $this->invokers;
 	}
 
-	public function getCalls($functionName = null, array $arguments = null, $identical = false)
+	public function getCalls($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
 		$calls = null;
 
@@ -75,40 +75,13 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			if ($arguments !== null)
-			{
-				if ($arguments === array())
-				{
-					$filter = function($callArguments) use ($arguments) {
-						return ($arguments === $callArguments);
-					};
-				}
-				else
-				{
-					$callback = function($a, $b) {
-						return ($a == $b ? 0 : -1);
-					};
-
-					if ($identical === false)
-					{
-						$filter = function($callArguments) use ($arguments, $callback) {
-							return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
-						};
-					}
-					else
-					{
-						$filter = function($callArguments) use ($arguments, $callback) {
-							return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
-						};
-					}
-				}
-			}
-
 			$functionName = static::normalizeFunctionName($functionName);
 
 			if (isset($this->calls[$functionName]) === true)
 			{
-				if ($arguments === null)
+				$filter = static::getArgumentsFilter($arguments, $identicalArguments);
+
+				if ($filter === null)
 				{
 					$calls = $this->calls[$functionName];
 				}
@@ -122,12 +95,12 @@ class adapter extends atoum\adapter
 		return $calls;
 	}
 
-	public function getCallNumber($functionName = null, array $arguments = null, $identical = false)
+	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
-		return sizeof($this->getCalls($functionName, $arguments, $identical));
+		return sizeof($this->getCalls($functionName, $arguments, $identicalArguments));
 	}
 
-	public function getTimeline($functionName = null)
+	public function getTimeline($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
 		$timeline = array();
 
@@ -135,9 +108,9 @@ class adapter extends atoum\adapter
 		{
 			foreach ($this->calls as $calledFunctionName => $calls)
 			{
-				foreach ($calls as $number => $arguments)
+				foreach ($calls as $number => $callArguments)
 				{
-					$timeline[$number] = array($calledFunctionName => $arguments);
+					$timeline[$number] = array($calledFunctionName => $callArguments);
 				}
 			}
 		}
@@ -147,11 +120,18 @@ class adapter extends atoum\adapter
 
 			if (isset($this->calls[$functionName]) === true)
 			{
-				foreach ($this->calls[$functionName] as $number => $arguments)
+				foreach ($this->calls[$functionName] as $number => $callArguments)
 				{
-					$timeline[$number] = $arguments;
+					$timeline[$number] = $callArguments;
 				}
 			}
+		}
+
+		$filter = static::getArgumentsFilter($arguments, $identicalArguments);
+
+		if ($filter !== null)
+		{
+			$timeline = array_filter($timeline, $filter);
 		}
 
 		ksort($timeline, SORT_NUMERIC);
@@ -288,6 +268,42 @@ class adapter extends atoum\adapter
 			default:
 				return false;
 		}
+	}
+
+	protected static function getArgumentsFilter($arguments, $identicalArguments)
+	{
+		$filter = null;
+
+		if (is_array($arguments) === true)
+		{
+			if ($arguments === array())
+			{
+				$filter = function($callArguments) use ($arguments) {
+					return ($arguments === $callArguments);
+				};
+			}
+			else
+			{
+				$callback = function($a, $b) {
+					return ($a == $b ? 0 : -1);
+				};
+
+				if ($identicalArguments === false)
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+				else
+				{
+					$filter = function($callArguments) use ($arguments, $callback) {
+						return ($arguments === array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
+					};
+				}
+			}
+		}
+
+		return $filter;
 	}
 }
 
