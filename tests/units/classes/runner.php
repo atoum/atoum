@@ -211,11 +211,32 @@ class runner extends atoum\test
 	public function testGetRunningDuration()
 	{
 		$this
+			->given($mockGenerator = $this->getMockGenerator())
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->microtime = function() { static $call = 0; return (++$call * 100); })
-			->and($adapter->get_declared_classes = array())
+			->and($adapter->get_declared_classes = array(uniqid()))
+			->and($reflectionClassFactory = function($class) use ($mockGenerator) {
+					$mockGenerator->orphanize('__construct');
+					$reflectionClass = new \mock\reflectionClass($class);
+					$reflectionClass->getMockController()->isSubClassOf = true;
+					$reflectionClass->getMockController()->isAbstract = false;
+
+					$reflectionClass->getMockController()->newInstanceArgs = function() {
+						$test = new \mock\mageekguy\atoum\test();
+						$test->setScore(new atoum\test\score());
+						$test->setAssertionManager(new test\assertion\manager());
+						$test->getMockController()->isIgnored = false;
+						$test->getMockController()->getTestMethods = array('testMethod');
+
+						return $test;
+					};
+
+					return $reflectionClass;
+				}
+			)
 			->and($runner = new testedClass())
 			->and($runner->setAdapter($adapter))
+			->and($runner->setReflectionClassFactory($reflectionClassFactory))
 			->then
 				->variable($runner->getRunningDuration())->isNull()
 			->if($runner->run())
