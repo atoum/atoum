@@ -7,6 +7,7 @@ use
 	mageekguy\atoum\php,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test,
 	mageekguy\atoum\tools\arguments
 ;
 
@@ -150,28 +151,28 @@ class adapter extends atoum\asserter
 
 	public function withArguments()
 	{
-		$this->calledFunctionNameIsSet()->call->setArguments(func_get_args());
+		$this->callIsSet()->call->setArguments(func_get_args());
 
 		return $this;
 	}
 
 	public function withIdenticalArguments()
 	{
-		$this->calledFunctionNameIsSet()->call->setArguments(func_get_args())->identical();
+		$this->callIsSet()->call->setArguments(func_get_args())->identical();
 
 		return $this;
 	}
 
 	public function withAnyArguments()
 	{
-		$this->calledFunctionNameIsSet()->call->unsetArguments();
+		$this->callIsSet()->call->unsetArguments();
 
 		return $this;
 	}
 
 	public function withoutAnyArgument()
 	{
-		$this->calledFunctionNameIsSet()->call->setArguments(array());
+		$this->callIsSet()->call->setArguments(array());
 
 		return $this;
 	}
@@ -193,7 +194,7 @@ class adapter extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->callIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
 
 		if (($callsNumber = sizeof($calls)) >= 1)
 		{
@@ -209,7 +210,7 @@ class adapter extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$this->assertOnBeforeAndAfterCalls($calls = $this->calledFunctionNameIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
+		$this->assertOnBeforeAndAfterCalls($calls = $this->callIsSet()->adapter->getCalls($this->call->getFunction(), $this->call->getArguments()));
 
 		if (($callsNumber = sizeof($calls)) === $number)
 		{
@@ -248,7 +249,7 @@ class adapter extends atoum\asserter
 		return $this;
 	}
 
-	protected function calledFunctionNameIsSet()
+	protected function callIsSet()
 	{
 		if ($this->adapterIsSet()->call === null)
 		{
