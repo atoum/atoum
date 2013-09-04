@@ -367,7 +367,6 @@ class runner implements observable
 
 	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
-		$this->start = $this->adapter->microtime(true);
 		$this->testNumber = 0;
 		$this->testMethodNumber = 0;
 
@@ -416,6 +415,8 @@ class runner implements observable
 
 		if ($tests)
 		{
+			$this->start = $this->adapter->microtime(true);
+
 			$this->callObservers(self::runStart);
 
 			foreach ($tests as $testMethods)
@@ -458,10 +459,10 @@ class runner implements observable
 				$this->score->merge($test->run($methods)->getScore());
 			}
 
+			$this->stop = $this->adapter->microtime(true);
+
 			$this->callObservers(self::runStop);
 		}
-
-		$this->stop = $this->adapter->microtime(true);
 
 		return $this->score;
 	}
