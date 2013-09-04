@@ -18,6 +18,7 @@ abstract class script
 	protected $adapter = null;
 	protected $prompt = null;
 	protected $cli = null;
+	protected $verbosityLevel = 0;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
 
@@ -231,6 +232,45 @@ abstract class script
 	public function writeError($message)
 	{
 		$this->errorWriter->clear()->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
+
+		return $this;
+	}
+
+	public function verbose($message, $verbosityLevel = 1, $eol = true)
+	{
+		if ($verbosityLevel > 0 && $this->verbosityLevel >= $verbosityLevel)
+		{
+			$this->writeMessage($message, $eol);
+		}
+
+		return $this;
+	}
+
+	public function increaseVerbosityLevel()
+	{
+		$this->verbosityLevel++;
+
+		return $this;
+	}
+
+	public function decreaseVerbosityLevel()
+	{
+		if ($this->verbosityLevel > 0)
+		{
+			$this->verbosityLevel--;
+		}
+
+		return $this;
+	}
+
+	public function getVerbosityLevel()
+	{
+		return $this->verbosityLevel;
+	}
+
+	public function resetVerbosityLevel()
+	{
+		$this->verbosityLevel = 0;
 
 		return $this;
 	}

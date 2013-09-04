@@ -378,6 +378,19 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
+						$script->resetVerbosityLevel()->increaseVerbosityLevel();
+					},
+					array('+verbose'),
+					null,
+					$this->locale->_('Enable verbose mode')
+				)
+			->addArgumentHandler(
+					function($script, $argument, $values) {
+						if (sizeof($values) !== 0)
+						{
+							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
+						}
+
 						$script->init();
 					},
 					array('--init'),
@@ -779,6 +792,14 @@ class runner extends atoum\script\configurable
 
 	protected function doRun()
 	{
+		if (sizeof($this->configFiles) > 0)
+		{
+			foreach ($this->configFiles as $configFile)
+			{
+				$this->verbose(sprintf($this->locale->_('Using \'%s\' configuration file…'), $configFile));
+			}
+		}
+
 		$this->setDefaultBootstrapFiles();
 
 		if ($this->loop === true)

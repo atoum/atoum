@@ -30,6 +30,7 @@ class script extends atoum\test
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 				->array($script->getHelp())->isEmpty()
 				->object($script->getCli())->isEqualTo(new atoum\cli())
+				->integer($script->getVerbosityLevel())->isZero()
 			->and($script = new mock\script($name = uniqid(), $adapter = new atoum\adapter()))
 			->then
 				->string($script->getName())->isEqualTo($name)
@@ -40,6 +41,7 @@ class script extends atoum\test
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 				->array($script->getHelp())->isEmpty()
 				->object($script->getCli())->isEqualTo(new atoum\cli())
+				->integer($script->getVerbosityLevel())->isZero()
 			->if($adapter = new atoum\test\adapter())
 			->and($adapter->php_sapi_name = uniqid())
 			->then
@@ -170,6 +172,49 @@ class script extends atoum\test
 		;
 	}
 
+	public function testIncreaseVerbosityLevel()
+	{
+		$this
+			->if($script = new mock\script(uniqid()))
+			->then
+				->object($script->increaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isEqualTo(1)
+				->object($script->increaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isEqualTo(2)
+				->object($script->increaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isEqualTo(3)
+		;
+	}
+
+	public function testDecreaseVerbosityLevel()
+	{
+		$this
+			->if($script = new mock\script(uniqid()))
+			->then
+				->object($script->DecreaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isZero()
+			->if($script->increaseVerbosityLevel())
+			->then
+				->object($script->DecreaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isZero()
+		;
+	}
+
+	public function testResetVerbosityLevel()
+	{
+		$this
+			->if($script = new mock\script(uniqid()))
+			->then
+				->object($script->resetVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isZero()
+			->if($script->increaseVerbosityLevel())
+			->and($script->increaseVerbosityLevel())
+			->then
+				->object($script->resetVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isZero()
+		;
+	}
+
 	public function testHelp()
 	{
 		$this
@@ -288,6 +333,31 @@ class script extends atoum\test
 					->call('clear')->exactly(4)
 					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(4)
+		;
+	}
+
+	public function testVerbose()
+	{
+		$this
+			->if($stdOut = new mock\writers\std\out())
+			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($script = new mock\script(uniqid()))
+			->and($script->setOutputWriter($stdOut))
+			->then
+				->object($script->verbose($message = uniqid()))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->never()
+			->if($script->increaseVerbosityLevel())
+			->then
+				->object($script->verbose($message = uniqid()))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->once()
+				->object($script->verbose($message, 1))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->twice()
+				->object($script->verbose($message, rand(2, PHP_INT_MAX)))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->twice()
+				->object($script->verbose($message, 0, false))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->never()
+				->object($script->verbose($message, 1, false))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withIdenticalArguments($message)->once()
 		;
 	}
 

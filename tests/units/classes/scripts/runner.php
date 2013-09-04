@@ -57,6 +57,11 @@ class runner extends atoum\test
 							'Display version'
 						),
 						array(
+							array('+verbose'),
+							null,
+							'Enable verbose mode'
+						),
+						array(
 							array('--init'),
 							null,
 							'Create configuration and bootstrap files in the current directory'
@@ -207,6 +212,11 @@ class runner extends atoum\test
 							array('-v', '--version'),
 							null,
 							'Display version'
+						),
+						array(
+							array('+verbose'),
+							null,
+							'Enable verbose mode'
 						),
 						array(
 							array('--init'),
