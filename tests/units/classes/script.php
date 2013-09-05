@@ -197,6 +197,8 @@ class script extends atoum\test
 			->then
 				->object($script->DecreaseVerbosityLevel())->isIdenticalTo($script)
 				->integer($script->getVerbosityLevel())->isZero()
+				->object($script->DecreaseVerbosityLevel())->isIdenticalTo($script)
+				->integer($script->getVerbosityLevel())->isZero()
 		;
 	}
 
