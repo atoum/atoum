@@ -419,16 +419,24 @@ class tap extends atoum\test
                     'file' => $file,
                     'class' => $class,
 					'method' => $method,
-					'exitCode' => $exitCode = rand(1, PHP_INT_MAX),
+					'exitCode' => rand(1, PHP_INT_MAX),
 					'output' => $output = uniqid()
 				)
 			)
-			->and($this->calling($score)->getLastUncompleteMethod[2] = array(
+			->and($this->calling($score)->getLastUncompleteMethod[2] = $this->calling($score)->getLastUncompleteMethod[3] = array(
                     'file' => $file,
                     'class' => $class,
 					'method' => $otherMethod,
-					'exitCode' => $otherExitCode = rand(1, PHP_INT_MAX),
+					'exitCode' => rand(1, PHP_INT_MAX),
 					'output' => $otherOutput = uniqid()
+				)
+			)
+			->and($this->calling($score)->getLastUncompleteMethod[4] = array(
+					'file' => $file,
+					'class' => $class,
+					'method' => $thirdMethod = uniqid(),
+					'exitCode' => $thirdExitCode = rand(1, PHP_INT_MAX),
+					'output' => null
 				)
 			)
 			->and($field = new testedClass())
@@ -443,6 +451,20 @@ class tap extends atoum\test
 			->if($field->handleEvent(atoum\test::uncompleted, $test))
 			->then
 				->castToString($field)->isEqualTo('not ok 2 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $otherOutput . PHP_EOL . '# ' . $file . PHP_EOL)
+			->if($this->calling($score)->getLastErroredMethod = array(
+					'errorFile' => $file,
+					'class' => $class,
+					'method' => $otherMethod,
+					'type' => $errorType = 'error', //uniqid()
+					'message' => ($errorMessageFirstLine = 'line1') . PHP_EOL . ($errorMessageSecondLine = 'line2')
+				)
+			)
+			->and($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 3 - ' . $class . '::' . $otherMethod . '()' . PHP_EOL . '# ' . $errorType . ' : ' . $errorMessageFirstLine . PHP_EOL . '# ' . $errorMessageSecondLine . PHP_EOL . '# ' . $file . PHP_EOL)
+			->if($field->handleEvent(atoum\test::uncompleted, $test))
+			->then
+				->castToString($field)->isEqualTo('not ok 4 - ' . $class . '::' . $thirdMethod . '()' . PHP_EOL . '# uncomplete method' . PHP_EOL . '# ' . $file . PHP_EOL)
 		;
 	}
 
