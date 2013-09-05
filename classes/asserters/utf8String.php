@@ -127,6 +127,82 @@ class utf8String extends asserters\string
 		return $this;
 	}
 
+	public function startWith($fragment, $failMessage = null)
+	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
+		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === 0)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not start with %s'), $fragment));
+		}
+
+		return $this;
+	}
+
+	public function notStartWith($fragment, $failMessage = null)
+	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
+		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === 0)
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String start with %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
+	public function endWith($fragment, $failMessage = null)
+	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
+		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === (mb_strlen($this->valueIsSet()->value) - mb_strlen($fragment)))
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String does not end with %s'), $fragment));
+		}
+
+		return $this;
+	}
+
+	public function notEndWith($fragment, $failMessage = null)
+	{
+		if (static::isUtf8($fragment) === false)
+		{
+			throw new exceptions\logic\invalidArgument('Fragment \'' . $fragment . '\' is not an UTF-8 string');
+		}
+
+		if (mb_strpos($this->valueIsSet()->value, $fragment, 0, 'UTF-8') === (mb_strlen($this->valueIsSet()->value) - mb_strlen($fragment)))
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('String end with %s'), $fragment));
+		}
+		else
+		{
+			$this->pass();
+		}
+
+		return $this;
+	}
+
 	public function getTypeOf($mixed)
 	{
 		return (is_string($mixed) === false ? parent::getTypeOf($mixed) : sprintf($this->getLocale()->_('string(%s) \'%s\''), mb_strlen($mixed, 'UTF-8'), $mixed));
