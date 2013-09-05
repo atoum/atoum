@@ -274,6 +274,99 @@ class string extends atoum\test
 		;
 	}
 
+	public function testStartWith()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->startWith(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = __METHOD__))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $fragment) { $asserter->startWith($fragment = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $fragment))
+				->object($asserter->startWith($string))->isIdenticalTo($asserter)
+			->if($asserter->setWith(uniqid() . $string))
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->startWith($string); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $string))
+			->if($asserter->setWith($string . uniqid()))
+			->then
+				->object($asserter->startWith($string))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $string, & $fragment) { $asserter->startWith($fragment = strtoupper($string)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not start with %s'), $fragment))
+		;
+	}
+
+	public function testNotStartWith()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->notStartWith(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = __METHOD__))
+			->then
+				->exception(function() use ($asserter, & $fragment) { $asserter->notStartWith($fragment = __NAMESPACE__); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String start with %s'), $fragment))
+				->object($asserter->notStartWith(uniqid()))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testEndWith()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->endWith(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = __METHOD__))
+			->and($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $fragment) { $asserter->endWith($fragment = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $fragment))
+				->object($asserter->endWith($string))->isIdenticalTo($asserter)
+			->if($asserter->setWith($string . uniqid()))
+			->then
+				->exception(function() use ($asserter, $string) { $asserter->endWith($string); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $string))
+			->if($asserter->setWith(uniqid() . $string))
+			->then
+				->object($asserter->endWith($string))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $string, & $fragment) { $asserter->endWith($fragment = strtoupper($string)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String does not end with %s'), $fragment))
+		;
+	}
+
+	public function testNotEndWith()
+	{
+		$this
+			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->notEndWith(uniqid()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Value is undefined')
+			->if($asserter->setWith($string = __METHOD__))
+			->and($fragment = __FUNCTION__)
+			->then
+				->exception(function() use ($asserter, $fragment) { $asserter->notEndWith($fragment); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($this->getLocale()->_('String end with %s'), $fragment))
+				->object($asserter->notEndWith(uniqid()))->isIdenticalTo($asserter)
+		;
+	}
+
 	public function testLength()
 	{
 		$this
