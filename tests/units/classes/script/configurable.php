@@ -109,7 +109,7 @@ class configurable extends atoum\test
 				->object($configurable->useDefaultConfigFiles(atoum\directory))->isIdenticalTo($configurable)
 				->mock($configurable)
 					->foreach(testedClass::getSubDirectoryPath(atoum\directory), function($mock, $path) {
-							$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+							$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
 						}
 					)
 			->if($configurable = new testedClass(($directory = uniqid() . DIRECTORY_SEPARATOR . uniqid() . DIRECTORY_SEPARATOR . uniqid()) . DIRECTORY_SEPARATOR . uniqid()))
@@ -120,7 +120,7 @@ class configurable extends atoum\test
 				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
 				->mock($configurable)
 					->foreach(testedClass::getSubDirectoryPath($directory), function($mock, $path) {
-						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
 					}
 				)
 			->if($adapter->is_dir = false)
@@ -129,7 +129,7 @@ class configurable extends atoum\test
 				->object($configurable->useDefaultConfigFiles())->isIdenticalTo($configurable)
 				->mock($configurable)
 					->foreach(testedClass::getSubDirectoryPath($workingDirectory), function($mock, $path) {
-						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
 					}
 				)
 			->if($adapter->is_dir = true)
@@ -139,7 +139,7 @@ class configurable extends atoum\test
 				->object($configurable->useDefaultConfigFiles(uniqid()))->isIdenticalTo($configurable)
 				->mock($configurable)
 					->foreach(testedClass::getSubDirectoryPath($otherWorkingDirectory), function($mock, $path) {
-						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->once();
+						$mock->call('useConfigFile')->withArguments($path . testedClass::defaultConfigFile)->atLeastOnce();
 					}
 				)
 		;
