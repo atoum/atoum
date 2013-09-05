@@ -399,10 +399,11 @@ class runner implements observable
 		natsort($runTestClasses);
 
 		$tests = array();
+		$reflectionClassFactory = $this->reflectionClassFactory;
 
 		foreach ($runTestClasses as $runTestClass)
 		{
-			$test = new $runTestClass();
+			$test = $reflectionClassFactory($runTestClass)->newInstanceArgs();
 
 			if (static::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
