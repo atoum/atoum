@@ -39,13 +39,6 @@ abstract class configurable extends atoum\script
 		return $this->configFiles;
 	}
 
-	public function run(array $arguments = array())
-	{
-		$this->useDefaultConfigFiles();
-
-		return parent::run($arguments);
-	}
-
 	public function useConfigFile($path)
 	{
 		return $this->includeConfigFile($path);
@@ -117,6 +110,13 @@ abstract class configurable extends atoum\script
 		}
 
 		return $paths;
+	}
+
+	protected function doRun()
+	{
+		$this->useDefaultConfigFiles();
+
+		return parent::doRun();
 	}
 
 	protected function setArgumentHandlers()

@@ -27,6 +27,7 @@ class parser extends atoum\test
 				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
+				->boolean($parser->hasFoundArguments())->isFalse()
 			->if($parser = new script\arguments\parser($superglobals = new atoum\superglobals()))
 			->then
 				->object($parser->getSuperGlobals())->isIdenticalTo($superglobals)
@@ -35,6 +36,7 @@ class parser extends atoum\test
 				->variable($parser->getDefaultHandler())->isNull()
 				->array($parser->getPriorities())->isEmpty()
 				->object($parser->getIterator())->isEmpty()
+				->boolean($parser->hasFoundArguments())->isFalse()
 		;
 	}
 
@@ -114,16 +116,19 @@ class parser extends atoum\test
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEmpty()
+					->boolean($parser->hasFoundArguments())->isFalse()
 				->if($superglobals->_SERVER['argv'] = array('scriptName'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEmpty()
+					->boolean($parser->hasFoundArguments())->isFalse()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a'))
 				->and($parser->addHandler(function($script, $argument, $value) use (& $invokeA) { $invokeA++; }, array('-a')))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array()))
 					->integer($invokeA)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', '-b'))
 				->and($parser->addHandler(function($script, $argument, $value) use (& $invokeB) { $invokeB++; }, array('-b')))
 				->then
@@ -131,36 +136,42 @@ class parser extends atoum\test
 					->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
 					->integer($invokeA)->isEqualTo(2)
 					->integer($invokeB)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
 					->integer($invokeA)->isEqualTo(3)
 					->integer($invokeB)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
 					->integer($invokeA)->isEqualTo(4)
 					->integer($invokeB)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', '-a', 'a2'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
 					->integer($invokeA)->isEqualTo(5)
 					->integer($invokeB)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
 					->integer($invokeA)->isEqualTo(6)
 					->integer($invokeB)->isEqualTo(2)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
 					->integer($invokeA)->isEqualTo(7)
 					->integer($invokeB)->isEqualTo(3)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c'))
 				->and($parser->addHandler(function($script, $argument, $value) use (& $invokeC) { $invokeC++; }, array('--c')))
 				->then
@@ -169,6 +180,7 @@ class parser extends atoum\test
 					->integer($invokeA)->isEqualTo(8)
 					->integer($invokeB)->isEqualTo(4)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-ac'))
 				->then
 					->exception(function() use ($parser, $script) { $parser->parse($script); })
@@ -192,6 +204,7 @@ class parser extends atoum\test
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->object($defaultHandlerScript)->isIdenticalTo($script)
 					->string($defaultHandlerArgument)->isEqualTo('-unknownArgument')
+					->boolean($parser->hasFoundArguments())->isTrue()
 			->assert('when using argument')
 				->if($superglobals->_SERVER['argv'] = array())
 				->then
@@ -200,46 +213,55 @@ class parser extends atoum\test
 					->integer($invokeA)->isEqualTo(8)
 					->integer($invokeB)->isEqualTo(4)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isFalse()
 					->object($parser->parse($script, array('-a')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array()))
 					->integer($invokeA)->isEqualTo(9)
 					->integer($invokeB)->isEqualTo(4)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', '-a')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array()))
 					->integer($invokeA)->isEqualTo(10)
 					->integer($invokeB)->isEqualTo(4)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', '-b')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array(), '-b' => array()))
 					->integer($invokeA)->isEqualTo(11)
 					->integer($invokeB)->isEqualTo(5)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', 'a1')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1')))
 					->integer($invokeA)->isEqualTo(12)
 					->integer($invokeB)->isEqualTo(5)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', 'a1', 'a2')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2')))
 					->integer($invokeA)->isEqualTo(13)
 					->integer($invokeB)->isEqualTo(5)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', 'a1', 'a2', '-b')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array()))
 					->integer($invokeA)->isEqualTo(14)
 					->integer($invokeB)->isEqualTo(6)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3')))
 					->integer($invokeA)->isEqualTo(15)
 					->integer($invokeB)->isEqualTo(7)
 					->integer($invokeC)->isEqualTo(1)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->object($parser->parse($script, array('-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c')))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
 					->integer($invokeA)->isEqualTo(16)
 					->integer($invokeB)->isEqualTo(8)
 					->integer($invokeC)->isEqualTo(2)
+					->boolean($parser->hasFoundArguments())->isTrue()
 					->exception(function() use ($parser, $script) {
 							$parser->parse($script, array('b'));
 						}
@@ -251,10 +273,12 @@ class parser extends atoum\test
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-d' => array('d1', 'd2'), '-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+					->boolean($parser->hasFoundArguments())->isTrue()
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-d', 'd1', 'd2', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '--c'))
 				->then
 					->object($parser->parse($script))->isIdenticalTo($parser)
 					->array($parser->getValues())->isEqualTo(array('-d' => array('d1', 'd2'), '-a' => array('a1', 'a2'), '-b' => array('b1', 'b2', 'b3'), '--c' => array()))
+					->boolean($parser->hasFoundArguments())->isTrue()
 		;
 	}
 

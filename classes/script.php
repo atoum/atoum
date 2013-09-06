@@ -21,10 +21,10 @@ abstract class script
 	protected $verbosityLevel = 0;
 	protected $outputWriter = null;
 	protected $errorWriter = null;
+	protected $argumentsParser = null;
 
 	private $doRun = true;
 	private $help = array();
-	private $argumentsParser = null;
 
 	public function __construct($name, atoum\adapter $adapter = null)
 	{
@@ -378,5 +378,8 @@ abstract class script
 		return $this;
 	}
 
-	protected abstract function doRun();
+	protected function doRun()
+	{
+		return $this;
+	}
 }

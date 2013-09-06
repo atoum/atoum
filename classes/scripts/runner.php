@@ -792,7 +792,12 @@ class runner extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		if (sizeof($this->configFiles) > 0)
+		if (sizeof($this->runner->getDeclaredTestClasses()) > 0)
+		{
+			$this->runner->canNotAddTest();
+		}
+
+		if (sizeof(parent::doRun()->configFiles) > 0)
 		{
 			foreach ($this->configFiles as $configFile)
 			{
@@ -826,17 +831,14 @@ class runner extends atoum\script\configurable
 				}
 			}
 
-			$newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
-
-			if ($this->runner->getTestMethodNumber() <= 0)
+			if ($this->argumentsParser->hasFoundArguments() === false && $this->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
 			{
-				if ($this->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
-				{
-					parent::run($this->getDefaultArguments());
-				}
+				parent::run($this->getDefaultArguments());
 			}
 			else
 			{
+				$newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
+
 				$this->saveScore($newScore);
 
 				if ($oldFailMethods && sizeof(self::getFailMethods($newScore)) <= 0)

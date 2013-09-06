@@ -36,6 +36,8 @@ class runner implements observable
 	protected $testDirectoryIterator = null;
 	protected $debugMode = false;
 	protected $xdebugConfig = null;
+	protected $canAddTest = true;
+	public $testClasses = null;
 
 	private $start = null;
 	private $stop = null;
@@ -321,6 +323,22 @@ class runner implements observable
 		return $this->codeCoverage;
 	}
 
+	public function canNotAddTest($testBaseClass = null)
+	{
+		$this->canAddTest = false;
+		$this->testClasses = $this->findTestClasses($testBaseClass);
+
+		return $this;
+	}
+
+	public function canAddTest()
+	{
+		$this->canAddTest = true;
+		$this->testClasses = null;
+
+		return $this;
+	}
+
 	public function addObserver(atoum\observer $observer)
 	{
 		$this->observers->attach($observer);
@@ -469,48 +487,51 @@ class runner implements observable
 
 	public function addTest($path)
 	{
-		$runner = $this;
-		$includer = function($path) use ($runner) { include_once($path); };
-		$generateTestClass = false;
-
-		try
+		if ($this->canAddTest === true)
 		{
-			$declaredTestClasses = $this->getDeclaredTestClasses();
-			$numberOfIncludedFiles = sizeof(get_included_files());
+			$runner = $this;
+			$includer = function($path) use ($runner) { include_once($path); };
+			$generateTestClass = false;
 
-			$this->includer->includePath($path, $includer);
-
-			if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->getDeclaredTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null)
+			try
 			{
-				$this->testGenerator->generate($path);
+				$declaredTestClasses = $this->findTestClasses();
+				$numberOfIncludedFiles = sizeof(get_included_files());
 
-				try
+				$this->includer->includePath($path, $includer);
+
+				if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->findTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null)
 				{
-					$this->includer->includePath($path, function($path) use ($runner) { include($path); });
+					$this->testGenerator->generate($path);
+
+					try
+					{
+						$this->includer->includePath($path, function($path) use ($runner) { include($path); });
+					}
+					catch (atoum\includer\exception $exception)
+					{
+						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
+					}
 				}
-				catch (atoum\includer\exception $exception)
+			}
+			catch (atoum\includer\exception $exception)
+			{
+				if ($this->testGenerator === null)
 				{
 					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
 				}
-			}
-		}
-		catch (atoum\includer\exception $exception)
-		{
-			if ($this->testGenerator === null)
-			{
-				throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
-			}
-			else
-			{
-				$this->testGenerator->generate($path);
+				else
+				{
+					$this->testGenerator->generate($path);
 
-				try
-				{
-					$this->includer->includePath($path, $includer);
-				}
-				catch (atoum\includer\exception $exception)
-				{
-					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $path));
+					try
+					{
+						$this->includer->includePath($path, $includer);
+					}
+					catch (atoum\includer\exception $exception)
+					{
+						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $path));
+					}
 				}
 			}
 		}
@@ -584,15 +605,12 @@ class runner implements observable
 
 	public function getDeclaredTestClasses($testBaseClass = null)
 	{
-		$reflectionClassFactory = $this->reflectionClassFactory;
-		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
+		if ($this->testClasses === null || sizeof($this->testClasses) <= 0)
+		{
+			$this->testClasses = $this->findTestClasses($testBaseClass);
+		}
 
-		return array_filter($this->adapter->get_declared_classes(), function($class) use ($reflectionClassFactory, $testBaseClass) {
-				$class = $reflectionClassFactory($class);
-
-				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
-			}
-		);
+		return $this->testClasses;
 	}
 
 	public function setReport(atoum\report $report)
@@ -679,6 +697,19 @@ class runner implements observable
 		}
 
 		return $isIgnored;
+	}
+
+	protected function findTestClasses($testBaseClass = null)
+	{
+		$reflectionClassFactory = $this->reflectionClassFactory;
+		$testBaseClass = $testBaseClass ?: __NAMESPACE__ . '\test';
+
+		return array_filter($this->adapter->get_declared_classes(), function($class) use ($reflectionClassFactory, $testBaseClass) {
+				$class = $reflectionClassFactory($class);
+
+				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
+			}
+		);
 	}
 
 	private static function getMethods(test $test, array $runTestMethods, array $tags)
