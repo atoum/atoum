@@ -22,7 +22,6 @@ class runner extends atoum\script\configurable
 	protected $arguments = array();
 	protected $defaultArguments = array();
 	protected $namespaces = array();
-	protected $testAllDirectories = array();
 	protected $tags = array();
 	protected $methods = array();
 	protected $loop = false;
@@ -135,19 +134,9 @@ class runner extends atoum\script\configurable
 
 	public function addTestAllDirectory($directory)
 	{
-		$directory = rtrim((string) $directory, DIRECTORY_SEPARATOR);
-
-		if (in_array($directory, $this->testAllDirectories) === false)
-		{
-			$this->testAllDirectories[] = $directory;
-		}
+		$script->writeError('--test-all argument is deprecated, please replace call to ' . __METHOD__ . '(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead');
 
 		return $this;
-	}
-
-	public function getTestAllDirectories()
-	{
-		return $this->testAllDirectories;
 	}
 
 	public function run(array $arguments = array())
@@ -670,21 +659,11 @@ class runner extends atoum\script\configurable
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
-						if (sizeof($values) !== 0)
-						{
-							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
-						}
-
-						$runner = $script->getRunner();
-
-						foreach ($script->getTestAllDirectories() as $directory)
-						{
-							$runner->addTestsFromDirectory($directory);
-						}
+						$script->writeError('--test-all argument is deprecated, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead');
 					},
 					array('--test-all'),
 					null,
-					$this->locale->_('Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file')
+					$this->locale->_('DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead')
 				)
 			->addArgumentHandler(
 					function($script, $argument, $values) {
