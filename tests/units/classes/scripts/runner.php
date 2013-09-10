@@ -154,7 +154,7 @@ class runner extends atoum\test
 						array(
 							array('--test-all'),
 							null,
-							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
 						),
 						array(
 							array('-ft', '--force-terminal'),
@@ -311,7 +311,7 @@ class runner extends atoum\test
 						array(
 							array('--test-all'),
 							null,
-							'Execute unit tests in directories defined via $script->addTestAllDirectory(\'path/to/directory\') in a configuration file'
+							'DEPRECATED, please do $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in a configuration file and use atoum without any argument instead'
 						),
 						array(
 							array('-ft', '--force-terminal'),
@@ -382,26 +382,17 @@ class runner extends atoum\test
 		;
 	}
 
-	public function getTestAllDirectories()
-	{
-		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-			->then
-				->array($runner->getTestAllDirectories())->isEmpty()
-		;
-	}
-
 	public function testAddTestAllDirectory()
 	{
 		$this
 			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
+			->and($this->calling($stderr)->clear = $stderr)
+			->and($this->calling($stderr)->write = function() {})
+			->and($runner->setErrorWriter($stderr))
 			->then
-				->object($runner->addTestAllDirectory($directory = uniqid()))->isIdenticalTo($runner)
-				->array($runner->getTestAllDirectories())->isEqualTo(array($directory))
-				->object($runner->addtestalldirectory($directory))->isidenticalto($runner)
-				->array($runner->gettestalldirectories())->isequalto(array($directory))
-				->object($runner->addtestalldirectory(($otherDirectory = uniqid()) . DIRECTORY_SEPARATOR))->isidenticalto($runner)
-				->array($runner->gettestalldirectories())->isequalto(array($directory, $otherDirectory))
+				->object($runner->addTestAllDirectory(uniqid()))->isIdenticalTo($runner)
+				->mock($stderr)->call('write')->withArguments('Error: --test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead' . PHP_EOL)->once()
 		;
 	}
 

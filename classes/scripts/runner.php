@@ -134,7 +134,7 @@ class runner extends atoum\script\configurable
 
 	public function addTestAllDirectory($directory)
 	{
-		$script->writeError('--test-all argument is deprecated, please replace call to ' . __METHOD__ . '(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead');
+		$this->writeError('--test-all argument is deprecated, please replace call to ' . __METHOD__ . '(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead');
 
 		return $this;
 	}
