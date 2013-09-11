@@ -4,9 +4,11 @@ namespace mageekguy\atoum;
 
 class autoloader
 {
+	const version = 1;
 	const defaultFileSuffix = '.php';
 	const defaultCacheFileName = '%s.atoum.cache';
 
+	protected $version = null;
 	protected $classes = array();
 	protected $directories = array();
 	protected $classAliases = array();
@@ -16,9 +18,12 @@ class autoloader
 	protected static $autoloader = null;
 
 	private static $cacheFile = null;
+	private static $registeredAutoloaders = null;
 
 	public function __construct(array $namespaces = array(), array $namespaceAliases = array(), $classAliases = array())
 	{
+		$this->version = static::version;
+
 		if (sizeof($namespaces) <= 0)
 		{
 			$namespaces = array(__NAMESPACE__ => __DIR__);
@@ -47,6 +52,13 @@ class autoloader
 			throw new \runtimeException('Unable to register autoloader \'' . get_class($this) . '\'');
 		}
 
+		if (static::$registeredAutoloaders === null)
+		{
+			static::$registeredAutoloaders = new \splObjectStorage();
+		}
+
+		static::$registeredAutoloaders->attach($this);
+
 		return $this;
 	}
 
@@ -56,6 +68,8 @@ class autoloader
 		{
 			throw new \runtimeException('Unable to unregister');
 		}
+
+		static::$registeredAutoloaders->detach($this);
 
 		return $this;
 	}
@@ -222,7 +236,7 @@ class autoloader
 				static::$autoloader = @unserialize($cacheContents) ?: null;
 			}
 
-			if (static::$autoloader === null)
+			if (static::$autoloader === null || isset(static::$autoloader->version) === false || static::$autoloader->version !== static::version)
 			{
 				static::$autoloader = new static();
 			}
@@ -245,7 +259,19 @@ class autoloader
 
 	public static function getCacheFile()
 	{
-		return (self::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
+		return (static::$cacheFile ?: rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . sprintf(static::defaultCacheFileName, md5(__FILE__)));
+	}
+
+	public static function getRegisteredAutoloaders()
+	{
+		$registeredAutoloaders = array();
+
+		foreach (static::$registeredAutoloaders as $autoloader)
+		{
+			$registeredAutoloaders[] = $autoloader;
+		}
+
+		return $registeredAutoloaders;
 	}
 
 	protected function resolveNamespaceAlias($class)
