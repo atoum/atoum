@@ -784,6 +784,11 @@ class runner extends atoum\script\configurable
 			}
 		}
 
+		foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
+		{
+			$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
+		}
+
 		$this->setDefaultBootstrapFiles();
 
 		if ($this->loop === true)
