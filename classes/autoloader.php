@@ -17,6 +17,8 @@ class autoloader
 
 	protected static $autoloader = null;
 
+	private $cacheUsed = false;
+
 	private static $cacheFile = null;
 	private static $registeredAutoloaders = null;
 
@@ -148,6 +150,8 @@ class autoloader
 
 	public function getPath($class)
 	{
+		$this->readCache();
+
 		$class = strtolower($class);
 
 		$path = (isset($this->classes[$class]) === false || is_file($this->classes[$class]) === false ? null : $this->classes[$class]);
@@ -178,12 +182,7 @@ class autoloader
 			{
 				$this->classes = $classes;
 
-				$cacheFile = $this->getCacheFileForInstance();
-
-				if (@file_put_contents($cacheFile, serialize($this)) === false)
-				{
-					throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
-				}
+				$this->writeCache();
 
 				$path = (isset($this->classes[$class]) === false ? null : $this->classes[$class]);
 			}
@@ -195,6 +194,7 @@ class autoloader
 	public function requireClass($class)
 	{
 		$class = strtolower($class);
+
 		$realClass = $this->resolveNamespaceAlias($this->resolveClassAlias($class));
 
 		if (static::exists($realClass) === false && ($path = $this->getPath($realClass)) !== null)
@@ -229,18 +229,7 @@ class autoloader
 	{
 		if (static::$autoloader === null)
 		{
-			$cacheContents = @file_get_contents(static::getCacheFile());
-
-			if ($cacheContents !== false)
-			{
-				static::$autoloader = @unserialize($cacheContents) ?: null;
-			}
-
-			if (static::$autoloader === null || isset(static::$autoloader->version) === false || static::$autoloader->version !== static::version)
-			{
-				static::$autoloader = new static();
-			}
-
+			static::$autoloader = new static();
 			static::$autoloader->register();
 		}
 
@@ -345,6 +334,40 @@ class autoloader
 		}
 
 		return false;
+	}
+
+	protected function readCache()
+	{
+		if ($this->cacheUsed === false)
+		{
+			$cacheContents = @file_get_contents($this->getCacheFileForInstance());
+
+			if ($cacheContents !== false)
+			{
+				$cacheContents = @unserialize($cacheContents) ?: null;
+			}
+
+			if ($cacheContents !== null && isset($cacheContents['version']) === true && $cacheContents['version'] === static::version)
+			{
+				$this->classes = $cacheContents['classes'];
+			}
+
+			$this->cacheUsed = true;
+		}
+
+		return $this;
+	}
+
+	protected function writeCache()
+	{
+		$cacheFile = $this->getCacheFileForInstance();
+
+		if (@file_put_contents($cacheFile, serialize(array('version' => static::version, 'classes' => $this->classes))) === false)
+		{
+			throw new \runtimeException('Unable to write in  \'' . $cacheFile . '\'');
+		}
+
+		return $this;
 	}
 
 	protected static function exists($class)
