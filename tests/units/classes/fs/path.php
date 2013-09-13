@@ -107,31 +107,31 @@ class path extends atoum\test
 					->object($path->absolutize())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR. 'b')
 				->if($path = new testedClass('../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->absolutize())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/../a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../../../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->absolutize())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/../../../a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->absolutize())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('./a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->absolutize())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/./a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'.'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 		;
 	}
 
@@ -146,31 +146,31 @@ class path extends atoum\test
 					->object($path->getAbsolutePath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getAbsolutePath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/../a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../../../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getAbsolutePath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/../../../a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getAbsolutePath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('./a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getAbsolutePath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/./a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'.'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 		;
 	}
 
@@ -182,37 +182,37 @@ class path extends atoum\test
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('/a/b/..', DIRECTORY_SEPARATOR))
 			->then
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/a')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a')
 			->if($path = new testedClass('/a/b/../..', DIRECTORY_SEPARATOR))
 			->then
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/')
+						->isEqualTo(DIRECTORY_SEPARATOR)
 			->if($path = new testedClass('/a/b/.', DIRECTORY_SEPARATOR))
 			->then
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('/a/./b', DIRECTORY_SEPARATOR))
 			->then
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('//a////./////b', DIRECTORY_SEPARATOR))
 			->then
 				->object($path->resolve())
 					->isIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->given($adapter = new atoum\test\adapter())
 			->and($adapter->getcwd = $currentDirectory = '/current/directory')
 			->then
@@ -221,25 +221,25 @@ class path extends atoum\test
 					->object($path->resolve())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('./a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->resolve())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->resolve())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->resolve())
 						->isIdenticalTo($path)
 						->toString
-							->isEqualTo('/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 		;
 	}
 
@@ -251,37 +251,37 @@ class path extends atoum\test
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('/a/b/..'))
 			->then
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/a')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a')
 			->if($path = new testedClass('/a/b/../..'))
 			->then
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/')
+						->isEqualTo(DIRECTORY_SEPARATOR)
 			->if($path = new testedClass('/a/b/.'))
 			->then
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('/a/./b'))
 			->then
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->if($path = new testedClass('//a////./////b'))
 			->then
 				->object($path->getResolvedPath())
 					->isNotIdenticalTo($path)
 					->toString
-						->isEqualTo('/a/b')
+						->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 			->given($adapter = new atoum\test\adapter())
 			->and($adapter->getcwd = $currentDirectory = '/current/directory')
 			->then
@@ -290,25 +290,25 @@ class path extends atoum\test
 					->object($path->getResolvedPath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('./a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getResolvedPath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/directory/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'directory'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getResolvedPath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/current/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'current'.DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 				->if($path = new testedClass('../../a/b', DIRECTORY_SEPARATOR, $adapter))
 				->then
 					->object($path->getResolvedPath())
 						->isNotIdenticalTo($path)
 						->toString
-							->isEqualTo('/a/b')
+							->isEqualTo(DIRECTORY_SEPARATOR.'a'.DIRECTORY_SEPARATOR.'b')
 		;
 	}
 
@@ -685,7 +685,7 @@ class path extends atoum\test
 	public function testCreateParentDirectory()
 	{
 		$this
-			->if($path = new testedClass('/a/b'))
+			->if($path = new testedClass('/a/b', '/'))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->file_exists = false)
 			->and($adapter->mkdir = true)
@@ -709,7 +709,7 @@ class path extends atoum\test
 	public function testPutContents()
 	{
 		$this
-			->if($path = new testedClass('/a/b'))
+			->if($path = new testedClass('/a/b', '/'))
 			->and($adapter = new atoum\test\adapter())
 			->and($adapter->mkdir = true)
 			->and($adapter->file_put_contents = true)
