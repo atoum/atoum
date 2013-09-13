@@ -347,7 +347,7 @@ class autoloader
 				$cacheContents = @unserialize($cacheContents) ?: null;
 			}
 
-			if ($cacheContents !== null && isset($cacheContents['version']) === true && $cacheContents['version'] === static::version)
+			if (is_array($cacheContents) === true && isset($cacheContents['version']) === true && $cacheContents['version'] === static::version)
 			{
 				$this->classes = $cacheContents['classes'];
 			}
