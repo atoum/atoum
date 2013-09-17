@@ -82,6 +82,13 @@ abstract class configurable extends atoum\script
 		return $this;
 	}
 
+	public function run(array $arguments = array())
+	{
+		$this->useDefaultConfigFiles();
+
+		return parent::run($arguments);
+	}
+
 	public static function getSubDirectoryPath($directory, $directorySeparator = null)
 	{
 		$directorySeparator = $directorySeparator ?: DIRECTORY_SEPARATOR;
@@ -110,13 +117,6 @@ abstract class configurable extends atoum\script
 		}
 
 		return $paths;
-	}
-
-	protected function doRun()
-	{
-		$this->useDefaultConfigFiles();
-
-		return parent::doRun();
 	}
 
 	protected function setArgumentHandlers()

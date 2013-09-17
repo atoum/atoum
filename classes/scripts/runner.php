@@ -141,6 +141,8 @@ class runner extends atoum\script\configurable
 
 	public function run(array $arguments = array())
 	{
+		$this->setDefaultBootstrapFiles();
+
 		try
 		{
 			parent::run($arguments ?: $this->getArguments());
@@ -784,12 +786,17 @@ class runner extends atoum\script\configurable
 			}
 		}
 
+		$bootstrapFile = $this->runner->getBootstrapFile();
+
+		if ($bootstrapFile !== null)
+		{
+			$this->verbose(sprintf($this->locale->_('Using \'%s\' bootstrap file…'), $bootstrapFile));
+		}
+
 		foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
 		{
 			$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
 		}
-
-		$this->setDefaultBootstrapFiles();
 
 		if ($this->loop === true)
 		{
