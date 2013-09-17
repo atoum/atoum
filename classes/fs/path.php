@@ -192,6 +192,10 @@ class path
 	{
 		$parentDirectory = clone $this;
 		$parentDirectory->components = $this->adapter->dirname($parentDirectory->components);
+		if (DIRECTORY_SEPARATOR === '\\')
+		{
+			$parentDirectory->components = str_replace('\\', '/', $parentDirectory->components);
+		}
 
 		return $parentDirectory;
 	}
