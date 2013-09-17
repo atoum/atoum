@@ -34,7 +34,7 @@ abstract class configurable extends atoum\script
 		return $this->includer;
 	}
 
-	public function getCOnfigFiles()
+	public function getConfigFiles()
 	{
 		return $this->configFiles;
 	}
