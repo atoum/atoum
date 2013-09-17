@@ -83,7 +83,7 @@ class path
 					$resolvedReferencePath = $resolvedReferencePath->getParentDirectoryPath();
 				}
 
-				$this->components = static::getComponents($relativePath, '/') . '/' . ltrim(substr($this->components, strlen($resolvedReferencePath->components)), '/');
+				$this->components = static::getComponents($relativePath) . '/' . ltrim(substr($this->components, strlen($resolvedReferencePath->components)), '/');
 		}
 
 		return $this;
@@ -174,7 +174,7 @@ class path
 		{
 			while ($realPath === false && $absolutePath->isRoot() === false)
 			{
-				$files = $this->directorySeparator . $this->adapter->basename((string) $absolutePath) . $files;
+				$files = '/' . $this->adapter->basename((string) $absolutePath) . $files;
 				$absolutePath = $absolutePath->getParentDirectoryPath();
 				$realPath = $this->adapter->realpath((string) $absolutePath);
 			}
@@ -191,11 +191,7 @@ class path
 	public function getParentDirectoryPath()
 	{
 		$parentDirectory = clone $this;
-		$parentDirectory->components = $this->adapter->dirname($parentDirectory->components);
-		if (DIRECTORY_SEPARATOR === '\\')
-		{
-			$parentDirectory->components = str_replace('\\', '/', $parentDirectory->components);
-		}
+		$parentDirectory->components = self::getComponents($this->adapter->dirname($parentDirectory->components));
 
 		return $parentDirectory;
 	}
@@ -264,19 +260,14 @@ class path
 	{
 		$drive = null;
 
-		if (preg_match('/^[a-z]:/i', $value, $matches) == true)
+		if (preg_match('#^[a-z]:#i', $value, $matches) == true)
 		{
 			$drive = $matches[0];
 			$value = substr($value, 2);
 		}
 
-		if ($this->directorySeparator === '\\')
-		{
-			$value = str_replace('\\', '/', $value);
-		}
-
 		$this->drive = $drive;
-		$this->components = self::getComponents($value, '/');
+		$this->components = self::getComponents($value);
 
 		return $this;
 	}
@@ -291,15 +282,15 @@ class path
 		return (substr($path, 0, 1) === '/');
 	}
 
-	protected static function getComponents($path, $directorySeparator)
+	protected static function getComponents($path)
 	{
+		$path = str_replace('\\', '/', $path);
+
 		if (static::pathIsRoot($path) === false)
 		{
-			$path = rtrim($path, $directorySeparator);
+			$path = rtrim($path, '/');
 		}
 
-		$path = preg_replace('#/{2,}#', '/', $path);
-
-		return $path;
+		return preg_replace('#/{2,}#', '/', $path);
 	}
 }

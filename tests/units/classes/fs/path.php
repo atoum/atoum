@@ -62,6 +62,11 @@ class path extends atoum\test
 					->castToString($path)->isEqualTo($value)
 					->string($path->getDirectorySeparator())->isEqualTo('\\')
 					->object($path->getAdapter())->isIdenticalTo($adapter)
+				->if($path = new testedClass('C:\\'))
+				->then
+					->castToString($path)->isEqualTo('C:' . DIRECTORY_SEPARATOR)
+					->string($path->getDirectorySeparator())->isEqualTo(DIRECTORY_SEPARATOR)
+					->object($path->getAdapter())->isEqualTo(new atoum\adapter())
 		;
 	}
 
@@ -483,7 +488,7 @@ class path extends atoum\test
 				->boolean($path->isRoot())->isTrue()
 			->if($path = new testedClass('\\', '/'))
 			->then
-				->boolean($path->isRoot())->isFalse()
+				->boolean($path->isRoot())->isTrue()
 			->if($path = new testedClass('C:\\', '\\'))
 			->then
 				->boolean($path->isRoot())->isTrue()
@@ -492,8 +497,20 @@ class path extends atoum\test
 				->boolean($path->isRoot())->isTrue()
 			->if($path = new testedClass('C:\\', '/'))
 			->then
-				->boolean($path->isRoot())->isFalse()
+				->boolean($path->isRoot())->isTrue()
 			->if($path = new testedClass('C:\\' . uniqid(), '\\'))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:/' . uniqid()))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:/' . uniqid(), DIRECTORY_SEPARATOR))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:/' . uniqid(), '/'))
+			->then
+				->boolean($path->isRoot())->isFalse()
+			->if($path = new testedClass('C:/' . uniqid(), '\\'))
 			->then
 				->boolean($path->isRoot())->isFalse()
 		;
