@@ -286,18 +286,15 @@ class runner extends atoum\script\configurable
 
 	public function setDefaultBootstrapFiles($startDirectory = null)
 	{
-		if ($this->runner->getBootstrapFile() === null)
+		foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
 		{
-			foreach (self::getSubDirectoryPath($startDirectory ?: $this->getDirectory()) as $directory)
+			$defaultBootstrapFile = $directory . static::defaultBootstrapFile;
+
+			if ($this->adapter->is_file($defaultBootstrapFile) === true)
 			{
-				$defaultBootstrapFile = $directory . static::defaultBootstrapFile;
+				$this->runner->setBootstrapFile($defaultBootstrapFile);
 
-				if ($this->adapter->is_file($defaultBootstrapFile) === true)
-				{
-					$this->runner->setBootstrapFile($defaultBootstrapFile);
-
-					break;
-				}
+				break;
 			}
 		}
 
