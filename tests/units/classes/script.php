@@ -27,7 +27,9 @@ class script extends atoum\test
 				->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
 				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
+				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
 				->array($script->getHelp())->isEmpty()
 				->object($script->getCli())->isEqualTo(new atoum\cli())
 				->integer($script->getVerbosityLevel())->isZero()
@@ -107,6 +109,30 @@ class script extends atoum\test
 				->object($script->getOutputWriter())->isIdenticalTo($outputWriter)
 				->object($script->setOutputWriter())->isIdenticalTo($script)
 				->object($script->getOutputWriter())->isEqualTo(new atoum\writers\std\out($script->getCli()))
+		;
+	}
+
+	public function testSetInfoWriter()
+	{
+		$this
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->object($script->setInfoWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
+				->object($script->getInfoWriter())->isIdenticalTo($outputWriter)
+				->object($script->setInfoWriter())->isIdenticalTo($script)
+				->object($script->getInfoWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
+		;
+	}
+
+	public function testSetWarningWriter()
+	{
+		$this
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->object($script->setWarningWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
+				->object($script->getWarningWriter())->isIdenticalTo($outputWriter)
+				->object($script->setWarningWriter())->isIdenticalTo($script)
+				->object($script->getWarningWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
 		;
 	}
 
@@ -304,6 +330,72 @@ class script extends atoum\test
 		;
 	}
 
+	public function testWriteInfo()
+	{
+		$this
+			->if($stdOut = new mock\writers\std\out())
+			->and($stdOut->getMockCOntroller()->write = function() {})
+			->and($script = new mock\script(uniqid()))
+			->and($script->setInfoWriter($stdOut))
+			->then
+				->object($script->writeInfo($info = uniqid()))->isIdenticalTo($script)
+				->mock($stdOut)->call('write')->withArguments($info . PHP_EOL)->once()
+				->object($script->writeInfo(($info = uniqid()) . PHP_EOL))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info . PHP_EOL)->once()
+				->object($script->writeInfo(($info = uniqid()) . ' ' . PHP_EOL))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info . PHP_EOL)->once()
+				->object($script->writeInfo(($info = PHP_EOL . $info) . ' ' . PHP_EOL))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info . PHP_EOL)->once()
+				->object($script->writeInfo($info = uniqid(), false))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info)->once()
+				->object($script->writeInfo(($info = uniqid()) . PHP_EOL, false))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info)->once()
+				->object($script->writeInfo(($info = uniqid()) . ' ' . PHP_EOL, false))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info)->once()
+				->object($script->writeInfo(($info = PHP_EOL . $info) . ' ' . PHP_EOL, false))->isEqualTo($script)
+				->mock($stdOut)->call('write')->withArguments($info)->once()
+		;
+	}
+
+	public function testWriteWarning()
+	{
+		$this
+			->if($locale = new mock\locale())
+			->and($stderr = new mock\writers\std\err())
+			->and($this->calling($stderr)->clear = $stderr)
+			->and($this->calling($stderr)->write = function() {})
+			->and($script = new mock\script(uniqid()))
+			->and($script->setErrorWriter($stderr))
+			->and($script->setLocale($locale))
+			->then
+				->object($script->writeWarning($warning = uniqid()))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->once()
+					->call('write')->withArguments('Warning: ' . $warning . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Warning: %s')->once()
+				->object($script->writeWarning(($warning = uniqid()) . PHP_EOL))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->twice()
+					->call('write')->withArguments('Warning: ' . $warning . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Warning: %s')->exactly(2)
+				->object($script->writeWarning(($warning = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->thrice()
+					->call('write')->withArguments('Warning: ' . $warning . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Warning: %s')->exactly(3)
+				->object($script->writeWarning((' ' . $warning = uniqid()) . ' ' . PHP_EOL))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->exactly(4)
+					->call('write')->withArguments('Warning: ' . $warning . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Warning: %s')->exactly(4)
+				->object($script->writeWarning($warning = uniqid()))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->exactly(5)
+					->call('write')->withArguments('Warning: ' . $warning . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Warning: %s')->exactly(5)
+		;
+	}
+
 	public function testWriteError()
 	{
 		$this
@@ -335,6 +427,11 @@ class script extends atoum\test
 					->call('clear')->exactly(4)
 					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
 				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(4)
+				->object($script->writeError($message = uniqid()))->isIdenticalTo($script)
+				->mock($stderr)
+					->call('clear')->exactly(5)
+					->call('write')->withIdenticalArguments('Error: ' . $message . PHP_EOL)->once()
+				->mock($locale)->call('_')->withArguments('Error: %s')->exactly(5)
 		;
 	}
 
@@ -344,7 +441,7 @@ class script extends atoum\test
 			->if($stdOut = new mock\writers\std\out())
 			->and($stdOut->getMockCOntroller()->write = function() {})
 			->and($script = new mock\script(uniqid()))
-			->and($script->setOutputWriter($stdOut))
+			->and($script->setInfoWriter($stdOut))
 			->then
 				->object($script->verbose($message = uniqid()))->isIdenticalTo($script)
 				->mock($stdOut)->call('write')->withIdenticalArguments($message . PHP_EOL)->never()
@@ -468,8 +565,7 @@ class script extends atoum\test
 		$this
 			->given($script = new mock\script($name = uniqid()))
 			->and($script->setAdapter($adapter = new atoum\test\adapter()))
-			->then
-			->if($adapter->is_dir = true)
+			->and($adapter->is_dir = true)
 			->and($adapter->dirname = $directory = uniqid())
 			->then
 			->string($script->getDirectory())->isEqualTo($directory)

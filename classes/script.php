@@ -20,6 +20,8 @@ abstract class script
 	protected $cli = null;
 	protected $verbosityLevel = 0;
 	protected $outputWriter = null;
+	protected $infoWriter = null;
+	protected $warningWriter = null;
 	protected $errorWriter = null;
 	protected $argumentsParser = null;
 
@@ -37,7 +39,9 @@ abstract class script
 			->setPrompt()
 			->setArgumentsParser()
 			->setOutputWriter()
+			->setInfoWriter($this->getOutputWriter())
 			->setErrorWriter()
+			->setWarningWriter($this->getErrorWriter())
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -123,6 +127,30 @@ abstract class script
 	public function getOutputWriter()
 	{
 		return $this->outputWriter;
+	}
+
+	public function setInfoWriter(atoum\writer $writer = null)
+	{
+		$this->infoWriter = $writer ?: new writers\std\err($this->cli);
+
+		return $this;
+	}
+
+	public function getInfoWriter()
+	{
+		return $this->infoWriter;
+	}
+
+	public function setWarningWriter(atoum\writer $writer = null)
+	{
+		$this->warningWriter = $writer ?: new writers\std\err($this->cli);
+
+		return $this;
+	}
+
+	public function getWarningWriter()
+	{
+		return $this->warningWriter;
 	}
 
 	public function setErrorWriter(atoum\writer $writer = null)
@@ -229,6 +257,27 @@ abstract class script
 		return $this;
 	}
 
+	public function writeInfo($info, $eol = true)
+	{
+		$info = rtrim($info);
+
+		if ($eol == true)
+		{
+			$info .= PHP_EOL;
+		}
+
+		$this->infoWriter->write($info);
+
+		return $this;
+	}
+
+	public function writeWarning($warning)
+	{
+		$this->errorWriter->clear()->write(sprintf($this->locale->_('Warning: %s'), trim($warning)) . PHP_EOL);
+
+		return $this;
+	}
+
 	public function writeError($message)
 	{
 		$this->errorWriter->clear()->write(sprintf($this->locale->_('Error: %s'), trim($message)) . PHP_EOL);
@@ -240,7 +289,7 @@ abstract class script
 	{
 		if ($verbosityLevel > 0 && $this->verbosityLevel >= $verbosityLevel)
 		{
-			$this->writeMessage($message, $eol);
+			$this->writeInfo($message, $eol);
 		}
 
 		return $this;
