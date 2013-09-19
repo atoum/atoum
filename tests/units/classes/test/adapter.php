@@ -383,6 +383,14 @@ class adapter extends test
 				->integer($adapter->addCall($method, $args2 = array(uniqid())))->isEqualTo(2)
 				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2))
 				->array($adapter->getCalls($otherMethod))->isEqualTo(array(2 => $otherArgs1))
+			->if($arg = 'foo')
+			->and($arguments = array(& $arg))
+			->then
+				->integer($adapter->addCall($method, $arguments))->isEqualTo(3)
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2, 4 => array('foo')))
+			->if($arg = 'bar')
+			->then
+				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2, 4 => array('foo')))
 		;
 	}
 
