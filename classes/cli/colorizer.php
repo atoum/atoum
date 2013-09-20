@@ -3,12 +3,14 @@
 namespace mageekguy\atoum\cli;
 
 use
-	mageekguy\atoum
+	mageekguy\atoum,
+	mageekguy\atoum\writer
 ;
 
-class colorizer
+class colorizer implements writer\decorator
 {
 	protected $cli = null;
+	protected $pattern = null;
 	protected $foreground = null;
 	protected $background = null;
 
@@ -24,12 +26,12 @@ class colorizer
 			$this->setBackground($background);
 		}
 
-		$this->setCli($cli ?: new atoum\cli());
+		$this->setCli($cli);
 	}
 
-	public function setCli(atoum\cli $cli)
+	public function setCli(atoum\cli $cli = null)
 	{
-		$this->cli = $cli;
+		$this->cli = $cli ?: new atoum\cli();
 
 		return $this;
 	}
@@ -37,6 +39,18 @@ class colorizer
 	public function getCli()
 	{
 		return $this->cli;
+	}
+
+	public function setPattern($pattern)
+	{
+		$this->pattern = $pattern;
+
+		return $this;
+	}
+
+	public function getPattern()
+	{
+		return $this->pattern;
 	}
 
 	public function setForeground($foreground)
@@ -67,19 +81,33 @@ class colorizer
 	{
 		if ($this->cli->isTerminal() === true && ($this->foreground !== null || $this->background !== null))
 		{
-			if ($this->background !== null)
+			$pattern = $this->pattern ?: '/^(.*)$/';
+
+			$replace = '\1';
+
+			if ($this->background !== null || $this->foreground !== null)
 			{
-				$string = "\033[" . $this->background . 'm' . $string;
+				if ($this->background !== null)
+				{
+					$replace = "\033[" . $this->background . 'm' . $replace;
+				}
+
+				if ($this->foreground !== null)
+				{
+					$replace = "\033[" . $this->foreground . 'm' . $replace;
+				}
+
+				$replace .= "\033[0m";
 			}
 
-			if ($this->foreground !== null)
-			{
-				$string = "\033[" . $this->foreground . 'm' . $string;
-			}
-
-			$string .= "\033[0m";
+			$string = preg_replace($pattern, $replace, $string);
 		}
 
 		return $string;
+	}
+
+	public function decorate($string)
+	{
+		return $this->colorize($string);
 	}
 }
