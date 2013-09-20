@@ -47,13 +47,6 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		return $this->locale;
 	}
 
-	public function write($something)
-	{
-		$this->mailer->send($something);
-
-		return $this;
-	}
-
 	public function clear()
 	{
 		return $this;
@@ -76,5 +69,12 @@ class mail extends atoum\writer implements report\writers\asynchronous
 		}
 
 		return $this->write((string) $report);
+	}
+
+	protected function doWrite($something)
+	{
+		$this->mailer->send($something);
+
+		return $this;
 	}
 }

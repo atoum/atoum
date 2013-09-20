@@ -2,9 +2,14 @@
 
 namespace mageekguy\atoum;
 
+use
+	mageekguy\atoum\writer\decorator
+;
+
 abstract class writer
 {
 	protected $adapter = null;
+	protected $decorators = array();
 
 	public function __construct(adapter $adapter = null)
 	{
@@ -28,6 +33,31 @@ abstract class writer
 		return $this;
 	}
 
-	public abstract function write($string);
+	public function addDecorator(decorator $decorator)
+	{
+		$this->decorators[] = $decorator;
+
+		return $this;
+	}
+
+	public function getDecorators()
+	{
+		return $this->decorators;
+	}
+
+	public function write($string)
+	{
+		foreach ($this->decorators as $decorator)
+		{
+			$string = $decorator->decorate($string);
+		}
+
+		$this->doWrite($string);
+
+		return $this;
+	}
+
 	public abstract function clear();
+
+	protected abstract function doWrite($string);
 }

@@ -29,18 +29,6 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		$this->closeFile();
 	}
 
-	public function write($something)
-	{
-		if (strlen($something) != $this->openFile()->adapter->fwrite($this->resource, $something))
-		{
-			throw new exceptions\runtime('Unable to write in file \'' . $this->filename . '\'');
-		}
-
-		$this->adapter->fflush($this->resource);
-
-		return $this;
-	}
-
 	public function clear()
 	{
 		if ($this->openFile()->adapter->ftruncate($this->resource, 0) === false)
@@ -79,6 +67,19 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 
 		return parent::reset();
 	}
+
+	protected function doWrite($something)
+	{
+		if (strlen($something) != $this->openFile()->adapter->fwrite($this->resource, $something))
+		{
+			throw new exceptions\runtime('Unable to write in file \'' . $this->filename . '\'');
+		}
+
+		$this->adapter->fflush($this->resource);
+
+		return $this;
+	}
+
 
 	private function openFile()
 	{

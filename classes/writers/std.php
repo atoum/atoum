@@ -41,13 +41,6 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		return $this->cli;
 	}
 
-	public function write($something)
-	{
-		$this->init()->adapter->fwrite($this->resource, $something);
-
-		return $this;
-	}
-
 	public function clear()
 	{
 		return $this->write($this->cli->isTerminal() === false ? PHP_EOL : "\033[1K\r");
@@ -62,6 +55,14 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 	{
 		return $this->write((string) $report);
 	}
+
+	protected function doWrite($something)
+	{
+		$this->init()->adapter->fwrite($this->resource, $something);
+
+		return $this;
+	}
+
 
 	protected abstract function init();
 }

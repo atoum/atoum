@@ -9,7 +9,6 @@ use
 	mageekguy\atoum\report\writers
 ;
 
-
 class http extends atoum\writer implements writers\asynchronous
 {
 	protected $url = null;
@@ -27,33 +26,6 @@ class http extends atoum\writer implements writers\asynchronous
 	public function writeAsynchronousReport(reports\asynchronous $report)
 	{
 		return $this->write((string) $report);
-	}
-
-	public function write($string)
-	{
-		if ($this->url === null)
-		{
-			throw new exceptions\runtime('No URL set for HTTP writer');
-		}
-
-		$headers = array();
-
-		foreach ($this->headers as $name => $value)
-		{
-			$headers[] = sprintf('%s: %s', $name, $value);
-		}
-
-		$context = $this->adapter->stream_context_create(array(
-			'http' => array(
-				'method' => $this->method,
-				'header' => join("\r\n", $headers),
-				'content' => $this->parameter ? http_build_query(array($this->parameter => $string)) : $string
-			)
-		));
-
-		$this->adapter->file_get_contents($this->url, false, $context);
-
-		return $this;
 	}
 
 	public function clear()
@@ -107,5 +79,32 @@ class http extends atoum\writer implements writers\asynchronous
 	public function getUrl()
 	{
 		return $this->url;
+	}
+
+	protected function doWrite($string)
+	{
+		if ($this->url === null)
+		{
+			throw new exceptions\runtime('No URL set for HTTP writer');
+		}
+
+		$headers = array();
+
+		foreach ($this->headers as $name => $value)
+		{
+			$headers[] = sprintf('%s: %s', $name, $value);
+		}
+
+		$context = $this->adapter->stream_context_create(array(
+			'http' => array(
+				'method' => $this->method,
+				'header' => join("\r\n", $headers),
+				'content' => $this->parameter ? http_build_query(array($this->parameter => $string)) : $string
+			)
+		));
+
+		$this->adapter->file_get_contents($this->url, false, $context);
+
+		return $this;
 	}
 }
