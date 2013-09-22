@@ -6,6 +6,7 @@ require_once __DIR__ . '/../../../../runner.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\php,
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
@@ -22,15 +23,15 @@ class adapter extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), $function = uniqid()))
+			->if($call = new call\adapter($callAsserter = new asserters\call\adapter(new asserters\adapter()), $adapter = new test\adapter(), $function = uniqid()))
 			->then
-				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getCallAsserter())->isIdenticalTo($callAsserter)
 				->object($call->getAdapter())->isIdenticalTo($adapter)
 				->string($call->getFunction())->isEqualTo($function)
 				->variable($call->getArguments())->isNull()
-			->if($call = new call\adapter($adapterAsserter = new asserters\adapter(new asserter\generator()), $adapter = new test\adapter, $function = rand(1, PHP_INT_MAX)))
+			->if($call = new call\adapter($callAsserter = new asserters\call\adapter(new asserters\adapter()), $adapter = new test\adapter, $function = rand(1, PHP_INT_MAX)))
 			->then
-				->object($call->getAdapterAsserter())->isIdenticalTo($adapterAsserter)
+				->object($call->getCallAsserter())->isIdenticalTo($callAsserter)
 				->object($call->getAdapter())->isIdenticalTo($adapter)
 				->string($call->getFunction())->isEqualTo((string) $function)
 				->variable($call->getArguments())->isNull()
@@ -40,24 +41,24 @@ class adapter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($call = new call\adapter($adapterAsserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
-			->and($adapterAsserter->getMockController()->call = $adapterAsserter)
+			->if($call = new call\adapter($callAsserter = new \mock\mageekguy\atoum\asserters\call\adapter(new asserters\adapter()),  new test\adapter(), uniqid()))
+			->and($callAsserter->getMockController()->beforeFunctionCall = $callAsserter)
 			->then
-				->object($call->call($arg = uniqid()))->isIdenticalTo($adapterAsserter)
-				->mock($adapterAsserter)
-					->call('call')->withArguments($arg)->once()
+				->object($call->beforeFunctionCall($arg = uniqid(), new test\adapter()))->isIdenticalTo($callAsserter)
+				->mock($callAsserter)
+					->call('beforeFunctionCall')->withArguments($arg)->once()
 			->if($unknownFunction = uniqid())
 			->then
 				->exception(function() use ($call, $unknownFunction) { $call->{$unknownFunction}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Method ' . get_class($adapterAsserter) . '::' . $unknownFunction . '() does not exist')
+					->hasMessage('Asserter \'' . $unknownFunction . '\' does not exist')
 		;
 	}
 
 	public function test__toString()
 	{
 		$this
-			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), new test\adapter(), $function = uniqid()))
+			->if($call = new call\adapter(new asserters\call\adapter(new asserters\adapter(new asserter\generator())), new test\adapter(), $function = uniqid()))
 			->then
 				->castToString($call)->isEqualTo($function . '()')
 		;
@@ -66,7 +67,7 @@ class adapter extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), new test\adapter(), uniqid()))
+			->if($call = new call\adapter(new asserters\call\adapter(new asserters\adapter(new asserter\generator())), new test\adapter(), uniqid()))
 			->then
 				->object($call->withArguments($arg = uniqid()))->isIdenticalTo($call)
 				->array($call->getArguments())->isEqualTo(array($arg))
@@ -78,7 +79,7 @@ class adapter extends atoum\test
 	public function testGetFirstCall()
 	{
 		$this
-			->if($call = new call\adapter( new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
+			->if($call = new call\adapter(new asserters\call\adapter(new asserters\adapter(new asserter\generator())), $adapter = new test\adapter(), 'md5'))
 			->then
 				->variable($call->getFirstCall())->isNull()
 			->if($otherAdapter = new test\adapter())
@@ -97,7 +98,7 @@ class adapter extends atoum\test
 	public function testGetLastCall()
 	{
 		$this
-			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
+			->if($call = new call\adapter(new asserters\call\adapter(new asserters\adapter(new asserter\generator())), $adapter = new test\adapter(), 'md5'))
 			->then
 				->variable($call->getLastCall())->isNull()
 			->if($otherAdapter = new test\adapter())

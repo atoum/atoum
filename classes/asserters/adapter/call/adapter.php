@@ -11,12 +11,12 @@ use
 
 class adapter extends php\call
 {
-	protected $adapterAsserter = null;
+	protected $callAsserter = null;
 	protected $adapter = null;
 
-	public function __construct(asserters\adapter $adapterAsserter, test\adapter $adapter, $function)
+	public function __construct(asserters\call\adapter $callAsserter, test\adapter $adapter, $function)
 	{
-		$this->adapterAsserter = $adapterAsserter;
+		$this->callAsserter = $callAsserter;
 		$this->adapter = $adapter;
 
 		parent::__construct($function);
@@ -24,17 +24,12 @@ class adapter extends php\call
 
 	public function __call($method, $arguments)
 	{
-		if (method_exists($this->adapterAsserter, $method) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->adapterAsserter) . '::' . $method . '() does not exist');
-		}
-
-		return call_user_func_array(array($this->adapterAsserter, $method), $arguments);
+		return call_user_func_array(array($this->callAsserter, $method), $arguments);
 	}
 
-	public function getAdapterAsserter()
+	public function getCallAsserter()
 	{
-		return $this->adapterAsserter;
+		return $this->callAsserter;
 	}
 
 	public function getAdapter()
