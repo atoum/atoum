@@ -388,7 +388,7 @@ class script extends atoum\test
 				->mock($stdOut)->call('write')->withArguments($info)->once()
 				->object($script->writeInfo(($info = uniqid()) . ' ' . PHP_EOL, false))->isEqualTo($script)
 				->mock($stdOut)->call('write')->withArguments($info)->once()
-				->object($script->writeInfo(($info = PHP_EOL . $info) . ' ' . PHP_EOL, false))->isEqualTo($script)
+				->object($script->writeInfo(($info = PHP_EOL . uniqid()) . ' ' . PHP_EOL, false))->isEqualTo($script)
 				->mock($stdOut)->call('write')->withArguments($info)->once()
 		;
 	}
