@@ -393,7 +393,7 @@ abstract class script
 	{
 		if ($this->help)
 		{
-			$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()) . PHP_EOL);
+			$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
 		}
 
 		return $this;
@@ -419,7 +419,7 @@ abstract class script
 			}
 
 			$this
-				->writeMessage($this->locale->_('Available options are:') . PHP_EOL)
+				->writeMessage($this->locale->_('Available options are:'))
 				->writeLabels($arguments)
 			;
 		}
