@@ -37,29 +37,20 @@ class tagger extends atoum\test
 
 	public function testRun()
 	{
-		$tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid());
-
-		$tagger
-			->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine())
-			->getMockController()->writeMessage = $tagger
-		;
-
-		$engine->getMockController()->tagVersion = function() {};
-
-		$this->assert
-			->object($tagger->run())->isIdenticalTo($tagger)
-			->mock($engine)
-				->call('tagVersion')->once()
-		;
-
-		$engine->getMockController()->resetCalls();
-
-		$this->assert
-			->object($tagger->run(array('-h')))->isIdenticalTo($tagger)
-			->mock($tagger)
-				->call('help')->atLeastOnce()
-			->mock($engine)
-				->call('tagVersion')->never()
+		$this
+			->if($tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid()))
+			->and($tagger->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine()))
+			->and($this->calling($tagger)->writeMessage = $tagger)
+			->and($this->calling($tagger)->writeHelp = $tagger)
+			->and($this->calling($engine)->tagVersion = function() {})
+			->then
+				->object($tagger->run())->isIdenticalTo($tagger)
+				->mock($engine)->call('tagVersion')->once()
+			->if($engine->getMockController()->resetCalls())
+			->then
+				->object($tagger->run(array('-h')))->isIdenticalTo($tagger)
+				->mock($tagger)->call('help')->atLeastOnce()
+				->mock($engine)->call('tagVersion')->never()
 		;
 	}
 }

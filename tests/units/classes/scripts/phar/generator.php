@@ -359,6 +359,7 @@ class generator extends atoum\test
 			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
 			->and($stderr->getMockController()->write = function() {})
 			->and($generator->setOutputWriter($stdout))
+			->and($generator->setHelpWriter($stdout))
 			->and($generator->setErrorWriter($stderr))
 			->then
 				->object($generator->run())->isIdenticalTo($generator)

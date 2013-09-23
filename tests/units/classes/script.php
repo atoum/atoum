@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\writers,
 	mageekguy\atoum\script\prompt,
 	mock\mageekguy\atoum as mock
 ;
@@ -20,6 +21,14 @@ class script extends atoum\test
 	public function test__construct()
 	{
 		$this
+			->given($labelColorizer = new atoum\cli\colorizer('0;32'))
+			->and($labelColorizer->setPattern('/(^[^:]+: )/'))
+			->and($argumentColorizer = new atoum\cli\colorizer('0;32'))
+			->and($argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/'))
+			->and($valueColorizer = new atoum\cli\colorizer('0;34'))
+			->and($valueColorizer->setPattern('/(<[^>]+>(?:\.\.\.)?)/'))
+			->and($defaultHelpWriter = new writers\std\out())
+			->and($defaultHelpWriter->addDecorator($labelColorizer)->addDecorator($valueColorizer)->addDecorator($argumentColorizer))
 			->if($script = new mock\script($name = uniqid()))
 			->then
 				->string($script->getName())->isEqualTo($name)
@@ -30,6 +39,7 @@ class script extends atoum\test
 				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
 				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
+				->object($script->getHelpWriter())->isEqualTo($defaultHelpWriter)
 				->array($script->getHelp())->isEmpty()
 				->object($script->getCli())->isEqualTo(new atoum\cli())
 				->integer($script->getVerbosityLevel())->isZero()
@@ -40,7 +50,10 @@ class script extends atoum\test
 				->object($script->getLocale())->isInstanceOf('mageekguy\atoum\locale')
 				->object($script->getArgumentsParser())->isInstanceOf('mageekguy\atoum\script\arguments\parser')
 				->object($script->getOutputWriter())->isInstanceOf('mageekguy\atoum\writers\std\out')
+				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
 				->object($script->getErrorWriter())->isInstanceOf('mageekguy\atoum\writers\std\err')
+				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
+				->object($script->getHelpWriter())->isEqualTo($defaultHelpWriter)
 				->array($script->getHelp())->isEmpty()
 				->object($script->getCli())->isEqualTo(new atoum\cli())
 				->integer($script->getVerbosityLevel())->isZero()
@@ -120,7 +133,7 @@ class script extends atoum\test
 				->object($script->setInfoWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
 				->object($script->getInfoWriter())->isIdenticalTo($outputWriter)
 				->object($script->setInfoWriter())->isIdenticalTo($script)
-				->object($script->getInfoWriter())->isEqualTo(new atoum\writers\std\out($script->getCli()))
+				->object($script->getInfoWriter())->isIdenticalTo($script->getOutputWriter())
 		;
 	}
 
@@ -129,10 +142,10 @@ class script extends atoum\test
 		$this
 			->if($script = new mock\script($name = uniqid()))
 			->then
-				->object($script->setWarningWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
-				->object($script->getWarningWriter())->isIdenticalTo($outputWriter)
+				->object($script->setWarningWriter($warningWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
+				->object($script->getWarningWriter())->isIdenticalTo($warningWriter)
 				->object($script->setWarningWriter())->isIdenticalTo($script)
-				->object($script->getWarningWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
+				->object($script->getWarningWriter())->isIdenticalTo($script->getErrorWriter())
 		;
 	}
 
@@ -141,10 +154,31 @@ class script extends atoum\test
 		$this
 			->if($script = new mock\script($name = uniqid()))
 			->then
-				->object($script->setErrorWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
-				->object($script->getErrorWriter())->isIdenticalTo($outputWriter)
+				->object($script->setErrorWriter($errorWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
+				->object($script->getErrorWriter())->isIdenticalTo($errorWriter)
 				->object($script->setErrorWriter())->isIdenticalTo($script)
 				->object($script->getErrorWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
+		;
+	}
+
+	public function testSetHelpWriter()
+	{
+		$this
+			->if($script = new mock\script($name = uniqid()))
+			->then
+				->object($script->setHelpWriter($helpWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
+				->object($script->getHelpWriter())->isIdenticalTo($helpWriter)
+			->given($labelColorizer = new atoum\cli\colorizer('0;32'))
+			->and($labelColorizer->setPattern('/(^[^:]+: )/'))
+			->and($argumentColorizer = new atoum\cli\colorizer('0;32'))
+			->and($argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/'))
+			->and($valueColorizer = new atoum\cli\colorizer('0;34'))
+			->and($valueColorizer->setPattern('/(<[^>]+>(?:\.\.\.)?)/'))
+			->and($defaultHelpWriter = new writers\std\out())
+			->and($defaultHelpWriter->addDecorator($labelColorizer)->addDecorator($valueColorizer)->addDecorator($argumentColorizer))
+			->then
+				->object($script->setHelpWriter())->isIdenticalTo($script)
+				->object($script->getHelpWriter())->isEqualTo($defaultHelpWriter)
 		;
 	}
 
@@ -254,16 +288,18 @@ class script extends atoum\test
 			->and($script->setArgumentsParser($argumentsParser))
 			->and($script->setLocale($locale))
 			->and($script->getMockController()->writeMessage = $script)
+			->and($script->getMockController()->writeHelp = $script)
 			->and($script->getMockController()->writeLabels = $script)
 			->then
 				->object($script->help())->isIdenticalTo($script)
 				->mock($script)->call('writeMessage')->never()
+				->mock($script)->call('writeHelp')->never()
 				->mock($script)->call('writeLabels')->never()
 			->if($script->addArgumentHandler(function() {}, array('-c', '--c'), $valuesC = '<argumentC>', $helpC = 'help of C argument'))
 			->then
 				->object($script->help())->isIdenticalTo($script)
 				->mock($locale)->call('_')->withArguments('Usage: %s [options]')->once()
-				->mock($script)->call('writeMessage')->withArguments('Usage: ' . $script->getName() . ' [options]', true)->once()
+				->mock($script)->call('writeHelp')->withArguments('Usage: ' . $script->getName() . ' [options]')->once()
 				->mock($script)->call('writeLabels')->withArguments(array('-c <argumentC>, --c <argumentC>' => $helpC), 1)->once()
 		;
 	}
@@ -479,7 +515,7 @@ class script extends atoum\test
 			->if($stdOut = new mock\writers\std\out())
 			->and($stdOut->getMockCOntroller()->write = function() {})
 			->and($script = new mock\script(uniqid()))
-			->and($script->setOutputWriter($stdOut))
+			->and($script->setHelpWriter($stdOut))
 			->then
 				->object($script->writeLabel($label = uniqid(), $message = uniqid()))->isIdenticalTo($script)
 				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->once()
@@ -502,7 +538,7 @@ class script extends atoum\test
 			->if($stdOut = new mock\writers\std\out())
 			->and($stdOut->getMockCOntroller()->write = function() {})
 			->and($script = new mock\script(uniqid()))
-			->and($script->setOutputWriter($stdOut))
+			->and($script->setHelpWriter($stdOut))
 			->then
 				->object($script->writeLabels(array($label = uniqid() => $message = uniqid())))->isIdenticalTo($script)
 				->mock($stdOut)->call('write')->withIdenticalArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()

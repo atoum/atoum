@@ -23,6 +23,7 @@ abstract class script
 	protected $infoWriter = null;
 	protected $warningWriter = null;
 	protected $errorWriter = null;
+	protected $helpWriter = null;
 	protected $argumentsParser = null;
 
 	private $doRun = true;
@@ -42,6 +43,7 @@ abstract class script
 			->setInfoWriter()
 			->setErrorWriter()
 			->setWarningWriter()
+			->setHelpWriter()
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -165,6 +167,37 @@ abstract class script
 		return $this->errorWriter;
 	}
 
+	public function setHelpWriter(atoum\writer $writer = null)
+	{
+		if ($writer === null)
+		{
+			$labelColorizer = new cli\colorizer('0;32');
+			$labelColorizer->setPattern('/(^[^:]+: )/');
+
+			$argumentColorizer = new cli\colorizer('0;32');
+			$argumentColorizer->setPattern('/((?:^| )[-+]+[-a-z]+)/');
+
+			$valueColorizer = new cli\colorizer('0;34');
+			$valueColorizer->setPattern('/(<[^>]+>(?:\.\.\.)?)/');
+
+			$writer = new writers\std\out();
+			$writer
+				->addDecorator($labelColorizer)
+				->addDecorator($valueColorizer)
+				->addDecorator($argumentColorizer)
+			;
+		}
+
+		$this->helpWriter = $writer;
+
+		return $this;
+	}
+
+	public function getHelpWriter()
+	{
+		return $this->helpWriter;
+	}
+
 	public function setPrompt(script\prompt $prompt = null)
 	{
 		if ($prompt === null)
@@ -271,6 +304,13 @@ abstract class script
 		return $this;
 	}
 
+	public function writeHelp($message)
+	{
+		$this->helpWriter->write(rtrim($message) . PHP_EOL);
+
+		return $this;
+	}
+
 	public function writeWarning($warning)
 	{
 		$this->errorWriter->clear()->write(sprintf($this->locale->_('Warning: %s'), trim($warning)) . PHP_EOL);
@@ -333,7 +373,7 @@ abstract class script
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
+		return $this->writeHelp(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
 	}
 
 	public function writeLabels(array $labels, $level = 1)
@@ -393,7 +433,7 @@ abstract class script
 	{
 		if ($this->help)
 		{
-			$this->writeMessage(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
+			$this->writeHelp(sprintf($this->locale->_('Usage: %s [options]'), $this->getName()));
 		}
 
 		return $this;
