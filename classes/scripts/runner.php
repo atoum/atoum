@@ -868,9 +868,9 @@ class runner extends atoum\script\configurable
 				}
 			}
 
-			if ($this->argumentsParser->hasFoundArguments() === false && $this->hasArguments() === false && $this->hasDefaultArguments() === true && $this->isRunningFromCli() === true)
+			if ($this->argumentsParser->hasFoundArguments() === false && $this->hasArguments() === false && $this->isRunningFromCli() === true)
 			{
-				parent::run($this->getDefaultArguments());
+				parent::run($this->defaultArguments ?: array('--help'));
 			}
 			else
 			{
