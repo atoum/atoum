@@ -131,7 +131,7 @@ abstract class script
 
 	public function setInfoWriter(atoum\writer $writer = null)
 	{
-		$this->infoWriter = $writer ?: new writers\std\err($this->cli);
+		$this->infoWriter = $writer ?: new writers\std\out($this->cli);
 
 		return $this;
 	}

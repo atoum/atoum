@@ -120,7 +120,7 @@ class script extends atoum\test
 				->object($script->setInfoWriter($outputWriter = new atoum\writers\std\out()))->isIdenticalTo($script)
 				->object($script->getInfoWriter())->isIdenticalTo($outputWriter)
 				->object($script->setInfoWriter())->isIdenticalTo($script)
-				->object($script->getInfoWriter())->isEqualTo(new atoum\writers\std\err($script->getCli()))
+				->object($script->getInfoWriter())->isEqualTo(new atoum\writers\std\out($script->getCli()))
 		;
 	}
 
