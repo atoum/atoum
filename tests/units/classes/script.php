@@ -263,7 +263,7 @@ class script extends atoum\test
 			->then
 				->object($script->help())->isIdenticalTo($script)
 				->mock($locale)->call('_')->withArguments('Usage: %s [options]')->once()
-				->mock($script)->call('writeMessage')->withArguments('Usage: ' . $script->getName() . ' [options]' . PHP_EOL)->once()
+				->mock($script)->call('writeMessage')->withArguments('Usage: ' . $script->getName() . ' [options]', true)->once()
 				->mock($script)->call('writeLabels')->withArguments(array('-c <argumentC>, --c <argumentC>' => $helpC), 1)->once()
 		;
 	}

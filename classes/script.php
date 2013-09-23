@@ -333,7 +333,7 @@ abstract class script
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value) . PHP_EOL);
+		return $this->writeMessage(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
 	}
 
 	public function writeLabels(array $labels, $level = 1)
