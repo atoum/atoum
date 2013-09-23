@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\scripts;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\cli,
 	mageekguy\atoum\mock\stream,
 	mageekguy\atoum\scripts\runner as testedClass
 ;
@@ -545,6 +546,56 @@ class runner extends atoum\test
 				->exception(function() use ($runner) { $runner->init(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
 					->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
+		;
+	}
+
+	public function testSetInfoWriter()
+	{
+		$this
+			->given($runner = new testedClass(uniqid()))
+			->then
+				->object($runner->setInfoWriter($errorWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
+				->object($runner->getInfoWriter())->isIdenticalTo($errorWriter)
+			->given($colorizer = new cli\colorizer('0;32'))
+			->and($defaultInfoWriter = new atoum\writers\std\out())
+			->and($defaultInfoWriter->addDecorator($colorizer))
+			->then
+				->object($runner->setInfoWriter())->isIdenticalTo($runner)
+				->object($runner->getInfoWriter())->isEqualTo($defaultInfoWriter)
+		;
+	}
+
+	public function testSetWarningWriter()
+	{
+		$this
+			->given($runner = new testedClass(uniqid()))
+			->then
+				->object($runner->setWarningWriter($warningWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
+				->object($runner->getWarningWriter())->isIdenticalTo($warningWriter)
+			->given($colorizer = new cli\colorizer('0;33'))
+			->and($colorizer->setPattern('/^([^:]+:)/'))
+			->and($defaultWarningWriter = new atoum\writers\std\err())
+			->and($defaultWarningWriter->addDecorator($colorizer))
+			->then
+				->object($runner->setWarningWriter())->isIdenticalTo($runner)
+				->object($runner->getWarningWriter())->isEqualTo($defaultWarningWriter)
+		;
+	}
+
+	public function testSetErrorWriter()
+	{
+		$this
+			->given($runner = new testedClass(uniqid()))
+			->then
+				->object($runner->setErrorWriter($errorWriter = new atoum\writers\std\err()))->isIdenticalTo($runner)
+				->object($runner->getErrorWriter())->isIdenticalTo($errorWriter)
+			->given($colorizer = new cli\colorizer('0;31'))
+			->and($colorizer->setPattern('/^([^:]+:)/'))
+			->and($defaultErrorWriter = new atoum\writers\std\err())
+			->and($defaultErrorWriter->addDecorator($colorizer))
+			->then
+				->object($runner->setErrorWriter())->isIdenticalTo($runner)
+				->object($runner->getErrorWriter())->isEqualTo($defaultErrorWriter)
 		;
 	}
 }

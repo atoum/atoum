@@ -39,9 +39,9 @@ abstract class script
 			->setPrompt()
 			->setArgumentsParser()
 			->setOutputWriter()
-			->setInfoWriter($this->getOutputWriter())
+			->setInfoWriter()
 			->setErrorWriter()
-			->setWarningWriter($this->getErrorWriter())
+			->setWarningWriter()
 		;
 
 		if ($this->adapter->php_sapi_name() !== 'cli')
@@ -131,7 +131,7 @@ abstract class script
 
 	public function setInfoWriter(atoum\writer $writer = null)
 	{
-		$this->infoWriter = $writer ?: new writers\std\out($this->cli);
+		$this->infoWriter = $writer ?: $this->outputWriter;
 
 		return $this;
 	}
@@ -143,7 +143,7 @@ abstract class script
 
 	public function setWarningWriter(atoum\writer $writer = null)
 	{
-		$this->warningWriter = $writer ?: new writers\std\err($this->cli);
+		$this->warningWriter = $writer ?: $this->errorWriter;
 
 		return $this;
 	}

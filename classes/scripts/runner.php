@@ -6,7 +6,9 @@ require_once __DIR__ . '/../../constants.php';
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\cli,
 	mageekguy\atoum\php,
+	mageekguy\atoum\writers,
 	mageekguy\atoum\exceptions
 ;
 
@@ -38,6 +40,53 @@ class runner extends atoum\script\configurable
 			->setConfiguratorFactory()
 			->setDefaultReportFactory()
 		;
+	}
+
+	public function setInfoWriter(atoum\writer $writer = null)
+	{
+		if ($writer === null)
+		{
+			$writer = new writers\std\out();
+			$writer->addDecorator(new cli\colorizer('0;32'));
+		}
+
+		parent::setInfoWriter($writer);
+
+		return $this;
+	}
+
+	public function setWarningWriter(atoum\writer $writer = null)
+	{
+		if ($writer === null)
+		{
+			$writer = new writers\std\err();
+
+			$colorizer = new cli\colorizer('0;33');
+			$colorizer->setPattern('/^([^:]+:)/');
+
+			$writer->addDecorator($colorizer);
+		}
+
+		parent::setWarningWriter($writer);
+
+		return $this;
+	}
+
+	public function setErrorWriter(atoum\writer $writer = null)
+	{
+		if ($writer === null)
+		{
+			$writer = new writers\std\err();
+
+			$colorizer = new cli\colorizer('0;31');
+			$colorizer->setPattern('/^([^:]+:)/');
+
+			$writer->addDecorator($colorizer);
+		}
+
+		parent::setErrorWriter($writer);
+
+		return $this;
 	}
 
 	public function getResourcesDirectory()
