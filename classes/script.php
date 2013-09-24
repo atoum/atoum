@@ -261,9 +261,7 @@ abstract class script
 
 		$this->doRun = true;
 
-		$this->argumentsParser->parse($this, $arguments);
-
-		if ($this->canRun() === true)
+		if ($this->parseArguments($arguments)->doRun === true)
 		{
 			$this->doRun();
 		}
@@ -463,6 +461,13 @@ abstract class script
 				->writeLabels($arguments)
 			;
 		}
+
+		return $this;
+	}
+
+	protected function parseArguments(array $arguments)
+	{
+		$this->argumentsParser->parse($this, $arguments);
 
 		return $this;
 	}

@@ -25,6 +25,7 @@ class runner extends atoum\script\configurable
 	protected $defaultArguments = array();
 	protected $namespaces = array();
 	protected $tags = array();
+	protected $classes = array();
 	protected $methods = array();
 	protected $loop = false;
 
@@ -190,6 +191,10 @@ class runner extends atoum\script\configurable
 
 	public function run(array $arguments = array())
 	{
+		# Default bootstrap file MUST be included here because some arguments on the command line can include some tests which depends of this file.
+		# So, this file must be included BEFORE argument parsing which is done in script::run().
+		# Default bootstrap file can be overrided in a default config file included in script\configurable::run() which extends script::run().
+		# So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
 		$this->setDefaultBootstrapFiles();
 
 		try
@@ -819,62 +824,64 @@ class runner extends atoum\script\configurable
 
 	protected function doRun()
 	{
-		if (sizeof($this->runner->getDeclaredTestClasses()) > 0)
+		parent::doRun();
+
+		if ($this->argumentsParser->hasFoundArguments() === false && $this->isRunningFromCli() === true)
 		{
-			$this->runner->canNotAddTest();
+			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}
 
-		if (sizeof(parent::doRun()->configFiles) > 0)
+		if (sizeof($this->runner->getDeclaredTestClasses()) <= 0)
 		{
-			foreach ($this->configFiles as $configFile)
-			{
-				$this->verbose(sprintf($this->locale->_('Using \'%s\' configuration file…'), $configFile));
-			}
-		}
-
-		$bootstrapFile = $this->runner->getBootstrapFile();
-
-		if ($bootstrapFile !== null)
-		{
-			$this->verbose(sprintf($this->locale->_('Using \'%s\' bootstrap file…'), $bootstrapFile));
-		}
-
-		foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
-		{
-			$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
-		}
-
-		if ($this->loop === true)
-		{
-			$this->loop();
+			$this->help();
 		}
 		else
 		{
-			if ($this->runner->hasReports() === false)
+			if (sizeof($this->configFiles) > 0)
 			{
-				$this->addDefaultReport();
-			}
-
-			$methods = $this->methods;
-			$oldFailMethods = array();
-
-			if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
-			{
-				$oldFailMethods = self::getFailMethods($oldScore);
-
-				if ($oldFailMethods)
+				foreach ($this->configFiles as $configFile)
 				{
-					$methods = $oldFailMethods;
+					$this->verbose(sprintf($this->locale->_('Using \'%s\' configuration file…'), $configFile));
 				}
 			}
 
-			if ($this->argumentsParser->hasFoundArguments() === false && $this->hasArguments() === false && $this->isRunningFromCli() === true && sizeof($this->runner->getDeclaredTestClasses()) <= 0)
+			$bootstrapFile = $this->runner->getBootstrapFile();
+
+			if ($bootstrapFile !== null)
 			{
-				parent::run($this->defaultArguments ?: array('--help'));
+				$this->verbose(sprintf($this->locale->_('Using \'%s\' bootstrap file…'), $bootstrapFile));
+			}
+
+			foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
+			{
+				$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
+			}
+
+			if ($this->loop === true)
+			{
+				$this->loop();
 			}
 			else
 			{
-				$newScore = $this->runner->run($this->namespaces, $this->tags, self::getClassesOf($methods), $methods);
+				if ($this->runner->hasReports() === false)
+				{
+					$this->addDefaultReport();
+				}
+
+				$methods = $this->methods;
+				$oldFailMethods = array();
+
+				if ($this->scoreFile !== null && ($scoreFileContents = @file_get_contents($this->scoreFile)) !== false && ($oldScore = @unserialize($scoreFileContents)) instanceof atoum\score)
+				{
+					$oldFailMethods = self::getFailMethods($oldScore);
+
+					if ($oldFailMethods)
+					{
+						$methods = $oldFailMethods;
+					}
+				}
+
+				$newScore = $this->runner->run($this->namespaces, $this->tags, $this->getClassesOf($methods), $methods);
 
 				$this->saveScore($newScore);
 
@@ -884,7 +891,7 @@ class runner extends atoum\script\configurable
 
 					if (sizeof($testMethods) > 1 || sizeof(current($testMethods)) > 1)
 					{
-						$this->saveScore($this->runner->run($this->namespaces, $this->tags, self::getClassesOf($this->methods), $this->methods));
+						$this->saveScore($this->runner->run($this->namespaces, $this->tags, $this->getClassesOf($this->methods), $this->methods));
 					}
 				}
 			}
@@ -976,9 +983,20 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	protected static function getClassesOf($methods)
+	protected function parseArguments(array $arguments)
 	{
-		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
+		$this->classes = $this->runner->getDeclaredTestClasses();
+
+		parent::parseArguments($arguments);
+
+		$this->classes = array_diff($this->runner->getDeclaredTestClasses(), $this->classes);
+
+		return $this;
+	}
+
+	private function getClassesOf($methods)
+	{
+		return sizeof($methods) <= 0 || isset($methods['*']) === true ? $this->classes : array_keys($methods);
 	}
 
 	private function copy($from, $to)
