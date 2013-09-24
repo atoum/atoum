@@ -21,10 +21,18 @@ class superglobals extends atoum\test
 			->array->setByReferenceWith($superglobals->_POST)->isReferenceTo($_POST)
 			->array->setByReferenceWith($superglobals->_FILES)->isReferenceTo($_FILES)
 			->array->setByReferenceWith($superglobals->_COOKIE)->isReferenceTo($_COOKIE)
-			->array->setByReferenceWith($superglobals->_SESSION)->isReferenceTo($_SESSION)
 			->array->setByReferenceWith($superglobals->_REQUEST)->isReferenceTo($_REQUEST)
 			->array->setByReferenceWith($superglobals->_ENV)->isReferenceTo($_ENV)
 		;
+
+		if (isset($_SESSION))
+		{
+			$this->assert()->array->setByReferenceWith($superglobals->_SESSION)->isReferenceTo($_SESSION);
+		}
+		else
+		{
+			$this->assert()->array->setByReferenceWith($superglobals->_SESSION)->isReferenceTo($superglobals->_SESSION);
+		}
 	}
 
 	public function test__set()
