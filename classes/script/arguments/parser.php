@@ -90,7 +90,6 @@ class parser implements \iteratorAggregate
 		return (sizeof($this->values) > 0);
 	}
 
-
 	public function addHandler(\closure $handler, array $arguments, $priority = 0)
 	{
 		$invoke = new \reflectionMethod($handler, '__invoke');
