@@ -13,7 +13,7 @@ class mock extends php\call
 {
 	protected $mockAsserter = null;
 
-	public function __construct(asserters\mock $mockAsserter, atoum\mock\aggregator $mockAggregator, $function)
+	public function __construct(asserters\call\mock $mockAsserter, atoum\mock\aggregator $mockAggregator, $function)
 	{
 		$this->mockAsserter = $mockAsserter;
 
@@ -22,11 +22,6 @@ class mock extends php\call
 
 	public function __call($function, $arguments)
 	{
-		if (method_exists($this->mockAsserter, $function) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->mockAsserter) . '::' . $function . '() does not exist');
-		}
-
 		return call_user_func_array(array($this->mockAsserter, $function), $arguments);
 	}
 

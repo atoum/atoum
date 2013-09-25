@@ -6,7 +6,6 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
-	mageekguy\atoum\mock,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions

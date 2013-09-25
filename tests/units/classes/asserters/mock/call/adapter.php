@@ -23,7 +23,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($call = new call\adapter(
-					$mockAsserter = new asserters\mock(new asserter\generator()),
+					$mockAsserter = new asserters\call\mock(new asserters\mock()),
 					$adapter = new test\adapter(),
 					$function = uniqid()
 				)
@@ -39,12 +39,7 @@ class adapter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($call = new call\adapter(
-					$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()),
-					new test\adapter(),
-					uniqid()
-				)
-			)
+			->if($call = new call\adapter(new asserters\call\mock($mockAsserter = new \mock\mageekguy\atoum\asserters\mock()), new test\adapter(), uniqid()))
 			->and($mockAsserter->getMockController()->call = $mockAsserter)
 			->then
 				->object($call->call($arg = uniqid()))->isIdenticalTo($mockAsserter)
@@ -52,12 +47,9 @@ class adapter extends atoum\test
 					->call('call')->withArguments($arg)->once()
 			->if($unknownFunction = uniqid())
 			->then
-				->exception(function() use ($call, $unknownFunction) {
-							$call->{$unknownFunction}();
-						}
-					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownFunction . '() does not exist')
+				->exception(function() use ($call, $unknownFunction) { $call->{$unknownFunction}(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Asserter \'' . $unknownFunction . '\' does not exist')
 		;
 	}
 
@@ -65,7 +57,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					new test\adapter(),
 					uniqid()
 				)
@@ -82,7 +74,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					$adapter = new test\adapter(),
 					'md5'
 				)
@@ -102,7 +94,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($call = new call\adapter(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					$adapter = new test\adapter(),
 					'md5'
 				)
