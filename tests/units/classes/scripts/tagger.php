@@ -4,7 +4,8 @@ namespace mageekguy\atoum\tests\units\scripts;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\scripts
+	mageekguy\atoum\scripts,
+	mock\mageekguy\atoum as mock
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -38,10 +39,11 @@ class tagger extends atoum\test
 	public function testRun()
 	{
 		$this
-			->if($tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid()))
+			->if($helpWriter = new mock\writers\std\out())
+			->and($this->calling($helpWriter)->write = function() {})
+			->and($tagger = new \mock\mageekguy\atoum\scripts\tagger(uniqid()))
 			->and($tagger->setEngine($engine = new \mock\mageekguy\atoum\scripts\tagger\engine()))
-			->and($this->calling($tagger)->writeMessage = $tagger)
-			->and($this->calling($tagger)->writeHelp = $tagger)
+			->and($tagger->setHelpWriter($helpWriter))
 			->and($this->calling($engine)->tagVersion = function() {})
 			->then
 				->object($tagger->run())->isIdenticalTo($tagger)

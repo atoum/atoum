@@ -6,6 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\cli,
 	mageekguy\atoum\mock\stream,
+	mock\mageekguy\atoum as mock,
 	mageekguy\atoum\scripts\runner as testedClass
 ;
 
@@ -596,6 +597,27 @@ class runner extends atoum\test
 			->then
 				->object($runner->setErrorWriter())->isIdenticalTo($runner)
 				->object($runner->getErrorWriter())->isEqualTo($defaultErrorWriter)
+		;
+	}
+
+	public function testHelp()
+	{
+		$this
+			->if($argumentsParser = new mock\script\arguments\parser())
+			->and($this->calling($argumentsParser)->addHandler = function() {})
+			->and($locale = new mock\locale())
+			->and($this->calling($locale)->_ = function($string) { return $string; })
+			->and($helpWriter = new mock\writers\std\out())
+			->and($this->calling($helpWriter)->write = function() {})
+			->and($runner = new testedClass($name = uniqid()))
+			->and($runner->setArgumentsParser($argumentsParser))
+			->and($runner->setLocale($locale))
+			->and($runner->setHelpWriter($helpWriter))
+			->then
+				->object($runner->help())->isIdenticalTo($runner)
+				->mock($helpWriter)->call('write')
+					->atLeastOnce()
+					->withArguments('Usage: ' . $name . ' [path/to/test/file] [options]' . PHP_EOL)->once()
 		;
 	}
 }

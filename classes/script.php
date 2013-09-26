@@ -371,37 +371,14 @@ abstract class script
 
 	public function writeLabel($label, $value, $level = 0)
 	{
-		return $this->writeHelp(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value));
+		static::writeLabelWithWriter($label, $value, $level, $this->outputWriter);
+
+		return $this;
 	}
 
 	public function writeLabels(array $labels, $level = 1)
 	{
-		$maxLength = 0;
-
-		foreach (array_keys($labels) as $label)
-		{
-			$length = strlen($label);
-
-			if ($length > $maxLength)
-			{
-				$maxLength = $length;
-			}
-		}
-
-		foreach ($labels as $label => $value)
-		{
-			$value = explode("\n", trim($value));
-
-			$this->writeLabel(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level);
-
-			if (sizeof($value) > 1)
-			{
-				foreach (array_slice($value, 1) as $line)
-				{
-					$this->writeLabel(str_repeat(' ', $maxLength), $line, $level);
-				}
-			}
-		}
+		static::writeLabelsWithWriter($labels, $level, $this->outputWriter);
 
 		return $this;
 	}
@@ -456,10 +433,9 @@ abstract class script
 				$arguments[join(', ', $help[0])] = $help[2];
 			}
 
-			$this
-				->writeMessage($this->locale->_('Available options are:'))
-				->writeLabels($arguments)
-			;
+			$this->writeHelp($this->locale->_('Available options are:'));
+
+			static::writeLabelsWithWriter($arguments, 1, $this->helpWriter);
 		}
 
 		return $this;
@@ -475,5 +451,42 @@ abstract class script
 	protected function doRun()
 	{
 		return $this;
+	}
+
+	protected static function writeLabelWithWriter($label, $value, $level, writer $writer)
+	{
+		return $writer->write(($level <= 0 ? '' : str_repeat(self::padding, $level)) . (preg_match('/^ +$/', $label) ? $label : rtrim($label)) . ': ' . trim($value) . PHP_EOL);
+	}
+
+	protected static function writeLabelsWithWriter($labels, $level, writer $writer)
+	{
+		$maxLength = 0;
+
+		foreach (array_keys($labels) as $label)
+		{
+			$length = strlen($label);
+
+			if ($length > $maxLength)
+			{
+				$maxLength = $length;
+			}
+		}
+
+		foreach ($labels as $label => $value)
+		{
+			$value = explode("\n", trim($value));
+
+			static::writeLabelWithWriter(str_pad($label, $maxLength, ' ', STR_PAD_LEFT), $value[0], $level, $writer);
+
+			if (sizeof($value) > 1)
+			{
+				foreach (array_slice($value, 1) as $line)
+				{
+					static::writeLabelWithWriter(str_repeat(' ', $maxLength), $line, $level, $writer);
+				}
+			}
+		}
+
+		return $writer;
 	}
 }

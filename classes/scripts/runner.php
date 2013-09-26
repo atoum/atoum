@@ -976,9 +976,9 @@ class runner extends atoum\script\configurable
 		return $this;
 	}
 
-	protected function writeUsageMessage()
+	protected function writeHelpUsage()
 	{
-		$this->writeMessage(sprintf($this->locale->_('Usage: %s [file] [options]'), $this->getName()) . PHP_EOL);
+		$this->writeHelp(sprintf($this->locale->_('Usage: %s [path/to/test/file] [options]'), $this->getName()) . PHP_EOL);
 
 		return $this;
 	}

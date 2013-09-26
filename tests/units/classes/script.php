@@ -281,26 +281,27 @@ class script extends atoum\test
 	{
 		$this
 			->if($argumentsParser = new mock\script\arguments\parser())
-			->and($argumentsParser->getMockController()->addHandler = function() {})
+			->and($this->calling($argumentsParser)->addHandler = function() {})
 			->and($locale = new mock\locale())
-			->and($locale->getMockController()->_ = function($string) { return $string; })
+			->and($this->calling($locale)->_ = function($string) { return $string; })
+			->and($helpWriter = new mock\writers\std\out())
+			->and($this->calling($helpWriter)->write = function() {})
 			->and($script = new mock\script($name = uniqid()))
 			->and($script->setArgumentsParser($argumentsParser))
 			->and($script->setLocale($locale))
-			->and($script->getMockController()->writeMessage = $script)
-			->and($script->getMockController()->writeHelp = $script)
-			->and($script->getMockController()->writeLabels = $script)
+			->and($script->setHelpWriter($helpWriter))
 			->then
 				->object($script->help())->isIdenticalTo($script)
-				->mock($script)->call('writeMessage')->never()
-				->mock($script)->call('writeHelp')->never()
-				->mock($script)->call('writeLabels')->never()
+				->mock($helpWriter)->call('write')->never()
 			->if($script->addArgumentHandler(function() {}, array('-c', '--c'), $valuesC = '<argumentC>', $helpC = 'help of C argument'))
 			->then
 				->object($script->help())->isIdenticalTo($script)
 				->mock($locale)->call('_')->withArguments('Usage: %s [options]')->once()
-				->mock($script)->call('writeHelp')->withArguments('Usage: ' . $script->getName() . ' [options]')->once()
-				->mock($script)->call('writeLabels')->withArguments(array('-c <argumentC>, --c <argumentC>' => $helpC), 1)->once()
+				->mock($helpWriter)
+					->call('write')
+						->withArguments('Usage: ' . $script->getName() . ' [options]' . PHP_EOL)->once()
+						->withArguments('Available options are:' . PHP_EOL)->once()
+						->withArguments('   -c <argumentC>, --c <argumentC>: help of C argument' . PHP_EOL)->once()
 		;
 	}
 
@@ -515,7 +516,7 @@ class script extends atoum\test
 			->if($stdOut = new mock\writers\std\out())
 			->and($stdOut->getMockCOntroller()->write = function() {})
 			->and($script = new mock\script(uniqid()))
-			->and($script->setHelpWriter($stdOut))
+			->and($script->setOutputWriter($stdOut))
 			->then
 				->object($script->writeLabel($label = uniqid(), $message = uniqid()))->isIdenticalTo($script)
 				->mock($stdOut)->call('write')->withIdenticalArguments($label . ': ' . $message . PHP_EOL)->once()
@@ -538,7 +539,7 @@ class script extends atoum\test
 			->if($stdOut = new mock\writers\std\out())
 			->and($stdOut->getMockCOntroller()->write = function() {})
 			->and($script = new mock\script(uniqid()))
-			->and($script->setHelpWriter($stdOut))
+			->and($script->setOutputWriter($stdOut))
 			->then
 				->object($script->writeLabels(array($label = uniqid() => $message = uniqid())))->isIdenticalTo($script)
 				->mock($stdOut)->call('write')->withIdenticalArguments(atoum\script::padding . $label . ': ' . $message . PHP_EOL)->once()
