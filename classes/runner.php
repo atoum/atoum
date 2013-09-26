@@ -26,6 +26,7 @@ class runner implements observable
 	protected $observers = null;
 	protected $reports = null;
 	protected $reportSet = null;
+	protected $testPaths = array();
 	protected $testNumber = 0;
 	protected $testMethodNumber = 0;
 	protected $codeCoverage = true;
@@ -367,6 +368,8 @@ class runner implements observable
 
 	public function run(array $namespaces = array(), array $tags = array(), array $runTestClasses = array(), array $runTestMethods = array(), $testBaseClass = null)
 	{
+		$this->includeTestPaths();
+
 		$this->testNumber = 0;
 		$this->testMethodNumber = 0;
 
@@ -467,52 +470,30 @@ class runner implements observable
 		return $this->score;
 	}
 
+	public function getTestPaths()
+	{
+		return $this->testPaths;
+	}
+
+	public function setTestPaths(array $testPaths)
+	{
+		$this->testPaths = $testPaths;
+
+		return $this;
+	}
+
+	public function resetTestPaths()
+	{
+		$this->testPaths = array();
+
+		return $this;
+	}
+
 	public function addTest($path)
 	{
-		$runner = $this;
-		$includer = function($path) use ($runner) { include_once($path); };
-		$generateTestClass = false;
-
-		try
+		if (in_array($path, $this->testPaths) === false)
 		{
-			$declaredTestClasses = $this->findTestClasses();
-			$numberOfIncludedFiles = sizeof(get_included_files());
-
-			$this->includer->includePath($path, $includer);
-
-			if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->findTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null)
-			{
-				$this->testGenerator->generate($path);
-
-				try
-				{
-					$this->includer->includePath($path, function($path) use ($runner) { include($path); });
-				}
-				catch (atoum\includer\exception $exception)
-				{
-					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
-				}
-			}
-		}
-		catch (atoum\includer\exception $exception)
-		{
-			if ($this->testGenerator === null)
-			{
-				throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $path));
-			}
-			else
-			{
-				$this->testGenerator->generate($path);
-
-				try
-				{
-					$this->includer->includePath($path, $includer);
-				}
-				catch (atoum\includer\exception $exception)
-				{
-					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $path));
-				}
-			}
+			$this->testPaths[] = $path;
 		}
 
 		return $this;
@@ -684,6 +665,60 @@ class runner implements observable
 				return ($class->isSubClassOf($testBaseClass) === true && $class->isAbstract() === false);
 			}
 		);
+	}
+
+	private function includeTestPaths()
+	{
+		$runner = $this;
+		$includer = function($path) use ($runner) { include_once($path); };
+		$generateTestClass = false;
+
+		foreach ($this->testPaths as $testPath)
+		{
+			try
+			{
+				$declaredTestClasses = $this->findTestClasses();
+				$numberOfIncludedFiles = sizeof(get_included_files());
+
+				$this->includer->includePath($testPath, $includer);
+
+				if ($numberOfIncludedFiles < sizeof(get_included_files()) && sizeof(array_diff($this->findTestClasses(), $declaredTestClasses)) <= 0 && $this->testGenerator !== null)
+				{
+					$this->testGenerator->generate($testPath);
+
+					try
+					{
+						$this->includer->includePath($testPath, function($testPath) use ($runner) { include($testPath); });
+					}
+					catch (atoum\includer\exception $exception)
+					{
+						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $testPath));
+					}
+				}
+			}
+			catch (atoum\includer\exception $exception)
+			{
+				if ($this->testGenerator === null)
+				{
+					throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to add test file \'%s\''), $testPath));
+				}
+				else
+				{
+					$this->testGenerator->generate($testPath);
+
+					try
+					{
+						$this->includer->includePath($testPath, $includer);
+					}
+					catch (atoum\includer\exception $exception)
+					{
+						throw new exceptions\runtime\file(sprintf($this->getLocale()->_('Unable to generate test file \'%s\''), $testPath));
+					}
+				}
+			}
+		}
+
+		return $this;
 	}
 
 	private static function getMethods(test $test, array $runTestMethods, array $tags)

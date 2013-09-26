@@ -25,7 +25,6 @@ class runner extends atoum\script\configurable
 	protected $defaultArguments = array();
 	protected $namespaces = array();
 	protected $tags = array();
-	protected $classes = array();
 	protected $methods = array();
 	protected $loop = false;
 
@@ -831,7 +830,7 @@ class runner extends atoum\script\configurable
 			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}
 
-		if (sizeof($this->runner->getDeclaredTestClasses()) <= 0)
+		if (sizeof($this->runner->getTestPaths()) <= 0 && sizeof($this->runner->getDeclaredTestClasses()) <= 0)
 		{
 			$this->writeError($this->locale->_('No test found'))->help();
 		}
@@ -985,18 +984,20 @@ class runner extends atoum\script\configurable
 
 	protected function parseArguments(array $arguments)
 	{
-		$this->classes = $this->runner->getDeclaredTestClasses();
+		$configTestPaths = $this->runner->getTestPaths();
+
+		$this->runner->resetTestPaths();
 
 		parent::parseArguments($arguments);
 
-		$this->classes = array_diff($this->runner->getDeclaredTestClasses(), $this->classes);
+		$this->runner->setTestPaths($this->runner->getTestPaths() ?: $configTestPaths);
 
 		return $this;
 	}
 
 	private function getClassesOf($methods)
 	{
-		return sizeof($methods) <= 0 || isset($methods['*']) === true ? $this->classes : array_keys($methods);
+		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
 	}
 
 	private function copy($from, $to)
