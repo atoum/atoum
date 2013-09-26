@@ -620,4 +620,33 @@ class runner extends atoum\test
 					->withArguments('Usage: ' . $name . ' [path/to/test/file] [options]' . PHP_EOL)->once()
 		;
 	}
+
+	public function testRun()
+	{
+		$this
+			->if($locale = new mock\locale())
+			->and($this->calling($locale)->_ = function($string) { return $string; })
+			->and($helpWriter = new mock\writers\std\out())
+			->and($this->calling($helpWriter)->write = function() {})
+			->and($errorWriter = new mock\writers\std\err())
+			->and($this->calling($errorWriter)->clear = $errorWriter)
+			->and($this->calling($errorWriter)->write = $errorWriter)
+			->and($runner = new mock\runner())
+			->and($this->calling($runner)->getDeclaredTestClasses = array())
+			->and($script = new testedClass($name = uniqid()))
+			->and($script->setLocale($locale))
+			->and($script->setHelpWriter($helpWriter))
+			->and($script->setErrorWriter($errorWriter))
+			->and($script->setRunner($runner))
+			->then
+				->object($script->run())->isIdenticalTo($script)
+				->mock($locale)
+					->call('_')
+						->withArguments('Error: %s')->once()
+						->withArguments('No test found')->once()
+				->mock($errorWriter)
+					->call('clear')->once()
+					->call('write')->withArguments('Error: No test found' . PHP_EOL)->once()
+		;
+	}
 }

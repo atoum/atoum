@@ -833,7 +833,7 @@ class runner extends atoum\script\configurable
 
 		if (sizeof($this->runner->getDeclaredTestClasses()) <= 0)
 		{
-			$this->help();
+			$this->writeError($this->locale->_('No test found'))->help();
 		}
 		else
 		{
