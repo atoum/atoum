@@ -298,7 +298,7 @@ class parser extends atoum\test
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-						->hasMessage('Argument \'b\' is invalid')
+						->hasMessage('Argument \'b\' is unknown')
 				->if($superglobals->_SERVER['argv'] = array('scriptName', '-a', 'a1', 'a2', '-b', 'b1', 'b2', 'b3', '-d', 'd1', 'd2', '--c'))
 				->and($parser->addHandler(function($script, $argument, $value) {}, array('-d'), PHP_INT_MAX))
 				->then
