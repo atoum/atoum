@@ -419,9 +419,16 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$script->resetVerbosityLevel()->increaseVerbosityLevel();
+						$script->resetVerbosityLevel();
+
+						$verbosityLevel = substr_count($argument, '+');
+
+						while ($verbosityLevel--)
+						{
+							$script->increaseVerbosityLevel();
+						}
 					},
-					array('+verbose'),
+					array('+verbose', '++verbose'),
 					null,
 					$this->locale->_('Enable verbose mode')
 				)
@@ -854,6 +861,11 @@ class runner extends atoum\script\configurable
 			foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
 			{
 				$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
+			}
+
+			foreach ($this->runner->getTestPaths() as $testPath)
+			{
+				$this->verbose(sprintf($this->locale->_('Using \'%s\' test file…'), $testPath), 2);
 			}
 
 			if ($this->loop === true)
