@@ -19,6 +19,23 @@ class parser implements \iteratorAggregate
 		$this->setSuperglobals($superglobals ?: new atoum\superglobals());
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		foreach ($this->values as $argumentName => $argumentValues)
+		{
+			$string .= ($string == '' ? '' : ' ') . $argumentName;
+
+			foreach ($argumentValues as $argumentValue)
+			{
+				$string .= ' ' . $argumentValue;
+			}
+		}
+
+		return $string;
+	}
+
 	public function setSuperglobals(atoum\superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
@@ -59,7 +76,9 @@ class parser implements \iteratorAggregate
 
 		$priorities = $this->priorities;
 
-		uksort($this->values, function($arg1, $arg2) use ($priorities) {
+		$values = $this->values;
+
+		uksort($values, function($arg1, $arg2) use ($priorities) {
 				switch (true)
 				{
 					case isset($priorities[$arg1]) === false:
@@ -72,7 +91,7 @@ class parser implements \iteratorAggregate
 			}
 		);
 
-		foreach ($this->values as $argument => $values)
+		foreach ($values as $argument => $values)
 		{
 			$this->triggerHandlers($argument, $values, $script);
 		}
@@ -146,6 +165,11 @@ class parser implements \iteratorAggregate
 		return (isset($this->handlers[$argument]) === true || $this->defaultHandler !== null);
 	}
 
+	public function argumentHasHandler($argument)
+	{
+		return (isset($this->handlers[$argument]) === true);
+	}
+
 	public function init(array $array = array())
 	{
 		if (sizeof($array) <= 0)
@@ -196,7 +220,7 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
-	public function triggerHandlers($argument, array $values, atoum\script $script)
+	public function triggerHandlers($argument, array $values, atoum\script $script, & $argumentUsed = null)
 	{
 		if (isset($this->handlers[$argument]) === true)
 		{
@@ -204,29 +228,17 @@ class parser implements \iteratorAggregate
 		}
 		else
 		{
-			$argumentIsHandled = false;
+			$closestArgument = null;
 
-			if ($this->defaultHandler !== null)
+			if (self::isArgument($argument) === true)
 			{
-				$argumentIsHandled = $this->defaultHandler->__invoke($script, $argument);
-			}
-
-			if ($argumentIsHandled === false)
-			{
-				if (self::isArgument($argument) === false)
-				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is invalid');
-				}
-
-				$argumentMetaphone = metaphone($argument);
-
 				$min = null;
-				$closestArgument = null;
-				$handlerArguments = array_keys($this->handlers);
+				$argumentMetaphone = metaphone($argument);
+				$availableArguments = array_keys($this->handlers);
 
-				natsort($handlerArguments);
+				natsort($availableArguments);
 
-				foreach ($handlerArguments as $handlerArgument)
+				foreach ($availableArguments as $handlerArgument)
 				{
 					$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
 
@@ -239,19 +251,22 @@ class parser implements \iteratorAggregate
 						}
 					}
 				}
+			}
 
-				if ($closestArgument === null)
-				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
-				}
-				else if ($min > 0)
-				{
+			switch (true)
+			{
+				case $closestArgument === null:
+					if ($this->defaultHandler === null || $this->defaultHandler->__invoke($script, $argument) === false)
+					{
+						throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
+					}
+					break;
+
+				case $min > 0:
 					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\'?');
-				}
-				else
-				{
+
+				default:
 					$this->invokeHandlers($script, $closestArgument, $values);
-				}
 			}
 		}
 
