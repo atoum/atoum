@@ -673,7 +673,6 @@ class runner implements observable
 	{
 		$runner = $this;
 		$includer = function($path) use ($runner) { include_once($path); };
-		$generateTestClass = false;
 
 		foreach ($this->testPaths as $testPath)
 		{
