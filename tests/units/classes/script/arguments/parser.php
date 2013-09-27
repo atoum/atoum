@@ -68,7 +68,7 @@ class parser extends atoum\test
 				->castToString($parser)->isEqualTo('-a A B C')
 			->and($parser->parse(new \mock\mageekguy\atoum\script(uniqid()), array('-a', 'A', 'B', 'C', '--b')))
 			->then
-				->castToString($parser)->isEqualTo('-a A B C --b')
+				->castToString($parser)->isEqualTo('--b -a A B C')
 		;
 	}
 

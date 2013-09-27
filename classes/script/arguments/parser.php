@@ -91,9 +91,13 @@ class parser implements \iteratorAggregate
 			}
 		);
 
+		$this->values = array();
+
 		foreach ($values as $argument => $values)
 		{
-			$this->triggerHandlers($argument, $values, $script);
+			$this->triggerHandlers($argument, $values, $script, $closestArgument);
+
+			$this->values[$closestArgument] = $values;
 		}
 
 		return $this;
@@ -222,60 +226,61 @@ class parser implements \iteratorAggregate
 
 	public function triggerHandlers($argument, array $values, atoum\script $script, & $argumentUsed = null)
 	{
+		$argumentUsed = $argument;
+
 		if (isset($this->handlers[$argument]) === true)
 		{
 			$this->invokeHandlers($script, $argument, $values);
 		}
 		else
 		{
-			$argumentIsHandled = false;
-
-			if ($this->defaultHandler !== null)
+			if (self::isArgument($argument) === false)
 			{
-				$argumentIsHandled = $this->defaultHandler->__invoke($script, $argument);
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is invalid');
 			}
 
-			if ($argumentIsHandled === false)
+			$argumentMetaphone = metaphone($argument);
+
+			$min = null;
+			$closestArgument = null;
+			$handlerArguments = array_keys($this->handlers);
+
+			natsort($handlerArguments);
+
+			foreach ($handlerArguments as $handlerArgument)
 			{
-				if (self::isArgument($argument) === false)
+				$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
+
+				if ($levenshtein < (strlen($argument) / 2))
 				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is invalid');
-				}
-
-				$argumentMetaphone = metaphone($argument);
-
-				$min = null;
-				$closestArgument = null;
-				$handlerArguments = array_keys($this->handlers);
-
-				natsort($handlerArguments);
-
-				foreach ($handlerArguments as $handlerArgument)
-				{
-					$levenshtein = levenshtein($argumentMetaphone, metaphone($handlerArgument));
-
-					if ($levenshtein < (strlen($argument) / 2))
+					if ($min === null || $levenshtein < $min)
 					{
-						if ($min === null || $levenshtein < $min)
-						{
-							$min = $levenshtein;
-							$closestArgument = $handlerArgument;
-						}
+						$min = $levenshtein;
+						$closestArgument = $handlerArgument;
 					}
 				}
+			}
 
-				if ($closestArgument === null)
+			if ($closestArgument === null)
+			{
+				if ($this->defaultHandler !== null)
 				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
-				}
-				else if ($min > 0)
-				{
-					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\'?');
+					$this->defaultHandler->__invoke($script, $argument);
 				}
 				else
 				{
-					$this->invokeHandlers($script, $closestArgument, $values);
+					throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown');
 				}
+			}
+			else if ($min > 0)
+			{
+				throw new exceptions\runtime\unexpectedValue('Argument \'' . $argument . '\' is unknown, did you mean \'' . $closestArgument . '\'?');
+			}
+			else
+			{
+				$argumentUsed = $closestArgument;
+
+				$this->invokeHandlers($script, $closestArgument, $values);
 			}
 		}
 
