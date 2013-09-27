@@ -272,6 +272,6 @@ class parser implements \iteratorAggregate
 
 	public static function isArgument($value)
 	{
-		return (preg_match('/^(\+|-{1,2})[a-z][-_a-z0-9]*/i', $value) === 1);
+		return (preg_match('/^(\+{1,}|-{1,})[a-z][-_a-z0-9]*/i', $value) === 1);
 	}
 }

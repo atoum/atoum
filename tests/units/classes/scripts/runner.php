@@ -59,7 +59,7 @@ class runner extends atoum\test
 							'Display version'
 						),
 						array(
-							array('+verbose'),
+							array('+verbose', '++verbose'),
 							null,
 							'Enable verbose mode'
 						),
@@ -216,7 +216,7 @@ class runner extends atoum\test
 							'Display version'
 						),
 						array(
-							array('+verbose'),
+							array('+verbose', '++verbose'),
 							null,
 							'Enable verbose mode'
 						),

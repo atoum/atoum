@@ -301,8 +301,13 @@ class parser extends atoum\test
 			->boolean(script\arguments\parser::isArgument('-a' . rand(0, 9)))->isTrue()
 			->boolean(script\arguments\parser::isArgument('--a' . rand(0, 9)))->isTrue()
 			->boolean(script\arguments\parser::isArgument('+aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('++aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('++-aa'))->isFalse()
+			->boolean(script\arguments\parser::isArgument('+++aa'))->isTrue()
 			->boolean(script\arguments\parser::isArgument('-aa'))->isTrue()
 			->boolean(script\arguments\parser::isArgument('--aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('---aa'))->isTrue()
+			->boolean(script\arguments\parser::isArgument('--+aa'))->isFalse()
 		;
 	}
 
