@@ -491,6 +491,8 @@ class runner implements observable
 
 	public function addTest($path)
 	{
+		$path = (string) $path;
+
 		if (in_array($path, $this->testPaths) === false)
 		{
 			$this->testPaths[] = $path;

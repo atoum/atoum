@@ -513,6 +513,8 @@ class runner extends atoum\test
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
 				->object($runner->addTest($testPath1))->isIdenticalTo($runner)
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
+				->object($runner->addTest($testPath3 = new \splFileInfo(__FILE__)))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
 		;
 	}
 }
