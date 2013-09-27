@@ -25,7 +25,7 @@ class parser implements \iteratorAggregate
 
 		foreach ($this->values as $argumentName => $argumentValues)
 		{
-			$string .= ' ' . $argumentName;
+			$string .= ($string == '' ? '' : ' ') . $argumentName;
 
 			foreach ($argumentValues as $argumentValue)
 			{
@@ -76,7 +76,9 @@ class parser implements \iteratorAggregate
 
 		$priorities = $this->priorities;
 
-		uksort($this->values, function($arg1, $arg2) use ($priorities) {
+		$values = $this->values;
+
+		uksort($values, function($arg1, $arg2) use ($priorities) {
 				switch (true)
 				{
 					case isset($priorities[$arg1]) === false:
@@ -89,7 +91,7 @@ class parser implements \iteratorAggregate
 			}
 		);
 
-		foreach ($this->values as $argument => $values)
+		foreach ($values as $argument => $values)
 		{
 			$this->triggerHandlers($argument, $values, $script);
 		}
@@ -218,7 +220,7 @@ class parser implements \iteratorAggregate
 		return $this;
 	}
 
-	public function triggerHandlers($argument, array $values, atoum\script $script)
+	public function triggerHandlers($argument, array $values, atoum\script $script, & $argumentUsed = null)
 	{
 		if (isset($this->handlers[$argument]) === true)
 		{
