@@ -25,7 +25,6 @@ class runner extends atoum\script\configurable
 	protected $defaultArguments = array();
 	protected $namespaces = array();
 	protected $tags = array();
-	protected $classes = array();
 	protected $methods = array();
 	protected $loop = false;
 
@@ -420,9 +419,16 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$script->resetVerbosityLevel()->increaseVerbosityLevel();
+						$script->resetVerbosityLevel();
+
+						$verbosityLevel = substr_count($argument, '+');
+
+						while ($verbosityLevel--)
+						{
+							$script->increaseVerbosityLevel();
+						}
 					},
-					array('+verbose'),
+					array('+verbose', '++verbose'),
 					null,
 					$this->locale->_('Enable verbose mode')
 				)
@@ -831,7 +837,7 @@ class runner extends atoum\script\configurable
 			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}
 
-		if (sizeof($this->runner->getDeclaredTestClasses()) <= 0)
+		if (sizeof($this->runner->getTestPaths()) <= 0 && sizeof($this->runner->getDeclaredTestClasses()) <= 0)
 		{
 			$this->writeError($this->locale->_('No test found'))->help();
 		}
@@ -855,6 +861,11 @@ class runner extends atoum\script\configurable
 			foreach (atoum\autoloader::getRegisteredAutoloaders() as $autoloader)
 			{
 				$this->verbose(sprintf($this->locale->_('Using \'%s\' autoloader cache file…'), $autoloader->getCacheFileForInstance()));
+			}
+
+			foreach ($this->runner->getTestPaths() as $testPath)
+			{
+				$this->verbose(sprintf($this->locale->_('Using \'%s\' test file…'), $testPath), 2);
 			}
 
 			if ($this->loop === true)
@@ -985,18 +996,20 @@ class runner extends atoum\script\configurable
 
 	protected function parseArguments(array $arguments)
 	{
-		$this->classes = $this->runner->getDeclaredTestClasses();
+		$configTestPaths = $this->runner->getTestPaths();
+
+		$this->runner->resetTestPaths();
 
 		parent::parseArguments($arguments);
 
-		$this->classes = array_diff($this->runner->getDeclaredTestClasses(), $this->classes);
+		$this->runner->setTestPaths($this->runner->getTestPaths() ?: $configTestPaths);
 
 		return $this;
 	}
 
 	private function getClassesOf($methods)
 	{
-		return sizeof($methods) <= 0 || isset($methods['*']) === true ? $this->classes : array_keys($methods);
+		return sizeof($methods) <= 0 || isset($methods['*']) === true ? array() : array_keys($methods);
 	}
 
 	private function copy($from, $to)

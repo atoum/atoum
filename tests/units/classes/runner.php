@@ -44,7 +44,29 @@ class runner extends atoum\test
 				->boolean($runner->codeCoverageIsEnabled())->isTrue()
 				->variable($runner->getDefaultReportTitle())->isNull()
 				->array($runner->getObservers())->isEmpty()
+				->array($runner->getTestPaths())->isEmpty()
 				->variable($runner->getXdebugConfig())->isNull()
+		;
+	}
+
+	public function testSetTestPaths()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->setTestPaths($paths = array(uniqid(), uniqid(), uniqid())))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo($paths)
+		;
+	}
+
+	public function testResetTestPaths()
+	{
+		$this
+			->if($runner = new testedClass())
+			->and($runner->setTestPaths(array(uniqid(), uniqid(), uniqid())))
+			->then
+				->object($runner->resetTestPaths())->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEmpty()
 		;
 	}
 
@@ -477,6 +499,22 @@ class runner extends atoum\test
 			->if($runner = new testedClass())
 			->then
 				->object($runner->getCoverage())->isIdenticalTo($runner->getScore()->getCoverage())
+		;
+	}
+
+	public function testAddTest()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->addTest($testPath1 = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1))
+				->object($runner->addTest($testPath2 = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
+				->object($runner->addTest($testPath1))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
+				->object($runner->addTest($testPath3 = new \splFileInfo(__FILE__)))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
 		;
 	}
 }
