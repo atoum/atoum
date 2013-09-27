@@ -76,7 +76,7 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->twice(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
-			->if($asserter->setWith($adapter = new test\adapter()))
+			->if($adapterAsserter->setWith($adapter = new test\adapter()))
 			->and($asserter->setWith($call = new php\call('md5', null, $adapter)))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
@@ -311,7 +311,7 @@ class adapter extends atoum\test
 				->array($asserter->getBeforeMethodCalls())->isEmpty()
 				->object($asserter->withAnyMethodCallsBefore())->isIdenticalTo($asserter)
 				->array($asserter->getBeforeMethodCalls())->isEmpty()
-			->if($asserter->setWith($adapter = new test\adapter()))
+			->if($adapterAsserter->setWith($adapter = new test\adapter()))
 			->and($asserter->beforeMethodCall(uniqid(), $mock))
 			->then
 				->array($asserter->getBeforeMethodCalls())->isNotEmpty()
@@ -341,12 +341,12 @@ class adapter extends atoum\test
 	public function testWithAnyMethodCallsAfter()
 	{
 		$this
-			->if($asserter = new testedClass(new asserters\adapter(new asserter\generator())))
+			->if($asserter = new testedClass($adapterAsserter = new asserters\adapter()))
 			->then
 				->array($asserter->getAfterMethodCalls())->isEmpty()
 				->object($asserter->withAnyMethodCallsAfter())->isIdenticalTo($asserter)
 				->array($asserter->getAfterMethodCalls())->isEmpty()
-			->if($asserter->setWith($adapter = new test\adapter()))
+			->if($adapterAsserter->setWith($adapter = new test\adapter()))
 			->and($asserter->afterMethodCall(uniqid(), new \mock\dummy()))
 			->then
 				->array($asserter->getAfterMethodCalls())->isNotEmpty()
@@ -437,6 +437,34 @@ class adapter extends atoum\test
 				->array($asserter->getAfterFunctionCalls())->isNotEmpty()
 				->object($asserter->withAnyFunctionCallsAfter())->isIdenticalTo($asserter)
 				->array($asserter->getAfterFunctionCalls())->isEmpty()
+		;
+	}
+
+	public function testWithAndArguments()
+	{
+		$this
+			->if($adapterAsserter = new asserters\adapter())
+			->and($asserter = new testedClass($adapterAsserter))
+			->then
+				->exception(function() use ($asserter) { $asserter->with(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called function is undefined')
+			->if($adapterAsserter->setWith($adapter = new atoum\test\adapter()))
+			->and($asserter->setWith($call = new php\call($function = uniqid(), null, $adapter)))
+			->then
+				->object($asserter->with())->isIdenticalTo($asserter)
+				->object($asserter->with)->isIdenticalTo($asserter)
+				->object($asserter->and())->isIdenticalTo($asserter)
+				->object($asserter->and)->isIdenticalTo($asserter)
+				->object($arguments = $asserter->arguments)->isInstanceOf('mageekguy\atoum\asserters\call\arguments')
+				->object($arguments->getCallee())->isIdenticalTo($adapter)
+				->object($asserter->arguments())->isIdenticalTo($arguments)
+				->object($asserter->arguments(rand(0, PHP_INT_MAX)))->isIdenticalTo($arguments)
+				->object($asserter
+						->with->arguments[0]->isIdenticalTo(uniqid())
+						->and->arguments(1)->isEqualTo(uniqid())
+					)
+						->isIdenticalTo($asserter->getArguments())
 		;
 	}
 }

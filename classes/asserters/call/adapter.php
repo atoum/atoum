@@ -28,12 +28,29 @@ class adapter extends asserters\call
 
 	public function __call($method, $arguments)
 	{
-		return call_user_func_array(array($this->adapterAsserter, $method), $arguments);
+		try
+		{
+			return call_user_func_array(array($this->adapterAsserter, $method), $arguments);
+		}
+		catch (exceptions\logic\invalidArgument $e)
+		{
+			return parent::__call($method, $arguments);
+		}
 	}
 
 	public function getAdapterAsserter()
 	{
 		return $this->adapterAsserter;
+	}
+
+	public function getArguments()
+	{
+		if ($this->callIsSet()->arguments === null)
+		{
+			$this->arguments = new arguments($this);
+		}
+
+		return $this->arguments->setWith($this->call->getObject());
 	}
 
 	public function beforeMethodCall($methodName, atoum\mock\aggregator $mock)

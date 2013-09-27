@@ -27,12 +27,29 @@ class mock extends asserters\call
 
 	public function __call($method, $arguments)
 	{
-		return call_user_func_array(array($this->mockAsserter, $method), $arguments);
+		try
+		{
+			return call_user_func_array(array($this->mockAsserter, $method), $arguments);
+		}
+		catch (exceptions\logic\invalidArgument $e)
+		{
+			return parent::__call($method, $arguments);
+		}
 	}
 
 	public function getMockAsserter()
 	{
 		return $this->mockAsserter;
+	}
+
+	public function getArguments()
+	{
+		if ($this->callIsSet()->arguments === null)
+		{
+			$this->arguments = new arguments($this);
+		}
+
+		return $this->arguments->setWith($this->call->getObject()->getMockController());
 	}
 
 	public function beforeMethodCall($methodName)

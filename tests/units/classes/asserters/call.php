@@ -32,6 +32,27 @@ class call extends atoum\test
 		;
 	}
 
+	public function test__call()
+	{
+		$this
+			->if($asserter = new testedClass())
+			->and($this->calling($asserter)->getArguments = $arguments = new \mock\mageekguy\atoum\asserters\call\arguments($asserter))
+			->then
+				->object($asserter->arguments(0))->isIdenticalTo($arguments)
+				->mock($arguments)
+					->call('offsetGet')
+						->with->arguments[0]->isEqualTo(0)->once()
+				->object($asserter->arguments[1])->isIdenticalTo($arguments)
+				->mock($arguments)
+					->call('offsetGet')
+						->with->arguments[0]->isEqualTo(1)->once()
+				->object($asserter->arguments[2])->isIdenticalTo($arguments)
+				->mock($arguments)
+					->call('offsetGet')
+						->with->arguments[0]->isEqualTo(2)->once()
+		;
+	}
+
 	public function testSetWith()
 	{
 		$this

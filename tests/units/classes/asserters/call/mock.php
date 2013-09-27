@@ -852,4 +852,35 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new php\call($function, array(), $mock))
 		;
 	}
+
+	public function testWithAndArguments()
+	{
+		$this
+			->if($mockAsserter = new asserters\mock())
+			->and($asserter = new testedClass($mockAsserter))
+			->then
+				->exception(function() use ($asserter) { $asserter->with(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Mock is undefined')
+			->if($mockAsserter->setWith($mock = new \mock\mageekguy\atoum\tests\units\asserters\dummy()))
+			->then
+				->exception(function() use ($asserter) { $asserter->with(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Called method is undefined')
+			->if($asserter->setWith($call = new php\call($function = uniqid(), null, $mock)))
+			->then
+				->object($asserter->with())->isIdenticalTo($asserter)
+				->object($asserter->with)->isIdenticalTo($asserter)
+				->object($asserter->and())->isIdenticalTo($asserter)
+				->object($asserter->and)->isIdenticalTo($asserter)
+				->object($arguments = $asserter->arguments())->isInstanceOf('mageekguy\atoum\asserters\call\arguments')
+				->object($arguments->getCallee())->isIdenticalTo($mock->getMockController())
+				->object($asserter->arguments)->isIdenticalTo($arguments)
+				->object($asserter
+						->with->arguments[0]->isIdenticalTo(uniqid())
+						->and->arguments(1)->isEqualTo(uniqid())
+					)
+						->isIdenticalTo($asserter->getArguments())
+		;
+	}
 }

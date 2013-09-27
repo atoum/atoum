@@ -11,10 +11,43 @@ use
 abstract class call extends atoum\asserter
 {
 	protected $call;
+	protected $arguments;
+
+	public function __call($method, $arguments)
+	{
+		switch ($method)
+		{
+			case 'with':
+			case 'and':
+				return $this->callIsSet();
+
+			case 'arguments':
+				$asserter = $this->getArguments();
+
+				if (sizeof($arguments) === 0) {
+					return $asserter;
+				}
+
+				return $asserter[$arguments[0]];
+
+			default:
+				return parent::__call($method, $arguments);
+		}
+	}
+
+	public function __get($asserter)
+	{
+		return $this->__call($asserter, array());
+	}
 
 	public function setWith($call)
 	{
 		$this->call = $call;
+
+		if ($this->call instanceof php\call === false)
+		{
+			$this->fail(sprintf($this->generator->getLocale()->_('%s is not a php call'), $this->getTypeOf($this->call)));
+		}
 
 		return $this;
 	}
@@ -95,6 +128,8 @@ abstract class call extends atoum\asserter
 	{
 		return $this->exactly(0, $failMessage);
 	}
+
+	abstract public function getArguments();
 
 	abstract public function exactly($number, $failMessage = null);
 
