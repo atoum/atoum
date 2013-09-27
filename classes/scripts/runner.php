@@ -843,6 +843,17 @@ class runner extends atoum\script\configurable
 		}
 		else
 		{
+			$arguments = $this->argumentsParser->getValues();
+
+			if (sizeof($arguments) <= 0)
+			{
+				$this->verbose(sprintf($this->locale->_('Using no CLI argument…')));
+			}
+			else
+			{
+				$this->verbose(sprintf($this->locale->__('Using %s CLI argument…', 'Using %s arguments…', sizeof($arguments)), $this->argumentsParser));
+			}
+
 			if (sizeof($this->configFiles) > 0)
 			{
 				foreach ($this->configFiles as $configFile)
@@ -931,7 +942,7 @@ class runner extends atoum\script\configurable
 
 		$addScoreFile = false;
 
-		foreach ($this->getArgumentsParser()->getValues() as $argument => $values)
+		foreach ($this->argumentsParser->getValues() as $argument => $values)
 		{
 			switch ($argument)
 			{
@@ -946,7 +957,14 @@ class runner extends atoum\script\configurable
 					break;
 
 				default:
-					$php->addArgument($argument, join(' ', $values));
+					if ($this->argumentsParser->argumentHasHandler($argument) === false)
+					{
+						$php->addArgument('-f', $argument);
+					}
+					else
+					{
+						$php->addArgument($argument, join(' ', $values));
+					}
 			}
 		}
 

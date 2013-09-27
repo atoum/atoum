@@ -374,6 +374,31 @@ class parser extends atoum\test
 		;
 	}
 
+	public function testArgumentHasHandler()
+	{
+		$this
+			->if($parser = new script\arguments\parser())
+			->then
+				->boolean($parser->argumentHasHandler('-' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler('--' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler(uniqid()))->isFalse()
+			->if($parser->addHandler(function($script, $argument, $values) {}, array('--a-long-argument', '-a')))
+			->then
+				->boolean($parser->argumentHasHandler('-' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler('--' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler(uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler('-a'))->isTrue()
+				->boolean($parser->argumentHasHandler('--a-long-argument'))->isTrue()
+			->if($parser->setDefaultHandler(function($script, $argument) {}))
+			->then
+				->boolean($parser->argumentHasHandler('-' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler('--' . uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler(uniqid()))->isFalse()
+				->boolean($parser->argumentHasHandler('-a'))->isTrue()
+				->boolean($parser->argumentHasHandler('--a-long-argument'))->isTrue()
+		;
+	}
+
 	public function testArgumentIsHandled()
 	{
 		$this

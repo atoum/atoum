@@ -19,6 +19,23 @@ class parser implements \iteratorAggregate
 		$this->setSuperglobals($superglobals ?: new atoum\superglobals());
 	}
 
+	public function __toString()
+	{
+		$string = '';
+
+		foreach ($this->values as $argumentName => $argumentValues)
+		{
+			$string .= ' ' . $argumentName;
+
+			foreach ($argumentValues as $argumentValue)
+			{
+				$string .= ' ' . $argumentValue;
+			}
+		}
+
+		return $string;
+	}
+
 	public function setSuperglobals(atoum\superglobals $superglobals)
 	{
 		$this->superglobals = $superglobals;
@@ -144,6 +161,11 @@ class parser implements \iteratorAggregate
 	public function argumentIsHandled($argument)
 	{
 		return (isset($this->handlers[$argument]) === true || $this->defaultHandler !== null);
+	}
+
+	public function argumentHasHandler($argument)
+	{
+		return (isset($this->handlers[$argument]) === true);
 	}
 
 	public function init(array $array = array())
