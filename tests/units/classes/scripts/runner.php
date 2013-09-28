@@ -649,4 +649,25 @@ class runner extends atoum\test
 					->call('write')->withArguments('Error: No test found' . PHP_EOL)->once()
 		;
 	}
+
+	public function testAutorun()
+	{
+		$this
+			->if($script = new testedClass(uniqid()))
+			->and($script->setAdapter($adapter = new atoum\test\adapter()))
+			->and($adapter->realpath = function($path) { return $path; })
+			->when(function() { if (isset($_SERVER['argv']) === true) { unset($_SERVER['argv']); } })
+			->then
+				->boolean($script->autorun())->isTrue()
+			->if($_SERVER['argv'] = array())
+			->then
+				->boolean($script->autorun())->isTrue()
+			->if($_SERVER['argv'][0] = $script->getName())
+			->then
+				->boolean($script->autorun())->isFalse()
+			->if($adapter->realpath = uniqid())
+			->then
+				->boolean($script->autorun())->isTrue()
+		;
+	}
 }

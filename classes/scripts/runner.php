@@ -135,9 +135,9 @@ class runner extends atoum\script\configurable
 		return $this->defaultReportFactory;
 	}
 
-	public function isRunningFromCli()
+	public function autorun()
 	{
-		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
+		return (isset($_SERVER['argv']) === false || isset($_SERVER['argv'][0]) === false || $this->adapter->realpath($_SERVER['argv'][0]) !== $this->getName());
 	}
 
 	public function setScoreFile($path)
@@ -832,7 +832,7 @@ class runner extends atoum\script\configurable
 	{
 		parent::doRun();
 
-		if ($this->argumentsParser->hasFoundArguments() === false && $this->isRunningFromCli() === true)
+		if ($this->argumentsParser->hasFoundArguments() === false && $this->autorun() === true)
 		{
 			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}
