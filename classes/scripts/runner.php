@@ -196,6 +196,11 @@ class runner extends atoum\script\configurable
 		# So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
 		$this->setDefaultBootstrapFiles();
 
+		if ($this->autorun() === true && sizeof($this->runner->getDeclaredTestClasses()) > 0)
+		{
+			$this->runner->canNotAddTest();
+		}
+
 		try
 		{
 			parent::run($arguments ?: $this->getArguments());
@@ -832,7 +837,7 @@ class runner extends atoum\script\configurable
 	{
 		parent::doRun();
 
-		if ($this->argumentsParser->hasFoundArguments() === false && $this->autorun() === true)
+		if ($this->argumentsParser->hasFoundArguments() === false)
 		{
 			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}

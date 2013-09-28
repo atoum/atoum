@@ -40,6 +40,7 @@ class runner implements observable
 
 	private $start = null;
 	private $stop = null;
+	private $canAddTest = true;
 
 	public function __construct()
 	{
@@ -489,13 +490,30 @@ class runner implements observable
 		return $this;
 	}
 
+	public function canAddTest()
+	{
+		$this->canAddTest = true;
+
+		return $this;
+	}
+
+	public function canNotAddTest()
+	{
+		$this->canAddTest = false;
+
+		return $this;
+	}
+
 	public function addTest($path)
 	{
-		$path = (string) $path;
-
-		if (in_array($path, $this->testPaths) === false)
+		if ($this->canAddTest === true)
 		{
-			$this->testPaths[] = $path;
+			$path = (string) $path;
+
+			if (in_array($path, $this->testPaths) === false)
+			{
+				$this->testPaths[] = $path;
+			}
 		}
 
 		return $this;
