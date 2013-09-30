@@ -36,6 +36,7 @@ class autoloader extends atoum\test
 					)
 				)
 				->array($autoloader->getNamespaceAliases())->isEqualTo(array('atoum\\' => 'mageekguy\\atoum\\'))
+				->array($autoloader->getClassAliases())->isEqualTo(array('atoum' => 'mageekguy\\atoum\\test', 'mageekguy\\atoum' => 'mageekguy\\atoum\\test'))
 		;
 	}
 
@@ -91,18 +92,21 @@ class autoloader extends atoum\test
 				->object($autoloader->addClassAlias($alias = uniqid(), $target = uniqid()))->isIdenticalTo($autoloader)
 				->array($autoloader->getClassAliases())->isEqualTo(array(
 						'atoum' => 'mageekguy\\atoum\\test',
+						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
 						$alias => $target
 					)
 				)
 				->object($autoloader->addClassAlias($alias, $target))->isIdenticalTo($autoloader)
 				->array($autoloader->getClassAliases())->isEqualTo(array(
 						'atoum' => 'mageekguy\\atoum\\test',
+						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
 						$alias => $target
 					)
 				)
 				->object($autoloader->addClassAlias('\\' . ($otherAlias = uniqid()), '\\' . ($otherTarget = uniqid())))->isIdenticalTo($autoloader)
 				->array($autoloader->getClassAliases())->isEqualTo(array(
 						'atoum' => 'mageekguy\\atoum\\test',
+						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
 						$alias => $target,
 						$otherAlias => $otherTarget
 					)
@@ -110,6 +114,7 @@ class autoloader extends atoum\test
 				->object($autoloader->addClassAlias('\\' . ($anOtherAlias = uniqid()) . '\\', '\\' . ($anOtherTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
 				->array($autoloader->getClassAliases())->isEqualTo(array(
 						'atoum' => 'mageekguy\\atoum\\test',
+						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
 						$alias => $target,
 						$otherAlias => $otherTarget,
 						$anOtherAlias => $anOtherTarget
@@ -118,6 +123,7 @@ class autoloader extends atoum\test
 				->object($autoloader->addClassAlias('FOO', '\\' . ($fooTarget = uniqid()) . '\\'))->isIdenticalTo($autoloader)
 				->array($autoloader->getClassAliases())->isEqualTo(array(
 						'atoum' => 'mageekguy\\atoum\\test',
+						'mageekguy\\atoum' => 'mageekguy\\atoum\\test',
 						$alias => $target,
 						$otherAlias => $otherTarget,
 						$anOtherAlias => $anOtherTarget,
