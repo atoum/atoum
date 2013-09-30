@@ -41,7 +41,7 @@ class autoloader
 			$this->addNamespaceAlias($alias, $target);
 		}
 
-		foreach ($classAliases ?: array('atoum' => __NAMESPACE__ . '\test') as $alias => $target)
+		foreach ($classAliases ?: array('atoum' => __NAMESPACE__ . '\test', __NAMESPACE__ => __NAMESPACE__ . '\test') as $alias => $target)
 		{
 			$this->addClassAlias($alias, $target);
 		}
