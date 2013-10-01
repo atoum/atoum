@@ -104,35 +104,6 @@ class adapter extends atoum\adapter
 		}
 
 		return $calls;
-
-		/*
-		$calls = null;
-
-		if ($functionName === null)
-		{
-			$calls = $this->calls;
-		}
-		else
-		{
-			$functionName = static::normalizeFunctionName($functionName);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				$filter = static::getArgumentsFilter($arguments, $identicalArguments);
-
-				if ($filter === null)
-				{
-					$calls = $this->calls[$functionName];
-				}
-				else
-				{
-					$calls = array_filter($this->calls[$functionName], $filter);
-				}
-			}
-		}
-
-		return $calls;
-		*/
 	}
 
 	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
