@@ -394,7 +394,7 @@ class mock extends atoum\asserter
 	{
 		$string = '';
 
-		if (($calls  = $this->mock->getMockController()->getCalls($this->call->getFunction())) !== null)
+		if (sizeof($calls  = $this->mock->getMockController()->getCalls($this->call->getFunction())) > 0)
 		{
 			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
 

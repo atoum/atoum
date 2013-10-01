@@ -296,6 +296,21 @@ class adapter extends test
 				->array($adapter->getCalls('foo', array(2 => 3, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
 				->array($adapter->getCalls('foo', array(0 => 1, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
 				->array($adapter->getCalls('foo', array(2 => 3, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+			->if($adapter->foo(1, 2, 3, 4, 5))
+			->then
+				->array($adapter->getCalls('foo'))->isEqualTo(array(
+						5 => array(1, 2, 3, 4, 5),
+						6 => array(1, 2, 3, 4, 6),
+						7 => array(1, 2, 3, 4, 5)
+					)
+				)
+				->array($adapter->getCalls('foo', array(1, 2, 3, 4, 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5), 7 => array(1, 2, 3, 4, 5)))
+				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5), 7 => array(1, 2, 3, 4, 5)))
+			->if($adapter = new testedClass())
+			->and($adapter->addCall('stream_wrapper_register', array('atoum', 'mageekguy\atoum\mock\stream', 0)))
+			->and($adapter->addCall('stream_wrapper_register', array('524ab3af569f3', 'mageekguy\atoum\mock\stream', 0)))
+			->then
+				->array($adapter->getCalls('stream_wrapper_register', array('524ab3af569f3', 'mageekguy\atoum\mock\stream')))->isEqualTo(array(9 => array('524ab3af569f3', 'mageekguy\atoum\mock\stream', 0)))
 		;
 	}
 

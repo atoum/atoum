@@ -67,6 +67,45 @@ class adapter extends atoum\adapter
 
 	public function getCalls($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
+		$calls = array();
+
+		if ($functionName === null)
+		{
+			foreach ($this->calls as $functionName => $functionCalls)
+			{
+				foreach ($functionCalls as $number => $call)
+				{
+					$calls[$functionName][$number] = $call->getArguments();
+				}
+			}
+		}
+		else
+		{
+			$functionName = static::normalizeFunctionName($functionName);
+
+			if (isset($this->calls[$functionName]) === true)
+			{
+				$referenceCall = new adapter\call($functionName, $arguments);
+
+				if ($identicalArguments === false)
+				{
+					$filter = function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); };
+				}
+				else
+				{
+					$filter = function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); };
+				}
+
+				foreach (array_filter($this->calls[$functionName], $filter) as $callNumber => $call)
+				{
+					$calls[$callNumber] = $call->getArguments();
+				}
+			}
+		}
+
+		return $calls;
+
+		/*
 		$calls = null;
 
 		if ($functionName === null)
@@ -93,6 +132,7 @@ class adapter extends atoum\adapter
 		}
 
 		return $calls;
+		*/
 	}
 
 	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
@@ -108,9 +148,9 @@ class adapter extends atoum\adapter
 		{
 			foreach ($this->calls as $calledFunctionName => $calls)
 			{
-				foreach ($calls as $number => $callArguments)
+				foreach ($calls as $number => $call)
 				{
-					$timeline[$number] = array($calledFunctionName => $callArguments);
+					$timeline[$number] = array($calledFunctionName => $call->getArguments());
 				}
 			}
 		}
@@ -120,9 +160,9 @@ class adapter extends atoum\adapter
 
 			if (isset($this->calls[$functionName]) === true)
 			{
-				foreach ($this->calls[$functionName] as $number => $callArguments)
+				foreach ($this->calls[$functionName] as $number => $call)
 				{
-					$timeline[$number] = $callArguments;
+					$timeline[$number] = $call->getArguments();
 				}
 			}
 		}
@@ -176,7 +216,7 @@ class adapter extends atoum\adapter
 			$unreferencedArguments[] = $argument;
 		}
 
-		$this->calls[$functionName][++self::$callsNumber] = $unreferencedArguments;
+		$this->calls[$functionName][++self::$callsNumber] = new adapter\call($functionName, $unreferencedArguments);
 
 		return sizeof($this->calls[$functionName]);
 	}

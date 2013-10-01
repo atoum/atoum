@@ -104,7 +104,7 @@ class phpFunction extends atoum\asserter
 	{
 		$string = '';
 
-		if (($calls  = $this->getCalls()) !== null)
+		if (sizeof($calls  = $this->getCalls()) > 0)
 		{
 			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
 
