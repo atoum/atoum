@@ -135,9 +135,9 @@ class runner extends atoum\script\configurable
 		return $this->defaultReportFactory;
 	}
 
-	public function isRunningFromCli()
+	public function autorun()
 	{
-		return (isset($_SERVER['argv']) === true && isset($_SERVER['argv'][0]) === true && realpath($_SERVER['argv'][0]) === $this->getName());
+		return (isset($_SERVER['argv']) === false || isset($_SERVER['argv'][0]) === false || $this->adapter->realpath($_SERVER['argv'][0]) !== $this->getName());
 	}
 
 	public function setScoreFile($path)
@@ -195,6 +195,11 @@ class runner extends atoum\script\configurable
 		# Default bootstrap file can be overrided in a default config file included in script\configurable::run() which extends script::run().
 		# So, if a bootstrap file is defined in a default config file, it will be available when arguments on CLI will be parsed
 		$this->setDefaultBootstrapFiles();
+
+		if ($this->autorun() === true && sizeof($this->runner->getDeclaredTestClasses()) > 0)
+		{
+			$this->runner->canNotAddTest();
+		}
 
 		try
 		{
@@ -832,7 +837,7 @@ class runner extends atoum\script\configurable
 	{
 		parent::doRun();
 
-		if ($this->argumentsParser->hasFoundArguments() === false && $this->isRunningFromCli() === true)
+		if ($this->argumentsParser->hasFoundArguments() === false)
 		{
 			$this->argumentsParser->parse($this, $this->defaultArguments);
 		}
