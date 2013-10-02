@@ -15,6 +15,11 @@ class call
 
 	public function __construct($function = null, array $arguments = null)
 	{
+		if ($function !== null)
+		{
+			$function = static::normalizeFunction($function);
+		}
+
 		$this->function = $function;
 		$this->arguments = $arguments;
 
@@ -100,28 +105,50 @@ class call
 
 	public function isEqualTo(self $call)
 	{
-		switch (true)
+		$isEqual = false;
+
+		if ($this->function !== null && $this->function == $call->function)
 		{
-			case $this->function !== null && $this->arguments === array() && $call->function !== null && $call->arguments !== null:
-				return ($this->function == $call->function && $call->arguments === array());
+			$isEqual = true;
 
-			case $this->function !== null && $this->arguments !== null && $call->function !== null && $call->arguments !== null:
-				$callback = function($a, $b) {
-					return ($a == $b ? 0 : -1);
-				};
+			if (is_array($this->arguments) === true)
+			{
+				if (sizeof($this->arguments) <= 0)
+				{
+					$isEqual = ($call->arguments === $this->arguments);
+				}
+				else if (is_array($call->arguments) === true)
+				{
+					$callback = function($a, $b) {
+						return ($a == $b ? 0 : -1);
+					};
 
-				return ($this->function == $call->function && ($this->arguments == array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
-
-			case $this->function !== null && $this->arguments === null && $call->function !== null:
-				return  ($this->function == $call->function);
-
-			default:
-				return false;
+					$isEqual = ($this->arguments == array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
+				}
+			}
 		}
+
+		return $isEqual;
 	}
 
 	public function isIdenticalTo(self $call)
 	{
-		return ($this->isEqualTo($call) === false ? false : $this->arguments === null || ($this->arguments === $call->arguments));
+		$isIdentical = $this->isEqualTo($call);
+
+		if ($isIdentical === true && sizeof($this->arguments) > 0)
+		{
+			$callback = function($a, $b) {
+				return ($a === $b ? 0 : -1);
+			};
+
+			$isIdentical = ($this->arguments === array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
+		}
+
+		return $isIdentical;
+	}
+
+	public static function normalizeFunction($function)
+	{
+		return strtolower($function);
 	}
 }

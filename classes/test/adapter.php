@@ -81,26 +81,44 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$functionName = static::normalizeFunctionName($functionName);
+			$referenceCall = new adapter\call($functionName, $arguments);
 
-			if (isset($this->calls[$functionName]) === true)
+			$calls = ($identicalArguments === false ? $this->getCallsEqualTo($referenceCall) : $this->getCallsIdenticalTo($referenceCall));
+
+			foreach ($calls as & $call)
 			{
-				$referenceCall = new adapter\call($functionName, $arguments);
-
-				if ($identicalArguments === false)
-				{
-					$filter = function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); };
-				}
-				else
-				{
-					$filter = function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); };
-				}
-
-				foreach (array_filter($this->calls[$functionName], $filter) as $callNumber => $call)
-				{
-					$calls[$callNumber] = $call->getArguments();
-				}
+				$call = $call->getArguments();
 			}
+
+			reset($calls);
+		}
+
+		return $calls;
+	}
+
+	public function getCallsEqualTo(adapter\call $referenceCall)
+	{
+		$calls = array();
+
+		$functionName = $referenceCall->getFunction();
+
+		if (isset($this->calls[$functionName]) === true)
+		{
+			$calls = array_filter($this->calls[$functionName], function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); });
+		}
+
+		return $calls;
+	}
+
+	public function getCallsIdenticalTo(adapter\call $referenceCall)
+	{
+		$calls = array();
+
+		$functionName = $referenceCall->getFunction();
+
+		if (isset($this->calls[$functionName]) === true)
+		{
+			$calls = array_filter($this->calls[$functionName], function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); });
 		}
 
 		return $calls;
@@ -108,41 +126,36 @@ class adapter extends atoum\adapter
 
 	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
-		return sizeof($this->getCalls($functionName, $arguments, $identicalArguments));
+		$number = 0;
+
+		if ($functionName === null)
+		{
+			$number = sizeof($this->calls);
+		}
+		else
+		{
+			$referenceCall = new adapter\call($functionName, $arguments);
+
+			$number = sizeof($identicalArguments === false ? $this->getCallsEqualTo($referenceCall) : $this->getCallsIdenticalTo($referenceCall));
+		}
+
+		return $number;
 	}
 
 	public function getTimeline($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
 		$timeline = array();
 
-		if ($functionName === null)
+		if ($functionName !== null)
 		{
-			foreach ($this->calls as $calledFunctionName => $calls)
-			{
-				foreach ($calls as $number => $call)
-				{
-					$timeline[$number] = array($calledFunctionName => $call->getArguments());
-				}
-			}
+			$timeline = $this->getCalls($functionName, $arguments, $identicalArguments);
 		}
-		else
+		else foreach ($this->getCalls($functionName, $arguments, $identicalArguments) as $functionName => $calls)
 		{
-			$functionName = static::normalizeFunctionName($functionName);
-
-			if (isset($this->calls[$functionName]) === true)
+			foreach ($calls as $number => $arguments)
 			{
-				foreach ($this->calls[$functionName] as $number => $call)
-				{
-					$timeline[$number] = $call->getArguments();
-				}
+				$timeline[$number] = array($functionName => $arguments);
 			}
-		}
-
-		$filter = static::getArgumentsFilter($arguments, $identicalArguments);
-
-		if ($filter !== null)
-		{
-			$timeline = array_filter($timeline, $filter);
 		}
 
 		ksort($timeline, SORT_NUMERIC);

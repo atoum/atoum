@@ -31,6 +31,11 @@ class call extends atoum\test
 				->string($call->getFunction())->isEqualTo($function)
 				->array($call->getArguments())->isEqualTo($arguments)
 				->object($call->getDecorator())->isEqualTo(new decorator())
+			->if($call = new testedClass('MD5'))
+			->then
+				->string($call->getFunction())->isEqualTo('md5')
+				->variable($call->getArguments())->isNull()
+				->object($call->getDecorator())->isEqualTo(new decorator())
 		;
 	}
 

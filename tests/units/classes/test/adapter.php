@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\test;
 
 use
 	mageekguy\atoum\test,
+	mageekguy\atoum\test\adapter\call,
 	mageekguy\atoum\test\adapter as testedClass
 ;
 
@@ -311,6 +312,60 @@ class adapter extends test
 			->and($adapter->addCall('stream_wrapper_register', array('524ab3af569f3', 'mageekguy\atoum\mock\stream', 0)))
 			->then
 				->array($adapter->getCalls('stream_wrapper_register', array('524ab3af569f3', 'mageekguy\atoum\mock\stream')))->isEqualTo(array(9 => array('524ab3af569f3', 'mageekguy\atoum\mock\stream', 0)))
+		;
+	}
+
+	public function testGetCallsEqualTo()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->getCallsEqualTo(new call('md5')))->isEmpty()
+			->if($adapter->addCall('md5', array($firstHash = uniqid())))
+			->then
+				->array($adapter->getCallsEqualTo(new call('md5')))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($firstHash))))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsEqualTo(new call('md5', array(uniqid()))))->isEmpty()
+				->array($adapter->getCallsEqualTo(new call(uniqid())))->isEmpty()
+				->array($adapter->getCallsEqualTo(new call(uniqid(), array(uniqid()))))->isEmpty()
+			->if($adapter->addCall('md5', array($secondHash = uniqid(), $object = new \mock\object())))
+			->then
+				->array($adapter->getCallsEqualTo(new call('md5')))->isEqualTo(array(1 => new call('md5', array($firstHash)), 2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($firstHash))))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($secondHash))))->isEqualTo(array(2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($secondHash, $object))))->isEqualTo(array(2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($secondHash, clone $object))))->isEqualTo(array(2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsEqualTo(new call('md5', array($object))))->isEmpty()
+				->array($adapter->getCallsEqualTo(new call('md5', array(uniqid()))))->isEmpty()
+				->array($adapter->getCallsEqualTo(new call(uniqid())))->isEmpty()
+				->array($adapter->getCallsEqualTo(new call(uniqid(), array(uniqid()))))->isEmpty()
+		;
+	}
+
+	public function testGetCallsIdenticalTo()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->then
+				->array($adapter->getCallsEqualTo(new call('md5')))->isEmpty()
+			->if($adapter->addCall('md5', array($firstHash = uniqid())))
+			->then
+				->array($adapter->getCallsIdenticalTo(new call('md5')))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($firstHash))))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array(uniqid()))))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call(uniqid())))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call(uniqid(), array(uniqid()))))->isEmpty()
+			->if($adapter->addCall('md5', array($secondHash = uniqid(), $object = new \mock\object())))
+			->then
+				->array($adapter->getCallsIdenticalTo(new call('md5')))->isEqualTo(array(1 => new call('md5', array($firstHash)), 2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($firstHash))))->isEqualTo(array(1 => new call('md5', array($firstHash))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($secondHash))))->isEqualTo(array(2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($secondHash, $object))))->isEqualTo(array(2 => new call('md5', array($secondHash, $object))))
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($secondHash, clone $object))))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call('md5', array($object))))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call('md5', array(uniqid()))))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call(uniqid())))->isEmpty()
+				->array($adapter->getCallsIdenticalTo(new call(uniqid(), array(uniqid()))))->isEmpty()
 		;
 	}
 

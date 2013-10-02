@@ -78,7 +78,7 @@ class adapter extends atoum\test
 	public function testGetFirstCall()
 	{
 		$this
-			->if($call = new call\adapter( new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
+			->if($call = new call\adapter(new asserters\adapter(new asserter\generator()), $adapter = new test\adapter(), 'md5'))
 			->then
 				->variable($call->getFirstCall())->isNull()
 			->if($otherAdapter = new test\adapter())
