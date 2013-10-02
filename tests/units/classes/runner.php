@@ -515,6 +515,47 @@ class runner extends atoum\test
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2))
 				->object($runner->addTest($testPath3 = new \splFileInfo(__FILE__)))->isIdenticalTo($runner)
 				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
+			->if($runner->canNotAddTest())
+			->then
+				->object($runner->addTest($testPath4 = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3))
+			->if($runner->canAddTest())
+			->then
+				->object($runner->addTest($testPath4 = uniqid()))->isIdenticalTo($runner)
+				->array($runner->getTestPaths())->isEqualTo(array($testPath1, $testPath2, (string) $testPath3, $testPath4))
+		;
+	}
+
+	public function testCanAddTest()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->canAddTest())->isIdenticalTo($runner)
+			->if($runner->canNotAddTest())
+			->then
+				->object($runner->canAddTest())->isIdenticalTo($runner)
+			->if($runner->addTest(uniqid()))
+			->then
+				->array($runner->getTestPaths())->isNotEmpty()
+		;
+	}
+
+	public function testCanNotAddTest()
+	{
+		$this
+			->if($runner = new testedClass())
+			->then
+				->object($runner->canNotAddTest())->isIdenticalTo($runner)
+			->if($runner->addTest(uniqid()))
+			->then
+				->array($runner->getTestPaths())->isEmpty()
+			->if($runner->canAddTest())
+			->then
+				->object($runner->canNotAddTest())->isIdenticalTo($runner)
+			->if($runner->addTest(uniqid()))
+			->then
+				->array($runner->getTestPaths())->isEmpty()
 		;
 	}
 }
