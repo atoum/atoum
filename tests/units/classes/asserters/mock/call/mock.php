@@ -27,7 +27,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					$mockAsserter = new asserters\mock(new asserter\generator()),
+					$mockAsserter = new asserters\call\mock(new asserters\mock()),
 					$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					$function = uniqid()
 				)
@@ -44,7 +44,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()),
+					new asserters\call\mock($mockAsserter = new \mock\mageekguy\atoum\asserters\mock()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
 				)
@@ -61,7 +61,7 @@ class mock extends atoum\test
 						}
 					)
 						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
-						->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownMethod . '() does not exist')
+						->hasMessage('Asserter \'' . $unknownMethod . '\' does not exist')
 		;
 	}
 
@@ -69,7 +69,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					$mockAggregator = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					$function = uniqid()
 				)
@@ -83,7 +83,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
 				)
@@ -100,7 +100,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
 				)
@@ -117,7 +117,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					uniqid()
 				)
@@ -133,7 +133,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					'foo'
 				)
@@ -155,7 +155,7 @@ class mock extends atoum\test
 	{
 		$this
 			->if($call = new testedClass(
-					new asserters\mock(new asserter\generator()),
+					new asserters\call\mock(new asserters\mock()),
 					$mock = new \mock\mageekguy\atoum\tests\units\asserters\mock\call\dummy(),
 					'foo'
 				)

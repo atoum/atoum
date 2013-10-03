@@ -11,28 +11,23 @@ use
 
 class mock extends php\call
 {
-	protected $adapterAsserter = null;
+	protected $callAsserter = null;
 
-	public function __construct(asserters\adapter $adapterAsserter, atoum\mock\aggregator $mockAggregator, $function)
+	public function __construct(asserters\call\adapter $callAsserter, atoum\mock\aggregator $mockAggregator, $function)
 	{
-		$this->adapterAsserter = $adapterAsserter;
+		$this->callAsserter = $callAsserter;
 
 		parent::__construct($function, null, $mockAggregator);
 	}
 
 	public function __call($method, $arguments)
 	{
-		if (method_exists($this->adapterAsserter, $method) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->adapterAsserter) . '::' . $method . '() does not exist');
-		}
-
-		return call_user_func_array(array($this->adapterAsserter, $method), $arguments);
+		return call_user_func_array(array($this->callAsserter, $method), $arguments);
 	}
 
-	public function getAdapterAsserter()
+	public function getCallAsserter()
 	{
-		return $this->adapterAsserter;
+		return $this->callAsserter;
 	}
 
 	public function withArguments()

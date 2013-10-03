@@ -14,7 +14,7 @@ class adapter extends php\call
 	protected $mockAsserter = null;
 	protected $adapter = null;
 
-	public function __construct(asserters\mock $mockAsserter, test\adapter $adapter, $function)
+	public function __construct(asserters\call\mock $mockAsserter, test\adapter $adapter, $function)
 	{
 		$this->mockAsserter = $mockAsserter;
 		$this->adapter = $adapter;
@@ -24,11 +24,6 @@ class adapter extends php\call
 
 	public function __call($method, $arguments)
 	{
-		if (method_exists($this->mockAsserter, $method) === false)
-		{
-			throw new exceptions\logic\invalidArgument('Method ' . get_class($this->mockAsserter) . '::' . $method . '() does not exist');
-		}
-
 		return call_user_func_array(array($this->mockAsserter, $method), $arguments);
 	}
 
