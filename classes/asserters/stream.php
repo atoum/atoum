@@ -13,6 +13,8 @@ class stream extends atoum\asserter
 
 	public function setWith($stream)
 	{
+		parent::setWith($stream);
+
 		$this->streamController = atoum\mock\stream::get($stream);
 
 		return $this;
@@ -49,6 +51,11 @@ class stream extends atoum\asserter
 		}
 
 		return $this;
+	}
+
+	public function handleNativeType()
+	{
+		return false;
 	}
 
 	protected function streamIsSet()

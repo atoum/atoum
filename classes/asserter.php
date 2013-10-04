@@ -124,7 +124,15 @@ abstract class asserter
 		return $this;
 	}
 
-	public abstract function setWith($mixed);
+	public function handleNativeType()
+	{
+		return true;
+	}
+
+	public function setWith($mixed)
+	{
+		return $this->reset();
+	}
 
 	protected function pass()
 	{

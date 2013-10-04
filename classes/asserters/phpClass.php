@@ -69,6 +69,8 @@ class phpClass extends atoum\asserter
 
 	public function setWith($class)
 	{
+		parent::setWith($class);
+
 		try
 		{
 			$this->class = $this->getReflectionClass($class);
@@ -167,6 +169,11 @@ class phpClass extends atoum\asserter
 		}
 
 		return $this;
+	}
+
+	public function handleNativeType()
+	{
+		return false;
 	}
 
 	protected function classIsSet()

@@ -11,6 +11,11 @@ use
 
 class testedClass extends asserters\phpClass
 {
+	public function handleNativeType()
+	{
+		return false;
+	}
+
 	public function setWith($class)
 	{
 		throw new exceptions\logic\badMethodCall('Unable to call method ' . __METHOD__ . '()');

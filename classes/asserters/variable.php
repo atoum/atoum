@@ -26,6 +26,8 @@ class variable extends atoum\asserter
 
 	public function setWith($value)
 	{
+		parent::setWith($value);
+
 		$this->value = $value;
 		$this->isSet = true;
 		$this->isSetByReference = false;
@@ -35,6 +37,8 @@ class variable extends atoum\asserter
 
 	public function setByReferenceWith(& $value)
 	{
+		$this->reset();
+
 		$this->value = & $value;
 		$this->isSet = true;
 		$this->isSetByReference = true;

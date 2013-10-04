@@ -53,9 +53,21 @@ class variable extends atoum\test
 			->then
 				->variable($asserter->getValue())->isNotNull()
 				->boolean($asserter->wasSet())->isTrue()
+				->boolean($asserter->isSetByReference())->isFalse()
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+			->if($reference = uniqid())
+			->and($asserter->setByReferenceWith($reference))
+			->then
+				->variable($asserter->getValue())->isNotNull()
+				->boolean($asserter->wasSet())->isTrue()
+				->boolean($asserter->isSetByReference())->isTrue()
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
 		;
 	}
 

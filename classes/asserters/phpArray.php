@@ -8,9 +8,12 @@ use
 	mageekguy\atoum\tools\diffs
 ;
 
-class phpArray extends asserters\variable
+class phpArray extends asserters\variable implements \arrayAccess
 {
 	private $key = null;
+	private $innerValue = null;
+	private $innerValueIsSet = false;
+	private $innerAsserter = null;
 
 	public function __get($asserter)
 	{
@@ -23,24 +26,152 @@ class phpArray extends asserters\variable
 				return $this->getSizeAsserter();
 
 			default:
-				return $this->generator->__get($asserter);
+				$asserter = parent::__get($asserter);
+
+				if ($asserter->handleNativeType() === false)
+				{
+					$this->resetInnerAsserter();
+
+					return $asserter;
+				}
+				else
+				{
+					$this->innerAsserter = $asserter;
+					$this->innerValue = $this->value;
+
+					return $this;
+				}
+
 		}
 	}
 
-	public function setWith($value, $label = null)
+	public function __call($method, $arguments)
 	{
-		parent::setWith($value, $label);
+		$innerAsserter = $this->setInnerAsserter($method);
 
-		if (self::isArray($this->value) === false)
+		if ($innerAsserter === null)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
+			return parent::__call($method, $arguments);
 		}
 		else
 		{
-			$this->pass();
-		}
+			call_user_func_array(array($innerAsserter, $method), $arguments);
 
-		return $this;
+			return $this;
+		}
+	}
+
+	public function getKey()
+	{
+		return $this->key;
+	}
+
+	public function getInnerAsserter()
+	{
+		return $this->innerAsserter;
+	}
+
+	public function getInnerValue()
+	{
+		return $this->innerValue;
+	}
+
+	public function reset()
+	{
+		$this->key = null;
+
+		return parent::reset()->resetInnerAsserter();
+	}
+
+	public function offsetGet($key)
+	{
+		if ($this->innerAsserter === null)
+		{
+			return $this->hasKey($key)->value[$key];
+		}
+		else
+		{
+			if (array_key_exists($key, $this->innerValue) === false)
+			{
+				$this->fail(sprintf($this->getLocale()->_('%s has no key %s'), $this->innerValue, $this->getTypeOf($key)));
+			}
+			else
+			{
+				$this->innerValue = $this->innerValue[$key];
+				$this->innerValueIsSet = true;
+			}
+
+			return $this;
+		}
+	}
+
+	public function offsetSet($key, $value)
+	{
+		throw new exceptions\logic('Array is read only');
+	}
+
+	public function offsetUnset($key)
+	{
+		throw new exceptions\logic('Array is read only');
+	}
+
+	public function offsetExists($key)
+	{
+		$value = ($this->innerAsserter === null ? $this->value : $this->innerValue);
+
+		return ($value !== null && array_key_exists($key, $value) === true);
+	}
+
+	public function setWith($value)
+	{
+		$innerAsserter = $this->setInnerAsserter();
+
+		if ($innerAsserter !== null)
+		{
+			$this->reset();
+
+			return $innerAsserter->setWith($value);
+		}
+		else
+		{
+			parent::setWith($value);
+
+			if (self::isArray($this->value) === true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
+			}
+
+			return $this;
+		}
+	}
+
+	public function setByReferenceWith(& $value)
+	{
+		$innerAsserter = $this->setInnerAsserter();
+
+		if ($innerAsserter !== null)
+		{
+			return $innerAsserter->setByReferenceWith($value);
+		}
+		else
+		{
+			parent::setByReferenceWith($value);
+
+			if (self::isArray($this->value) === true)
+			{
+				$this->pass();
+			}
+			else
+			{
+				$this->fail(sprintf($this->getLocale()->_('%s is not an array'), $this));
+			}
+
+			return $this;
+		}
 	}
 
 	public function hasSize($size, $failMessage = null)
@@ -114,7 +245,7 @@ class phpArray extends asserters\variable
 
 	public function hasKeys(array $keys, $failMessage = null)
 	{
-		if (sizeof($undefinedKeys = array_diff($keys, array_keys($this->value))) <= 0)
+		if (sizeof($undefinedKeys = array_diff($keys, array_keys($this->valueIsSet()->value))) <= 0)
 		{
 			$this->pass();
 		}
@@ -186,6 +317,31 @@ class phpArray extends asserters\variable
 	public function strictlyNotContainsValues(array $values, $failMessage = null)
 	{
 		return $this->notIntersect($values, $failMessage, true);
+	}
+
+	public function isEqualTo($value, $failMessage = null)
+	{
+		return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+	}
+
+	public function isNotEqualTo($value, $failMessage = null)
+	{
+		return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+	}
+
+	public function isIdenticalTo($value, $failMessage = null)
+	{
+		return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+	}
+
+	public function isNotIdenticalTo($value, $failMessage = null)
+	{
+		return $this->callAssertion(__FUNCTION__, array($value, $failMessage));
+	}
+
+	public function isReferenceTo(& $reference, $failMessage = null)
+	{
+		return $this->callAssertion(__FUNCTION__, array(& $reference, $failMessage));
 	}
 
 	protected function containsValue($value, $failMessage, $strict)
@@ -403,6 +559,32 @@ class phpArray extends asserters\variable
 		return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
 	}
 
+	protected function setInnerAsserter($method = null)
+	{
+		$asserter = null;
+
+		if ($this->innerAsserter !== null)
+		{
+			if ($method === null)
+			{
+				$asserter = $this->innerAsserter;
+			}
+			else if ($this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true)
+			{
+				$asserter = $this->innerAsserter->setWith($this->innerValue);
+			}
+		}
+
+		return $asserter;
+	}
+
+	protected function callAssertion($method, array $arguments)
+	{
+		call_user_func_array(array($this->setInnerAsserter($method) ?: 'parent', $method), $arguments);
+
+		return $this;
+	}
+
 	protected static function check($value, $method)
 	{
 		if (self::isArray($value) === false)
@@ -414,5 +596,14 @@ class phpArray extends asserters\variable
 	protected static function isArray($value)
 	{
 		return (is_array($value) === true);
+	}
+
+	private function resetInnerAsserter()
+	{
+		$this->innerAsserter = null;
+		$this->innerValue = null;
+		$this->innerValueIsSet = false;
+
+		return $this;
 	}
 }
