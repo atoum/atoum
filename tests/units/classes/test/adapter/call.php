@@ -285,6 +285,11 @@ class call extends atoum\test
 			->then
 				->boolean($call1->isEqualTo($call2))->isFalse()
 				->boolean($call2->isEqualTo($call1))->isTrue()
+			->if($call1 = new testedClass($function))
+			->and($call2 = new testedClass($function, array($object = new \mock\object())))
+			->then
+				->boolean($call1->isEqualTo($call2))->isTrue()
+				->boolean($call2->isEqualTo($call1))->isFalse()
 		;
 	}
 
@@ -352,6 +357,11 @@ class call extends atoum\test
 			->if($call2 = new testedClass($function, array($arg3, $arg2, $arg1)))
 			->then
 				->boolean($call1->isIdenticalTo($call2))->isFalse()
+				->boolean($call2->isIdenticalTo($call1))->isFalse()
+			->if($call1 = new testedClass($function))
+			->and($call2 = new testedClass($function, array($object = new \mock\object())))
+			->then
+				->boolean($call1->isIdenticalTo($call2))->isTrue()
 				->boolean($call2->isIdenticalTo($call1))->isFalse()
 		;
 	}
