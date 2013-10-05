@@ -213,24 +213,6 @@ class adapter extends test
 		;
 	}
 
-	public function testGetCallsNumber()
-	{
-		$this
-			->integer(testedClass::getCallsNumber())->isZero()
-			->if($adapter = new testedClass())
-			->and($adapter->md5(uniqid()))
-			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(1)
-			->if($adapter->md5(uniqid()))
-			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(2)
-			->if($otherAdapter = new testedClass())
-			->and($otherAdapter->sha1(uniqid()))
-			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(3)
-		;
-	}
-
 	public function testGetCalls()
 	{
 		$this

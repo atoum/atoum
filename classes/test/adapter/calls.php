@@ -29,14 +29,14 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetGet($mixed)
 	{
-		$mixed = static::normalize($mixed);
+		$mixed = static::normalizeFunction($mixed);
 
 		return (isset($this->calls[$mixed]) === false ? array() : $this->calls[$mixed]);
 	}
 
 	public function offsetUnset($mixed)
 	{
-		$mixed = static::normalize($mixed);
+		$mixed = static::normalizeFunction($mixed);
 
 		if (isset($this->calls[$mixed]) === true)
 		{
@@ -48,7 +48,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetExists($mixed)
 	{
-		return (isset($this->calls[static::normalize($mixed)]) === true);
+		return (isset($this->calls[static::normalizeFunction($mixed)]) === true);
 	}
 
 	public function getIterator()
@@ -173,13 +173,8 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return ($identical === false ? $this->findLastEqual($call) : $this->findLastIdentical($call));
 	}
 
-	private static function normalize($mixed)
+	private static function normalizeFunction($mixed)
 	{
-		if ($mixed instanceof adapter\call)
-		{
-			$mixed = $mixed->getFunction();
-		}
-
-		return (string) $mixed;
+		return ($mixed instanceof adapter\call ? $mixed->getFunction() : adapter\call::normalizeFunction($mixed));
 	}
 }

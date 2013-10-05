@@ -10,20 +10,21 @@ use
 
 class adapter extends atoum\adapter
 {
-	protected $calls = array();
+	protected $calls = null;
 	protected $invokers = array();
 
 	private static $storage = null;
-	private static $callsNumber = 0;
 
 	public function __construct()
 	{
+		$this->calls = new adapter\calls();
+
 		self::$storage->add($this);
 	}
 
 	public function __set($functionName, $mixed)
 	{
-		$this->__get($functionName)->return = $mixed;
+		$this->{$functionName}->return = $mixed;
 
 		return $this;
 	}
@@ -45,11 +46,7 @@ class adapter extends atoum\adapter
 			$functionName = static::normalizeFunctionName($functionName);
 
 			unset($this->invokers[$functionName]);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				unset($this->calls[$functionName]);
-			}
+			unset($this->calls[$functionName]);
 		}
 
 		return $this;
@@ -81,9 +78,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$referenceCall = new adapter\call($functionName, $arguments);
-
-			$calls = ($identicalArguments === false ? $this->getCallsEqualTo($referenceCall) : $this->getCallsIdenticalTo($referenceCall));
+			$calls = $this->calls->find(new adapter\call($functionName, $arguments), $identicalArguments);
 
 			foreach ($calls as & $call)
 			{
@@ -134,9 +129,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$referenceCall = new adapter\call($functionName, $arguments);
-
-			$number = sizeof($identicalArguments === false ? $this->getCallsEqualTo($referenceCall) : $this->getCallsIdenticalTo($referenceCall));
+			$number = sizeof($this->calls->find(new adapter\call($functionName, $arguments), $identicalArguments));
 		}
 
 		return $number;
@@ -167,16 +160,11 @@ class adapter extends atoum\adapter
 	{
 		if ($functionName === null)
 		{
-			$this->calls = array();
+			$this->calls->reset();
 		}
 		else
 		{
-			$functionName = static::normalizeFunctionName($functionName);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				unset($this->calls[$functionName]);
-			}
+			unset($this->calls[$functionName]);
 		}
 
 		return $this;
@@ -191,8 +179,6 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
-		$functionName = static::normalizeFunctionName($functionName);
-
 		$unreferencedArguments = array();
 
 		foreach ($arguments as $argument)
@@ -200,9 +186,9 @@ class adapter extends atoum\adapter
 			$unreferencedArguments[] = $argument;
 		}
 
-		$this->calls[$functionName][++self::$callsNumber] = new adapter\call($functionName, $unreferencedArguments);
+		$this->calls[] = $call = new adapter\call($functionName, $unreferencedArguments);
 
-		return sizeof($this->calls[$functionName]);
+		return sizeof($this->calls[$call]);
 	}
 
 	public function invoke($functionName, array $arguments = array())
@@ -222,11 +208,6 @@ class adapter extends atoum\adapter
 		{
 			throw new exceptions\logic('There is no return value defined for \'' . $functionName . '() at call ' . $call);
 		}
-	}
-
-	public static function getCallsNumber()
-	{
-		return self::$callsNumber;
 	}
 
 	public static function setStorage(adapter\storage $storage = null)
