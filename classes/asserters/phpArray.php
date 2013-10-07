@@ -107,7 +107,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function offsetSet($key, $value)
 	{
-		throw new exceptions\logic('Array is read only');
+		throw new exceptions\logic('Tested array is read only');
 	}
 
 	public function offsetUnset($key)

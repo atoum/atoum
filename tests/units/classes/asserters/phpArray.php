@@ -175,7 +175,7 @@ class phpArray extends atoum\test
 			->then
 				->exception(function() use ($asserter) { $asserter[rand(0, PHP_INT_MAX)] = rand(0, PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
-					->hasMessage('Array is read only')
+					->hasMessage('Tested array is read only')
 		;
 	}
 
