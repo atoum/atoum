@@ -93,7 +93,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		{
 			if (array_key_exists($key, $this->innerValue) === false)
 			{
-				$this->fail(sprintf($this->getLocale()->_('%s has no key %s'), $this->innerValue, $this->getTypeOf($key)));
+				$this->fail(sprintf($this->getLocale()->_('%s has no key %s'), $this->getTypeOf($this->innerValue), $this->getTypeOf($key)));
 			}
 			else
 			{
