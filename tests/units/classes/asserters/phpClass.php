@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\phpClass as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,13 +21,13 @@ class phpClass extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->extends('mageekguy\atoum\asserter');
 	}
 
 	public function test__construct()
 	{
 		$this->assert
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -37,7 +37,7 @@ class phpClass extends atoum\test
 	public function testGetClass()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->variable($asserter->getClass())->isNull()
 			->if($asserter->setWith(__CLASS__))
@@ -49,7 +49,7 @@ class phpClass extends atoum\test
 	public function testSetReflectionClassInjector()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->setReflectionClassInjector(function($class) use (& $reflectionClass) { return ($reflectionClass = new \mock\reflectionClass($class)); }))->isIdenticalTo($asserter)
 				->object($asserter->getReflectionClass($class = uniqid()))->isIdenticalTo($reflectionClass)
@@ -62,7 +62,7 @@ class phpClass extends atoum\test
 	public function testGetReflectionClass()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getReflectionClass(__CLASS__))->isInstanceOf('reflectionClass')
 				->string($asserter->getReflectionClass(__CLASS__)->getName())->isEqualTo(__CLASS__)
@@ -81,7 +81,7 @@ class phpClass extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($mockController = new atoum\mock\controller())
 			->and($mockController->__construct = function() { throw new \reflectionException();})
 			->and($asserter->setReflectionClassInjector(function($class) use ($mockController) { return new \mock\reflectionClass($class, $mockController); }))
@@ -90,7 +90,7 @@ class phpClass extends atoum\test
 				->exception(function() use ($asserter, $class) { $asserter->setWith($class); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('Class \'%s\' does not exist'), $class))
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->setWith(__CLASS__))->isIdenticalTo($asserter)
 				->string($asserter->getClass())->isEqualTo(__CLASS__)
@@ -100,7 +100,7 @@ class phpClass extends atoum\test
 	public function testHasParent()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasParent(uniqid()); })
 					->isInstanceOf('logicException')
@@ -129,7 +129,7 @@ class phpClass extends atoum\test
 	public function testHasNoParent()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasNoParent(); })
 					->isInstanceOf('logicException')
@@ -156,7 +156,7 @@ class phpClass extends atoum\test
 	public function testIsSubclassOf()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isSubclassOf(uniqid()); })
 					->isInstanceOf('logicException')
@@ -184,7 +184,7 @@ class phpClass extends atoum\test
 	public function testExtends()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->extends(uniqid()); })
 					->isInstanceOf('logicException')
@@ -212,7 +212,7 @@ class phpClass extends atoum\test
 	public function testHasInterface()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasInterface(uniqid()); })
 					->isInstanceOf('logicException')
@@ -240,7 +240,7 @@ class phpClass extends atoum\test
 	public function testImplements()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->implements(uniqid()); })
 					->isInstanceOf('logicException')
@@ -268,7 +268,7 @@ class phpClass extends atoum\test
 	public function testIsAbstract()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isAbstract(); })
 					->isInstanceOf('logicException')
@@ -295,7 +295,7 @@ class phpClass extends atoum\test
 	public function testHasMethod()
 	{
 		$this
-			->if($asserter = new asserters\phpClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasMethod(uniqid()); })
 					->isInstanceOf('logicException')
@@ -317,6 +317,15 @@ class phpClass extends atoum\test
 			->if($reflectionClassController->hasMethod = true)
 			->then
 				->object($asserter->hasMethod(uniqid()))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isFalse()
 		;
 	}
 }

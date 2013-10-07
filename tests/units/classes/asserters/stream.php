@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\stream as testedClass
+	mageekguy\atoum\asserters\stream as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,7 +20,7 @@ class stream extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->variable($asserter->getStreamController())->isNull()
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -31,7 +31,7 @@ class stream extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->object($asserter->setWith($stream = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getStreamController())->isEqualTo(atoum\mock\stream::get($stream))
@@ -45,7 +45,7 @@ class stream extends atoum\test
 	public function testIsRead()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isRead(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -65,7 +65,7 @@ class stream extends atoum\test
 	public function testIsWrited()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isWrited(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -88,6 +88,15 @@ class stream extends atoum\test
 					->hasMessage($failMessage = sprintf($generator->getLocale()->_('stream %s is not writed'), $streamController))
 			->when(function() use ($streamController, $contents) { file_put_contents($streamController, $contents); })
 				->object($asserter->isWrited())->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isFalse()
 		;
 	}
 }

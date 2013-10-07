@@ -245,6 +245,11 @@ class variable extends atoum\asserter
 		return $this;
 	}
 
+	public function handleNativeType()
+	{
+		return true;
+	}
+
 	protected function valueIsSet($message = 'Value is undefined')
 	{
 		if ($this->isSet === false)

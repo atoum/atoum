@@ -171,11 +171,6 @@ class phpClass extends atoum\asserter
 		return $this;
 	}
 
-	public function handleNativeType()
-	{
-		return false;
-	}
-
 	protected function classIsSet()
 	{
 		if ($this->class === null)

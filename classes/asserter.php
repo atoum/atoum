@@ -126,7 +126,7 @@ abstract class asserter
 
 	public function handleNativeType()
 	{
-		return true;
+		return false;
 	}
 
 	public function setWith($mixed)

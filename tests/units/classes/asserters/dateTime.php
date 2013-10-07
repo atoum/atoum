@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\dateTime as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,7 +20,7 @@ class dateTime extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -32,7 +32,7 @@ class dateTime extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->assert('Set the asserter with something else than a date time trown an exception')
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -50,7 +50,7 @@ class dateTime extends atoum\test
 	public function testHasTimezone()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -66,7 +66,7 @@ class dateTime extends atoum\test
 	public function testHasYear()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasYear(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -86,7 +86,7 @@ class dateTime extends atoum\test
 	public function testHasMonth()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasMonth(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -107,7 +107,7 @@ class dateTime extends atoum\test
 	public function testHasDay()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasDay(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -125,7 +125,7 @@ class dateTime extends atoum\test
 	public function testHasDate()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasDate(1976, 10, 6); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -144,7 +144,7 @@ class dateTime extends atoum\test
 	public function testHasHours()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasHours(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -162,7 +162,7 @@ class dateTime extends atoum\test
 	public function testHasMinutes()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasMinutes(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -180,7 +180,7 @@ class dateTime extends atoum\test
 	public function testHasSeconds()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use ($asserter) { $asserter->hasSeconds(rand(0, PHP_INT_MAX)); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Instance of \\dateTime is undefined')
@@ -198,7 +198,7 @@ class dateTime extends atoum\test
 	public function testHasTime()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasTime(1, 2, 3); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -217,7 +217,7 @@ class dateTime extends atoum\test
 	public function testHasDateAndTime()
 	{
 		$this
-			->if($asserter = new asserters\dateTime($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -230,6 +230,15 @@ class dateTime extends atoum\test
 				->object($asserter->hasDateAndTime('1981', '02', '13', '01', '02', '03'))->isIdenticalTo($asserter)
 				->object($asserter->hasDateAndTime('1981', '2', '13', '1', '2', '3'))->isIdenticalTo($asserter)
 				->object($asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3))->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }
