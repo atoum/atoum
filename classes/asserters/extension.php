@@ -70,11 +70,6 @@ class extension extends atoum\asserter
 		return $this;
 	}
 
-	public function handleNativeType()
-	{
-		return false;
-	}
-
 	protected function valueIsSet($message = 'Name of PHP extension is undefined')
 	{
 		if ($this->name === null)

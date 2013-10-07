@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\dateInterval as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,7 +20,7 @@ class dateInterval extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -32,7 +32,7 @@ class dateInterval extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->assert('Set the asserter with something else than a date interval trown an exception')
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -50,7 +50,7 @@ class dateInterval extends atoum\test
 	public function testIsGreaterThan()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isGreaterThan(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
@@ -69,7 +69,7 @@ class dateInterval extends atoum\test
 	public function testIsGreaterThanOrEqualTo()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isGreaterThanOrEqualTo(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
@@ -86,7 +86,7 @@ class dateInterval extends atoum\test
 	public function testIsZero()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isZero(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -105,7 +105,7 @@ class dateInterval extends atoum\test
 	public function testIsLessThan()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isLessThan(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
@@ -124,7 +124,7 @@ class dateInterval extends atoum\test
 	public function testIsLessThanOrEqualTo()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isLessThanOrEqualTo(new \DateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
@@ -141,7 +141,7 @@ class dateInterval extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new asserters\dateInterval($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 				->exception(function() use ($asserter) { $asserter->isEqualTo(new \dateInterval('P1D')); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic')
 				->hasMessage('Interval is undefined')
@@ -154,6 +154,15 @@ class dateInterval extends atoum\test
 				->exception(function() use ($asserter, & $interval) { $asserter->isEqualTo($interval = new \dateInterval('P2D')); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage('Interval ' . $asserter . ' is not equal to ' . $interval->format('%Y/%M/%D %H:%I:%S'))
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

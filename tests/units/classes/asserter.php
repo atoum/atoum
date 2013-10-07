@@ -7,7 +7,7 @@ require __DIR__ . '/../runner.php';
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserters,
-	mock\mageekguy\atoum\asserter as testedClass
+	mock\mageekguy\atoum\asserter as sut
 ;
 
 class asserter extends atoum\test
@@ -15,11 +15,11 @@ class asserter extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new atoum\asserter\generator()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($generator = $asserter->getGenerator())->isEqualTo(new atoum\asserter\generator())
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
@@ -29,7 +29,7 @@ class asserter extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new atoum\asserter\generator()))
 			->then
 				->object($integerAsserter = $asserter->integer)->isEqualTo(new asserters\integer($generator))
 				->object($integerAsserter->getGenerator())->isIdenticalTo($generator)
@@ -39,7 +39,7 @@ class asserter extends atoum\test
 	public function test__call()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new atoum\asserter\generator()))
 			->then
 				->object($integerAsserter = $asserter->integer($integer = rand(1, PHP_INT_MAX)))->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integerAsserter->getValue())->isEqualTo($integer)
@@ -50,7 +50,7 @@ class asserter extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
 				->object($asserter->reset())->isIdenticalTo($asserter)
 		;
@@ -59,7 +59,7 @@ class asserter extends atoum\test
 	public function testSetLocale()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setLocale($locale = new atoum\locale()))->isIdenticalTo($asserter)
 				->object($asserter->getLocale())->isIdenticalTo($locale)
@@ -69,7 +69,7 @@ class asserter extends atoum\test
 	public function testGetLocale()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new atoum\asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 			->if($asserter->setLocale($locale = new atoum\locale()))
@@ -81,7 +81,7 @@ class asserter extends atoum\test
 	public function testSetGenerator()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setGenerator($generator = new atoum\asserter\generator()))->isIdenticalTo($asserter)
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -96,7 +96,7 @@ class asserter extends atoum\test
 	public function testSetWithTest()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
 		;
@@ -105,7 +105,7 @@ class asserter extends atoum\test
 	public function testSetWithArguments()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
 				->object($asserter->setWithArguments(array()))->isIdenticalTo($asserter)
 				->mock($asserter)->call('setWith')->never()
@@ -117,7 +117,7 @@ class asserter extends atoum\test
 	public function testGetTypeOf()
 	{
 		$this
-			->if($asserter = new testedClass(new atoum\asserter\generator()))
+			->if($asserter = new sut(new atoum\asserter\generator()))
 			->and($asserter->setLocale($locale = new \mock\mageekguy\atoum\locale()))
 			->then
 				->string($asserter->getTypeOf(true))->isEqualTo('boolean(true)')
@@ -138,6 +138,15 @@ class asserter extends atoum\test
 				->mock($locale)->call('_')->withArguments('string(%s) \'%s\'')->once()
 				->string($asserter->getTypeOf(range(1, 10)))->isEqualTo('array(10)')
 				->mock($locale)->call('_')->withArguments('array(%s)')->once()
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isFalse()
 		;
 	}
 }

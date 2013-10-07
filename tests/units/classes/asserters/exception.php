@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\exception as testedClass
+	mageekguy\atoum\asserters\exception as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,7 +20,7 @@ class exception extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -32,7 +32,7 @@ class exception extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->assert('It is impossible to set asserter with something else than an exception')
 					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
@@ -48,7 +48,7 @@ class exception extends atoum\test
 	public function testIsInstanceOf()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -71,7 +71,7 @@ class exception extends atoum\test
 	public function testHasCode()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasCode(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -89,7 +89,7 @@ class exception extends atoum\test
 	public function testHasMessage()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasMessage(uniqid()); })
@@ -107,7 +107,7 @@ class exception extends atoum\test
 	public function testHasNestedException()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->hasNestedException(); })
@@ -134,7 +134,7 @@ class exception extends atoum\test
 	public function testMessage()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->message; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -157,14 +157,23 @@ class exception extends atoum\test
 	public function testGetLastValue()
 	{
 		$this
-			->variable(testedClass::getLastValue())->isNull()
-			->if($asserter = new testedClass(new asserter\generator()))
+			->variable(sut::getLastValue())->isNull()
+			->if($asserter = new sut(new asserter\generator()))
 			->and($asserter->setWith(function() use (& $exception) { $exception = new \exception(); throw $exception; }))
 			->then
-				->object(testedClass::getLastValue())->isIdenticalTo($exception)
+				->object(sut::getLastValue())->isIdenticalTo($exception)
 			->and($asserter->setWith(function() use (& $otherException) { $otherException = new \exception(); throw $otherException; }))
 			->then
-				->object(testedClass::getLastValue())->isIdenticalTo($otherException)
+				->object(sut::getLastValue())->isIdenticalTo($otherException)
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\asserters\boolean as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,7 +21,7 @@ class boolean extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\boolean($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->variable($asserter->getValue())->isNull()
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
@@ -33,7 +33,7 @@ class boolean extends atoum\test
 	public function testIsTrue()
 	{
 		$this
-			->if($asserter = new asserters\boolean($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isTrue(); })
 					->isInstanceOf('logicException')
@@ -62,7 +62,7 @@ class boolean extends atoum\test
 	public function testIsFalse()
 	{
 		$this
-			->if($asserter = new asserters\boolean($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isFalse(); })
 					->isInstanceOf('logicException')
@@ -91,7 +91,7 @@ class boolean extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\boolean($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->assert('Set the asserter with something else than a boolean throw an exception')
 					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
@@ -101,6 +101,15 @@ class boolean extends atoum\test
 					->string($asserter->getValue())->isEqualTo($value)
 					->object($asserter->setWith(true))->isIdenticalTo($asserter)
 					->boolean($asserter->getValue())->isTrue()
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

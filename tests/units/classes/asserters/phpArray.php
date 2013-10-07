@@ -6,7 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\phpArray as testedClass
+	mageekguy\atoum\asserters\phpArray as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -24,7 +24,7 @@ class phpArray extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -39,7 +39,7 @@ class phpArray extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->object($asserter->object)->isIdenticalTo($asserter)
 				->object($asserter->getInnerAsserter())->isEqualTo($generator->object)
@@ -51,7 +51,7 @@ class phpArray extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->variable($asserter->getValue())->isNull()
@@ -104,7 +104,7 @@ class phpArray extends atoum\test
 	public function testHandleNativeType()
 	{
 		$this
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->boolean($asserter->handleNativeType())->isTrue()
 		;
@@ -113,7 +113,7 @@ class phpArray extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -141,7 +141,7 @@ class phpArray extends atoum\test
 	public function testOffsetGet()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter[2]; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -152,7 +152,7 @@ class phpArray extends atoum\test
 				->object($asserter->object[2])->isIdenticalTo($asserter)
 				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->and($asserter->setWith(array($integer = rand(1, PHP_INT_MAX), 2, array(3, 4, 5, $object))))
 			->then
 				->integer($asserter[0])->isEqualTo($integer)
@@ -171,7 +171,7 @@ class phpArray extends atoum\test
 	public function testOffsetSet()
 	{
 		$this
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter[rand(0, PHP_INT_MAX)] = rand(0, PHP_INT_MAX); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -182,7 +182,7 @@ class phpArray extends atoum\test
 	public function testOffsetUnset()
 	{
 		$this
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { unset($asserter[rand(0, PHP_INT_MAX)]); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -193,7 +193,7 @@ class phpArray extends atoum\test
 	public function testOffsetExists()
 	{
 		$this
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->boolean(isset($asserter[rand(0, PHP_INT_MAX)]))->isFalse()
 			->if($asserter->setWith(array()))
@@ -214,7 +214,7 @@ class phpArray extends atoum\test
 	public function testHasSize()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -234,7 +234,7 @@ class phpArray extends atoum\test
 	public function testIsEmpty()
 	{
 		$this->assert
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -256,7 +256,7 @@ class phpArray extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -278,7 +278,7 @@ class phpArray extends atoum\test
 	public function testAtKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -302,7 +302,7 @@ class phpArray extends atoum\test
 	public function testContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -325,7 +325,7 @@ class phpArray extends atoum\test
 	public function testNotContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -364,7 +364,7 @@ class phpArray extends atoum\test
 	public function testStrictlyContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -392,7 +392,7 @@ class phpArray extends atoum\test
 	public function testStrictlyNotContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -425,7 +425,7 @@ class phpArray extends atoum\test
 	public function testContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -453,7 +453,7 @@ class phpArray extends atoum\test
 	public function testNotContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -478,7 +478,7 @@ class phpArray extends atoum\test
 	public function testStrictlyContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -511,7 +511,7 @@ class phpArray extends atoum\test
 	public function testStrictlyNotContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -535,7 +535,7 @@ class phpArray extends atoum\test
 	public function testHasKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasKey(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -567,7 +567,7 @@ class phpArray extends atoum\test
 	public function testNotHasKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -590,7 +590,7 @@ class phpArray extends atoum\test
 	public function testNotHasKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -614,7 +614,7 @@ class phpArray extends atoum\test
 	public function testHasKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasKeys(array(rand(0, PHP_INT_MAX))); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -642,7 +642,7 @@ class phpArray extends atoum\test
 	public function testKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->keys; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -665,7 +665,7 @@ class phpArray extends atoum\test
 	public function testSize()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->size; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -688,7 +688,7 @@ class phpArray extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEqualTo(array()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -726,7 +726,7 @@ class phpArray extends atoum\test
 	public function testIsNotEqualTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEqualTo(array()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -758,7 +758,7 @@ class phpArray extends atoum\test
 	public function testIsIdenticalTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isIdenticalTo(new \mock\object()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -790,7 +790,7 @@ class phpArray extends atoum\test
 	public function testIsNotIdenticalTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotIdenticalTo(new \mock\object()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

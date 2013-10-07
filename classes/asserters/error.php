@@ -174,11 +174,6 @@ class error extends atoum\asserter
 		return $this;
 	}
 
-	public function handleNativeType()
-	{
-		return false;
-	}
-
 	public static function getAsString($errorType)
 	{
 		switch ($errorType)

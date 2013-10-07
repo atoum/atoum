@@ -53,11 +53,6 @@ class stream extends atoum\asserter
 		return $this;
 	}
 
-	public function handleNativeType()
-	{
-		return false;
-	}
-
 	protected function streamIsSet()
 	{
 		if ($this->streamController === null)

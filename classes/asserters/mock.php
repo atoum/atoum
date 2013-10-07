@@ -282,11 +282,6 @@ class mock extends atoum\asserter
 		return $this->exactly(0, $failMessage);
 	}
 
-	public function handleNativeType()
-	{
-		return false;
-	}
-
 	protected function mockIsSet()
 	{
 		if ($this->mock === null)
