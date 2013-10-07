@@ -141,7 +141,7 @@ class phpArray extends atoum\test
 	public function testOffsetGet()
 	{
 		$this
-			->if($asserter = new testedClass(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new testedClass($generator = new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter[2]; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -162,6 +162,9 @@ class phpArray extends atoum\test
 				->object($asserter->object[2][3]->isIdenticalTo($object)->integer($integer)->isEqualTo($integer))
 					->isNotIdenticalTo($asserter)
 					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->exception(function() use ($asserter) { $asserter->object[2][4]; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf(4)))
 		;
 	}
 
