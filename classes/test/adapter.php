@@ -95,11 +95,9 @@ class adapter extends atoum\adapter
 	{
 		$calls = array();
 
-		$functionName = $referenceCall->getFunction();
-
-		if (isset($this->calls[$functionName]) === true)
+		if (isset($this->calls[$referenceCall]) === true)
 		{
-			$calls = array_filter($this->calls[$functionName], function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); });
+			$calls = array_filter($this->calls[$referenceCall], function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); });
 		}
 
 		return $calls;
@@ -109,11 +107,9 @@ class adapter extends atoum\adapter
 	{
 		$calls = array();
 
-		$functionName = $referenceCall->getFunction();
-
-		if (isset($this->calls[$functionName]) === true)
+		if (isset($this->calls[$referenceCall]) === true)
 		{
-			$calls = array_filter($this->calls[$functionName], function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); });
+			$calls = array_filter($this->calls[$referenceCall], function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); });
 		}
 
 		return $calls;
@@ -121,18 +117,7 @@ class adapter extends atoum\adapter
 
 	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
 	{
-		$number = 0;
-
-		if ($functionName === null)
-		{
-			$number = sizeof($this->calls);
-		}
-		else
-		{
-			$number = sizeof($this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments));
-		}
-
-		return $number;
+		return sizeof($functionName === null ? $this->calls : $this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments));
 	}
 
 	public function getTimeline($functionName = null, array $arguments = null, $identicalArguments = false)
