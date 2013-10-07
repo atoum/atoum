@@ -56,6 +56,13 @@ class call
 		return $this;
 	}
 
+	public function unsetArguments()
+	{
+		$this->arguments = null;
+
+		return $this;
+	}
+
 	public function setDecorator(call\decorator $decorator = null)
 	{
 		$this->decorator = $decorator ?: new call\decorator();

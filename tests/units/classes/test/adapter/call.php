@@ -89,6 +89,20 @@ class call extends atoum\test
 		;
 	}
 
+	public function testUnsetArguments()
+	{
+		$this
+			->if($call = new testedClass())
+			->then
+				->object($call->unsetArguments())->isIdenticalTo($call)
+				->variable($call->getArguments())->isNull()
+			->if($call->setArguments(array()))
+			->then
+				->object($call->unsetArguments())->isIdenticalTo($call)
+				->variable($call->getArguments())->isNull()
+		;
+	}
+
 	public function testSetDecorator()
 	{
 		$this
