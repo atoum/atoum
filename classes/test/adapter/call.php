@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\test\adapter;
 
 use
+	mageekguy\atoum\exceptions,
 	mageekguy\atoum\test\adapter,
 	mageekguy\atoum\test\adapter\call
 ;
@@ -24,6 +25,11 @@ class call
 		$this->arguments = $arguments;
 
 		$this->setDecorator();
+	}
+
+	public function __toString()
+	{
+		return $this->decorator->decorate($this);
 	}
 
 	public function getFunction()
@@ -153,8 +159,20 @@ class call
 		return $isIdentical;
 	}
 
+	public function isFullyQualified()
+	{
+		return ($this->function !== null && $this->arguments !== null);
+	}
+
 	public static function normalizeFunction($function)
 	{
+		$function = (string) $function;
+
+		if ($function === '')
+		{
+			throw new exceptions\logic\invalidArgument('Function must not be empty');
+		}
+
 		return strtolower($function);
 	}
 }

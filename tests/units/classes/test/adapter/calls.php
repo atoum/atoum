@@ -60,6 +60,54 @@ class calls extends atoum\test
 		;
 	}
 
+	public function test__toString()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->castToString($calls)->isEqualTo($calls->getDecorator()->decorate($calls))
+		;
+	}
+
+	public function testCount()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->sizeof($calls)->isZero()
+			->if($calls[] = $call1 = new adapter\call(uniqid()))
+			->then
+				->sizeof($calls)->isEqualTo(1)
+			->if($otherCalls = new testedClass())
+			->and($otherCalls[] = $call2 = new adapter\call(uniqid()))
+			->then
+				->sizeof($calls)->isEqualTo(1)
+				->sizeof($otherCalls)->isEqualTo(1)
+			->if($calls[] = $call2 = new adapter\call(uniqid()))
+			->then
+				->sizeof($calls)->isEqualTo(2)
+				->sizeof($otherCalls)->isEqualTo(1)
+			->if($calls[] = $call3 = new adapter\call($call1->getFunction()))
+			->then
+				->sizeof($calls)->isEqualTo(3)
+				->sizeof($otherCalls)->isEqualTo(1)
+		;
+	}
+
+	public function testSetDecorator()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->object($calls->setDecorator($decorator = new adapter\calls\decorator()))->isIdenticalTo($calls)
+				->object($calls->getDecorator())->isIdenticalTo($decorator)
+				->object($calls->setDecorator())->isIdenticalTo($calls)
+				->object($calls->getDecorator())
+					->isNotIdenticalTo($decorator)
+					->isEqualTo(new adapter\calls\decorator())
+		;
+	}
+
 	public function testReset()
 	{
 		$this
@@ -94,33 +142,49 @@ class calls extends atoum\test
 		$this
 			->if($calls = new testedClass())
 			->then
-				->array($calls[uniqid()])->isEmpty()
-			->if($calls[] = $call = new adapter\call(uniqid()))
+				->exception(function() use ($calls) { $calls[] = new adapter\call(); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->hasMessage('Function is undefined')
+			->if($calls[] = $call1 = new adapter\call(uniqid()))
 			->then
-				->array($calls[$call->getFunction()])
-					->isEqualTo(array(1 => $call))
-						->object[1]->isIdenticalTo($call)
-			->if($calls[] = $otherCall = new adapter\call($call->getFunction()))
+				->array($calls[$call1])
+					->isEqualTo(array(1 => $call1))
+						->object[1]->isIdenticalTo($call1)
+			->if($calls[] = $call2 = new adapter\call(uniqid(), array()))
 			->then
-				->array($calls[$call->getFunction()])
-					->isEqualTo(array(1 => $call, 2 => $otherCall))
-						->object[1]->isIdenticalTo($call)
-						->object[2]->isIdenticalTo($otherCall)
-			->if($calls[] = $anotherCall = new adapter\call(uniqid()))
+				->array($calls[$call1])
+					->isEqualTo(array(1 => $call1))
+						->object[1]->isIdenticalTo($call1)
+				->array($calls[$call2])
+					->isEqualTo(array(2 => $call2))
+						->object[2]->isIdenticalTo($call2)
+			->if($calls[] = $call3 = new adapter\call($call1->getFunction(), array()))
 			->then
-				->array($calls[$call->getFunction()])
-					->isEqualTo(array(1 => $call, 2 => $otherCall))
-						->object[1]->isIdenticalTo($call)
-						->object[2]->isIdenticalTo($otherCall)
-				->array($calls[$anotherCall->getFunction()])
-					->isEqualTo(array(3 => $anotherCall))
-						->object[3]->isIdenticalTo($anotherCall)
+				->array($calls[$call1])
+					->isEqualTo(array(1 => $call1, 3 => $call3))
+						->object[1]->isIdenticalTo($call1)
+						->object[3]->isIdenticalTo($call3)
+				->array($calls[$call2])
+					->isEqualTo(array(2 => $call2))
+						->object[2]->isIdenticalTo($call2)
+			->if($calls[] = $call4 = new adapter\call(uniqid()))
+			->then
+				->array($calls[$call1])
+					->isEqualTo(array(1 => $call1, 3 => $call3))
+						->object[1]->isIdenticalTo($call1)
+						->object[3]->isIdenticalTo($call3)
+				->array($calls[$call2])
+					->isEqualTo(array(2 => $call2))
+						->object[2]->isIdenticalTo($call2)
+				->array($calls[$call4->getFunction()])
+					->isEqualTo(array(4 => $call4))
+						->object[4]->isIdenticalTo($call4)
 			->if($calls[$unusedFunctionName = uniqid()] = $callWithUnusedFuntionName = new adapter\call(uniqid()))
 			->then
 				->array($calls[$unusedFunctionName])->isEmpty()
 				->array($calls[$callWithUnusedFuntionName])
-					->isEqualTo(array(4 => $callWithUnusedFuntionName))
-						->object[4]->isIdenticalTo($callWithUnusedFuntionName)
+					->isEqualTo(array(5 => $callWithUnusedFuntionName))
+						->object[5]->isIdenticalTo($callWithUnusedFuntionName)
 		;
 	}
 
@@ -635,6 +699,41 @@ class calls extends atoum\test
 				->array($calls->getLast($call11, true))->isIdenticalTo(array(11 => $call11))
 				->array($calls->getLast($call12, true))->isIdenticalTo(array(12 => $call12))
 				->variable($calls->getLast(new adapter\call($call7->getFunction(), array(clone $object)), true))->isNull()
+		;
+	}
+
+	public function testGetTimeline()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->array($calls->getTimeline())->isEmpty()
+			->if($calls[] = $call1 = new adapter\call(uniqid()))
+			->then
+				->array($calls->getTimeline())->isEqualTo(array(1 => $call1))
+			->if($calls[] = $call2 = new adapter\call(uniqid()))
+			->then
+				->array($calls->getTimeline())->isEqualTo(array(
+						1 => $call1,
+						2 => $call2
+					)
+				)
+			->if($otherCalls = new testedClass())
+			->and($otherCalls[] = $call3 = new adapter\call(uniqid()))
+			->then
+				->array($calls->getTimeline())->isEqualTo(array(
+						1 => $call1,
+						2 => $call2
+					)
+				)
+			->if($calls[] = $call4 = new adapter\call(uniqid()))
+			->then
+				->array($calls->getTimeline())->isEqualTo(array(
+						1 => $call1,
+						2 => $call2,
+						4 => $call4
+					)
+				)
 		;
 	}
 }

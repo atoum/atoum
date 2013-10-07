@@ -36,6 +36,36 @@ class call extends atoum\test
 				->string($call->getFunction())->isEqualTo('md5')
 				->variable($call->getArguments())->isNull()
 				->object($call->getDecorator())->isEqualTo(new decorator())
+			->exception(function() { new testedClass(''); })
+				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+				->hasMessage('Function must not be empty')
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->if($call = new testedClass())
+			->then
+				->castToString($call)->isEmpty()
+		;
+	}
+
+	public function testIsFullyQualified()
+	{
+		$this
+			->if($call = new testedClass())
+			->then
+				->boolean($call->isFullyQualified())->isFalse()
+			->if($call = new testedClass(uniqid()))
+			->then
+				->boolean($call->isFullyQualified())->isFalse()
+			->if($call = new testedClass(null, array()))
+			->then
+				->boolean($call->isFullyQualified())->isFalse()
+			->if($call = new testedClass(uniqid(), array()))
+			->then
+				->boolean($call->isFullyQualified())->isTrue()
 		;
 	}
 

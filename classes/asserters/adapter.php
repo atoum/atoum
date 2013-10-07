@@ -24,13 +24,13 @@ class adapter extends atoum\asserter
 	{
 		$this->adapter = $adapter;
 
-		if ($this->adapter instanceof \mageekguy\atoum\test\adapter === false)
+		if ($this->adapter instanceof \mageekguy\atoum\test\adapter)
 		{
-			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->getTypeOf($this->adapter)));
+			$this->pass();
 		}
 		else
 		{
-			$this->pass();
+			$this->fail(sprintf($this->getLocale()->_('%s is not a test adapter'), $this->getTypeOf($this->adapter)));
 		}
 
 		return $this;

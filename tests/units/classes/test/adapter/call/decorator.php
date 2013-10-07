@@ -35,4 +35,17 @@ class decorator extends atoum\test
 					->isEqualTo(new call\arguments\decorator())
 		;
 	}
+
+	public function testDecorate()
+	{
+		$this
+			->if($decorator = new testedClass())
+			->then
+				->string($decorator->decorate(new call()))->isEmpty()
+				->string($decorator->decorate(new call($function = uniqid())))->isEqualTo($function . '(*)')
+				->string($decorator->decorate(new call(null, array())))->isEmpty()
+				->string($decorator->decorate(new call($function = uniqid(), array())))->isEqualTo($function . '()')
+				->string($decorator->decorate(new call($function = uniqid(), $arguments = array(uniqid(), uniqid()))))->isEqualTo($function . '(' . $decorator->getArgumentsDecorator()->decorate($arguments) . ')')
+		;
+	}
 }
