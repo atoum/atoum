@@ -78,7 +78,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$calls = $this->calls->find(new adapter\call($functionName, $arguments), $identicalArguments);
+			$calls = $this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments);
 
 			foreach ($calls as & $call)
 			{
@@ -129,7 +129,7 @@ class adapter extends atoum\adapter
 		}
 		else
 		{
-			$number = sizeof($this->calls->find(new adapter\call($functionName, $arguments), $identicalArguments));
+			$number = sizeof($this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments));
 		}
 
 		return $number;

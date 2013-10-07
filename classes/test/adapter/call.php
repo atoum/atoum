@@ -62,7 +62,7 @@ class call
 		return $this->decorator;
 	}
 
-	public function find(adapter $adapter)
+	public function get(adapter $adapter)
 	{
 		$calls = $adapter->getCalls($this->function) ?: array();
 
@@ -93,14 +93,14 @@ class call
 		return $calls;
 	}
 
-	public function findFirst(adapter $adapter)
+	public function getFirst(adapter $adapter)
 	{
-		return (array_slice($this->find($adapter), 0, 1, true) ?: null);
+		return (array_slice($this->get($adapter), 0, 1, true) ?: null);
 	}
 
-	public function findLast(adapter $adapter)
+	public function getLast(adapter $adapter)
 	{
-		return (array_slice($this->find($adapter), -1, 1, true) ?: null);
+		return (array_slice($this->get($adapter), -1, 1, true) ?: null);
 	}
 
 	public function isEqualTo(self $call)

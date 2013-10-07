@@ -70,7 +70,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $this;
 	}
 
-	public function findEqual(adapter\call $call)
+	public function getEqualTo(adapter\call $call)
 	{
 		$calls = array();
 
@@ -82,7 +82,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $calls;
 	}
 
-	public function findIdentical(adapter\call $call)
+	public function getIdenticalTo(adapter\call $call)
 	{
 		$calls = array();
 
@@ -94,12 +94,12 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $calls;
 	}
 
-	public function find(adapter\call $call, $identical = false)
+	public function get(adapter\call $call, $identical = false)
 	{
-		return ($identical === false ? $this->findEqual($call) : $this->findIdentical($call));
+		return ($identical === false ? $this->getEqualTo($call) : $this->getIdenticalTo($call));
 	}
 
-	public function findFirstEqual(adapter\call $call)
+	public function getFirstEqualTo(adapter\call $call)
 	{
 		if (isset($this[$call]) === true)
 		{
@@ -115,7 +115,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return null;
 	}
 
-	public function findFirstIdentical(adapter\call $call)
+	public function getFirstIdenticalTo(adapter\call $call)
 	{
 		if (isset($this[$call]) === true)
 		{
@@ -131,12 +131,12 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return null;
 	}
 
-	public function findFirst(adapter\call $call, $identical = false)
+	public function getFirst(adapter\call $call, $identical = false)
 	{
-		return ($identical === false ? $this->findFirstEqual($call) : $this->findFirstIdentical($call));
+		return ($identical === false ? $this->getFirstEqualTo($call) : $this->getFirstIdenticalTo($call));
 	}
 
-	public function findLastEqual(adapter\call $call)
+	public function getLastEqualTo(adapter\call $call)
 	{
 		if (isset($this[$call]) === true)
 		{
@@ -152,7 +152,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return null;
 	}
 
-	public function findLastIdentical(adapter\call $call)
+	public function getLastIdenticalTo(adapter\call $call)
 	{
 		if (isset($this[$call]) === true)
 		{
@@ -168,9 +168,9 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return null;
 	}
 
-	public function findLast(adapter\call $call, $identical = false)
+	public function getLast(adapter\call $call, $identical = false)
 	{
-		return ($identical === false ? $this->findLastEqual($call) : $this->findLastIdentical($call));
+		return ($identical === false ? $this->getLastEqualTo($call) : $this->getLastIdenticalTo($call));
 	}
 
 	private static function normalizeFunction($mixed)
