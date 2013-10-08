@@ -264,7 +264,7 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testGetEqual()
+	public function testGetEqualTo()
 	{
 		$this
 			->if($calls = new testedClass())
@@ -298,7 +298,7 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testGetIdentical()
+	public function testGetIdenticalTo()
 	{
 		$this
 			->if($calls = new testedClass())
