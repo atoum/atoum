@@ -33,7 +33,7 @@ class call extends atoum\test
 				->object($call->getDecorator())->isEqualTo(new decorator())
 			->if($call = new testedClass('MD5'))
 			->then
-				->string($call->getFunction())->isEqualTo('md5')
+				->string($call->getFunction())->isEqualTo('MD5')
 				->variable($call->getArguments())->isNull()
 				->object($call->getDecorator())->isEqualTo(new decorator())
 			->exception(function() { new testedClass(''); })
@@ -79,7 +79,7 @@ class call extends atoum\test
 				->object($call->setFunction('foo'))->isIdenticalTo($call)
 				->string($call->getFunction())->isEqualTo('foo')
 				->object($call->setFunction('FOo'))->isIdenticalTo($call)
-				->string($call->getFunction())->isEqualTo('foo')
+				->string($call->getFunction())->isEqualTo('FOo')
 		;
 	}
 

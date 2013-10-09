@@ -18,10 +18,9 @@ class call
 	{
 		if ($function !== null)
 		{
-			$function = static::normalizeFunction($function);
+			$this->setFunction($function);
 		}
 
-		$this->function = $function;
 		$this->arguments = $arguments;
 
 		$this->setDecorator();
@@ -39,7 +38,14 @@ class call
 
 	public function setFunction($function)
 	{
-		$this->function = static::normalizeFunction($function);
+		$function = (string) $function;
+
+		if ($function === '')
+		{
+			throw new exceptions\logic\invalidArgument('Function must not be empty');
+		}
+
+		$this->function = $function;
 
 		return $this;
 	}
@@ -128,17 +134,5 @@ class call
 	public function isFullyQualified()
 	{
 		return ($this->function !== null && $this->arguments !== null);
-	}
-
-	public static function normalizeFunction($function)
-	{
-		$function = strtolower($function);
-
-		if ($function === '')
-		{
-			throw new exceptions\logic\invalidArgument('Function must not be empty');
-		}
-
-		return $function;
 	}
 }

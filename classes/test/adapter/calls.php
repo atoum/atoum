@@ -37,6 +37,11 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetSet($functionName = null, $call)
 	{
+		if ($functionName !== null)
+		{
+			$call->setFunction($functionName);
+		}
+
 		return $this->addCall($call);
 	}
 
@@ -47,11 +52,11 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetUnset($mixed)
 	{
-		$function = static::buildCall($mixed)->getFunction();
+		$key = self::getKey(static::buildCall($mixed));
 
-		if (isset($this->calls[$function]) === true)
+		if (isset($this->calls[$key]) === true)
 		{
-			unset($this->calls[$function]);
+			unset($this->calls[$key]);
 		}
 
 		return $this;
@@ -59,7 +64,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetExists($mixed)
 	{
-		return (isset($this->calls[static::buildCall($mixed)->getFunction()]) === true);
+		return (isset($this->calls[self::getKey(static::buildCall($mixed))]) === true);
 	}
 
 	public function getIterator()
@@ -89,14 +94,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function addCall(adapter\call $call)
 	{
-		$function = $call->getFunction();
-
-		if ($function == '')
-		{
-			throw new exceptions\logic\invalidArgument('Function is undefined');
-		}
-
-		return $this->setCall($call, ++self::$callsNumber);
+		return $this->setCall($call);
 	}
 
 	public function toArray(adapter\call $call = null, $identical = false)
@@ -121,7 +119,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_filter($this->calls[$call->getFunction()], function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
+			foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
 			{
 				$calls->setCall($innerCall, $position);
 			}
@@ -136,7 +134,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_filter($this->calls[$call->getFunction()], function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
+			foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
 			{
 				$calls->setCall($innerCall, $position);
 			}
@@ -154,7 +152,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach ($this->calls[$call->getFunction()] as $position => $innerCall)
+			foreach ($this->getCalls($call) as $position => $innerCall)
 			{
 				if ($call->isEqualTo($innerCall) === true)
 				{
@@ -170,7 +168,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach ($this->calls[$call->getFunction()] as $position => $innerCall)
+			foreach ($this->getCalls($call) as $position => $innerCall)
 			{
 				if ($call->isIdenticalTo($innerCall) === true)
 				{
@@ -191,7 +189,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_reverse($this->calls[$call->getFunction()], true) as $position => $innerCall)
+			foreach (array_reverse($this->getCalls($call), true) as $position => $innerCall)
 			{
 				if ($call->isEqualTo($innerCall) === true)
 				{
@@ -207,7 +205,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_reverse($this->calls[$call->getFunction()], true) as $position => $innerCall)
+			foreach (array_reverse($this->getCalls($call), true) as $position => $innerCall)
 			{
 				if ($call->isIdenticalTo($innerCall) === true)
 				{
@@ -241,18 +239,41 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $timeline;
 	}
 
-	private function setCall(adapter\call $call, $position)
+	protected function setCall(adapter\call $call, $position = null)
 	{
 		$function = $call->getFunction();
 
-		if (isset($this->calls[$function][$position]) === false)
+		if ($function == '')
 		{
-			$this->size++;
+			throw new exceptions\logic\invalidArgument('Function is undefined');
 		}
 
-		$this->calls[$call->getFunction()][$position] = $call;
+		if ($position === null)
+		{
+			$position = ++self::$callsNumber;
+		}
+
+		$this->calls[self::getKey($call)][$position] = $call;
+		$this->size++;
 
 		return $this;
+	}
+
+	protected function getCalls($mixed)
+	{
+		if ($mixed instanceof adapter\call === false)
+		{
+			$mixed = new adapter\call($mixed);
+		}
+
+		$key = self::getKey($mixed);
+
+		return (isset($this->calls[$key]) === false ? array() : $this->calls[$key]);
+	}
+
+	protected static function getKey(adapter\call $call)
+	{
+		return strtolower($call->getFunction());
 	}
 
 	private static function buildCall($mixed)

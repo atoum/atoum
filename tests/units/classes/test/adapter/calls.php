@@ -179,12 +179,11 @@ class calls extends atoum\test
 				->array($calls[$call4->getFunction()]->toArray())
 					->isEqualTo(array(4 => $call4))
 						->object[4]->isIdenticalTo($call4)
-			->if($calls[$unusedFunctionName = uniqid()] = $callWithUnusedFuntionName = new adapter\call(uniqid()))
+			->if($calls[$newFunction = uniqid()] = $call5 = new adapter\call(uniqid()))
 			->then
-				->array($calls[$unusedFunctionName]->toArray())->isEmpty()
-				->array($calls[$callWithUnusedFuntionName]->toArray())
-					->isEqualTo(array(5 => $callWithUnusedFuntionName))
-						->object[5]->isIdenticalTo($callWithUnusedFuntionName)
+				->array($calls[$newFunction]->toArray())->isEqualTo(array(5 => $call5))
+					->object[5]->isIdenticalTo($call5)
+				->string($call5->getFunction())->isEqualTo($newFunction)
 		;
 	}
 
