@@ -42,18 +42,16 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetGet($mixed)
 	{
-		$mixed = static::normalizeFunction($mixed);
-
-		return (isset($this->calls[$mixed]) === false ? array() : $this->calls[$mixed]);
+		return $this->getEqualTo(static::buildCall($mixed));
 	}
 
 	public function offsetUnset($mixed)
 	{
-		$mixed = static::normalizeFunction($mixed);
+		$function = static::buildCall($mixed)->getFunction();
 
-		if (isset($this->calls[$mixed]) === true)
+		if (isset($this->calls[$function]) === true)
 		{
-			unset($this->calls[$mixed]);
+			unset($this->calls[$function]);
 		}
 
 		return $this;
@@ -61,7 +59,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function offsetExists($mixed)
 	{
-		return (isset($this->calls[static::normalizeFunction($mixed)]) === true);
+		return (isset($this->calls[static::buildCall($mixed)->getFunction()]) === true);
 	}
 
 	public function getIterator()
@@ -98,19 +96,35 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 			throw new exceptions\logic\invalidArgument('Function is undefined');
 		}
 
-		$this->calls[$function][++self::$callsNumber] = $call;
-		$this->size++;
+		return $this->setCall($call, ++self::$callsNumber);
+	}
 
-		return $this;
+	public function toArray(adapter\call $call = null, $identical = false)
+	{
+		$calls = array();
+
+		if ($call === null)
+		{
+			$calls = $this->getTimeline();
+		}
+		else
+		{
+			$calls = $this->getEqualTo($call)->toArray();
+		}
+
+		return $calls;
 	}
 
 	public function getEqualTo(adapter\call $call)
 	{
-		$calls = array();
+		$calls = new static();
 
 		if (isset($this[$call]) === true)
 		{
-			$calls = array_filter($this[$call], function($innerCall) use ($call) { return $call->isEqualTo($innerCall); });
+			foreach (array_filter($this->calls[$call->getFunction()], function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
+			{
+				$calls->setCall($innerCall, $position);
+			}
 		}
 
 		return $calls;
@@ -118,11 +132,14 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function getIdenticalTo(adapter\call $call)
 	{
-		$calls = array();
+		$calls = new static();
 
 		if (isset($this[$call]) === true)
 		{
-			$calls = array_filter($this[$call], function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); });
+			foreach (array_filter($this->calls[$call->getFunction()], function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
+			{
+				$calls->setCall($innerCall, $position);
+			}
 		}
 
 		return $calls;
@@ -137,7 +154,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach ($this[$call] as $position => $innerCall)
+			foreach ($this->calls[$call->getFunction()] as $position => $innerCall)
 			{
 				if ($call->isEqualTo($innerCall) === true)
 				{
@@ -153,7 +170,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach ($this[$call] as $position => $innerCall)
+			foreach ($this->calls[$call->getFunction()] as $position => $innerCall)
 			{
 				if ($call->isIdenticalTo($innerCall) === true)
 				{
@@ -174,7 +191,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_reverse($this[$call], true) as $position => $innerCall)
+			foreach (array_reverse($this->calls[$call->getFunction()], true) as $position => $innerCall)
 			{
 				if ($call->isEqualTo($innerCall) === true)
 				{
@@ -190,7 +207,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		if (isset($this[$call]) === true)
 		{
-			foreach (array_reverse($this[$call], true) as $position => $innerCall)
+			foreach (array_reverse($this->calls[$call->getFunction()], true) as $position => $innerCall)
 			{
 				if ($call->isIdenticalTo($innerCall) === true)
 				{
@@ -224,8 +241,22 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $timeline;
 	}
 
-	private static function normalizeFunction($mixed)
+	private function setCall(adapter\call $call, $position)
 	{
-		return ($mixed instanceof adapter\call ? $mixed->getFunction() : adapter\call::normalizeFunction($mixed));
+		$function = $call->getFunction();
+
+		if (isset($this->calls[$function][$position]) === false)
+		{
+			$this->size++;
+		}
+
+		$this->calls[$call->getFunction()][$position] = $call;
+
+		return $this;
+	}
+
+	private static function buildCall($mixed)
+	{
+		return ($mixed instanceof adapter\call ? $mixed : new adapter\call($mixed));
 	}
 }

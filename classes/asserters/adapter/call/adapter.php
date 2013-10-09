@@ -51,14 +51,14 @@ class adapter extends php\call
 
 	public function getFirstCall()
 	{
-		$calls = $this->adapter->getCalls($this->function, $this->arguments);
+		$calls = $this->adapter->getCalls(new test\adapter\call($this->function, $this->arguments))->toArray();
 
 		return (sizeof($calls) <= 0 ? null : key($calls));
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->adapter->getCalls($this->function, $this->arguments);
+		$calls = $this->adapter->getCalls(new test\adapter\call($this->function, $this->arguments))->toArray();
 
 		return (sizeof($calls) <= 0 ? null : key(array_reverse($calls, true)));
 	}

@@ -5,6 +5,7 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
@@ -97,7 +98,7 @@ class phpFunction extends atoum\asserter
 
 	protected function getCalls()
 	{
-		return php\mocker::getAdapter()->getCalls($this->getFullyQualifiedFunctionName());
+		return php\mocker::getAdapter()->getCalls(new test\adapter\call($this->getFullyQualifiedFunctionName()));
 	}
 
 	protected function getCallsAsString()

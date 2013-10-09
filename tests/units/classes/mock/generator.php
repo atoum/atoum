@@ -218,11 +218,16 @@ class generator extends atoum\test
 			->and($generator->generate($unknownClass))
 			->and($mockedUnknownClass = '\mock\\' . $unknownClass)
 			->and($dummy = new $mockedUnknownClass())
+			->and($dummyController = new atoum\mock\controller())
+			->and($dummyController->notControlNextNewMock())
+			->and($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($dummyController->setCalls($calls))
+			->and($dummyController->control($dummy))
 			->then
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->array($dummy->getMockController()->getCalls('bar'))->hasSize(1)
+					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array()))->once()
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->array($dummy->getMockController()->getCalls('bar'))->hasSize(2)
+					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array()))->twice()
 		;
 	}
 

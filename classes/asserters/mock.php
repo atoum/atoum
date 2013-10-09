@@ -15,6 +15,7 @@ class mock extends atoum\asserter
 {
 	protected $mock = null;
 	protected $call = null;
+	protected $identicalCall = false;
 	protected $beforeFunctionCalls = array();
 	protected $afterFunctionCalls = array();
 	protected $beforeMethodCalls = array();
@@ -164,13 +165,12 @@ class mock extends atoum\asserter
 	{
 		if ($this->mockIsSet()->call === null)
 		{
-			$this->call = new php\call($function, null, $this->mock);
+			$this->call = new test\adapter\call($function, null);
 		}
 		else
 		{
 			$this->call
 				->setFunction($function)
-				->setObject($this->mock)
 				->unsetArguments()
 			;
 		}
@@ -180,28 +180,32 @@ class mock extends atoum\asserter
 
 	public function withArguments()
 	{
-		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->notIdentical();
+		$this->calledMethodNameIsSet()->call->setArguments(func_get_args());
+		$this->identicalCall = false;
 
 		return $this;
 	}
 
 	public function withIdenticalArguments()
 	{
-		$this->calledMethodNameIsSet()->call->setArguments(func_get_args())->identical();
+		$this->calledMethodNameIsSet()->call->setArguments(func_get_args());
+		$this->identicalCall = true;
 
 		return $this;
 	}
 
 	public function withAtLeastArguments(array $arguments)
 	{
-		$this->calledMethodNameIsSet()->call->setArguments($arguments)->notIdentical();
+		$this->calledMethodNameIsSet()->call->setArguments($arguments);
+		$this->identicalCall = false;
 
 		return $this;
 	}
 
 	public function withAtLeastIdenticalArguments(array $arguments)
 	{
-		$this->calledMethodNameIsSet()->call->setArguments($arguments)->identical();
+		$this->calledMethodNameIsSet()->call->setArguments($arguments);
+		$this->identicalCall = true;
 
 		return $this;
 	}
@@ -209,6 +213,7 @@ class mock extends atoum\asserter
 	public function withAnyArguments()
 	{
 		$this->calledMethodNameIsSet()->call->unsetArguments();
+		$this->identicalCall = false;
 
 		return $this;
 	}
@@ -216,6 +221,7 @@ class mock extends atoum\asserter
 	public function withoutAnyArgument()
 	{
 		$this->calledMethodNameIsSet()->call->setArguments(array());
+		$this->identicalCall = false;
 
 		return $this;
 	}
@@ -304,7 +310,14 @@ class mock extends atoum\asserter
 
 	protected function assertOnBeforeAndAfterCalls()
 	{
-		$calls = $this->calledMethodNameIsSet()->mock->getMockController()->getCalls($this->call->getFunction(), $this->call->getArguments(), $this->call->isIdentical());
+		if ($this->calledMethodNameIsSet()->identicalCall === false)
+		{
+			$calls = $this->mock->getMockController()->getCallsEqualTo($this->call);
+		}
+		else
+		{
+			$calls = $this->mock->getMockController()->getCallsIdenticalTo($this->call);
+		}
 
 		if (sizeof($calls) > 0)
 		{
@@ -317,7 +330,9 @@ class mock extends atoum\asserter
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $beforeMethodCall));
 				}
 
-				if (key($calls) > $firstCall)
+				$lastCall = key($this->identicalCall === false ? $this->mock->getMockController()->getLastCallEqualTo($this->call) : $this->mock->getMockController()->getLastCallIdenticalTo($this->call));
+
+				if ($lastCall > $firstCall)
 				{
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called before method %s'), $this->call, $beforeMethodCall));
 				}
@@ -334,7 +349,9 @@ class mock extends atoum\asserter
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $beforeFunctionCall));
 				}
 
-				if (key($calls) > $firstCall)
+				$lastCall = ($this->identicalCall === false ? $this->mock->getMockController()->getLastCallEqualTo($this->call) : $this->mock->getMockController()->getLastCallIdenticalTo($this->call));
+
+				if (key($lastCall) > $firstCall)
 				{
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called before function %s'), $this->call, $beforeFunctionCall));
 				}
@@ -351,7 +368,9 @@ class mock extends atoum\asserter
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $afterMethodCall));
 				}
 
-				if (key($calls) < $lastCall)
+				$firstCall = key($this->identicalCall === false ? $this->mock->getMockController()->getFirstCallEqualTo($this->call) : $this->mock->getMockController()->getFirstCallIdenticalTo($this->call));
+
+				if ($firstCall < $lastCall)
 				{
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called after method %s'), $this->call, $afterMethodCall));
 				}
@@ -368,41 +387,31 @@ class mock extends atoum\asserter
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called'), $afterFunctionCall));
 				}
 
-				if (key($calls) < $lastCall)
+				$firstCall = key($this->identicalCall === false ? $this->mock->getMockController()->getFirstCallEqualTo($this->call) : $this->mock->getMockController()->getFirstCallIdenticalTo($this->call));
+
+				if ($firstCall < $lastCall)
 				{
 					$this->fail(sprintf($this->getLocale()->_('method %s is not called after function %s'), $this->call, $afterFunctionCall));
 				}
 
 				$this->pass();
 			}
-		}
 
-		$this->beforeMethodCalls = array();
-		$this->afterMethodCalls = array();
-		$this->beforeFunctionCalls = array();
-		$this->afterFunctionCalls = array();
+			$this->beforeMethodCalls = array();
+			$this->afterMethodCalls = array();
+			$this->beforeFunctionCalls = array();
+			$this->afterFunctionCalls = array();
+		}
 
 		return $calls;
 	}
 
 	protected function getCallsAsString()
 	{
-		$string = '';
+		$referenceCall = clone $this->call;
 
-		if (sizeof($calls  = $this->mock->getMockController()->getCalls($this->call->getFunction())) > 0)
-		{
-			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
+		$calls = $this->mock->getMockController()->getCallsEqualTo($referenceCall->unsetArguments());
 
-			$phpCalls = array();
-
-			foreach (array_values($calls) as $call => $arguments)
-			{
-				$phpCalls[] = sprintf($format, $call + 1, new php\call($this->call->getFunction(), $arguments, $this->mock));
-			}
-
-			$string = PHP_EOL . join(PHP_EOL, $phpCalls);
-		}
-
-		return $string;
+		return (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
 	}
 }

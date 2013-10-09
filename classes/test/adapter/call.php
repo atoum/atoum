@@ -39,7 +39,7 @@ class call
 
 	public function setFunction($function)
 	{
-		$this->function = $function;
+		$this->function = static::normalizeFunction($function);
 
 		return $this;
 	}
@@ -73,47 +73,6 @@ class call
 	public function getDecorator()
 	{
 		return $this->decorator;
-	}
-
-	public function get(adapter $adapter)
-	{
-		$calls = $adapter->getCalls($this->function) ?: array();
-
-		if (sizeof($calls) > 0 && $this->arguments !== null)
-		{
-			$arguments = $this->arguments;
-
-			if ($arguments === array())
-			{
-				$filter = function($callArguments) use ($arguments) {
-					return ($arguments === $callArguments);
-				};
-			}
-			else
-			{
-				$callback = function($a, $b) {
-					return ($a == $b ? 0 : -1);
-				};
-
-				$filter = function($callArguments) use ($arguments, $callback) {
-					return ($arguments == array_uintersect_uassoc($callArguments, $arguments, $callback, $callback));
-				};
-			}
-
-			$calls = array_filter($calls, $filter);
-		}
-
-		return $calls;
-	}
-
-	public function getFirst(adapter $adapter)
-	{
-		return (array_slice($this->get($adapter), 0, 1, true) ?: null);
-	}
-
-	public function getLast(adapter $adapter)
-	{
-		return (array_slice($this->get($adapter), -1, 1, true) ?: null);
 	}
 
 	public function isEqualTo(self $call)
@@ -173,13 +132,13 @@ class call
 
 	public static function normalizeFunction($function)
 	{
-		$function = (string) $function;
+		$function = strtolower($function);
 
 		if ($function === '')
 		{
 			throw new exceptions\logic\invalidArgument('Function must not be empty');
 		}
 
-		return strtolower($function);
+		return $function;
 	}
 }

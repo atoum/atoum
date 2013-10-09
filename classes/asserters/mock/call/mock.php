@@ -5,6 +5,7 @@ namespace mageekguy\atoum\asserters\mock\call;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
+	mageekguy\atoum\test,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions
 ;
@@ -52,14 +53,14 @@ class mock extends php\call
 
 	public function getFirstCall()
 	{
-		$calls = $this->getObject()->getMockController()->getCalls($this->function, $this->arguments);
+		$calls = $this->getObject()->getMockController()->getFirstCallEqualTo(new test\adapter\call($this->function, $this->arguments));
 
 		return $calls === null ? null : key($calls);
 	}
 
 	public function getLastCall()
 	{
-		$calls = $this->getObject()->getMockController()->getCalls($this->function, $this->arguments);
+		$calls = $this->getObject()->getMockController()->getLastCallEqualTo(new test\adapter\call($this->function, $this->arguments));
 
 		return $calls === null ? null : key(array_reverse($calls, true));
 	}

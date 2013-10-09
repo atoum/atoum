@@ -80,7 +80,6 @@ class file extends atoum\writer implements writers\realtime, writers\asynchronou
 		return $this;
 	}
 
-
 	private function openFile()
 	{
 		if ($this->resource === null)

@@ -119,14 +119,14 @@ class controller extends test\adapter
 		return $this->iterator->resetFilters()->addFilter(function($name) use ($regex) { return preg_match($regex, $name); });
 	}
 
-	public function getCalls($method = null, array $arguments = null, $identical = false)
+	public function getCalls(test\adapter\call $call = null, $identical = false)
 	{
-		if ($method !== null)
+		if ($call !== null)
 		{
-			$this->checkMethod($method);
+			$this->checkMethod($call->getFunction());
 		}
 
-		return parent::getCalls($method, $arguments, $identical);
+		return parent::getCalls($call, $identical);
 	}
 
 	public function control(mock\aggregator $mock)
@@ -140,23 +140,23 @@ class controller extends test\adapter
 
 		if ($currentMockController === null || $currentMockController !== $this)
 		{
-			$this->mockClass = get_class($mock);
-			$this->mockMethods = $mock->getMockedMethods();
-
-			foreach (array_keys($this->invokers) as $method)
-			{
-				$this->checkMethod($method);
-			}
-
-			foreach ($this->mockMethods as $method)
-			{
-				if (isset($this->invokers[$method]) === false)
-				{
-					$this->setInvoker($method);
-				}
-			}
-
 			self::$linker->link($this, $mock);
+		}
+
+		$this->mockClass = get_class($mock);
+		$this->mockMethods = $mock->getMockedMethods();
+
+		foreach (array_keys($this->invokers) as $method)
+		{
+			$this->checkMethod($method);
+		}
+
+		foreach ($this->mockMethods as $method)
+		{
+			if (isset($this->invokers[$method]) === false)
+			{
+				$this->setInvoker($method);
+			}
 		}
 
 		return $this

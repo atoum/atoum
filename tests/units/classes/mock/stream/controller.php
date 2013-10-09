@@ -773,13 +773,13 @@ class controller extends atoum\test
 		$this
 			->if($streamController = new testedClass(uniqid()))
 			->then
-				->object($duplicatedController = $streamController->duplicate())->isEqualTo($streamController)
+				->object($duplicatedController = $streamController->duplicate())->isCloneOf($streamController)
 			->if($streamController->setPath($path = uniqid()))
 			->then
 				->string($duplicatedController->getPath())->isEqualTo($path)
 			->if($streamController->stream_lock())
 			->then
-				->array($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
+				->object($duplicatedController->getCalls())->isEqualTo($streamController->getCalls())
 			->if($streamController->stream_lock = function() {})
 			->then
 				->array($duplicatedController->getInvokers())->isEqualTo($streamController->getInvokers())

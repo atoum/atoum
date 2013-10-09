@@ -18,9 +18,11 @@ class decorator
 		{
 			$format = '[%' . strlen((string) $sizeOfCalls) . 's] %s';
 
-			foreach ($calls->getTimeline() as $position => $call)
+			$position = 1;
+
+			foreach ($calls->getTimeline() as $call)
 			{
-				$string .= sprintf($format, $position, $call) . PHP_EOL;
+				$string .= sprintf($format, $position++, $call) . PHP_EOL;
 			}
 		}
 

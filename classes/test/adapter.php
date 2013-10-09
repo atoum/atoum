@@ -17,9 +17,7 @@ class adapter extends atoum\adapter
 
 	public function __construct()
 	{
-		$this->calls = new adapter\calls();
-
-		self::$storage->add($this);
+		self::$storage->add($this->setCalls());
 	}
 
 	public function __set($functionName, $mixed)
@@ -57,88 +55,66 @@ class adapter extends atoum\adapter
 		return array();
 	}
 
+	public function __toString()
+	{
+		return (string) $this->calls;
+	}
+
 	public function getInvokers()
 	{
 		return $this->invokers;
 	}
 
-	public function getCalls($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function setCalls(adapter\calls $calls = null)
 	{
-		$calls = array();
+		$this->calls = $calls ?: new adapter\calls();
 
-		if ($functionName === null)
-		{
-			foreach ($this->calls as $functionName => $functionCalls)
-			{
-				foreach ($functionCalls as $number => $call)
-				{
-					$calls[$functionName][$number] = $call->getArguments();
-				}
-			}
-		}
-		else
-		{
-			$calls = $this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments);
-
-			foreach ($calls as & $call)
-			{
-				$call = $call->getArguments();
-			}
-
-			reset($calls);
-		}
-
-		return $calls;
+		return $this->resetCalls();
 	}
 
-	public function getCallsEqualTo(adapter\call $referenceCall)
+	public function getCalls(adapter\call $call = null, $identical = false)
 	{
-		$calls = array();
-
-		if (isset($this->calls[$referenceCall]) === true)
-		{
-			$calls = array_filter($this->calls[$referenceCall], function($call) use ($referenceCall) { return $referenceCall->isEqualTo($call); });
-		}
-
-		return $calls;
+		return ($call === null ? $this->calls : $this->calls->get($call, $identical));
 	}
 
-	public function getCallsIdenticalTo(adapter\call $referenceCall)
+	public function getCallsEqualTo(adapter\call $call)
 	{
-		$calls = array();
-
-		if (isset($this->calls[$referenceCall]) === true)
-		{
-			$calls = array_filter($this->calls[$referenceCall], function($call) use ($referenceCall) { return $referenceCall->isIdenticalTo($call); });
-		}
-
-		return $calls;
+		return $this->calls->getEqualTo($call);
 	}
 
-	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function getCallsIdenticalTo(adapter\call $call)
 	{
-		return sizeof($functionName === null ? $this->calls : $this->calls->get(new adapter\call($functionName, $arguments), $identicalArguments));
+		return $this->calls->getIdenticalTo($call);
 	}
 
-	public function getTimeline($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function getFirstCallEqualTo(adapter\call $call)
 	{
-		$timeline = array();
+		return $this->calls->getFirstEqualTo($call);
+	}
 
-		if ($functionName !== null)
-		{
-			$timeline = $this->getCalls($functionName, $arguments, $identicalArguments);
-		}
-		else foreach ($this->getCalls($functionName, $arguments, $identicalArguments) as $functionName => $calls)
-		{
-			foreach ($calls as $number => $arguments)
-			{
-				$timeline[$number] = array($functionName => $arguments);
-			}
-		}
+	public function getFirstCallIdenticalTo(adapter\call $call)
+	{
+		return $this->calls->getFirstIdenticalTo($call);
+	}
 
-		ksort($timeline, SORT_NUMERIC);
+	public function getLastCallEqualTo(adapter\call $call)
+	{
+		return $this->calls->getLastEqualTo($call);
+	}
 
-		return $timeline;
+	public function getLastCallIdenticalTo(adapter\call $call)
+	{
+		return $this->calls->getLastIdenticalTo($call);
+	}
+
+	public function getCallNumber(adapter\call $call = null, $identical = false)
+	{
+		return sizeof($this->getCalls($call, $identical));
+	}
+
+	public function getTimeline(adapter\call $call = null, $identical = false)
+	{
+		return $this->calls->getTimeline($call, $identical);
 	}
 
 	public function resetCalls($functionName = null)
@@ -173,7 +149,7 @@ class adapter extends atoum\adapter
 
 		$this->calls[] = $call = new adapter\call($functionName, $unreferencedArguments);
 
-		return sizeof($this->calls[$call]);
+		return $this;
 	}
 
 	public function invoke($functionName, array $arguments = array())
@@ -183,7 +159,7 @@ class adapter extends atoum\adapter
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
 		}
 
-		$call = $this->addCall($functionName, $arguments);
+		$call = sizeof($this->addCall($functionName, $arguments)->getCallsEqualTo(new adapter\call($functionName)));
 
 		try
 		{
@@ -226,7 +202,7 @@ class adapter extends atoum\adapter
 
 	protected function nextCallIsOverloaded($functionName)
 	{
-		return ($this->callIsOverloaded($functionName, $this->getCallNumber($functionName) + 1) === true);
+		return ($this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true);
 	}
 
 	protected static function normalizeFunctionName($functionName)

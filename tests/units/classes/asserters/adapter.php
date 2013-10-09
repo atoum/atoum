@@ -62,17 +62,17 @@ class adapter extends atoum\test
 			->if($asserter->setWith($adapter = new atoum\test\adapter()))
 			->then
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->array($adapter->getCalls())->isEmpty()
+				->sizeOf($adapter->getCalls())->isZero()
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->array($adapter->getCalls())->isEmpty()
+				->sizeOf($adapter->getCalls())->isZero()
 			->if($adapter->md5(uniqid()))
 			->then
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->array($adapter->getCalls())->isNotEmpty()
+				->sizeOf($adapter->getCalls())->isEqualTo(1)
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
-				->array($adapter->getCalls())->isEmpty()
+				->sizeOf($adapter->getCalls())->isZero()
 		;
 	}
 
@@ -87,12 +87,12 @@ class adapter extends atoum\test
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 			->if($asserter->withArguments())
 			->then
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array()))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
 				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 		;
 	}
 
@@ -112,11 +112,11 @@ class adapter extends atoum\test
 			->if($asserter->call($function = uniqid()))
 			->then
 				->object($asserter->withArguments())->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array()))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
 				->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg1)))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1)))
 				->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg1, $arg2)))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2)))
 		;
 	}
 
@@ -135,14 +135,14 @@ class adapter extends atoum\test
 					->hasMessage('Called function is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
-				->object($asserter->getCall())->isEqualTo(new php\call($function))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 			->if($asserter->withArguments($arg = uniqid()))
 			->then
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array($arg)))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg)))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 		;
 	}
 
@@ -162,7 +162,7 @@ class adapter extends atoum\test
 			->if($asserter->call($function = uniqid()))
 			->then
 				->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
-				->object($asserter->getCall())->isEqualTo(new php\call($function, array()))
+				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
 		;
 	}
 
@@ -350,7 +350,7 @@ class adapter extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()))
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
 			->then
 				->object($asserter->once())->isIdenticalTo($asserter)
@@ -390,7 +390,7 @@ class adapter extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->twice(); })
@@ -437,7 +437,7 @@ class adapter extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 3'), $asserter->getCall()))
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
@@ -501,7 +501,7 @@ class adapter extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->atLeastOnce(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time'), $asserter->getCall()))
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($adapter->md5($arg))
 			->then
 				->object($asserter->atLeastOnce())->isIdenticalTo($asserter)
@@ -531,7 +531,7 @@ class adapter extends atoum\test
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exactly(2); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($adapter->md5($arg = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
@@ -585,7 +585,7 @@ class adapter extends atoum\test
 				->exception(function() use ($asserter) { $asserter->never(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
-			->if($call = new php\call('md5'))
+			->if($call = new test\adapter\call('md5'))
 			->and($asserter->call('md5'))
 			->then
 				->object($asserter->never())->isIdenticalTo($asserter)
