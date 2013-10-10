@@ -67,9 +67,7 @@ class phpFunction extends atoum\asserter
 
 	public function isCalled($failMessage = null)
 	{
-		$fqdn = $this->functionIsSet()->namespace . $this->function;
-
-		if (sizeof($this->getCalls($fqdn)) > 0)
+		if (sizeof($this->functionIsSet()->getCalls()) > 0)
 		{
 			$this->pass();
 		}
@@ -103,22 +101,6 @@ class phpFunction extends atoum\asserter
 
 	protected function getCallsAsString()
 	{
-		$string = '';
-
-		if (sizeof($calls  = $this->getCalls()) > 0)
-		{
-			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
-
-			$phpCalls = array();
-
-			foreach (array_values($calls) as $call => $arguments)
-			{
-				$phpCalls[] = sprintf($format, $call + 1, new php\call($this->call->getFunction(), $arguments));
-			}
-
-			$string = PHP_EOL . join(PHP_EOL, $phpCalls);
-		}
-
-		return $string;
+		return (sizeof($calls = $this->getCalls()) <= 0 ? '' : PHP_EOL . rtrim($calls));
 	}
 }
