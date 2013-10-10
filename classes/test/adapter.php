@@ -82,6 +82,11 @@ class adapter extends atoum\adapter
 		return $this->calls->getEqualTo($call);
 	}
 
+	public function getPreviousCallsEqualTo(adapter\call $call, $position)
+	{
+		return $this->calls->getPreviousEqualTo($call, $position);
+	}
+
 	public function getCallsIdenticalTo(adapter\call $call)
 	{
 		return $this->calls->getIdenticalTo($call);
@@ -105,6 +110,16 @@ class adapter extends atoum\adapter
 	public function getLastCallIdenticalTo(adapter\call $call)
 	{
 		return $this->calls->getLastIdenticalTo($call);
+	}
+
+	public function getPreviousCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->getPrevious($call, $position, $identical);
+	}
+
+	public function getAfterCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->getAfter($call, $position, $identical);
 	}
 
 	public function getCallNumber(adapter\call $call = null, $identical = false)
@@ -147,7 +162,7 @@ class adapter extends atoum\adapter
 			$unreferencedArguments[] = $argument;
 		}
 
-		$this->calls[] = $call = new adapter\call($functionName, $unreferencedArguments);
+		$this->calls[] = $call = $this->buildCall($functionName, $unreferencedArguments);
 
 		return $this;
 	}
@@ -203,6 +218,11 @@ class adapter extends atoum\adapter
 	protected function nextCallIsOverloaded($functionName)
 	{
 		return ($this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true);
+	}
+
+	protected function buildCall($function, array $arguments)
+	{
+		return new adapter\call($function, $arguments);
 	}
 
 	protected static function normalizeFunctionName($functionName)

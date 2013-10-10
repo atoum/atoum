@@ -14,7 +14,7 @@ class call
 	protected $arguments = null;
 	protected $decorator = null;
 
-	public function __construct($function = null, array $arguments = null)
+	public function __construct($function = null, array $arguments = null, call\decorator $decorator = null)
 	{
 		if ($function !== null)
 		{
@@ -23,7 +23,7 @@ class call
 
 		$this->arguments = $arguments;
 
-		$this->setDecorator();
+		$this->setDecorator($decorator);
 	}
 
 	public function __toString()

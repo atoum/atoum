@@ -92,8 +92,9 @@ class file extends atoum\test
 			->then
 				->string($file->getFilename())->isEqualTo('anotherNameAgain')
 				->adapter($adapter)
-					->afterFunctionCall('flock')->withArguments($resource, LOCK_UN)
-						->call('fclose')->withArguments($resource)->once()
+					->call('fclose')->withArguments($resource)
+						->after($this->adapter($adapter)->call('flock')->withArguments($resource, LOCK_UN))
+							->once()
 		;
 	}
 
@@ -142,10 +143,10 @@ class file extends atoum\test
 					->call('fflush')->withArguments($resource)->once()
 				->object($file->write($string = (uniqid() . "\n")))->isIdenticalTo($file)
 				->adapter($adapter)
-					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
-					->afterFunctionCall('flock')->withArguments($resource, LOCK_EX)
-						->call('fwrite')->withArguments($resource, $string)->once()
-					->call('fflush')->withArguments($resource)->twice()
+					->call('fwrite')->withArguments($resource, $string)
+						->after($this->adapter($adapter)->call('fopen')->withArguments($file->getFilename(), 'c'))
+						->after($this->adapter($adapter)->call('flock')->withArguments($resource, LOCK_EX))
+						->before($this->adapter($adapter)->call('fflush')->withArguments($resource))
 		;
 	}
 
@@ -177,8 +178,9 @@ class file extends atoum\test
 				->object($file->clear())->isIdenticalTo($file)
 				->adapter($adapter)
 					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
-					->afterFunctionCall('flock')->withArguments($resource, LOCK_EX)
-						->call('ftruncate')->withArguments($resource, 0)->twice()
+					->call('ftruncate')->withArguments($resource, 0)
+						->after($this->adapter($adapter)->call('flock')->withArguments($resource, LOCK_EX))
+							->twice()
 		;
 	}
 }

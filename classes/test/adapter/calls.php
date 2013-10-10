@@ -143,6 +143,76 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $calls;
 	}
 
+	public function getPreviousEqualTo(adapter\call $call, $position)
+	{
+		$calls = new static();
+
+		foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition < $position)
+			{
+				$calls->setCall($innerCall, $innerPosition);
+			}
+		}
+
+		return $calls;
+	}
+
+	public function getPreviousIdenticalTo(adapter\call $call, $position)
+	{
+		$calls = new static();
+
+		foreach ($this->getIdenticalTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition < $position)
+			{
+				$calls->setCall($innerCall, $innerPosition);
+			}
+		}
+
+		return $calls;
+	}
+
+	public function getPrevious(adapter\call $call, $position, $identical = false)
+	{
+		return ($identical === false ? $this->getPreviousEqualTo($call, $position) : $this->getPreviousIdenticalTo($call, $position));
+	}
+
+	public function getAfterEqualTo(adapter\call $call, $position)
+	{
+		$calls = new static();
+
+		foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition > $position)
+			{
+				$calls->setCall($innerCall, $innerPosition);
+			}
+		}
+
+		return $calls;
+	}
+
+	public function getAfterIdenticalTo(adapter\call $call, $position)
+	{
+		$calls = new static();
+
+		foreach ($this->getIdenticalTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition > $position)
+			{
+				$calls->setCall($innerCall, $innerPosition);
+			}
+		}
+
+		return $calls;
+	}
+
+	public function getAfter(adapter\call $call, $position, $identical = false)
+	{
+		return ($identical === false ? $this->getAfterEqualTo($call, $position) : $this->getAfterIdenticalTo($call, $position));
+	}
+
 	public function get(adapter\call $call, $identical = false)
 	{
 		return ($identical === false ? $this->getEqualTo($call) : $this->getIdenticalTo($call));

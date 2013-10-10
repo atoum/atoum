@@ -5,6 +5,7 @@ namespace mageekguy\atoum\tests\units\mock;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
+	mageekguy\atoum\test\adapter\call\decorators,
 	mageekguy\atoum\mock\generator as testedClass
 ;
 
@@ -225,9 +226,9 @@ class generator extends atoum\test
 			->and($dummyController->control($dummy))
 			->then
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array()))->once()
+					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array(), new decorators\addClass($dummy)))->once()
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array()))->twice()
+					->mock($calls)->call('addCall')->withArguments(new atoum\test\adapter\call('bar', array(), new decorators\addClass($dummy)))->twice()
 		;
 	}
 

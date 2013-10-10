@@ -5,10 +5,10 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\exceptions,
 	mageekguy\atoum\test,
-	mageekguy\atoum\tools\arguments
+	mageekguy\atoum\asserter,
+	mageekguy\atoum\tools\arguments,
+	mageekguy\atoum\asserters\adapter\exceptions
 ;
 
 class adapter extends atoum\asserter
@@ -16,11 +16,15 @@ class adapter extends atoum\asserter
 	protected $adapter = null;
 	protected $call = null;
 	protected $identicalCall = false;
+	protected $beforeCalls = array();
+	protected $afterCalls = array();
 
-	protected $beforeMethodCalls = array();
-	protected $afterMethodCalls = array();
-	protected $beforeFunctionCalls = array();
-	protected $afterFunctionCalls = array();
+	public function __construct(asserter\generator $generator = null)
+	{
+		parent::__construct($generator);
+
+		$this->call = new test\adapter\call();
+	}
 
 	public function setWith($adapter)
 	{
@@ -53,95 +57,30 @@ class adapter extends atoum\asserter
 		return $this->adapter;
 	}
 
-	public function beforeMethodCall($methodName, atoum\mock\aggregator $mock)
+	public function before(adapter $asserter)
 	{
-		$this->adapterIsSet()->beforeMethodCalls[] = $beforeMethodCall = new adapter\call\mock($this, $mock, $methodName);
-
-		return $beforeMethodCall;
-	}
-
-	public function getBeforeMethodCalls()
-	{
-		return $this->beforeMethodCalls;
-	}
-
-	public function withAnyMethodCallsBefore()
-	{
-		$this->beforeMethodCalls = array();
+		$this->beforeCalls[] = $asserter;
 
 		return $this;
 	}
 
-	public function afterMethodCall($methodName, atoum\mock\aggregator $mock)
+	public function after(adapter $adapter)
 	{
-		$this->adapterIsSet()->afterMethodCalls[] = $afterMethodCall = new adapter\call\mock($this, $mock, $methodName);
-
-		return $afterMethodCall;
-	}
-
-	public function getAfterMethodCalls()
-	{
-		return $this->afterMethodCalls;
-	}
-
-	public function withAnyMethodCallsAfter()
-	{
-		$this->afterMethodCalls = array();
-
-		return $this;
-	}
-
-	public function beforeFunctionCall($methodName)
-	{
-		$this->adapterIsSet()->beforeFunctionCalls[] = $beforeFunctionCall = new adapter\call\adapter($this, $this->adapter, $methodName);
-
-		return $beforeFunctionCall;
-	}
-
-	public function getBeforeFunctionCalls()
-	{
-		return $this->beforeFunctionCalls;
-	}
-
-	public function withAnyFunctionCallsBefore()
-	{
-		$this->beforeFunctionCalls = array();
-
-		return $this;
-	}
-
-	public function afterFunctionCall($methodName)
-	{
-		$this->adapterIsSet()->afterFunctionCalls[] = $afterFunctionCall = new adapter\call\adapter($this, $this->adapter, $methodName);
-
-		return $afterFunctionCall;
-	}
-
-	public function getAfterFunctionCalls()
-	{
-		return $this->afterFunctionCalls;
-	}
-
-	public function withAnyFunctionCallsAfter()
-	{
-		$this->afterFunctionCalls = array();
+		$this->afterCalls[] = $adapter;
 
 		return $this;
 	}
 
 	public function call($function)
 	{
-		if ($this->adapterIsSet()->call === null)
-		{
-			$this->call = new test\adapter\call($function);
-		}
-		else
-		{
-			$this->call
-					->setFunction($function)
-					->unsetArguments()
-			;
-		}
+		$this->adapterIsSet()
+			->call
+				->setFunction($function)
+				->unsetArguments()
+		;
+
+		$this->beforeCalls = array();
+		$this->afterCalls = array();
 
 		return $this;
 	}
@@ -153,15 +92,27 @@ class adapter extends atoum\asserter
 
 	public function withArguments()
 	{
-		$this->callIsSet()->call->setArguments(func_get_args());
+		return $this->withAtLeastArguments(func_get_args());
+	}
+
+	public function withIdenticalArguments()
+	{
+		$this->identicalCall = true;
+
+		return $this->withAtLeastArguments(func_get_args());
+	}
+
+	public function withAtLeastArguments(array $arguments)
+	{
+		$this->callIsSet()->call->setArguments($arguments);
 		$this->identicalCall = false;
 
 		return $this;
 	}
 
-	public function withIdenticalArguments()
+	public function withAtLeastIdenticalArguments(array $arguments)
 	{
-		$this->callIsSet()->call->setArguments(func_get_args())->identical();
+		$this->callIsSet()->call->setArguments($arguments);
 		$this->identicalCall = true;
 
 		return $this;
@@ -200,24 +151,13 @@ class adapter extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		if ($this->callIsSet()->identicalCall === false)
-		{
-			$calls = $this->adapter->getCallsEqualTo($this->call);
-		}
-		else
-		{
-			$calls = $this->adapter->getCallsIdenticalTo($this->call);
-		}
-
-		$this->assertOnBeforeAndAfterCalls($calls);
-
-		if (($callsNumber = sizeof($calls)) >= 1)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) >= 1)
 		{
 			$this->pass();
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this->call) . $this->getCallsAsString());
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is called 0 time'), $this->call) . $this->getCallsAsString());
 		}
 
 		return $this;
@@ -225,18 +165,7 @@ class adapter extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		if ($this->callIsSet()->identicalCall === false)
-		{
-			$calls = $this->adapter->getCallsEqualTo($this->call);
-		}
-		else
-		{
-			$calls = $this->adapter->getCallsIdenticalTo($this->call);
-		}
-
-		$this->assertOnBeforeAndAfterCalls($calls);
-
-		if (($callsNumber = sizeof($calls)) === $number)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) === $number)
 		{
 			$this->pass();
 		}
@@ -244,8 +173,8 @@ class adapter extends atoum\asserter
 		{
 			$this->fail($failMessage !== null ? $failMessage : sprintf(
 					$this->getLocale()->__(
-						'function %s is called %d time instead of %d',
-						'function %s is called %d times instead of %d',
+						'%s is called %d time instead of %d',
+						'%s is called %d times instead of %d',
 						$callsNumber
 					),
 					$this->call,
@@ -275,102 +204,80 @@ class adapter extends atoum\asserter
 
 	protected function callIsSet()
 	{
-		if ($this->adapterIsSet()->call === null)
+		if ($this->adapterIsSet()->call->getFunction() === null)
 		{
-			throw new exceptions\logic('Called function is undefined');
+			throw new exceptions\logic('Call is undefined');
 		}
 
 		return $this;
 	}
 
-	protected function assertOnBeforeAndAfterCalls($calls)
+	protected function checkBeforeAndAfterCalls()
 	{
-		if (sizeof($calls) > 0)
+		if ($this->callIsSet()->identicalCall === false)
 		{
-			foreach ($this->beforeMethodCalls as $beforeMethodCall)
+			$calls = $this->adapter->getCallsEqualTo($this->call);
+		}
+		else
+		{
+			$calls = $this->adapter->getCallsIdenticalTo($this->call);
+		}
+
+		if (sizeof($calls) > 0 && (sizeof($this->beforeCalls) > 0 || sizeof($this->afterCalls) > 0))
+		{
+			$arrayOfCalls = $calls->toArray();
+
+			foreach ($this->beforeCalls as $asserter)
 			{
-				$firstCall = $beforeMethodCall->getFirstCall();
-
-				if ($firstCall === null)
+				foreach ($arrayOfCalls as $position => $call)
 				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $beforeMethodCall));
+					$afterAsserterCalls = $asserter->getAfterCalls($position);
+
+					if (sizeof($afterAsserterCalls) > 0)
+					{
+						$this->pass();
+					}
+					else
+					{
+						$this->fail(sprintf($this->getLocale()->_('%s is not called before %s'), $this->call, $asserter->getCall()));
+					}
 				}
-
-				$lastCall = key($this->identicalCall === false ? $this->adapter->getLastCallEqualTo($this->call) : $this->adapter->getLastCallIdenticalTo($this->call));
-
-				if ($lastCall > $firstCall)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called before method %s'), $this->call, $beforeMethodCall));
-				}
-
-				$this->pass();
 			}
 
-			foreach ($this->beforeFunctionCalls as $beforeFunctionCall)
+			foreach ($this->afterCalls as $asserter)
 			{
-				$firstCall = $beforeFunctionCall->getFirstCall();
-
-				if ($firstCall === null)
+				foreach ($arrayOfCalls as $position => $call)
 				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $beforeFunctionCall));
+					$previousAsserterCalls = $asserter->getPreviousCalls($position);
+
+					if (sizeof($previousAsserterCalls) > 0)
+					{
+						$this->pass();
+					}
+					else
+					{
+						$this->fail(sprintf($this->getLocale()->_('%s is not called after %s'), $this->call, $asserter->getCall()));
+					}
 				}
-
-				$lastCall = key($this->identicalCall === false ? $this->adapter->getLastCallEqualTo($this->call) : $this->adapter->getLastCallIdenticalTo($this->call));
-
-				if ($lastCall > $firstCall)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called before function %s'), $this->call, $beforeFunctionCall));
-				}
-
-				$this->pass();
-			}
-
-			foreach ($this->afterMethodCalls as $afterMethodCall)
-			{
-				$lastCall = $afterMethodCall->getLastCall();
-
-				if ($lastCall === null)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $afterMethodCall));
-				}
-
-				$firstCall = key($this->identicalCall === false ? $this->adapter->getFirstCallEqualTo($this->call) : $this->adapter->getFirstCallIdenticalTo($this->call));
-
-				if ($firstCall < $lastCall)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called after method %s'), $this->call, $afterMethodCall));
-				}
-
-				$this->pass();
-			}
-
-			foreach ($this->afterFunctionCalls as $afterFunctionCall)
-			{
-				$lastCall = $afterFunctionCall->getLastCall();
-
-				if ($lastCall === null)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called'), $afterFunctionCall));
-				}
-
-				$firstCall = key($this->identicalCall === false ? $this->adapter->getFirstCallEqualTo($this->call) : $this->adapter->getFirstCallIdenticalTo($this->call));
-
-				if ($firstCall < $lastCall)
-				{
-					$this->fail(sprintf($this->getLocale()->_('function %s is not called after function %s'), $this->call, $afterFunctionCall));
-				}
-
-				$this->pass();
 			}
 		}
 
-		return $this;
+		return $calls;
+	}
+
+	protected function getPreviousCalls($position)
+	{
+		return $this->adapter->getPreviousCalls($this->call, $position, $this->identicalCall);
+	}
+
+	protected function getAfterCalls($position)
+	{
+		return $this->adapter->getAfterCalls($this->call, $position, $this->identicalCall);
 	}
 
 	protected function getCallsAsString()
 	{
 		$referenceCall = clone $this->call;
-
 		$calls = $this->adapter->getCallsEqualTo($referenceCall->unsetArguments());
 
 		return (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));

@@ -273,6 +273,36 @@ class adapter extends test
 		;
 	}
 
+	public function testGetPreviousCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getPrevious = $previousCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
+			->then
+				->object($adapter->getPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isIdenticalTo($previousCalls)
+				->mock($calls)->call('getPrevious')->withArguments($call, $position, false)->once()
+				->object($adapter->getPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isIdenticalTo($previousCalls)
+				->mock($calls)->call('getPrevious')->withArguments($call, $position, true)->once()
+		;
+	}
+
+	public function testGetAfterCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getAfter = $afterCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
+			->then
+				->object($adapter->getAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isIdenticalTo($afterCalls)
+				->mock($calls)->call('getAfter')->withArguments($call, $position, false)->once()
+				->object($adapter->getAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isIdenticalTo($afterCalls)
+				->mock($calls)->call('getAfter')->withArguments($call, $position, true)->once()
+		;
+	}
+
 	public function testGetCallsIdenticalTo()
 	{
 		$this

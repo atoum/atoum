@@ -6,7 +6,8 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\mock,
 	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\test\adapter\call\decorators
 ;
 
 class controller extends test\adapter
@@ -292,6 +293,18 @@ class controller extends test\adapter
 		}
 
 		return $invoker;
+	}
+
+	protected function buildCall($function, array $arguments)
+	{
+		$call = parent::buildCall($function, $arguments);
+
+		if ($this->mockClass !== null)
+		{
+			$call->setDecorator(new decorators\addClass($this->mockClass));
+		}
+
+		return $call;
 	}
 }
 
