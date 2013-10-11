@@ -8,7 +8,7 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\arguments,
-	mageekguy\atoum\asserters\adapter\exceptions
+	mageekguy\atoum\asserters\adapter\call\exceptions
 ;
 
 abstract class call extends atoum\asserter
@@ -123,7 +123,7 @@ abstract class call extends atoum\asserter
 					$callsNumber,
 					$number
 				) . $this->getCallsAsString()
-			);
+		);
 		}
 
 		return $this;

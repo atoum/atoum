@@ -78,7 +78,7 @@ class adapter extends atoum\test
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
@@ -98,12 +98,12 @@ class adapter extends atoum\test
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -122,12 +122,12 @@ class adapter extends atoum\test
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -148,12 +148,12 @@ class adapter extends atoum\test
 			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -168,12 +168,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call('md5'))
 			->then
@@ -208,12 +208,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call('md5'))
 			->then
@@ -255,12 +255,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call('md5'))
 			->then
@@ -307,12 +307,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call('md5'))
 			->then
@@ -349,12 +349,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($asserter->call('md5'))
 			->then
@@ -408,12 +408,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
 					->hasMessage('Call is undefined')
 			->if($call = new test\adapter\call('md5'))
 			->and($asserter->call('md5'))

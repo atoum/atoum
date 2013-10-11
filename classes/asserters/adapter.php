@@ -8,6 +8,7 @@ use
 	mageekguy\atoum\test,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\arguments,
+	mageekguy\atoum\asserters\adapter\call,
 	mageekguy\atoum\asserters\adapter\exceptions
 ;
 
@@ -46,5 +47,29 @@ class adapter extends adapter\call
 	public function withoutAnyArgument()
 	{
 		return $this->withAtLeastArguments(array());
+	}
+
+	protected function adapterIsSet()
+	{
+		try
+		{
+			return parent::adapterIsSet();
+		}
+		catch (call\exceptions\logic $exception)
+		{
+			throw new exceptions\logic('Adapter is undefined');
+		}
+	}
+
+	protected function callIsSet()
+	{
+		try
+		{
+			return parent::callIsSet();
+		}
+		catch (call\exceptions\logic $exception)
+		{
+			throw new exceptions\logic('Call is undefined');
+		}
 	}
 }

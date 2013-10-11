@@ -6,14 +6,15 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
 	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\asserters\adapter\call
 ;
 
 class phpFunction extends atoum\asserters\adapter\call
 {
 	public function setWithTest(atoum\test $test)
 	{
-		if ($this->adapter === null)
+		if ($this->callIsSet()->adapter === null)
 		{
 			parent::setWith(clone php\mocker::getAdapter());
 		}
@@ -43,16 +44,6 @@ class phpFunction extends atoum\asserters\adapter\call
 		return $this->setIdenticalArguments(func_get_args());
 	}
 
-	public function isCalledWithAtLeastArguments(array $arguments)
-	{
-		return $this->setArguments($arguments);
-	}
-
-	public function isCalledWithAtLeastIdenticalArguments(array $arguments)
-	{
-		return $this->setIdenticalArguments($arguments);
-	}
-
 	public function isCalledWithAnyArguments()
 	{
 		return $this->unsetArguments();
@@ -60,6 +51,30 @@ class phpFunction extends atoum\asserters\adapter\call
 
 	public function isCalledWithoutAnyArgument()
 	{
-		return $this->withAtLeastArguments(array());
+		return $this->setArguments(array());
+	}
+
+	protected function adapterIsSet()
+	{
+		try
+		{
+			return parent::adapterIsSet();
+		}
+		catch (call\exceptions\logic $exception)
+		{
+			throw new exceptions\logic('Function is undefined');
+		}
+	}
+
+	protected function callIsSet()
+	{
+		try
+		{
+			return parent::callIsSet();
+		}
+		catch (call\exceptions\logic $exception)
+		{
+			throw new exceptions\logic('Call is undefined');
+		}
 	}
 }
