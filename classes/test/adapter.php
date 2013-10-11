@@ -92,26 +92,6 @@ class adapter extends atoum\adapter
 		return $this->calls->getIdenticalTo($call);
 	}
 
-	public function getFirstCallEqualTo(adapter\call $call)
-	{
-		return $this->calls->getFirstEqualTo($call);
-	}
-
-	public function getFirstCallIdenticalTo(adapter\call $call)
-	{
-		return $this->calls->getFirstIdenticalTo($call);
-	}
-
-	public function getLastCallEqualTo(adapter\call $call)
-	{
-		return $this->calls->getLastEqualTo($call);
-	}
-
-	public function getLastCallIdenticalTo(adapter\call $call)
-	{
-		return $this->calls->getLastIdenticalTo($call);
-	}
-
 	public function getPreviousCalls(adapter\call $call, $position, $identical = false)
 	{
 		return $this->calls->getPrevious($call, $position, $identical);
