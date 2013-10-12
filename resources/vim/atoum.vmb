@@ -393,7 +393,7 @@ if !exists('b:current_syntax')
 	highlight default atoumExceptionDescription guifg=White ctermfg=White
 
 	syntax match atoumExceptionMethod '.\+::.\+():$' contained
-	syntax match atoumExceptionMethod 'Exception throwed in .\+ on line \d\+:' contained
+	syntax match atoumExceptionMethod 'An exception has been thrown in .\+ on line \d\+:' contained
 	highlight default atoumExceptionMethod guifg=Magenta ctermfg=Magenta
 
 	syntax match atoumExceptionTitle 'There \(is\|are\) \d\+ exceptions\?:$' contained
