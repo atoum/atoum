@@ -45,6 +45,8 @@ class phpArray extends atoum\test
 				->object($asserter->getInnerAsserter())->isEqualTo($generator->object)
 				->object($asserter->error)->isInstanceOf($generator->error)
 				->variable($asserter->getInnerAsserter())->isNull()
+			->if($asserter->setWith(array(array('foo', 'bar'), array(1, new \mock\object()))))
+				->object($asserter->phpArray[0]->string[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
 		;
 	}
 
@@ -148,14 +150,23 @@ class phpArray extends atoum\test
 					->hasMessage('Array is undefined')
 			->if($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
 			->then
-				->object($asserter[2])->isIdenticalTo($object)
+				->exception(function() use ($asserter) { $asserter[2]; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Value %s at key %s is not an array'), $asserter->getTypeOf($object), 2))
+				->object($asserter->integer[0])->isIdenticalTo($asserter)
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->and($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
+			->then
 				->object($asserter->object[2])->isIdenticalTo($asserter)
 				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
 			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
-			->and($asserter->setWith(array($integer = rand(1, PHP_INT_MAX), 2, array(3, 4, 5, $object))))
+			->and($asserter->setWith($array = array($integer = rand(1, PHP_INT_MAX), 2, $innerArray = array(3, 4, 5, $object))))
 			->then
-				->integer($asserter[0])->isEqualTo($integer)
+				->object($asserter[2])
+					->isIdenticalTo($asserter)
+					->array($asserter->getValue())->isEqualTo($innerArray)
+			->if($asserter->setWith($array))
 				->object($asserter->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object)->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)

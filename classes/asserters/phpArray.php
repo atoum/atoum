@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
@@ -11,9 +12,9 @@ use
 class phpArray extends asserters\variable implements \arrayAccess
 {
 	private $key = null;
+	private $innerAsserter = null;
 	private $innerValue = null;
 	private $innerValueIsSet = false;
-	private $innerAsserter = null;
 
 	public function __get($asserter)
 	{
@@ -33,6 +34,12 @@ class phpArray extends asserters\variable implements \arrayAccess
 					$this->resetInnerAsserter();
 
 					return $asserter;
+				}
+				else if ($asserter instanceof self)
+				{
+					$this->resetInnerAsserter();
+
+					return $asserter->setWith($this->value);
 				}
 				else
 				{
@@ -86,7 +93,14 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		if ($this->innerAsserter === null)
 		{
-			return $this->hasKey($key)->value[$key];
+			if (self::isArray($this->hasKey($key)->value[$key]) === true)
+			{
+				$this->setWith($this->value[$key]);
+			}
+			else
+			{
+				$this->fail(sprintf($this->getLocale()->_('Value %s at key %s is not an array'), $this->getTypeOf($this->value[$key]), $key));
+			}
 		}
 		else
 		{
@@ -99,9 +113,9 @@ class phpArray extends asserters\variable implements \arrayAccess
 				$this->innerValue = $this->innerValue[$key];
 				$this->innerValueIsSet = true;
 			}
-
-			return $this;
 		}
+
+		return $this;
 	}
 
 	public function offsetSet($key, $value)
