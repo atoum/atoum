@@ -262,6 +262,7 @@ abstract class test implements observable, \countable
 
 		$this->asserterGenerator = $generator
 			->setAlias('array', 'phpArray')
+			->setAlias('in', 'phpArray')
 			->setAlias('class', 'phpClass')
 			->setAlias('function', 'phpFunction')
 		;

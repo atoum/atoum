@@ -27,4 +27,13 @@ class testedClass extends atoum\test
 					->hasMessage('Unable to call method ' . get_class($asserter) . '::setWith()')
 		;
 	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new asserters\testedClass(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isFalse()
+		;
+	}
 }

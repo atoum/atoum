@@ -7,7 +7,7 @@ require __DIR__ . '/../../runner.php';
 use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
-	mageekguy\atoum\asserters\phpFunction as testedClass
+	mageekguy\atoum\asserters\phpFunction as sut
 ;
 
 class phpFunction extends atoum\test
@@ -20,7 +20,7 @@ class phpFunction extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->string($asserter->getNamespace())->isEmpty()
 				->string($asserter->getFunction())->isEmpty()
@@ -30,7 +30,7 @@ class phpFunction extends atoum\test
 	public function __toString()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->castToString($asserter)->isEmpty()
 			->if($asserter->setNamespace($namespace = uniqid()))
@@ -45,7 +45,7 @@ class phpFunction extends atoum\test
 	public function testSetNamespace()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->setNamespace($namespace = ''))->isIdenticalTo($asserter)
 				->string($asserter->getNamespace())->isEmpty()
@@ -63,7 +63,7 @@ class phpFunction extends atoum\test
 	public function testSetFunction()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->setFunction($function = uniqid()))->isIdenticalTo($asserter)
 				->string($asserter->getFunction())->isEqualTo($function)
@@ -73,7 +73,7 @@ class phpFunction extends atoum\test
 	public function testGetFullyQualifiedFunctionName()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->string($asserter->getFullyQualifiedFunctionName())->isEmpty()
 			->if($asserter->setNamespace($namespace = uniqid()))
@@ -88,7 +88,7 @@ class phpFunction extends atoum\test
 	public function testSetWithTest()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
 				->string($asserter->getNamespace())->isEqualTo($this->getTestedClassNamespace() . '\\')
@@ -98,7 +98,7 @@ class phpFunction extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->setWith($function = uniqid()))->isIdenticalTo($asserter)
 				->string($asserter->getFunction())->isEqualTo($function)
@@ -108,7 +108,7 @@ class phpFunction extends atoum\test
 	public function testIsCalled()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->and($this->function->function_exists = false)
 			->then
 				->exception(function() use ($asserter) { $asserter->isCalled(); })
@@ -132,6 +132,15 @@ class phpFunction extends atoum\test
 			->if(php\mocker::getAdapter()->addCall($asserter->getFullyQualifiedFunctionName()))
 			->then
 				->object($asserter->isCalled())->isIdenticalTo($asserter)
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isFalse()
 		;
 	}
 }

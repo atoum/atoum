@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\asserters\hash as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,7 +21,7 @@ class hash extends atoum\test
 	public function testIsSha1()
 	{
 		$this
-			->if($asserter = new asserters\hash($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('sha1', 'hello')))
 			->then
 				->object($asserter->isSha1())->isIdenticalTo($asserter)
@@ -48,7 +48,7 @@ class hash extends atoum\test
 	public function testIsSha256()
 	{
 		$this
-			->if($asserter = new asserters\hash($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('sha256', 'hello')))
 			->then
 				->object($asserter->isSha256())->isIdenticalTo($asserter)
@@ -75,7 +75,7 @@ class hash extends atoum\test
 	public function testIsSha512()
 	{
 		$this
-			->if($asserter = new asserters\hash($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('sha512', 'hello')))
 			->then
 				->object($asserter->isSha512())->isIdenticalTo($asserter)
@@ -102,7 +102,7 @@ class hash extends atoum\test
 	public function testIsMd5()
 	{
 		$this
-			->if($asserter = new asserters\hash($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith($value = hash('md5', 'hello')))
 			->then
 				->object($asserter->isMd5())->isIdenticalTo($asserter)
@@ -123,6 +123,15 @@ class hash extends atoum\test
 				->exception(function() use ($asserter, & $line) { $line = __LINE__; $asserter->isMd5(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s does not match given pattern'), $asserter))
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

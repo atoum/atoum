@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\asserters\sizeOf as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,7 +21,7 @@ class sizeOf extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\sizeOf($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -33,7 +33,7 @@ class sizeOf extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\sizeOf($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->setWith(array()))->isIdenticalTo($asserter)
 				->boolean($asserter->wasSet())->isTrue()
@@ -41,6 +41,15 @@ class sizeOf extends atoum\test
 				->object($asserter->setWith($countable = range(1, rand(2, 5))))->isIdenticalTo($asserter)
 				->boolean($asserter->wasSet())->isTrue()
 				->integer($asserter->getValue())->isEqualTo(sizeof($countable))
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

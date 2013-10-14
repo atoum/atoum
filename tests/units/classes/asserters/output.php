@@ -5,7 +5,7 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters
+	mageekguy\atoum\asserters\output as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -20,13 +20,13 @@ class output extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\output())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->string($asserter->getValue())->isEmpty()
 				->boolean($asserter->wasSet())->isTrue()
-			->if($asserter = new asserters\output($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
@@ -38,7 +38,7 @@ class output extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\output(new asserter\generator()))
+			->if($asserter = new sut(new asserter\generator()))
 			->then
 				->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($output)
@@ -46,6 +46,15 @@ class output extends atoum\test
 				->object($asserter->setWith(function() use (& $output) { echo ($output = uniqid()); }, null, "\010"))->isIdenticalTo($asserter)
 				->string($asserter->getValue())->isEqualTo($output)
 				->string($asserter->getCharlist())->isEqualTo("\010")
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

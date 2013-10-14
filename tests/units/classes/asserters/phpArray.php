@@ -5,7 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\phpArray as testedClass
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\asserters\phpArray as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,38 +15,217 @@ class phpArray extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserters\variable');
+		$this->testedClass
+			->extends('mageekguy\atoum\asserters\variable')
+			->implements('arrayAccess')
+		;
 	}
 
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->object($asserter->object)->isIdenticalTo($asserter)
+				->object($asserter->getInnerAsserter())->isEqualTo($generator->object)
+				->object($asserter->error)->isInstanceOf($generator->error)
+				->variable($asserter->getInnerAsserter())->isNull()
+			->if($asserter->setWith(array(array('foo', 'bar'), array(1, new \mock\object()))))
+				->object($asserter->phpArray[0]->string[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+		;
+	}
+
+	public function testReset()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+			->if($asserter->setWith(array()))
+			->then
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+			->if($reference = range(1, 5))
+			->and($asserter->setByReferenceWith($reference))
+			->then
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+			->if($asserter->object)
+			->then
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+			->if($asserter->setWith(range(1, 5)))
+			->and($asserter->atKey(2))
+			->then
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not an array'), $asserter->getTypeOf($value)))
 				->object($asserter->setWith($value = array()))->isIdenticalTo($asserter)
 				->array($asserter->getValue())->isEqualTo($value)
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+				->boolean($asserter->isSetByReference())->isFalse()
+			->if($asserter->object)
+			->then
+				->variable($innerAsserter = $asserter->getInnerAsserter())->isNotNull()
+				->object($objectAsserter = $asserter->setWith($object = new \mock\object()))->isIdenticalTo($innerAsserter)
+				->object($objectAsserter->getValue())->isIdenticalTo($object)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+				->variable($asserter->getKey())->isNull()
+				->variable($asserter->getInnerAsserter())->isNull()
+				->variable($asserter->getInnerValue())->isNull()
+		;
+	}
+
+	public function testOffsetGet()
+	{
+		$this
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter[2]; })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
+			->then
+				->exception(function() use ($asserter) { $asserter[2]; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('Value %s at key %s is not an array'), $asserter->getTypeOf($object), 2))
+				->object($asserter->integer[0])->isIdenticalTo($asserter)
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->and($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
+			->then
+				->object($asserter->object[2])->isIdenticalTo($asserter)
+				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
+				->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->and($asserter->setWith($array = array($integer = rand(1, PHP_INT_MAX), 2, $innerArray = array(3, 4, 5, $object))))
+			->then
+				->object($asserter[2])
+					->isIdenticalTo($asserter)
+					->array($asserter->getValue())->isEqualTo($innerArray)
+			->if($asserter->setWith($array))
+				->object($asserter->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
+				->object($asserter->object[2][3]->isIdenticalTo($object))->isIdenticalTo($asserter)
+				->object($asserter->object[2][3]->isIdenticalTo($object)->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
+				->object($asserter->object[2][3]->isIdenticalTo($object)->integer($integer)->isEqualTo($integer))
+					->isNotIdenticalTo($asserter)
+					->isInstanceOf('mageekguy\atoum\asserters\integer')
+				->exception(function() use ($asserter) { $asserter->object[2][4]; })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s has no key %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf(4)))
+		;
+	}
+
+	public function testOffsetSet()
+	{
+		$this
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter[rand(0, PHP_INT_MAX)] = rand(0, PHP_INT_MAX); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Tested array is read only')
+		;
+	}
+
+	public function testOffsetUnset()
+	{
+		$this
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { unset($asserter[rand(0, PHP_INT_MAX)]); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is read only')
+		;
+	}
+
+	public function testOffsetExists()
+	{
+		$this
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->then
+				->boolean(isset($asserter[rand(0, PHP_INT_MAX)]))->isFalse()
+			->if($asserter->setWith(array()))
+			->then
+				->boolean(isset($asserter[rand(0, PHP_INT_MAX)]))->isFalse()
+			->if($asserter->setWith(array(uniqid())))
+			->then
+				->boolean(isset($asserter[0]))->isTrue()
+				->boolean(isset($asserter[rand(1, PHP_INT_MAX)]))->isFalse()
+			->if($asserter->setWith(array($key = uniqid() => uniqid())))
+			->then
+				->boolean(isset($asserter[$key]))->isTrue()
+				->boolean(isset($asserter[0]))->isFalse()
+				->boolean(isset($asserter[rand(1, PHP_INT_MAX)]))->isFalse()
 		;
 	}
 
 	public function testHasSize()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -65,7 +245,7 @@ class phpArray extends atoum\test
 	public function testIsEmpty()
 	{
 		$this->assert
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -87,7 +267,7 @@ class phpArray extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -109,7 +289,7 @@ class phpArray extends atoum\test
 	public function testAtKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atKey(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -133,7 +313,7 @@ class phpArray extends atoum\test
 	public function testContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -156,7 +336,7 @@ class phpArray extends atoum\test
 	public function testNotContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -195,7 +375,7 @@ class phpArray extends atoum\test
 	public function testStrictlyContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -223,7 +403,7 @@ class phpArray extends atoum\test
 	public function testStrictlyNotContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -256,7 +436,7 @@ class phpArray extends atoum\test
 	public function testContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -284,7 +464,7 @@ class phpArray extends atoum\test
 	public function testNotContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -309,7 +489,7 @@ class phpArray extends atoum\test
 	public function testStrictlyContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -342,7 +522,7 @@ class phpArray extends atoum\test
 	public function testStrictlyNotContainsValues()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -366,7 +546,7 @@ class phpArray extends atoum\test
 	public function testHasKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasKey(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -398,7 +578,7 @@ class phpArray extends atoum\test
 	public function testNotHasKey()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -421,7 +601,7 @@ class phpArray extends atoum\test
 	public function testNotHasKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -445,9 +625,9 @@ class phpArray extends atoum\test
 	public function testHasKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->hasSize(rand(0, PHP_INT_MAX)); })
+				->exception(function() use ($asserter) { $asserter->hasKeys(array(rand(0, PHP_INT_MAX))); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Array is undefined')
 			->if($asserter->setWith(array()))
@@ -473,7 +653,7 @@ class phpArray extends atoum\test
 	public function testKeys()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->keys; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -496,7 +676,7 @@ class phpArray extends atoum\test
 	public function testSize()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->size; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -513,6 +693,137 @@ class phpArray extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(2)
+		;
+	}
+
+	public function testIsEqualTo()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isEqualTo(array()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array()))
+			->then
+				->object($asserter->isEqualTo(array()))->isIdenticalTo($asserter)
+			->if($asserter->setWith($array = range(1, 5)))
+			->then
+				->object($asserter->isEqualTo($array))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->then
+				->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setExpected($notEqualValue)->setActual($asserter->getValue()))
+			->if($asserter->integer)
+			->then
+				->object($asserter->isEqualTo($array))->isIdenticalTo($asserter)
+				->exception(function() use (& $line, $asserter, & $notEqualValue) { $line = __LINE__; $asserter->isEqualTo($notEqualValue = uniqid()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf($notEqualValue)) . PHP_EOL . $diff->setExpected($notEqualValue)->setActual($asserter->getValue()))
+			->if($asserter->integer[2])
+			->then
+				->object($asserter->isEqualTo(3))->isIdenticalTo($asserter)
+				->object($asserter->isNotEqualTo(2))->isIdenticalTo($asserter)
+				->object($asserter->isEqualTo(3)->isNotEqualTo(5))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $expectedValue) { $asserter->isEqualTo($expectedValue = rand(4, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf($expectedValue)) . PHP_EOL . $diff->setExpected($expectedValue)->setActual(3))
+		;
+	}
+
+	public function testIsNotEqualTo()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isNotEqualTo(array()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array()))
+			->then
+				->object($asserter->isNotEqualTo(range(1, 2)))->isIdenticalTo($asserter)
+			->if($asserter->setWith($array = range(1, 5)))
+			->then
+				->object($asserter->isNotEqualTo(array()))->isIdenticalTo($asserter)
+			->if($asserter->integer)
+			->then
+				->object($asserter->isNotEqualTo(array()))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $array) { $asserter->isNotEqualTo($array); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is equal to %s'), $asserter, $asserter->getTypeOf($array)))
+			->if($asserter->integer[2])
+			->then
+				->object($asserter->isEqualTo(3))->isIdenticalTo($asserter)
+				->object($asserter->isEqualTo(3)->isNotEqualTo(5))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $expectedValue) { $asserter->isEqualTo($expectedValue = rand(4, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf($expectedValue)) . PHP_EOL . $diff->setExpected($expectedValue)->setActual(3))
+		;
+	}
+
+	public function testIsIdenticalTo()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isIdenticalTo(new \mock\object()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith(array($object = new \mock\object(), 2)))
+			->then
+				->object($asserter->isIdenticalTo(array($object, 2)))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $notIdenticalValue, $object) { $asserter->isIdenticalTo($notIdenticalValue = array(clone $object, 2)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)) . PHP_EOL . $diff->setExpected($notIdenticalValue)->setActual($asserter->getValue()))
+				->exception(function() use ($asserter, & $notIdenticalValue, $object) { $asserter->isIdenticalTo($notIdenticalValue = array($object, '2')); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not identical to %s'), $asserter, $asserter->getTypeOf($notIdenticalValue)) . PHP_EOL . $diff->setExpected($notIdenticalValue)->setActual($asserter->getValue()))
+			->if($asserter->integer)
+			->then
+				->object($asserter->isIdenticalTo(array($object, 2)))->isIdenticalTo($asserter)
+			->if($asserter->integer[1])
+			->then
+				->object($asserter->isEqualTo(2))->isIdenticalTo($asserter)
+				->object($asserter->isEqualTo(2)->isNotEqualTo(5))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, & $expectedValue) { $asserter->isEqualTo($expectedValue = rand(3, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf($expectedValue)) . PHP_EOL . $diff->setExpected($expectedValue)->setActual(2))
+		;
+	}
+
+	public function testIsNotIdenticalTo()
+	{
+		$this
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->isNotIdenticalTo(new \mock\object()); })
+					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->hasMessage('Array is undefined')
+			->if($asserter->setWith($array = array(1, 2)))
+			->then
+				->object($asserter->isNotIdenticalTo(array('1', 2)))->isIdenticalTo($asserter)
+				->exception(function() use ($asserter, $array) { $asserter->isNotIdenticalTo($array); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is identical to %s'), $asserter, $asserter->getTypeOf($array)))
+			->if($asserter->integer)
+			->then
+				->object($asserter->isNotIdenticalTo(array('1', 2)))->isIdenticalTo($asserter)
+			->if($asserter->integer[1])
+			->then
+				->object($asserter->isEqualTo(2))->isIdenticalTo($asserter)
+				->object($asserter->isEqualTo(2)->isNotEqualTo(5))->isIdenticalTo($asserter)
+			->if($diff = new diffs\variable())
+			->then
+				->exception(function() use ($asserter, & $expectedValue) { $asserter->isEqualTo($expectedValue = rand(3, PHP_INT_MAX)); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter->getTypeOf($asserter->getInnerValue()), $asserter->getTypeOf($expectedValue)) . PHP_EOL . $diff->setExpected($expectedValue)->setActual(2))
 		;
 	}
 }
