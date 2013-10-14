@@ -43,6 +43,8 @@ class phpArray extends atoum\test
 			->then
 				->object($asserter->object)->isIdenticalTo($asserter)
 				->object($asserter->getInnerAsserter())->isEqualTo($generator->object)
+				->object($asserter->object->string)->isIdenticalTo($asserter)
+				->object($asserter->getInnerAsserter())->isEqualTo($generator->string)
 				->object($asserter->error)->isInstanceOf($generator->error)
 				->variable($asserter->getInnerAsserter())->isNull()
 			->if($asserter->setWith(array(
@@ -177,6 +179,7 @@ class phpArray extends atoum\test
 				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
+				->object($asserter->object[2])->isIdenticalTo($asserter)
 			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->and($asserter->setWith($array = array($integer = rand(1, PHP_INT_MAX), 2, $innerArray = array(3, 4, 5, $object))))
 			->then
@@ -184,6 +187,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($asserter)
 					->array($asserter->getValue())->isEqualTo($innerArray)
 			->if($asserter->setWith($array))
+			->then
 				->object($asserter->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object)->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)

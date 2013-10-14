@@ -3,6 +3,7 @@
 namespace mageekguy\atoum\asserters;
 
 use
+	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
 	mageekguy\atoum\exceptions,
 	mageekguy\atoum\tools\diffs
@@ -11,10 +12,10 @@ use
 class phpArray extends asserters\variable implements \arrayAccess
 {
 	private $key = null;
-	private $innerValue = null;
-	private $innerValueIsSet = false;
 	private $innerAsserter = null;
 	private $innerAsserterUsed = false;
+	private $innerValue = null;
+	private $innerValueIsSet = false;
 
 	public function __get($asserter)
 	{
@@ -53,17 +54,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function __call($method, $arguments)
 	{
-		$innerAsserter = $this->setInnerAsserter($method);
-
-		if ($innerAsserter === null)
+		if ($this->innerAsserterCanUsed($method) === false)
 		{
 			return parent::__call($method, $arguments);
 		}
 		else
 		{
-			call_user_func_array(array($innerAsserter, $method), $arguments);
-
-			return $this;
+			return $this->callInnerAsserterMethod($method, $arguments);
 		}
 	}
 
@@ -101,8 +98,6 @@ class phpArray extends asserters\variable implements \arrayAccess
 			{
 				$this->fail(sprintf($this->getLocale()->_('Value %s at key %s is not an array'), $this->getTypeOf($this->value[$key]), $key));
 			}
-
-			return $this;
 		}
 		else
 		{
@@ -115,9 +110,9 @@ class phpArray extends asserters\variable implements \arrayAccess
 				$this->innerValue = $this->innerValue[$key];
 				$this->innerValueIsSet = true;
 			}
-
-			return $this;
 		}
+
+		return $this;
 	}
 
 	public function offsetSet($key, $value)
@@ -139,7 +134,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function setWith($value)
 	{
-		$innerAsserter = $this->setInnerAsserter();
+		$innerAsserter = $this->innerAsserter;
 
 		if ($innerAsserter !== null)
 		{
@@ -166,11 +161,9 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function setByReferenceWith(& $value)
 	{
-		$innerAsserter = $this->setInnerAsserter();
-
-		if ($innerAsserter !== null)
+		if ($this->innerAsserter !== null)
 		{
-			return $innerAsserter->setByReferenceWith($value);
+			return $this->innerAsserter->setByReferenceWith($value);
 		}
 		else
 		{
@@ -574,40 +567,39 @@ class phpArray extends asserters\variable implements \arrayAccess
 		return $this->generator->__call('integer', array(sizeof($this->valueIsSet()->value)));
 	}
 
-	protected function setInnerAsserter($method = null)
-	{
-		$asserter = null;
-
-		if ($this->innerAsserter !== null)
-		{
-			if ($method === null)
-			{
-				$asserter = $this->innerAsserter;
-			}
-			else if ($this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true)
-			{
-				$asserter = $this->innerAsserter->setWith($this->innerValue);
-			}
-		}
-
-		return $asserter;
-	}
-
 	protected function callAssertion($method, array $arguments)
 	{
-		$innerAsserter = $this->setInnerAsserter($method);
-
-		if ($innerAsserter === null)
+		if ($this->innerAsserterCanUsed($method) === false)
 		{
-			$target = 'parent';
+			call_user_func_array(array('parent', $method), $arguments);
 		}
 		else
 		{
-			$target = $innerAsserter;
-			$this->innerAsserterUsed = true;
+			$this->callInnerAsserterMethod($method, $arguments);
 		}
 
-		call_user_func_array(array($target, $method), $arguments);
+		return $this;
+	}
+
+	protected function innerAsserterCanUsed($method)
+	{
+		return ($this->innerAsserter !== null && $this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true);
+	}
+
+	protected function callInnerAsserterMethod($method, $arguments)
+	{
+		call_user_func_array(array($this->innerAsserter->setWith($this->innerValue), $method), $arguments);
+
+		$this->innerAsserterUsed = true;
+
+		return $this;
+	}
+
+	protected function resetInnerAsserter()
+	{
+		$this->innerAsserter = null;
+		$this->innerValue = null;
+		$this->innerValueIsSet = false;
 
 		return $this;
 	}
@@ -623,14 +615,5 @@ class phpArray extends asserters\variable implements \arrayAccess
 	protected static function isArray($value)
 	{
 		return (is_array($value) === true);
-	}
-
-	private function resetInnerAsserter()
-	{
-		$this->innerAsserter = null;
-		$this->innerValue = null;
-		$this->innerValueIsSet = false;
-
-		return $this;
 	}
 }
