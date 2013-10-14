@@ -6,7 +6,7 @@ use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
 	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\string as testedClass
+	mageekguy\atoum\asserters\string as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,14 +21,14 @@ class string extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
 				->object($asserter->getAdapter())->isEqualTo(new atoum\adapter())
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
-			->if($asserter = new testedClass($generator = new asserter\generator(), $adapter = new atoum\adapter()))
+			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\adapter()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -41,7 +41,7 @@ class string extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith($value = uniqid()))
 			->then
 				->castToString($asserter)->isEqualTo('string(' . strlen($value) . ') \'' . $value . '\'')
@@ -54,7 +54,7 @@ class string extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->if($asserter = new testedClass())
+			->if($asserter = new sut())
 			->then
 				->object($asserter->setAdapter($adapter = new atoum\adapter()))->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isIdenticalTo($adapter)
@@ -68,7 +68,7 @@ class string extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
@@ -87,7 +87,7 @@ class string extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualTo(uniqid()); })
@@ -106,7 +106,7 @@ class string extends atoum\test
 	public function testIsEqualToFileContents()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
+			->if($asserter = new sut($generator = new asserter\generator(), $adapter = new atoum\test\adapter()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualToContentsOfFile(uniqid()); })
@@ -133,7 +133,7 @@ class string extends atoum\test
 	public function testIsEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -153,7 +153,7 @@ class string extends atoum\test
 	public function testIsNotEmpty()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isNotEmpty(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -173,7 +173,7 @@ class string extends atoum\test
 	public function testHasLength()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLength(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -194,7 +194,7 @@ class string extends atoum\test
 	public function testHasLengthGreaterThan()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLengthGreaterThan(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -215,7 +215,7 @@ class string extends atoum\test
 	public function testHasLengthLessThan()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->hasLengthLessThan(rand(0, PHP_INT_MAX)); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -236,7 +236,7 @@ class string extends atoum\test
 	public function testContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->contains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -260,7 +260,7 @@ class string extends atoum\test
 	public function testNotContains()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->notContains(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -277,7 +277,7 @@ class string extends atoum\test
 	public function testStartWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->startWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -306,7 +306,7 @@ class string extends atoum\test
 	public function testNotStartWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->notStartWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -323,7 +323,7 @@ class string extends atoum\test
 	public function testEndWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->endWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -352,7 +352,7 @@ class string extends atoum\test
 	public function testNotEndWith()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->notEndWith(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -370,7 +370,7 @@ class string extends atoum\test
 	public function testLength()
 	{
 		$this
-			->if($asserter = new testedClass($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->length; })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -387,6 +387,15 @@ class string extends atoum\test
 					->isInstanceOf('mageekguy\atoum\asserters\integer')
 				->integer($integer->getValue())
 					->isEqualTo(strlen($str))
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }

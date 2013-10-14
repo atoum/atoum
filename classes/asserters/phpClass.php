@@ -69,6 +69,8 @@ class phpClass extends atoum\asserter
 
 	public function setWith($class)
 	{
+		parent::setWith($class);
+
 		try
 		{
 			$this->class = $this->getReflectionClass($class);

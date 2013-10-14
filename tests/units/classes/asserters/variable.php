@@ -5,8 +5,8 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\tools\diffs,
+	mageekguy\atoum\asserters\variable as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -21,7 +21,7 @@ class variable extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->object($asserter->getLocale())->isIdenticalTo($generator->getLocale())
 				->object($asserter->getGenerator())->isIdenticalTo($generator)
@@ -33,7 +33,7 @@ class variable extends atoum\test
 	public function test__get()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, & $property) { $asserter->{$property = uniqid()}; })
 					->isInstanceOf('logicException')
@@ -48,21 +48,33 @@ class variable extends atoum\test
 	public function testReset()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($asserter->setWith(uniqid()))
 			->then
 				->variable($asserter->getValue())->isNotNull()
 				->boolean($asserter->wasSet())->isTrue()
+				->boolean($asserter->isSetByReference())->isFalse()
 				->object($asserter->reset())->isIdenticalTo($asserter)
 				->variable($asserter->getValue())->isNull()
 				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
+			->if($reference = uniqid())
+			->and($asserter->setByReferenceWith($reference))
+			->then
+				->variable($asserter->getValue())->isNotNull()
+				->boolean($asserter->wasSet())->isTrue()
+				->boolean($asserter->isSetByReference())->isTrue()
+				->object($asserter->reset())->isIdenticalTo($asserter)
+				->variable($asserter->getValue())->isNull()
+				->boolean($asserter->wasSet())->isFalse()
+				->boolean($asserter->isSetByReference())->isFalse()
 		;
 	}
 
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($value = uniqid())
 			->then
 				->boolean($asserter->isSetByReference())->isFalse()
@@ -75,7 +87,7 @@ class variable extends atoum\test
 	public function testSetByReferenceWith()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($value = uniqid())
 			->then
 				->boolean($asserter->isSetByReference())->isFalse()
@@ -88,7 +100,7 @@ class variable extends atoum\test
 	public function testIsSetByReference()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->isSetByReference())->isFalse()
 			->if($asserter->setWith(uniqid()))
@@ -107,7 +119,7 @@ class variable extends atoum\test
 	public function testIsEqualTo()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -134,7 +146,7 @@ class variable extends atoum\test
 	public function testIsNotEqualTo()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotEqualTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -155,7 +167,7 @@ class variable extends atoum\test
 	public function testIsIdenticalTo()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -178,7 +190,7 @@ class variable extends atoum\test
 	public function testIsNotIdenticalTo()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotIdenticalTo(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -196,7 +208,7 @@ class variable extends atoum\test
 	public function testIsNull()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -231,7 +243,7 @@ class variable extends atoum\test
 	public function testIsNotNull()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -251,7 +263,7 @@ class variable extends atoum\test
 	public function testIsReferenceTo()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->and($value = uniqid())
 			->then
 				->boolean($asserter->wasSet())->isFalse()
@@ -293,7 +305,7 @@ class variable extends atoum\test
 	public function testIsNotFalse()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -313,7 +325,7 @@ class variable extends atoum\test
 	public function testIsNotTrue()
 	{
 		$this
-			->if($asserter = new asserters\variable($generator = new asserter\generator()))
+			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->boolean($asserter->wasSet())->isFalse()
 				->exception(function() use ($asserter) { $asserter->isNotNull(rand(- PHP_INT_MAX, PHP_INT_MAX)); })
@@ -327,6 +339,15 @@ class variable extends atoum\test
 				->exception(function() use ($asserter) { $asserter->isNotTrue(); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is true'), $asserter))
+		;
+	}
+
+	public function testHandleNativeType()
+	{
+		$this
+			->if($asserter = new sut(new atoum\asserter\generator()))
+			->then
+				->boolean($asserter->handleNativeType())->isTrue()
 		;
 	}
 }
