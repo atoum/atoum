@@ -3,10 +3,8 @@
 namespace mageekguy\atoum\asserters;
 
 use
-	mageekguy\atoum\asserter,
 	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\tools\diffs
+	mageekguy\atoum\exceptions
 ;
 
 class phpArray extends asserters\variable implements \arrayAccess
