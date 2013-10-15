@@ -565,41 +565,6 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testHasPreviousEqualTo()
-	{
-		$this
-			->if($calls = new testedClass())
-			->then
-				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
-			->if($calls[] = $call1 = new adapter\call(uniqid()))
-			->then
-				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
-				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), 0))->isFalse()
-				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), 1))->isFalse()
-				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), rand(2, PHP_INT_MAX)))->isFalse()
-			->if($calls[] = $call2 = new adapter\call(uniqid(), array()))
-			->then
-				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), 1))->isFalse()
-				->boolean($calls->hasPreviousEqualTo($call1, 1))->isFalse()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call1, 2))->isTrue()
-				->boolean($calls->hasPreviousEqualTo($call2, 1))->isFalse()
-				->boolean($calls->hasPreviousEqualTo($call2, 2))->isFalse()
-			->if($calls[] = $call3 = new adapter\call(uniqid(), array($object = new \mock\object())))
-			->if($calls[] = $call4 = new adapter\call($call3->getFunction(), array(clone $object)))
-			->and($calls[] = $call5 = new adapter\call(uniqid(), array()))
-			->then
-				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), 1))->isFalse()
-				->boolean($calls->hasPreviousEqualTo($call1, 1))->isFalse()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call1, 2))->isTrue()
-				->boolean($calls->hasPreviousEqualTo($call2, 1))->isFalse()
-				->boolean($calls->hasPreviousEqualTo($call2, 2))->isFalse()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call3, 4))->isTrue()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call4, 4))->isTrue()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call3, 5))->isTrue()
-				->boolean($previousCalls = $calls->hasPreviousEqualTo($call4, 5))->isTrue()
-		;
-	}
-
 	public function testGetPreviousIdenticalTo()
 	{
 		$this
@@ -683,6 +648,55 @@ class calls extends atoum\test
 		;
 	}
 
+	public function testGetPrevious()
+	{
+		$this
+			->if($calls = new mockedTestedClass())
+			->then
+				->object($calls->getPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))
+					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
+				->mock($calls)->call('getPreviousEqualTo')->withArguments($call, $position)->once()
+				->object($calls->getPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))
+					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
+				->mock($calls)->call('getPreviousIdenticalTo')->withArguments($call, $position)->once()
+		;
+	}
+
+	public function testHasPreviousEqualTo()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
+			->if($calls[] = $call1 = new adapter\call(uniqid()))
+			->then
+				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
+				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), 0))->isFalse()
+				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), 1))->isFalse()
+				->boolean($calls->hasPreviousEqualTo(new adapter\call($call1), rand(2, PHP_INT_MAX)))->isFalse()
+			->if($calls[] = $call2 = new adapter\call(uniqid(), array()))
+			->then
+				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), 1))->isFalse()
+				->boolean($calls->hasPreviousEqualTo($call1, 1))->isFalse()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call1, 2))->isTrue()
+				->boolean($calls->hasPreviousEqualTo($call2, 1))->isFalse()
+				->boolean($calls->hasPreviousEqualTo($call2, 2))->isFalse()
+			->if($calls[] = $call3 = new adapter\call(uniqid(), array($object = new \mock\object())))
+			->if($calls[] = $call4 = new adapter\call($call3->getFunction(), array(clone $object)))
+			->and($calls[] = $call5 = new adapter\call(uniqid(), array()))
+			->then
+				->boolean($calls->hasPreviousEqualTo(new adapter\call(uniqid()), 1))->isFalse()
+				->boolean($calls->hasPreviousEqualTo($call1, 1))->isFalse()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call1, 2))->isTrue()
+				->boolean($calls->hasPreviousEqualTo($call2, 1))->isFalse()
+				->boolean($calls->hasPreviousEqualTo($call2, 2))->isFalse()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call3, 4))->isTrue()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call4, 4))->isTrue()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call3, 5))->isTrue()
+				->boolean($previousCalls = $calls->hasPreviousEqualTo($call4, 5))->isTrue()
+		;
+	}
+
 	public function testHasPreviousIdenticalTo()
 	{
 		$this
@@ -718,17 +732,15 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testGetPrevious()
+	public function testHasPrevious()
 	{
 		$this
 			->if($calls = new mockedTestedClass())
 			->then
-				->object($calls->getPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))
-					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
-				->mock($calls)->call('getPreviousEqualTo')->withArguments($call, $position)->once()
-				->object($calls->getPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))
-					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
-				->mock($calls)->call('getPreviousIdenticalTo')->withArguments($call, $position)->once()
+				->boolean($calls->hasPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))->isFalse()
+				->mock($calls)->call('hasPreviousEqualTo')->withArguments($call, $position)->once()
+				->boolean($calls->hasPrevious($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))->isFalse()
+				->mock($calls)->call('hasPreviousIdenticalTo')->withArguments($call, $position)->once()
 		;
 	}
 
@@ -812,40 +824,6 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testHasAfterEqualTo()
-	{
-		$this
-			->if($calls = new testedClass())
-			->then
-				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
-			->if($calls[] = $call1 = new adapter\call(uniqid()))
-			->then
-				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
-				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), 0))->isFalse()
-				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), 1))->isFalse()
-				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), rand(2, PHP_INT_MAX)))->isFalse()
-			->if($calls[] = $call2 = new adapter\call(uniqid(), array()))
-			->then
-				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), 1))->isFalse()
-				->boolean($calls->hasAfterEqualTo($call1, 1))->isFalse()
-				->boolean($calls->hasAfterEqualTo($call1, 2))->isFalse()
-				->boolean($afterCalls = $calls->hasAfterEqualTo($call2, 1))->isTrue()
-				->boolean($calls->hasAfterEqualTo($call2, 2))->isFalse()
-			->if($calls[] = $call3 = new adapter\call(uniqid(), array($object = new \mock\object())))
-			->if($calls[] = $call4 = new adapter\call($call3->getFunction(), array(clone $object)))
-			->and($calls[] = $call5 = new adapter\call(uniqid(), array()))
-			->then
-				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), 1))->isFalse()
-				->boolean($calls->hasAfterEqualTo($call1, 1))->isFalse()
-				->boolean($calls->hasAfterEqualTo($call1, 2))->isFalse()
-				->boolean($afterCalls = $calls->hasAfterEqualTo($call2, 1))->isTrue()
-				->boolean($calls->hasAfterEqualTo($call2, 2))->isFalse()
-				->boolean($afterCalls = $calls->hasAfterEqualTo($call3, 1))->isTrue()
-				->boolean($afterCalls = $calls->hasAfterEqualTo($call3, 3))->isTrue()
-				->boolean($afterCalls = $calls->hasAfterEqualTo($call4, 1))->isTrue()
-		;
-	}
-
 	public function testGetAfterIdenticalTo()
 	{
 		$this
@@ -924,6 +902,54 @@ class calls extends atoum\test
 		;
 	}
 
+	public function testGetAfter()
+	{
+		$this
+			->if($calls = new mockedTestedClass())
+			->then
+				->object($calls->getAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))
+					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
+				->mock($calls)->call('getAfterEqualTo')->withArguments($call, $position)->once()
+				->object($calls->getAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))
+					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
+				->mock($calls)->call('getAfterIdenticalTo')->withArguments($call, $position)->once()
+		;
+	}
+
+	public function testHasAfterEqualTo()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
+			->if($calls[] = $call1 = new adapter\call(uniqid()))
+			->then
+				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isFalse()
+				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), 0))->isFalse()
+				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), 1))->isFalse()
+				->boolean($calls->hasAfterEqualTo(new adapter\call($call1), rand(2, PHP_INT_MAX)))->isFalse()
+			->if($calls[] = $call2 = new adapter\call(uniqid(), array()))
+			->then
+				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), 1))->isFalse()
+				->boolean($calls->hasAfterEqualTo($call1, 1))->isFalse()
+				->boolean($calls->hasAfterEqualTo($call1, 2))->isFalse()
+				->boolean($afterCalls = $calls->hasAfterEqualTo($call2, 1))->isTrue()
+				->boolean($calls->hasAfterEqualTo($call2, 2))->isFalse()
+			->if($calls[] = $call3 = new adapter\call(uniqid(), array($object = new \mock\object())))
+			->if($calls[] = $call4 = new adapter\call($call3->getFunction(), array(clone $object)))
+			->and($calls[] = $call5 = new adapter\call(uniqid(), array()))
+			->then
+				->boolean($calls->hasAfterEqualTo(new adapter\call(uniqid()), 1))->isFalse()
+				->boolean($calls->hasAfterEqualTo($call1, 1))->isFalse()
+				->boolean($calls->hasAfterEqualTo($call1, 2))->isFalse()
+				->boolean($afterCalls = $calls->hasAfterEqualTo($call2, 1))->isTrue()
+				->boolean($calls->hasAfterEqualTo($call2, 2))->isFalse()
+				->boolean($afterCalls = $calls->hasAfterEqualTo($call3, 1))->isTrue()
+				->boolean($afterCalls = $calls->hasAfterEqualTo($call3, 3))->isTrue()
+				->boolean($afterCalls = $calls->hasAfterEqualTo($call4, 1))->isTrue()
+		;
+	}
+
 	public function testHasAfterIdenticalTo()
 	{
 		$this
@@ -958,17 +984,15 @@ class calls extends atoum\test
 		;
 	}
 
-	public function testGetAfter()
+	public function testHasAfter()
 	{
 		$this
 			->if($calls = new mockedTestedClass())
 			->then
-				->object($calls->getAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))
-					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
-				->mock($calls)->call('getAfterEqualTo')->withArguments($call, $position)->once()
-				->object($calls->getAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))
-					->isInstanceOf('mageekguy\atoum\test\adapter\calls')
-				->mock($calls)->call('getAfterIdenticalTo')->withArguments($call, $position)->once()
+				->boolean($calls->hasAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX)))->isFalse()
+				->mock($calls)->call('hasAfterEqualTo')->withArguments($call, $position)->once()
+				->boolean($calls->hasAfter($call = new adapter\call(uniqid()), $position = rand(1, PHP_INT_MAX), true))->isFalse()
+				->mock($calls)->call('hasAfterIdenticalTo')->withArguments($call, $position)->once()
 		;
 	}
 

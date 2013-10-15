@@ -173,9 +173,7 @@ abstract class call extends atoum\asserter
 			{
 				foreach ($arrayOfCalls as $position => $call)
 				{
-					$afterAsserterCalls = $asserter->getAfterCalls($position);
-
-					if (sizeof($afterAsserterCalls) > 0)
+					if ($asserter->hasAfterCalls($position) === true)
 					{
 						$this->pass();
 					}
@@ -190,9 +188,7 @@ abstract class call extends atoum\asserter
 			{
 				foreach ($arrayOfCalls as $position => $call)
 				{
-					$previousAsserterCalls = $asserter->getPreviousCalls($position);
-
-					if (sizeof($previousAsserterCalls) > 0)
+					if ($asserter->hasPreviousCalls($position) === true)
 					{
 						$this->pass();
 					}
@@ -249,14 +245,14 @@ abstract class call extends atoum\asserter
 		return $this;
 	}
 
-	protected function getPreviousCalls($position)
+	protected function hasPreviousCalls($position)
 	{
-		return $this->adapter->getPreviousCalls($this->call, $position, $this->identicalCall);
+		return $this->adapter->hasPreviousCalls($this->call, $position, $this->identicalCall);
 	}
 
-	protected function getAfterCalls($position)
+	protected function hasAfterCalls($position)
 	{
-		return $this->adapter->getAfterCalls($this->call, $position, $this->identicalCall);
+		return $this->adapter->hasAfterCalls($this->call, $position, $this->identicalCall);
 	}
 
 	protected function getCallsAsString()

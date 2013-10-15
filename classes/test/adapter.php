@@ -82,11 +82,6 @@ class adapter extends atoum\adapter
 		return $this->calls->getEqualTo($call);
 	}
 
-	public function getPreviousCallsEqualTo(adapter\call $call, $position)
-	{
-		return $this->calls->getPreviousEqualTo($call, $position);
-	}
-
 	public function getCallsIdenticalTo(adapter\call $call)
 	{
 		return $this->calls->getIdenticalTo($call);
@@ -97,9 +92,19 @@ class adapter extends atoum\adapter
 		return $this->calls->getPrevious($call, $position, $identical);
 	}
 
+	public function hasPreviousCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->hasPrevious($call, $position, $identical);
+	}
+
 	public function getAfterCalls(adapter\call $call, $position, $identical = false)
 	{
 		return $this->calls->getAfter($call, $position, $identical);
+	}
+
+	public function hasAfterCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->hasAfter($call, $position, $identical);
 	}
 
 	public function getCallNumber(adapter\call $call = null, $identical = false)
