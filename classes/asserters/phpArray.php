@@ -54,7 +54,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	public function __call($method, $arguments)
 	{
-		if ($this->innerAsserterCanUsed($method) === false)
+		if ($this->innerAsserterCanUse($method) === false)
 		{
 			return parent::__call($method, $arguments);
 		}
@@ -569,7 +569,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function callAssertion($method, array $arguments)
 	{
-		if ($this->innerAsserterCanUsed($method) === false)
+		if ($this->innerAsserterCanUse($method) === false)
 		{
 			call_user_func_array(array('parent', $method), $arguments);
 		}
@@ -581,7 +581,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 		return $this;
 	}
 
-	protected function innerAsserterCanUsed($method)
+	protected function innerAsserterCanUse($method)
 	{
 		return ($this->innerAsserter !== null && $this->innerValueIsSet === true && method_exists($this->innerAsserter, $method) === true);
 	}
