@@ -14,6 +14,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 	private $innerValue = null;
 	private $innerValueIsSet = false;
 	private $innerAsserter = null;
+	private $innerAsserterUsed = false;
 
 	public function __get($asserter)
 	{
@@ -36,8 +37,13 @@ class phpArray extends asserters\variable implements \arrayAccess
 				}
 				else
 				{
+					if ($this->innerAsserter === null || $this->innerAsserterUsed === true)
+					{
+						$this->innerValue = $this->value;
+						$this->innerAsserterUsed = false;
+					}
+
 					$this->innerAsserter = $asserter;
-					$this->innerValue = $this->value;
 
 					return $this;
 				}
@@ -87,7 +93,16 @@ class phpArray extends asserters\variable implements \arrayAccess
 	{
 		if ($this->innerAsserter === null)
 		{
-			return $this->hasKey($key)->value[$key];
+			if (self::isArray($this->hasKey($key)->value[$key]) === true)
+			{
+				parent::setWith($this->value[$key]);
+			}
+			else
+			{
+				$this->fail(sprintf($this->getLocale()->_('Value %s at key %s is not an array'), $this->getTypeOf($this->value[$key]), $key));
+			}
+
+			return $this;
 		}
 		else
 		{
@@ -580,7 +595,19 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 	protected function callAssertion($method, array $arguments)
 	{
-		call_user_func_array(array($this->setInnerAsserter($method) ?: 'parent', $method), $arguments);
+		$innerAsserter = $this->setInnerAsserter($method);
+
+		if ($innerAsserter === null)
+		{
+			$target = 'parent';
+		}
+		else
+		{
+			$target = $innerAsserter;
+			$this->innerAsserterUsed = true;
+		}
+
+		call_user_func_array(array($target, $method), $arguments);
 
 		return $this;
 	}
