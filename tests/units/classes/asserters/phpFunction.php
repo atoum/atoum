@@ -21,8 +21,9 @@ class phpFunction extends atoum\test
 	{
 		$this
 			->if($asserter = new sut())
+			->and($test = $this)
 			->then
-				->exception(function() use ($asserter) { $asserter->setWithTest($this); })
+				->exception(function() use ($asserter, $test) { $asserter->setWithTest($test); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith($function = uniqid()))
