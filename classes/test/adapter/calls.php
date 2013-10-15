@@ -158,6 +158,19 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $calls;
 	}
 
+	public function hasPreviousEqualTo(adapter\call $call, $position)
+	{
+		foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition < $position)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function getPreviousIdenticalTo(adapter\call $call, $position)
 	{
 		$calls = new static();
@@ -171,6 +184,19 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		}
 
 		return $calls;
+	}
+
+	public function hasPreviousIdenticalTo(adapter\call $call, $position)
+	{
+		foreach ($this->getIdenticalTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition < $position)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function getPrevious(adapter\call $call, $position, $identical = false)
@@ -193,6 +219,19 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $calls;
 	}
 
+	public function hasAfterEqualTo(adapter\call $call, $position)
+	{
+		foreach ($this->getEqualTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition > $position)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function getAfterIdenticalTo(adapter\call $call, $position)
 	{
 		$calls = new static();
@@ -206,6 +245,19 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		}
 
 		return $calls;
+	}
+
+	public function hasAfterIdenticalTo(adapter\call $call, $position)
+	{
+		foreach ($this->getIdenticalTo($call)->toArray() as $innerPosition => $innerCall)
+		{
+			if ($innerPosition > $position)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	public function getAfter(adapter\call $call, $position, $identical = false)
