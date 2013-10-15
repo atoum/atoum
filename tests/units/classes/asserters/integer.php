@@ -137,13 +137,4 @@ class integer extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than or equal to %s'), $asserter, $asserter->getTypeOf(- PHP_INT_MAX)))
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

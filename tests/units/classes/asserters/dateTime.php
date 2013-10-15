@@ -232,13 +232,4 @@ class dateTime extends atoum\test
 				->object($asserter->hasDateAndTime(1981, 2, 13, 1, 2, 3))->isIdenticalTo($asserter)
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

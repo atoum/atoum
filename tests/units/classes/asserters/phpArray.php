@@ -122,15 +122,6 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
-
 	public function testSetWith()
 	{
 		$this

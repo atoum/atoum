@@ -125,13 +125,4 @@ class hash extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s does not match given pattern'), $asserter))
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

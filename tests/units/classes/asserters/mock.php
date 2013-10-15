@@ -932,13 +932,4 @@ class mock extends atoum\test
 				->object($asserter->never())->isIdenticalTo($asserter)
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isFalse()
-		;
-	}
 }

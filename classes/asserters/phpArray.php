@@ -28,7 +28,7 @@ class phpArray extends asserters\variable implements \arrayAccess
 			default:
 				$asserter = parent::__get($asserter);
 
-				if ($asserter->handleNativeType() === false)
+				if ($asserter instanceof asserters\variable === false)
 				{
 					$this->resetInnerAsserter();
 
