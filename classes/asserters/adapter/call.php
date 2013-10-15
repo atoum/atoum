@@ -57,14 +57,14 @@ abstract class call extends atoum\asserter
 		return $this->adapter;
 	}
 
-	public function before(self $call)
+	public function before(call $call)
 	{
 		$this->beforeCalls[] = $call;
 
 		return $this;
 	}
 
-	public function after(self $call)
+	public function after(call $call)
 	{
 		$this->afterCalls[] = $call;
 
