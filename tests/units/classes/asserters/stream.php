@@ -90,13 +90,4 @@ class stream extends atoum\test
 				->object($asserter->isWrited())->isIdenticalTo($asserter)
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isFalse()
-		;
-	}
 }

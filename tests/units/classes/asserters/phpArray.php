@@ -43,10 +43,29 @@ class phpArray extends atoum\test
 			->then
 				->object($asserter->object)->isIdenticalTo($asserter)
 				->object($asserter->getInnerAsserter())->isEqualTo($generator->object)
+				->object($asserter->object->string)->isIdenticalTo($asserter)
+				->object($asserter->getInnerAsserter())->isEqualTo($generator->string)
 				->object($asserter->error)->isInstanceOf($generator->error)
 				->variable($asserter->getInnerAsserter())->isNull()
-			->if($asserter->setWith(array(array('foo', 'bar'), array(1, new \mock\object()))))
+			->if($asserter->setWith(array(
+						0 => array(
+							0 => array(
+								1 => array('foo', 'bar')
+							),
+							1 => array(1, new \mock\object())
+						),
+						1 => 'foobar'
+					)
+				)
+			)
+			->then
+				->object($asserter->phpArray[0][0][1]->isEqualTo(array('foo', 'bar')))->isIdenticalTo($asserter)
+				->object($asserter->string[1]->isEqualTo('foobar'))->isIdenticalTo($asserter)
+			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
+			->and($asserter->setWith(array($array1 = array('foo', 'bar'), $array2 = array(1, new \mock\object()))))
+			->then
 				->object($asserter->phpArray[0]->string[0]->isEqualTo('foo'))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
+				->object($asserter->phpArray[1]->isEqualTo($array2))->isInstanceOf('mageekguy\atoum\asserters\phpArray')
 		;
 	}
 
@@ -103,15 +122,6 @@ class phpArray extends atoum\test
 		;
 	}
 
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
-
 	public function testSetWith()
 	{
 		$this
@@ -157,9 +167,10 @@ class phpArray extends atoum\test
 			->if($asserter = new sut($generator = new \mock\mageekguy\atoum\asserter\generator()))
 			->and($asserter->setWith(array(1, 2, $object = new \mock\object(), clone $object)))
 			->then
-				->object($asserter->object[2])->isIdenticalTo($asserter)
+				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[2]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[3]->isCloneOf($object))->isIdenticalTo($asserter)
+				->object($asserter->object[2])->isIdenticalTo($asserter)
 			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->and($asserter->setWith($array = array($integer = rand(1, PHP_INT_MAX), 2, $innerArray = array(3, 4, 5, $object))))
 			->then
@@ -167,6 +178,7 @@ class phpArray extends atoum\test
 					->isIdenticalTo($asserter)
 					->array($asserter->getValue())->isEqualTo($innerArray)
 			->if($asserter->setWith($array))
+			->then
 				->object($asserter->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object))->isIdenticalTo($asserter)
 				->object($asserter->object[2][3]->isIdenticalTo($object)->integer[0]->isEqualTo($integer))->isIdenticalTo($asserter)

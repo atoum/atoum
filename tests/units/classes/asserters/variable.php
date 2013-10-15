@@ -341,13 +341,4 @@ class variable extends atoum\test
 					->hasMessage(sprintf($generator->getLocale()->_('%s is true'), $asserter))
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

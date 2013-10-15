@@ -60,13 +60,4 @@ class castToString extends atoum\test
 				->castToString($asserter)->isEqualTo('string(' . strlen(($string = (string) $object)) . ') \'' . $string . '\'')
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

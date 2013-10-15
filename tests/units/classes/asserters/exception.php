@@ -167,13 +167,4 @@ class exception extends atoum\test
 				->object(sut::getLastValue())->isIdenticalTo($otherException)
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }
