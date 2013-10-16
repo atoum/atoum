@@ -97,7 +97,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $this->setCall($call);
 	}
 
-	public function toArray(adapter\call $call = null, $identical = false)
+	public function toArray(adapter\call $call = null)
 	{
 		$calls = array();
 
@@ -280,7 +280,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return ($identical === false ? $this->getEqualTo($call) : $this->getIdenticalTo($call));
 	}
 
-	public function getTimeline(adapter\call $call = null, $identical = false)
+	public function getTimeline()
 	{
 		$timeline = array();
 
