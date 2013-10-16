@@ -214,13 +214,4 @@ class error extends atoum\test
 					->isInstanceOf('mageekguy\atoum\score')
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isFalse()
-		;
-	}
 }

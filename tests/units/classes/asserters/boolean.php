@@ -103,13 +103,4 @@ class boolean extends atoum\test
 					->boolean($asserter->getValue())->isTrue()
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

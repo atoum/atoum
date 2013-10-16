@@ -130,13 +130,4 @@ class object extends atoum\test
 				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }
