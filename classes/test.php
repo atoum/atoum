@@ -13,6 +13,7 @@ use
 
 abstract class test implements observable, \countable
 {
+	const defaultTestMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -55,7 +56,6 @@ abstract class test implements observable, \countable
 	private $path = '';
 	private $class = '';
 	private $classNamespace = '';
-	private $testMethodPrefix = 'test';
 	private $observers = array();
 	private $tags = array();
 	private $phpVersions = array();
@@ -75,6 +75,7 @@ abstract class test implements observable, \countable
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
+	protected static $testMethodPrefix = null;
 
 	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
 	{
@@ -118,7 +119,7 @@ abstract class test implements observable, \countable
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (stripos($methodName = $publicMethod->getName(), $this->testMethodPrefix) === 0)
+			if (stripos($methodName = $publicMethod->getName(), static::getTestMethodPrefix()) === 0)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -725,21 +726,19 @@ abstract class test implements observable, \countable
 		return $this->path;
 	}
 
-	public function getTestMethodPrefix()
+	public static function getTestMethodPrefix()
 	{
-		return $this->testMethodPrefix;
+		return static::$testMethodPrefix ?: static::defaultTestMethodPrefix;
 	}
 
-	public function setTestMethodPrefix($prefix)
+	public static function setTestMethodPrefix($prefix)
 	{
-		$this->testMethodPrefix = (string) $prefix;
+		static::$testMethodPrefix = (string) $prefix;
 
-		if ($this->testMethodPrefix === '')
+		if (static::$testMethodPrefix === '')
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
-
-		return $this;
 	}
 
 	public function getTaggedTestMethods(array $methods, array $tags = array())
