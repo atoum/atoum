@@ -8,9 +8,15 @@ use
 
 class invoker implements \arrayAccess, \countable
 {
+	protected $function = '';
 	protected $bindClosureTo = null;
 	protected $currentCall = null;
 	protected $closuresByCall = array();
+
+	public function __construct($function)
+	{
+		$this->function = (string) $function;
+	}
 
 	public function __set($keyword, $mixed)
 	{
@@ -21,8 +27,6 @@ class invoker implements \arrayAccess, \countable
 				{
 					$mixed = function() use ($mixed) { return $mixed; };
 				}
-
-				$this->setClosure($mixed);
 				break;
 
 			case 'throw':
@@ -30,13 +34,18 @@ class invoker implements \arrayAccess, \countable
 				{
 					$mixed = function() use ($mixed) { throw $mixed; };
 				}
-
-				$this->setClosure($mixed);
 				break;
 
 			default:
 				throw new exceptions\logic\invalidArgument('Keyword \'' . $keyword . '\' is unknown');
 		}
+
+		return $this->setClosure($mixed);
+	}
+
+	public function getFunction()
+	{
+		return $this->function;
 	}
 
 	public function bindTo($object)

@@ -312,6 +312,7 @@ abstract class test implements observable, \countable
 			->setHandler('calling', $returnMockController)
 			->setHandler('ƒ', $returnMockController)
 			->setHandler('resetMock', function(mock\aggregator $mock) { return $mock->getMockController()->resetCalls(); })
+			->setHandler('resetFunction', function(test\adapter\invoker $invoker) { php\mocker::getAdapter()->resetCalls($invoker->getFunction()); return $invoker; })
 		;
 
 		$this->assertionManager

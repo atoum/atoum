@@ -41,7 +41,7 @@ class adapter extends atoum\adapter
 	{
 		if (isset($this->{$functionName}) === true)
 		{
-			$functionName = static::normalizeFunctionName($functionName);
+			$functionName = static::getKey($functionName);
 
 			unset($this->invokers[$functionName]);
 			unset($this->calls[$functionName]);
@@ -176,26 +176,26 @@ class adapter extends atoum\adapter
 		self::$storage = $storage ?: new adapter\storage();
 	}
 
-	protected function setInvoker($name, \closure $factory = null)
+	protected function setInvoker($functionName, \closure $factory = null)
 	{
-		$name = static::normalizeFunctionName($name);
+		$key = static::getKey($functionName);
 
-		if (isset($this->invokers[$name]) === false)
+		if (isset($this->invokers[$key]) === false)
 		{
 			if ($factory === null)
 			{
-				$factory = function() { return new invoker(); };
+				$factory = function($functionName) { return new invoker($functionName); };
 			}
 
-			$this->invokers[$name] = $factory();
+			$this->invokers[$key] = $factory($functionName);
 		}
 
-		return $this->invokers[$name];
+		return $this->invokers[$key];
 	}
 
 	protected function callIsOverloaded($functionName, $call)
 	{
-		$functionName = static::normalizeFunctionName($functionName);
+		$functionName = static::getKey($functionName);
 
 		return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true);
 	}
@@ -210,7 +210,7 @@ class adapter extends atoum\adapter
 		return new adapter\call($function, $arguments);
 	}
 
-	protected static function normalizeFunctionName($functionName)
+	protected static function getKey($functionName)
 	{
 		return strtolower($functionName);
 	}

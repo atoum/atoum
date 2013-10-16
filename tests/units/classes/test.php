@@ -825,6 +825,16 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
+		public function testResetFunction()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($this->function->md5 = uniqid())
+				->then
+					->object($test->resetFunction($this->function->md5))->isIdenticalTo($this->function->md5)
+			;
+		}
+
 		public function testResetAdapter()
 		{
 			$this
