@@ -64,7 +64,6 @@ namespace mageekguy\atoum\tests\units
 		public function testClassConstants()
 		{
 			$this
-				->string(atoum\test::testMethodPrefix)->isEqualTo('test')
 				->string(atoum\test::runStart)->isEqualTo('testRunStart')
 				->string(atoum\test::beforeSetUp)->isEqualTo('beforeTestSetUp')
 				->string(atoum\test::afterSetUp)->isEqualTo('afterTestSetUp')
@@ -107,6 +106,7 @@ namespace mageekguy\atoum\tests\units
 					->array($test->getMandatoryClassExtensions())->isEmpty()
 					->array($test->getMandatoryMethodExtensions())->isEmpty()
 					->variable($test->getXdebugConfig())->isNull()
+					->string($test->getTestMethodPrefix())->isEqualTo('test')
 			;
 		}
 
@@ -935,6 +935,31 @@ namespace mageekguy\atoum\tests\units
 						->hasMessage('Test class \'foo\bar\aaa\bbb\testedClass\' is not in a namespace which match pattern \'' . atoum\test::getNamespace() . '\'')
 					->string(atoum\test::getTestedClassNameFromTestClass('foo\bar\aaa\bbb\testedClass', '#(?:^|\\\)aaas?\\\bbbs?\\\#i'))->isEqualTo('foo\bar\testedClass')
 			;
+		}
+
+		public function testSetTestMethodPrefix()
+		{
+			$this
+				->assert('Set a non-empty string prefix')
+					->if($test = new emptyTest())
+					->and($prefix = uniqid())
+					->then
+						->object($test->setTestMethodPrefix($prefix))->isIdenticalTo($test)
+						->string($test->getTestMethodPrefix())->isEqualTo($prefix)
+				->assert('Integer prefix should be cast to string')
+					->if($test = new emptyTest())
+					->and($intPrefix = time())
+					->then
+						->object($test->setTestMethodPrefix($intPrefix))->isIdenticalTo($test)
+						->string($test->getTestMethodPrefix())->isIdenticalTo((string) $intPrefix)
+				->assert('Empty string should throw an exception')
+					->if($test = new emptyTest())
+					->and($prefix = '')
+					->then
+						->exception(function() use ($test, $prefix) { $test->setTestMethodPrefix($prefix); })
+							->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+							->hasMessage('Test method prefix must not be empty')
+				;
 		}
 	}
 }

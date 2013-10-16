@@ -13,7 +13,6 @@ use
 
 abstract class test implements observable, \countable
 {
-	const testMethodPrefix = 'test';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -56,6 +55,7 @@ abstract class test implements observable, \countable
 	private $path = '';
 	private $class = '';
 	private $classNamespace = '';
+	private $testMethodPrefix = 'test';
 	private $observers = array();
 	private $tags = array();
 	private $phpVersions = array();
@@ -118,7 +118,7 @@ abstract class test implements observable, \countable
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (stripos($methodName = $publicMethod->getName(), self::testMethodPrefix) === 0)
+			if (stripos($methodName = $publicMethod->getName(), $this->testMethodPrefix) === 0)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -723,6 +723,23 @@ abstract class test implements observable, \countable
 	public function getPath()
 	{
 		return $this->path;
+	}
+
+	public function getTestMethodPrefix()
+	{
+		return $this->testMethodPrefix;
+	}
+
+	public function setTestMethodPrefix($prefix)
+	{
+		$this->testMethodPrefix = (string) $prefix;
+
+		if ($this->testMethodPrefix === '')
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
+		}
+
+		return $this;
 	}
 
 	public function getTaggedTestMethods(array $methods, array $tags = array())
