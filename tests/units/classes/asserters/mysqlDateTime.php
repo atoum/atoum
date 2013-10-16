@@ -32,13 +32,4 @@ class mysqlDateTime extends atoum\test
 			->string($asserter->getValue())->isEqualTo($value)
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }

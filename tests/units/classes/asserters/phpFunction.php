@@ -45,15 +45,6 @@ class phpFunction extends atoum\test
 		;
 	}
 
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isFalse()
-		;
-	}
-
 	public function testIsCalled()
 	{
 		$this

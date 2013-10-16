@@ -140,13 +140,4 @@ class asserter extends atoum\test
 				->mock($locale)->call('_')->withArguments('array(%s)')->once()
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isFalse()
-		;
-	}
 }

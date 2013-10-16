@@ -43,13 +43,4 @@ class sizeOf extends atoum\test
 				->integer($asserter->getValue())->isEqualTo(sizeof($countable))
 		;
 	}
-
-	public function testHandleNativeType()
-	{
-		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
-			->then
-				->boolean($asserter->handleNativeType())->isTrue()
-		;
-	}
 }
