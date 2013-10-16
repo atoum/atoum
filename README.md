@@ -20,6 +20,108 @@ It can also generate unit test execution reports in the Xunit format, which make
 *atoum* also generates code coverage reports, in order to make it possible to supervise unit tests.  
 Finally, even though it is developed mainly on UNIX, it can also work on Windows.  
 
+## Why atoum ?
+
+* *atoum* is really [easy to install](http://docs.atoum.org/en/chapter1.html#Download-Install) : clone it [from github](https://github.com/atoum/atoum), download [its PHAR](http://downloads.atoum.org/) or simply [use composer](https://packagist.org/packages/atoum/atoum);
+* *atoum* provides a high level of security during test execution by isolating each test method in its own PHP process. Of course, this feature is available out of the box, no need to install any additional extension;
+* *atoum* runs tests in a parallelized environment making the suite run as fast as possible by taking advantage of today's multi-core CPUs;
+* *atoum* provides a [full-featured set of natural and expressive assertions](http://docs.atoum.org/en/chapter2.html#Asserters) making tests as readable as possible. Here is an example:
+
+``` php
+<?php
+$this
+	->integer(150)
+		->isGreaterThan(100)
+		->isLowerThanOrEqualTo(200)
+;
+```
+
+* *atoum* supports a BDD like syntax with a lot of structural keywords:
+
+``` php
+<?php
+$this
+	->given($testedInstance = new testedClass())
+	->and($testedClass[] = $firstValue = uniqid())
+	->then
+		->sizeof($testedInstance)->isEqualTo(1)
+		->string($testedClass[0])->isEqualTo($firstValue)
+;
+```
+
+* *atoum* provides a dead simple, yet very powerful, [mock engine](http://docs.atoum.org/en/chapter2.html#mock):
+
+``` php
+<?php
+$this
+	->given($testedInstance = new testedClass())
+	->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
+	->and($this->calling($aMock)->doOtherThing = true) // each call to doOtherThing() by the instance will return true
+	->and($testedInstance->setDependency($aMock))
+	->then
+		->boolean($testedInstance->doSomething())->isTrue()
+		->mock($aMock)
+			->call('doOtherThing')->withArguments($testedInstance)->once() // Asserts that the doOtherTHing() method of $aMock was called once
+;
+```
+
+* *atoum* provides a clear API to assert on exceptions:
+
+``` php
+<?php
+$this
+	->given($testedInstance = new testedClass())
+	->and($aMock = new \mock\foo\bar()) // here a mock of the class \foo\bar is created dynamically
+	->and($this->calling($aMock)->doOtherThing->throw = $exception = new \exception()) // Call to doOtherThing() will throw an exception
+	->and($testedInstance->setDependency($aMock))
+	->then
+		->exception(function() use ($testedInstance) { $testedInstance->doSomething(); })
+			->isIdenticalTo($exception)
+;
+```
+
+* *atoum* also lets you mock native PHP functions. Again, this is available out of the box:
+
+``` php
+<?php
+$this
+	->given($this->function->session_start = false)
+	->and($session = new testedClass())
+	->then
+		->exception(function() use ($session) { $session->start(); })
+			->isInstanceOf('project\namespace\exception')
+			->hasMessage('Unable to start session')
+		->function('session_start')->wasCalled()->once()
+;
+```
+
+* *atoum* is able to produce several reports like TAP, clover, xUnit to be easily integrated with Jenkins or any other continuous integration tool;
+* *atoum* supports [data providers](http://docs.atoum.org/fr/chapitre2.html#Fournisseurs-de-donnees-data-provider);
+* *atoum* tests support autorun : just include the *atoum* runner and launch your test using `php path/to/test/file.php`;
+* *atoum*'s [configuration file](http://docs.atoum.org/en/chapter3.html#Configuration-files) is exclusively written in PHP (no XML, Yaml or any other format) giving you the best flexibility:
+
+``` php
+<?php
+$script->addDefaultArguments('--test-it', '-ncc');
+
+$runner->addTestsFromDirectory(__DIR__ . '/tests/units/classes');
+
+$testGenerator = new mageekguy\atoum\test\generator();
+$testGenerator
+	->setTestClassesDirectory(__DIR__ . '/tests/units/classes');
+	->setTestClassNamespace('mageekguy\atoum\tests\units');
+	->setTestedClassesDirectory(__DIR__ . '/classes');
+	->setTestedClassNamespace('mageekguy\atoum')
+	->setRunnerPath(__DIR__ . '/scripts/runner.php')
+;
+
+$runner->setTestGenerator($testGenerator);
+```
+
+* *atoum* provides an automatic test generator
+* *atoum* provides a [loop mode](http://docs.atoum.org/en/chapter3.html#l-loop) to easily retrigger failed tests;
+* *atoum* is full of other interesting features that you will discover over the time.
+
 ## Prerequisites to use *atoum*
 
 *atoum* absolutely requires *PHP 5.3.3* or later to work.
