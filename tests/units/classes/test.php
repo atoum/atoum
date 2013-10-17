@@ -937,23 +937,23 @@ namespace mageekguy\atoum\tests\units
 			;
 		}
 
-		public function testSetTestMethodPrefix()
+		public function testSetMethodPrefix()
 		{
 			$this
 				->assert('Set a non-empty string prefix')
 					->if($prefix = uniqid())
-					->and(emptyTest::setTestMethodPrefix($prefix))
+					->and(emptyTest::setMethodPrefix($prefix))
 					->then
-						->string(emptyTest::getTestMethodPrefix())->isEqualTo($prefix)
+						->string(emptyTest::getMethodPrefix())->isEqualTo($prefix)
 				->assert('Integer prefix should be cast to string')
 					->if($intPrefix = time())
-					->and(emptyTest::setTestMethodPrefix($intPrefix))
+					->and(emptyTest::setMethodPrefix($intPrefix))
 					->then
-						->string(emptyTest::getTestMethodPrefix())->isIdenticalTo((string) $intPrefix)
+						->string(emptyTest::getMethodPrefix())->isIdenticalTo((string) $intPrefix)
 				->assert('Empty string should throw an exception')
 					->if($prefix = '')
 					->then
-						->exception(function() use ($prefix) { emptyTest::setTestMethodPrefix($prefix); })
+						->exception(function() use ($prefix) { emptyTest::setMethodPrefix($prefix); })
 							->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 							->hasMessage('Test method prefix must not be empty')
 				;
