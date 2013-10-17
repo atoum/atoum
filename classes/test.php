@@ -49,6 +49,7 @@ abstract class test implements observable, \countable
 	private $testedClassPath = null;
 	private $currentMethod = null;
 	private $testNamespace = null;
+	private $testMethodPrefix = null;
 	private $classEngine = null;
 	private $bootstrapFile = null;
 	private $maxAsynchronousEngines = null;
@@ -75,7 +76,7 @@ abstract class test implements observable, \countable
 
 	private static $namespace = null;
 	private static $defaultEngine = self::defaultEngine;
-	protected static $testMethodPrefix = null;
+	protected static $methodPrefix = null;
 
 	public function __construct(adapter $adapter = null, annotations\extractor $annotationExtractor = null, asserter\generator $asserterGenerator = null, test\assertion\manager $assertionManager = null, \closure $reflectionClassFactory = null)
 	{
@@ -726,19 +727,36 @@ abstract class test implements observable, \countable
 		return $this->path;
 	}
 
-	public static function getTestMethodPrefix()
+	public static function getMethodPrefix()
 	{
-		return static::$testMethodPrefix ?: static::defaultTestMethodPrefix;
+		return static::$methodPrefix ?: static::defaultTestMethodPrefix;
 	}
 
-	public static function setTestMethodPrefix($prefix)
+	public static function setMethodPrefix($prefix)
 	{
-		static::$testMethodPrefix = (string) $prefix;
+		static::$methodPrefix = (string) $prefix;
 
-		if (static::$testMethodPrefix === '')
+		if (static::$methodPrefix === '')
 		{
 			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
 		}
+	}
+
+	public function setTestMethodPrefix($testMethodPrefix)
+	{
+		$this->testMethodPrefix = self::cleanNamespace($testMethodPrefix);
+
+		if ($this->testMethodPrefix === '')
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
+		}
+
+		return $this;
+	}
+
+	public function getTestMethodPrefix()
+	{
+		return $this->testMethodPrefix ?: self::getMethodPrefix();
 	}
 
 	public function getTaggedTestMethods(array $methods, array $tags = array())
@@ -1182,6 +1200,7 @@ abstract class test implements observable, \countable
 			->setHandler('ignore', function($value) use ($test) { $test->ignore(annotations\extractor::toBoolean($value)); })
 			->setHandler('tags', function($value) use ($test) { $test->setTags(annotations\extractor::toArray($value)); })
 			->setHandler('namespace', function($value) use ($test) { $test->setTestNamespace($value); })
+			->setHandler('prefix', function($value) use ($test) { $test->setTestMethodPrefix($value); })
 			->setHandler('maxChildrenNumber', function($value) use ($test) { $test->setMaxChildrenNumber($value); })
 			->setHandler('engine', function($value) use ($test) { $test->setClassEngine($value); })
 			->setHandler('hasVoidMethods', function($value) use ($test) { $test->classHasVoidMethods(); })
