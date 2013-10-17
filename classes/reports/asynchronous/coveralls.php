@@ -88,7 +88,7 @@ class coveralls extends atoum\reports\asynchronous
 			->setUrl(static::defaultCoverallsApiUrl)
 			->setMethod(static::defaultCoverallsApiMethod)
 			->setParameter(static::defaultCoverallsApiParameter)
-			->addHeader('Content-type', 'multipart/form-data')
+			->addHeader('Content-Type', 'multipart/form-data')
 		;
 
 		return parent::addWriter($writer);
