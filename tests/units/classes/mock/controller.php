@@ -17,8 +17,8 @@ class foo
 
 	public function __construct() {}
 	public function __call($method, $arguments) {}
-	public function doSomething() { return 'something done'; }
-	public function doSomethingElse() {}
+	public function doesSomething() { return 'something done'; }
+	public function doesSomethingElse() {}
 }
 
 class bar {}
@@ -101,8 +101,8 @@ class controller extends atoum\test
 		$this
 			->if($mockController = new testedClass())
 			->and($mockController->control($mock = new \mock\mageekguy\atoum\tests\units\mock\foo()))
-			->and($mockController->doSomething = function() use (& $public) { $this->public = $public = uniqid(); })
-			->and($mock->doSomething())
+			->and($mockController->doesSomething = function() use (& $public) { $this->public = $public = uniqid(); })
+			->and($mock->doesSomething())
 			->then
 				->string($mock->public)->isEqualTo($public)
 			->if($mockController = new testedClass())
@@ -145,12 +145,12 @@ class controller extends atoum\test
 				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
 			->if($mockController->disableAutoBind())
-			->and($mockController->doSomething = function() { return $this; })
+			->and($mockController->doesSomething = function() { return $this; })
 			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
 			->then
 				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
-				->object($mock->doSomething())->isIdenticalTo($mock)
+				->object($mock->doesSomething())->isIdenticalTo($mock)
 		;
 	}
 
@@ -167,12 +167,12 @@ class controller extends atoum\test
 				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
 			->if($mockController->enableAutoBind())
-			->and($mockController->doSomething = function() { return $this; })
+			->and($mockController->doesSomething = function() { return $this; })
 			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
 			->then
 				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
-				->boolean(isset($mockController->doSomething))->isFalse()
+				->boolean(isset($mockController->doesSomething))->isFalse()
 		;
 	}
 
@@ -304,9 +304,9 @@ class controller extends atoum\test
 			->and($mockController->control(new \mock\mageekguy\atoum\tests\units\mock\foo()))
 			->then
 				->object($mockController->methodsMatching('/Else$/i'))->isEqualTo($mockController->getIterator())
-				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomethingelse'))
-				->object($mockController->methodsMatching('/^doSomething/i'))->isEqualTo($mockController->getIterator())
-				->array($mockController->getIterator()->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
+				->array($mockController->getIterator()->getMethods())->isEqualTo(array('doessomethingelse'))
+				->object($mockController->methodsMatching('/^doesSomething/i'))->isEqualTo($mockController->getIterator())
+				->array($mockController->getIterator()->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
 		;
 	}
 
@@ -314,9 +314,9 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
-			->and($this->calling($mock)->doSomething->doNothing())
+			->and($this->calling($mock)->doesSomething->doesNothing())
 			->then
-				->variable($mock->doSomething())->isNull()
+				->variable($mock->doesSomething())->isNull()
 		;
 	}
 
@@ -324,10 +324,10 @@ class controller extends atoum\test
 	{
 		$this
 			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
-			->and($this->calling($mock)->doSomething->doNothing())
-			->and($this->calling($mock)->doSomething->doSomething())
+			->and($this->calling($mock)->doesSomething->doesNothing())
+			->and($this->calling($mock)->doesSomething->doesSomething())
 			->then
-				->string($mock->doSomething())->isEqualTo('something done')
+				->string($mock->doesSomething())->isEqualTo('something done')
 		;
 	}
 
