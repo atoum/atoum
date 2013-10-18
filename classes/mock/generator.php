@@ -21,6 +21,7 @@ class generator
 	protected $shuntParentClassCalls = false;
 
 	private $defaultNamespace = null;
+	private $currentMethod = null;
 
 	public function __construct()
 	{
@@ -29,6 +30,11 @@ class generator
 			->setPhpMethodFactory()
 			->setReflectionClassFactory()
 		;
+	}
+
+	public function __get($method)
+	{
+		return new generator\method($method, $this);
 	}
 
 	public function callsToParentClassAreShunted()
