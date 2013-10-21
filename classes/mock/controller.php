@@ -237,7 +237,7 @@ class controller extends test\adapter
 		self::$autoBindForNewMock = false;
 	}
 
-	public static function get()
+	public static function get($unset = true)
 	{
 		$instance = self::$controlNextNewMock;
 

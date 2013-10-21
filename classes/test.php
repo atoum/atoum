@@ -300,7 +300,7 @@ abstract class test implements observable, \countable
 		$mockGenerator = $this->mockGenerator;
 
 		$this->assertionManager
-			->setPropertyHandler('inNextMockedClass', function() use ($mockGenerator) { return $mockGenerator->getMethod(); })
+			->setPropertyHandler('nextMockedMethod', function() use ($mockGenerator) { return $mockGenerator->getMethod(); })
 		;
 
 		$returnTest = function() use ($test) { return $test; };

@@ -10,7 +10,6 @@ use
 class generator extends mock\generator
 {
 	protected $test = null;
-	protected $getMethod = false;
 
 	public function __construct(atoum\test $test)
 	{
@@ -21,37 +20,12 @@ class generator extends mock\generator
 
 	public function __get($property)
 	{
-		if ($this->getMethod === false)
-		{
-			return $this->test->getAssertionManager()->invoke($property);
-		}
-		else
-		{
-			$method = parent::__get($property);
-
-			$this->getAssertion();
-
-			return $method;
-		}
-	}
-
-	public function getMethod()
-	{
-		$this->getMethod = true;
-
-		return $this;
-	}
-
-	public function getAssertion()
-	{
-		$this->getMethod = false;
-
-		return $this;
+		return $this->test->{$property};
 	}
 
 	public function __call($method, array $arguments)
 	{
-		return $this->test->getAssertionManager()->invoke($method, $arguments);
+		return call_user_func_array(array($this->test, $method), $arguments);
 	}
 
 	public function setTest(atoum\test $test)
