@@ -241,7 +241,7 @@ class controller extends test\adapter
 	{
 		$instance = self::$controlNextNewMock;
 
-		if ($instance !== null)
+		if ($instance !== null && $unset === true)
 		{
 			self::$controlNextNewMock = null;
 		}

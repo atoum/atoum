@@ -566,8 +566,9 @@ class controller extends atoum\test
 		$this
 			->variable(testedClass::get())->isNull()
 			->if($mockController = new testedClass())
+			->and($mockController->controlNextNewMock())
 			->then
-				->object($mockController->controlNextNewMock())->isIdenticalTo($mockController)
+				->object(testedClass::get(false))->isIdenticalTo($mockController)
 				->object(testedClass::get())->isIdenticalTo($mockController)
 				->variable(testedClass::get())->isNull()
 		;
