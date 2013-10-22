@@ -45,38 +45,38 @@ class phpFunction extends atoum\test
 		;
 	}
 
-	public function testIsCalled()
+	public function testWasCalled()
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCalled(); })
+				->exception(function() use ($asserter) { $asserter->wasCalled(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith(uniqid()))
 			->then
-				->object($asserter->isCalled())->isIdenticalTo($asserter)
+				->object($asserter->wasCalled())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
-			->if($asserter->isCalledWithArguments(array()))
+			->if($asserter->wasCalledWithArguments(array()))
 			->then
-				->object($asserter->isCalled())->isIdenticalTo($asserter)
+				->object($asserter->wasCalled())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
 		;
 	}
 
-	public function testIsCalledWithArguments()
+	public function testWasCalledWithArguments()
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCalledWithArguments(); })
+				->exception(function() use ($asserter) { $asserter->wasCalledWithArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($this->function->md5 = uniqid())
 			->and($asserter->setWith('md5'))
 			->and($asserter->setWithTest($this))
 			->then
-				->object($asserter->isCalledWithArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
+				->object($asserter->wasCalledWithArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
 				->array($asserter->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
 			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(\'' . $arg1 . '\', \'' . $arg2 . '\');'))
 			->then
@@ -87,19 +87,19 @@ class phpFunction extends atoum\test
 		;
 	}
 
-	public function testIsCalledWithIdenticalArguments()
+	public function testWasCalledWithIdenticalArguments()
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCalledWithIdenticalArguments(); })
+				->exception(function() use ($asserter) { $asserter->wasCalledWithIdenticalArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($this->function->md5 = uniqid())
 			->and($asserter->setWith('md5'))
 			->and($asserter->setWithTest($this))
 			->then
-				->object($asserter->isCalledWithIdenticalArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
+				->object($asserter->wasCalledWithIdenticalArguments($arg1 = '1', $arg2 = '2'))->isIdenticalTo($asserter)
 				->array($asserter->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
 			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(1, 2);'))
 			->then
@@ -110,34 +110,34 @@ class phpFunction extends atoum\test
 		;
 	}
 
-	public function testIsCalledWithAnyArguments()
+	public function testWasCalledWithAnyArguments()
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCalledWithAnyArguments(); })
+				->exception(function() use ($asserter) { $asserter->wasCalledWithAnyArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith(uniqid()))
-			->and($asserter->isCalledWithArguments(array()))
+			->and($asserter->wasCalledWithArguments(array()))
 			->then
-				->object($asserter->isCalledWithAnyArguments())->isIdenticalTo($asserter)
+				->object($asserter->wasCalledWithAnyArguments())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
 		;
 	}
 
-	public function testIsCalledWithoutAnyArguments()
+	public function testWasCalledWithoutAnyArguments()
 	{
 		$this
 			->if($asserter = new sut(new atoum\asserter\generator()))
 			->then
-				->exception(function() use ($asserter) { $asserter->isCalledWithoutAnyArgument(); })
+				->exception(function() use ($asserter) { $asserter->wasCalledWithoutAnyArgument(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith(uniqid()))
-			->and($asserter->isCalledWithArguments(array()))
+			->and($asserter->wasCalledWithArguments(array()))
 			->then
-				->object($asserter->isCalledWithoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->wasCalledWithoutAnyArgument())->isIdenticalTo($asserter)
 				->array($asserter->getCall()->getArguments())->isEmpty()
 		;
 	}

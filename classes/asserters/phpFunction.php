@@ -29,27 +29,27 @@ class phpFunction extends atoum\asserters\adapter\call
 		return parent::setWith(clone php\mocker::getAdapter())->setFunction($function);
 	}
 
-	public function isCalled()
+	public function wasCalled()
 	{
 		return $this->unsetArguments();
 	}
 
-	public function isCalledWithArguments()
+	public function wasCalledWithArguments()
 	{
 		return $this->setArguments(func_get_args());
 	}
 
-	public function isCalledWithIdenticalArguments()
+	public function wasCalledWithIdenticalArguments()
 	{
 		return $this->setIdenticalArguments(func_get_args());
 	}
 
-	public function isCalledWithAnyArguments()
+	public function wasCalledWithAnyArguments()
 	{
 		return $this->unsetArguments();
 	}
 
-	public function isCalledWithoutAnyArgument()
+	public function wasCalledWithoutAnyArgument()
 	{
 		return $this->setArguments(array());
 	}
