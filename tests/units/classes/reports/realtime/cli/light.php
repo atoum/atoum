@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\realtime\cli;
+namespace atoum\tests\units\reports\realtime\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields,
-	mageekguy\atoum\reports\realtime\cli\light as testedClass
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields,
+	atoum\reports\realtime\cli\light as testedClass
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -16,7 +16,7 @@ class light extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reports\realtime');
+		$this->testedClass->extends('atoum\reports\realtime');
 	}
 
 	public function test__construct()

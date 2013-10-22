@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\error as sut
+	atoum,
+	atoum\asserter,
+	atoum\asserters\error as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class error extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserter');
+		$this->testedClass->extends('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -24,7 +24,7 @@ class error extends atoum\test
 			->then
 				->object($asserter->getGenerator())->isEqualTo(new asserter\generator())
 				->object($asserter->getLocale())->isIdenticalTo($asserter->getGenerator()->getLocale())
-				->object($asserter->getScore())->isInstanceOf('mageekguy\atoum\test\score')
+				->object($asserter->getScore())->isInstanceOf('atoum\test\score')
 				->variable($asserter->getMessage())->isNull()
 				->variable($asserter->getType())->isNull()
 			->if($asserter = new sut($generator = new asserter\generator(), $score = new atoum\test\score()))
@@ -93,7 +93,7 @@ class error extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage($generator->getLocale()->_('error does not exist'))
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
@@ -102,7 +102,7 @@ class error extends atoum\test
 			->if($asserter->setWith($message = uniqid(), null))
 			->then
 				->exception(function() use (& $line, $asserter) { $asserter->exists(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error with message \'%s\' does not exist'), $message))
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), rand(0, PHP_INT_MAX), $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
@@ -111,7 +111,7 @@ class error extends atoum\test
 			->if($asserter->setWith($message = uniqid(), $type = E_USER_ERROR))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error of type %s with message \'%s\' does not exist'), sut::getAsString($type), $message))
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, $message, uniqid(), rand(1, PHP_INT_MAX)))
 			->then
@@ -120,7 +120,7 @@ class error extends atoum\test
 			->if($asserter->setWith(null, $type = E_USER_ERROR))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exists(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('error of type %s does not exist'), sut::getAsString($type)))
 			->if($asserter->getScore()->addError(uniqid(), uniqid(), uniqid(), rand(1, PHP_INT_MAX), $type, uniqid(), uniqid(), rand(1, PHP_INT_MAX)))
 			->then
@@ -211,7 +211,7 @@ class error extends atoum\test
 				->object($asserter->setScore())->isIdenticalTo($asserter)
 				->object($asserter->getScore())
 					->isNotIdenticalTo($score)
-					->isInstanceOf('mageekguy\atoum\score')
+					->isInstanceOf('atoum\score')
 		;
 	}
 }

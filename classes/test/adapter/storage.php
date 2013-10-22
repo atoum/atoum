@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\adapter;
+namespace atoum\test\adapter;
 
 use
-	mageekguy\atoum\test\adapter
+	atoum\test\adapter
 ;
 
 class storage implements \countable, \iteratorAggregate

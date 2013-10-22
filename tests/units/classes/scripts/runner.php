@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\scripts;
+namespace atoum\tests\units\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli,
-	mageekguy\atoum\mock\stream,
-	mock\mageekguy\atoum as mock,
-	mageekguy\atoum\scripts\runner as testedClass
+	atoum,
+	atoum\cli,
+	atoum\mock\stream,
+	mock\atoum as mock,
+	atoum\scripts\runner as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -16,7 +16,7 @@ class runner extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\script\configurable');
+		$this->testedClass->extends('atoum\script\configurable');
 	}
 
 	public function testClassConstants()
@@ -35,10 +35,10 @@ class runner extends atoum\test
 				->boolean($runner->hasDefaultArguments())->isFalse()
 				->array($runner->getDefaultArguments())->isEmpty()
 				->string($runner->getName())->isEqualTo($name)
-				->object($runner->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
-				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+				->object($runner->getAdapter())->isInstanceOf('atoum\adapter')
+				->object($runner->getLocale())->isInstanceOf('atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('atoum\includer')
+				->object($runner->getRunner())->isInstanceOf('atoum\runner')
 				->variable($runner->getScoreFile())->isNull()
 				->array($runner->getReports())->isEmpty()
 				->array($runner->getArguments())->isEmpty()
@@ -194,9 +194,9 @@ class runner extends atoum\test
 			->then
 				->string($runner->getName())->isEqualTo($name)
 				->object($runner->getAdapter())->isIdenticalTo($adapter)
-				->object($runner->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($runner->getIncluder())->isInstanceOf('mageekguy\atoum\includer')
-				->object($runner->getRunner())->isInstanceOf('mageekguy\atoum\runner')
+				->object($runner->getLocale())->isInstanceOf('atoum\locale')
+				->object($runner->getIncluder())->isInstanceOf('atoum\includer')
+				->object($runner->getRunner())->isInstanceOf('atoum\runner')
 				->variable($runner->getScoreFile())->isNull()
 				->array($runner->getArguments())->isEmpty()
 				->array($runner->getHelp())->isEqualTo(array(
@@ -366,13 +366,13 @@ class runner extends atoum\test
 	{
 		$this
 			->if($runner = new testedClass(uniqid()))
-			->and($runner->setLocale($locale = new \mock\mageekguy\atoum\locale()))
+			->and($runner->setLocale($locale = new \mock\atoum\locale()))
 			->then
 				->exception(function() use ($runner, & $file) {
 						$runner->useConfigFile($file = uniqid());
 					}
 				)
-					->isInstanceOf('mageekguy\atoum\includer\exception')
+					->isInstanceOf('atoum\includer\exception')
 					->hasMessage('Unable to find configuration file \'' . $file . '\'')
 				->mock($locale)->call('_')->withArguments('Unable to find configuration file \'%s\'')->once()
 			->if($configFile = stream::get())
@@ -387,23 +387,23 @@ class runner extends atoum\test
 	public function testAddTestAllDirectory()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
-			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
+			->and($stderr = new \mock\atoum\writers\std\err())
 			->and($this->calling($stderr)->clear = $stderr)
 			->and($this->calling($stderr)->write = function() {})
 			->and($runner->setErrorWriter($stderr))
 			->then
 				->object($runner->addTestAllDirectory(uniqid()))->isIdenticalTo($runner)
-				->mock($stderr)->call('write')->withArguments('Error: --test-all argument is deprecated, please replace call to mageekguy\atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead' . PHP_EOL)->once()
+				->mock($stderr)->call('write')->withArguments('Error: --test-all argument is deprecated, please replace call to atoum\scripts\runner::addTestAllDirectory(\'path/to/default/tests/directory\') by $runner->addTestsFromDirectory(\'path/to/default/tests/directory\') in your configuration files and use atoum without any argument instead' . PHP_EOL)->once()
 		;
 	}
 
 	public function testAddDefaultReport()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
 			->then
-				->object($report = $runner->addDefaultReport())->isInstanceOf('mageekguy\atoum\reports\realtime\cli')
+				->object($report = $runner->addDefaultReport())->isInstanceOf('atoum\reports\realtime\cli')
 				->array($report->getWriters())->isEqualTo(array(new atoum\writers\std\out()))
 		;
 	}
@@ -411,11 +411,11 @@ class runner extends atoum\test
 	public function testAddReport()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
 			->then
-				->object($runner->addReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->object($runner->addReport($report = new \mock\atoum\report()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($report))
-				->object($runner->addReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->object($runner->addReport($otherReport = new \mock\atoum\report()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($report, $otherReport))
 		;
 	}
@@ -423,11 +423,11 @@ class runner extends atoum\test
 	public function testSetReport()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
 			->then
-				->object($runner->setReport($report = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->object($runner->setReport($report = new \mock\atoum\report()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($report))
-				->object($runner->setReport($otherReport = new \mock\mageekguy\atoum\report()))->isIdenticalTo($runner)
+				->object($runner->setReport($otherReport = new \mock\atoum\report()))->isIdenticalTo($runner)
 				->array($runner->getReports())->isEqualTo(array($otherReport))
 			->if($runner->addReport($report))
 			->then
@@ -438,7 +438,7 @@ class runner extends atoum\test
 	public function testSetNamespaces()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
 			->then
 				->object($runner->testNamespaces(array()))->isIdenticalTo($runner)
 				->array($runner->getTestedNamespaces())->isEmpty()
@@ -450,7 +450,7 @@ class runner extends atoum\test
 	public function testAddDefaultArguments()
 	{
 		$this
-			->if($runner = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->if($runner = new \mock\atoum\scripts\runner(uniqid()))
 			->then
 				->object($runner->addDefaultArguments($arg1 = uniqid()))->isInstanceOf($runner)
 				->boolean($runner->hasDefaultArguments())->isTrue()
@@ -466,8 +466,8 @@ class runner extends atoum\test
 		$this
 			->given($runner = new testedClass(uniqid()))
 			->and($runner->setAdapter($adapter = new atoum\test\adapter()))
-			->and($runner->setOutputWriter($outputWriter = new \mock\mageekguy\atoum\writers\std\out()))
-			->and($runner->setPrompt($prompt = new \mock\mageekguy\atoum\script\prompt()))
+			->and($runner->setOutputWriter($outputWriter = new \mock\atoum\writers\std\out()))
+			->and($runner->setPrompt($prompt = new \mock\atoum\script\prompt()))
 			->and($adapter->copy = true)
 			->and($adapter->getcwd = $currentDirectory = uniqid())
 			->and($adapter->file_exists = false)
@@ -545,7 +545,7 @@ class runner extends atoum\test
 			->and($adapter->copy = false)
 			->then
 				->exception(function() use ($runner) { $runner->init(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to write \'' . atoum\directory . '/resources/configurations/runner/atoum.php.dist\' to \'' . $currentDirectory . DIRECTORY_SEPARATOR . testedClass::defaultConfigFile . '\'')
 		;
 	}

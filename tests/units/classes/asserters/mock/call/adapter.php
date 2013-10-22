@@ -1,22 +1,22 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters\mock\call;
+namespace atoum\tests\units\asserters\mock\call;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\asserters\mock\call
+	atoum,
+	atoum\test,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\asserters\mock\call
 ;
 
 class adapter extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\php\call');
+		$this->testedClass->extends('atoum\php\call');
 	}
 
 	public function test__construct()
@@ -40,7 +40,7 @@ class adapter extends atoum\test
 	{
 		$this
 			->if($call = new call\adapter(
-					$mockAsserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()),
+					$mockAsserter = new \mock\atoum\asserters\mock(new asserter\generator()),
 					new test\adapter(),
 					uniqid()
 				)
@@ -56,7 +56,7 @@ class adapter extends atoum\test
 							$call->{$unknownFunction}();
 						}
 					)
-						->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+						->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 						->hasMessage('Method ' . get_class($mockAsserter) . '::' . $unknownFunction . '() does not exist')
 		;
 	}

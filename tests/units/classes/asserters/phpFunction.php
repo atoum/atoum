@@ -1,20 +1,20 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 require __DIR__ . '/../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\asserters\phpFunction as sut
+	atoum,
+	atoum\php,
+	atoum\asserters\phpFunction as sut
 ;
 
 class phpFunction extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\asserter');
+		$this->testedClass->extends('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -112,22 +112,22 @@ class phpFunction extends atoum\test
 			->and($this->function->function_exists = false)
 			->then
 				->exception(function() use ($asserter) { $asserter->isCalled(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setNamespace($namespace = uniqid()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isCalled(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setFunction($function = uniqid()))
 			->then
 				->exception(function() use ($asserter) { $asserter->isCalled(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Function \'' . $asserter->getFullyQualifiedFunctionName() . '\' does not exist')
 			->if($this->function->function_exists = true)
 			->then
 				->exception(function() use ($asserter) { $asserter->isCalled(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($asserter->getLocale()->_('function %s is called 0 time'), $asserter))
 			->if(php\mocker::getAdapter()->addCall($asserter->getFullyQualifiedFunctionName()))
 			->then

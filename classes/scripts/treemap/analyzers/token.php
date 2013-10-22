@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\scripts\treemap\analyzers;
+namespace atoum\scripts\treemap\analyzers;
 
 use
-	mageekguy\atoum\scripts\treemap\analyzer
+	atoum\scripts\treemap\analyzer
 ;
 
 class token implements analyzer

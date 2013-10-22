@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock\php\method;
+namespace atoum\mock\php\method;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class argument

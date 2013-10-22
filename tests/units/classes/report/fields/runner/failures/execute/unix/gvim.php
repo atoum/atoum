@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\failures\execute\unix;
+namespace atoum\tests\units\report\fields\runner\failures\execute\unix;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\failures\execute\unix\gvim as testedClass
+	atoum,
+	atoum\report\fields\runner\failures\execute\unix\gvim as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../../../runner.php';
@@ -14,7 +14,7 @@ class gvim extends atoum\test
 	public function testClass()
 	{
 		$this
-			->testedClass->isSubclassOf('mageekguy\atoum\report\fields\runner\failures\execute')
+			->testedClass->isSubclassOf('atoum\report\fields\runner\failures\execute')
 		;
 	}
 
@@ -36,7 +36,7 @@ class gvim extends atoum\test
 			->then
 				->castToString($field)->isEmpty()
 				->adapter($adapter)->call('system')->never()
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($score->getMockController()->getErrors = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\tools;
+namespace atoum\tools;
 
 class diff
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\iterators\filters\recursives\atoum;
+namespace atoum\iterators\filters\recursives\atoum;
 
 use
-	mageekguy\atoum\iterators\filters\recursives
+	atoum\iterators\filters\recursives
 ;
 
 class source extends recursives\dot

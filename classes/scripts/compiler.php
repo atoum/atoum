@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\iterators,
+	atoum\exceptions
 ;
 
 class compiler extends atoum\script

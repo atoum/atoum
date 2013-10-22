@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\readers\std;
+namespace atoum\tests\units\readers\std;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\readers\std\in as testedClass
+	atoum,
+	atoum\readers\std\in as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -13,7 +13,7 @@ class in extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reader');
+		$this->testedClass->extends('atoum\reader');
 	}
 
 	public function testRead()
@@ -23,7 +23,7 @@ class in extends atoum\test
 			->if($adapter->fopen = false)
 			->then
 				->exception(function() use ($reader) { $reader->read(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to open php://stdin stream')
 				->adapter($adapter)
 					->call('fopen')->withArguments('php://stdin', 'r')->once()

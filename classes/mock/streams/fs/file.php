@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock\streams\fs;
+namespace atoum\mock\streams\fs;
 
 use
-	mageekguy\atoum\mock\stream
+	atoum\mock\stream
 ;
 
 class file extends stream

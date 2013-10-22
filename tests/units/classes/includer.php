@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\includer as testedClass
+	atoum,
+	atoum\mock\stream,
+	atoum\includer as testedClass
 ;
 
 require __DIR__ . '/../runner.php';
@@ -61,7 +61,7 @@ class includer extends atoum\test
 			->and($unknownFile = stream::get())
 			->then
 				->exception(function() use ($includer, $unknownFile) { $includer->includePath($unknownFile); })
-					->isInstanceOf('mageekguy\atoum\includer\exception')
+					->isInstanceOf('atoum\includer\exception')
 					->hasMessage('Unable to include \'' . $unknownFile . '\'')
 				->array($includer->getErrors())->isNotEmpty()
 				->adapter($adapter)

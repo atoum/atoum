@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\reports\realtime;
+namespace atoum\reports\realtime;
 
 use
-	mageekguy\atoum\reports,
-	mageekguy\atoum\report\fields
+	atoum\reports,
+	atoum\report\fields
 ;
 
 class tap extends reports\realtime

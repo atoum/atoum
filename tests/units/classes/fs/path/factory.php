@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\fs\path;
+namespace atoum\tests\units\fs\path;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\fs\path,
-	mageekguy\atoum\fs\path\factory as testedClass
+	atoum,
+	atoum\fs\path,
+	atoum\fs\path\factory as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';

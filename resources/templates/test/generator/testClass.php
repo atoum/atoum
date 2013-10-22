@@ -3,7 +3,7 @@
 namespace <tpl:testClassNamespace />;
 
 use
-	mageekguy\atoum,
+	atoum,
 	<tpl:fullyQualifiedTestClassName /> as testedClass
 ;
 

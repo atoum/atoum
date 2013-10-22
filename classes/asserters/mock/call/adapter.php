@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\asserters\mock\call;
+namespace atoum\asserters\mock\call;
 
 use
-	mageekguy\atoum\php,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	atoum\php,
+	atoum\test,
+	atoum\asserters,
+	atoum\exceptions
 ;
 
 class adapter extends php\call

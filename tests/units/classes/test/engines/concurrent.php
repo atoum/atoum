@@ -1,19 +1,19 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\engines;
+namespace atoum\tests\units\test\engines;
 
 require_once __DIR__ . '/../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines\concurrent as testedClass
+	atoum,
+	atoum\test\engines\concurrent as testedClass
 ;
 
 class concurrent extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\test\engine');
+		$this->testedClass->extends('atoum\test\engine');
 	}
 
 	public function test__construct()
@@ -22,7 +22,7 @@ class concurrent extends atoum\test
 			->if($engine = new testedClass())
 			->then
 				->object($defaultScoreFactory = $engine->getScoreFactory())->isInstanceOf('closure')
-				->object($defaultScoreFactory())->isInstanceOf('mageekguy\atoum\score')
+				->object($defaultScoreFactory())->isInstanceOf('atoum\score')
 				->object($engine->getPhp())->isEqualTo(new atoum\php())
 		;
 	}
@@ -54,9 +54,9 @@ class concurrent extends atoum\test
 	{
 		$this
 			->if($engine = new testedClass())
-			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
+			->and($engine->setPhp($php = new \mock\atoum\php()))
 			->then
-				->object($engine->run($test = new \mock\mageekguy\atoum\test()))->isIdenticalTo($engine)
+				->object($engine->run($test = new \mock\atoum\test()))->isIdenticalTo($engine)
 			->if($test->getMockController()->getCurrentMethod = $method = uniqid())
 			->and($test->getMockController()->getPath = $testPath = uniqid())
 			->and($test->getMockController()->getPhpPath = $phpPath = uniqid())
@@ -83,7 +83,7 @@ class concurrent extends atoum\test
 						'$test->setPhpPath(\'' . $phpPath . '\');' .
 						'$test->disableCodeCoverage();' .
 						'ob_end_clean();' .
-						'mageekguy\atoum\scripts\runner::disableAutorun();' .
+						'atoum\scripts\runner::disableAutorun();' .
 						'echo serialize($test->runTestMethod(\'' . $method . '\')->getScore());'
 					)->twice()
 					->call('__set')->withArguments('XDEBUG_CONFIG', $xdebugConfig)->twice()
@@ -94,12 +94,12 @@ class concurrent extends atoum\test
 	{
 		$this
 			->if($engine = new testedClass())
-			->and($engine->setPhp($php = new \mock\mageekguy\atoum\php()))
+			->and($engine->setPhp($php = new \mock\atoum\php()))
 			->and($this->calling($php)->run = $php)
 			->and($this->calling($php)->isRunning = false)
 			->then
 				->variable($engine->getScore())->isNull()
-			->if($engine->run($test = new \mock\mageekguy\atoum\test()))
+			->if($engine->run($test = new \mock\atoum\test()))
 			->and($this->calling($php)->isRunning = true)
 			->then
 				->variable($engine->getScore())->isNull()
@@ -113,7 +113,7 @@ class concurrent extends atoum\test
 			->and($this->calling($php)->getExitCode = $exitCode = uniqid())
 			->and($engine->run($test))
 			->then
-				->object($score = $engine->getScore())->isInstanceOf('mageekguy\atoum\score')
+				->object($score = $engine->getScore())->isInstanceOf('atoum\score')
 				->array($score->getUncompletedMethods())->isEqualTo(array(array('file' => $testPath, 'class' => get_class($test), 'method' => $method, 'exitCode' => $exitCode, 'output' => $output)))
 			->if($this->calling($php)->getStdOut = serialize($score))
 			->and($engine->run($test))

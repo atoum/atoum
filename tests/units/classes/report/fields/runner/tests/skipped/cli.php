@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\skipped;
+namespace atoum\tests\units\report\fields\runner\tests\skipped;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests\skipped\cli as testedClass
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\tests\skipped\cli as testedClass
 ;
 
 require __DIR__ . '/../../../../../../runner.php';
@@ -15,7 +15,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\tests\skipped');
+		$this->testedClass->extends('atoum\report\fields\runner\tests\skipped');
 	}
 
 	public function testSetTitlePrompt()
@@ -91,7 +91,7 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($this->calling($score)->getSkippedMethods = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

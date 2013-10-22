@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\mock;
+namespace atoum\mock;
 
 use
-	mageekguy\atoum\mock
+	atoum\mock
 ;
 
 interface aggregator

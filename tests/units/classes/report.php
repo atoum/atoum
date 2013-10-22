@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units;
+namespace atoum\tests\units;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report as testedClass
+	atoum,
+	atoum\report as testedClass
 ;
 
 require_once __DIR__ . '/../runner.php';
@@ -14,7 +14,7 @@ class report extends atoum\test
 	public function testClass()
 	{
 		$this->testedClass
-			->implements('mageekguy\atoum\observer')
+			->implements('atoum\observer')
 		;
 	}
 
@@ -24,8 +24,8 @@ class report extends atoum\test
 			->if($report = new testedClass())
 			->then
 				->variable($report->getTitle())->isNull()
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->array($report->getWriters())->isEmpty()
 		;
@@ -76,10 +76,10 @@ class report extends atoum\test
 		$this
 			->if($report = new testedClass())
 			->then
-				->object($report->addField($field = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
+				->object($report->addField($field = new \mock\atoum\report\field()))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field))
 				->object($field->getLocale())->isIdenticalTo($report->getLocale())
-				->object($report->addField($otherField = new \mock\mageekguy\atoum\report\field()))->isIdenticalTo($report)
+				->object($report->addField($otherField = new \mock\atoum\report\field()))->isIdenticalTo($report)
 				->array($report->getFields())->isIdenticalTo(array($field, $otherField))
 				->object($field->getLocale())->isIdenticalTo($report->getLocale())
 				->object($otherField->getLocale())->isIdenticalTo($report->getLocale())
@@ -93,8 +93,8 @@ class report extends atoum\test
 			->then
 				->object($report->resetFields())->isIdenticalTo($report)
 				->array($report->getFields())->isEmpty()
-			->if($report->addField(new \mock\mageekguy\atoum\report\field()))
-			->and($report->addField(new \mock\mageekguy\atoum\report\field()))
+			->if($report->addField(new \mock\atoum\report\field()))
+			->and($report->addField(new \mock\atoum\report\field()))
 			->then
 				->object($report->resetFields())->isIdenticalTo($report)
 				->array($report->getFields())->isEmpty()

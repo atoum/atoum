@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\asserter,
+	atoum\asserters,
+	atoum\exceptions
 ;
 
 class testedClass extends asserters\phpClass

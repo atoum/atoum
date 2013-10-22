@@ -1,17 +1,17 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\test\assertion\manager;
+namespace atoum\tests\units\test\assertion\manager;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 class exception extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubClassOf('mageekguy\atoum\exceptions\runtime');
+		$this->testedClass->isSubClassOf('atoum\exceptions\runtime');
 	}
 }

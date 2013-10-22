@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\scripts;
+namespace atoum\scripts;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\scripts\phar,
-	mageekguy\atoum\scripts\builder
+	atoum,
+	atoum\exceptions,
+	atoum\scripts\phar,
+	atoum\scripts\builder
 ;
 
 class builder extends atoum\script\configurable

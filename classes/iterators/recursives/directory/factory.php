@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\iterators\recursives\directory;
+namespace atoum\iterators\recursives\directory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\iterators\filters
+	atoum,
+	atoum\exceptions,
+	atoum\iterators\filters
 ;
 
 class factory implements \iteratorAggregate

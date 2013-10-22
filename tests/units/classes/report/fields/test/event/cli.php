@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\event;
+namespace atoum\tests\units\report\fields\test\event;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\report\fields\test
+	atoum,
+	atoum\mock,
+	atoum\report\fields\test
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -14,7 +14,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\test\event');
+		$this->testedClass->extends('atoum\report\fields\test\event');
 	}
 
 	public function test__construct()
@@ -49,7 +49,7 @@ class cli extends atoum\test
 			->and($adapter->class_exists = true)
 			->and($testController = new mock\controller())
 			->and($testController->getTestedClassName = uniqid())
-			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->and($test = new \mock\atoum\test($adapter))
 			->and($field = new test\event\cli())
 			->then
 				->boolean($field->handleEvent(atoum\runner::runStart, $test))->isFalse()
@@ -104,7 +104,7 @@ class cli extends atoum\test
 			->and($adapter->class_exists = true)
 			->and($testController = new atoum\mock\controller())
 			->and($testController->getTestedClassName = uniqid())
-			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->and($test = new \mock\atoum\test($adapter))
 			->and($field = new test\event\cli())
 			->and($count = rand(1, PHP_INT_MAX))
 			->and($test->getMockController()->count = function() use ($count) { return $count; })

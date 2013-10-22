@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\failures;
+namespace atoum\report\fields\runner\failures;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\adapter,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner
+	atoum,
+	atoum\locale,
+	atoum\adapter,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner
 ;
 
 class execute extends runner\failures

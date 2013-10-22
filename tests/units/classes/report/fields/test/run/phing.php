@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\test\run;
+namespace atoum\tests\units\report\fields\test\run;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\test\adapter,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\test
+	atoum,
+	atoum\mock,
+	atoum\locale,
+	atoum\test\adapter,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\test
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -18,7 +18,7 @@ class phing extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\test\run\cli');
+		$this->testedClass->extends('atoum\report\fields\test\run\cli');
 	}
 
 	public function test__construct()
@@ -69,7 +69,7 @@ class phing extends atoum\test
 			->and($adapter->class_exists = true)
 			->and($testController = new mock\controller())
 			->and($testController->getTestedClassName = uniqid())
-			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->and($test = new \mock\atoum\test($adapter))
 			->then
 				->boolean($field->handleEvent(atoum\test::runStop, $test))->isFalse()
 				->variable($field->getTestClass())->isNull()
@@ -105,7 +105,7 @@ class phing extends atoum\test
 			->and($adapter->class_exists = true)
 			->and($testController = new mock\controller())
 			->and($testController->getTestedClassName = uniqid())
-			->and($test = new \mock\mageekguy\atoum\test($adapter))
+			->and($test = new \mock\atoum\test($adapter))
 			->and($defaultField = new test\run\phing())
 			->then
 				->castToString($defaultField)->isEqualTo('There is currently no test running.')

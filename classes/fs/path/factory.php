@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\fs\path;
+namespace atoum\fs\path;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\fs\path
+	atoum,
+	atoum\fs\path
 ;
 
 class factory

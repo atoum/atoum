@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\test,
+	atoum\exceptions
 ;
 
 class extension extends atoum\asserter

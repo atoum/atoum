@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\recursives\directory;
+namespace atoum\tests\units\iterators\recursives\directory;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators\filters,
-	mageekguy\atoum\iterators\recursives\directory\factory as testedClass
+	atoum,
+	atoum\iterators\filters,
+	atoum\iterators\recursives\directory\factory as testedClass
 ;
 
 class factory extends atoum\test

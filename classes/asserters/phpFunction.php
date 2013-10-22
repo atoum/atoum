@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\php,
+	atoum\exceptions
 ;
 
 class phpFunction extends atoum\asserter

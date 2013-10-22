@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\uncompleted;
+namespace atoum\tests\units\report\fields\runner\tests\uncompleted;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\tests\units,
-	mock\mageekguy\atoum as mock,
-	mageekguy\atoum\report\fields\runner\tests
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\tests\units,
+	mock\atoum as mock,
+	atoum\report\fields\runner\tests
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\tests\uncompleted');
+		$this->testedClass->extends('atoum\report\fields\runner\tests\uncompleted');
 	}
 
 	public function test__construct()
@@ -151,7 +151,7 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($this->calling($score)->getUncompletedMethods = array())
 			->and($runner = new atoum\runner())
 			->and($runner->setScore($score))

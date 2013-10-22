@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier\image;
+namespace atoum\report\fields\runner\result\notifier\image;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions\logic,
-	mageekguy\atoum\report\fields\runner\result\notifier\image
+	atoum,
+	atoum\exceptions\logic,
+	atoum\report\fields\runner\result\notifier\image
 ;
 
 class growl extends image

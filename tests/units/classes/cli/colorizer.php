@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\cli;
+namespace atoum\tests\units\cli;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli
+	atoum,
+	atoum\cli
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -13,7 +13,7 @@ class colorizer extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->implements('mageekguy\atoum\writer\decorator');
+		$this->testedClass->implements('atoum\writer\decorator');
 	}
 
 	public function test__construct()
@@ -110,7 +110,7 @@ class colorizer extends atoum\test
 	public function testColorize()
 	{
 		$this
-			->if($colorizer = new cli\colorizer(null, null, $cli = new \mock\mageekguy\atoum\cli()))
+			->if($colorizer = new cli\colorizer(null, null, $cli = new \mock\atoum\cli()))
 			->and($this->calling($cli)->isTerminal = true)
 			->then
 				->string($colorizer->colorize($string = uniqid()))->isEqualTo($string)
@@ -139,7 +139,7 @@ class colorizer extends atoum\test
 	public function testDecorate()
 	{
 		$this
-			->if($colorizer = new cli\colorizer(null, null, $cli = new \mock\mageekguy\atoum\cli()))
+			->if($colorizer = new cli\colorizer(null, null, $cli = new \mock\atoum\cli()))
 			->and($this->calling($cli)->isTerminal = true)
 			->then
 				->string($colorizer->decorate($string = uniqid()))->isEqualTo($string)

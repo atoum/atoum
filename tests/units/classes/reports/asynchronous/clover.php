@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\tests\units\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\score,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\reports\asynchronous\clover as testedClass
+	atoum,
+	atoum\score,
+	atoum\mock,
+	atoum\reports\asynchronous\clover as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -20,7 +20,7 @@ class clover extends atoum\test
 
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->extends('atoum\reports\asynchronous');
 	}
 
 	public function testClassConstants()
@@ -40,8 +40,8 @@ class clover extends atoum\test
 			->if($report = new testedClass($adapter = new atoum\test\adapter()))
 			->then
 				->array($report->getFields(atoum\runner::runStart))->isEmpty()
-				->object($report->getLocale())->isInstanceOf('mageekguy\atoum\locale')
-				->object($report->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($report->getLocale())->isInstanceOf('atoum\locale')
+				->object($report->getAdapter())->isInstanceOf('atoum\adapter')
 				->array($report->getFields())->isEmpty()
 				->adapter($adapter)->call('extension_loaded')->withArguments('libxml')->once()
 			->if($adapter->extension_loaded = false)
@@ -50,7 +50,7 @@ class clover extends atoum\test
 								new testedClass($adapter);
 							}
 						)
-				->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+				->isInstanceOf('atoum\exceptions\runtime')
 				->hasMessage('libxml PHP extension is mandatory for clover report')
 		;
 	}
@@ -61,18 +61,18 @@ class clover extends atoum\test
 			->if($adapter = new atoum\test\adapter())
 			->if($adapter->extension_loaded = true)
 			->and($report = new testedClass($adapter))
-			->and($score = new \mock\mageekguy\atoum\score())
-			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
-			->and($writer = new \mock\mageekguy\atoum\writers\file())
+			->and($score = new \mock\atoum\score())
+			->and($coverage = new \mock\atoum\score\coverage())
+			->and($writer = new \mock\atoum\writers\file())
 			->and($writer->getMockController()->write = $writer)
 			->then
 				->when(function() use ($report, $writer) {
-						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \mageekguy\atoum\runner());
+						$report->addWriter($writer)->handleEvent(atoum\runner::runStop, new \atoum\runner());
 					})
 					->mock($writer)->call('writeAsynchronousReport')->withArguments($report)->once()
 			->and($adapter->time = 762476400)
 			->and($adapter->uniqid = 'foo')
-			->and($observable = new \mock\mageekguy\atoum\runner())
+			->and($observable = new \mock\atoum\runner())
 			->and($observable->getMockController()->getScore = $score)
 			->and($score->getMockController()->getCoverage = $coverage)
 			->and($coverage->getMockController()->getClasses = array())

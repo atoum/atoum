@@ -1,14 +1,14 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\reports\asynchronous;
+namespace atoum\tests\units\reports\asynchronous;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\test,
-	mageekguy\atoum\report\fields\runner,
-	mageekguy\atoum\reports\asynchronous\builder as testedClass
+	atoum,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\test,
+	atoum\report\fields\runner,
+	atoum\reports\asynchronous\builder as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -17,7 +17,7 @@ class builder extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\reports\asynchronous');
+		$this->testedClass->extends('atoum\reports\asynchronous');
 	}
 
 	public function test__construct()

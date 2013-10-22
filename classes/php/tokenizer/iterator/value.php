@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer\iterator;
+namespace atoum\php\tokenizer\iterator;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 abstract class value implements \iterator, \countable

@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\template;
+namespace atoum\template;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\template\parser
+	atoum,
+	atoum\exceptions,
+	atoum\template\parser
 ;
 
 class parser

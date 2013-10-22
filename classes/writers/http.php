@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\writers;
+namespace atoum\writers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\exceptions,
-	mageekguy\atoum\report\writers
+	atoum,
+	atoum\reports,
+	atoum\exceptions,
+	atoum\report\writers
 ;
 
 class http extends atoum\writer implements writers\asynchronous

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\streams\fs\file;
+namespace atoum\tests\units\mock\streams\fs\file;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\streams\fs\file\controller as testedClass
+	atoum,
+	atoum\mock\streams\fs\file\controller as testedClass
 ;
 
 require_once __DIR__ . '/../../../../../runner.php';
@@ -13,7 +13,7 @@ class controller extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\mock\streams\fs\controller');
+		$this->testedClass->extends('atoum\mock\streams\fs\controller');
 	}
 
 	public function test__construct()
@@ -37,7 +37,7 @@ class controller extends atoum\test
 			->then
 				->boolean($controller->stream_open(uniqid(), 'r', uniqid()))->isFalse()
 				->exception(function() use ($controller) { $controller->mkdir = true; })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Unable to override streamWrapper::mkdir() for file')
 		;
 	}

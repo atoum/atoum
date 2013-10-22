@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\scripts\treemap;
+namespace atoum\scripts\treemap;
 
 interface analyzer
 {

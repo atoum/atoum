@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\php\tokenizer\iterators;
+namespace atoum\php\tokenizer\iterators;
 
 use
-	mageekguy\atoum\php\tokenizer
+	atoum\php\tokenizer
 ;
 
 class phpConstant extends tokenizer\iterator

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\php;
+namespace atoum\php;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\exceptions
 ;
 
 class mocker

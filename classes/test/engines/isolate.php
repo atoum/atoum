@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\test\engines;
+namespace atoum\test\engines;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\test\engines
+	atoum,
+	atoum\test\engines
 ;
 
 class isolate extends engines\concurrent

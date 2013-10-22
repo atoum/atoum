@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\duration;
+namespace atoum\report\fields\runner\duration;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\duration
+	atoum,
+	atoum\locale,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\duration
 ;
 
 class phing extends duration\cli

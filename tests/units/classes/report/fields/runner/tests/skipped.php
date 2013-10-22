@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests;
+namespace atoum\tests\units\report\fields\runner\tests;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner,
-	mock\mageekguy\atoum\report\fields\runner\tests\skipped as testedClass
+	atoum,
+	atoum\runner,
+	mock\atoum\report\fields\runner\tests\skipped as testedClass
 ;
 
 require __DIR__ . '/../../../../../runner.php';
@@ -15,7 +15,7 @@ class skipped extends atoum\test
 	public function testClass()
 	{
 		$this->testedClass
-			->extends('mageekguy\atoum\report\field')
+			->extends('atoum\report\field')
 			->isAbstract()
 		;
 	}

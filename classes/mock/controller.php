@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\mock;
+namespace atoum\mock;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	atoum,
+	atoum\mock,
+	atoum\test,
+	atoum\exceptions
 ;
 
 class controller extends test\adapter

@@ -1,8 +1,8 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
-use mageekguy\atoum\asserters;
+use atoum\asserters;
 
 class sizeOf extends asserters\integer
 {

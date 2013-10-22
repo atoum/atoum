@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\php,
-	mageekguy\atoum\test,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\adapter as sut
+	atoum,
+	atoum\php,
+	atoum\test,
+	atoum\asserter,
+	atoum\asserters\adapter as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -16,7 +16,7 @@ class adapter extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserter');
+		$this->testedClass->isSubclassOf('atoum\asserter');
 	}
 
 	public function test__construct()
@@ -42,7 +42,7 @@ class adapter extends atoum\test
 			->then
 				->assert('Set the asserter with something else than an adapter throw an exception')
 					->exception(function() use ($asserter, & $value) { $asserter->setWith($value = uniqid()); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->isInstanceOf('atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s is not a test adapter'), $asserter->getTypeOf($value)))
 					->string($asserter->getAdapter())->isEqualTo($value)
 				->assert('It is possible to set the asserter with an adapter')
@@ -79,10 +79,10 @@ class adapter extends atoum\test
 	public function testCall()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
@@ -99,15 +99,15 @@ class adapter extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -123,15 +123,15 @@ class adapter extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -149,15 +149,15 @@ class adapter extends atoum\test
 	public function testWithoutAnyArgument()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
+			->if($asserter = new \mock\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
@@ -173,7 +173,7 @@ class adapter extends atoum\test
 			->and($asserter = new sut(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, $mock) { $asserter->beforeMethodCall(uniqid(), $mock); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
@@ -213,7 +213,7 @@ class adapter extends atoum\test
 			->and($asserter = new sut(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter, $mock) { $asserter->afterMethodCall(uniqid(), $mock); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 				->if($asserter->setWith($adapter = new test\adapter()))
 				->then
@@ -256,7 +256,7 @@ class adapter extends atoum\test
 			->and($asserter = new sut(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->beforeFunctionCall(uniqid(), new test\adapter()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
@@ -299,7 +299,7 @@ class adapter extends atoum\test
 			->and($asserter = new sut(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->afterFunctionCall(uniqid(), new test\adapter()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
@@ -338,17 +338,17 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()))
 			->if($call = new php\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
@@ -357,7 +357,7 @@ class adapter extends atoum\test
 			->if($adapter->md5($secondArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 2 times instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
 			->if($adapter->resetCalls())
 			->and($asserter->withArguments($arg = uniqid()))
@@ -367,7 +367,7 @@ class adapter extends atoum\test
 			->if($asserter->withArguments(uniqid()))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->once(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 1'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 		;
 	}
@@ -378,23 +378,23 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
 			->if($call = new php\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
 			->if($adapter->md5($secondArgument = uniqid()))
 			->then
@@ -402,19 +402,19 @@ class adapter extends atoum\test
 			->if($adapter->md5($thirdArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)))
 			->if($adapter->resetCalls())
 			->and($asserter->withArguments($arg = uniqid()))
 			->and($adapter->md5($arg))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					 ->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 			->if($asserter->withArguments(uniqid()))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->twice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 		;
 	}
@@ -425,28 +425,28 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 3'), $asserter->getCall()))
 			->if($call = new php\call('md5'))
 			->and($adapter->md5($firstArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)))
 			->if($adapter->md5($secondArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 2 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)))
 			->if($adapter->md5($thirdArgument = uniqid()))
 			->then
@@ -454,19 +454,19 @@ class adapter extends atoum\test
 			->if($adapter->md5($fourthArgument = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 4 times instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($firstArgument)) . PHP_EOL . '[2] ' . $call->setArguments(array($secondArgument)) . PHP_EOL . '[3] ' . $call->setArguments(array($thirdArgument)) . PHP_EOL . '[4] ' . $call->setArguments(array($fourthArgument)))
 			->if($adapter->resetCalls())
 			->and($asserter->withArguments($arg = uniqid()))
 			->and($adapter->md5($arg))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 			->if($asserter->withArguments(uniqid()))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->thrice(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 3'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 		;
 	}
@@ -477,17 +477,17 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time'), $asserter->getCall()))
 			->if($adapter->md5(uniqid()))
 			->then
@@ -499,7 +499,7 @@ class adapter extends atoum\test
 			->and($asserter->withArguments($arg = uniqid()))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time'), $asserter->getCall()))
 			->if($call = new php\call('md5'))
 			->and($adapter->md5($arg))
@@ -508,7 +508,7 @@ class adapter extends atoum\test
 			->if($asserter->withArguments(uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->atLeastOnce(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 		;
 	}
@@ -519,23 +519,23 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($asserter->call('md5'))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
 			->if($call = new php\call('md5'))
 			->and($adapter->md5($arg = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 			->if($adapter->md5($otherArg = uniqid()))
 			->then
@@ -543,23 +543,23 @@ class adapter extends atoum\test
 			->if($adapter->md5($anOtherArg = uniqid()))
 			->then
 				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($otherArg)) . PHP_EOL . '[3] ' . $call->setArguments(array($anOtherArg)))
 			->if($adapter->resetCalls())
 			->and($asserter->withArguments($arg = uniqid()))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()))
 			->if($adapter->md5($usedArg = uniqid()))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 0 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
 			->if($adapter->md5($arg))
 			->then
 				->exception(function() use (& $anotherLine, $asserter) { $anotherLine = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
 			->if($adapter->md5($arg))
 			->then
@@ -567,7 +567,7 @@ class adapter extends atoum\test
 			->if($adapter->md5($arg))
 			->then
 				->exception(function() use (& $anAnotherLine, $asserter) { $anAnotherLine = __LINE__; $asserter->exactly(2); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 3 times instead of 2'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)) . PHP_EOL . '[3] ' . $call->setArguments(array($arg))  . PHP_EOL . '[4] ' . $call->setArguments(array($arg)))
 		;
 	}
@@ -578,12 +578,12 @@ class adapter extends atoum\test
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Adapter is undefined')
 			->if($asserter->setWith($adapter = new test\adapter()))
 			->then
 				->exception(function() use ($asserter) { $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic')
+					->isInstanceOf('atoum\exceptions\logic')
 					->hasMessage('Called function is undefined')
 			->if($call = new php\call('md5'))
 			->and($asserter->call('md5'))
@@ -592,7 +592,7 @@ class adapter extends atoum\test
 			->if($adapter->md5($usedArg = uniqid()))
 			->then
 					->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->isInstanceOf('atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($usedArg)))
 			->if($adapter->resetCalls())
 			->and($asserter->withArguments($arg = uniqid()))
@@ -601,12 +601,12 @@ class adapter extends atoum\test
 			->if($adapter->md5($arg))
 			->then
 				->exception(function() use (& $line, $asserter) { $line = __LINE__; $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 1 time instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)))
 			->if($adapter->md5($arg))
 			->then
 				->exception(function() use (& $otherLine, $asserter) { $otherLine = __LINE__; $asserter->never(); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('function %s is called 2 times instead of 0'), $asserter->getCall()) . PHP_EOL . '[1] ' . $call->setArguments(array($arg)) . PHP_EOL . '[2] ' . $call->setArguments(array($arg)))
 			->if($asserter->withArguments(uniqid()))
 			->then

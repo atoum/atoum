@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\mock\stream;
+namespace atoum\mock\stream;
 
 use
-	mageekguy\atoum\test,
-	mageekguy\atoum\exceptions
+	atoum\test,
+	atoum\exceptions
 ;
 
 class controller extends test\adapter

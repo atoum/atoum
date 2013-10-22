@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests\skipped;
+namespace atoum\report\fields\runner\tests\skipped;
 
 use
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests\skipped
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\tests\skipped
 ;
 
 class cli extends skipped

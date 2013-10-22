@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\template\parser;
+namespace atoum\template\parser;
 
 use
-	mageekguy\atoum\exceptions
+	atoum\exceptions
 ;
 
 class exception extends exceptions\runtime

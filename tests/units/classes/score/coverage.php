@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\score;
+namespace atoum\tests\units\score;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\score,
-	mageekguy\atoum\score\coverage as testedClass
+	atoum,
+	atoum\mock,
+	atoum\score,
+	atoum\score\coverage as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -49,7 +49,7 @@ class coverage extends atoum\test
 				->object($coverage->getAdapter())->isIdenticalTo($adapter)
 				->object($coverage->setAdapter())->isIdenticalTo($coverage)
 				->object($coverage->getAdapter())
-					->isInstanceOf('mageekguy\atoum\adapter')
+					->isInstanceOf('atoum\adapter')
 					->isNotIdenticalTo($adapter)
 		;
 	}

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result\notifier\image;
+namespace atoum\report\fields\runner\result\notifier\image;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\result\notifier\image
+	atoum,
+	atoum\report\fields\runner\result\notifier\image
 ;
 
 class libnotify extends image

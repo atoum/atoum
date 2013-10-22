@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\asserters;
+namespace atoum\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserters
+	atoum,
+	atoum\asserters
 ;
 
 class output extends asserters\string

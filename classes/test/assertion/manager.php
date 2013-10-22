@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\test\assertion;
+namespace atoum\test\assertion;
 
 use
-	mageekguy\atoum\test\assertion
+	atoum\test\assertion
 ;
 
 class manager

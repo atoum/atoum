@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner;
+namespace atoum\tests\units\report\fields\runner;
 
 use
-	mageekguy\atoum,
-	mock\mageekguy\atoum\report\fields\runner\coverage as testedClass
+	atoum,
+	mock\atoum\report\fields\runner\coverage as testedClass
 ;
 
 require_once __DIR__ . '/../../../../runner.php';
@@ -13,7 +13,7 @@ class coverage extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\field');
+		$this->testedClass->extends('atoum\report\field');
 	}
 
 	public function test__construct()

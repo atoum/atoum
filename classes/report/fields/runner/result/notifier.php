@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\result;
+namespace atoum\report\fields\runner\result;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report\fields\runner\result
+	atoum,
+	atoum\report\fields\runner\result
 ;
 
 abstract class notifier extends result

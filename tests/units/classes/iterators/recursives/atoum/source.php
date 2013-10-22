@@ -1,13 +1,13 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\recursives\atoum;
+namespace atoum\tests\units\iterators\recursives\atoum;
 
 require_once __DIR__ . '/../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\iterators,
-	mageekguy\atoum\mock\stream
+	atoum,
+	atoum\iterators,
+	atoum\mock\stream
 ;
 
 class source extends atoum\test

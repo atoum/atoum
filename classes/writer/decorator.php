@@ -1,6 +1,6 @@
 <?php
 
-namespace mageekguy\atoum\writer;
+namespace atoum\writer;
 
 interface decorator
 {

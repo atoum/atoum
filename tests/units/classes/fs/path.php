@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\fs;
+namespace atoum\tests\units\fs;
 
 require_once __DIR__ . '/../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\fs\path as testedClass
+	atoum,
+	atoum\fs\path as testedClass
 ;
 
 // See http://msdn.microsoft.com/en-us/library/windows/desktop/aa365247(v=vs.85).aspx for more informations
@@ -631,7 +631,7 @@ class path extends atoum\test
 				->if($path = new testedClass('/an/invalid/path', '/', $adapter))
 				->then
 					->exception(function() use ($path) { $path->getRealPath(); })
-						->isInstanceOf('mageekguy\atoum\fs\path\exception')
+						->isInstanceOf('atoum\fs\path\exception')
 						->hasMessage('Unable to get real path for \'' . $path . '\'')
 		;
 	}
@@ -713,7 +713,7 @@ class path extends atoum\test
 			->if($adapter->mkdir = false)
 			->then
 				->exception(function() use ($path) { $path->createParentDirectory(); })
-					->isInstanceOf('mageekguy\atoum\fs\path\exception')
+					->isInstanceOf('atoum\fs\path\exception')
 					->hasMessage('Unable to create directory \'/a\'')
 			->if($adapter->file_exists = true)
 			->and($this->resetAdapter($adapter))
@@ -739,7 +739,7 @@ class path extends atoum\test
 			->if($adapter->file_put_contents = false)
 			->then
 				->exception(function() use ($path, & $data) { $path->putContents($data = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\fs\path\exception')
+					->isInstanceOf('atoum\fs\path\exception')
 					->hasMessage('Unable to put data \'' . $data . '\' in file \'' . $path . '\'')
 		;
 	}

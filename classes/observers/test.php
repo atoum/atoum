@@ -1,9 +1,9 @@
 <?php
 
-namespace mageekguy\atoum\observers;
+namespace atoum\observers;
 
 use
-	mageekguy\atoum
+	atoum
 ;
 
 interface test extends atoum\observer {}

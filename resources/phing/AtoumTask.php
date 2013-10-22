@@ -1,18 +1,18 @@
 <?php
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\reports,
-	mageekguy\atoum\reports\realtime,
-	mageekguy\atoum\report\fields\runner\coverage
+	atoum,
+	atoum\reports,
+	atoum\reports\realtime,
+	atoum\report\fields\runner\coverage
 ;
 
-if (defined('mageekguy\atoum\phing\task\path') === false)
+if (defined('atoum\phing\task\path') === false)
 {
-	define('mageekguy\atoum\phing\task\path', 'phing/Task.php');
+	define('atoum\phing\task\path', 'phing/Task.php');
 }
 
-require_once mageekguy\atoum\phing\task\path;
+require_once atoum\phing\task\path;
 
 class atoumTask extends task
 {
@@ -104,9 +104,9 @@ class atoumTask extends task
 		{
 			require_once $this->atoumAutoloaderPath;
 		}
-		else if (class_exists('mageekguy\atoum\scripts\runner', false) === false)
+		else if (class_exists('atoum\scripts\runner', false) === false)
 		{
-			throw new exception('Unknown class mageekguy\\atoum\\scripts\\runner, consider setting atoumPharPath parameter');
+			throw new exception('Unknown class atoum\\scripts\\runner, consider setting atoumPharPath parameter');
 		}
 
 		atoum\scripts\runner::disableAutorun();

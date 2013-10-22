@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\mock\php\method;
+namespace atoum\tests\units\mock\php\method;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock\php
+	atoum,
+	atoum\mock\php
 ;
 
 require_once __DIR__ . '/../../../../runner.php';

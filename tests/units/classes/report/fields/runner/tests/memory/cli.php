@@ -1,15 +1,15 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\report\fields\runner\tests\memory;
+namespace atoum\tests\units\report\fields\runner\tests\memory;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\runner,
-	mageekguy\atoum\locale,
-	mageekguy\atoum\tests\units,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer,
-	mageekguy\atoum\report\fields\runner\tests\memory
+	atoum,
+	atoum\runner,
+	atoum\locale,
+	atoum\tests\units,
+	atoum\cli\prompt,
+	atoum\cli\colorizer,
+	atoum\report\fields\runner\tests\memory
 ;
 
 require_once __DIR__ . '/../../../../../../runner.php';
@@ -18,7 +18,7 @@ class cli extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\report\fields\runner\tests\memory');
+		$this->testedClass->extends('atoum\report\fields\runner\tests\memory');
 	}
 
 	public function test__construct()
@@ -96,9 +96,9 @@ class cli extends atoum\test
 	{
 		$this
 			->if($field = new memory\cli())
-			->and($score = new \mock\mageekguy\atoum\runner\score())
+			->and($score = new \mock\atoum\runner\score())
 			->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner = new \mock\atoum\runner())
 			->and($runner->setScore($score))
 			->and($runner->getMockController()->getTestNumber = function () use (& $testNumber) { return $testNumber = rand(0, PHP_INT_MAX); })
 			->then
@@ -114,9 +114,9 @@ class cli extends atoum\test
 	public function test__toString()
 	{
 		$this
-			->if($score = new \mock\mageekguy\atoum\runner\score())
+			->if($score = new \mock\atoum\runner\score())
 			->and($score->getMockController()->getTotalMemoryUsage = function() use (& $totalMemoryUsage) { return $totalMemoryUsage = rand(1, PHP_INT_MAX); })
-			->and($runner = new \mock\mageekguy\atoum\runner())
+			->and($runner = new \mock\atoum\runner())
 			->and($runner->setScore($score))
 			->and($runner->getMockController()->getTestNumber = $testNumber = rand(1, PHP_INT_MAX))
 			->and($defaultField = new memory\cli())

@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers;
+namespace atoum\tests\units\writers;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers\file as testedClass
+	atoum,
+	atoum\writers\file as testedClass
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,8 +15,8 @@ class file extends atoum\test
 	{
 		$this
 			->testedClass
-				->implements('mageekguy\atoum\report\writers\realtime')
-				->implements('mageekguy\atoum\report\writers\asynchronous')
+				->implements('atoum\report\writers\realtime')
+				->implements('atoum\report\writers\asynchronous')
 		;
 	}
 
@@ -33,7 +33,7 @@ class file extends atoum\test
 			->if($file = new testedClass())
 			->then
 				->string($file->getFilename())->isEqualTo('atoum.log')
-				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($file->getAdapter())->isInstanceOf('atoum\adapter')
 			->if($file = new testedClass(null, $adapter = new atoum\test\adapter()))
 			->then
 				->object($file->getAdapter())->isIdenticalTo($adapter)
@@ -42,7 +42,7 @@ class file extends atoum\test
 			->if($file = new testedClass($filename = uniqid()))
 			->then
 				->string($file->getFilename())->isEqualTo($filename)
-				->object($file->getAdapter())->isInstanceOf('mageekguy\atoum\adapter')
+				->object($file->getAdapter())->isInstanceOf('atoum\adapter')
 		;
 	}
 
@@ -106,7 +106,7 @@ class file extends atoum\test
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->write(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to open file \'' . $file->getFilename() . '\'')
 				->error->notExists()
 			->if($adapter->fopen = $resource = uniqid())
@@ -114,7 +114,7 @@ class file extends atoum\test
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->write(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to lock file \'' . $file->getFilename() . '\'')
 			->if($file = new testedClass(null, $adapter))
 			->and($adapter->flock = true)
@@ -125,7 +125,7 @@ class file extends atoum\test
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->write(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to write in file \'' . $file->getFilename() . '\'')
 				->adapter($adapter)
 					->call('fopen')->withArguments($file->getFilename(), 'c')->once()
@@ -158,7 +158,7 @@ class file extends atoum\test
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->clear(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to open file \'' . $file->getFilename() . '\'')
 			->if($adapter->fopen = $resource = uniqid())
 			->and($adapter->flock = true)
@@ -167,7 +167,7 @@ class file extends atoum\test
 			->and($adapter->resetCalls())
 			->then
 				->exception(function() use ($file) { $file->clear(); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime')
+					->isInstanceOf('atoum\exceptions\runtime')
 					->hasMessage('Unable to truncate file \'' . $file->getFilename() . '\'')
 				->adapter($adapter)
 					->call('fopen')->withArguments($file->getFilename(), 'c')->once()

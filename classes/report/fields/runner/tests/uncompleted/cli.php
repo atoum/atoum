@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tests\uncompleted;
+namespace atoum\report\fields\runner\tests\uncompleted;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\report,
-	mageekguy\atoum\cli\prompt,
-	mageekguy\atoum\cli\colorizer
+	atoum,
+	atoum\report,
+	atoum\cli\prompt,
+	atoum\cli\colorizer
 ;
 
 class cli extends report\fields\runner\tests\uncompleted

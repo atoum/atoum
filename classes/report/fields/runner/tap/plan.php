@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\report\fields\runner\tap;
+namespace atoum\report\fields\runner\tap;
 
 use
-	mageekguy\atoum\runner,
-	mageekguy\atoum\report
+	atoum\runner,
+	atoum\report
 ;
 
 class plan extends report\field
@@ -21,7 +21,7 @@ class plan extends report\field
 		return ($this->testMethodNumber <= 0 ? '' : '1..' . $this->testMethodNumber . PHP_EOL);
 	}
 
-	public function handleEvent($event, \mageekguy\atoum\observable $observable)
+	public function handleEvent($event, \atoum\observable $observable)
 	{
 		if (parent::handleEvent($event, $observable) === false)
 		{

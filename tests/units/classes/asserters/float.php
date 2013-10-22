@@ -1,12 +1,12 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\tools\diffs,
-	mageekguy\atoum\asserters\float as sut
+	atoum,
+	atoum\asserter,
+	atoum\tools\diffs,
+	atoum\asserters\float as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -15,7 +15,7 @@ class float extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\integer');
+		$this->testedClass->isSubclassOf('atoum\asserters\integer');
 	}
 
 	public function test__construct()
@@ -35,7 +35,7 @@ class float extends atoum\test
 		$this
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = uniqid()); })
-				->isInstanceOf('mageekguy\atoum\asserter\exception')
+				->isInstanceOf('atoum\asserter\exception')
 				->hasMessage(sprintf($generator->getLocale()->_('%s is not a float'), $asserter->getTypeOf($value)))
 			->string($asserter->getValue())->isEqualTo($value)
 			->object($asserter->setWith($value = (float) rand(- PHP_INT_MAX, PHP_INT_MAX)))->isIdenticalTo($asserter)
@@ -51,13 +51,13 @@ class float extends atoum\test
 			->then
 				->object($asserter->isEqualTo($value))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $notFloat) { $asserter->isEqualTo($notFloat = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isEqualTo() must be a float')
 			->if($diff = new diffs\variable())
 			->and($diff->setExpected(- $value)->setActual($value))
 			->then
 				->exception(function() use ($asserter, $value) { $asserter->isEqualTo(- $value); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not equal to %s'), $asserter, $asserter->getTypeOf(- $value)) . PHP_EOL . $diff)
 		;
 	}
@@ -70,10 +70,10 @@ class float extends atoum\test
 			->then
 				->object($asserter->isGreaterThan(1.1))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $notFloat) { $asserter->isGreaterThan($notFloat = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isGreaterThan() must be a float')
 				->exception(function() use ($asserter, & $greaterValue) { $asserter->isGreaterThan($greaterValue = 1.3); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not greater than %s'), $asserter, $asserter->getTypeOf($greaterValue)))
 		;
 	}
@@ -86,10 +86,10 @@ class float extends atoum\test
 			->then
 				->object($asserter->isLessThan(1.3))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $notFloat) { $asserter->isLessThan($notFloat = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isLessThan() must be a float')
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isLessThan($lessValue = 1.1); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than %s'), $asserter, $asserter->getTypeOf($lessValue)))
 		;
 	}
@@ -103,10 +103,10 @@ class float extends atoum\test
 				->object($asserter->isGreaterThanOrEqualTo(1.1))->isIdenticalTo($asserter)
 				->object($asserter->isGreaterThanOrEqualTo($value))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $notFloat) { $asserter->isGreaterThanOrEqualTo($notFloat = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isGreaterThanOrEqualTo() must be a float')
 				->exception(function() use ($asserter, & $greaterValue) { $asserter->isGreaterThanOrEqualTo($greaterValue = 1.3); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not greater than or equal to %s'), $asserter, $asserter->getTypeOf($greaterValue)))
 		;
 	}
@@ -120,10 +120,10 @@ class float extends atoum\test
 				->object($asserter->isLessThanOrEqualTo(1.3))->isIdenticalTo($asserter)
 				->object($asserter->isLessThanOrEqualTo($value))->isIdenticalTo($asserter)
 				->exception(function() use ($asserter, & $notFloat) { $asserter->isLessThanOrEqualTo($notFloat = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
+					->isInstanceOf('atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Argument of ' . get_class($asserter) . '::isLessThanOrEqualTo() must be a float')
 				->exception(function() use ($asserter, & $lessValue) { $asserter->isLessThanOrEqualTo($lessValue = 1.1); })
-					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->isInstanceOf('atoum\asserter\exception')
 					->hasMessage(sprintf($generator->getLocale()->_('%s is not less than or equal to %s'), $asserter, $asserter->getTypeOf($lessValue)))
 		;
 	}
@@ -145,7 +145,7 @@ class float extends atoum\test
 					->and($diff->setExpected($testValue)->setActual($value))
 					->then
 						->exception(function() use ($asserter, $testValue, $epsilon) { $asserter->isNearlyEqualTo($testValue, $epsilon); })
-							->isInstanceOf('mageekguy\atoum\asserter\exception')
+							->isInstanceOf('atoum\asserter\exception')
 							->hasMessage(sprintf($generator->getLocale()->_('%s is not nearly equal to %s with epsilon %s'), $asserter, $asserter->getTypeOf($testValue), $epsilon) . PHP_EOL . $diff);
 			}
 

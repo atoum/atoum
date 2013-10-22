@@ -1,10 +1,10 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\writers\std;
+namespace atoum\tests\units\writers\std;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\writers\std\out as testedClass
+	atoum,
+	atoum\writers\std\out as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -15,9 +15,9 @@ class out extends atoum\test
 	{
 		$this
 			->testedClass
-				->extends('mageekguy\atoum\writers\std')
-				->implements('mageekguy\atoum\report\writers\realtime')
-				->implements('mageekguy\atoum\report\writers\asynchronous')
+				->extends('atoum\writers\std')
+				->implements('atoum\report\writers\realtime')
+				->implements('atoum\report\writers\asynchronous')
 		;
 	}
 

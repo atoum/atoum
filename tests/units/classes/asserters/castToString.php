@@ -1,11 +1,11 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\asserters;
+namespace atoum\tests\units\asserters;
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\castToString as sut
+	atoum,
+	atoum\asserter,
+	atoum\asserters\castToString as sut
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -14,7 +14,7 @@ class castToString extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->isSubclassOf('mageekguy\atoum\asserters\string');
+		$this->testedClass->isSubclassOf('atoum\asserters\string');
 	}
 
 	public function test__construct()
@@ -36,7 +36,7 @@ class castToString extends atoum\test
 			->then
 				->assert('Set the asserter with something else than an object throw an exception')
 					->exception(function() use (& $line, $asserter, & $value) { $line = __LINE__; $asserter->setWith($value = rand(- PHP_INT_MAX, PHP_INT_MAX)); })
-						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->isInstanceOf('atoum\asserter\exception')
 						->hasMessage(sprintf($generator->getLocale()->_('%s is not an object'), $asserter->getTypeOf($value)))
 					->integer($asserter->getValue())->isEqualTo($value)
 					->variable($asserter->getCharlist())->isNull()

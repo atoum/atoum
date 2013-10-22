@@ -1,20 +1,20 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\iterators\filters\recursives\atoum;
+namespace atoum\tests\units\iterators\filters\recursives\atoum;
 
 require __DIR__ . '/../../../../../runner.php';
 
 use
-	mageekguy\atoum,
-	mageekguy\atoum\mock,
-	mageekguy\atoum\iterators\filters\recursives
+	atoum,
+	atoum\mock,
+	atoum\iterators\filters\recursives
 ;
 
 class source extends atoum\test
 {
 	public function testClass()
 	{
-		$this->testedClass->extends('mageekguy\atoum\iterators\filters\recursives\dot');
+		$this->testedClass->extends('atoum\iterators\filters\recursives\dot');
 	}
 
 	public function test__accept()
