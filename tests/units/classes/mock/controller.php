@@ -112,7 +112,7 @@ class controller extends atoum\test
 			->if($mockController = new testedClass())
 			->and($mockController->__construct = function() use (& $public) { $this->public = $public = uniqid(); })
 			->and($mockController->enableAutoBind())
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\with__callAndOtherMethods($mockController))
 			->then
 				->string($mock->public)->isEqualTo($public)
 		;
@@ -132,7 +132,7 @@ class controller extends atoum\test
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
 			->if($mockController->disableAutoBind())
 			->and($mockController->doSomething = function() { return $this; })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\with__callAndOtherMethods($mockController))
 			->then
 				->object($mockController->enableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isTrue()
@@ -154,7 +154,7 @@ class controller extends atoum\test
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
 			->if($mockController->enableAutoBind())
 			->and($mockController->doSomething = function() { return $this; })
-			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\foo($mockController))
+			->and($mock = new \mock\mageekguy\atoum\tests\units\mock\with__callAndOtherMethods($mockController))
 			->then
 				->object($mockController->disableAutoBind())->isIdenticalTo($mockController)
 				->boolean($mockController->autoBindIsEnabled())->isFalse()
