@@ -885,4 +885,43 @@ class runner extends atoum\test
 				->boolean($script->autorun())->isTrue()
 		;
 	}
+
+	public function testNoCodeCoverageForNamespaces()
+	{
+		$this
+			->if($script = new testedClass(uniqid()))
+			->and($runner = new atoum\runner())
+			->and($score = new atoum\runner\score())
+			->and($configurator = new atoum\configurator($script))
+			->and($coverage = new \mock\mageekguy\atoum\score\coverage())
+			->and($score->setCoverage($coverage))
+			->and($runner->setScore($score))
+			->and($script->setRunner($runner))
+			->then
+				->object($configurator->noCodeCoverageForNamespaces($namespace = 'A' . uniqid()))->isIdenticalTo($configurator)
+				->mock($coverage)
+					->call('excludeNamespace')->withArguments($namespace)->once()
+				->object($configurator->noCodeCoverageForNamespaces($namespace = '\A' . uniqid()))->isIdenticalTo($configurator)
+			->if($this->resetMock($coverage))
+				->object($configurator->noCodeCoverageForNamespaces(array($namespace, $otherNamespace = 'A' . uniqid())))->isIdenticalTo($configurator)
+				->mock($coverage)
+					->call('excludeNamespace')
+						->withArguments($namespace)->once()
+						->withArguments($otherNamespace)->once()
+			->if($this->resetMock($coverage))
+			->then
+				->exception(function() use ($configurator, & $namespace) {
+						$configurator->noCodeCoverageForNamespaces($namespace = rand(0, PHP_INT_MAX));
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage(sprintf('"%s" is not a valid namespace', $namespace))
+				->exception(function() use ($configurator, & $namespace) {
+						$configurator->noCodeCoverageForNamespaces(array('A' . uniqid(), $namespace = rand(0, PHP_INT_MAX)));
+					}
+				)
+					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage(sprintf('"%s" is not a valid namespace', $namespace))
+		;
+	}
 }
