@@ -12,6 +12,8 @@ class includer
 	protected $adapter = null;
 	protected $errors = array();
 
+	private $path = '';
+
 	public function __construct(atoum\adapter $adapter = null)
 	{
 		$this->setAdapter($adapter);
@@ -45,23 +47,23 @@ class includer
 	{
 		$this->resetErrors();
 
-		$path = (string) $path;
+		$this->path = (string) $path;
 
 		$errorHandler = $this->adapter->set_error_handler(array($this, 'errorHandler'));
 
 		$closure = $closure ?: function($path) { include_once($path); };
 
-		$closure($path);
+		$closure($this->path);
 
 		$this->adapter->restore_error_handler();
 
 		if (sizeof($this->errors) > 0)
 		{
-			$realpath = parse_url($path, PHP_URL_SCHEME) !== null ? $path : realpath($path) ?: $path;
+			$realpath = parse_url($this->path, PHP_URL_SCHEME) !== null ? $this->path : realpath($this->path) ?: $this->path;
 
 			if (in_array($realpath, $this->adapter->get_included_files(), true) === false)
 			{
-				throw new includer\exception('Unable to include \'' . $path . '\'');
+				throw new includer\exception('Unable to include \'' . $this->path . '\'');
 			}
 
 			if ($errorHandler !== null)
@@ -80,8 +82,19 @@ class includer
 	{
 		$errorReporting = $this->adapter->error_reporting();
 
-		if ($errorReporting !== 0 && $errorReporting & $error)
+		if ($errorReporting !== 0 && ($errorReporting & $error))
 		{
+			foreach (array_reverse(debug_backtrace()) as $trace)
+			{
+				if (isset($trace['file']) === true && $trace['file'] === $this->path)
+				{
+					$file = $this->path;
+					$line = $trace['line'];
+
+					break;
+				}
+			}
+
 			$this->errors[] = array($error, $message, $file, $line, $context);
 		}
 

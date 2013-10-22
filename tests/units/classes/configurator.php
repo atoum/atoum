@@ -42,12 +42,15 @@ class configurator extends atoum\test
 					->mock($script)->call('setScoreFile')->withArguments($scoreFile)->once()
 					->object($configurator->addDefaultReport())->isIdenticalTo($report)
 					->mock($script)->call('addDefaultReport')->once()
+					->object($configurator->noCodeCoverageForNamespaces($namespaces = array('foo', 'bar')))->isIdenticalTo($configurator)
+					->mock($script)->call('excludeNamespacesFromCoverage')
+						->withArguments($namespaces)->once()
+					->object($configurator->noCodeCoverageForNamespaces('foo', 'bar'))->isIdenticalTo($configurator)
+					->mock($script)->call('excludeNamespacesFromCoverage')
+						->withArguments($namespaces)->twice()
 				->exception(function() use ($configurator, & $method) { $configurator->{$method = uniqid()}(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
 					->hasMessage('Method \'' . $method . '\' is unavailable')
-				->exception(function() use ($configurator) { $configurator->setPhpPath(uniqid()); })
-					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-					->hasMessage('Method \'setPhpPath\' is unavailable')
 		;
 	}
 }

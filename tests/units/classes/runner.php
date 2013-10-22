@@ -558,4 +558,15 @@ class runner extends atoum\test
 				->array($runner->getTestPaths())->isEmpty()
 		;
 	}
+
+	public function testAcceptTestFileExtensions()
+	{
+		$this
+			->if($runner = new testedClass())
+			->and($runner->setTestDirectoryIterator($directoryIterator = new \mock\mageekguy\atoum\iterators\recursives\directory\factory()))
+			->then
+				->object($runner->acceptTestFileExtensions($testFileExtensions = array(uniqid(), uniqid())))->isIdenticalTo($runner)
+				->mock($directoryIterator)->call('acceptExtensions')->withArguments($testFileExtensions)->once()
+		;
+	}
 }
