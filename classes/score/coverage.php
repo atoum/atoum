@@ -406,8 +406,8 @@ class coverage implements \countable, \serializable
 			);
 		}
 
-		$namespaceRegex = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+)*/';
-		if (1 !== preg_match($namespaceRegex, $namespace)) {
+		$namespaceRegex = '/^\\\?(?<identifier>[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)(?:\\\(?1))*/';
+		if (preg_match($namespaceRegex, $namespace) === 0) {
 			throw new exceptions\runtime\unexpectedValue(sprintf('"%s" is not a valid namespace', $namespace));
 		}
 
@@ -419,10 +419,8 @@ class coverage implements \countable, \serializable
 		return $this;
 	}
 
-	public function excludeNamespaces($namespaces)
+	public function excludeNamespaces(array $namespaces)
 	{
-		$namespaces = (array) $namespaces;
-
 		foreach ($namespaces as $namespace)
 		{
 			if (is_array($namespace))

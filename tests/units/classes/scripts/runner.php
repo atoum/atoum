@@ -903,7 +903,15 @@ class runner extends atoum\test
 					->call('excludeNamespace')->withArguments($namespace)->once()
 				->object($configurator->noCodeCoverageForNamespaces($namespace = '\A' . uniqid()))->isIdenticalTo($configurator)
 			->if($this->resetMock($coverage))
+			->then
 				->object($configurator->noCodeCoverageForNamespaces(array($namespace, $otherNamespace = 'A' . uniqid())))->isIdenticalTo($configurator)
+				->mock($coverage)
+					->call('excludeNamespace')
+						->withArguments($namespace)->once()
+						->withArguments($otherNamespace)->once()
+			->if($this->resetMock($coverage))
+			->then
+				->object($configurator->noCodeCoverageForNamespaces($namespace, $otherNamespace))->isIdenticalTo($configurator)
 				->mock($coverage)
 					->call('excludeNamespace')
 						->withArguments($namespace)->once()
