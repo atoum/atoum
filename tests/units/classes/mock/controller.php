@@ -310,7 +310,7 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testDoNothing()
+	public function testDoesNothing()
 	{
 		$this
 			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())
@@ -320,7 +320,7 @@ class controller extends atoum\test
 		;
 	}
 
-	public function testDoSomething()
+	public function testDoesSomething()
 	{
 		$this
 			->if($mock = new \mock\mageekguy\atoum\tests\units\mock\foo())

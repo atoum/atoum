@@ -9,7 +9,7 @@ use
 	mageekguy\atoum\php\mocker as testedClass
 ;
 
-function doSomething() {}
+function doesSomething() {}
 
 class mocker extends atoum\test
 {
@@ -116,9 +116,9 @@ class mocker extends atoum\test
 				->boolean(function_exists($functionName))->isTrue()
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
-				->exception(function() use ($php) { $php->generate(__NAMESPACE__ . '\doSomething'); })
+				->exception(function() use ($php) { $php->generate(__NAMESPACE__ . '\doesSomething'); })
 					->isInstanceof('mageekguy\atoum\exceptions\logic\invalidArgument')
-					->hasMessage('Function \'' . __NAMESPACE__ . '\doSomething\' already exists')
+					->hasMessage('Function \'' . __NAMESPACE__ . '\doesSomething\' already exists')
 			->if($php->{$functionName} = $returnValue = uniqid())
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($returnValue)

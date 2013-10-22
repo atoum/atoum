@@ -13,8 +13,8 @@ require_once __DIR__ . '/../../../runner.php';
 class foo
 {
 	public function __construct() {}
-	public function doSomething() {}
-	public function doSomethingElse() {}
+	public function doesSomething() {}
+	public function doesSomethingElse() {}
 }
 
 class iterator extends atoum\test
@@ -48,29 +48,29 @@ class iterator extends atoum\test
 			->and($iterator->return = $return = uniqid())
 			->then
 				->boolean(isset($controller->__construct))->isFalse()
-				->string($controller->doSomething->invoke())->isEqualTo($return)
-				->string($controller->doSomethingElse->invoke())->isEqualTo($return)
-			->if($iterator->addFilter(function($name) { return (strtolower($name) == 'dosomething'); }))
+				->string($controller->doesSomething->invoke())->isEqualTo($return)
+				->string($controller->doesSomethingElse->invoke())->isEqualTo($return)
+			->if($iterator->addFilter(function($name) { return (strtolower($name) == 'doessomething'); }))
 			->and($iterator->return = $otherReturn = uniqid())
 			->then
 				->boolean(isset($controller->__construct))->isFalse()
-				->string($controller->doSomething->invoke())->isEqualTo($otherReturn)
-				->string($controller->doSomethingElse->invoke())->isEqualTo($return)
+				->string($controller->doesSomething->invoke())->isEqualTo($otherReturn)
+				->string($controller->doesSomethingElse->invoke())->isEqualTo($return)
 			->if($iterator->resetFilters())
 			->and($iterator->return = $otherReturn)
 			->then
 				->boolean(isset($controller->__construct))->isFalse()
-				->string($controller->doSomething->invoke())->isEqualTo($otherReturn)
-				->string($controller->doSomethingElse->invoke())->isEqualTo($otherReturn)
+				->string($controller->doesSomething->invoke())->isEqualTo($otherReturn)
+				->string($controller->doesSomethingElse->invoke())->isEqualTo($otherReturn)
 			->if($iterator->return = $mock)
 			->then
 				->boolean(isset($controller->__construct))->isFalse()
-				->object($controller->doSomething->invoke())->isIdenticalTo($mock)
-				->object($controller->doSomethingElse->invoke())->isIdenticalTo($mock)
+				->object($controller->doesSomething->invoke())->isIdenticalTo($mock)
+				->object($controller->doesSomethingElse->invoke())->isIdenticalTo($mock)
 			->if($iterator->throw = $exception = new \exception())
 			->then
-				->exception(function() use ($controller) { $controller->doSomething->invoke(); })->isIdenticalTo($exception)
-				->exception(function() use ($controller) { $controller->doSomethingElse->invoke(); })->isIdenticalTo($exception)
+				->exception(function() use ($controller) { $controller->doesSomething->invoke(); })->isIdenticalTo($exception)
+				->exception(function() use ($controller) { $controller->doesSomethingElse->invoke(); })->isIdenticalTo($exception)
 			->exception(function() use ($iterator) { $iterator->{uniqid()} = uniqid(); })
 				->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 		;
@@ -122,16 +122,16 @@ class iterator extends atoum\test
 				->array($iterator->getMethods())->isEmpty()
 			->if($controller->control($mock = new \mock\mageekguy\atoum\tests\units\mock\controller\foo()))
 			->then
-				->array($iterator->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
+				->array($iterator->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
 			->if($iterator->addFilter(function($method) { return true; }))
 			->then
-				->array($iterator->getMethods())->isEqualTo(array('dosomething', 'dosomethingelse'))
+				->array($iterator->getMethods())->isEqualTo(array('doessomething', 'doessomethingelse'))
 			->if($iterator->addFilter(function($method) { return false; }))
 			->then
 				->array($iterator->getMethods())->isEmpty()
-			->if($iterator->resetFilters()->addFilter(function($name) { return (strtolower($name) == 'dosomething'); }))
+			->if($iterator->resetFilters()->addFilter(function($name) { return (strtolower($name) == 'doessomething'); }))
 			->then
-				->array($iterator->getMethods())->isEqualTo(array('dosomething'))
+				->array($iterator->getMethods())->isEqualTo(array('doessomething'))
 		;
 	}
 
