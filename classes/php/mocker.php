@@ -100,15 +100,17 @@ class mocker
 			try
 			{
 				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
+
+				$this->setDefaultBehavior($fqdn, $reflectedFunction);
+
+				eval('namespace ' . $namespace . ' { function ' . $function . '(' . static::getParametersSignature($reflectedFunction) . ') { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, ' . static::getParameters($reflectedFunction) . '); } }');
 			}
 			catch (\exception $exception)
 			{
-				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' does not exist');
+				$this->setDefaultBehavior($fqdn);
+
+				eval('namespace ' . $namespace . ' { function ' . $function . '() { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, func_get_args()); } }');
 			}
-
-			$this->setDefaultBehavior($fqdn, $reflectedFunction);
-
-			eval('namespace ' . $namespace . ' { function ' . $function . '(' . static::getParametersSignature($reflectedFunction) . ') { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, ' . static::getParameters($reflectedFunction) . '); } }');
 		}
 
 		return $this;
@@ -139,13 +141,21 @@ class mocker
 			{
 				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
 			}
-			catch (\exception $exception)
-			{
-				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' does not exist');
-			}
+			catch (\exception $exception) {}
 		}
 
-		static::$adapter->{$fqdn}->setClosure(eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };'));
+		if ($reflectedFunction === null)
+		{
+			$closure = function() { return null; };
+		}
+		else
+		{
+			$closure = eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };');
+		}
+
+		static::$adapter->{$fqdn}->setClosure($closure);
+
+		return $this;
 	}
 
 	protected static function getParametersSignature(\reflectionFunction $function)

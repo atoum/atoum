@@ -125,11 +125,19 @@ class mocker extends atoum\test
 				->object($php->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($php)
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+				->object($php->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($php)
+				->variable(foo())->isNull()
+			->if($php->{$unknownFunctionName} = $fooReturnValue = uniqid())
+			->then
+				->string(foo())->isEqualTo($fooReturnValue)
 			->if($php->{$functionName} = $returnValue = uniqid())
 			->when(function() use ($php, $functionName) { unset($php->{$functionName}); })
 			->then
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+			->when(function() use ($php, $unknownFunctionName) { unset($php->{$unknownFunctionName}); })
+			->then
+				->variable(foo())->isNull()
 		;
 	}
 }
