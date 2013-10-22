@@ -697,7 +697,7 @@ class runner extends atoum\script\configurable
 							throw new exceptions\logic\invalidArgument(sprintf($script->getLocale()->_('Bad usage of %s, do php %s --help for more informations'), $argument, $script->getName()));
 						}
 
-						$script->getRunner()->getCoverage()->excludeNamespaces((array) $namespaces);
+						$script->excludeNamespacesFromCoverage($namespaces);
 					},
 					array('-nccfns', '--no-code-coverage-for-namespaces'),
 					'<namespace>...',

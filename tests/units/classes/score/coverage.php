@@ -1268,14 +1268,16 @@ class coverage extends atoum\test
 				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, $otherNamespace))
 				->object($coverage->excludeNamespace('\\' . ($anotherNamespace = 'AnotherNamespace')))->isIdenticalTo($coverage)
 				->array($coverage->getExcludedNamespaces())->isEqualTo(array($namespace, $otherNamespace, $anotherNamespace))
-				->exception(function() use ($coverage) {
-					$coverage->excludeNamespace(rand(1, PHP_INT_MAX));
+				->exception(function() use ($coverage, & $namespace) {
+					$coverage->excludeNamespace($namespace = rand(1, PHP_INT_MAX));
 				})
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
-				->exception(function() use ($coverage) {
-					$coverage->excludeNamespace('\0Namespace');
+					->hasMessage(sprintf('"%s" is not a valid namespace', $namespace))
+				->exception(function() use ($coverage, & $namespace) {
+					$coverage->excludeNamespace($namespace = '\0Namespace');
 				})
 					->isInstanceOf('mageekguy\atoum\exceptions\runtime\unexpectedValue')
+					->hasMessage(sprintf('"%s" is not a valid namespace', trim($namespace, '\\')))
 		;
 	}
 
