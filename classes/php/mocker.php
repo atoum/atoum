@@ -103,13 +103,13 @@ class mocker
 
 				$this->setDefaultBehavior($fqdn, $reflectedFunction);
 
-				eval('namespace ' . $namespace . ' { function ' . $function . '(' . static::getParametersSignature($reflectedFunction) . ') { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, ' . static::getParameters($reflectedFunction) . '); } }');
+				static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 			}
 			catch (\exception $exception)
 			{
 				$this->setDefaultBehavior($fqdn);
 
-				eval('namespace ' . $namespace . ' { function ' . $function . '() { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, func_get_args()); } }');
+				static::defineMockedFunction($namespace, get_class($this), $function);
 			}
 		}
 
@@ -210,6 +210,18 @@ class mocker
 			default:
 				return '';
 		}
+	}
+
+	protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
+	{
+		eval(sprintf(
+			'namespace %s { function %s(%s) { return \\%s::getAdapter()->invoke(__FUNCTION__, %s); } }',
+			$namespace,
+			$function,
+			$reflectedFunction ? static::getParametersSignature($reflectedFunction) : '',
+			$class,
+			$reflectedFunction ? static::getParameters($reflectedFunction) : 'func_get_args()'
+		));
 	}
 }
 
