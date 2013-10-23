@@ -24,17 +24,12 @@ class mocker
 
 	public function __get($functionName)
 	{
-		return static::$adapter->{$this->getFqdn($functionName)};
+		return static::$adapter->{$this->generateIfNotExists($functionName)};
 	}
 
 	public function __set($functionName, $mixed)
 	{
-		if (isset($this->{$functionName}) === false)
-		{
-			$this->generate($functionName);
-		}
-
-		static::$adapter->{$this->getFqdn($functionName)} = $mixed;
+		static::$adapter->{$this->generateIfNotExists($functionName)} = $mixed;
 
 		return $this;
 	}
@@ -127,6 +122,16 @@ class mocker
 	protected function getFqdn($functionName)
 	{
 		return $this->defaultNamespace . $functionName;
+	}
+
+	protected function generateIfNotExists($functionName)
+	{
+		if (isset($this->{$functionName}) === false)
+		{
+			$this->generate($functionName);
+		}
+
+		return $this->getFqdn($functionName);
 	}
 
 	protected function setDefaultBehavior($fqdn, \reflectionFunction $reflectedFunction = null)

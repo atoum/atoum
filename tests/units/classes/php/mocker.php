@@ -34,6 +34,19 @@ class mocker extends atoum\test
 		;
 	}
 
+	public function test__get()
+	{
+		$this
+			->if($php = new testedClass())
+			->and($php->{$functionName = __NAMESPACE__ . '\version_compare'})
+			->then
+				->boolean(function_exists($functionName))->isTrue()
+			->if($php->{$functionName})
+			->then
+				->boolean(function_exists($functionName))->isTrue()
+		;
+	}
+
 	public function test__set()
 	{
 		$this
