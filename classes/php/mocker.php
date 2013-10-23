@@ -103,13 +103,13 @@ class mocker
 
 				$this->setDefaultBehavior($fqdn, $reflectedFunction);
 
-				eval(static::getMockedFunctionCode($namespace, get_class($this), $function, $reflectedFunction));
+				static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 			}
 			catch (\exception $exception)
 			{
 				$this->setDefaultBehavior($fqdn);
 
-				eval(static::getMockedFunctionCode($namespace, get_class($this), $function));
+				static::defineMockedFunction($namespace, get_class($this), $function);
 			}
 		}
 
@@ -212,16 +212,16 @@ class mocker
 		}
 	}
 
-	protected static function getMockedFunctionCode($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
+	protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
 	{
-		return sprintf(
+		eval(sprintf(
 			'namespace %s { function %s(%s) { return \\%s::getAdapter()->invoke(__FUNCTION__, %s); } }',
 			$namespace,
 			$function,
 			$reflectedFunction ? static::getParametersSignature($reflectedFunction) : '',
 			$class,
 			$reflectedFunction ? static::getParameters($reflectedFunction) : 'func_get_args()'
-		);
+		));
 	}
 }
 
