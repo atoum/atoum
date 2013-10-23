@@ -184,11 +184,13 @@ abstract class configurable extends atoum\script
 			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
 		}
 
-		foreach ($this->includer->getErrors() as $error)
-		{
-			list($error, $message, $file, $line, $context) = $error;
+		$firstError = $this->includer->getFirstError();
 
-			throw new exceptions\runtime($message . ' in ' . $path . ' at line ' . $line);
+		if ($firstError !== null)
+		{
+			list($error, $message, $file, $line) = $firstError;
+
+			throw new exceptions\runtime($message . ' in ' . $path . ' at line ' . $line, $error);
 		}
 
 		return $this;

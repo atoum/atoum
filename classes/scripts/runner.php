@@ -524,9 +524,28 @@ class runner extends atoum\script\configurable
 			register_shutdown_function(function() use (& $autorunner, $calledClass) {
 					if ($autorunner instanceof $calledClass)
 					{
-						$score = $autorunner->run()->getRunner()->getScore();
+						set_error_handler(function($error, $message, $file, $line) use ($autorunner) {
+								if (error_reporting() !== 0)
+								{
+									$autorunner->writeError($message . ' in ' . $file . ' at line ' . $line, $error);
 
-						exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+									exit($error);
+								}
+							}
+						);
+
+						try
+						{
+							$score = $autorunner->run()->getRunner()->getScore();
+
+							exit($score->getFailNumber() <= 0 && $score->getErrorNumber() <= 0 && $score->getExceptionNumber() <= 0 ? 0 : 1);
+						}
+						catch (\exception $exception)
+						{
+							$autorunner->writeError($exception->getMessage());
+
+							exit($exception->getCode());
+						}
 					}
 				}
 			);

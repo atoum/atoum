@@ -72,10 +72,24 @@ class includer
 				{
 					call_user_func_array($errorHandler, $error);
 				}
+
+				$this->errors = array();
 			}
 		}
 
 		return $this;
+	}
+
+	public function getFirstError()
+	{
+		$firstError = null;
+
+		if (sizeof($this->errors) > 0)
+		{
+			$firstError = $this->errors[0];
+		}
+
+		return $firstError;
 	}
 
 	public function errorHandler($error, $message, $file, $line, $context)
