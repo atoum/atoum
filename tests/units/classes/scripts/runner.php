@@ -563,7 +563,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->addTestsFromDirectory->doNothing())
+			->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
 			->then
 				->object($script->addTestsFromDirectory($directory = uniqid()))->isIdenticalTo($script)
 				->mock($runner)->call('addTestsFromDirectory')->withArguments($directory)->once()
@@ -575,7 +575,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->addTestsFromDirectory->doNothing())
+			->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
 			->then
 				->object($script->addTestsFromDirectories(array($directory1 = uniqid(), $directory2 = uniqid())))->isIdenticalTo($script)
 				->mock($runner)
@@ -590,7 +590,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->addTestsFromPattern->doNothing())
+			->and($this->calling($runner)->addTestsFromPattern->doesNothing())
 			->then
 				->object($script->addTestsFromPattern($pattern = uniqid()))->isIdenticalTo($script)
 				->mock($runner)->call('addTestsFromPattern')->withArguments($pattern)->once()
@@ -602,7 +602,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->addTestsFromPattern->doNothing())
+			->and($this->calling($runner)->addTestsFromPattern->doesNothing())
 			->then
 				->object($script->addTestsFromPatterns(array($pattern1 = uniqid(), $pattern2 = uniqid())))->isIdenticalTo($script)
 				->mock($runner)
@@ -617,7 +617,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->acceptTestFileExtensions->doNothing())
+			->and($this->calling($runner)->acceptTestFileExtensions->doesNothing())
 			->then
 				->object($script->acceptTestFileExtensions($testFileExtensions = array(uniqid(), uniqid())))->isIdenticalTo($script)
 				->mock($runner)->call('acceptTestFileExtensions')->withArguments($testFileExtensions)->once()
@@ -629,7 +629,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->setBootstrapFile->doNothing())
+			->and($this->calling($runner)->setBootstrapFile->doesNothing())
 			->then
 				->object($script->setBootstrapFile($bootstrapFile = uniqid()))->isIdenticalTo($script)
 				->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
@@ -641,7 +641,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->setXdebugConfig->doNothing())
+			->and($this->calling($runner)->setXdebugConfig->doesNothing())
 			->then
 				->object($script->setXdebugConfig($xdebugConfig = uniqid()))->isIdenticalTo($script)
 				->mock($runner)->call('setXdebugConfig')->withArguments($xdebugConfig)->once()
@@ -653,7 +653,7 @@ class runner extends atoum\test
 		$this
 			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
 			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
-			->and($this->calling($runner)->enableDebugMode->doNothing())
+			->and($this->calling($runner)->enableDebugMode->doesNothing())
 			->then
 				->object($script->enableDebugMode())->isIdenticalTo($script)
 				->mock($runner)->call('enableDebugMode')->withoutAnyArgument()->once()

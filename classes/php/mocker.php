@@ -76,7 +76,6 @@ class mocker
 	public function generate($functionName)
 	{
 		$fqdn = $this->getFqdn($functionName);
-		$reflectedFunction = null;
 
 		if ($this->functionExists($fqdn) === false)
 		{
@@ -88,6 +87,7 @@ class mocker
 			$lastAntislash = strrpos($fqdn, '\\');
 			$namespace = substr($fqdn, 0, $lastAntislash);
 			$function = substr($fqdn, $lastAntislash + 1);
+			$reflectedFunction = null;
 
 			try
 			{
@@ -95,13 +95,13 @@ class mocker
 			}
 			catch (\exception $exception) {}
 
-			static::defineMockedFunction($namespace, get_class($this), $function);
+			static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 		}
 
-		return $this->setDefaultBehavior($fqdn, $reflectedFunction);
+		return $this->setDefaultBehavior($fqdn);
 	}
 
-	public static function setAdapter(atoum\php\mocker\adapter $adapter = null)
+	public static function setAdapter(atoum\test\adapter $adapter = null)
 	{
 		static::$adapter = $adapter ?: new atoum\php\mocker\adapter();
 	}
