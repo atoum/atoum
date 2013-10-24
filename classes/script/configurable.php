@@ -175,13 +175,22 @@ abstract class configurable extends atoum\script
 
 		try
 		{
-			$this->includer->includePath($path, $callback);
+			$this->includer->resetErrors()->includePath($path, $callback);
 
 			$this->configFiles[] = $path;
 		}
 		catch (atoum\includer\exception $exception)
 		{
 			throw new atoum\includer\exception(sprintf($this->getLocale()->_('Unable to find configuration file \'%s\''), $path));
+		}
+
+		$firstError = $this->includer->getFirstError();
+
+		if ($firstError !== null)
+		{
+			list($error, $message, $file, $line) = $firstError;
+
+			throw new exceptions\runtime($message . ' in ' . $path . ' at line ' . $line, $error);
 		}
 
 		return $this;
