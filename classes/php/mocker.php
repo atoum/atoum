@@ -101,9 +101,9 @@ class mocker
 		return $this->setDefaultBehavior($fqdn, $reflectedFunction);
 	}
 
-	public static function setAdapter(atoum\test\adapter $adapter = null)
+	public static function setAdapter(atoum\php\mocker\adapter $adapter = null)
 	{
-		static::$adapter = $adapter ?: new atoum\test\adapter();
+		static::$adapter = $adapter ?: new atoum\php\mocker\adapter();
 	}
 
 	public static function getAdapter()

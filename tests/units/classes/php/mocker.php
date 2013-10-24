@@ -108,12 +108,12 @@ class mocker extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->variable(testedClass::setAdapter($adapter = new atoum\test\adapter()))->isNull()
+			->variable(testedClass::setAdapter($adapter = new atoum\php\mocker\adapter()))->isNull()
 			->object(testedClass::getAdapter())->isIdenticalTo($adapter)
 			->variable(testedClass::setAdapter())->isNull()
 			->object(testedClass::getAdapter())
 				->isNotIdenticalTo($adapter)
-				->isEqualTo(new atoum\test\adapter())
+				->isEqualTo(new atoum\php\mocker\adapter())
 		;
 	}
 
