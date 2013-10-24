@@ -36,10 +36,19 @@ class inline extends atoum\test
 			->then
 				->object($engine->run($test))->isIdenticalTo($engine)
 				->mock($test)
-					->call('getScore')->beforeMethodCall('runTestMethod')->once()
-					->call('setScore')->withIdenticalArguments($engine->getScore())->beforeMethodCall('runTestMethod')->once()
-					->call('runTestMethod')->withArguments($method)->once()
-					->call('setScore')->withIdenticalArguments($test->getScore())->afterMethodCall('runTestMethod')->once()
+					->call('getScore')
+						->before($this->mock($test)->call('runTestMethod'))
+							->once()
+					->call('setScore')
+						->withIdenticalArguments($engine->getScore())
+							->before($this->mock($test)->call('runTestMethod'))
+								->once()
+					->call('runTestMethod')
+						->withArguments($method)->once()
+					->call('setScore')
+						->withIdenticalArguments($test->getScore())
+							->after($this->mock($test)->call('runTestMethod'))
+								->once()
 		;
 	}
 

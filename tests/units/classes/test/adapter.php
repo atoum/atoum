@@ -4,6 +4,7 @@ namespace mageekguy\atoum\tests\units\test;
 
 use
 	mageekguy\atoum\test,
+	mageekguy\atoum\test\adapter\call,
 	mageekguy\atoum\test\adapter as testedClass
 ;
 
@@ -22,7 +23,7 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->then
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->object($adapter->getCalls())->isEqualTo(new test\adapter\calls())
 		;
 	}
 
@@ -101,37 +102,38 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->then
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->array($adapter->getCalls()->toArray())->isEmpty()
 			->when(function() use ($adapter) { unset($adapter->md5); })
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->array($adapter->getCalls()->toArray())->isEmpty()
 			->when(function() use ($adapter) { unset($adapter->MD5); })
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->array($adapter->getCalls()->toArray())->isEmpty()
 			->when(function() use ($adapter) { $adapter->md5 = uniqid(); $adapter->md5(uniqid()); })
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->array($adapter->getCalls()->toArray())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->{uniqid()}); })
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->array($adapter->getCalls()->toArray())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->md5); })
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->array($adapter->getCalls()->toArray())->isEmpty()
 			->when(function() use ($adapter) { $adapter->MD5 = uniqid(); $adapter->MD5(uniqid()); })
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->array($adapter->getCalls()->toArray())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->{uniqid()}); })
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->array($adapter->getCalls()->toArray())->isNotEmpty()
 			->when(function() use ($adapter) { unset($adapter->MD5); })
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->array($adapter->getCalls()->toArray())->isEmpty()
 		;
 	}
 
 	public function test__call()
 	{
 		$this
+			/*
 			->if($adapter = new testedClass())
 			->then
 				->string($adapter->md5($hash = uniqid()))->isEqualTo(md5($hash))
@@ -182,12 +184,14 @@ class adapter extends test
 				->integer($adapter->MD5())->isEqualTo(1)
 				->integer($adapter->MD5())->isEqualTo(2)
 				->integer($adapter->MD5())->isEqualTo(0)
+			*/
 			->if($adapter = new testedClass())
 			->and($adapter->sha1[2] = $sha1 = uniqid())
 			->then
 				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
+//				->string($adapter->sha1($string = uniqid()))->isEqualTo(sha1($string))
 				->string($adapter->sha1(uniqid()))->isEqualTo($sha1)
-				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
+//				->string($adapter->sha1($otherString = uniqid()))->isEqualTo(sha1($otherString))
 		;
 	}
 
@@ -197,6 +201,16 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->then
 				->array($adapter->__sleep())->isEmpty()
+		;
+	}
+
+	public function test__toString()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->and($calls = new test\adapter\calls())
+			->then
+				->castToString($adapter)->isEqualTo((string) $calls)
 		;
 	}
 
@@ -212,21 +226,24 @@ class adapter extends test
 		;
 	}
 
-	public function testGetCallsNumber()
+	public function testSetCalls()
 	{
 		$this
-			->integer(testedClass::getCallsNumber())->isZero()
 			->if($adapter = new testedClass())
-			->and($adapter->md5(uniqid()))
 			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(1)
-			->if($adapter->md5(uniqid()))
+				->object($adapter->setCalls($calls = new test\adapter\calls()))->isIdenticalTo($adapter)
+				->object($adapter->getCalls())->isIdenticalTo($calls)
+				->object($adapter->setCalls())->isIdenticalTo($adapter)
+				->object($adapter->getCalls())
+					->isNotIdenticalTo($calls)
+					->isEqualTo(new test\adapter\calls())
+			->if($calls = new test\adapter\calls())
+			->and($calls[] = new test\adapter\call(uniqid()))
+			->and($adapter->setCalls($calls))
 			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(2)
-			->if($otherAdapter = new testedClass())
-			->and($otherAdapter->sha1(uniqid()))
-			->then
-				->integer(testedClass::getCallsNumber())->isEqualTo(3)
+				->object($adapter->getCalls())
+					->isIdenticalTo($calls)
+					->hasSize(0)
 		;
 	}
 
@@ -234,85 +251,113 @@ class adapter extends test
 	{
 		$this
 			->if($adapter = new testedClass())
+			->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+			->and($this->calling($calls)->get = $innerCalls = new test\adapter\calls())
 			->then
-				->array($adapter->getCalls())->isEmpty()
-			->if($adapter->md5($firstHash = uniqid()))
+				->object($adapter->getCalls())->isIdenticalTo($calls)
+				->object($adapter->getCalls($call = new test\adapter\call(uniqid())))->isIdenticalTo($innerCalls)
+				->mock($calls)->call('get')->withArguments($call, false)->once()
+		;
+	}
+
+	public function testGetCallsEqualTo()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getEqualTo = $equalCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash))))
-				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash)))
-				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash)))
-			->if($adapter->md5($secondHash = uniqid()))
+				->object($adapter->getCallsEqualTo($call = new call('md5')))->isIdenticalTo($equalCalls)
+				->mock($calls)->call('getEqualTo')->withArguments($call)->once()
+		;
+	}
+
+	public function testGetPreviousCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getPrevious = $previousCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash))))
-				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash)))
-				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash)))
-			->if($adapter->md5 = function() {})
-			->and($adapter->md5($thirdHash = uniqid()))
+				->object($adapter->getPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isIdenticalTo($previousCalls)
+				->mock($calls)->call('getPrevious')->withArguments($call, $position, false)->once()
+				->object($adapter->getPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isIdenticalTo($previousCalls)
+				->mock($calls)->call('getPrevious')->withArguments($call, $position, true)->once()
+		;
+	}
+
+	public function testHasPreviousCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->hasPrevious = $has = (boolean) rand(0, 1))
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls())->isEqualTo(array('md5' => array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash))))
-				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-			->if($adapter->strpos($haystack = uniqid(), $needle = uniqid(), $offset = rand(0, 12)))
+				->boolean($adapter->hasPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isEqualTo($has)
+				->mock($calls)->call('hasPrevious')->withArguments($call, $position, false)->once()
+				->boolean($adapter->hasPreviousCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isEqualTo($has)
+				->mock($calls)->call('hasPrevious')->withArguments($call, $position, true)->once()
+		;
+	}
+
+	public function testGetAfterCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getAfter = $afterCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls())->isEqualTo(array(
-							'md5' => array(
-								1 => array($firstHash),
-								2 => array($secondHash),
-								3 => array($thirdHash)
-							),
-							'strpos' => array(
-								4 => array($haystack, $needle, $offset)
-							)
-					)
-				)
-				->array($adapter->getCalls('md5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-				->array($adapter->getCalls('MD5'))->isEqualTo(array(1 => array($firstHash), 2 => array($secondHash), 3 => array($thirdHash)))
-				->array($adapter->getCalls('strpos'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
-				->array($adapter->getCalls('STRPOS'))->isEqualTo(array(4 => array($haystack, $needle, $offset)))
-			->if($adapter->foo = function($a, $b, $c, $d, $e) {})
-			->and($adapter->foo(1, 2, 3, 4, 5))
+				->object($adapter->getAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isIdenticalTo($afterCalls)
+				->mock($calls)->call('getAfter')->withArguments($call, $position, false)->once()
+				->object($adapter->getAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isIdenticalTo($afterCalls)
+				->mock($calls)->call('getAfter')->withArguments($call, $position, true)->once()
+		;
+	}
+
+	public function testHasAfterCalls()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->hasAfter = $has = (boolean) rand(0, 1))
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls('foo'))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1, 2, 3, 4, 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1, 2, 3, 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1, 2, 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1, 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(0 => 1)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(1 => 2)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(2 => 3)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(3 => 4)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(0 => 1, 4 => rand(6, PHP_INT_MAX))))->isEmpty()
-			->if($adapter->foo(1, 2, 3, 4, 6))
+				->boolean($adapter->hasAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX)))->isEqualTo($has)
+				->mock($calls)->call('hasAfter')->withArguments($call, $position, false)->once()
+				->boolean($adapter->hasAfterCalls($call = new call('md5'), $position = rand(1, PHP_INT_MAX), true))->isEqualTo($has)
+				->mock($calls)->call('hasAfter')->withArguments($call, $position, true)->once()
+		;
+	}
+
+	public function testGetCallsIdenticalTo()
+	{
+		$this
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->getIdenticalTo = $identicalCalls = new test\adapter\calls())
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
-				->array($adapter->getCalls('foo'))->isEqualTo(array(
-						5 => array(1, 2, 3, 4, 5),
-						6 => array(1, 2, 3, 4, 6)
-					)
-				)
-				->array($adapter->getCalls('foo', array(0 => 1, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(2 => 3, 4 => 5)))->isEqualTo(array(5 => array(1, 2, 3, 4, 5)))
-				->array($adapter->getCalls('foo', array(0 => 1, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
-				->array($adapter->getCalls('foo', array(2 => 3, 4 => 6)))->isEqualTo(array(6 => array(1, 2, 3, 4, 6)))
+				->object($adapter->getCallsIdenticalTo($call = new call('md5')))->isIdenticalTo($identicalCalls)
+				->mock($calls)->call('getIdenticalTo')->withArguments($call)->once()
 		;
 	}
 
 	public function testGetCallNumber()
 	{
 		$this
-			->if($adapter = new testedClass())
+			->if($calls = new \mock\mageekguy\atoum\test\adapter\calls())
+			->and($this->calling($calls)->count = 0)
+			->and($adapter = new testedClass())
+			->and($adapter->setCalls($calls))
 			->then
 				->integer($adapter->getCallNumber())->isZero()
-			->if($adapter->md5($firstHash = uniqid()))
+			->and($this->calling($calls)->count = $callNumber = rand(1, PHP_INT_MAX))
 			->then
-				->integer($adapter->getCallNumber())->isEqualTo(1)
-				->integer($adapter->getCallNumber('md5'))->isEqualTo(1)
-				->integer($adapter->getCallNumber('md5', array(uniqid())))->isEqualTo(0)
-				->integer($adapter->getCallNumber('md5', array($firstHash)))->isEqualTo(1)
-				->integer($adapter->getCallNumber('MD5', array($firstHash)))->isEqualTo(1)
-				->integer($adapter->getCallNumber(uniqid()))->isEqualTo(0)
+				->integer($adapter->getCallNumber())->isEqualTo($callNumber)
 		;
 	}
 
@@ -320,52 +365,11 @@ class adapter extends test
 	{
 		$this
 			->if($adapter = new testedClass())
+			->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+			->and($this->calling($calls)->getTimeline = array())
 			->then
 				->array($adapter->getTimeline())->isEmpty()
-			->if($adapter->md5($md5arg1 = uniqid()))
-			->then
-				->array($adapter->getTimeline())->isEqualTo(array(
-						1 => array('md5' => array($md5arg1))
-					)
-				)
-			->if($adapter->md5($md5arg2 = uniqid()))
-			->then
-				->array($adapter->getTimeline())->isEqualTo(array(
-						1 => array('md5' => array($md5arg1)),
-						2 => array('md5' => array($md5arg2))
-					)
-				)
-			->if($adapter->sha1($sha1arg1 = uniqid()))
-			->then
-				->array($adapter->getTimeline())->isEqualTo(array(
-						1 => array('md5' => array($md5arg1)),
-						2 => array('md5' => array($md5arg2)),
-						3 => array('sha1' => array($sha1arg1))
-					)
-				)
-			->if($adapter->md5($md5arg3 = uniqid()))
-			->then
-				->array($adapter->getTimeline())->isEqualTo(array(
-						1 => array('md5' => array($md5arg1)),
-						2 => array('md5' => array($md5arg2)),
-						3 => array('sha1' => array($sha1arg1)),
-						4 => array('md5' => array($md5arg3))
-					)
-				)
-				->array($adapter->getTimeline('md5'))->isEqualTo(array(
-						1 => array($md5arg1),
-						2 => array($md5arg2),
-						4 => array($md5arg3)
-					)
-				)
-				->array($adapter->getTimeline('md5', array($md5arg2)))->isEqualTo(array(
-						2 => array($md5arg2),
-					)
-				)
-				->array($adapter->getTimeline('sha1'))->isEqualTo(array(
-						3 => array($sha1arg1)
-					)
-				)
+				->mock($calls)->call('getTimeline')->withArguments(null, false)->once()
 		;
 	}
 
@@ -373,24 +377,20 @@ class adapter extends test
 	{
 		$this
 			->if($adapter = new testedClass())
+			->and($adapter->setCalls($calls = new \mock\mageekguy\atoum\test\adapter\calls()))
+			->and($this->calling($calls)->addCall = $calls)
 			->then
-				->array($adapter->getCalls())->isEmpty()
-				->integer($adapter->addCall($method = uniqid(), $args1 = array(uniqid())))->isEqualTo(1)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1))
-				->integer($adapter->addCall($otherMethod = uniqid(), $otherArgs1 = array(uniqid(), uniqid())))->isEqualTo(1)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1))
-				->array($adapter->getCalls($otherMethod))->isEqualTo(array(2 => $otherArgs1))
-				->integer($adapter->addCall($method, $args2 = array(uniqid())))->isEqualTo(2)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2))
-				->array($adapter->getCalls($otherMethod))->isEqualTo(array(2 => $otherArgs1))
+				->object($adapter->addCall($method = uniqid(), $args = array(uniqid())))->isIdenticalTo($adapter)
+				->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $args))->once()
+				->object($adapter->addCall($otherMethod = uniqid(), $otherArgs = array(uniqid(), uniqid())))->isIdenticalTo($adapter)
+				->mock($calls)->call('addCall')->withArguments(new test\adapter\call($otherMethod, $otherArgs))->once()
+				->object($adapter->addCall($method, $anotherArgs = array(uniqid())))->isIdenticalTo($adapter)
+				->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $anotherArgs))->once()
 			->if($arg = 'foo')
 			->and($arguments = array(& $arg))
 			->then
-				->integer($adapter->addCall($method, $arguments))->isEqualTo(3)
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2, 4 => array('foo')))
-			->if($arg = 'bar')
-			->then
-				->array($adapter->getCalls($method))->isEqualTo(array(1 => $args1, 3 => $args2, 4 => array('foo')))
+				->object($adapter->addCall($method, $arguments))->isIdenticalTo($adapter)
+				->mock($calls)->call('addCall')->withArguments(new test\adapter\call($method, $arguments))->once()
 		;
 	}
 
@@ -400,9 +400,9 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->and($adapter->md5(uniqid()))
 			->then
-				->array($adapter->getCalls())->isNotEmpty()
+				->sizeof($adapter->getCalls())->isGreaterThan(0)
 				->object($adapter->resetCalls())->isIdenticalTo($adapter)
-				->array($adapter->getCalls())->isEmpty()
+			->sizeof($adapter->getCalls())->isZero(0)
 		;
 	}
 
@@ -412,32 +412,32 @@ class adapter extends test
 			->if($adapter = new testedClass())
 			->then
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero()
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero()
 			->if($adapter->md5(uniqid()))
 			->then
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->sizeof($adapter->getCalls())->isGreaterThan(0)
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero()
 			->if($adapter->md5 = uniqid())
 			->then
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero(0)
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero()
 			->if($adapter->md5 = uniqid())
 			->and($adapter->md5(uniqid()))
 			->then
 				->array($adapter->getInvokers())->isNotEmpty()
-				->array($adapter->getCalls())->isNotEmpty()
+				->sizeof($adapter->getCalls())->isGreaterThan(0)
 				->object($adapter->reset())->isIdenticalTo($adapter)
 				->array($adapter->getInvokers())->isEmpty()
-				->array($adapter->getCalls())->isEmpty()
+				->sizeof($adapter->getCalls())->isZero()
 		;
 	}
 }

@@ -4,6 +4,7 @@ namespace mageekguy\atoum\asserters;
 
 use
 	mageekguy\atoum,
+	mageekguy\atoum\test,
 	mageekguy\atoum\exceptions
 ;
 
@@ -27,7 +28,7 @@ class stream extends atoum\asserter
 
 	public function isRead($failMessage = null)
 	{
-		if (sizeof($this->streamIsSet()->streamController->getCalls('stream_read')) > 0)
+		if (sizeof($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_read'))) > 0)
 		{
 			$this->pass();
 		}
@@ -41,7 +42,7 @@ class stream extends atoum\asserter
 
 	public function isWrited($failMessage = null)
 	{
-		if (sizeof($this->streamIsSet()->streamController->getCalls('stream_write')) > 0)
+		if (sizeof($this->streamIsSet()->streamController->getCalls(new test\adapter\call('stream_write'))) > 0)
 		{
 			$this->pass();
 		}

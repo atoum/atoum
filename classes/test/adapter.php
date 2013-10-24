@@ -10,20 +10,19 @@ use
 
 class adapter extends atoum\adapter
 {
-	protected $calls = array();
+	protected $calls = null;
 	protected $invokers = array();
 
 	private static $storage = null;
-	private static $callsNumber = 0;
 
 	public function __construct()
 	{
-		self::$storage->add($this);
+		self::$storage->add($this->setCalls());
 	}
 
 	public function __set($functionName, $mixed)
 	{
-		$this->__get($functionName)->return = $mixed;
+		$this->{$functionName}->return = $mixed;
 
 		return $this;
 	}
@@ -42,14 +41,10 @@ class adapter extends atoum\adapter
 	{
 		if (isset($this->{$functionName}) === true)
 		{
-			$functionName = static::normalizeFunctionName($functionName);
+			$functionName = static::getKey($functionName);
 
 			unset($this->invokers[$functionName]);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				unset($this->calls[$functionName]);
-			}
+			unset($this->calls[$functionName]);
 		}
 
 		return $this;
@@ -60,99 +55,77 @@ class adapter extends atoum\adapter
 		return array();
 	}
 
+	public function __toString()
+	{
+		return (string) $this->calls;
+	}
+
 	public function getInvokers()
 	{
 		return $this->invokers;
 	}
 
-	public function getCalls($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function setCalls(adapter\calls $calls = null)
 	{
-		$calls = null;
+		$this->calls = $calls ?: new adapter\calls();
 
-		if ($functionName === null)
-		{
-			$calls = $this->calls;
-		}
-		else
-		{
-			$functionName = static::normalizeFunctionName($functionName);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				$filter = static::getArgumentsFilter($arguments, $identicalArguments);
-
-				if ($filter === null)
-				{
-					$calls = $this->calls[$functionName];
-				}
-				else
-				{
-					$calls = array_filter($this->calls[$functionName], $filter);
-				}
-			}
-		}
-
-		return $calls;
+		return $this->resetCalls();
 	}
 
-	public function getCallNumber($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function getCalls(adapter\call $call = null, $identical = false)
 	{
-		return sizeof($this->getCalls($functionName, $arguments, $identicalArguments));
+		return ($call === null ? $this->calls : $this->calls->get($call, $identical));
 	}
 
-	public function getTimeline($functionName = null, array $arguments = null, $identicalArguments = false)
+	public function getCallsEqualTo(adapter\call $call)
 	{
-		$timeline = array();
+		return $this->calls->getEqualTo($call);
+	}
 
-		if ($functionName === null)
-		{
-			foreach ($this->calls as $calledFunctionName => $calls)
-			{
-				foreach ($calls as $number => $callArguments)
-				{
-					$timeline[$number] = array($calledFunctionName => $callArguments);
-				}
-			}
-		}
-		else
-		{
-			$functionName = static::normalizeFunctionName($functionName);
+	public function getCallsIdenticalTo(adapter\call $call)
+	{
+		return $this->calls->getIdenticalTo($call);
+	}
 
-			if (isset($this->calls[$functionName]) === true)
-			{
-				foreach ($this->calls[$functionName] as $number => $callArguments)
-				{
-					$timeline[$number] = $callArguments;
-				}
-			}
-		}
+	public function getPreviousCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->getPrevious($call, $position, $identical);
+	}
 
-		$filter = static::getArgumentsFilter($arguments, $identicalArguments);
+	public function hasPreviousCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->hasPrevious($call, $position, $identical);
+	}
 
-		if ($filter !== null)
-		{
-			$timeline = array_filter($timeline, $filter);
-		}
+	public function getAfterCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->getAfter($call, $position, $identical);
+	}
 
-		ksort($timeline, SORT_NUMERIC);
+	public function hasAfterCalls(adapter\call $call, $position, $identical = false)
+	{
+		return $this->calls->hasAfter($call, $position, $identical);
+	}
 
-		return $timeline;
+	public function getCallNumber(adapter\call $call = null, $identical = false)
+	{
+		return sizeof($this->getCalls($call, $identical));
+	}
+
+	public function getTimeline(adapter\call $call = null, $identical = false)
+	{
+		return $this->calls->getTimeline($call, $identical);
 	}
 
 	public function resetCalls($functionName = null)
 	{
 		if ($functionName === null)
 		{
-			$this->calls = array();
+			$this->calls->reset();
 		}
 		else
 		{
-			$functionName = static::normalizeFunctionName($functionName);
-
-			if (isset($this->calls[$functionName]) === true)
-			{
-				unset($this->calls[$functionName]);
-			}
+			unset($this->calls[$functionName]);
 		}
 
 		return $this;
@@ -167,8 +140,6 @@ class adapter extends atoum\adapter
 
 	public function addCall($functionName, array $arguments = array())
 	{
-		$functionName = static::normalizeFunctionName($functionName);
-
 		$unreferencedArguments = array();
 
 		foreach ($arguments as $argument)
@@ -176,9 +147,9 @@ class adapter extends atoum\adapter
 			$unreferencedArguments[] = $argument;
 		}
 
-		$this->calls[$functionName][++self::$callsNumber] = $unreferencedArguments;
+		$this->calls[] = $call = $this->buildCall($functionName, $unreferencedArguments);
 
-		return sizeof($this->calls[$functionName]);
+		return $this;
 	}
 
 	public function invoke($functionName, array $arguments = array())
@@ -188,7 +159,7 @@ class adapter extends atoum\adapter
 			throw new exceptions\logic\invalidArgument('Function \'' . $functionName . '()\' is not invokable by an adapter');
 		}
 
-		$call = $this->addCall($functionName, $arguments);
+		$call = sizeof($this->addCall($functionName, $arguments)->getCallsEqualTo(new adapter\call($functionName)));
 
 		try
 		{
@@ -200,46 +171,46 @@ class adapter extends atoum\adapter
 		}
 	}
 
-	public static function getCallsNumber()
-	{
-		return self::$callsNumber;
-	}
-
 	public static function setStorage(adapter\storage $storage = null)
 	{
 		self::$storage = $storage ?: new adapter\storage();
 	}
 
-	protected function setInvoker($name, \closure $factory = null)
+	protected function setInvoker($functionName, \closure $factory = null)
 	{
-		$name = static::normalizeFunctionName($name);
+		$key = static::getKey($functionName);
 
-		if (isset($this->invokers[$name]) === false)
+		if (isset($this->invokers[$key]) === false)
 		{
 			if ($factory === null)
 			{
-				$factory = function() { return new invoker(); };
+				$factory = function($functionName) { return new invoker($functionName); };
 			}
 
-			$this->invokers[$name] = $factory();
+			$this->invokers[$key] = $factory($functionName);
 		}
 
-		return $this->invokers[$name];
+		return $this->invokers[$key];
 	}
 
 	protected function callIsOverloaded($functionName, $call)
 	{
-		$functionName = static::normalizeFunctionName($functionName);
+		$functionName = static::getKey($functionName);
 
 		return (isset($this->invokers[$functionName]) === true && $this->invokers[$functionName]->closureIsSetForCall($call) === true);
 	}
 
 	protected function nextCallIsOverloaded($functionName)
 	{
-		return ($this->callIsOverloaded($functionName, $this->getCallNumber($functionName) + 1) === true);
+		return ($this->callIsOverloaded($functionName, $this->getCallNumber(new adapter\call($functionName)) + 1) === true);
 	}
 
-	protected static function normalizeFunctionName($functionName)
+	protected function buildCall($function, array $arguments)
+	{
+		return new adapter\call($function, $arguments);
+	}
+
+	protected static function getKey($functionName)
 	{
 		return strtolower($functionName);
 	}

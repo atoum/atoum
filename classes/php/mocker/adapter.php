@@ -13,7 +13,7 @@ class adapter extends test\adapter
 	{
 		if ($factory === null)
 		{
-			$factory = function() { return new mocker\adapter\invoker(); };
+			$factory = function($functionName) { return new mocker\adapter\invoker($functionName); };
 		}
 
 		return parent::setInvoker($functionName, $factory);

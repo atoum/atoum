@@ -1,21 +1,21 @@
 <?php
 
-namespace mageekguy\atoum\tests\units\php\call\arguments;
+namespace mageekguy\atoum\tests\units\test\adapter\call\arguments;
+
+require __DIR__ . '/../../../../../runner.php';
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\mock\stream,
-	mageekguy\atoum\php\call\arguments
+	mageekguy\atoum\mock,
+	mageekguy\atoum\test\adapter\call\arguments\decorator as testedClass
 ;
-
-require_once __DIR__ . '/../../../../runner.php';
 
 class decorator extends atoum\test
 {
 	public function testDecorate()
 	{
 		$this
-			->if($decorator = new arguments\decorator())
+			->if($decorator = new testedClass())
 			->then
 				->string($decorator->decorate())->isEmpty()
 				->string($decorator->decorate(null))->isEmpty()
@@ -29,15 +29,10 @@ class decorator extends atoum\test
 				->string($decorator->decorate(array(false, true)))->isEqualTo('FALSE, TRUE')
 				->string($decorator->decorate(array(null)))->isEqualTo('NULL')
 				->string($decorator->decorate(array($this)))->isEqualTo('object(' . __CLASS__ . ')')
-			->if($stream = stream::get())
+			->if($stream = mock\stream::get())
 			->and($stream->fopen = true)
 			->and($resource = fopen($stream, 'r'))
-			->and($dump = function() use ($resource) {
-					ob_start();
-					var_dump($resource);
-					return ob_get_clean();
-				}
-			)
+			->and($dump = function() use ($resource) { ob_start(); var_dump($resource); return ob_get_clean(); })
 			->then
 				->string($decorator->decorate(array($resource)))->isEqualTo($dump())
 		;

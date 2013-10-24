@@ -816,14 +816,22 @@ namespace mageekguy\atoum\tests\units
 		{
 			$this
 				->if($test = new emptyTest())
-				->and($mock = new \mock\foo())
+				->and($mockController = new \mock\mageekguy\atoum\mock\controller())
+				->and($mockController->control($mock = new \mock\object()))
+				->and($this->resetMock($mockController))
 				->then
 					->object($test->resetMock($mock))->isIdenticalTo($mock->getMockController())
-					->array($mock->getMockController()->getCalls())->isEmpty()
-				->if($mock->bar())
+					->mock($mockController)->call('resetCalls')->once()
+			;
+		}
+
+		public function testResetFunction()
+		{
+			$this
+				->if($test = new emptyTest())
+				->and($this->function->md5 = uniqid())
 				->then
-					->object($test->resetMock($mock))->isIdenticalTo($mock->getMockController())
-					->array($mock->getMockController()->getCalls())->isEmpty()
+					->object($test->resetFunction($this->function->md5))->isIdenticalTo($this->function->md5)
 			;
 		}
 
@@ -831,14 +839,11 @@ namespace mageekguy\atoum\tests\units
 		{
 			$this
 				->if($test = new emptyTest())
-				->and($adapter = new atoum\test\adapter())
+				->and($adapter = new \mock\mageekguy\atoum\test\adapter())
+				->and($this->resetMock($adapter))
 				->then
 					->object($test->resetAdapter($adapter))->isIdenticalTo($adapter)
-					->array($adapter->getCalls())->isEmpty()
-				->if($adapter->md5(uniqid()))
-				->then
-					->object($test->resetAdapter($adapter))->isIdenticalTo($adapter)
-					->array($adapter->getCalls())->isEmpty()
+					->mock($adapter)->call('resetCalls')->once()
 			;
 		}
 

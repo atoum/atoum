@@ -200,7 +200,7 @@ class controller extends fs\controller
 
 			$openedPath = null;
 
-			if ($isOpened === true && $options & STREAM_USE_PATH)
+			if ($isOpened === true && ($options & STREAM_USE_PATH))
 			{
 				$openedPath = $this->getPath();
 			}

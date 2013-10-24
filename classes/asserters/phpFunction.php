@@ -5,119 +5,76 @@ namespace mageekguy\atoum\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\php,
-	mageekguy\atoum\exceptions
+	mageekguy\atoum\test,
+	mageekguy\atoum\exceptions,
+	mageekguy\atoum\asserters\adapter\call
 ;
 
-class phpFunction extends atoum\asserter
+class phpFunction extends atoum\asserters\adapter\call
 {
-	protected $namespace = '';
-	protected $function = '';
-
-	public function __toString()
-	{
-		return $this->getFullyQualifiedFunctionName();
-	}
-
-	public function setNamespace($namespace)
-	{
-		$this->namespace = trim($namespace, '\\');
-
-		if ($this->namespace !== '')
-		{
-			$this->namespace .= '\\';
-		}
-
-		return $this;
-	}
-
-	public function getNamespace()
-	{
-		return $this->namespace;
-	}
-
-	public function setFunction($function)
-	{
-		$this->function = $function;
-
-		return $this;
-	}
-
-	public function getFunction()
-	{
-		return $this->function;
-	}
-
-	public function getFullyQualifiedFunctionName()
-	{
-		return ($this->function === '' ? '' : $this->namespace . $this->function);
-	}
-
-	public function setWith($function)
-	{
-		return $this->setFunction($function);
-	}
-
 	public function setWithTest(atoum\test $test)
 	{
-		$this->setNamespace($test->getTestedClassNamespace());
+		if ($this->callIsSet()->adapter === null)
+		{
+			parent::setWith(clone php\mocker::getAdapter());
+		}
+
+		$this->setFunction($test->getTestedClassNamespace() . '\\' . $this->getFunction());
 
 		return parent::setWithTest($test);
 	}
 
-	public function isCalled($failMessage = null)
+	public function setWith($function)
 	{
-		$fqdn = $this->functionIsSet()->namespace . $this->function;
-
-		if (sizeof($this->getCalls($fqdn)) > 0)
-		{
-			$this->pass();
-		}
-		else
-		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('function %s is called 0 time'), $this) . $this->getCallsAsString());
-		}
-
-		return $this;
+		return parent::setWith(clone php\mocker::getAdapter())->setFunction($function);
 	}
 
-	protected function functionIsSet()
+	public function wasCalled()
 	{
-		if ($this->getFullyQualifiedFunctionName() === '')
+		return $this->unsetArguments();
+	}
+
+	public function wasCalledWithArguments()
+	{
+		return $this->setArguments(func_get_args());
+	}
+
+	public function wasCalledWithIdenticalArguments()
+	{
+		return $this->setIdenticalArguments(func_get_args());
+	}
+
+	public function wasCalledWithAnyArguments()
+	{
+		return $this->unsetArguments();
+	}
+
+	public function wasCalledWithoutAnyArgument()
+	{
+		return $this->setArguments(array());
+	}
+
+	protected function adapterIsSet()
+	{
+		try
+		{
+			return parent::adapterIsSet();
+		}
+		catch (call\exceptions\logic $exception)
 		{
 			throw new exceptions\logic('Function is undefined');
 		}
-
-		if (function_exists($this->getFullyQualifiedFunctionName()) === false)
-		{
-			throw new exceptions\logic('Function \'' . $this->getFullyQualifiedFunctionName() . '\' does not exist');
-		}
-
-		return $this;
 	}
 
-	protected function getCalls()
+	protected function callIsSet()
 	{
-		return php\mocker::getAdapter()->getCalls($this->getFullyQualifiedFunctionName());
-	}
-
-	protected function getCallsAsString()
-	{
-		$string = '';
-
-		if (($calls  = $this->getCalls()) !== null)
+		try
 		{
-			$format = '[%' . strlen((string) sizeof($calls)) . 's] %s';
-
-			$phpCalls = array();
-
-			foreach (array_values($calls) as $call => $arguments)
-			{
-				$phpCalls[] = sprintf($format, $call + 1, new php\call($this->call->getFunction(), $arguments));
-			}
-
-			$string = PHP_EOL . join(PHP_EOL, $phpCalls);
+			return parent::callIsSet();
 		}
-
-		return $string;
+		catch (call\exceptions\logic $exception)
+		{
+			throw new exceptions\logic('Call is undefined');
+		}
 	}
 }

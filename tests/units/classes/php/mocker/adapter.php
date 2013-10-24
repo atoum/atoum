@@ -22,7 +22,7 @@ class adapter extends atoum
 		$this
 			->if($adapter = new testedClass())
 			->then
-				->object($invoker = $adapter->md5)->isEqualTo(new mocker\adapter\invoker())
+				->object($invoker = $adapter->md5)->isEqualTo(new mocker\adapter\invoker('md5'))
 				->object($adapter->md5)->isIdenticalTo($invoker)
 		;
 	}

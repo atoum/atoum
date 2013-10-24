@@ -35,6 +35,11 @@ class generator
 		return $this->getAsserterInstance($property);
 	}
 
+	public function __isset($property)
+	{
+		return ($this->getAsserterClass($property) !== null);
+	}
+
 	public function __call($method, $arguments)
 	{
 		return $this->getAsserterInstance($method, $arguments);

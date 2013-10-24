@@ -19,7 +19,7 @@ class invoker extends atoum
 	public function testInvoke()
 	{
 		$this
-			->if($invoker = new testedClass())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->invoke();

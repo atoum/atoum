@@ -46,7 +46,6 @@ class phpArray extends asserters\variable implements \arrayAccess
 
 					return $this;
 				}
-
 		}
 	}
 

@@ -4,7 +4,7 @@ namespace mageekguy\atoum\tests\units\test\adapter;
 
 use
 	mageekguy\atoum,
-	mageekguy\atoum\test\adapter
+	mageekguy\atoum\test\adapter\invoker as testedClass
 ;
 
 require_once __DIR__ . '/../../../runner.php';
@@ -22,7 +22,7 @@ class invoker extends atoum\test
 	public function test__set()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->and($invoker->return = $return = uniqid())
 			->then
 				->string($invoker->invoke())->isEqualTo($return)
@@ -33,7 +33,7 @@ class invoker extends atoum\test
 					}
 				)
 					->isIdenticalTo($exception)
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->{uniqid()} = uniqid();
@@ -46,8 +46,9 @@ class invoker extends atoum\test
 	public function test__construct()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass($function = uniqid()))
 			->then
+				->string($invoker->getFunction())->isEqualTo($function)
 				->boolean($invoker->isEmpty())->isTrue()
 				->variable($invoker->getCurrentCall())->isNull()
 		;
@@ -56,7 +57,7 @@ class invoker extends atoum\test
 	public function testDoesNothing()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->object($invoker->doesNothing())->isIdenticalTo($invoker)
 				->boolean($invoker->closureIsSetForCall(0))->isTrue()
@@ -67,7 +68,7 @@ class invoker extends atoum\test
 	public function testDoesSomething()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->and($invoker->doesNothing())
 			->then
 				->object($invoker->doesSomething())->isIdenticalTo($invoker)
@@ -78,7 +79,7 @@ class invoker extends atoum\test
 	public function testCount()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->sizeof($invoker)->isZero()
 			->if($invoker->setClosure(function() {}))
@@ -96,7 +97,7 @@ class invoker extends atoum\test
 	public function testSetClosure()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->setClosure(function() {}, - rand(1, PHP_INT_MAX));
@@ -119,7 +120,7 @@ class invoker extends atoum\test
 	public function testGetClosure()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->getClosure(- rand(1, PHP_INT_MAX));
@@ -150,7 +151,7 @@ class invoker extends atoum\test
 	public function testClosureIsSet()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->closureIsSetForCall(- rand(1, PHP_INT_MAX), function() {});
@@ -178,7 +179,7 @@ class invoker extends atoum\test
 	public function testUnsetClosure()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->unsetClosure(- rand(1, PHP_INT_MAX), function() {});
@@ -203,7 +204,7 @@ class invoker extends atoum\test
 	public function testOffsetSet()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->offsetSet(- rand(1, PHP_INT_MAX), function() {});
@@ -222,7 +223,7 @@ class invoker extends atoum\test
 	public function testOffsetGet()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->offsetGet(- rand(1, PHP_INT_MAX));
@@ -243,7 +244,7 @@ class invoker extends atoum\test
 	public function testOffsetExists()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->offsetExists(- rand(1, PHP_INT_MAX), function() {});
@@ -256,7 +257,7 @@ class invoker extends atoum\test
 			->then
 				->boolean($invoker->offsetExists(0))->isTrue()
 				->boolean($invoker->offsetExists(rand(1, PHP_INT_MAX)))->isTrue()
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->and($invoker->setClosure(function() {}, 2))
 			->then
 				->boolean($invoker->offsetExists(0))->isFalse()
@@ -274,7 +275,7 @@ class invoker extends atoum\test
 	public function testOffsetUnset()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->offsetUnset(- rand(1, PHP_INT_MAX), function() {});
@@ -299,7 +300,7 @@ class invoker extends atoum\test
 	public function testInvoke()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->then
 				->exception(function() use ($invoker) {
 						$invoker->invoke();
@@ -323,7 +324,7 @@ class invoker extends atoum\test
 	public function testAtCall()
 	{
 		$this
-			->if($invoker = new adapter\invoker())
+			->if($invoker = new testedClass(uniqid()))
 			->and($invoker->setClosure(function () use (& $defaultReturn) { return $defaultReturn = uniqid(); }, 0))
 			->then
 				->variable($invoker->getCurrentCall())->isNull()
