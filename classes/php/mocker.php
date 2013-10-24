@@ -24,24 +24,19 @@ class mocker
 
 	public function __get($functionName)
 	{
-		return static::$adapter->{$this->getFqdn($functionName)};
+		return static::$adapter->{$this->generateIfNotExists($functionName)};
 	}
 
 	public function __set($functionName, $mixed)
 	{
-		if (isset($this->{$functionName}) === false)
-		{
-			$this->generate($functionName);
-		}
-
-		static::$adapter->{$this->getFqdn($functionName)} = $mixed;
+		static::$adapter->{$this->generateIfNotExists($functionName)} = $mixed;
 
 		return $this;
 	}
 
 	public function __isset($functionName)
 	{
-		return (isset(static::$adapter->{$this->getFqdn($functionName)}) === true);
+		return $this->functionExists($this->getFqdn($functionName));
 	}
 
 	public function __unset($functionName)
@@ -81,12 +76,9 @@ class mocker
 	public function generate($functionName)
 	{
 		$fqdn = $this->getFqdn($functionName);
+		$reflectedFunction = null;
 
-		if (isset($this->{$functionName}) === true)
-		{
-			$this->setDefaultBehavior($fqdn);
-		}
-		else
+		if ($this->functionExists($fqdn) === false)
 		{
 			if (function_exists($fqdn) === true)
 			{
@@ -100,20 +92,13 @@ class mocker
 			try
 			{
 				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
-
-				$this->setDefaultBehavior($fqdn, $reflectedFunction);
-
-				static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 			}
-			catch (\exception $exception)
-			{
-				$this->setDefaultBehavior($fqdn);
+			catch (\exception $exception) {}
 
-				static::defineMockedFunction($namespace, get_class($this), $function);
-			}
+			static::defineMockedFunction($namespace, get_class($this), $function);
 		}
 
-		return $this;
+		return $this->setDefaultBehavior($fqdn, $reflectedFunction);
 	}
 
 	public static function setAdapter(atoum\test\adapter $adapter = null)
@@ -129,6 +114,16 @@ class mocker
 	protected function getFqdn($functionName)
 	{
 		return $this->defaultNamespace . $functionName;
+	}
+
+	protected function generateIfNotExists($functionName)
+	{
+		if (isset($this->{$functionName}) === false)
+		{
+			$this->generate($functionName);
+		}
+
+		return $this->getFqdn($functionName);
 	}
 
 	protected function setDefaultBehavior($fqdn, \reflectionFunction $reflectedFunction = null)
@@ -156,6 +151,11 @@ class mocker
 		static::$adapter->{$fqdn}->setClosure($closure);
 
 		return $this;
+	}
+
+	protected function functionExists($fqdn)
+	{
+		return (isset(static::$adapter->{$fqdn}) === true);
 	}
 
 	protected static function getParametersSignature(\reflectionFunction $function)

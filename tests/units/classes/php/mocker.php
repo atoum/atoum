@@ -22,18 +22,6 @@ class mocker extends atoum\test
 		;
 	}
 
-	public function test__isset()
-	{
-		$this
-			->if($php = new testedClass())
-			->then
-				->boolean(isset($php->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
-			->if($php->generate($functionName))
-			->then
-				->boolean(isset($php->{$functionName}))->isTrue()
-		;
-	}
-
 	public function test__set()
 	{
 		$this
@@ -48,6 +36,28 @@ class mocker extends atoum\test
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($otherReturnValue)
 				->string(file_get_contents(uniqid()))->isEqualTo($fileContents)
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->object($php->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->boolean(function_exists($functionName))->isTrue()
+		;
+	}
+
+	public function test__isset()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->boolean(isset($php->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
+			->if($php->generate($functionName))
+			->then
+				->boolean(isset($php->{$functionName}))->isTrue()
 		;
 	}
 
