@@ -53,24 +53,24 @@ class invoker extends atoum\test
 		;
 	}
 
-	public function testDoNothing()
+	public function testDoesNothing()
 	{
 		$this
 			->if($invoker = new adapter\invoker())
 			->then
-				->object($invoker->doNothing())->isIdenticalTo($invoker)
+				->object($invoker->doesNothing())->isIdenticalTo($invoker)
 				->boolean($invoker->closureIsSetForCall(0))->isTrue()
 				->variable($invoker->invoke())->isNull()
 		;
 	}
 
-	public function testDoSomething()
+	public function testDoesSomething()
 	{
 		$this
 			->if($invoker = new adapter\invoker())
-			->and($invoker->doNothing())
+			->and($invoker->doesNothing())
 			->then
-				->object($invoker->doSomething())->isIdenticalTo($invoker)
+				->object($invoker->doesSomething())->isIdenticalTo($invoker)
 				->boolean($invoker->closureIsSetForCall(0))->isFalse()
 		;
 	}
@@ -84,7 +84,7 @@ class invoker extends atoum\test
 			->if($invoker->setClosure(function() {}))
 			->then
 				->sizeof($invoker)->isEqualTo(1)
-			->if($invoker->doNothing())
+			->if($invoker->doesNothing())
 			->then
 				->sizeof($invoker)->isEqualTo(1)
 			->if($invoker->setClosure(function() {}, 1))
