@@ -75,12 +75,12 @@ class method
 		return $this;
 	}
 
-	public function doNothing()
+	public function doesNothing()
 	{
 		$this
 			->checkName()
 			->getNextMockController()
-				->{$this->name}->doNothing()
+				->{$this->name}->doesNothing()
 		;
 
 		return $this;

@@ -117,12 +117,12 @@ class method extends atoum
 		$this
 			->if($method = new testedClass())
 			->then
-				->exception(function() use ($method) { $method->doNothing(); })
+				->exception(function() use ($method) { $method->doesNothing(); })
 					->isInstanceOf('mageekguy\atoum\mock\generator\method\exception')
 					->hasMessage('Method name is undefined')
 			->if($method->{$name = 'doesSomething'} = $returnValue = uniqid())
 			->then
-				->object($method->{$name = 'doesSomething'}->doNothing())->isIdenticalTo($method)
+				->object($method->{$name = 'doesSomething'}->doesNothing())->isIdenticalTo($method)
 				->when(function() use (& $mockedInstance) { $mockedInstance = new \mock\object(); })
 				->then
 					->variable($mockedInstance->doesSomething())->isNull()
