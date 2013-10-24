@@ -22,18 +22,6 @@ class mocker extends atoum\test
 		;
 	}
 
-	public function test__isset()
-	{
-		$this
-			->if($php = new testedClass())
-			->then
-				->boolean(isset($php->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
-			->if($php->generate($functionName))
-			->then
-				->boolean(isset($php->{$functionName}))->isTrue()
-		;
-	}
-
 	public function test__set()
 	{
 		$this
@@ -48,6 +36,28 @@ class mocker extends atoum\test
 			->then
 				->string(version_compare(uniqid(), uniqid()))->isEqualTo($otherReturnValue)
 				->string(file_get_contents(uniqid()))->isEqualTo($fileContents)
+		;
+	}
+
+	public function test__get()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->object($php->{$functionName = __NAMESPACE__ . '\version_compare'})->isInstanceOf('mageekguy\atoum\test\adapter\invoker')
+				->boolean(function_exists($functionName))->isTrue()
+		;
+	}
+
+	public function test__isset()
+	{
+		$this
+			->if($php = new testedClass())
+			->then
+				->boolean(isset($php->{$functionName = __NAMESPACE__ . '\version_compare'}))->isFalse()
+			->if($php->generate($functionName))
+			->then
+				->boolean(isset($php->{$functionName}))->isTrue()
 		;
 	}
 
@@ -98,12 +108,12 @@ class mocker extends atoum\test
 	public function testSetAdapter()
 	{
 		$this
-			->variable(testedClass::setAdapter($adapter = new atoum\test\adapter()))->isNull()
+			->variable(testedClass::setAdapter($adapter = new atoum\php\mocker\adapter()))->isNull()
 			->object(testedClass::getAdapter())->isIdenticalTo($adapter)
 			->variable(testedClass::setAdapter())->isNull()
 			->object(testedClass::getAdapter())
 				->isNotIdenticalTo($adapter)
-				->isEqualTo(new atoum\test\adapter())
+				->isEqualTo(new atoum\php\mocker\adapter())
 		;
 	}
 
@@ -125,11 +135,19 @@ class mocker extends atoum\test
 				->object($php->generate($functionName = __NAMESPACE__ . '\version_compare'))->isIdenticalTo($php)
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+				->object($php->generate($unknownFunctionName = __NAMESPACE__ . '\\foo'))->isIdenticalTo($php)
+				->variable(foo())->isNull()
+			->if($php->{$unknownFunctionName} = $fooReturnValue = uniqid())
+			->then
+				->string(foo())->isEqualTo($fooReturnValue)
 			->if($php->{$functionName} = $returnValue = uniqid())
 			->when(function() use ($php, $functionName) { unset($php->{$functionName}); })
 			->then
 				->boolean(version_compare('5.4.0', '5.3.0'))->isFalse()
 				->boolean(version_compare('5.3.0', '5.4.0'))->isTrue()
+			->when(function() use ($php, $unknownFunctionName) { unset($php->{$unknownFunctionName}); })
+			->then
+				->variable(foo())->isNull()
 		;
 	}
 }
