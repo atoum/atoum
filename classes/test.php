@@ -81,13 +81,13 @@ abstract class test implements observable, \countable
 		$this
 			->setAdapter($adapter)
 			->setPhpMocker()
+			->setMockGenerator()
 			->setAsserterGenerator($asserterGenerator)
 			->setAssertionManager($assertionManager)
 			->setTestAdapterStorage()
 			->setMockControllerLinker()
 			->setScore()
 			->setLocale()
-			->setMockGenerator()
 			->setReflectionMethodFactory()
 			->enableCodeCoverage()
 		;
@@ -295,6 +295,12 @@ abstract class test implements observable, \countable
 			->setHandler('dumpOnFailure', function($variable) use ($test) { if ($test->debugModeIsEnabled() === true) { $test->executeOnFailure(function() use ($variable) { var_dump($variable); }); } return $test; })
 			->setPropertyHandler('function', function() use ($test) { return $test->getPhpMocker(); })
 			->setPropertyHandler('exception', function() { return asserters\exception::getLastValue(); })
+		;
+
+		$mockGenerator = $this->mockGenerator;
+
+		$this->assertionManager
+			->setPropertyHandler('nextMockedMethod', function() use ($mockGenerator) { return $mockGenerator->getMethod(); })
 		;
 
 		$returnTest = function() use ($test) { return $test; };

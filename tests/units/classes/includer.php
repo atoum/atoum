@@ -58,6 +58,7 @@ class includer extends atoum\test
 	{
 		$this
 			->if($includer = new testedClass($adapter = new atoum\test\adapter()))
+			->and($adapter->set_error_handler = function($errorHandler) use (& $errors) { set_error_handler($errorHandler); return function($error, $message, $file, $line, $context) use (& $errors) { $errors[] = func_get_args(); };})
 			->and($unknownFile = stream::get())
 			->then
 				->exception(function() use ($includer, $unknownFile) { $includer->includePath($unknownFile); })
@@ -80,21 +81,33 @@ class includer extends atoum\test
 			->and($fileWithError->file_get_contents = '<?php trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
 			->then
 				->object($includer->includePath($fileWithError))->isIdenticalTo($includer)
-				->array($includer->getErrors())->isNotEmpty()
-				->error
-					->withType(E_USER_WARNING)
-					->withMessage($message)
-						->exists()
+				->array($includer->getErrors())->isEmpty()
+				->integer($errors[0][0])->isEqualTo(E_USER_WARNING)
+				->string($errors[0][1])->isEqualTo($message)
 				->adapter($adapter)
 					->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->thrice()
 					->call('restore_error_handler')->thrice()
-			->if($fileWithError->file_get_contents = '<?php @trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
+			->if($fileWithError = stream::get())
+			->and($fileWithError->file_get_contents = '<?php @trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
+			->and($errors = array())
 			->then
 				->object($includer->includePath($fileWithError))->isIdenticalTo($includer)
 				->array($includer->getErrors())->isEmpty()
+				->array($errors)->isEmpty()
 				->adapter($adapter)
 					->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->exactly(4)
 					->call('restore_error_handler')->exactly(4)
+			->if($adapter->set_error_handler = function($errorHandler) { set_error_handler($errorHandler); return null; })
+			->and($fileWithError = stream::get())
+			->and($fileWithError->file_get_contents = '<?php trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
+			->then
+				->object($includer->includePath($fileWithError))->isIdenticalTo($includer)
+				->array($errors = $includer->getErrors())->isNotEmpty()
+				->integer($errors[0][0])->isEqualTo(E_USER_WARNING)
+				->string($errors[0][1])->isEqualTo($message)
+				->adapter($adapter)
+					->call('set_error_handler')->withArguments(array($includer, 'errorHandler'))->exactly(5)
+					->call('restore_error_handler')->exactly(5)
 		;
 	}
 
@@ -148,6 +161,23 @@ class includer extends atoum\test
 				->then
 					->boolean($includer->errorHandler(E_DEPRECATED, $errstr = uniqid(), uniqid(), rand(1, PHP_INT_MAX), uniqid()))->isTrue()
 					->array($includer->getErrors())->isEmpty()
+		;
+	}
+
+	public function testGetFirstError()
+	{
+		$this
+			->if($includer = new testedClass($adapter = new atoum\test\adapter()))
+			->then
+				->variable($includer->getFirstError())->isNull()
+			->if($adapter->set_error_handler = function($errorHandler) { set_error_handler($errorHandler); return null; })
+			->and($fileWithError = stream::get())
+			->and($fileWithError->file_get_contents = '<?php trigger_error(\'' . ($message = uniqid()) . '\', E_USER_WARNING); ?>')
+			->and($includer->includePath($fileWithError))
+			->then
+				->array($error = $includer->getFirstError())->isNotEmpty()
+				->integer($error[0])->isEqualTo(E_USER_WARNING)
+				->string($error[1])->isEqualTo($message)
 		;
 	}
 }

@@ -198,6 +198,13 @@ class runner implements observable
 		return $this;
 	}
 
+	public function acceptTestFileExtensions(array $testFileExtensions)
+	{
+		$this->testDirectoryIterator->acceptExtensions($testFileExtensions);
+
+		return $this;
+	}
+
 	public function setDefaultReportTitle($title)
 	{
 		$this->defaultReportTitle = (string) $title;

@@ -20,12 +20,12 @@ class generator extends mock\generator
 
 	public function __get($property)
 	{
-		return $this->test->getAssertionManager()->invoke($property);
+		return $this->test->{$property};
 	}
 
 	public function __call($method, array $arguments)
 	{
-		return $this->test->getAssertionManager()->invoke($method, $arguments);
+		return call_user_func_array(array($this->test, $method), $arguments);
 	}
 
 	public function setTest(atoum\test $test)

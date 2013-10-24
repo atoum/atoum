@@ -20,8 +20,6 @@ class generator extends atoum\test
 			->then
 				->object($generator->getAdapter())->isEqualTo(new atoum\adapter())
 				->boolean($generator->callsToParentClassAreShunted())->isFalse()
-				->object($defaultPhpMethodFactory = $generator->getPhpMethodFactory())->isInstanceOf('\closure')
-				->object($defaultPhpMethodFactory($method = uniqid()))->isEqualTo(new mock\php\method($method))
 		;
 	}
 
@@ -40,21 +38,6 @@ class generator extends atoum\test
 		;
 	}
 
-	public function testSetPhpMethodFactory()
-	{
-		$this
-			->if($generator = new testedClass())
-			->then
-				->object($generator->setPhpMethodFactory($factory = function() {}))->isIdenticalTo($generator)
-				->object($generator->getPhpMethodFactory())->isIdenticalTo($factory)
-				->object($generator->setPhpMethodFactory())->isIdenticalTo($generator)
-				->object($defaultPhpMethodFactory = $generator->getPhpMethodFactory())
-					->isInstanceOf('closure')
-					->isNotIdenticalTo($factory)
-				->object($defaultPhpMethodFactory($method = uniqid()))->isEqualTo(new mock\php\method($method))
-		;
-	}
-
 	public function testSetReflectionClassFactory()
 	{
 		$this
@@ -67,6 +50,15 @@ class generator extends atoum\test
 					->isInstanceOf('closure')
 					->isNotIdenticalTo($factory)
 				->object($defaultReflectionClassFactory($this))->isEqualTo(new \reflectionClass($this))
+		;
+	}
+
+	public function testGetMethod()
+	{
+		$this
+			->if($generator = new testedClass())
+			->then
+				->object($generator->getMethod())->isEqualTo(new mock\generator\method($generator))
 		;
 	}
 

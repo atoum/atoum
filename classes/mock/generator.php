@@ -13,7 +13,6 @@ class generator
 	const defaultNamespace = 'mock';
 
 	protected $adapter = null;
-	protected $phpMethodFactory = null;
 	protected $reflectionClassFactory = null;
 	protected $shuntedMethods = array();
 	protected $overloadedMethods = array();
@@ -26,7 +25,6 @@ class generator
 	{
 		$this
 			->setAdapter()
-			->setPhpMethodFactory()
 			->setReflectionClassFactory()
 		;
 	}
@@ -48,16 +46,9 @@ class generator
 		return $this->adapter;
 	}
 
-	public function setPhpMethodFactory(\closure $factory = null)
+	public function getMethod()
 	{
-		$this->phpMethodFactory = $factory ?: function($method) { return new mock\php\method($method); };
-
-		return $this;
-	}
-
-	public function getPhpMethodFactory()
-	{
-		return $this->phpMethodFactory;
+		return new generator\method($this);
 	}
 
 	public function setReflectionClassFactory(\closure $factory = null)

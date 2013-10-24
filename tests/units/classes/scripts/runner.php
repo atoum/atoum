@@ -447,6 +447,219 @@ class runner extends atoum\test
 		;
 	}
 
+	public function testSetPhpPath()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->setPhpPath($phpPath = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('setPhpPath')->withArguments($phpPath)->once()
+		;
+	}
+
+	public function testSetDefaultReportTitle()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->setDefaultReportTitle($reportTitle = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('setDefaultReportTitle')->withArguments($reportTitle)->once()
+		;
+	}
+
+	public function testSetMaxChildrenNumber()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->setMaxChildrenNumber($childrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($script)
+				->mock($runner)->call('setMaxChildrenNumber')->withArguments($childrenNumber)->once()
+		;
+	}
+
+	public function testDisableCodeCoverage()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->disableCodeCoverage($childrenNumber = rand(1, PHP_INT_MAX)))->isIdenticalTo($script)
+				->mock($runner)->call('disableCodeCoverage')->withoutAnyArgument()->once()
+		;
+	}
+
+	public function testExcludeNamespacesFromCoverage()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+			->then
+				->object($script->excludeNamespacesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+				->mock($coverage)->call('excludeNamespace')
+					->withArguments('foo')->once()
+					->withArguments('bar')->once()
+		;
+	}
+
+	public function testExcludeDirectoriesFromCoverage()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+			->then
+				->object($script->excludeDirectoriesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+				->mock($coverage)->call('excludeDirectory')
+					->withArguments('foo')->once()
+					->withArguments('bar')->once()
+		;
+	}
+
+	public function testExcludeClassesFromCoverage()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->getCoverage = $coverage = new \mock\mageekguy\atoum\score\coverage())
+			->then
+				->object($script->excludeClassesFromCoverage(array('foo', 'bar')))->isIdenticalTo($script)
+				->mock($coverage)->call('excludeClass')
+					->withArguments('foo')->once()
+					->withArguments('bar')->once()
+		;
+	}
+
+	public function testAddTest()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->addTest($testPath = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('addTest')->withArguments($testPath)->once()
+		;
+	}
+
+	public function testAddTests()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->then
+				->object($script->addTests(array($testPath1 = uniqid(), $testPath2 = uniqid())))->isIdenticalTo($script)
+				->mock($runner)
+					->call('addTest')
+						->withArguments($testPath1)->once()
+						->withArguments($testPath2)->once()
+		;
+	}
+
+	public function testAddTestsFromDirectory()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
+			->then
+				->object($script->addTestsFromDirectory($directory = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('addTestsFromDirectory')->withArguments($directory)->once()
+		;
+	}
+
+	public function testAddTestsFromDirectories()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->addTestsFromDirectory->doesNothing())
+			->then
+				->object($script->addTestsFromDirectories(array($directory1 = uniqid(), $directory2 = uniqid())))->isIdenticalTo($script)
+				->mock($runner)
+					->call('addTestsFromDirectory')
+						->withArguments($directory1)->once()
+						->withArguments($directory2)->once()
+		;
+	}
+
+	public function testAddTestsFromPattern()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->addTestsFromPattern->doesNothing())
+			->then
+				->object($script->addTestsFromPattern($pattern = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('addTestsFromPattern')->withArguments($pattern)->once()
+		;
+	}
+
+	public function testAddTestsFromPatterns()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->addTestsFromPattern->doesNothing())
+			->then
+				->object($script->addTestsFromPatterns(array($pattern1 = uniqid(), $pattern2 = uniqid())))->isIdenticalTo($script)
+				->mock($runner)
+					->call('addTestsFromPattern')
+						->withArguments($pattern1)->once()
+						->withArguments($pattern2)->once()
+		;
+	}
+
+	public function testAcceptTestFileExtensions()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->acceptTestFileExtensions->doesNothing())
+			->then
+				->object($script->acceptTestFileExtensions($testFileExtensions = array(uniqid(), uniqid())))->isIdenticalTo($script)
+				->mock($runner)->call('acceptTestFileExtensions')->withArguments($testFileExtensions)->once()
+		;
+	}
+
+	public function testSetBootstrapFile()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->setBootstrapFile->doesNothing())
+			->then
+				->object($script->setBootstrapFile($bootstrapFile = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('setBootstrapFile')->withArguments($bootstrapFile)->once()
+		;
+	}
+
+	public function testSetXdebugConfig()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->setXdebugConfig->doesNothing())
+			->then
+				->object($script->setXdebugConfig($xdebugConfig = uniqid()))->isIdenticalTo($script)
+				->mock($runner)->call('setXdebugConfig')->withArguments($xdebugConfig)->once()
+		;
+	}
+
+	public function testEnableDebugMode()
+	{
+		$this
+			->if($script = new \mock\mageekguy\atoum\scripts\runner(uniqid()))
+			->and($script->setRunner($runner = new \mock\mageekguy\atoum\runner()))
+			->and($this->calling($runner)->enableDebugMode->doesNothing())
+			->then
+				->object($script->enableDebugMode())->isIdenticalTo($script)
+				->mock($runner)->call('enableDebugMode')->withoutAnyArgument()->once()
+		;
+	}
+
 	public function testAddDefaultArguments()
 	{
 		$this

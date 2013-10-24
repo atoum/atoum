@@ -28,6 +28,11 @@ class configurator
 
 		if (isset($this->methods[$keyMethod]) === true)
 		{
+			if (isset($arguments[0]) === true && is_array($arguments[0]) === true)
+			{
+				$arguments = $arguments[0];
+			}
+
 			$this->script->getArgumentsParser()->invokeHandlers($this->script, $this->methods[$keyMethod], $arguments);
 
 			return $this;

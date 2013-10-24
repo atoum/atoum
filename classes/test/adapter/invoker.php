@@ -65,12 +65,12 @@ class invoker implements \arrayAccess, \countable
 		return sizeof($this->closuresByCall);
 	}
 
-	public function doNothing()
+	public function doesNothing()
 	{
 		return $this->setClosure(function() {});
 	}
 
-	public function doSomething()
+	public function doesSomething()
 	{
 		return $this->unsetClosure();
 	}

@@ -244,7 +244,7 @@ class coveralls extends atoum\test
 					->call('setUrl')->withArguments(testedClass::defaultCoverallsApiUrl)->once()
 					->call('setMethod')->withArguments(testedClass::defaultCoverallsApiMethod)->once()
 					->call('setParameter')->withArguments(testedClass::defaultCoverallsApiParameter)->once()
-					->call('addHeader')->withArguments('Content-Type', 'multipart/form-data')
+					->call('addHeader')->withArguments('Content-Type', 'multipart/form-data')->once()
 		;
 	}
 }

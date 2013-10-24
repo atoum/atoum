@@ -36,7 +36,7 @@ class mocker
 
 	public function __isset($functionName)
 	{
-		return (isset(static::$adapter->{$this->getFqdn($functionName)}) === true);
+		return $this->functionExists($this->getFqdn($functionName));
 	}
 
 	public function __unset($functionName)
@@ -77,11 +77,7 @@ class mocker
 	{
 		$fqdn = $this->getFqdn($functionName);
 
-		if (isset($this->{$functionName}) === true)
-		{
-			$this->setDefaultBehavior($fqdn);
-		}
-		else
+		if ($this->functionExists($fqdn) === false)
 		{
 			if (function_exists($fqdn) === true)
 			{
@@ -91,27 +87,23 @@ class mocker
 			$lastAntislash = strrpos($fqdn, '\\');
 			$namespace = substr($fqdn, 0, $lastAntislash);
 			$function = substr($fqdn, $lastAntislash + 1);
+			$reflectedFunction = null;
 
 			try
 			{
 				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
 			}
-			catch (\exception $exception)
-			{
-				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' does not exist');
-			}
+			catch (\exception $exception) {}
 
-			$this->setDefaultBehavior($fqdn, $reflectedFunction);
-
-			eval('namespace ' . $namespace . ' { function ' . $function . '(' . static::getParametersSignature($reflectedFunction) . ') { return \\' . get_class($this) . '::getAdapter()->invoke(__FUNCTION__, ' . static::getParameters($reflectedFunction) . '); } }');
+			static::defineMockedFunction($namespace, get_class($this), $function, $reflectedFunction);
 		}
 
-		return $this;
+		return $this->setDefaultBehavior($fqdn);
 	}
 
 	public static function setAdapter(atoum\test\adapter $adapter = null)
 	{
-		static::$adapter = $adapter ?: new atoum\test\adapter();
+		static::$adapter = $adapter ?: new atoum\php\mocker\adapter();
 	}
 
 	public static function getAdapter()
@@ -144,13 +136,26 @@ class mocker
 			{
 				$reflectedFunction = call_user_func_array($this->reflectedFunctionFactory, array($function));
 			}
-			catch (\exception $exception)
-			{
-				throw new exceptions\logic\invalidArgument('Function \'' . $fqdn . '\' does not exist');
-			}
+			catch (\exception $exception) {}
 		}
 
-		static::$adapter->{$fqdn}->setClosure(eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };'));
+		if ($reflectedFunction === null)
+		{
+			$closure = function() { return null; };
+		}
+		else
+		{
+			$closure = eval('return function(' . static::getParametersSignature($reflectedFunction) . ') { return call_user_func_array(\'\\' . $function . '\', ' . static::getParameters($reflectedFunction) . '); };');
+		}
+
+		static::$adapter->{$fqdn}->setClosure($closure);
+
+		return $this;
+	}
+
+	protected function functionExists($fqdn)
+	{
+		return (isset(static::$adapter->{$fqdn}) === true);
 	}
 
 	protected static function getParametersSignature(\reflectionFunction $function)
@@ -205,6 +210,18 @@ class mocker
 			default:
 				return '';
 		}
+	}
+
+	protected static function defineMockedFunction($namespace, $class, $function, \reflectionFunction $reflectedFunction = null)
+	{
+		eval(sprintf(
+			'namespace %s { function %s(%s) { return \\%s::getAdapter()->invoke(__FUNCTION__, %s); } }',
+			$namespace,
+			$function,
+			$reflectedFunction ? static::getParametersSignature($reflectedFunction) : '',
+			$class,
+			$reflectedFunction ? static::getParameters($reflectedFunction) : 'func_get_args()'
+		));
 	}
 }
 
