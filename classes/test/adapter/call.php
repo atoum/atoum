@@ -83,30 +83,34 @@ class call
 
 	public function isEqualTo(call $call)
 	{
-		$isEqual = false;
-
-		if ($this->function !== null && $this->function == $call->function)
+		switch (true)
 		{
-			$isEqual = ($this->arguments === null);
+			case $this->function === null || $this->function != $call->function:
+				return false;
 
-			if ($isEqual === false && $call->arguments !== null)
-			{
-				if (sizeof($this->arguments) <= 0)
-				{
-					$isEqual = (sizeof($call->arguments) <= 0);
-				}
-				else if (sizeof($this->arguments) <= sizeof($call->arguments))
-				{
-					$callback = function($a, $b) {
-						return ($a == $b ? 0 : -1);
-					};
+			case $this->arguments === null:
+				return true;
 
-					$isEqual = ($this->arguments == array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
+			case $call->arguments === null:
+				return false;
+
+			case sizeof($this->arguments) <= 0:
+				return (sizeof($call->arguments) <= 0);
+
+			case sizeof($this->arguments) <= sizeof($call->arguments):
+				foreach ($this->arguments as $key => $value)
+				{
+					if ($call->arguments[$key] != $value)
+					{
+						return false;
+					}
 				}
-			}
+
+				return true;
+
+			default:
+				return false;
 		}
-
-		return $isEqual;
 	}
 
 	public function isIdenticalTo(call $call)
