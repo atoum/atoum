@@ -87,27 +87,21 @@ class call
 
 		if ($this->function !== null && $this->function == $call->function)
 		{
-			if (is_array($this->arguments) === false)
-			{
-				$isEqual = true;
-			}
-			else
+			$isEqual = ($this->arguments === null);
+
+			if ($isEqual === false && $call->arguments !== null)
 			{
 				if (sizeof($this->arguments) <= 0)
 				{
-					$isEqual = ($call->arguments === $this->arguments);
+					$isEqual = (sizeof($call->arguments) <= 0);
 				}
-				else if (is_array($call->arguments) === true)
+				else if (sizeof($this->arguments) <= sizeof($call->arguments))
 				{
 					$callback = function($a, $b) {
 						return ($a == $b ? 0 : -1);
 					};
 
 					$isEqual = ($this->arguments == array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback));
-				}
-				else
-				{
-					$isEqual = false;
 				}
 			}
 		}
@@ -119,7 +113,7 @@ class call
 	{
 		$isIdentical = $this->isEqualTo($call);
 
-		if ($isIdentical === true && sizeof($this->arguments) > 0 && $call->arguments !== null)
+		if ($isIdentical === true && $this->arguments !== null && $call->arguments !== null)
 		{
 			$callback = function($a, $b) {
 				return ($a === $b ? 0 : -1);
