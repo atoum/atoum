@@ -1,4 +1,4 @@
-# *atoum* [![Build Status](https://secure.travis-ci.org/mageekguy/atoum.png?branch=master)](http://travis-ci.org/mageekguy/atoum)
+# *atoum* [![Build Status](https://secure.travis-ci.org/mageekguy/atoum.png?branch=master)](http://travis-ci.org/atoum/atoum)
 
 ## A simple, modern and intuitive unit testing framework for PHP!
 
