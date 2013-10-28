@@ -117,10 +117,15 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$calls = new static();
 
-		foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
+		$innerCalls = $this->getCalls($call);
+
+		if ($call->getArguments() !== null)
 		{
-			$calls->setCall($innerCall, $position);
+			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isEqualTo($innerCall); });
 		}
+
+		$calls->calls[self::getKey($call)] = $innerCalls;
+		$calls->size = sizeof($innerCalls);
 
 		return $calls;
 	}
@@ -129,10 +134,15 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$calls = new static();
 
-		foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
+		$innerCalls = $this->getCalls($call);
+
+		if ($call->getArguments() !== null)
 		{
-			$calls->setCall($innerCall, $position);
+			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); });
 		}
+
+		$calls->calls[self::getKey($call)] = $innerCalls;
+		$calls->size = sizeof($innerCalls);
 
 		return $calls;
 	}
@@ -313,11 +323,6 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	protected function getCalls($mixed)
 	{
-		if ($mixed instanceof adapter\call === false)
-		{
-			$mixed = new adapter\call($mixed);
-		}
-
 		$key = self::getKey($mixed);
 
 		return (isset($this->calls[$key]) === false ? array() : $this->calls[$key]);
