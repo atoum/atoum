@@ -117,12 +117,9 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$calls = new static();
 
-		if (isset($this[$call]) === true)
+		foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
 		{
-			foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isEqualTo($innerCall); }) as $position => $innerCall)
-			{
-				$calls->setCall($innerCall, $position);
-			}
+			$calls->setCall($innerCall, $position);
 		}
 
 		return $calls;
@@ -132,12 +129,9 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$calls = new static();
 
-		if (isset($this[$call]) === true)
+		foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
 		{
-			foreach (array_filter($this->getCalls($call), function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); }) as $position => $innerCall)
-			{
-				$calls->setCall($innerCall, $position);
-			}
+			$calls->setCall($innerCall, $position);
 		}
 
 		return $calls;
