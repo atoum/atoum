@@ -80,8 +80,15 @@ class phpFunction extends atoum\test
 				->array($asserter->getCall()->getArguments())->isEqualTo(array($arg1, $arg2))
 			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(\'' . $arg1 . '\', \'' . $arg2 . '\');'))
 			->then
+				->exception(function() use ($asserter) { $asserter->once(); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+			->if($asserter->setWith('md5'))
+			->and($asserter->setWithTest($this))
+			->then
 				->object($asserter->once())->isIdenticalTo($asserter)
 			->if(eval('\\' . $this->getTestedClassNamespace() . '\md5(1, 2);'))
+			->if($asserter->setWith('md5'))
+			->and($asserter->setWithTest($this))
 			->then
 				->object($asserter->twice())->isIdenticalTo($asserter)
 		;

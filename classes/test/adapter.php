@@ -17,7 +17,22 @@ class adapter extends atoum\adapter
 
 	public function __construct()
 	{
-		self::$storage->add($this->setCalls());
+		$this->setCalls();
+
+		if (self::$storage !== null)
+		{
+			self::$storage->add($this);
+		}
+	}
+
+	public function __clone()
+	{
+		$this->calls = clone $this->calls;
+
+		if (self::$storage !== null)
+		{
+			self::$storage->add($this);
+		}
 	}
 
 	public function __set($functionName, $mixed)
@@ -277,5 +292,3 @@ class adapter extends atoum\adapter
 		return $filter;
 	}
 }
-
-adapter::setStorage();
