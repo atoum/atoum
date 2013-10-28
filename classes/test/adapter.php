@@ -25,6 +25,16 @@ class adapter extends atoum\adapter
 		}
 	}
 
+	public function __clone()
+	{
+		$this->calls = clone $this->calls;
+
+		if (self::$storage !== null)
+		{
+			self::$storage->add($this);
+		}
+	}
+
 	public function __set($functionName, $mixed)
 	{
 		$this->{$functionName}->return = $mixed;

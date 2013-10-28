@@ -21,9 +21,36 @@ class adapter extends test
 	{
 		$this
 			->if($adapter = new testedClass())
+			->and($storage = new test\adapter\storage())
 			->then
 				->array($adapter->getInvokers())->isEmpty()
 				->object($adapter->getCalls())->isEqualTo(new test\adapter\calls())
+				->boolean($storage->contains($adapter))->isFalse()
+			->if(testedClass::setStorage($storage))
+			->and($otherAdapter = new testedClass())
+			->then
+				->array($otherAdapter->getInvokers())->isEmpty()
+				->object($otherAdapter->getCalls())->isEqualTo(new test\adapter\calls())
+				->boolean($storage->contains($adapter))->isFalse()
+				->boolean($storage->contains($otherAdapter))->isTrue()
+		;
+	}
+
+	public function test__clone()
+	{
+		$this
+			->if($adapter = new testedClass())
+			->and($storage = new test\adapter\storage())
+			->and($clone = clone $adapter)
+			->then
+				->object($clone->getCalls())->isCloneOf($adapter->getCalls())
+				->boolean($storage->contains($clone))->isFalse()
+			->if(testedClass::setStorage($storage))
+			->and($otherClone = clone $adapter)
+			->then
+				->object($otherClone->getCalls())->isCloneOf($adapter->getCalls())
+				->boolean($storage->contains($clone))->isFalse()
+				->boolean($storage->contains($otherClone))->isTrue()
 		;
 	}
 
