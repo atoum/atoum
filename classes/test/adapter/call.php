@@ -81,7 +81,7 @@ class call
 		return $this->decorator;
 	}
 
-	public function isEqualTo(self $call)
+	public function isEqualTo(call $call)
 	{
 		$isEqual = false;
 
@@ -115,7 +115,7 @@ class call
 		return $isEqual;
 	}
 
-	public function isIdenticalTo(self $call)
+	public function isIdenticalTo(call $call)
 	{
 		$isIdentical = $this->isEqualTo($call);
 
