@@ -115,36 +115,26 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 
 	public function getEqualTo(adapter\call $call)
 	{
-		$calls = new static();
-
 		$innerCalls = $this->getCalls($call);
 
-		if ($call->getArguments() !== null)
+		if (sizeof($innerCalls) > 0 && $call->getArguments() !== null)
 		{
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isEqualTo($innerCall); });
 		}
 
-		$calls->calls[self::getKey($call)] = $innerCalls;
-		$calls->size = sizeof($innerCalls);
-
-		return $calls;
+		return static::buildCallsForCall($call, $innerCalls);
 	}
 
 	public function getIdenticalTo(adapter\call $call)
 	{
-		$calls = new static();
-
 		$innerCalls = $this->getCalls($call);
 
-		if ($call->getArguments() !== null)
+		if (sizeof($innerCalls) > 0 && $call->getArguments() !== null)
 		{
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); });
 		}
 
-		$calls->calls[self::getKey($call)] = $innerCalls;
-		$calls->size = sizeof($innerCalls);
-
-		return $calls;
+		return static::buildCallsForCall($call, $innerCalls);
 	}
 
 	public function getPreviousEqualTo(adapter\call $call, $position)
@@ -331,6 +321,16 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	protected static function getKey(adapter\call $call)
 	{
 		return strtolower($call->getFunction());
+	}
+
+	protected static function buildCallsForCall(adapter\call $call, array $array)
+	{
+		$calls = new static();
+
+		$calls->calls[self::getKey($call)] = $array;
+		$calls->size = sizeof($array);
+
+		return $calls;
 	}
 
 	private static function buildCall($mixed)

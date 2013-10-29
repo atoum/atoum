@@ -95,18 +95,14 @@ class call
 				return false;
 
 			case sizeof($this->arguments) <= 0:
-				return (sizeof($call->arguments) <= 0);
+				return $this->arguments == $call->arguments;
 
 			case sizeof($this->arguments) <= sizeof($call->arguments):
-				foreach ($this->arguments as $key => $value)
-				{
-					if ($call->arguments[$key] != $value)
-					{
-						return false;
-					}
-				}
+				$callback = function($a, $b) {
+					return ($a == $b ? 0 : -1);
+				};
 
-				return true;
+				return (sizeof($this->arguments) == sizeof(array_uintersect_uassoc($call->arguments, $this->arguments, $callback, $callback)));
 
 			default:
 				return false;
