@@ -111,9 +111,12 @@ class invoker extends atoum\test
 				->object($invoker->setClosure($value = function() {}, 0))->isIdenticalTo($invoker)
 				->boolean($invoker->isEmpty())->isFalse()
 				->object($invoker->getClosure(0))->isIdenticalTo($value)
-				->object($invoker->setClosure($otherValue = function() {}, $call = rand(2, PHP_INT_MAX)))->isIdenticalTo($invoker)
+				->object($invoker->setClosure($otherValue = function() {}, $call = rand(2, PHP_INT_MAX - 1)))->isIdenticalTo($invoker)
 				->boolean($invoker->isEmpty())->isFalse()
 				->object($invoker->getClosure($call))->isIdenticalTo($otherValue)
+				->object($invoker->setClosure($nextValue = function() {}, null))->isIdenticalTo($invoker)
+				->boolean($invoker->isEmpty())->isFalse()
+				->object($invoker->getClosure($call + 1))->isIdenticalTo($nextValue)
 		;
 	}
 
@@ -212,11 +215,22 @@ class invoker extends atoum\test
 				)
 					->isInstanceOf('mageekguy\atoum\exceptions\logic\invalidArgument')
 					->hasMessage('Call number must be greater than or equal to zero')
-				->object($invoker->offsetSet(1, $value = function() {}))->isIdenticalTo($invoker)
+			->if($invoker[1] = $value = function() {})
+			->then
 				->boolean($invoker->isEmpty())->isFalse()
 				->object($invoker->getClosure(1))->isIdenticalTo($value)
-				->object($invoker->offsetSet(2, $mixed = uniqid()))->isIdenticalTo($invoker)
+			->if($invoker[2] = $mixed = uniqid())
+			->then
 				->string($invoker->invoke(array(), 2))->isEqualTo($mixed)
+			->if($invoker[] = $otherMixed = uniqid())
+			->then
+				->string($invoker->invoke(array(), 3))->isEqualTo($otherMixed)
+			->if($invoker[5] = uniqid())
+			->and($invoker[] = $lastMixed = uniqid())
+			->then
+				->boolean(isset($invoker[4]))->isFalse()
+				->boolean(isset($invoker[5]))->isTrue()
+				->boolean(isset($invoker[6]))->isTrue()
 		;
 	}
 
