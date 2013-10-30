@@ -117,7 +117,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$innerCalls = $this->getCalls($call);
 
-		if (sizeof($innerCalls) > 0 && $call->getArguments() !== null)
+		if ($call->getArguments() !== null)
 		{
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isEqualTo($innerCall); });
 		}
@@ -129,7 +129,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 	{
 		$innerCalls = $this->getCalls($call);
 
-		if (sizeof($innerCalls) > 0 && $call->getArguments() !== null)
+		if ($call->getArguments() !== null)
 		{
 			$innerCalls = array_filter($innerCalls, function($innerCall) use ($call) { return $call->isIdenticalTo($innerCall); });
 		}
@@ -323,7 +323,7 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return strtolower($call->getFunction());
 	}
 
-	protected static function buildCallsForCall(adapter\call $call, array $array)
+	private static function buildCallsForCall(adapter\call $call, array $array)
 	{
 		$calls = new static();
 

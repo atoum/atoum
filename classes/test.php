@@ -1323,7 +1323,38 @@ abstract class test implements observable, \countable
 
 	private function runTestMethods(array $methods)
 	{
-		$this->runTestMethods = $methods;
+		$this->runTestMethods = array();
+
+		foreach ($methods as $method)
+		{
+			if ($this->xdebugConfig != null)
+			{
+				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
+			}
+			else
+			{
+				$engineName = $engineClass = ($this->getMethodEngine($method) ?: $this->getClassEngine() ?: self::getDefaultEngine());
+
+				if (substr($engineClass, 0, 1) !== '\\')
+				{
+					$engineClass = self::enginesNamespace . '\\' . $engineClass;
+				}
+
+				if (class_exists($engineClass) === false)
+				{
+					throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $method . '()\'');
+				}
+			}
+
+			$engine = new $engineClass();
+
+			if ($engine instanceof test\engine === false)
+			{
+				throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $method . '()\'');
+			}
+
+			$this->runTestMethods[$method] = $engine;
+		}
 
 		return $this;
 	}
@@ -1355,43 +1386,53 @@ abstract class test implements observable, \countable
 				{
 					unset($this->engines[$this->currentMethod]);
 
-					$this->score->merge($score);
+					$this
+						->callObservers(self::afterTestMethod)
+						->score
+							->merge($score)
+					;
 
-					$this->callObservers(self::afterTestMethod);
+					$runtimeExceptions = $score->getRuntimeExceptions();
 
-					switch (true)
+					if (sizeof($runtimeExceptions) > 0)
 					{
-						case $score->getRuntimeExceptionNumber():
-							$this->callObservers(self::runtimeException);
-							$runtimeExceptions = $score->getRuntimeExceptions();
-							throw array_shift($runtimeExceptions);
+						$this->callObservers(self::runtimeException);
 
-						case $score->getVoidMethodNumber():
-							$this->callObservers(self::void);
-							break;
+						throw reset($runtimeExceptions);
+					}
+					else
+					{
+						switch (true)
+						{
+							case $score->getVoidMethodNumber():
+								$signal = self::void;
+								break;
 
-						case $score->getUncompletedMethodNumber():
-							$this->callObservers(self::uncompleted);
-							break;
+							case $score->getUncompletedMethodNumber():
+								$signal = self::uncompleted;
+								break;
 
-						case $score->getSkippedMethodNumber():
-							$this->callObservers(self::skipped);
-							break;
+							case $score->getSkippedMethodNumber():
+								$signal = self::skipped;
+								break;
 
-						case $score->getFailNumber():
-							$this->callObservers(self::fail);
-							break;
+							case $score->getFailNumber():
+								$signal = self::fail;
+								break;
 
-						case $score->getErrorNumber():
-							$this->callObservers(self::error);
-							break;
+							case $score->getErrorNumber():
+								$signal = self::error;
+								break;
 
-						case $score->getExceptionNumber():
-							$this->callObservers(self::exception);
-							break;
+							case $score->getExceptionNumber():
+								$signal = self::exception;
+								break;
 
-						default:
-							$this->callObservers(self::success);
+							default:
+								$signal = self::success;
+						}
+
+						$this->callObservers($signal);
 					}
 
 					if ($engine->isAsynchronous() === true)
@@ -1427,39 +1468,15 @@ abstract class test implements observable, \countable
 
 	private function runEngine()
 	{
-		$this->currentMethod = current($this->runTestMethods) ?: null;
+		$engine = reset($this->runTestMethods);
 
-		if ($this->currentMethod !== null)
+		if ($engine !== false)
 		{
-			if ($this->xdebugConfig != null)
-			{
-				$engineClass = 'mageekguy\atoum\test\engines\concurrent';
-			}
-			else
-			{
-				$engineName = $engineClass = ($this->getMethodEngine($this->currentMethod) ?: $this->getClassEngine() ?: self::getDefaultEngine());
-
-				if (substr($engineClass, 0, 1) !== '\\')
-				{
-					$engineClass = self::enginesNamespace . '\\' . $engineClass;
-				}
-
-				if (class_exists($engineClass) === false)
-				{
-					throw new exceptions\runtime('Test engine \'' . $engineName . '\' does not exist for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
-				}
-			}
-
-			$engine = new $engineClass();
-
-			if ($engine instanceof test\engine === false)
-			{
-				throw new exceptions\runtime('Test engine \'' . $engineName . '\' is invalid for method \'' . $this->class . '::' . $this->currentMethod . '()\'');
-			}
+			$this->currentMethod = key($this->runTestMethods);
 
 			if ($this->canRunEngine($engine) === true)
 			{
-				array_shift($this->runTestMethods);
+				unset($this->runTestMethods[$this->currentMethod]);
 
 				$this->engines[$this->currentMethod] = $engine->run($this->callObservers(self::beforeTestMethod));
 
@@ -1477,7 +1494,7 @@ abstract class test implements observable, \countable
 
 	private function canRunEngine(test\engine $engine)
 	{
-		return ($this->runTestMethods && ($engine->isAsynchronous() === false || ($this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines)));
+		return ($engine->isAsynchronous() === false || $this->maxAsynchronousEngines === null || $this->asynchronousEngines < $this->maxAsynchronousEngines);
 	}
 
 	private function doTearDown()

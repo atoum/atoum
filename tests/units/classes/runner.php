@@ -242,7 +242,7 @@ class runner extends atoum\test
 				->variable($runner->getRunningDuration())->isNull()
 			->if($runner->run())
 			->then
-				->variable($runner->getRunningDuration())->isNull()
+				->integer($runner->getRunningDuration())->isEqualTo(100)
 			->if(eval('namespace ' . __NAMESPACE__ . ' { class forTestGetRunningDuration extends \mageekguy\atoum\test { public function testSomething() {} public function run(array $runTestMethods = array(), array $tags = array()) { return $this; } } }'))
 			->and($adapter->get_declared_classes = array(__NAMESPACE__ . '\forTestGetRunningDuration'))
 			->and($runner->run())

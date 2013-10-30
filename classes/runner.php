@@ -409,7 +409,9 @@ class runner implements observable
 
 		natsort($runTestClasses);
 
-		$tests = array();
+		$this->start = $this->adapter->microtime(true);
+
+		$this->callObservers(self::runStart);
 
 		foreach ($runTestClasses as $runTestClass)
 		{
@@ -417,22 +419,8 @@ class runner implements observable
 
 			if (static::isIgnored($test, $namespaces, $tags) === false && ($methods = self::getMethods($test, $runTestMethods, $tags)))
 			{
-				$tests[] = array($test, $methods);
-
 				$this->testNumber++;
 				$this->testMethodNumber += sizeof($methods);
-			}
-		}
-
-		if ($tests)
-		{
-			$this->start = $this->adapter->microtime(true);
-
-			$this->callObservers(self::runStart);
-
-			foreach ($tests as $testMethods)
-			{
-				list($test, $methods) = $testMethods;
 
 				$test
 					->setPhpPath($this->php->getBinaryPath())
@@ -469,11 +457,11 @@ class runner implements observable
 
 				$this->score->merge($test->run($methods)->getScore());
 			}
-
-			$this->stop = $this->adapter->microtime(true);
-
-			$this->callObservers(self::runStop);
 		}
+
+		$this->stop = $this->adapter->microtime(true);
+
+		$this->callObservers(self::runStop);
 
 		return $this->score;
 	}
