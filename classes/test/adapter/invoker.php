@@ -95,7 +95,14 @@ class invoker implements \arrayAccess, \countable
 
 		static::checkCall($call);
 
-		$this->closuresByCall[$call] = $this->bindClosure($closure);
+		if ($call === null)
+		{
+			$this->closuresByCall[] = $this->bindClosure($closure);
+		}
+		else
+		{
+			$this->closuresByCall[$call] = $this->bindClosure($closure);
+		}
 
 		return $this;
 	}
@@ -133,7 +140,7 @@ class invoker implements \arrayAccess, \countable
 		return $this;
 	}
 
-	public function offsetSet($call, $mixed)
+	public function offsetSet($call = null, $mixed)
 	{
 		if ($mixed instanceof \closure === false)
 		{

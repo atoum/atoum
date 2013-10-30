@@ -138,6 +138,9 @@ class generator
 
 		$asserterInstance = new $asserterClass();
 
-		return $asserterInstance->setGenerator($this)->setWithArguments($arguments);
+		return $asserterInstance
+			->setGenerator($this)
+			->setWithArguments($arguments)
+		;
 	}
 }
