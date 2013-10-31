@@ -75,8 +75,7 @@ class adapter extends atoum\test
 	public function testCall()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
@@ -96,8 +95,7 @@ class adapter extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
@@ -121,8 +119,7 @@ class adapter extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')
@@ -148,8 +145,7 @@ class adapter extends atoum\test
 	public function testWithoutAnyArgument()
 	{
 		$this
-			->mockGenerator->orphanize('asserterFail')
-			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
+			->if($asserter = new \mock\mageekguy\atoum\asserters\adapter(new asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
 					->isInstanceOf('mageekguy\atoum\asserters\adapter\exceptions\logic')

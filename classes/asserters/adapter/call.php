@@ -18,21 +18,12 @@ abstract class call extends atoum\asserter
 	protected $identicalCall = false;
 	protected $beforeCalls = array();
 	protected $afterCalls = array();
-	protected $isEvaluated = false;
 
 	public function __construct(asserter\generator $generator = null)
 	{
 		parent::__construct($generator);
 
 		$this->call = new test\adapter\call();
-	}
-
-	public function __destruct()
-	{
-		if ($this->call->getFunction() !== null && $this->isEvaluated === false)
-		{
-			$this->atLeastOnce();
-		}
 	}
 
 	public function reset()
@@ -82,7 +73,7 @@ abstract class call extends atoum\asserter
 
 	public function getCall()
 	{
-		return clone $this->call;
+		return ($this->call === null ? null : clone $this->call);
 	}
 
 	public function once($failMessage = null)
@@ -102,9 +93,7 @@ abstract class call extends atoum\asserter
 
 	public function atLeastOnce($failMessage = null)
 	{
-		$this->isEvaluated = true;
-
-		if (($callsNumber = sizeof($this->setLastAssertion()->checkBeforeAndAfterCalls())) >= 1)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) >= 1)
 		{
 			$this->pass();
 		}
@@ -118,9 +107,7 @@ abstract class call extends atoum\asserter
 
 	public function exactly($number, $failMessage = null)
 	{
-		$this->isEvaluated = true;
-
-		if (($callsNumber = sizeof($this->setLastAssertion()->checkBeforeAndAfterCalls())) === $number)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) === $number)
 		{
 			$this->pass();
 		}
@@ -218,8 +205,6 @@ abstract class call extends atoum\asserter
 
 	protected function setFunction($function)
 	{
-		$this->isEvaluated = false;
-
 		$this->adapterIsSet()
 			->call
 				->setFunction($function)
@@ -239,8 +224,6 @@ abstract class call extends atoum\asserter
 
 	protected function setArguments(array $arguments)
 	{
-		$this->isEvaluated = false;
-
 		$this->callIsSet()->call->setArguments($arguments);
 		$this->identicalCall = false;
 
