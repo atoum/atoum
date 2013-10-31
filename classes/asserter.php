@@ -12,6 +12,7 @@ abstract class asserter
 {
 	protected $locale = null;
 	protected $generator = null;
+	protected $lastAssertion = array('name' => null, 'file' => null, 'line' => null);
 
 	public function __construct(asserter\generator $generator = null)
 	{
@@ -52,6 +53,21 @@ abstract class asserter
 	public function reset()
 	{
 		return $this;
+	}
+
+	public function getLastAssertionName()
+	{
+		return $this->lastAssertion['name'];
+	}
+
+	public function getLastAssertionFile()
+	{
+		return $this->lastAssertion['file'];
+	}
+
+	public function getLastAssertionLine()
+	{
+		return $this->lastAssertion['line'];
 	}
 
 	public function setLocale(locale $locale)
@@ -139,6 +155,30 @@ abstract class asserter
 	protected function fail($reason)
 	{
 		$this->generator->asserterFail($this, $reason);
+
+		return $this;
+	}
+
+	protected function setLastAssertion()
+	{
+		foreach (debug_backtrace() as $backtrace)
+		{
+			if (isset($backtrace['function']) === true && isset($backtrace['file']) === true && isset($backtrace['line']) === true)
+			{
+				if (isset($backtrace['object']) === false || $backtrace['object'] !== $this)
+				{
+					return $this;
+				}
+
+				$this->lastAssertion['name'] = $backtrace['function'];
+				$this->lastAssertion['file'] = $backtrace['file'];
+				$this->lastAssertion['line'] = $backtrace['line'];
+			}
+		}
+
+		$this->lastAssertion['name'] = null;
+		$this->lastAssertion['file'] = null;
+		$this->lastAssertion['line'] = null;
 
 		return $this;
 	}

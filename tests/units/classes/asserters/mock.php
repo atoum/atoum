@@ -125,7 +125,8 @@ class mock extends atoum\test
 	public function testCall()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->call(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -145,7 +146,8 @@ class mock extends atoum\test
 	public function testWithArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -169,7 +171,8 @@ class mock extends atoum\test
 	public function testWithAtLeastArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -191,7 +194,8 @@ class mock extends atoum\test
 	public function testWithAnyArguments()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withArguments(uniqid()); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -217,7 +221,8 @@ class mock extends atoum\test
 	public function testWithoutAnyArgument()
 	{
 		$this
-			->if($asserter = new \mock\mageekguy\atoum\asserters\mock(new asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->withoutAnyArgument(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')

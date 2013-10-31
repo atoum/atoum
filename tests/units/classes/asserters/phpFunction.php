@@ -20,7 +20,8 @@ class phpFunction extends atoum\test
 	public function testSetWithTest()
 	{
 		$this
-			->if($asserter = new sut())
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->and($test = $this)
 			->then
 				->exception(function() use ($asserter, $test) { $asserter->setWithTest($test); })
@@ -37,7 +38,8 @@ class phpFunction extends atoum\test
 	public function testSetWith()
 	{
 		$this
-			->if($asserter = new sut())
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->object($asserter->setWith($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isCloneOf(php\mocker::getAdapter())
@@ -48,7 +50,8 @@ class phpFunction extends atoum\test
 	public function testWasCalled()
 	{
 		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalled(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -120,7 +123,8 @@ class phpFunction extends atoum\test
 	public function testWasCalledWithAnyArguments()
 	{
 		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithAnyArguments(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
@@ -136,7 +140,8 @@ class phpFunction extends atoum\test
 	public function testWasCalledWithoutAnyArguments()
 	{
 		$this
-			->if($asserter = new sut(new atoum\asserter\generator()))
+			->mockGenerator->orphanize('asserterFail')
+			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
 				->exception(function() use ($asserter) { $asserter->wasCalledWithoutAnyArgument(); })
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
