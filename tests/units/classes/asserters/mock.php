@@ -138,7 +138,7 @@ class mock extends atoum\test
 			->if($asserter->withArguments())
 			->then
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mock->getMockController()->getMockClass())))
-				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->call($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, null, new decorators\addClass($mock->getMockController()->getMockClass())))
 		;
 	}
@@ -163,7 +163,7 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mock)))
 				->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1),  new decorators\addClass($mock)))
-				->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2),  new decorators\addClass($mock)))
 		;
 	}
@@ -186,7 +186,7 @@ class mock extends atoum\test
 			->then
 				->object($asserter->withAtLeastArguments($arguments = array(1 => uniqid())))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, $arguments, new decorators\addClass($mock)))
-				->object($asserter->withAtLeastArguments($arguments = array(2 => uniqid(), 5 => uniqid())))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->withAtLeastArguments($arguments = array(2 => uniqid(), 5 => uniqid())))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, $arguments, new decorators\addClass($mock)))
 		;
 	}
@@ -210,7 +210,7 @@ class mock extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, null, new decorators\addClass($mock)))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, null, new decorators\addClass($mock)))
-			->if($asserter->withArguments($arg = uniqid()))
+			->if($asserter->disableEvaluationChecking()->withArguments($arg = uniqid()))
 			->then
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg), new decorators\addClass($mock)))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
@@ -234,7 +234,7 @@ class mock extends atoum\test
 					->hasMessage('Call is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
-				->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->withoutAnyArgument())->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array(), new decorators\addClass($mock)))
 		;
 	}

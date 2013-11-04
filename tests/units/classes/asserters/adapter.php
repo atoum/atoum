@@ -88,7 +88,7 @@ class adapter extends atoum\test
 			->if($asserter->withArguments())
 			->then
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
-				->object($asserter->call($function = uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->call($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 		;
 	}
@@ -113,7 +113,7 @@ class adapter extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
 				->object($asserter->withArguments($arg1 = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1)))
-				->object($asserter->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->withArguments($arg1 = uniqid(), $arg2 = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg1, $arg2)))
 		;
 	}
@@ -137,7 +137,7 @@ class adapter extends atoum\test
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function))
-			->if($asserter->withArguments($arg = uniqid()))
+			->if($asserter->disableEvaluationChecking()->withArguments($arg = uniqid()))
 			->then
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array($arg)))
 				->object($asserter->withAnyArguments())->isIdenticalTo($asserter)
@@ -161,7 +161,7 @@ class adapter extends atoum\test
 					->hasMessage('Call is undefined')
 			->if($asserter->call($function = uniqid()))
 			->then
-				->object($asserter->withoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->withoutAnyArgument())->isIdenticalTo($asserter)
 				->object($asserter->getCall())->isEqualTo(new test\adapter\call($function, array()))
 		;
 	}

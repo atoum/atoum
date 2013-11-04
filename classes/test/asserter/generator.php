@@ -49,11 +49,11 @@ class generator extends asserter\generator
 
 	public function asserterFail(atoum\asserter $asserter, $reason)
 	{
-		$file = $asserter->getLastAssertionFile() ?: $this->test->getPath();
-		$line = $asserter->getLastAssertionLine() ?: null;
 		$class = $this->test->getClass();
-		$function = $asserter->getLastAssertionName();
 		$method = $this->test->getCurrentMethod();
+		$file = $this->test->getPath();
+		$line = null;
+		$function = null;
 
 		foreach (array_filter(debug_backtrace(false), function($backtrace) use ($file) { return isset($backtrace['file']) === true && $backtrace['file'] === $file; }) as $backtrace)
 		{

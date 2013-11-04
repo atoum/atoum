@@ -19,20 +19,49 @@ abstract class call extends atoum\asserter
 	protected $beforeCalls = array();
 	protected $afterCalls = array();
 	protected $isEvaluated = false;
+	protected $lastAssertion = array('file' => null, 'line' => null);
+
+	private static $instances = null;
 
 	public function __construct(asserter\generator $generator = null)
 	{
 		parent::__construct($generator);
 
 		$this->call = new test\adapter\call();
+
+		if (self::$instances === null)
+		{
+			self::$instances = new \splObjectStorage();
+		}
+
+		self::$instances->attach($this);
 	}
 
-	public function __destruct()
+	public function isEvaluated()
 	{
 		if ($this->call->getFunction() !== null && $this->isEvaluated === false)
 		{
-			$this->atLeastOnce();
+			throw new test\exceptions\runtime('Assertion is not evaluated in file \'' . $this->getLastAssertionFile() . '\' on line ' . $this->getLastAssertionLine());
 		}
+
+		return $this;
+	}
+
+	public function disableEvaluationChecking()
+	{
+		self::$instances->detach($this);
+
+		return $this;
+	}
+
+	public function getLastAssertionFile()
+	{
+		return $this->lastAssertion['file'];
+	}
+
+	public function getLastAssertionLine()
+	{
+		return $this->lastAssertion['line'];
 	}
 
 	public function reset()
@@ -68,14 +97,14 @@ abstract class call extends atoum\asserter
 
 	public function before(call $call)
 	{
-		$this->beforeCalls[] = $call;
+		$this->setLastAssertion(__METHOD__)->beforeCalls[] = $call->disableEvaluationChecking();
 
 		return $this;
 	}
 
 	public function after(call $call)
 	{
-		$this->afterCalls[] = $call;
+		$this->setLastAssertion(__METHOD__)->afterCalls[] = $call->disableEvaluationChecking();
 
 		return $this;
 	}
@@ -104,7 +133,7 @@ abstract class call extends atoum\asserter
 	{
 		$this->isEvaluated = true;
 
-		if (($callsNumber = sizeof($this->setLastAssertion()->checkBeforeAndAfterCalls())) >= 1)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) >= 1)
 		{
 			$this->pass();
 		}
@@ -120,7 +149,7 @@ abstract class call extends atoum\asserter
 	{
 		$this->isEvaluated = true;
 
-		if (($callsNumber = sizeof($this->setLastAssertion()->checkBeforeAndAfterCalls())) === $number)
+		if (($callsNumber = sizeof($this->checkBeforeAndAfterCalls())) === $number)
 		{
 			$this->pass();
 		}
@@ -145,6 +174,19 @@ abstract class call extends atoum\asserter
 	public function never($failMessage = null)
 	{
 		return $this->exactly(0, $failMessage);
+	}
+
+	public static function areEvaluated()
+	{
+		if (self::$instances !== null)
+		{
+			foreach (self::$instances as $asserter)
+			{
+				$asserter->isEvaluated();
+			}
+
+			self::$instances = null;
+		}
 	}
 
 	protected function adapterIsSet()
@@ -218,7 +260,7 @@ abstract class call extends atoum\asserter
 
 	protected function setFunction($function)
 	{
-		$this->isEvaluated = false;
+		$this->setLastAssertion(__METHOD__)->isEvaluated = false;
 
 		$this->adapterIsSet()
 			->call
@@ -239,7 +281,7 @@ abstract class call extends atoum\asserter
 
 	protected function setArguments(array $arguments)
 	{
-		$this->isEvaluated = false;
+		$this->setLastAssertion(__METHOD__)->isEvaluated = false;
 
 		$this->callIsSet()->call->setArguments($arguments);
 		$this->identicalCall = false;
@@ -278,5 +320,27 @@ abstract class call extends atoum\asserter
 		$calls = $this->adapter->getCallsEqualTo($referenceCall->unsetArguments());
 
 		return (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
+	}
+
+	protected function setLastAssertion($method)
+	{
+		foreach (debug_backtrace() as $backtrace)
+		{
+			if (isset($backtrace['function']) === true && isset($backtrace['file']) === true && isset($backtrace['line']) === true)
+			{
+				if (isset($backtrace['object']) === false || $backtrace['object'] !== $this)
+				{
+					return $this;
+				}
+
+				$this->lastAssertion['file'] = $backtrace['file'];
+				$this->lastAssertion['line'] = $backtrace['line'];
+			}
+		}
+
+		$this->lastAssertion['file'] = null;
+		$this->lastAssertion['line'] = null;
+
+		return $this;
 	}
 }

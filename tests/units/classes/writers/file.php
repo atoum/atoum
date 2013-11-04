@@ -147,6 +147,7 @@ class file extends atoum\test
 						->after($this->adapter($adapter)->call('fopen')->withArguments($file->getFilename(), 'c'))
 						->after($this->adapter($adapter)->call('flock')->withArguments($resource, LOCK_EX))
 						->before($this->adapter($adapter)->call('fflush')->withArguments($resource))
+							->once()
 		;
 	}
 

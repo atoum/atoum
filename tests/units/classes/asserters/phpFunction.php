@@ -29,7 +29,7 @@ class phpFunction extends atoum\test
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith($function = uniqid()))
 			->then
-				->object($asserter->setWithTest($this))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->setWithTest($this))->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isCloneOf(php\mocker::getAdapter())
 				->string($asserter->getCall()->getFunction())->isEqualTo($this->getTestedClassNamespace() . '\\' . $function)
 		;
@@ -41,7 +41,7 @@ class phpFunction extends atoum\test
 			->mockGenerator->orphanize('asserterFail')
 			->if($asserter = new sut(new \mock\mageekguy\atoum\asserter\generator()))
 			->then
-				->object($asserter->setWith($function = uniqid()))->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->setWith($function = uniqid()))->isIdenticalTo($asserter)
 				->object($asserter->getAdapter())->isCloneOf(php\mocker::getAdapter())
 				->string($asserter->getCall()->getFunction())->isEqualTo($function)
 		;
@@ -60,7 +60,7 @@ class phpFunction extends atoum\test
 			->then
 				->object($asserter->wasCalled())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
-			->if($asserter->wasCalledWithArguments(array()))
+			->if($asserter->disableEvaluationChecking()->wasCalledWithArguments(array()))
 			->then
 				->object($asserter->wasCalled())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
@@ -130,7 +130,7 @@ class phpFunction extends atoum\test
 					->isInstanceOf('mageekguy\atoum\exceptions\logic')
 					->hasMessage('Function is undefined')
 			->if($asserter->setWith(uniqid()))
-			->and($asserter->wasCalledWithArguments(array()))
+			->and($asserter->disableEvaluationChecking()->wasCalledWithArguments(array()))
 			->then
 				->object($asserter->wasCalledWithAnyArguments())->isIdenticalTo($asserter)
 				->variable($asserter->getCall()->getArguments())->isNull()
@@ -149,7 +149,7 @@ class phpFunction extends atoum\test
 			->if($asserter->setWith(uniqid()))
 			->and($asserter->wasCalledWithArguments(array()))
 			->then
-				->object($asserter->wasCalledWithoutAnyArgument())->isIdenticalTo($asserter)
+				->object($asserter->disableEvaluationChecking()->wasCalledWithoutAnyArgument())->isIdenticalTo($asserter)
 				->array($asserter->getCall()->getArguments())->isEmpty()
 		;
 	}

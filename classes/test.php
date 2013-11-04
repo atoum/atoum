@@ -903,6 +903,8 @@ abstract class test implements observable, \countable
 					if (isset($this->dataProviders[$testMethod]) === false)
 					{
 						$this->{$testMethod}();
+
+						asserters\adapter\call::areEvaluated();
 					}
 					else
 					{
@@ -931,6 +933,8 @@ abstract class test implements observable, \countable
 							$this->score->setDataSet($key, $this->dataProviders[$testMethod]);
 
 							$reflectedTestMethod->invokeArgs($this, $arguments);
+
+							asserters\adapter\call::areEvaluated();
 
 							$this->score->unsetDataSet();
 						}
