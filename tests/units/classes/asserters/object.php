@@ -133,20 +133,21 @@ class object extends atoum\test
 		;
 	}
 
-    public function testIsNotInstanceOf()
-    {
-        $this
-            ->object(new stdClass())->isNotInstanceOf('exception')
+	public function testIsNotInstanceOf()
+	{
+		$this
+			->object(new stdClass())
+				->isNotInstanceOf('exception')
 			->if($asserter = new sut($generator = new asserter\generator()))
 			->then
-            ->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf('\stdClass'); })
+				->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf('\stdClass'); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-                    ->hasMessage('object(stdClass) is an instance of \stdClass')
-            ->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf(new stdClass()); })
+					->hasMessage('object(stdClass) is an instance of \stdClass')
+				->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf(new stdClass()); })
 					->isInstanceOf('mageekguy\atoum\asserter\exception')
-                    ->hasMessage('object(stdClass) is an instance of object(stdClass)')
+					->hasMessage('object(stdClass) is an instance of object(stdClass)')
 
-            ;
-                
-    }
+			;
+
+	}
 }
