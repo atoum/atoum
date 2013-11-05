@@ -151,7 +151,7 @@ class pusher extends script\configurable
 
 	protected function doRun()
 	{
-		$tag = @file_get_contents($this->tagFile) ?: 0;
+		$tag = trim(@file_get_contents($this->tagFile)) ?: 0;
 
 		file_put_contents($this->tagFile, ++$tag);
 
