@@ -235,5 +235,5 @@ When you are done updating or disabling [XDebug](http://xdebug.org/), run `php m
 
 You are looking for a roadmap ?
 
-[Here is the WIP close futur :](https://github.com/atoum/atoum/issues?labels=Work+in+progress&page=1&state=open)
-[And here is what could come after :](: https://github.com/atoum/atoum/issues?labels=Todo&page=1&state=open)
+- [Here is](https://github.com/atoum/atoum/issues?labels=Work+in+progress&page=1&state=open) the close futur (aka *WIP*),
+- [And there](https://github.com/atoum/atoum/issues?labels=Todo&page=1&state=open) what could come after (aka *Backlog*).
