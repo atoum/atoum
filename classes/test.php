@@ -13,7 +13,7 @@ use
 
 abstract class test implements observable, \countable
 {
-	const defaultTestMethodPrefix = 'test';
+	const defaultTestMethodPrefix = '#^test#i';
 	const defaultNamespace = '#(?:^|\\\)tests?\\\units?\\\#i';
 	const runStart = 'testRunStart';
 	const beforeSetUp = 'beforeTestSetUp';
@@ -117,10 +117,11 @@ abstract class test implements observable, \countable
 		}
 
 		$this->setMethodAnnotations($annotationExtractor, $methodName);
+		$testMethodPrefix = $this->getTestMethodPrefix();
 
 		foreach ($class->getMethods(\ReflectionMethod::IS_PUBLIC) as $publicMethod)
 		{
-			if (stripos($methodName = $publicMethod->getName(), static::getTestMethodPrefix()) === 0)
+			if (preg_match($testMethodPrefix, $methodName = $publicMethod->getName()) > 0)
 			{
 				$this->testMethods[$methodName] = array();
 
@@ -734,22 +735,12 @@ abstract class test implements observable, \countable
 
 	public static function setMethodPrefix($prefix)
 	{
-		static::$methodPrefix = (string) $prefix;
-
-		if (static::$methodPrefix === '')
-		{
-			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
-		}
+		static::$methodPrefix = static::checkMethodPrefix($prefix);
 	}
 
 	public function setTestMethodPrefix($testMethodPrefix)
 	{
-		$this->testMethodPrefix = self::cleanNamespace($testMethodPrefix);
-
-		if ($this->testMethodPrefix === '')
-		{
-			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
-		}
+		$this->testMethodPrefix = static::checkMethodPrefix($testMethodPrefix);;
 
 		return $this;
 	}
@@ -1523,5 +1514,30 @@ abstract class test implements observable, \countable
 	private static function isRegex($namespace)
 	{
 		return preg_match('/^([^\\\[:alnum:][:space:]]).*\1.*$/', $namespace) === 1;
+	}
+
+	private static function isIdentifier($identifier)
+	{
+		return preg_match('/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+)*/', $identifier) === 1;
+	}
+
+	private static function checkMethodPrefix($prefix)
+	{
+		if ($prefix === '')
+		{
+			throw new exceptions\logic\invalidArgument('Test method prefix must not be empty');
+		}
+
+		if (static::isRegex($prefix) === false)
+		{
+			if (static::isIdentifier($prefix) === false)
+			{
+				throw new exceptions\logic\invalidArgument(sprintf('%s is not a valid test method prefix', $prefix));
+			}
+
+			$prefix = '#^' . $prefix . '#i';
+		}
+
+		return $prefix;
 	}
 }
