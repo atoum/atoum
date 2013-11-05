@@ -168,11 +168,10 @@ class pusher extends script\configurable
 		$git
 			->addOption('commit')
 			->addOption('-am', '\'Set version to ' . $tag .'.\'')
+			->run()
 		;
 
-		var_dump((string) $git);
-
-		if ($git->run()->getExitCode() !== 0)
+		if ($git->getExitCode() !== 0)
 		{
 			throw new cli\command\exception('Unable to commit \'' . $this->tagFile . '\' in repository: ' . $git->getStderr());
 		}
@@ -180,11 +179,10 @@ class pusher extends script\configurable
 		$git
 			->reset()
 			->addOption('tag', $tag)
+			->run()
 		;
 
-		var_dump((string) $git);
-
-		if ($git->run()->getExitCode() !== 0)
+		if ($git->getExitCode() !== 0)
 		{
 			throw new cli\command\exception('Unable to apply tag \'' . $tag  . '\': ' . $git->getStderr());
 		}
@@ -195,13 +193,12 @@ class pusher extends script\configurable
 			->addOption('--tags')
 			->addOption($this->remote)
 			->addOption($this->branch)
+			->run()
 		;
 
-		var_dump((string) $git);
-
-		if ($git->run()->getExitCode() !== 0)
+		if ($git->getExitCode() !== 0)
 		{
-			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $thi->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
+			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $this->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
 		}
 
 		$tag = 'DEVELOPMENT-' . $tag;
@@ -215,11 +212,10 @@ class pusher extends script\configurable
 			->reset()
 			->addOption('commit')
 			->addOption('-am', '\'Set version to ' . $tag .'.\'')
+			->run()
 		;
 
-		var_dump((string) $git);
-
-		if ($git->run()->getExitCode() !== 0)
+		if ($git->getExitCode() !== 0)
 		{
 			throw new cli\command\exception('Unable to commit tag \'' . $tag  . '\': ' . $git->getStderr());
 		}
@@ -229,13 +225,12 @@ class pusher extends script\configurable
 			->addOption('push')
 			->addOption($this->remote)
 			->addOption($this->branch)
+			->run()
 		;
 
-		var_dump((string) $git);
-
-		if ($git->run()->getExitCode() !== 0)
+		if ($git->getExitCode() !== 0)
 		{
-			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $thi->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
+			throw new cli\command\exception('Unable to push tag \'' . $tag  . '\' to \'' . $this->remote . '\' in branch \'' . $this->branch . '\': ' . $git->getStderr());
 		}
 
 		return $this;
