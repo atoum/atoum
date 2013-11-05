@@ -73,9 +73,9 @@ class generator extends atoum\test
 			->and($dummy = new $mockedUnknownClass())
 			->then
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->array($dummy->getMockController()->getCalls('bar'))->hasSize(1)
+					->sizeOf($dummy->getMockController()->getCalls(new atoum\test\adapter\call('bar')))->isEqualTo(1)
 				->when(function() use ($dummy) { $dummy->bar(); })
-					->array($dummy->getMockController()->getCalls('bar'))->hasSize(2)
+					->sizeOf($dummy->getMockController()->getCalls(new atoum\test\adapter\call('bar')))->isEqualTo(2)
 		;
 	}
 
