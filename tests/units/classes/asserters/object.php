@@ -130,4 +130,23 @@ class object extends atoum\test
 				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
 	}
+
+    public function testIsNotInstanceOf()
+    {
+        $class = new \stdClass();
+        $this
+            ->object($class)->isNotInstanceOf('\Exception')
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+            ->exception(function() use ($class, $asserter) { $asserter->object($class)->isNotInstanceOf('\stdClass'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage('object(stdClass) is an instance of \stdClass')
+			->then
+            ->exception(function() use ($class, $asserter) { $asserter->object($class)->isNotInstanceOf($class); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+                    ->hasMessage('object(stdClass) is an instance of object(stdClass)')
+
+            ;
+                
+    }
 }
