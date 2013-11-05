@@ -170,8 +170,8 @@ class php extends atoum\test
 			->and($adapter->proc_open = false)
 			->then
 				->exception(function() use ($php, & $code) { $php->run($code = uniqid()); })
-					->isInstanceOf('mageekguy\atoum\php\exception')
-					->hasMessage('Unable to run \'' . $code . '\' with php binary \'' . $phpPath . '\'')
+					->isInstanceOf('mageekguy\atoum\cli\command\exception')
+					->hasMessage('Unable to run \'' . $php . '\'')
 				->adapter($adapter)
 					->call('proc_open')->withArguments((string) $php, array(0 => array('pipe', 'r'), 1 => array('pipe', 'w'), 2 => array('pipe', 'w')), array())->once()
 			->if($php = new testedClass($phpPath = uniqid(), $adapter))
