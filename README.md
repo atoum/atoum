@@ -228,3 +228,12 @@ To fix this issue, you have to update [XDebug](http://xdebug.org/) to the latest
 If you can't update [XDebug](http://xdebug.org/) on your system, you can still disable the extension to avoid getting segfaults.  
 To be sure that [XDebug](http://xdebug.org/) has been succefully updated or disabled, you can run `php -v`.  
 When you are done updating or disabling [XDebug](http://xdebug.org/), run `php mageekguy.atoum.phar --test-it` to be sure that all the segfaults have gone and that *atoum* is working.
+
+---
+
+## Roadmap
+
+You are looking for a roadmap ?
+
+[Here is the WIP close futur :](https://github.com/atoum/atoum/issues?labels=Work+in+progress&page=1&state=open)
+[And here is what could come after :](: https://github.com/atoum/atoum/issues?labels=Todo&page=1&state=open)
