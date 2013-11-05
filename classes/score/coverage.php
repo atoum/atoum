@@ -398,6 +398,13 @@ class coverage implements \countable, \serializable
 	public function excludeNamespace($namespace)
 	{
 		$namespace = trim((string) $namespace, '\\');
+		$namespaceRegex = '/^[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*(?:\\[a-zA-Z_\x7f-\xff][a-zA-Z0-9_\x7f-\xff]+)*/';
+
+		if (1 !== preg_match($namespaceRegex, $namespace)) {
+			throw new exceptions\runtime\unexpectedValue(
+				sprintf('"%s" is not a valid namespace', $namespace)
+			);
+		}
 
 		if (in_array($namespace, $this->excludedNamespaces) === false)
 		{
