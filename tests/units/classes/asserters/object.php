@@ -5,7 +5,9 @@ namespace mageekguy\atoum\tests\units\asserters;
 use
 	mageekguy\atoum,
 	mageekguy\atoum\asserter,
-	mageekguy\atoum\asserters\object as sut
+	mageekguy\atoum\asserters\object as sut,
+    stdClass,
+    exception
 ;
 
 require_once __DIR__ . '/../../runner.php';
@@ -129,5 +131,23 @@ class object extends atoum\test
 			->then
 				->object($asserter->toString())->isInstanceOf('mageekguy\atoum\asserters\castToString')
 		;
+	}
+
+	public function testIsNotInstanceOf()
+	{
+		$this
+			->object(new stdClass())
+				->isNotInstanceOf('exception')
+			->if($asserter = new sut($generator = new asserter\generator()))
+			->then
+				->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf('\stdClass'); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('object(stdClass) is an instance of \stdClass')
+				->exception(function() use ($asserter) { $asserter->object(new stdClass())->isNotInstanceOf(new stdClass()); })
+					->isInstanceOf('mageekguy\atoum\asserter\exception')
+					->hasMessage('object(stdClass) is an instance of object(stdClass)')
+
+			;
+
 	}
 }

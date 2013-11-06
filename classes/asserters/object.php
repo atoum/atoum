@@ -59,6 +59,25 @@ class object extends asserters\variable
 		return $this;
 	}
 
+	public function isNotInstanceOf($value)
+	{
+		try
+		{
+			self::check($value, __FUNCTION__);
+		}
+		catch (\logicException $exception)
+		{
+			if (self::classExists($value) === false)
+			{
+				throw new exceptions\logic('Argument of ' . __METHOD__ . '() must be a class instance or a class name');
+			}
+		}
+
+		($this->valueIsSet()->value instanceof $value === false) ? $this->pass() : $this->fail(sprintf($this->getLocale()->_('%s is an instance of %s'), $this, is_string($value) === true ? $value : $this->getTypeOf($value)));
+
+		return $this;
+	}
+
 	public function hasSize($size, $failMessage = null)
 	{
 		if (sizeof($this->valueIsSet()->value) == $size)
