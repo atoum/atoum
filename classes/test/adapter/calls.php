@@ -97,6 +97,26 @@ class calls implements \countable, \arrayAccess, \iteratorAggregate
 		return $this->setCall($call);
 	}
 
+	public function removeCall(adapter\call $call, $position)
+	{
+		$function = $call->getFunction();
+
+		if ($function == '')
+		{
+			throw new exceptions\logic\invalidArgument('Function is undefined');
+		}
+
+		$key = self::getKey($call);
+
+		if (isset($this->calls[$key][$position]) === true)
+		{
+			unset($this->calls[$key][$position]);
+			$this->size--;
+		}
+
+		return $this;
+	}
+
 	public function toArray(adapter\call $call = null)
 	{
 		$calls = array();

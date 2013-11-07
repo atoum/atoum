@@ -139,7 +139,7 @@ abstract class call extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is called 0 time'), $this->call) . $this->getCallsAsString());
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is called 0 time'), $this->call) . $this->getCallsAsString());
 		}
 
 		return $this;
@@ -155,7 +155,9 @@ abstract class call extends atoum\asserter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf(
+			if ($failMessage === null)
+			{
+				$failMessage = sprintf(
 					$this->getLocale()->__(
 						'%s is called %d time instead of %d',
 						'%s is called %d times instead of %d',
@@ -164,8 +166,36 @@ abstract class call extends atoum\asserter
 					$this->call,
 					$callsNumber,
 					$number
-				) . $this->getCallsAsString()
-		);
+				);
+
+				if (sizeof($this->beforeCalls) > 0)
+				{
+					$beforeCalls = array();
+
+					foreach ($this->beforeCalls as $asserter)
+					{
+						$beforeCalls[] = (string) $asserter->getCall();
+					}
+
+					$failMessage = sprintf('%s before %s', $failMessage, join(', ', $beforeCalls));
+				}
+
+				if (sizeof($this->afterCalls) > 0)
+				{
+					$afterCalls = array();
+
+					foreach ($this->afterCalls as $asserter)
+					{
+						$afterCalls[] = (string) $asserter->getCall();
+					}
+
+					$failMessage = sprintf('%s after %s', $failMessage, join(', ', $afterCalls));
+				}
+
+				$failMessage .= $this->getCallsAsString();
+			}
+
+			$this->fail($failMessage);
 		}
 
 		return $this;
@@ -226,31 +256,47 @@ abstract class call extends atoum\asserter
 
 			foreach ($this->beforeCalls as $asserter)
 			{
+				$pass = 0;
+
 				foreach ($arrayOfCalls as $position => $call)
 				{
 					if ($asserter->hasAfterCalls($position) === true)
 					{
-						$this->pass();
+						$pass++;
 					}
 					else
 					{
-						$this->fail(sprintf($this->getLocale()->_('%s is not called before %s'), $this->call, $asserter->getCall()));
+						$calls->removeCall($call, $position);
+						unset($arrayOfCalls[$position]);
 					}
+				}
+
+				if ($pass == 0)
+				{
+					$this->fail(sprintf($this->getLocale()->_('%s is not called before %s'), $this->call, $asserter->getCall()));
 				}
 			}
 
 			foreach ($this->afterCalls as $asserter)
 			{
+				$pass = 0;
+
 				foreach ($arrayOfCalls as $position => $call)
 				{
 					if ($asserter->hasPreviousCalls($position) === true)
 					{
-						$this->pass();
+						$pass++;
 					}
 					else
 					{
-						$this->fail(sprintf($this->getLocale()->_('%s is not called after %s'), $this->call, $asserter->getCall()));
+						$calls->removeCall($call, $position);
+						unset($arrayOfCalls[$position]);
 					}
+				}
+
+				if ($pass == 0)
+				{
+					$this->fail(sprintf($this->getLocale()->_('%s is not called after %s'), $this->call, $asserter->getCall()));
 				}
 			}
 		}
@@ -314,12 +360,24 @@ abstract class call extends atoum\asserter
 		return $this->adapter->hasAfterCalls($this->call, $position, $this->identicalCall);
 	}
 
+	protected function getCalls($call)
+	{
+		return $this->adapter->getCalls($call);
+	}
+
 	protected function getCallsAsString()
 	{
-		$referenceCall = clone $this->call;
-		$calls = $this->adapter->getCallsEqualTo($referenceCall->unsetArguments());
+		$string = '';
 
-		return (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
+		if (sizeof($this->beforeCalls) <= 0 && sizeof($this->afterCalls) <= 0)
+		{
+			$referenceCall = clone $this->call;
+			$calls = $this->adapter->getCallsEqualTo($referenceCall->unsetArguments());
+
+			$string = (sizeof($calls) <= 0 ? '' : PHP_EOL . rtrim($calls));
+		}
+
+		return $string;
 	}
 
 	protected function setLastAssertion($method)

@@ -33,7 +33,7 @@ class mock extends adapter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is not called'), $this->adapter->getMockClass()));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is not called'), $this->adapter->getMockClass()));
 		}
 
 		return $this;
@@ -47,7 +47,7 @@ class mock extends adapter
 		}
 		else
 		{
-			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is called'), $this->adapter->getMockClass()));
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is called'), $this->adapter->getMockClass()));
 		}
 
 		return $this;

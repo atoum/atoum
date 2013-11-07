@@ -138,6 +138,24 @@ class calls extends atoum\test
 		;
 	}
 
+	public function testRemoveCall()
+	{
+		$this
+			->if($calls = new testedClass())
+			->then
+				->object($calls->removeCall(new adapter\call(uniqid()), rand(0, PHP_INT_MAX)))->isIdenticalTo($calls)
+				->sizeof($calls)->isZero()
+			->if($calls->addCall($call = new adapter\call(uniqid())))
+			->then
+				->object($calls->removeCall(new adapter\call(uniqid()), rand(1, PHP_INT_MAX)))->isIdenticalTo($calls)
+				->sizeof($calls)->isEqualTo(1)
+				->object($calls->removeCall($call, rand(2, PHP_INT_MAX)))->isIdenticalTo($calls)
+				->sizeof($calls)->isEqualTo(1)
+				->object($calls->removeCall($call, 1))->isIdenticalTo($calls)
+				->sizeof($calls)->isZero()
+		;
+	}
+
 	public function testOffsetSet()
 	{
 		$this
