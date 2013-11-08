@@ -42,9 +42,7 @@ class stub extends scripts\runner
 		$this->writeMessage(self::padding . 'tagger');
 		$this->writeMessage(self::padding . 'treemap');
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function useScript($script)
@@ -70,9 +68,7 @@ class stub extends scripts\runner
 			->writeLabels($phar->getMetadata())
 		;
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function signature()
@@ -83,9 +79,7 @@ class stub extends scripts\runner
 
 		$this->writeLabel($this->locale->_('Signature'), $signature['hash']);
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function extractTo($directory)
@@ -124,9 +118,7 @@ class stub extends scripts\runner
 			}
 		}
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function extractResourcesTo($directory)
@@ -155,9 +147,7 @@ class stub extends scripts\runner
 			}
 		}
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function useDefaultConfigFiles($startDirectory = null)
@@ -176,9 +166,7 @@ class stub extends scripts\runner
 			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()) . PHP_EOL)
 		;
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function update()
@@ -264,9 +252,7 @@ class stub extends scripts\runner
 			$this->writeMessage(sprintf($this->locale->_('Atoum has been updated from version \'%s\' to \'%s\' successfully !'), atoum\version, $data['version']));
 		}
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function listAvailableVersions()
@@ -296,9 +282,7 @@ class stub extends scripts\runner
 			$this->writeMessage(($directory == $currentDirectory ? '*' : ' ') . ' ' . $version);
 		}
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function enableVersion($versionName, \phar $phar = null)
@@ -329,9 +313,7 @@ class stub extends scripts\runner
 
 		$phar['versions'] = serialize($versions);
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function deleteVersion($versionName, \phar $phar = null)
@@ -368,9 +350,7 @@ class stub extends scripts\runner
 
 		$phar['versions'] = serialize($versions);
 
-		$this->runTests = false;
-
-		return $this;
+		return $this->stopRun();
 	}
 
 	public function getResourcesDirectory()
