@@ -97,16 +97,36 @@ abstract class call extends atoum\asserter
 
 	public function before(call $call)
 	{
-		$this->setLastAssertion(__METHOD__)->beforeCalls[] = $call->disableEvaluationChecking();
+		$this->setLastAssertion(__METHOD__);
+
+		foreach (func_get_args() as $call)
+		{
+			$this->addBeforeCall($call);
+		}
 
 		return $this;
 	}
 
+	public function getBefore()
+	{
+		return $this->beforeCalls;
+	}
+
 	public function after(call $call)
 	{
-		$this->setLastAssertion(__METHOD__)->afterCalls[] = $call->disableEvaluationChecking();
+		$this->setLastAssertion(__METHOD__);
+
+		foreach (func_get_args() as $call)
+		{
+			$this->addAfterCall($call);
+		}
 
 		return $this;
+	}
+
+	public function getAfter()
+	{
+		return $this->afterCalls;
 	}
 
 	public function getCall()
@@ -398,6 +418,20 @@ abstract class call extends atoum\asserter
 
 		$this->lastAssertion['file'] = null;
 		$this->lastAssertion['line'] = null;
+
+		return $this;
+	}
+
+	private function addBeforeCall(call $call)
+	{
+		$this->beforeCalls[] = $call->disableEvaluationChecking();
+
+		return $this;
+	}
+
+	private function addAfterCall(call $call)
+	{
+		$this->afterCalls[] = $call->disableEvaluationChecking();
 
 		return $this;
 	}
