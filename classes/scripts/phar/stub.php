@@ -163,7 +163,7 @@ class stub extends scripts\runner
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()) . PHP_EOL)
+			->writeInfo(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, \phar::running()))
 		;
 
 		return $this->stopRun();
@@ -194,7 +194,7 @@ class stub extends scripts\runner
 
 		$this
 			->clearMessage()
-			->writeMessage($this->locale->_('Checking if a new version is available... Done !'))
+			->writeMessage($this->locale->_('Checking if a new version is available... Done!' . PHP_EOL))
 		;
 
 		if (is_array($data) === false || isset($data['version']) === false || isset($data['phar']) === false)

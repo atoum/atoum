@@ -44,13 +44,13 @@ class runner extends atoum\script\configurable
 
 	public function setInfoWriter(atoum\writer $writer = null)
 	{
+		parent::setInfoWriter($writer);
+
 		if ($writer === null)
 		{
-			$writer = new writers\std\out();
-			$writer->addDecorator(new cli\colorizer('0;32'));
+			$this->infoWriter->addDecorator(new cli\colorizer('0;32'));
 		}
 
-		parent::setInfoWriter($writer);
 
 		return $this;
 	}
@@ -218,7 +218,7 @@ class runner extends atoum\script\configurable
 	public function version()
 	{
 		$this
-			->writeMessage(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory) . PHP_EOL)
+			->writeInfo(sprintf($this->locale->_('atoum version %s by %s (%s)'), atoum\version, atoum\author, atoum\directory))
 			->stopRun()
 		;
 
@@ -468,7 +468,7 @@ class runner extends atoum\script\configurable
 		{
 			$this
 				->copy($resourceDirectory . '/configurations/runner/atoum.php.dist', $defaultConfigFile)
-				->writeMessage($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' was successfully created in the current directory'))
+				->writeInfo($this->locale->_('Default configuration file \'' . static::defaultConfigFile . '\' was successfully created in the current directory'))
 			;
 		}
 
@@ -478,7 +478,7 @@ class runner extends atoum\script\configurable
 		{
 			$this
 				->copy($resourceDirectory . '/configurations/runner/bootstrap.php.dist', $bootstrapFile)
-				->writeMessage($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' was successfully created in the current directory'))
+				->writeInfo($this->locale->_('Default bootstrap file \'' . static::defaultBootstrapFile . '\' was successfully created in the current directory'))
 			;
 		}
 
