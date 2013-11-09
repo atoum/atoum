@@ -79,12 +79,12 @@ class stub extends atoum\test
 				->mock($locale)
 					->call('_')
 						->withArguments('Checking if a new version is available...')->once()
-						->withArguments('Checking if a new version is available... Done !')->once()
+						->withArguments('Checking if a new version is available... Done!' . PHP_EOL)->once()
 						->withArguments('There is no new version available !')->once()
 				->mock($stdOut)
 					->call('clear')->once()
 					->call('write')->withArguments('Checking if a new version is available...')->once()
-					->call('write')->withArguments('Checking if a new version is available... Done !' . PHP_EOL)->once()
+					->call('write')->withArguments('Checking if a new version is available... Done!' . PHP_EOL)->once()
 		;
 	}
 }

@@ -14,6 +14,11 @@ require_once __DIR__ . '/../../../runner.php';
 
 class generator extends atoum\test
 {
+	public function testClass()
+	{
+		$this->testedClass->extends('mageekguy\atoum\script');
+	}
+
 	public function testClassConstants()
 	{
 		$this->string(phar\generator::phar)->isEqualTo('mageekguy.atoum.phar');
@@ -156,55 +161,6 @@ class generator extends atoum\test
 			->then
 				->object($generator->setStubFile($stubFile = uniqid()))->isIdenticalTo($generator)
 				->string($generator->getStubFile())->isEqualTo($stubFile)
-		;
-	}
-
-	public function testSetOutputWriter()
-	{
-		$this
-			->if($generator = new phar\generator(uniqid()))
-			->then
-				->object($generator->setOutputWriter($stdout = new atoum\writers\std\out()))->isIdenticalTo($generator)
-				->object($generator->getOutputWriter())->isIdenticalTo($stdout)
-		;
-	}
-
-	public function testSetErrorWriter()
-	{
-
-		$this
-			->if($generator = new phar\generator(uniqid()))
-			->then
-				->object($generator->setErrorWriter($stderr = new atoum\writers\std\err()))->isIdenticalTo($generator)
-				->object($generator->getErrorWriter())->isIdenticalTo($stderr)
-		;
-	}
-
-	public function testWriteMessage()
-	{
-		$this
-			->if($generator = new phar\generator(uniqid()))
-			->and($stdout = new \mock\mageekguy\atoum\writers\std\out())
-			->and($stdout->getMockController()->write = function() {})
-			->and($generator->setOutputWriter($stdout))
-			->then
-				->object($generator->writeMessage($message = uniqid()))->isIdenticalTo($generator)
-				->mock($stdout)->call('write')->withArguments($message . PHP_EOL)->once()
-		;
-	}
-
-	public function testWriteError()
-	{
-		$this
-			->if($generator = new phar\generator(uniqid()))
-			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
-			->and($this->calling($stderr)->clear = $stderr)
-			->and($this->calling($stderr)->write = function() {})
-			->and($generator->setErrorWriter($stderr))
-			->then
-				->object($generator->writeError($error = uniqid()))->isIdenticalTo($generator)
-				->mock($stderr)
-					->call('write')->withArguments(sprintf($generator->getLocale()->_('Error: %s'), $error) . PHP_EOL)->once()
 		;
 	}
 
@@ -358,16 +314,15 @@ class generator extends atoum\test
 			->and($stdout->getMockController()->write = function() {})
 			->and($stderr = new \mock\mageekguy\atoum\writers\std\err())
 			->and($stderr->getMockController()->write = function() {})
-			->and($generator->setOutputWriter($stdout))
 			->and($generator->setHelpWriter($stdout))
 			->and($generator->setErrorWriter($stderr))
 			->then
 				->object($generator->run())->isIdenticalTo($generator)
 				->mock($stdout)
-					->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()) . PHP_EOL)->once()
-					->call('write')->withArguments($generator->getLocale()->_('Available options are:') . PHP_EOL)->once()
-					->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help') . PHP_EOL)->once()
-					->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>') . PHP_EOL)->once()
+					->call('write')->withArguments(sprintf($generator->getLocale()->_('Usage: %s [options]'), $generator->getName()))->once()
+					->call('write')->withArguments($generator->getLocale()->_('Available options are:'))->once()
+					->call('write')->withArguments('                                -h, --help: ' . $generator->getLocale()->_('Display this help'))->once()
+					->call('write')->withArguments('   -d <directory>, --directory <directory>: ' . $generator->getLocale()->_('Destination directory <dir>'))->once()
 			->if($generator->setPharFactory(function($name) use (& $phar) {
 						$pharController = new mock\controller();
 						$pharController->__construct = function() {};
