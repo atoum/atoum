@@ -63,6 +63,5 @@ abstract class std extends atoum\writer implements writers\realtime, writers\asy
 		return $this;
 	}
 
-
 	protected abstract function init();
 }
