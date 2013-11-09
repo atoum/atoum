@@ -66,6 +66,21 @@ class castToString extends atoum\test
 					->variable($asserter->getCharlist())->isNull()
 				->mock($locale)->call('_')->withArguments('%s is not an object', $type)->once
 				->mock($analyzer)->call('getTypeOf')->withArguments($value)->once
+				->assert('The asserter was returned when it set with an object')
+					->object($asserter->setWith($object = new \exception))->isIdenticalTo($asserter)
+					->string($asserter->getValue())->isEqualTo((string) $object)
+					->variable($asserter->getCharlist())->isNull()
+				->assert('It is possible to define a character list')
+					->object($asserter->setWith($object = new \exception, $charlist = "\010"))->isIdenticalTo($asserter)
+					->string($asserter->getValue())->isEqualTo((string) $object)
+					->string($asserter->getCharlist())->isEqualTo($charlist)
+				->assert('Fails if object is not convertible to string')
+					->exception(function() use ($asserter, & $object) {
+							$asserter->setWith($object = new \stdClass());
+						}
+					)
+						->isInstanceOf('mageekguy\atoum\asserter\exception')
+						->hasMessage($notAnObject)
 		;
 	}
 
