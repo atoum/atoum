@@ -40,7 +40,15 @@ class castToString extends asserters\phpString
 				$fail = false;
 				$this->adapter->set_error_handler(function() use (& $fail) { $fail = true; });
 
-				$value = (string) $this->value;
+				switch (true)
+				{
+					case $this->value instanceof \DOMDocument:
+						$value = $this->value->saveXML();
+						break;
+
+					default:
+						$value = (string) $this->value;
+				}
 
 				$this->adapter->restore_error_handler();
 
