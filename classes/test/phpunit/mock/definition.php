@@ -80,12 +80,15 @@ class definition extends atoum\test\mock\generator
 
 	public function verdict(atoum\test $test)
 	{
-		$asserter = $test->mock($this->mock);
+		if (sizeof($this->assertions))
+		{
+			$asserter = $test->mock($this->mock);
 
-		while(sizeof($this->assertions) > 0) {
-			$assertion = array_shift($this->assertions);
+			while(sizeof($this->assertions) > 0) {
+				$assertion = array_shift($this->assertions);
 
-			$assertion->verdict($asserter);
+				$assertion->verdict($asserter);
+			}
 		}
 
 		return $this->reset();

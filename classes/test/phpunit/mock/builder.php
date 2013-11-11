@@ -4,9 +4,9 @@ namespace mageekguy\atoum\test\phpunit\mock;
 
 use mageekguy\atoum;
 
-class builder extends atoum\test\mock\generator
+class builder
 {
-	protected $testCase;
+	protected $test;
 	protected $className;
 	protected $methods = array();
 	protected $mockClassName = '';
@@ -16,24 +16,52 @@ class builder extends atoum\test\mock\generator
 	protected $autoload = true;
 	protected $cloneArguments = false;
 
-	public function __construct(atoum\test\phpunit\test $testCase, $className)
+	public function __construct(atoum\test\phpunit\test $test, $className)
 	{
-		$this->testCase  = $testCase;
+		$this->test  = $test;
 		$this->className = $className;
 	}
 
 	public function getMock()
 	{
-		return $this->testCase->getMock(
-			$this->className,
-			$this->methods,
-			$this->constructorArgs,
-			$this->mockClassName,
-			$this->originalConstructor,
-			$this->originalClone,
-			$this->autoload,
-			$this->cloneArguments
-		);
+		$reflectionFactory = $this->test->getMockGenerator()->getReflectionClassFactory();
+
+		if($this->originalConstructor === false) {
+			$this->test->getMockGenerator()->orphanize('__construct');
+		}
+
+		$classname = '\\' . ltrim($this->test->getMockGenerator()->getDefaultnamespace(), '\\') . '\\' . trim($this->mockClassName ?: $this->className ,'\\');
+		if (class_exists($classname, $this->autoload) === false)
+		{
+			$this->test->getMockGenerator()->generate($this->className, null, $this->mockClassName);
+		}
+
+		$mock = null;
+		if(sizeof($this->constructorArgs) > 0) {
+			$mock = $reflectionFactory($classname)->newInstanceArgs($this->constructorArgs);
+		}
+
+		$mock = $mock ?: new $classname();
+
+		if ($this->methods === array())
+		{
+			foreach ($reflectionFactory($this->className)->getMethods() as $method)
+			{
+				if ($method->isPublic() && $method->isStatic() === false)
+				{
+					$mock->getMockController()->{$method->getName()} = null;
+				}
+			}
+		}
+		else
+		{
+			foreach ($this->methods as $method)
+			{
+				$mock->getMockController()->{$method} = null;
+			}
+		}
+
+		return $mock;
 	}
 
 	public function getMockForAbstractClass()
@@ -71,58 +99,58 @@ class builder extends atoum\test\mock\generator
 		return $this;
 	}
 
-	public function disableOriginalConstructor()
+	public function disableOriginalConstructor($disable = true)
 	{
-		$this->originalConstructor = false;
+		$this->originalConstructor = !$disable;
 
 		return $this;
 	}
 
-	public function enableOriginalConstructor()
+	public function enableOriginalConstructor($enable = true)
 	{
-		$this->originalConstructor = true;
+		$this->originalConstructor = $enable;
 
 		return $this;
 	}
 
-	public function disableOriginalClone()
+	public function disableOriginalClone($disable = true)
 	{
-		$this->originalClone = false;
+		$this->originalClone = !$disable;
 
 		return $this;
 	}
 
-	public function enableOriginalClone()
+	public function enableOriginalClone($enable = true)
 	{
-		$this->originalClone = true;
+		$this->originalClone = $enable;
 
 		return $this;
 	}
 
-	public function disableAutoload()
+	public function disableAutoload($disable = true)
 	{
-		$this->autoload = false;
+		$this->autoload = !$disable;
 
 		return $this;
 	}
 
-	public function enableAutoload()
+	public function enableAutoload($enable = true)
 	{
-		$this->autoload = true;
+		$this->autoload = $enable;
 
 		return $this;
 	}
 
-	public function disableArgumentCloning()
+	public function disableArgumentCloning($disable = true)
 	{
-		$this->cloneArguments = false;
+		$this->cloneArguments = !$disable;
 
 		return $this;
 	}
 
-	public function enableArgumentCloning()
+	public function enableArgumentCloning($enable = true)
 	{
-		$this->cloneArguments = true;
+		$this->cloneArguments = $enable;
 
 		return $this;
 	}

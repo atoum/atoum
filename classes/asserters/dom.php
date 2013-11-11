@@ -78,6 +78,48 @@ class dom extends asserters\object
 		return $this;
 	}
 
+	public function isNotEmpty($failMessage = null)
+	{
+		if ($this->valueIsSet()->value->firstChild !== null)
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage !== null ? $failMessage : sprintf($this->getLocale()->_('%s is empty'), $this));
+		}
+
+		return $this;
+	}
+
+	public function isEqualTo($expected, $failMessage = null)
+	{
+		if ($this->valueIsSet()->value->C14N() === $expected->C14N())
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is not equal to %s'), $this, $this->getTypeOf($expected)));
+		}
+
+		return $this;
+	}
+
+	public function isNotEqualTo($expected, $failMessage = null)
+	{
+		if ($this->valueIsSet()->value->C14N() !== $expected->C14N())
+		{
+			$this->pass();
+		}
+		else
+		{
+			$this->fail($failMessage ?: sprintf($this->getLocale()->_('%s is equal to %s'), $this, $this->getTypeOf($expected)));
+		}
+
+		return $this;
+	}
+
 	public function toString()
 	{
 		return $this->generator->castToString($this->valueIsSet()->value);

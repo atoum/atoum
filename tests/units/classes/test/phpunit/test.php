@@ -311,53 +311,6 @@ class test extends atoum\test
 		;
 	}
 
-	public function testAssertInstanceOfNotInstanceOf()
-	{
-		$this
-			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
-			->then
-				->object($test->assertInstanceOf('\\StdClass', new \StdClass))->isInstanceOf('\\mageekguy\\atoum\\asserters\\object')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
-				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test->getScore()->reset())
-			->then
-				->exception(function() use ($test) {
-						$test->assertInstanceOf($test, new \StdClass);
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
-				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
-			->then
-				->object($test->assertNotInstanceOf(new self(), new \StdClass))->isInstanceOf('\\mageekguy\\atoum\\asserters\\object')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
-				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test->getScore()->reset())
-			->then
-				->exception(function() use ($test) {
-						$test->assertNotInstanceOf('\\StdClass', new \StdClass);
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(1)
-				->integer($test->getScore()->getFailNumber())->isEqualTo(1)
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test->getScore()->reset())
-			->then
-				->exception(function() use ($test, & $actual) {
-						$test->assertInstanceOf(uniqid(), $actual = uniqid());
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-					->hasMessage('string(' . strlen($actual) . ') \'' . $actual . '\' is not an object')
-				->object($test->assertNotInstanceOf(uniqid(), $actual = uniqid()))->isIdenticalTo($test)
-		;
-	}
-
 	public function testAssertArrayHasKey()
 	{
 		$this
@@ -386,44 +339,6 @@ class test extends atoum\test
 				)
 					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
 					->hasMessage('string(' . strlen($actual) . ') \'' . $actual . '\' is not an array')
-		;
-	}
-
-	public function testAssertCount()
-	{
-		$this
-			->if($test = new \mock\mageekguy\atoum\test\phpunit\test())
-			->and($actual = array(uniqid(), uniqid()))
-			->then
-				->object($test->assertCount(count($actual), $actual))->isInstanceOf('\\mageekguy\\atoum\\asserters\\phpArray')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
-				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test->getScore()->reset())
-			->then
-				->exception($throwing = function() use ($test, & $actual) {
-						$test->assertCount(rand(count($actual), PHP_INT_MAX), $actual);
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-			->if($test->getScore()->reset())
-			->and($actual = new \ArrayIterator($actual))
-			->then
-				->object($test->assertCount(count($actual), $actual))->isInstanceOf('\\mageekguy\\atoum\\asserters\\object')
-				->integer($test->getScore()->getPassNumber())->isEqualTo(2)
-				->integer($test->getScore()->getFailNumber())->isZero()
-				->integer($test->getScore()->getAssertionNumber())->isEqualTo(2)
-			->if($test->getScore()->reset())
-			->then
-				->exception($throwing)->isInstanceOf('\\mageekguy\\atoum\\asserter\\exception')
-			->if($test->getScore()->reset())
-			->then
-				->exception(function() use ($test, & $actual) {
-						$test->assertCount(rand(0, PHP_INT_MAX), $actual = uniqid());
-					}
-				)
-					->isInstanceOf('\\mageekguy\\atoum\\exceptions\\logic\\invalidArgument')
-					->hasMessage('Value is not countable')
 		;
 	}
 
