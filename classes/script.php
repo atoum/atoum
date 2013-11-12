@@ -140,6 +140,7 @@ abstract class script
 			$writer
 				->addDecorator(new writer\decorators\rtrim())
 				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
 			;
 		}
 
@@ -162,6 +163,7 @@ abstract class script
 				->addDecorator(new writer\decorators\trim())
 				->addDecorator(new writer\decorators\prompt($this->locale->_('Warning: ')))
 				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
 			;
 		}
 
@@ -184,6 +186,7 @@ abstract class script
 				->addDecorator(new writer\decorators\trim())
 				->addDecorator(new writer\decorators\prompt($this->locale->_('Error: ')))
 				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
 			;
 		}
 
@@ -217,6 +220,7 @@ abstract class script
 				->addDecorator($argumentColorizer)
 				->addDecorator(new writer\decorators\rtrim())
 				->addDecorator(new writer\decorators\eol())
+				->addDecorator(new atoum\cli\clear())
 			;
 		}
 
@@ -306,6 +310,27 @@ abstract class script
 		return trim($this->prompt->ask(rtrim($message)));
 	}
 
+	public function writeLabel($label, $value, $level = 0)
+	{
+		static::writeLabelWithWriter($label, $value, $level, $this->helpWriter);
+
+		return $this;
+	}
+
+	public function writeLabels(array $labels, $level = 1)
+	{
+		static::writeLabelsWithWriter($labels, $level, $this->helpWriter);
+
+		return $this;
+	}
+
+	public function clearMessage()
+	{
+		$this->outputWriter->clear();
+
+		return $this;
+	}
+
 	public function writeMessage($message)
 	{
 		$this->outputWriter
@@ -332,14 +357,14 @@ abstract class script
 
 	public function writeWarning($warning)
 	{
-		$this->warningWriter->clear()->write($warning);
+		$this->warningWriter->write($warning);
 
 		return $this;
 	}
 
 	public function writeError($message)
 	{
-		$this->errorWriter->clear()->write($message);
+		$this->errorWriter->write($message);
 
 		return $this;
 	}
@@ -379,27 +404,6 @@ abstract class script
 	public function resetVerbosityLevel()
 	{
 		$this->verbosityLevel = 0;
-
-		return $this;
-	}
-
-	public function clearMessage()
-	{
-		$this->outputWriter->clear();
-
-		return $this;
-	}
-
-	public function writeLabel($label, $value, $level = 0)
-	{
-		static::writeLabelWithWriter($label, $value, $level, $this->helpWriter);
-
-		return $this;
-	}
-
-	public function writeLabels(array $labels, $level = 1)
-	{
-		static::writeLabelsWithWriter($labels, $level, $this->helpWriter);
 
 		return $this;
 	}

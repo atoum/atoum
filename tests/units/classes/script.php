@@ -35,19 +35,22 @@ class script extends atoum\test
 				$defaultInfoWriter = new writers\std\out(),
 				$defaultInfoWriter
 					->addDecorator(new writer\decorators\rtrim())
-					->addDecorator(new writer\decorators\eol()),
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear()),
 
 				$defaultWarningWriter = new writers\std\err(),
 				$defaultWarningWriter
 					->addDecorator(new writer\decorators\trim())
 					->addDecorator(new writer\decorators\prompt('Warning: '))
-					->addDecorator(new writer\decorators\eol()),
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear()),
 
 				$defaultErrorWriter = new writers\std\err(),
 				$defaultErrorWriter
 					->addDecorator(new writer\decorators\trim())
 					->addDecorator(new writer\decorators\prompt('Error: '))
-					->addDecorator(new writer\decorators\eol()),
+					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear()),
 
 				$defaultHelpWriter = new writers\std\out(),
 				$defaultHelpWriter
@@ -56,6 +59,7 @@ class script extends atoum\test
 					->addDecorator($argumentColorizer)
 					->addDecorator(new writer\decorators\rtrim())
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 			)
 			->if($script = new mock\script($name = uniqid()))
 			->then
@@ -174,6 +178,7 @@ class script extends atoum\test
 				$defaultInfoWriter
 					->addDecorator(new writer\decorators\rtrim())
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 			)
 				->object($script->setInfoWriter())->isIdenticalTo($script)
 				->object($script->getInfoWriter())
@@ -197,6 +202,7 @@ class script extends atoum\test
 					->addDecorator(new writer\decorators\trim())
 					->addDecorator(new writer\decorators\prompt($script->getLocale()->_('Warning: ')))
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 			)
 			->then
 				->object($script->setWarningWriter())->isIdenticalTo($script)
@@ -221,6 +227,7 @@ class script extends atoum\test
 					->addDecorator(new writer\decorators\trim())
 					->addDecorator(new writer\decorators\prompt($script->getLocale()->_('Error: ')))
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 			)
 			->then
 				->object($script->setErrorWriter())->isIdenticalTo($script)
@@ -252,6 +259,7 @@ class script extends atoum\test
 					->addDecorator($argumentColorizer)
 					->addDecorator(new writer\decorators\rtrim())
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 			)
 			->then
 				->object($script->setHelpWriter())->isIdenticalTo($script)
@@ -462,9 +470,7 @@ class script extends atoum\test
 			->and($script->setWarningWriter($errorWriter))
 			->then
 				->object($script->writeWarning($warning = uniqid()))->isIdenticalTo($script)
-				->mock($errorWriter)
-					->call('clear')->once()
-					->call('write')->withArguments($warning)->once()
+				->mock($errorWriter)->call('write')->withArguments($warning)->once()
 		;
 	}
 
@@ -478,9 +484,7 @@ class script extends atoum\test
 			->and($script->setErrorWriter($errorWriter))
 			->then
 				->object($script->writeError($message = uniqid()))->isIdenticalTo($script)
-				->mock($errorWriter)
-					->call('clear')->once()
-					->call('write')->withIdenticalArguments($message)->once()
+				->mock($errorWriter)->call('write')->withIdenticalArguments($message)->once()
 		;
 	}
 

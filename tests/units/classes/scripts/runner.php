@@ -776,6 +776,7 @@ class runner extends atoum\test
 				$defaultInfoWriter
 					->addDecorator(new writer\decorators\rtrim())
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 					->addDecorator(new cli\colorizer('0;32'))
 			)
 			->then
@@ -816,6 +817,7 @@ class runner extends atoum\test
 					->addDecorator(new writer\decorators\trim())
 					->addDecorator(new writer\decorators\prompt($runner->getLocale()->_('Error: ')))
 					->addDecorator(new writer\decorators\eol())
+					->addDecorator(new atoum\cli\clear())
 					->addDecorator($colorizer)
 			)
 			->then
@@ -869,9 +871,7 @@ class runner extends atoum\test
 				->mock($locale)
 					->call('_')
 						->withArguments('No test found')->once()
-				->mock($errorWriter)
-					->call('clear')->once()
-					->call('write')->withArguments('No test found')->once()
+				->mock($errorWriter)->call('write')->withArguments('No test found')->once()
 		;
 	}
 
