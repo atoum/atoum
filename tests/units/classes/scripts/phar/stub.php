@@ -85,9 +85,11 @@ class stub extends atoum\test
 						->withArguments('Checking if a new version is available... Done!' . PHP_EOL)->once()
 						->withArguments('There is no new version available!')->once()
 				->mock($outputWriter)
-					->call('clear')->once()
 					->call('write')->withArguments('Checking if a new version is available...')->once()
-					->call('write')->withArguments('Checking if a new version is available... Done!' . PHP_EOL)->once()
+					->call('write')
+						->after($this->mock($outputWriter)->call('clear')->once())
+						->withArguments('Checking if a new version is available... Done!' . PHP_EOL)
+							->once()
 		;
 	}
 }
